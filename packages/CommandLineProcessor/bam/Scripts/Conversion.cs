@@ -149,6 +149,10 @@ namespace CommandLineProcessor
             object[] attributeArray,
             object propertyValue)
         {
+            if (null == propertyValue)
+            {
+                return;
+            }
             if (!(typeof(System.Enum).IsAssignableFrom(propertyInfo.PropertyType) ||
                   (propertyInfo.PropertyType.IsGenericType &&
                    propertyInfo.PropertyType.GetGenericTypeDefinition() == typeof(System.Nullable<>)
