@@ -186,6 +186,10 @@ namespace VisualCCommon
         [CommandLineProcessor.Enum(C.EOptimization.Size, "-O1")]
         [CommandLineProcessor.Enum(C.EOptimization.Speed, "-O2")]
         [CommandLineProcessor.Enum(C.EOptimization.Custom, "")] // deferred for compiler specific optimisation setting
+        [VisualStudioProcessor.Enum(C.EOptimization.Off, "Optimization", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "Disabled")]
+        [VisualStudioProcessor.Enum(C.EOptimization.Size, "Optimization", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "MinSpace")]
+        [VisualStudioProcessor.Enum(C.EOptimization.Speed, "Optimization", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "MaxSpeed")]
+        [VisualStudioProcessor.Enum(C.EOptimization.Custom, "Optimization", VisualStudioProcessor.EnumAttribute.EMode.NoOp)] // compiler specific setting
 #endif
         C.EOptimization? C.ICommonCompilerSettings.Optimization
         {
