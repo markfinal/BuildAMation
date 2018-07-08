@@ -49,7 +49,7 @@ namespace ClangCommon
             this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
             if (!this.Contains("MinVersion"))
             {
-                this.MinimumVersionSupported = "macosx10.6";
+                this.MinimumVersionSupported = "10.6";
             }
         }
 

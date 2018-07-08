@@ -61,7 +61,7 @@ namespace Cxx11Test1
             Clang.MetaData instance)
         {
             // using libc++ requires 10.7 minimum deployment
-            instance.MinimumVersionSupported = "macosx10.7";
+            instance.MinimumVersionSupported = "10.7";
         }
     }
 

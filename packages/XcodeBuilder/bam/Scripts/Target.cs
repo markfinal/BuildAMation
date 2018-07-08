@@ -707,20 +707,8 @@ namespace XcodeBuilder
                 // set which SDK to build against
                 newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
 
-                // set the minimum version of OSX/iPhone to run against
-                var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
-                var match = minVersionRegEx.Match(clangMeta.MinimumVersionSupported);
-                if (!match.Groups["Type"].Success)
-                {
-                    throw new Bam.Core.Exception("Unable to extract SDK type from: '{0}'", clangMeta.MinimumVersionSupported);
-                }
-                if (!match.Groups["Version"].Success)
-                {
-                    throw new Bam.Core.Exception("Unable to extract SDK version from: '{0}'", clangMeta.MinimumVersionSupported);
-                }
-
-                var optionName = System.String.Format("{0}_DEPLOYMENT_TARGET", match.Groups["Type"].Value.ToUpper());
-                newConfig[optionName] = new UniqueConfigurationValue(match.Groups["Version"].Value);
+                // set the minimum version of macOS/iOS to run against
+                newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(clangMeta.MinimumVersionSupported);
 
                 return newConfig;
             }
