@@ -67,21 +67,29 @@ namespace C
 #if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
+#if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
                     MakeFileSupport.Compile(this);
                     break;
+#endif
 
+#if D_PACKAGE_NATIVEBUILDER
                 case "Native":
                     NativeSupport.Compile(this, context);
                     break;
+#endif
 
+#if D_PACKAGE_VSSOLUTIONBUILDER
                 case "VSSolution":
                     VSSolutionSupport.Compile(this);
                     break;
+#endif
 
+#if D_PACKAGE_XCODEBUILDER
                 case "Xcode":
                     XcodeSupport.Compile(this);
                     break;
+#endif
 
                 default:
                     throw new System.NotImplementedException();

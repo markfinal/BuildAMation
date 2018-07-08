@@ -444,21 +444,29 @@ namespace C
 #if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
+#if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
                     //MakeFileSupport.Link(this);
                     break;
+#endif
 
+#if D_PACKAGE_NATIVEBUILDER
                 case "Native":
                     NativeSupport.Link(this, context);
                     break;
+#endif
 
+#if D_PACKAGE_VSSOLUTIONBUILDER
                 case "VSSolution":
                     //VSSolutionSupport.Link(this);
                     break;
+#endif
 
+#if D_PACKAGE_XCODEBUILDER
                 case "Xcode":
                     //XcodeSupport.Link(this);
                     break;
+#endif
 
                 default:
                     throw new System.NotImplementedException();
