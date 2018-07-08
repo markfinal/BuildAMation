@@ -45,7 +45,7 @@ namespace ClangCommon
             this.InitializeAllInterfaces(module, false, true);
 
             // not in the defaults in the C package to avoid a compile-time dependency on the Clang package
-            (this as C.ICommonLinkerSettingsOSX).MinimumVersionSupported =
+            (this as C.ICommonLinkerSettingsOSX).MacOSMinimumVersionSupported =
                 Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MinimumVersionSupported;
         }
 
@@ -131,7 +131,7 @@ namespace ClangCommon
             set;
         }
 
-        string C.ICommonLinkerSettingsOSX.MinimumVersionSupported
+        string C.ICommonLinkerSettingsOSX.MacOSMinimumVersionSupported
         {
             get;
             set;

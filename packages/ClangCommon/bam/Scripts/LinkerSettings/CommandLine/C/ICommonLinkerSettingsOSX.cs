@@ -53,22 +53,6 @@ namespace ClangCommon
                     commandLine.Add(System.String.Format("-Wl,-dylib_install_name,{0}", settings.InstallName.ToString()));
                 }
             }
-            if (settings.MinimumVersionSupported != null)
-            {
-                var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
-                var match = minVersionRegEx.Match(settings.MinimumVersionSupported);
-                if (!match.Groups["Type"].Success)
-                {
-                    throw new Bam.Core.Exception("Unable to extract SDK type from: '{0}'", settings.MinimumVersionSupported);
-                }
-                if (!match.Groups["Version"].Success)
-                {
-                    throw new Bam.Core.Exception("Unable to extract SDK version from: '{0}'", settings.MinimumVersionSupported);
-                }
-                commandLine.Add(System.String.Format("-m{0}-version-min={1}",
-                    match.Groups["Type"].Value,
-                    match.Groups["Version"].Value));
-            }
         }
     }
 }

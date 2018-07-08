@@ -53,7 +53,7 @@ namespace ClangCommon
             this.InitializeAllInterfaces(module, true, useDefaults);
 
             // not in the defaults in the C package to avoid a compile-time dependency on the Clang package
-            (this as C.ICommonCompilerSettingsOSX).MinimumVersionSupported =
+            (this as C.ICommonCompilerSettingsOSX).MacOSMinimumVersionSupported =
                 Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MinimumVersionSupported;
         }
 
@@ -230,7 +230,7 @@ namespace ClangCommon
 #if BAM_V2
         [CommandLineProcessor.String("-mmacos-version-min=")]
 #endif
-        string C.ICommonCompilerSettingsOSX.MinimumVersionSupported
+        string C.ICommonCompilerSettingsOSX.MacOSMinimumVersionSupported
         {
             get;
             set;
@@ -308,26 +308,6 @@ namespace ClangCommon
         Validate()
         {
             base.Validate();
-
-            if (!System.String.IsNullOrEmpty((this as C.ICommonCompilerSettingsOSX).MinimumVersionSupported))
-            {
-                var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
-                var match = minVersionRegEx.Match((this as C.ICommonCompilerSettingsOSX).MinimumVersionSupported);
-                if (!match.Groups["Type"].Success)
-                {
-                    throw new Bam.Core.Exception(
-                        "Unable to extract SDK type from: '{0}'",
-                        (this as C.ICommonCompilerSettingsOSX).MinimumVersionSupported
-                    );
-                }
-                if (!match.Groups["Version"].Success)
-                {
-                    throw new Bam.Core.Exception(
-                        "Unable to extract SDK version from: '{0}'",
-                        (this as C.ICommonCompilerSettingsOSX).MinimumVersionSupported
-                    );
-                }
-            }
 
             if ((this as ICommonCompilerSettings).Optimization.HasValue &&
                 (this as C.ICommonCompilerSettings).Optimization != C.EOptimization.Custom)

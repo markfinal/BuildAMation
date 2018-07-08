@@ -67,10 +67,10 @@ namespace C
         }
 
         /// <summary>
-        /// Minimum version of OSX supported for the binary.
+        /// Minimum version of macOS supported for the binary.
         /// </summary>
         /// <value>The minimum version supported.</value>
-        string MinimumVersionSupported
+        string MacOSMinimumVersionSupported
         {
             get;
             set;
