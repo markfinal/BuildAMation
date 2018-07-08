@@ -151,10 +151,19 @@ namespace VisualStudioProcessor
         BaseAttribute
     {
         public BoolAttribute(
-            string property)
+            string property,
+            bool inverted = false)
             :
             base(property)
-        {}
+        {
+            this.Inverted = inverted;
+        }
+
+        public bool Inverted
+        {
+            get;
+            private set;
+        }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -273,9 +282,14 @@ namespace VisualStudioProcessor
                     }
                     else if (attributeArray.First() is BoolAttribute)
                     {
+                        var value = (bool)property_value;
+                        if ((attributeArray.First() as BoolAttribute).Inverted)
+                        {
+                            value = !value;
+                        }
                         vsSettingsGroup.AddSetting(
                             (attributeArray.First() as BoolAttribute).Property,
-                            (bool)property_value,
+                            value,
                             condition
                         );
                     }
