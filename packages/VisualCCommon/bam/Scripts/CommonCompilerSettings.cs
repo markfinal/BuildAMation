@@ -121,6 +121,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.PreprocessorDefines("-D")]
+        [VisualStudioProcessor.PreprocessorDefines("PreprocessorDefinitions", inheritExisting: true)]
 #endif
         C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
         {

@@ -37,12 +37,20 @@ namespace VisualStudioProcessor
         System.Attribute
     {
         protected BaseAttribute(
-            string property)
+            string property,
+            bool inheritExisting)
         {
             this.Property = property;
+            this.InheritExisting = inheritExisting;
         }
 
         public string Property
+        {
+            get;
+            private set;
+        }
+
+        public bool InheritExisting
         {
             get;
             private set;
@@ -67,10 +75,11 @@ namespace VisualStudioProcessor
             object key,
             string property,
             EMode mode,
+            bool inheritExisting = false,
             string verbatimString = null,
             string prefix = null)
             :
-            base(property)
+            base(property, inheritExisting)
         {
             this.Key = key as System.Enum;
             this.Mode = mode;
@@ -108,9 +117,10 @@ namespace VisualStudioProcessor
         BaseAttribute
     {
         public PathAttribute(
-            string command_switch)
+            string command_switch,
+            bool inheritExisting = false)
             :
-            base(command_switch)
+            base(command_switch, inheritExisting)
         { }
     }
 
@@ -119,9 +129,10 @@ namespace VisualStudioProcessor
         BaseAttribute
     {
         public PathArrayAttribute(
-            string command_switch)
+            string command_switch,
+            bool inheritExisting = false)
             :
-            base(command_switch)
+            base(command_switch, inheritExisting)
         { }
     }
 
@@ -130,9 +141,10 @@ namespace VisualStudioProcessor
         BaseAttribute
     {
         public StringAttribute(
-            string command_switch)
+            string command_switch,
+            bool inheritExisting = false)
             :
-            base(command_switch)
+            base(command_switch, inheritExisting)
         { }
     }
 
@@ -141,9 +153,10 @@ namespace VisualStudioProcessor
         BaseAttribute
     {
         public StringArrayAttribute(
-            string command_switch)
+            string command_switch,
+            bool inheritExisting = false)
             :
-            base(command_switch)
+            base(command_switch, inheritExisting)
         { }
     }
 
@@ -153,9 +166,10 @@ namespace VisualStudioProcessor
     {
         public BoolAttribute(
             string property,
+            bool inheritExisting = false,
             bool inverted = false)
             :
-            base(property)
+            base(property, inheritExisting)
         {
             this.Inverted = inverted;
         }
@@ -163,9 +177,10 @@ namespace VisualStudioProcessor
         public BoolAttribute(
             string property,
             string truth,
-            string falisy)
+            string falisy,
+            bool inheritExisting = false)
             :
-            base(property)
+            base(property, inheritExisting)
         {
             this.Inverted = false;
             this.Truth = truth;
@@ -196,9 +211,10 @@ namespace VisualStudioProcessor
         BaseAttribute
     {
         public PreprocessorDefinesAttribute(
-            string command_switch)
+            string command_switch,
+            bool inheritExisting = false)
             :
-            base(command_switch)
+            base(command_switch, inheritExisting)
         { }
     }
 
@@ -246,6 +262,7 @@ namespace VisualStudioProcessor
                     {
                         var associated_attribute = attributeArray.First(
                             item => (item as EnumAttribute).Key.Equals(property_value)) as EnumAttribute;
+                        System.Diagnostics.Debug.Assert(!associated_attribute.InheritExisting);
                         switch (associated_attribute.Mode)
                         {
                             case EnumAttribute.EMode.AsString:
@@ -338,7 +355,12 @@ namespace VisualStudioProcessor
                     }
                     else if (attributeArray.First() is PreprocessorDefinesAttribute)
                     {
-                        throw new System.NotImplementedException();
+                        vsSettingsGroup.AddSetting(
+                            (attributeArray.First() as BaseAttribute).Property,
+                            property_value as C.PreprocessorDefinitions,
+                            condition,
+                            inheritExisting: (attributeArray.First() as BaseAttribute).InheritExisting
+                        );
                     }
                     else
                     {
