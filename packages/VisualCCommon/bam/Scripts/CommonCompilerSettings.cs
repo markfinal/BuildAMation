@@ -131,6 +131,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-I")]
+        [VisualStudioProcessor.PathArray("AdditionalIncludeDirectories", inheritExisting: true)]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths
         {
@@ -140,6 +141,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-I")]
+        [VisualStudioProcessor.PathArray("AdditionalIncludeDirectories", inheritExisting: true)]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
         {

@@ -318,7 +318,14 @@ namespace VisualStudioProcessor
                     }
                     else if (attributeArray.First() is PathArrayAttribute)
                     {
-                        throw new System.NotImplementedException();
+                        var associated_attribute = attributeArray.First() as BaseAttribute;
+                        vsSettingsGroup.AddSetting(
+                            associated_attribute.Property,
+                            property_value as Bam.Core.TokenizedStringArray,
+                            condition,
+                            inheritExisting: associated_attribute.InheritExisting,
+                            arePaths: true
+                        );
                     }
                     else if (attributeArray.First() is StringAttribute)
                     {
@@ -355,11 +362,12 @@ namespace VisualStudioProcessor
                     }
                     else if (attributeArray.First() is PreprocessorDefinesAttribute)
                     {
+                        var associated_attribute = attributeArray.First() as BaseAttribute;
                         vsSettingsGroup.AddSetting(
-                            (attributeArray.First() as BaseAttribute).Property,
+                            associated_attribute.Property,
                             property_value as C.PreprocessorDefinitions,
                             condition,
-                            inheritExisting: (attributeArray.First() as BaseAttribute).InheritExisting
+                            inheritExisting: associated_attribute.InheritExisting
                         );
                     }
                     else
