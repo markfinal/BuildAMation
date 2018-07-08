@@ -30,8 +30,7 @@
 namespace Gcc
 {
     public class CCompilerSettings :
-        GccCommon.CommonCompilerSettings,
-        C.ICOnlyCompilerSettings
+        GccCommon.CommonCompilerSettings
     {
         public CCompilerSettings(
             Bam.Core.Module module)
@@ -45,11 +44,5 @@ namespace Gcc
             :
             base(module, useDefaults)
         {}
-
-        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
     }
 }

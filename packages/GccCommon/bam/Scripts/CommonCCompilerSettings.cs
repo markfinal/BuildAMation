@@ -27,42 +27,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-#if BAM_V2
-#else
 namespace GccCommon
 {
-    public static partial class CommandLineImplementation
+    public abstract class CommonCCompilerSettings :
+        CommonCompilerSettings,
+        C.ICOnlyCompilerSettings
     {
-        public static void
-        Convert(
-            this C.ICOnlyCompilerSettings settings,
-            Bam.Core.StringArray commandLine)
+        protected CommonCCompilerSettings(
+            Bam.Core.Module module)
+            :
+            base(module)
+        {}
+
+        protected CommonCCompilerSettings(
+            Bam.Core.Module module,
+            bool useDefaults)
+            :
+            base(module, useDefaults)
+        {}
+
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.ELanguageStandard.NotSet, "")]
+        [CommandLineProcessor.Enum(C.ELanguageStandard.C89, "-std=c89")]
+        [CommandLineProcessor.Enum(C.ELanguageStandard.GNU89, "-std=gnu89")]
+        [CommandLineProcessor.Enum(C.ELanguageStandard.C99, "-std=c99")]
+        [CommandLineProcessor.Enum(C.ELanguageStandard.GNU99, "-std=gnu99")]
+#endif
+        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
         {
-            if (settings.LanguageStandard.HasValue)
-            {
-                switch (settings.LanguageStandard.Value)
-                {
-                    case C.ELanguageStandard.C89:
-                        commandLine.Add("-std=c89");
-                        break;
-
-                    case C.ELanguageStandard.GNU89:
-                        commandLine.Add("-std=gnu89");
-                        break;
-
-                    case C.ELanguageStandard.C99:
-                        commandLine.Add("-std=c99");
-                        break;
-
-                    case C.ELanguageStandard.GNU99:
-                        commandLine.Add("-std=gnu99");
-                        break;
-
-                    default:
-                        throw new Bam.Core.Exception("Invalid C language standard, '{0}'", settings.LanguageStandard.Value.ToString());
-                }
-            }
+            get;
+            set;
         }
     }
 }
-#endif
