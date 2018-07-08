@@ -31,7 +31,10 @@ namespace ClangCommon
 {
     public abstract class CommonCompilerSettings :
         C.SettingsBase,
+#if BAM_V2
+#else
         CommandLineProcessor.IConvertToCommandLine,
+#endif
         XcodeProjectProcessor.IConvertToProject,
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
@@ -57,12 +60,15 @@ namespace ClangCommon
                 Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MinimumVersionSupported;
         }
 
+#if BAM_V2
+#else
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineCompilerImplementation), this, commandLine);
         }
+#endif
 
         void
         XcodeProjectProcessor.IConvertToProject.Convert(
