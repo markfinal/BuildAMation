@@ -80,6 +80,9 @@ namespace VisualCCommon
         [CommandLineProcessor.Enum(C.ECharacterSet.NotSet, "")]
         [CommandLineProcessor.Enum(C.ECharacterSet.Unicode, "-DUNICODE -D_UNICODE")]
         [CommandLineProcessor.Enum(C.ECharacterSet.MultiByte, "-D_MBCS")]
+        [VisualStudioProcessor.Enum(C.ECharacterSet.NotSet, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)] // set project wide
+        [VisualStudioProcessor.Enum(C.ECharacterSet.Unicode, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)] // ditto
+        [VisualStudioProcessor.Enum(C.ECharacterSet.MultiByte, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)] // ditto
 #endif
         C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
         {

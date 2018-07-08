@@ -59,7 +59,8 @@ namespace VisualStudioProcessor
             AsInteger,
             AsIntegerWithPrefix,
             VerbatimString,
-            Empty
+            Empty,
+            NoOp
         }
 
         public EnumAttribute(
@@ -286,6 +287,12 @@ namespace VisualStudioProcessor
                                     condition
                                 );
                                 break;
+
+                            case EnumAttribute.EMode.NoOp:
+                                break;
+
+                            default:
+                                throw new Bam.Core.Exception("Unhandled enum mode, {0}", associated_attribute.Mode.ToString());
                         }
                     }
                     else if (attributeArray.First() is PathAttribute)
