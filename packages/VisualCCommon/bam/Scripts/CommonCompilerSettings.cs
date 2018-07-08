@@ -32,7 +32,10 @@ namespace VisualCCommon
 {
     public abstract class CommonCompilerSettings :
         C.SettingsBase,
+#if BAM_V2
+#else
         CommandLineProcessor.IConvertToCommandLine,
+#endif
         VisualStudioProcessor.IConvertToProject,
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
@@ -54,12 +57,15 @@ namespace VisualCCommon
             this.InitializeAllInterfaces(module, true, useDefaults);
         }
 
+#if BAM_V2
+#else
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
+#endif
 
         void
         VisualStudioProcessor.IConvertToProject.Convert(
