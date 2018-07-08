@@ -82,7 +82,6 @@ namespace C
             var className = "C." + mode + "Assembly";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IAssemblerPolicy>.Create(className);
         }
-#endif
 
         protected override void
         EvaluateInternal()
@@ -118,7 +117,15 @@ namespace C
             }
 
             // no header files, so simpler
-            // TODO: parameterise this, so there is just one EvaluateInternal method
+        }
+#endif
+
+        protected override bool RequiresHeaderEvaluation
+        {
+            get
+            {
+                return false;
+            }
         }
     }
 }

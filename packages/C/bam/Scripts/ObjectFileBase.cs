@@ -126,5 +126,10 @@ namespace C
             get;
             set;
         }
+
+        protected abstract bool RequiresHeaderEvaluation
+        {
+            get;
+        }
     }
 }

@@ -157,7 +157,7 @@ namespace C
                 return;
             }
 
-            if (this is WinResource)
+            if (!this.RequiresHeaderEvaluation)
             {
                 return;
             }
@@ -276,6 +276,14 @@ namespace C
             }
 
             return;
+        }
+
+        protected override bool RequiresHeaderEvaluation
+        {
+            get
+            {
+                return true;
+            }
         }
     }
 }

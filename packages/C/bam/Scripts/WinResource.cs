@@ -54,6 +54,14 @@ namespace C
             this.DependsOn(dependent);
             this.UsePublicPatchesPrivately(dependent);
         }
+
+        protected override bool RequiresHeaderEvaluation
+        {
+            get
+            {
+                return false;
+            }
+        }
     }
 
     /// <summary>
