@@ -29,9 +29,8 @@
 #endregion // License
 namespace Gcc
 {
-    public class ObjectiveCCompilerSettings :
-        CCompilerSettings,
-        C.IObjectiveCOnlyCompilerSettings
+    public sealed class ObjectiveCCompilerSettings :
+        GccCommon.CommonCCompilerSettings
     {
         public ObjectiveCCompilerSettings(
             Bam.Core.Module module)
@@ -46,11 +45,5 @@ namespace Gcc
             :
             base(module, useDefaults)
         {}
-
-        string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
-        {
-            get;
-            set;
-        }
     }
 }

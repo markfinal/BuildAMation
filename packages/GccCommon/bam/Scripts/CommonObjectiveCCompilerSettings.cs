@@ -27,23 +27,33 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Gcc
+namespace GccCommon
 {
-    public sealed class ObjectiveCCompilerSettings :
-        GccCommon.CommonCCompilerSettings
+    public abstract class CommonObjectiveCCompilerSettings :
+        CommonCCompilerSettings,
+        C.IObjectiveCOnlyCompilerSettings
     {
-        public ObjectiveCCompilerSettings(
+        protected CommonObjectiveCCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
-        { }
+        {}
 
-        public
-        ObjectiveCCompilerSettings(
+        protected
+        CommonObjectiveCCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
             :
             base(module, useDefaults)
-        { }
+        {}
+
+#if BAM_V2
+        [CommandLineProcessor.String("-fconstant-string-class=")]
+#endif
+        string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
+        {
+            get;
+            set;
+        }
     }
 }
