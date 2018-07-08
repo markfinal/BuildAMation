@@ -159,7 +159,31 @@ namespace VisualStudioProcessor
             this.Inverted = inverted;
         }
 
+        public BoolAttribute(
+            string property,
+            string truth,
+            string falisy)
+            :
+            base(property)
+        {
+            this.Inverted = false;
+            this.Truth = truth;
+            this.Falisy = falisy;
+        }
+
         public bool Inverted
+        {
+            get;
+            private set;
+        }
+
+        public string Truth
+        {
+            get;
+            private set;
+        }
+
+        public string Falisy
         {
             get;
             private set;
@@ -283,15 +307,27 @@ namespace VisualStudioProcessor
                     else if (attributeArray.First() is BoolAttribute)
                     {
                         var value = (bool)property_value;
-                        if ((attributeArray.First() as BoolAttribute).Inverted)
+                        var bool_attr = attributeArray.First() as BoolAttribute;
+                        if (bool_attr.Inverted)
                         {
                             value = !value;
                         }
-                        vsSettingsGroup.AddSetting(
-                            (attributeArray.First() as BoolAttribute).Property,
-                            value,
-                            condition
-                        );
+                        if (null == bool_attr.Truth && null == bool_attr.Falisy)
+                        {
+                            vsSettingsGroup.AddSetting(
+                                bool_attr.Property,
+                                value,
+                                condition
+                            );
+                        }
+                        else
+                        {
+                            vsSettingsGroup.AddSetting(
+                                bool_attr.Property,
+                                value ? bool_attr.Truth : bool_attr.Falisy,
+                                condition
+                            );
+                        }
                     }
                     else if (attributeArray.First() is PreprocessorDefinesAttribute)
                     {

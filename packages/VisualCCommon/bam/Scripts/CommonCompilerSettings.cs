@@ -295,6 +295,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Enum(EOptimization.Full, "-Ox")]
+        [VisualStudioProcessor.Enum(EOptimization.Full, "Optimization", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
 #endif
         EOptimization? ICommonCompilerSettings.Optimization
         {
@@ -304,8 +305,9 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-bigobj", "")]
+        [VisualStudioProcessor.Bool("AdditionalOptions", "-bigobj", "")]
 #endif
-        bool? ICommonCompilerSettings.IncreaseObjectFileSectionCount
+        bool ? ICommonCompilerSettings.IncreaseObjectFileSectionCount
         {
             get;
             set;
