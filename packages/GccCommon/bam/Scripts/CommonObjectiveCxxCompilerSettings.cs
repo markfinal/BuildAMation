@@ -27,19 +27,19 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Gcc
+namespace GccCommon
 {
-    public sealed class ObjectiveCCompilerSettings :
-        GccCommon.CommonObjectiveCCompilerSettings
+    public abstract class CommonObjectiveCxxCompilerSettings :
+        CommonCxxCompilerSettings,
+        C.IObjectiveCxxOnlyCompilerSettings
     {
-        public ObjectiveCCompilerSettings(
+        protected CommonObjectiveCxxCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
         {}
 
-        public
-        ObjectiveCCompilerSettings(
+        protected CommonObjectiveCxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
             :

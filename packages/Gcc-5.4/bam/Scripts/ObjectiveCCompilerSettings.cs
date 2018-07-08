@@ -30,7 +30,7 @@
 namespace Gcc
 {
     public sealed class ObjectiveCCompilerSettings :
-        GccCommon.CommonCCompilerSettings
+        GccCommon.CommonObjectiveCCompilerSettings
     {
         public ObjectiveCCompilerSettings(
             Bam.Core.Module module)
