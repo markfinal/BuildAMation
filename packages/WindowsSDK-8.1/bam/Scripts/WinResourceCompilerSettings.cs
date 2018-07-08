@@ -31,7 +31,10 @@ namespace WindowsSDK
 {
     public class WinResourceCompilerSettings :
         C.SettingsBase,
+#if BAM_V2
+#else
         CommandLineProcessor.IConvertToCommandLine,
+#endif
         VisualStudioProcessor.IConvertToProject,
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
@@ -45,12 +48,15 @@ namespace WindowsSDK
             this.InitializeAllInterfaces(module, false, true);
         }
 
+#if BAM_V2
+#else
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
+#endif
 
         void
         VisualStudioProcessor.IConvertToProject.Convert(
@@ -79,25 +85,36 @@ namespace WindowsSDK
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-v", "")]
+#endif
         bool? C.ICommonWinResourceCompilerSettings.Verbose
         {
             get;
             set;
         }
 
+#if BAM_V2
         [CommandLineProcessor.PathArray("-i")]
+#endif
         Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PreprocessorDefines("-D")]
+#endif
         C.PreprocessorDefinitions C.ICommonWinResourceCompilerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.StringArray("")]
+#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
