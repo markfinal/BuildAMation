@@ -209,7 +209,8 @@ namespace CommandLineProcessor
             if (!typeof(Bam.Core.TokenizedString).IsAssignableFrom(propertyInfo.PropertyType))
             {
                 throw new Bam.Core.Exception(
-                    "Attribute expected a Bam.Core.TokenizedString, but property is of type {0}",
+                    "Attribute expected a Bam.Core.TokenizedString, but property {0} is of type {1}",
+                    propertyInfo.Name,
                     propertyInfo.PropertyType.ToString()
                 );
             }
@@ -233,7 +234,8 @@ namespace CommandLineProcessor
             if (!typeof(Bam.Core.TokenizedStringArray).IsAssignableFrom(propertyInfo.PropertyType))
             {
                 throw new Bam.Core.Exception(
-                    "Attribute expected a Bam.Core.TokenizedStringArray, but property is of type {0}",
+                    "Attribute expected a Bam.Core.TokenizedStringArray, but property {0} is of type {1}",
+                    propertyInfo.Name,
                     propertyInfo.PropertyType.ToString()
                 );
             }
@@ -267,7 +269,8 @@ namespace CommandLineProcessor
             if (!typeof(string).IsAssignableFrom(propertyInfo.PropertyType))
             {
                 throw new Bam.Core.Exception(
-                    "Attribute expected a string, but property is of type {0}",
+                    "Attribute expected a string, but property {0} is of type {1}",
+                    propertyInfo.Name,
                     propertyInfo.PropertyType.ToString()
                 );
             }
@@ -292,7 +295,8 @@ namespace CommandLineProcessor
             if (!typeof(Bam.Core.StringArray).IsAssignableFrom(propertyInfo.PropertyType))
             {
                 throw new Bam.Core.Exception(
-                    "Attribute expected a Bam.Core.StringArray, but property is of type {0}",
+                    "Attribute expected a Bam.Core.StringArray, but property {0} is of type {1}",
+                    propertyInfo.Name,
                     propertyInfo.PropertyType.ToString()
                 );
             }
@@ -363,7 +367,8 @@ namespace CommandLineProcessor
             if (!typeof(C.PreprocessorDefinitions).IsAssignableFrom(propertyInfo.PropertyType))
             {
                 throw new Bam.Core.Exception(
-                    "Attribute expected a C.PreprocessorDefinitions, but property is of type {0}",
+                    "Attribute expected a C.PreprocessorDefinitions, but property {0} is of type {1}",
+                    propertyInfo.Name,
                     propertyInfo.PropertyType.ToString()
                 );
             }
