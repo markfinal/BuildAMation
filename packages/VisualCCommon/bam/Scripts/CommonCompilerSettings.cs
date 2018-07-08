@@ -274,7 +274,7 @@ namespace VisualCCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.Bool("-Za", "")]
+        [CommandLineProcessor.Bool("", "-Za")]
 #endif
         bool? ICommonCompilerSettings.EnableLanguageExtensions
         {
