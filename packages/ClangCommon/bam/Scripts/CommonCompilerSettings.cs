@@ -90,12 +90,19 @@ namespace ClangCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-arch i386")]
+        [CommandLineProcessor.EnumAttribute(C.EBit.SixtyFour, "-arch x86_64")]
+#endif
         C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PreprocessorDefines("-D")]
+#endif
         C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
         {
             get;
@@ -132,106 +139,203 @@ namespace ClangCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-g", "")]
+#endif
         bool? C.ICommonCompilerSettings.DebugSymbols
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-Werror", "-Wno-error")]
+#endif
         bool? C.ICommonCompilerSettings.WarningsAsErrors
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.EOptimization.Off, "-O0")]
+        [CommandLineProcessor.Enum(C.EOptimization.Size, "-Os")] // TODO: is this right?
+        [CommandLineProcessor.Enum(C.EOptimization.Speed, "-O2")]
+        [CommandLineProcessor.Enum(C.EOptimization.Custom, "")]
+#endif
         C.EOptimization? C.ICommonCompilerSettings.Optimization
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.ETargetLanguage.Default, "")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-x c")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-x c++")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveC, "-x objective-c")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveCxx, "-x objective-c++")]
+#endif
         C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-fomit-frame-pointer", "-fno-omit-frame-pointer")]
+#endif
         bool? C.ICommonCompilerSettings.OmitFramePointer
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.StringArray("-Wno-")]
+#endif
         Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.StringArray("-U")]
+#endif
         Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.StringArray("-include ")]
+#endif
         Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PathArray("-F")]
+#endif
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettingsOSX.FrameworkSearchPaths
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.String("-mmacos-version-min=")]
+#endif
         string C.ICommonCompilerSettingsOSX.MinimumVersionSupported
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.StringArray("")]
+#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-Wall", "-Wno-all")]
+#endif
         bool? ICommonCompilerSettings.AllWarnings
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-Wextra", "-Wno-extra")]
+#endif
         bool? ICommonCompilerSettings.ExtraWarnings
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-Wpedantic", "-Wno-pedantic")]
+#endif
         bool? ICommonCompilerSettings.Pedantic
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(EVisibility.Default, "-fvisibility=default")]
+        [CommandLineProcessor.Enum(EVisibility.Hidden, "-fvisibility=hidden")]
+        [CommandLineProcessor.Enum(EVisibility.Internal, "-fvisibility=internal")]
+        [CommandLineProcessor.Enum(EVisibility.Protected, "-fvisibility=protected")]
+#endif
         EVisibility? ICommonCompilerSettings.Visibility
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-fstrict-aliasing", "-fno-strict-aliasing")]
+#endif
         bool? ICommonCompilerSettings.StrictAliasing
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(EOptimization.O1, "-O1")]
+        [CommandLineProcessor.Enum(EOptimization.O3, "-O3")]
+        [CommandLineProcessor.Enum(EOptimization.Ofast, "-Ofast")]
+#endif
         EOptimization? ICommonCompilerSettings.Optimization
         {
             get;
             set;
+        }
+
+        public override void
+        Validate()
+        {
+            base.Validate();
+
+            if (!System.String.IsNullOrEmpty((this as C.ICommonCompilerSettingsOSX).MinimumVersionSupported))
+            {
+                var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
+                var match = minVersionRegEx.Match((this as C.ICommonCompilerSettingsOSX).MinimumVersionSupported);
+                if (!match.Groups["Type"].Success)
+                {
+                    throw new Bam.Core.Exception(
+                        "Unable to extract SDK type from: '{0}'",
+                        (this as C.ICommonCompilerSettingsOSX).MinimumVersionSupported
+                    );
+                }
+                if (!match.Groups["Version"].Success)
+                {
+                    throw new Bam.Core.Exception(
+                        "Unable to extract SDK version from: '{0}'",
+                        (this as C.ICommonCompilerSettingsOSX).MinimumVersionSupported
+                    );
+                }
+            }
+
+            if ((this as ICommonCompilerSettings).Optimization.HasValue &&
+                (this as C.ICommonCompilerSettings).Optimization != C.EOptimization.Custom)
+            {
+                throw new Bam.Core.Exception(
+                    "Compiler specific optimizations can only be set when the common optimization is C.EOptimization.Custom"
+                );
+            }
         }
     }
 }

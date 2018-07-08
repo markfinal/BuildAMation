@@ -90,6 +90,17 @@ namespace CommandLineProcessor
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class StringAttribute :
+        BaseAttribute
+    {
+        public StringAttribute(
+            string command_switch)
+            :
+            base(command_switch)
+        { }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class StringArrayAttribute :
         BaseAttribute
     {
@@ -239,6 +250,35 @@ namespace CommandLineProcessor
                     )
                 );
             }
+        }
+
+        private static void
+        HandleSingleString(
+            Bam.Core.StringArray commandLine,
+            System.Reflection.PropertyInfo interfacePropertyInfo,
+            System.Reflection.PropertyInfo propertyInfo,
+            object[] attributeArray,
+            object propertyValue)
+        {
+            if (null == propertyValue)
+            {
+                return;
+            }
+            if (!typeof(string).IsAssignableFrom(propertyInfo.PropertyType))
+            {
+                throw new Bam.Core.Exception(
+                    "Attribute expected a string, but property is of type {0}",
+                    propertyInfo.PropertyType.ToString()
+                );
+            }
+            var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
+            commandLine.Add(
+                System.String.Format(
+                    "{0}{1}",
+                    command_switch,
+                    propertyValue as string
+                )
+            );
         }
 
         private static void
@@ -396,6 +436,16 @@ namespace CommandLineProcessor
                     else if (attributeArray.First() is PathArrayAttribute)
                     {
                         HandlePathArray(
+                            commandLine,
+                            interface_property,
+                            settings_property,
+                            attributeArray,
+                            property_value
+                        );
+                    }
+                    else if (attributeArray.First() is StringAttribute)
+                    {
+                        HandleSingleString(
                             commandLine,
                             interface_property,
                             settings_property,
