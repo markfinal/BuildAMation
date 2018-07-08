@@ -163,6 +163,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-Z7", "")]
+        [VisualStudioProcessor.Bool("DebugInformationFormat", "OldStyle", "None")]
 #endif
         bool? C.ICommonCompilerSettings.DebugSymbols
         {
