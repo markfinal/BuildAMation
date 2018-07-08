@@ -27,6 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+#if BAM_V2
+#else
 namespace ClangCommon
 {
     public static partial class CommandLineCompilerImplementation
@@ -63,8 +65,6 @@ namespace ClangCommon
             {
                 commandLine.Add(System.String.Format("-Wno-{0}", warning));
             }
-#if BAM_V2
-#else
             foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
             {
                 var quoted_path = path.ToStringQuoteIfNecessary();
@@ -74,7 +74,6 @@ namespace ClangCommon
                 }
                 commandLine.Add(System.String.Format("-I{0}", quoted_path));
             }
-#endif
             if (settings.Optimization.HasValue)
             {
                 switch (settings.Optimization.Value)
@@ -129,8 +128,6 @@ namespace ClangCommon
             {
                 commandLine.Add(System.String.Format("-U{0}", undefine));
             }
-#if BAM_V2
-#else
             foreach (var path in settings.SystemIncludePaths.ToEnumerableWithoutDuplicates())
             {
                 var quoted_path = path.ToStringQuoteIfNecessary();
@@ -140,7 +137,6 @@ namespace ClangCommon
                 }
                 commandLine.Add(System.String.Format("-I{0}", quoted_path));
             }
-#endif
             if (settings.TargetLanguage.HasValue)
             {
                 switch (settings.TargetLanguage.Value)
@@ -172,8 +168,6 @@ namespace ClangCommon
                     commandLine.Add("-Wno-error");
                 }
             }
-#if BAM_V2
-#else
             if (settings.OutputType.HasValue)
             {
                 var module = (settings as Bam.Core.Settings).Module;
@@ -189,7 +183,6 @@ namespace ClangCommon
                         throw new Bam.Core.Exception("Unsupported output type, {0}", settings.OutputType.Value.ToString());
                 }
             }
-#endif
             foreach (var header in settings.NamedHeaders)
             {
                 commandLine.Add(System.String.Format("-include {0}", header));
@@ -197,3 +190,4 @@ namespace ClangCommon
         }
     }
 }
+#endif
