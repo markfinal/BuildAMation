@@ -222,6 +222,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("-wd")]
+        [VisualStudioProcessor.StringArray("DisableSpecificWarnings", inheritExisting: true)]
 #endif
         Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
         {

@@ -333,7 +333,13 @@ namespace VisualStudioProcessor
                     }
                     else if (attributeArray.First() is StringArrayAttribute)
                     {
-                        throw new System.NotImplementedException();
+                        var associated_attribute = attributeArray.First() as BaseAttribute;
+                        vsSettingsGroup.AddSetting(
+                            associated_attribute.Property,
+                            property_value as Bam.Core.StringArray,
+                            condition,
+                            inheritExisting: associated_attribute.InheritExisting
+                        );
                     }
                     else if (attributeArray.First() is BoolAttribute)
                     {
