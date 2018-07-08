@@ -32,6 +32,8 @@ using C.DefaultSettings;
 using System.Linq;
 namespace C
 {
+#if BAM_V2
+#else
     public sealed partial class VSSolutionLinker :
         ILinkingPolicy
     {
@@ -223,4 +225,5 @@ namespace C
             }
         }
     }
+#endif
 }

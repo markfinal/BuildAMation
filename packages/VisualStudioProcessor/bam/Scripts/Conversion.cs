@@ -33,9 +33,16 @@ using System.Linq;
 namespace VisualStudioProcessor
 {
 #if BAM_V2
+    public abstract class BaseAttribute :
+        System.Attribute
+    {
+        protected BaseAttribute()
+        {}
+    }
+
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
     public class EnumAttribute :
-        System.Attribute
+        BaseAttribute
     {
         public EnumAttribute(
             object key,
@@ -55,6 +62,42 @@ namespace VisualStudioProcessor
         {
             get;
             private set;
+        }
+    }
+
+    public static class VSSolutionConversion
+    {
+        public static void
+        Convert(
+            Bam.Core.Settings settings,
+            Bam.Core.Module module, // cannot use settings.Module as this may be null for per-file settings
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition = null)
+        {
+            var commandLine = new Bam.Core.StringArray();
+            Bam.Core.Log.MessageAll("Module: {0}", module.ToString());
+            Bam.Core.Log.MessageAll("Settings: {0}", settings.ToString());
+            foreach (var settings_interface in settings.Interfaces())
+            {
+                Bam.Core.Log.MessageAll(settings_interface.ToString());
+                foreach (var interface_property in settings_interface.GetProperties())
+                {
+                    // must use the fully qualified property name from the originating interface
+                    // to look for the instance in the concrete settings class
+                    // this is to allow for the same property leafname to appear in multiple interfaces
+                    var full_property_interface_name = System.String.Join(".", new[] { interface_property.DeclaringType.FullName, interface_property.Name });
+                    var settings_property = settings.Properties.First(
+                        item => full_property_interface_name == item.Name
+                    );
+                    Bam.Core.Log.MessageAll("\t{0}", settings_property.ToString());
+                    var attributeArray = settings_property.GetCustomAttributes(typeof(BaseAttribute), false);
+                    if (!attributeArray.Any())
+                    {
+                        Bam.Core.Log.MessageAll("\t\tNo attrs");
+                        continue;
+                    }
+                }
+            }
         }
     }
 #endif

@@ -397,9 +397,10 @@ namespace CommandLineProcessor
             Bam.Core.Module module)
         {
             var commandLine = new Bam.Core.StringArray();
+            var settings = module.Settings;
             //Bam.Core.Log.MessageAll("Module: {0}", module.ToString());
-            //Bam.Core.Log.MessageAll("Settings: {0}", module.Settings.ToString());
-            foreach (var settings_interface in module.Settings.Interfaces())
+            //Bam.Core.Log.MessageAll("Settings: {0}", settings.ToString());
+            foreach (var settings_interface in settings.Interfaces())
             {
                 //Bam.Core.Log.MessageAll(settings_interface.ToString());
                 foreach (var interface_property in settings_interface.GetProperties())
@@ -408,7 +409,7 @@ namespace CommandLineProcessor
                     // to look for the instance in the concrete settings class
                     // this is to allow for the same property leafname to appear in multiple interfaces
                     var full_property_interface_name = System.String.Join(".", new[] { interface_property.DeclaringType.FullName, interface_property.Name });
-                    var settings_property = module.Settings.Properties.First(
+                    var settings_property = settings.Properties.First(
                         item => full_property_interface_name == item.Name
                     );
                     //Bam.Core.Log.MessageAll("\t{0}", settings_property.ToString());
@@ -417,7 +418,7 @@ namespace CommandLineProcessor
                     {
                         continue;
                     }
-                    var property_value = settings_property.GetValue(module.Settings);
+                    var property_value = settings_property.GetValue(settings);
                     if (attributeArray.First() is EnumAttribute)
                     {
                         HandleEnum(

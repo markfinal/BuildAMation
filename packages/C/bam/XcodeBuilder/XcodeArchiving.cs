@@ -30,6 +30,8 @@
 using System.Linq;
 namespace C
 {
+#if BAM_V2
+#else
     public sealed class XcodeLibrarian :
         IArchivingPolicy
     {
@@ -206,4 +208,5 @@ namespace C
             }
         }
     }
+#endif
 }

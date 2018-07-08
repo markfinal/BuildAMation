@@ -374,7 +374,16 @@ namespace VSSolutionBuilder
             var settings = module.MetaData as VSSettingsGroup;
             if (null != patchSettings)
             {
+#if BAM_V2
+                VisualStudioProcessor.VSSolutionConversion.Convert(
+                    patchSettings,
+                    module,
+                    settings,
+                    condition: this.ConditionText
+                );
+#else
                 (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(module, settings, condition: this.ConditionText);
+#endif
             }
             this.Sources.AddUnique(settings);
             this.Project.AddSource(settings);
