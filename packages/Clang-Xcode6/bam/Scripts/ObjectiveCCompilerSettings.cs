@@ -30,30 +30,19 @@
 namespace Clang
 {
     public sealed class ObjectiveCCompilerSettings :
-        CCompilerSettings,
-        C.IObjectiveCOnlyCompilerSettings
+        ClangCommon.CommonObjectiveCCompilerSettings
     {
         public ObjectiveCCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
-        {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
-        }
+        { }
 
         public ObjectiveCCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
             :
             base(module, useDefaults)
-        {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
-        }
-
-        string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
-        {
-            get;
-            set;
-        }
+        { }
     }
 }

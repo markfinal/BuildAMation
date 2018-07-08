@@ -27,22 +27,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-#if BAM_V2
-#else
 namespace ClangCommon
 {
-    public static partial class CommandLineCompilerImplementation
+    public abstract class CommonObjectiveCCompilerSettings :
+        CommonCCompilerSettings,
+        C.IObjectiveCOnlyCompilerSettings
     {
-        public static void
-        Convert(
-            this C.IObjectiveCOnlyCompilerSettings settings,
-            Bam.Core.StringArray commandLine)
+        protected CommonObjectiveCCompilerSettings(
+            Bam.Core.Module module)
+            :
+            base(module)
         {
-            if (!System.String.IsNullOrEmpty(settings.ConstantStringClass))
-            {
-                commandLine.Add(System.String.Format("-fconstant-string-class={0}", settings.ConstantStringClass));
-            }
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
+        }
+
+        protected CommonObjectiveCCompilerSettings(
+            Bam.Core.Module module,
+            bool useDefaults)
+            :
+            base(module, useDefaults)
+        {
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.String("-fconstant-string-class=")]
+#endif
+        string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
+        {
+            get;
+            set;
         }
     }
 }
-#endif
