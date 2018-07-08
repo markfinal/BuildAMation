@@ -73,6 +73,10 @@ namespace ClangCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-arch i386")]
+        [CommandLineProcessor.EnumAttribute(C.EBit.SixtyFour, "-arch x86_64")]
+#endif
         C.EBit C.ICommonLinkerSettings.Bits
         {
             get;
@@ -107,56 +111,80 @@ namespace ClangCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-g", "")]
+#endif
         bool C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PathArray("-framework ")]
+#endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.Frameworks
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PathArray("-F ")]
+#endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.FrameworkSearchPaths
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Path("-Wl,-dylib_install_name,")]
+#endif
         Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.InstallName
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.String("-mmacosx-version-min=")]
+#endif
         string C.ICommonLinkerSettingsOSX.MacOSMinimumVersionSupported
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.StringArray("")]
+#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PathArray("-Wl,-rpath,{0}")]
+#endif
         Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPath
         {
             get;
             set;
         }
-    }
 
-    public sealed class CLinkerSettings :
-        CommonLinkerSettings
-    {
-        public CLinkerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        { }
+        public override void
+        Validate()
+        {
+            base.Validate();
+            if (null != (this as C.ICommonLinkerSettingsOSX).InstallName)
+            {
+                if (!(this.Module is C.DynamicLibrary))
+                {
+                    throw new Bam.Core.Exception("Install name is only applicable to dynamic libraries");
+                }
+            }
+        }
     }
 }

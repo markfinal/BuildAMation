@@ -27,6 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+#if BAM_V2
+#else
 namespace ClangCommon
 {
     public static partial class CommandLineLinkerImplementation
@@ -50,8 +52,6 @@ namespace ClangCommon
             default:
                 throw new Bam.Core.Exception("Unknown bit depth, {0}", settings.Bits.ToString());
             }
-#if BAM_V2
-#else
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
@@ -80,7 +80,6 @@ namespace ClangCommon
             {
                 commandLine.Add(path);
             }
-#endif
             if (settings.DebugSymbols)
             {
                 commandLine.Add("-g");
@@ -88,3 +87,4 @@ namespace ClangCommon
         }
     }
 }
+#endif
