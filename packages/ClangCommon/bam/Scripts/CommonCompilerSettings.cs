@@ -228,7 +228,7 @@ namespace ClangCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.String("-mmacos-version-min=")]
+        [CommandLineProcessor.String("-mmacosx-version-min=")]
 #endif
         string C.ICommonCompilerSettingsOSX.MacOSMinimumVersionSupported
         {
