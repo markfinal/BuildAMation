@@ -73,6 +73,7 @@ namespace C
                     realObjectFiles);
                 VisualStudioProcessor.VSSolutionConversion.Convert(
                     sharedSettings,
+                    realObjectFiles.First().Settings.GetType(),
                     module,
                     compilerGroup
                 );

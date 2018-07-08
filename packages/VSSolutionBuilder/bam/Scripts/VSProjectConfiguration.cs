@@ -377,6 +377,7 @@ namespace VSSolutionBuilder
 #if BAM_V2
                 VisualStudioProcessor.VSSolutionConversion.Convert(
                     patchSettings,
+                    module.Settings.GetType(),
                     module,
                     settings,
                     condition: this.ConditionText

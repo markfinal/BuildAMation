@@ -36,8 +36,17 @@ namespace VisualStudioProcessor
     public abstract class BaseAttribute :
         System.Attribute
     {
-        protected BaseAttribute()
-        {}
+        protected BaseAttribute(
+            string property)
+        {
+            this.Property = property;
+        }
+
+        public string Property
+        {
+            get;
+            private set;
+        }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
@@ -46,10 +55,11 @@ namespace VisualStudioProcessor
     {
         public EnumAttribute(
             object key,
-            string value)
+            string command_switch)
+            :
+            base(command_switch)
         {
             this.Key = key as System.Enum;
-            this.Value = value;
         }
 
         public System.Enum Key
@@ -57,12 +67,72 @@ namespace VisualStudioProcessor
             get;
             private set;
         }
+    }
 
-        public string Value
-        {
-            get;
-            private set;
-        }
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class PathAttribute :
+        BaseAttribute
+    {
+        public PathAttribute(
+            string command_switch)
+            :
+            base(command_switch)
+        { }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class PathArrayAttribute :
+        BaseAttribute
+    {
+        public PathArrayAttribute(
+            string command_switch)
+            :
+            base(command_switch)
+        { }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class StringAttribute :
+        BaseAttribute
+    {
+        public StringAttribute(
+            string command_switch)
+            :
+            base(command_switch)
+        { }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class StringArrayAttribute :
+        BaseAttribute
+    {
+        public StringArrayAttribute(
+            string command_switch)
+            :
+            base(command_switch)
+        { }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class BoolAttribute :
+        BaseAttribute
+    {
+        public BoolAttribute(
+            string property)
+            :
+            base(property)
+        {}
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class PreprocessorDefinesAttribute :
+        BaseAttribute
+    {
+        public PreprocessorDefinesAttribute(
+            string command_switch)
+            :
+            base(command_switch)
+        { }
     }
 
     public static class VSSolutionConversion
@@ -70,13 +140,14 @@ namespace VisualStudioProcessor
         public static void
         Convert(
             Bam.Core.Settings settings,
+            System.Type real_settings_type,
             Bam.Core.Module module, // cannot use settings.Module as this may be null for per-file settings
             VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             string condition = null)
         {
             var commandLine = new Bam.Core.StringArray();
             Bam.Core.Log.MessageAll("Module: {0}", module.ToString());
-            Bam.Core.Log.MessageAll("Settings: {0}", settings.ToString());
+            Bam.Core.Log.MessageAll("Settings {0}", settings.ToString());
             foreach (var settings_interface in settings.Interfaces())
             {
                 Bam.Core.Log.MessageAll(settings_interface.ToString());
@@ -86,15 +157,58 @@ namespace VisualStudioProcessor
                     // to look for the instance in the concrete settings class
                     // this is to allow for the same property leafname to appear in multiple interfaces
                     var full_property_interface_name = System.String.Join(".", new[] { interface_property.DeclaringType.FullName, interface_property.Name });
-                    var settings_property = settings.Properties.First(
+                    var attribute_settings_property = Bam.Core.Settings.FindProperties(real_settings_type).First(
                         item => full_property_interface_name == item.Name
                     );
-                    Bam.Core.Log.MessageAll("\t{0}", settings_property.ToString());
-                    var attributeArray = settings_property.GetCustomAttributes(typeof(BaseAttribute), false);
+                    Bam.Core.Log.MessageAll("\t{0}", attribute_settings_property.ToString());
+                    var attributeArray = attribute_settings_property.GetCustomAttributes(typeof(BaseAttribute), false);
                     if (!attributeArray.Any())
                     {
                         Bam.Core.Log.MessageAll("\t\tNo attrs");
                         continue;
+                    }
+                    var value_settings_property = settings.Properties.First(
+                        item => full_property_interface_name == item.Name
+                    );
+                    var property_value = value_settings_property.GetValue(settings);
+                    if (null == property_value)
+                    {
+                        continue;
+                    }
+                    if (attributeArray.First() is EnumAttribute)
+                    {
+                    }
+                    else if (attributeArray.First() is PathAttribute)
+                    {
+                    }
+                    else if (attributeArray.First() is PathArrayAttribute)
+                    {
+                    }
+                    else if (attributeArray.First() is StringAttribute)
+                    {
+                    }
+                    else if (attributeArray.First() is StringArrayAttribute)
+                    {
+                    }
+                    else if (attributeArray.First() is BoolAttribute)
+                    {
+                        vsSettingsGroup.AddSetting(
+                            (attributeArray.First() as BoolAttribute).Property,
+                            (bool)property_value,
+                            condition
+                        );
+                    }
+                    else if (attributeArray.First() is PreprocessorDefinesAttribute)
+                    {
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception(
+                            "Unhandled attribute {0} for property {1} in {2}",
+                            attributeArray.First().ToString(),
+                            attribute_settings_property.Name,
+                            module.ToString()
+                        );
                     }
                 }
             }

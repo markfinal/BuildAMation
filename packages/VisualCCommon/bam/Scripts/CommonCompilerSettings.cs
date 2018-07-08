@@ -241,6 +241,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-nologo", "")]
+        [VisualStudioProcessor.Bool("SuppressStartupBanner")]
 #endif
         bool? ICommonCompilerSettings.NoLogo
         {

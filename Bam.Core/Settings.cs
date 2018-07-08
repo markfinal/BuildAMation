@@ -118,11 +118,18 @@ namespace Bam.Core
             }
         }
 
-        // TODO: this does seem to find more properties than it needs to
-        private static Array<System.Reflection.PropertyInfo>
+        /// <summary>
+        /// Utility function to gather all the properties on a Settings
+        /// class hierarchy.
+        /// </summary>
+        /// <param name="settingsType">Concrete Settings type to start from.</param>
+        /// <returns>Array of PropertyInfo.</returns>
+        public static Array<System.Reflection.PropertyInfo>
         FindProperties(
             System.Type settingsType)
         {
+            // TODO: this does seem to find more properties than it needs to
+
             // since flattening the hierachy doesn't expose private property
             // implementations on base classes, recurse
             var properties = settingsType.GetProperties(
