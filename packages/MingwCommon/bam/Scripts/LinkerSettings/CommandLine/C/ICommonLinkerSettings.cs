@@ -27,6 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+#if BAM_V2
+#else
 namespace MingwCommon
 {
     public static partial class CommandLineImplementation
@@ -50,8 +52,6 @@ namespace MingwCommon
                 default:
                     throw new Bam.Core.Exception("Unknown machine bit depth, {0}", settings.Bits.ToString());
             }
-#if BAM_V2
-#else
             switch (settings.OutputType)
             {
                 case C.ELinkerOutput.Executable:
@@ -72,7 +72,6 @@ namespace MingwCommon
             {
                 commandLine.Add(path);
             }
-#endif
             if (settings.DebugSymbols)
             {
                 commandLine.Add("-g");
@@ -80,3 +79,4 @@ namespace MingwCommon
         }
     }
 }
+#endif

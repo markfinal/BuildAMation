@@ -69,18 +69,30 @@ namespace MingwCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.ESubsystem.NotSet, "")]
+        [CommandLineProcessor.Enum(C.ESubsystem.Console, "-Wl,-subsystem,console")]
+        [CommandLineProcessor.Enum(C.ESubsystem.Windows, "-Wl,-subsystem,windows")]
+#endif
         C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Path("")] // just add it to the command line
+#endif
         Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
+        [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
+#endif
         C.EBit C.ICommonLinkerSettings.Bits
         {
             get;
@@ -115,12 +127,18 @@ namespace MingwCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-g", "")]
+#endif
         bool C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.StringArray("")]
+#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
