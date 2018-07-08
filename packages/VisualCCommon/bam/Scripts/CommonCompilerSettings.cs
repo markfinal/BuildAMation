@@ -232,6 +232,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("-U")]
+        [VisualStudioProcessor.StringArray("UndefinePreprocessorDefinitions", inheritExisting: true)]
 #endif
         Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
         {
