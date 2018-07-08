@@ -27,18 +27,27 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-#if BAM_V2
-#else
 namespace ClangCommon
 {
-    public static partial class CommandLineCompilerImplementation
+    public abstract class CommonObjectiveCxxCompilerSettings :
+        CommonCxxCompilerSettings,
+        C.IObjectiveCxxOnlyCompilerSettings
     {
-        public static void
-        Convert(
-            this C.IObjectiveCxxOnlyCompilerSettings settings,
-            Bam.Core.StringArray commandLine)
+        protected CommonObjectiveCxxCompilerSettings(
+            Bam.Core.Module module)
+            :
+            base(module)
         {
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
+        }
+
+        protected CommonObjectiveCxxCompilerSettings(
+            Bam.Core.Module module,
+            bool useDefaults)
+            :
+            base(module, useDefaults)
+        {
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
         }
     }
 }
-#endif
