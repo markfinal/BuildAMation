@@ -198,9 +198,11 @@ namespace VisualCCommon
         }
 
 #if BAM_V2
+        // dialects other than C and C++ not supported
         [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-TC")]
         [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-TP")]
-        // other dialects not supported
+        [VisualStudioProcessor.Enum(C.ETargetLanguage.C, "CompileAs", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "CompileAsC")]
+        [VisualStudioProcessor.Enum(C.ETargetLanguage.Cxx, "CompileAs", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "CompileAsCpp")]
 #endif
         C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
         {
