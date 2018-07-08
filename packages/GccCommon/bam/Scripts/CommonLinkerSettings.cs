@@ -69,6 +69,10 @@ namespace GccCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
+        [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
+#endif
         C.EBit C.ICommonLinkerSettings.Bits
         {
             get;
@@ -103,36 +107,54 @@ namespace GccCommon
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-g", "")]
+#endif
         bool C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.StringArray("")]
+#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.Bool("-Wl,-z,origin", "")]
+#endif
         bool ICommonLinkerSettings.CanUseOrigin
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PathArray("-Wl,-rpath,")]
+#endif
         Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPath
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PathArray("-Wl,-rpath-link,")]
+#endif
         Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPathLink
         {
             get;
             set;
         }
 
+#if BAM_V2
+        [CommandLineProcessor.PathArray("-Wl,--version-script=")]
+#endif
         Bam.Core.TokenizedString ICommonLinkerSettings.VersionScript
         {
             get;
