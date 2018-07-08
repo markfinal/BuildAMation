@@ -31,7 +31,10 @@ namespace MingwCommon
 {
     public abstract class CommonArchiverSettings :
         C.SettingsBase,
+#if BAM_V2
+#else
         CommandLineProcessor.IConvertToCommandLine,
+#endif
         C.ICommonHasOutputPath,
         C.IAdditionalSettings,
         ICommonArchiverSettings
@@ -42,12 +45,15 @@ namespace MingwCommon
             this.InitializeAllInterfaces(module, false, true);
         }
 
+#if BAM_V2
+#else
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("")]

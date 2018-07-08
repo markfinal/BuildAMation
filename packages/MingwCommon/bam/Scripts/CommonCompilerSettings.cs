@@ -31,7 +31,10 @@ namespace MingwCommon
 {
     public abstract class CommonCompilerSettings :
         C.SettingsBase,
+#if BAM_V2
+#else
         CommandLineProcessor.IConvertToCommandLine,
+#endif
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
         C.ICommonCompilerSettingsWin,
@@ -52,12 +55,15 @@ namespace MingwCommon
             this.InitializeAllInterfaces(module, true, useDefaults);
         }
 
+#if BAM_V2
+#else
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Enum(C.ECharacterSet.NotSet, "")]
