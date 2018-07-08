@@ -30,30 +30,19 @@
 namespace Clang
 {
     public class CxxCompilerSettings :
-        ClangCommon.CommonCompilerSettings,
-        C.ICOnlyCompilerSettings
+        ClangCommon.CommonCxxCompilerSettings
     {
         public CxxCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
-        {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
-        }
+        { }
 
         public CxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
             :
             base(module, useDefaults)
-        {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
-        }
-
-        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
+        { }
     }
 }

@@ -30,7 +30,7 @@
 namespace VisualC
 {
     public sealed class CxxCompilerSettings :
-        VisualCCommon.CommonCompilerSettings,
+        VisualCCommon.CommonCxxCompilerSettings,
         C.ICxxOnlyCompilerSettings
     {
         public CxxCompilerSettings(
@@ -45,29 +45,5 @@ namespace VisualC
             :
             base(module, useDefaults)
         { }
-
-        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
-        {
-            get;
-            set;
-        }
-
-        bool? C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo
-        {
-            get;
-            set;
-        }
-
-        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
-
-        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
-        {
-            get;
-            set;
-        }
     }
 }
