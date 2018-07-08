@@ -30,8 +30,7 @@
 namespace VisualC
 {
     public sealed class CCompilerSettings :
-        VisualCCommon.CommonCompilerSettings,
-        C.ICOnlyCompilerSettings
+        VisualCCommon.CommonCCompilerSettings
     {
         public CCompilerSettings(
             Bam.Core.Module module)
@@ -45,11 +44,5 @@ namespace VisualC
             :
             base(module, useDefaults)
         { }
-
-        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
     }
 }

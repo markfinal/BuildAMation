@@ -27,22 +27,37 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualC
+using System.Linq;
+namespace VisualCCommon
 {
-    public sealed class CCompilerSettings :
-        VisualCCommon.CommonCCompilerSettings
+    public abstract class CommonCCompilerSettings :
+        CommonCompilerSettings,
+        C.ICOnlyCompilerSettings
     {
-        public CCompilerSettings(
+        protected CommonCCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
-        { }
+        {}
 
-        public CCompilerSettings(
+        protected CommonCCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
             :
             base(module, useDefaults)
-        { }
+        {}
+
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.ELanguageStandard.NotSet, "")]
+        [CommandLineProcessor.Enum(C.ELanguageStandard.C89, "")]
+        [CommandLineProcessor.Enum(C.ELanguageStandard.GNU89, "")]
+        [CommandLineProcessor.Enum(C.ELanguageStandard.C99, "")]
+        [CommandLineProcessor.Enum(C.ELanguageStandard.GNU99, "")]
+#endif
+        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
+        {
+            get;
+            set;
+        }
     }
 }
