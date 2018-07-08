@@ -33,11 +33,7 @@ namespace C
     /// Object file assembled from preprocessed assembly.
     /// </summary>
     public class AssembledObjectFile :
-#if BAM_V2
-        ObjectFile
-#else
         ObjectFileBase
-#endif
     {
 #if BAM_V2
 #else

@@ -33,7 +33,7 @@ namespace C
     /// Compile a Windows resource file into the compiled resource.
     /// </summary>
     public class WinResource :
-        ObjectFile
+        ObjectFileBase
     {
         protected override void
         Init(
@@ -41,6 +41,18 @@ namespace C
         {
             base.Init(parent);
             this.Compiler = DefaultToolchain.WinResource_Compiler(this.BitDepth);
+        }
+
+        public WinResourceCompilerTool Compiler
+        {
+            get
+            {
+                return this.Tool as WinResourceCompilerTool;
+            }
+            set
+            {
+                this.Tool = value;
+            }
         }
 
         public void

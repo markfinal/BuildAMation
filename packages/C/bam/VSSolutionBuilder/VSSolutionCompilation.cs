@@ -34,7 +34,7 @@ namespace C
     {
         public static void
         Compile(
-            ObjectFile module)
+            ObjectFileBase module)
         {
             var encapsulating = module.GetEncapsulatingReferencedModule();
 
