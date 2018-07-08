@@ -242,6 +242,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("-FI")]
+        [VisualStudioProcessor.StringArray("ForcedIncludeFiles", inheritExisting: true)]
 #endif
         Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
         {
