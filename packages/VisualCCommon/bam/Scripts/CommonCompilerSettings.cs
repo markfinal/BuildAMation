@@ -110,6 +110,8 @@ namespace VisualCCommon
 
 #if BAM_V2
         // no attributes as this mapping is in which compiler executable is used
+        [VisualStudioProcessor.Enum(C.EBit.ThirtyTwo, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
+        [VisualStudioProcessor.Enum(C.EBit.SixtyFour, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
 #endif
         C.EBit? C.ICommonCompilerSettings.Bits
         {
