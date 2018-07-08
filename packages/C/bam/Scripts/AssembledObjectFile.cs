@@ -33,9 +33,16 @@ namespace C
     /// Object file assembled from preprocessed assembly.
     /// </summary>
     public class AssembledObjectFile :
+#if BAM_V2
+        ObjectFile
+#else
         ObjectFileBase
+#endif
     {
+#if BAM_V2
+#else
         private IAssemblerPolicy Policy = null;
+#endif
 
         protected override void
         Init(
@@ -57,6 +64,8 @@ namespace C
             }
         }
 
+#if BAM_V2
+#else
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -73,6 +82,7 @@ namespace C
             var className = "C." + mode + "Assembly";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IAssemblerPolicy>.Create(className);
         }
+#endif
 
         protected override void
         EvaluateInternal()
@@ -106,6 +116,9 @@ namespace C
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.InputPath);
                 return;
             }
+
+            // no header files, so simpler
+            // TODO: parameterise this, so there is just one EvaluateInternal method
         }
     }
 }

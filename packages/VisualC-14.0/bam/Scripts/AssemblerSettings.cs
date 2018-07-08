@@ -29,94 +29,13 @@
 #endregion // License
 namespace VisualC
 {
-    public class AssemblerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        VisualStudioProcessor.IConvertToProject,
-        C.ICommonAssemblerSettings,
-        C.IAdditionalSettings,
-        VisualCCommon.ICommonAssemblerSettings
+    public sealed class AssemblerSettings :
+        VisualCCommon.CommonAssemblerSettings
     {
         public AssemblerSettings(
             Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
-        }
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
-            string condition)
-        {
-            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-
-        C.EBit? C.ICommonAssemblerSettings.Bits
-        {
-            get;
-            set;
-        }
-
-        bool C.ICommonAssemblerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        C.ECompilerOutput C.ICommonAssemblerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool C.ICommonAssemblerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-        C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool VisualCCommon.ICommonAssemblerSettings.NoLogo
-        {
-            get;
-            set;
-        }
-
-        VisualCCommon.EAssemblerWarningLevel VisualCCommon.ICommonAssemblerSettings.WarningLevel
-        {
-            get;
-            set;
-        }
-
-        bool VisualCCommon.ICommonAssemblerSettings.SafeExceptionHandlers
-        {
-            get;
-            set;
-        }
+            :
+            base(module)
+        {}
     }
 }
