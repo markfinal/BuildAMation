@@ -53,16 +53,30 @@ namespace VisualStudioProcessor
     public class EnumAttribute :
         BaseAttribute
     {
+        public enum EMode
+        {
+            AsInteger,
+            AssociatedPath
+        }
+
         public EnumAttribute(
             object key,
-            string command_switch)
+            string property,
+            EMode mode)
             :
-            base(command_switch)
+            base(property)
         {
             this.Key = key as System.Enum;
+            this.Mode = mode;
         }
 
         public System.Enum Key
+        {
+            get;
+            private set;
+        }
+
+        public EMode Mode
         {
             get;
             private set;
@@ -177,18 +191,42 @@ namespace VisualStudioProcessor
                     }
                     if (attributeArray.First() is EnumAttribute)
                     {
+                        var associated_attribute = attributeArray.First(
+                            item => (item as EnumAttribute).Key.Equals(property_value)) as EnumAttribute;
+                        switch (associated_attribute.Mode)
+                        {
+                            case EnumAttribute.EMode.AsInteger:
+                                vsSettingsGroup.AddSetting(
+                                    associated_attribute.Property,
+                                    ((int)property_value).ToString("D"),
+                                    condition
+                                );
+                                break;
+
+                            case EnumAttribute.EMode.AssociatedPath:
+                                vsSettingsGroup.AddSetting(
+                                    associated_attribute.Property,
+                                    "", // TODO: this cannot be right, surely?
+                                    condition
+                                );
+                                break;
+                        }
                     }
                     else if (attributeArray.First() is PathAttribute)
                     {
+                        throw new System.NotImplementedException();
                     }
                     else if (attributeArray.First() is PathArrayAttribute)
                     {
+                        throw new System.NotImplementedException();
                     }
                     else if (attributeArray.First() is StringAttribute)
                     {
+                        throw new System.NotImplementedException();
                     }
                     else if (attributeArray.First() is StringArrayAttribute)
                     {
+                        throw new System.NotImplementedException();
                     }
                     else if (attributeArray.First() is BoolAttribute)
                     {
@@ -200,6 +238,7 @@ namespace VisualStudioProcessor
                     }
                     else if (attributeArray.First() is PreprocessorDefinesAttribute)
                     {
+                        throw new System.NotImplementedException();
                     }
                     else
                     {

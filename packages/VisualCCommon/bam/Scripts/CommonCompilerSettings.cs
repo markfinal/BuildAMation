@@ -144,8 +144,8 @@ namespace VisualCCommon
 #if BAM_V2
         [CommandLineProcessor.Enum(C.ECompilerOutput.CompileOnly, "-c")]
         [CommandLineProcessor.Enum(C.ECompilerOutput.Preprocess, "-E")]
-        [VisualStudioProcessor.Enum(C.ECompilerOutput.CompileOnly, "ObjectFileName")]
-        [VisualStudioProcessor.Enum(C.ECompilerOutput.Preprocess, "PreprocessToFile")]
+        [VisualStudioProcessor.Enum(C.ECompilerOutput.CompileOnly, "ObjectFileName", VisualStudioProcessor.EnumAttribute.EMode.AssociatedPath)]
+        [VisualStudioProcessor.Enum(C.ECompilerOutput.Preprocess, "PreprocessToFile", VisualStudioProcessor.EnumAttribute.EMode.AssociatedPath)]
 #endif
         C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
@@ -252,8 +252,12 @@ namespace VisualCCommon
 #if BAM_V2
         [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreaded, "-MT")]
         [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreadedDebug, "-MTd")]
-        [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreadedDebugDLL, "-MDd")]
         [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreadedDLL, "-MD")]
+        [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreadedDebugDLL, "-MDd")]
+        [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreaded, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
+        [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreadedDebug, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
+        [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreadedDLL, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
+        [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreadedDebugDLL, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
 #endif
         ERuntimeLibrary? ICommonCompilerSettings.RuntimeLibrary
         {
