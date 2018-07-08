@@ -30,19 +30,12 @@
 namespace Clang
 {
     public sealed class CxxLinkerSettings :
-        ClangCommon.CommonLinkerSettings,
-        C.ICxxOnlyLinkerSettings
+        ClangCommon.CommonCxxLinkerSettings
     {
         public CxxLinkerSettings(
             Bam.Core.Module module)
             :
             base(module)
         { }
-
-        C.Cxx.EStandardLibrary C.ICxxOnlyLinkerSettings.StandardLibrary
-        {
-            get;
-            set;
-        }
     }
 }

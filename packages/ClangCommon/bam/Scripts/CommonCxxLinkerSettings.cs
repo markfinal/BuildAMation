@@ -27,15 +27,27 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Clang
+namespace ClangCommon
 {
-    public sealed class CxxLinkerSettings :
-        ClangCommon.CommonCxxLinkerSettings
+    public abstract class CommonCxxLinkerSettings :
+        ClangCommon.CommonLinkerSettings,
+        C.ICxxOnlyLinkerSettings
     {
-        public CxxLinkerSettings(
+        protected CommonCxxLinkerSettings(
             Bam.Core.Module module)
             :
             base(module)
         {}
+
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.NotSet, "")]
+        [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libstdcxx, "-stdlib=libstdc++")]
+        [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libcxx, "-stdlib=libc++")]
+#endif
+        C.Cxx.EStandardLibrary C.ICxxOnlyLinkerSettings.StandardLibrary
+        {
+            get;
+            set;
+        }
     }
 }
