@@ -30,6 +30,67 @@
 using System.Linq;
 namespace C
 {
+#if BAM_V2
+    public static partial class VSSolutionSupport
+    {
+        public static void
+        Archive(
+            StaticLibrary module)
+        {
+            // early out
+            var object_files = module.ObjectFiles;
+            if (!object_files.Any())
+            {
+                return;
+            }
+
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            var project = solution.EnsureProjectExists(module);
+            var config = project.GetConfiguration(module);
+
+            // ensure the project type is accurate
+            config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.StaticLibrary);
+            if (module.Settings is ICommonHasOutputPath)
+            {
+                config.SetOutputPath((module.Settings as ICommonHasOutputPath).OutputPath);
+            }
+            config.EnableIntermediatePath();
+
+            // add any header files
+            foreach (var header in module.HeaderFiles)
+            {
+                config.AddHeaderFile(header as HeaderFile);
+            }
+
+            var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler);
+
+            // add real C/C++ source files to the project
+            var realObjectFiles = object_files.Where(item => item is ObjectFile);
+            if (realObjectFiles.Any())
+            {
+                var vsConvertParameterTypes = new Bam.Core.TypeArray
+                {
+                    typeof(Bam.Core.Module),
+                    typeof(VSSolutionBuilder.VSSettingsGroup),
+                    typeof(string)
+                };
+
+                var sharedSettings = C.SettingsBase.SharedSettings(
+                    realObjectFiles,
+                    typeof(VisualCCommon.VSSolutionImplementation),
+                    typeof(VisualStudioProcessor.IConvertToProject),
+                    vsConvertParameterTypes);
+                //(sharedSettings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
+
+                foreach (var objFile in realObjectFiles)
+                {
+                    var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
+                    config.AddSourceFile(objFile, deltaSettings);
+                }
+            }
+        }
+    }
+#else
     public sealed class VSSolutionLibrarian :
         IArchivingPolicy
     {
@@ -152,4 +213,5 @@ namespace C
             }
         }
     }
+#endif
 }

@@ -30,7 +30,7 @@
 namespace C
 {
 #if BAM_V2
-    public static class VSSolutionSupport
+    public static partial class VSSolutionSupport
     {
         public static void
         Compile(

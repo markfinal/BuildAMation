@@ -78,6 +78,22 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Access the headers files associated with this library.
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        HeaderFiles
+        {
+            get
+            {
+                var module_list = FlattenHierarchicalFileList(this.headerModules);
+                foreach (var module in module_list)
+                {
+                    yield return module;
+                }
+            }
+        }
+
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
         {
             get
@@ -244,7 +260,7 @@ namespace C
 
 #if D_PACKAGE_VSSOLUTIONBUILDER
                 case "VSSolution":
-                    //VSSolutionSupport.Archive(this);
+                    VSSolutionSupport.Archive(this);
                     break;
 #endif
 
