@@ -159,7 +159,7 @@ namespace GccCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.PathArray("-Wl,--version-script=")]
+        [CommandLineProcessor.Path("-Wl,--version-script=")]
 #endif
         Bam.Core.TokenizedString ICommonLinkerSettings.VersionScript
         {
