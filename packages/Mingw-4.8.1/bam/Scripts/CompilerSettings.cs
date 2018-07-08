@@ -30,8 +30,7 @@
 namespace Mingw
 {
     public sealed class CCompilerSettings :
-        MingwCommon.CommonCompilerSettings,
-        C.ICOnlyCompilerSettings
+        MingwCommon.CommonCompilerSettings
     {
         public CCompilerSettings(
             Bam.Core.Module module)
@@ -45,11 +44,5 @@ namespace Mingw
             :
             base(module, useDefaults)
         {}
-
-        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
     }
 }
