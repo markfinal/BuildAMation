@@ -27,6 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+#if BAM_V2
+#else
 namespace MingwCommon
 {
     public static partial class CommandLineImplementation
@@ -64,13 +66,10 @@ namespace MingwCommon
             {
                 commandLine.Add(warning);
             }
-#if BAM_V2
-#else
             foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }
-#endif
             if (settings.Optimization.HasValue)
             {
                 switch (settings.Optimization.Value)
@@ -116,13 +115,10 @@ namespace MingwCommon
             {
                 commandLine.Add(System.String.Format("-U{0}", undefine));
             }
-#if BAM_V2
-#else
             foreach (var path in settings.SystemIncludePaths.ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(System.String.Format("-I{0}", path.ToStringQuoteIfNecessary()));
             }
-#endif
             if (settings.TargetLanguage.HasValue)
             {
                 switch (settings.TargetLanguage.Value)
@@ -148,8 +144,6 @@ namespace MingwCommon
                     commandLine.Add("-Wno-error");
                 }
             }
-#if BAM_V2
-#else
             if (settings.OutputType.HasValue)
             {
                 switch (settings.OutputType.Value)
@@ -162,7 +156,6 @@ namespace MingwCommon
                         break;
                 }
             }
-#endif
             foreach (var header in settings.NamedHeaders)
             {
                 commandLine.Add(System.String.Format("-include {0}", header));
@@ -170,3 +163,4 @@ namespace MingwCommon
         }
     }
 }
+#endif
