@@ -173,6 +173,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-WX", "-WX-")]
+        [VisualStudioProcessor.Bool("TreatWarningAsError")]
 #endif
         bool? C.ICommonCompilerSettings.WarningsAsErrors
         {
