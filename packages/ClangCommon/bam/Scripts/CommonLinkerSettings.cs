@@ -31,7 +31,10 @@ namespace ClangCommon
 {
     public abstract class CommonLinkerSettings :
         C.SettingsBase,
+#if BAM_V2
+#else
         CommandLineProcessor.IConvertToCommandLine,
+#endif
         XcodeProjectProcessor.IConvertToProject,
         C.ICommonHasOutputPath,
         C.ICommonLinkerSettings,
@@ -49,12 +52,15 @@ namespace ClangCommon
                 Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MinimumVersionSupported;
         }
 
+#if BAM_V2
+#else
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineLinkerImplementation), this, commandLine);
         }
+#endif
 
         void
         XcodeProjectProcessor.IConvertToProject.Convert(

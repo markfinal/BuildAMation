@@ -31,7 +31,10 @@ namespace ClangCommon
 {
     public abstract class CommonArchiverSettings :
         C.SettingsBase,
+#if BAM_V2
+#else
         CommandLineProcessor.IConvertToCommandLine,
+#endif
         // TODO: Xcode translation
         C.ICommonHasOutputPath,
         C.IAdditionalSettings,
@@ -43,12 +46,15 @@ namespace ClangCommon
             this.InitializeAllInterfaces(module, false, true);
         }
 
+#if BAM_V2
+#else
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineArchiverImplementation), this, commandLine);
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("")]
