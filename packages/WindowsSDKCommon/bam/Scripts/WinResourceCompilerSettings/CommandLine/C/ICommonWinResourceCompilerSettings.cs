@@ -27,15 +27,48 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace WindowsSDK
+#if BAM_V2
+#else
+namespace WindowsSDKCommon
 {
-    public sealed class WinResourceCompilerSettings :
-        WindowsSDKCommon.CommonWinResourceCompilerSettings
+    public static partial class CommandLineImplementation
     {
-        public WinResourceCompilerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
+        public static void
+        Convert(
+            this C.ICommonWinResourceCompilerSettings settings,
+            Bam.Core.StringArray commandLine)
+        {
+            if (settings.Verbose.HasValue && settings.Verbose.Value)
+            {
+                commandLine.Add("-v");
+            }
+
+            foreach (var path in settings.IncludePaths.ToEnumerableWithoutDuplicates())
+            {
+                commandLine.Add(System.String.Format("-i{0}", path.ToStringQuoteIfNecessary()));
+            }
+
+            foreach (var define in settings.PreprocessorDefines)
+            {
+                if (null == define.Value)
+                {
+                    commandLine.Add(System.String.Format("-D{0}", define.Key));
+                }
+                else
+                {
+                    var defineValue = define.Value.ToString();
+                    if (defineValue.Contains("\""))
+                    {
+                        defineValue = defineValue.Replace("\"", "\\\"");
+                    }
+                    defineValue = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(defineValue);
+                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
+                }
+            }
+
+            var resource = (settings as Bam.Core.Settings).Module as C.WinResource;
+            commandLine.Add(System.String.Format("-Fo{0}", resource.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary()));
+        }
     }
 }
+#endif

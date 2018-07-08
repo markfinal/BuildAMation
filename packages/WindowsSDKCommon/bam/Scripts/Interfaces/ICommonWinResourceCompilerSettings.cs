@@ -27,15 +27,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace WindowsSDK
+namespace WindowsSDKCommon
 {
-    public sealed class WinResourceCompilerSettings :
-        WindowsSDKCommon.CommonWinResourceCompilerSettings
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsPrecedence(System.Int32.MaxValue)]
+    public interface ICommonWinResourceCompilerSettings :
+        Bam.Core.ISettingsBase
     {
-        public WinResourceCompilerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
+        bool? NoLogo
+        {
+            get;
+            set;
+        }
     }
 }

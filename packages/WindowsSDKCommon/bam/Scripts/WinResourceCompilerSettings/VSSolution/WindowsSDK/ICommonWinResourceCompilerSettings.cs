@@ -27,15 +27,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace WindowsSDK
+namespace WindowsSDKCommon
 {
-    public sealed class WinResourceCompilerSettings :
-        WindowsSDKCommon.CommonWinResourceCompilerSettings
+    public static partial class VSSolutionImplementation
     {
-        public WinResourceCompilerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
+        public static void
+        Convert(
+            this ICommonWinResourceCompilerSettings settings,
+            Bam.Core.Module module,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
+        {
+            if (settings.NoLogo.HasValue)
+            {
+                vsSettingsGroup.AddSetting("SuppressStartupBanner", settings.NoLogo.Value, condition);
+            }
+        }
     }
 }

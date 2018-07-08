@@ -2,10 +2,10 @@
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="WindowsSDK" version="8.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
   <Description>Microsoft Windows SDK v8.0</Description>
   <Dependents>
-    <Package name="VSSolutionBuilder" />
+    <Package name="WindowsSDKCommon" />
   </Dependents>
   <BamAssemblies>
-    <BamAssembly name="Bam.Core" major="1" minor="0" />
+    <BamAssembly name="Bam.Core" major="1" minor="2" />
   </BamAssemblies>
   <DotNetAssemblies>
     <DotNetAssembly name="System" requiredTargetFramework="4.0.30319" />

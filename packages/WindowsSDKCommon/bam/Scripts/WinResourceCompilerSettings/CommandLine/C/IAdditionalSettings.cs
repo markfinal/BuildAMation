@@ -27,15 +27,22 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace WindowsSDK
+#if BAM_V2
+#else
+namespace WindowsSDKCommon
 {
-    public sealed class WinResourceCompilerSettings :
-        WindowsSDKCommon.CommonWinResourceCompilerSettings
+    public static partial class CommandLineImplementation
     {
-        public WinResourceCompilerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
+        public static void
+        Convert(
+            this C.IAdditionalSettings settings,
+            Bam.Core.StringArray commandLine)
+        {
+            if (null != settings.AdditionalSettings)
+            {
+                commandLine.AddRange(settings.AdditionalSettings);
+            }
+        }
     }
 }
+#endif

@@ -29,105 +29,13 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public class WinResourceCompilerSettings :
-        C.SettingsBase,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
-        VisualStudioProcessor.IConvertToProject,
-        C.ICommonHasSourcePath,
-        C.ICommonHasOutputPath,
-        C.ICommonWinResourceCompilerSettings,
-        C.IAdditionalSettings,
-        ICommonWinResourceCompilerSettings
+    public sealed class WinResourceCompilerSettings :
+        WindowsSDKCommon.CommonWinResourceCompilerSettings
     {
         public WinResourceCompilerSettings(
             Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
-            string condition)
-        {
-            VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Path("")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Path("-Fo")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Bool("-v", "")]
-#endif
-        bool? C.ICommonWinResourceCompilerSettings.Verbose
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.PathArray("-i")]
-#endif
-        Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.PreprocessorDefines("-D")]
-#endif
-        C.PreprocessorDefinitions C.ICommonWinResourceCompilerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.StringArray("")]
-#endif
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Bool("-NOLOGO", "")]
-#endif
-        bool? ICommonWinResourceCompilerSettings.NoLogo
-        {
-            get;
-            set;
-        }
+            :
+            base(module)
+        {}
     }
 }
