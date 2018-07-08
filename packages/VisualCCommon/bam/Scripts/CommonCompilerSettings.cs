@@ -144,8 +144,8 @@ namespace VisualCCommon
 #if BAM_V2
         [CommandLineProcessor.Enum(C.ECompilerOutput.CompileOnly, "-c")]
         [CommandLineProcessor.Enum(C.ECompilerOutput.Preprocess, "-E")]
-        [VisualStudioProcessor.Enum(C.ECompilerOutput.CompileOnly, "ObjectFileName", VisualStudioProcessor.EnumAttribute.EMode.AssociatedPath)]
-        [VisualStudioProcessor.Enum(C.ECompilerOutput.Preprocess, "PreprocessToFile", VisualStudioProcessor.EnumAttribute.EMode.AssociatedPath)]
+        [VisualStudioProcessor.Enum(C.ECompilerOutput.CompileOnly, "ObjectFileName", VisualStudioProcessor.EnumAttribute.EMode.Empty)]
+        [VisualStudioProcessor.Enum(C.ECompilerOutput.Preprocess, "PreprocessToFile", VisualStudioProcessor.EnumAttribute.EMode.Empty)]
 #endif
         C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
@@ -254,10 +254,10 @@ namespace VisualCCommon
         [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreadedDebug, "-MTd")]
         [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreadedDLL, "-MD")]
         [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreadedDebugDLL, "-MDd")]
-        [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreaded, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
-        [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreadedDebug, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
-        [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreadedDLL, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
-        [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreadedDebugDLL, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
+        [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreaded, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
+        [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreadedDebug, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
+        [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreadedDLL, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
+        [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreadedDebugDLL, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
 #endif
         ERuntimeLibrary? ICommonCompilerSettings.RuntimeLibrary
         {
@@ -271,6 +271,11 @@ namespace VisualCCommon
         [CommandLineProcessor.Enum(EWarningLevel.Level2, "-W2")]
         [CommandLineProcessor.Enum(EWarningLevel.Level3, "-W3")]
         [CommandLineProcessor.Enum(EWarningLevel.Level4, "-W4")]
+        [VisualStudioProcessor.Enum(EWarningLevel.Level0, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "TurnOffAllWarnings")]
+        [VisualStudioProcessor.Enum(EWarningLevel.Level1, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsIntegerWithPrefix, prefix: "Level")]
+        [VisualStudioProcessor.Enum(EWarningLevel.Level2, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsIntegerWithPrefix, prefix: "Level")]
+        [VisualStudioProcessor.Enum(EWarningLevel.Level3, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsIntegerWithPrefix, prefix: "Level")]
+        [VisualStudioProcessor.Enum(EWarningLevel.Level4, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsIntegerWithPrefix, prefix: "Level")]
 #endif
         EWarningLevel? ICommonCompilerSettings.WarningLevel
         {

@@ -55,19 +55,26 @@ namespace VisualStudioProcessor
     {
         public enum EMode
         {
+            AsString,
             AsInteger,
-            AssociatedPath
+            AsIntegerWithPrefix,
+            VerbatimString,
+            Empty
         }
 
         public EnumAttribute(
             object key,
             string property,
-            EMode mode)
+            EMode mode,
+            string verbatimString = null,
+            string prefix = null)
             :
             base(property)
         {
             this.Key = key as System.Enum;
             this.Mode = mode;
+            this.VerbatimString = verbatimString;
+            this.Prefix = prefix;
         }
 
         public System.Enum Key
@@ -77,6 +84,18 @@ namespace VisualStudioProcessor
         }
 
         public EMode Mode
+        {
+            get;
+            private set;
+        }
+
+        public string VerbatimString
+        {
+            get;
+            private set;
+        }
+
+        public string Prefix
         {
             get;
             private set;
@@ -195,6 +214,14 @@ namespace VisualStudioProcessor
                             item => (item as EnumAttribute).Key.Equals(property_value)) as EnumAttribute;
                         switch (associated_attribute.Mode)
                         {
+                            case EnumAttribute.EMode.AsString:
+                                vsSettingsGroup.AddSetting(
+                                    associated_attribute.Property,
+                                    property_value.ToString(),
+                                    condition
+                                );
+                                break;
+
                             case EnumAttribute.EMode.AsInteger:
                                 vsSettingsGroup.AddSetting(
                                     associated_attribute.Property,
@@ -203,10 +230,26 @@ namespace VisualStudioProcessor
                                 );
                                 break;
 
-                            case EnumAttribute.EMode.AssociatedPath:
+                            case EnumAttribute.EMode.AsIntegerWithPrefix:
                                 vsSettingsGroup.AddSetting(
                                     associated_attribute.Property,
-                                    "", // TODO: this cannot be right, surely?
+                                    System.String.Format("{0}{1}", associated_attribute.Prefix, ((int)property_value).ToString("D")),
+                                    condition
+                                );
+                                break;
+
+                            case EnumAttribute.EMode.VerbatimString:
+                                vsSettingsGroup.AddSetting(
+                                    associated_attribute.Property,
+                                    associated_attribute.VerbatimString,
+                                    condition
+                                );
+                                break;
+
+                            case EnumAttribute.EMode.Empty:
+                                vsSettingsGroup.AddSetting(
+                                    associated_attribute.Property,
+                                    "",
                                     condition
                                 );
                                 break;
