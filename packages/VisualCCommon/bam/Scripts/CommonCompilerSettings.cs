@@ -212,6 +212,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-Oy", "-Oy-")]
+        [VisualStudioProcessor.Bool("OmitFramePointers")]
 #endif
         bool? C.ICommonCompilerSettings.OmitFramePointer
         {
