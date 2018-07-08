@@ -27,22 +27,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Clang
+namespace ClangCommon
 {
-    public sealed class CCompilerSettings :
-        ClangCommon.CommonCCompilerSettings
+    public abstract class CommonCCompilerSettings :
+        CommonCompilerSettings,
+        C.ICOnlyCompilerSettings
     {
-        public CCompilerSettings(
+        public CommonCCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
         {}
 
-        public CCompilerSettings(
+        public CommonCCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
             :
             base(module, useDefaults)
         {}
+
+#if BAM_V2
+        [CommandLineProcessor.Enum(C.ELanguageStandard.NotSet, "")]
+        [CommandLineProcessor.Enum(C.ELanguageStandard.C89, "-std=c89")]
+        [CommandLineProcessor.Enum(C.ELanguageStandard.GNU89, "-std=gnu89")]
+        [CommandLineProcessor.Enum(C.ELanguageStandard.C99, "-std=c99")]
+        [CommandLineProcessor.Enum(C.ELanguageStandard.GNU99, "-std=gnu99")]
+#endif
+        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
+        {
+            get;
+            set;
+        }
     }
 }
