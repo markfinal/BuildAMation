@@ -37,52 +37,12 @@ namespace C
         Archive(
             StaticLibrary module)
         {
-            // early out
-            var object_files = module.ObjectFiles;
-            if (!object_files.Any())
-            {
-                return;
-            }
-
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-            var project = solution.EnsureProjectExists(module);
-            var config = project.GetConfiguration(module);
-
-            // ensure the project type is accurate
-            config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.StaticLibrary);
-            if (module.Settings is ICommonHasOutputPath)
-            {
-                config.SetOutputPath((module.Settings as ICommonHasOutputPath).OutputPath);
-            }
-            config.EnableIntermediatePath();
-
-            // add any header files
-            foreach (var header in module.HeaderFiles)
-            {
-                config.AddHeaderFile(header as HeaderFile);
-            }
-
-            var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler);
-
-            // add real C/C++ source files to the project
-            var realObjectFiles = object_files.Where(item => item is ObjectFile);
-            if (realObjectFiles.Any())
-            {
-                var sharedSettings = C.SettingsBase.SharedSettings(
-                    realObjectFiles);
-                VisualStudioProcessor.VSSolutionConversion.Convert(
-                    sharedSettings,
-                    realObjectFiles.First().Settings.GetType(),
-                    module,
-                    compilerGroup
-                );
-
-                foreach (var objFile in realObjectFiles)
-                {
-                    var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
-                    config.AddSourceFile(objFile, deltaSettings);
-                }
-            }
+            LinkOrArchive(
+                module,
+                VSSolutionBuilder.VSProjectConfiguration.EType.StaticLibrary,
+                module.ObjectFiles,
+                module.HeaderFiles
+            );
         }
     }
 #else

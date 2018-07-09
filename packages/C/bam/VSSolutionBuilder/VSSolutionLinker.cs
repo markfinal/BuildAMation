@@ -39,9 +39,26 @@ namespace C
         Link(
             ConsoleApplication module)
         {
+            var type = (module is IDynamicLibrary) ?
+                VSSolutionBuilder.VSProjectConfiguration.EType.DynamicLibrary :
+                VSSolutionBuilder.VSProjectConfiguration.EType.Application;
+            LinkOrArchive(
+                module,
+                type,
+                module.ObjectFiles,
+                module.HeaderFiles
+            );
+        }
+
+        public static void
+        LinkOrArchive(
+            CModule module,
+            VSSolutionBuilder.VSProjectConfiguration.EType type,
+            System.Collections.Generic.IEnumerable<Bam.Core.Module> objectFiles,
+            System.Collections.Generic.IEnumerable<Bam.Core.Module> headerFiles)
+        {
             // early out
-            var object_files = module.ObjectFiles;
-            if (!object_files.Any())
+            if (!objectFiles.Any())
             {
                 return;
             }
@@ -65,7 +82,7 @@ namespace C
             }
             config.EnableIntermediatePath();
 
-            foreach (var header in module.HeaderFiles)
+            foreach (var header in headerFiles)
             {
                 config.AddHeaderFile(header as HeaderFile);
             }
@@ -73,7 +90,7 @@ namespace C
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler);
 
             // add real C/C++ source files to the project
-            var realObjectFiles = object_files.Where(item => item is ObjectFile);
+            var realObjectFiles = objectFiles.Where(item => item is ObjectFile);
             if (realObjectFiles.Any())
             {
                 var sharedSettings = C.SettingsBase.SharedSettings(
