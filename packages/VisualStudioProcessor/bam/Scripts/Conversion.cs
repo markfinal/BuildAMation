@@ -118,10 +118,19 @@ namespace VisualStudioProcessor
     {
         public PathAttribute(
             string command_switch,
-            bool inheritExisting = false)
+            bool inheritExisting = false,
+            bool ignored = false)
             :
             base(command_switch, inheritExisting)
-        { }
+        {
+            this.Ignored = ignored;
+        }
+
+        public bool Ignored
+        {
+            get;
+            private set;
+        }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -240,6 +249,10 @@ namespace VisualStudioProcessor
                     // to look for the instance in the concrete settings class
                     // this is to allow for the same property leafname to appear in multiple interfaces
                     var full_property_interface_name = System.String.Join(".", new[] { interface_property.DeclaringType.FullName, interface_property.Name });
+                    var value_settings_property = settings.Properties.First(
+                        item => full_property_interface_name == item.Name
+                    );
+                    var property_value = value_settings_property.GetValue(settings);
                     var attribute_settings_property = Bam.Core.Settings.FindProperties(real_settings_type).First(
                         item => full_property_interface_name == item.Name
                     );
@@ -250,12 +263,9 @@ namespace VisualStudioProcessor
                         Bam.Core.Log.MessageAll("\t\tNo attrs");
                         continue;
                     }
-                    var value_settings_property = settings.Properties.First(
-                        item => full_property_interface_name == item.Name
-                    );
-                    var property_value = value_settings_property.GetValue(settings);
                     if (null == property_value)
                     {
+                        // TODO: move to earlier
                         continue;
                     }
                     if (attributeArray.First() is EnumAttribute)
@@ -314,7 +324,11 @@ namespace VisualStudioProcessor
                     }
                     else if (attributeArray.First() is PathAttribute)
                     {
-                        throw new System.NotImplementedException();
+                        var associated_attribute = attributeArray.First() as PathAttribute;
+                        if (!associated_attribute.Ignored)
+                        {
+                            throw new System.NotImplementedException();
+                        }
                     }
                     else if (attributeArray.First() is PathArrayAttribute)
                     {

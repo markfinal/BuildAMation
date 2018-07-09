@@ -92,6 +92,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("")]
+        [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
         {
@@ -101,6 +102,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-Fo")]
+        [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
@@ -252,6 +254,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
+        [VisualStudioProcessor.StringArray("AdditionalOptions")]
 #endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
