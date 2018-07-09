@@ -414,7 +414,17 @@ namespace VSSolutionBuilder
             var settings = resource.MetaData as VSSettingsGroup;
             if (null != patchSettings)
             {
+#if BAM_V2
+                VisualStudioProcessor.VSSolutionConversion.Convert(
+                    patchSettings,
+                    resource.Settings.GetType(),
+                    resource,
+                    settings,
+                    condition: this.ConditionText
+                );
+#else
                 (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(resource, settings, condition: this.ConditionText);
+#endif
             }
             var resourceGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.Resource, resource.InputPath);
             this.ResourceFiles.AddUnique(resourceGroup);
@@ -429,7 +439,17 @@ namespace VSSolutionBuilder
             var settings = assembler.MetaData as VSSettingsGroup;
             if (null != patchSettings)
             {
+#if BAM_V2
+                VisualStudioProcessor.VSSolutionConversion.Convert(
+                    patchSettings,
+                    assembler.Settings.GetType(),
+                    assembler,
+                    settings,
+                    condition: this.ConditionText
+                );
+#else
                 (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(assembler, settings, condition: this.ConditionText);
+#endif
             }
             var assemblyGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, assembler.InputPath);
             this.AssemblyFiles.AddUnique(assemblyGroup);

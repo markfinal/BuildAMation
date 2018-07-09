@@ -101,6 +101,18 @@ namespace C
                     config.AddSourceFile(objFile, deltaSettings);
                 }
             }
+
+            // add windows resource files
+            foreach (var winResObj in objectFiles.Where(item => item is WinResource))
+            {
+                config.AddResourceFile(winResObj as WinResource, winResObj.Settings);
+            }
+
+            // add assembly files
+            foreach (var asmObj in objectFiles.Where(item => item is AssembledObjectFile))
+            {
+                config.AddAssemblyFile(asmObj as AssembledObjectFile, asmObj.Settings);
+            }
         }
     }
 #else
