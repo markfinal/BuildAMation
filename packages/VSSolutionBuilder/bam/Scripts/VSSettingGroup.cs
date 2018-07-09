@@ -306,6 +306,10 @@ namespace VSSolutionBuilder
             string condition = null,
             bool inheritExisting = false)
         {
+            if (!definitions.Any())
+            {
+                return;
+            }
             lock (this.Settings)
             {
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
