@@ -68,7 +68,6 @@ namespace C
             var realObjectFiles = object_files.Where(item => item is ObjectFile);
             if (realObjectFiles.Any())
             {
-#if BAM_V2
                 var sharedSettings = C.SettingsBase.SharedSettings(
                     realObjectFiles);
                 VisualStudioProcessor.VSSolutionConversion.Convert(
@@ -77,21 +76,6 @@ namespace C
                     module,
                     compilerGroup
                 );
-#else
-                var vsConvertParameterTypes = new Bam.Core.TypeArray
-                {
-                    typeof(Bam.Core.Module),
-                    typeof(VSSolutionBuilder.VSSettingsGroup),
-                    typeof(string)
-                };
-
-                var sharedSettings = C.SettingsBase.SharedSettings(
-                    realObjectFiles,
-                    typeof(VisualCCommon.VSSolutionImplementation),
-                    typeof(VisualStudioProcessor.IConvertToProject),
-                    vsConvertParameterTypes);
-                (sharedSettings as VisualStudioProcessor.IConvertToProject).Convert(sender, compilerGroup);
-#endif
 
                 foreach (var objFile in realObjectFiles)
                 {
