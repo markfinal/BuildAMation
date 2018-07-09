@@ -37,11 +37,29 @@ namespace C
         Archive(
             StaticLibrary module)
         {
+            VSSolutionBuilder.VSSolution solution;
+            VSSolutionBuilder.VSProjectConfiguration config;
+
             LinkOrArchive(
+                out solution,
+                out config,
                 module,
                 VSSolutionBuilder.VSProjectConfiguration.EType.StaticLibrary,
                 module.ObjectFiles,
                 module.HeaderFiles
+            );
+            if (null == config)
+            {
+                return;
+            }
+
+            // now add the librarian settings
+            var librarianGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Librarian);
+            VisualStudioProcessor.VSSolutionConversion.Convert(
+                module.Settings,
+                module.Settings.GetType(),
+                module,
+                librarianGroup
             );
         }
     }

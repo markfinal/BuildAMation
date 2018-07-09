@@ -39,19 +39,91 @@ namespace C
         Link(
             ConsoleApplication module)
         {
+            VSSolutionBuilder.VSSolution solution;
+            VSSolutionBuilder.VSProjectConfiguration config;
+
             var type = (module is IDynamicLibrary) ?
                 VSSolutionBuilder.VSProjectConfiguration.EType.DynamicLibrary :
                 VSSolutionBuilder.VSProjectConfiguration.EType.Application;
             LinkOrArchive(
+                out solution,
+                out config,
                 module,
                 type,
                 module.ObjectFiles,
                 module.HeaderFiles
             );
+            if (null == config)
+            {
+                return;
+            }
+
+            // now link against libraries
+            foreach (var input in module.Libraries)
+            {
+                if ((null != input.MetaData) && VSSolutionBuilder.VSProject.IsBuildable(input))
+                {
+                    if ((input is C.StaticLibrary) || (input is C.IDynamicLibrary))
+                    {
+                        config.LinkAgainstProject(solution.EnsureProjectExists(input));
+                    }
+                    else if ((input is C.CSDKModule) || (input is C.HeaderLibrary))
+                    {
+                        continue;
+                    }
+                    else if (input is OSXFramework)
+                    {
+                        throw new Bam.Core.Exception("Frameworks are not supported on Windows: {0}", input.ToString());
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Don't know how to handle this buildable library module, {0}", input.ToString());
+                    }
+                }
+                else
+                {
+                    if (input is C.StaticLibrary)
+                    {
+                        // TODO: probably a simplification of the DLL codepath
+                        throw new System.NotImplementedException();
+                    }
+                    else if (input is C.IDynamicLibrary)
+                    {
+                        // TODO: this might be able to shift out of the conditional
+                        (module.Tool as C.LinkerTool).ProcessLibraryDependency(
+                            module as CModule,
+                            input as CModule
+                        );
+                    }
+                    else if ((input is C.CSDKModule) || (input is C.HeaderLibrary))
+                    {
+                        continue;
+                    }
+                    else if (input is OSXFramework)
+                    {
+                        throw new Bam.Core.Exception("Frameworks are not supported on Windows: {0}", input.ToString());
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Don't know how to handle this prebuilt library module, {0}", input.ToString());
+                    }
+                }
+            }
+
+            // now add the linker settings
+            var linkerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Linker);
+            VisualStudioProcessor.VSSolutionConversion.Convert(
+                module.Settings,
+                module.Settings.GetType(),
+                module,
+                linkerGroup
+            );
         }
 
         public static void
         LinkOrArchive(
+            out VSSolutionBuilder.VSSolution solution,
+            out VSSolutionBuilder.VSProjectConfiguration config,
             CModule module,
             VSSolutionBuilder.VSProjectConfiguration.EType type,
             System.Collections.Generic.IEnumerable<Bam.Core.Module> objectFiles,
@@ -60,12 +132,14 @@ namespace C
             // early out
             if (!objectFiles.Any())
             {
+                solution = null;
+                config = null;
                 return;
             }
 
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
             var project = solution.EnsureProjectExists(module);
-            var config = project.GetConfiguration(module);
+            config = project.GetConfiguration(module);
 
             // ensure the project type is accurate
             config.SetType(type);
@@ -113,6 +187,8 @@ namespace C
             {
                 config.AddAssemblyFile(asmObj as AssembledObjectFile, asmObj.Settings);
             }
+
+            return;
         }
     }
 #else
