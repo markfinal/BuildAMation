@@ -68,14 +68,7 @@ namespace C
             var config = project.GetConfiguration(module);
 
             // ensure the project type is accurate
-            if (module is IDynamicLibrary)
-            {
-                config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.DynamicLibrary);
-            }
-            else
-            {
-                config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Application);
-            }
+            config.SetType(type);
             if (module.Settings is ICommonHasOutputPath)
             {
                 config.SetOutputPath((module.Settings as ICommonHasOutputPath).OutputPath);
