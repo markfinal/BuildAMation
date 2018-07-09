@@ -98,6 +98,25 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Access the headers files associated with this executable.
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        HeaderFiles
+        {
+            get
+            {
+                var module_list = FlattenHierarchicalFileList(this.headerModules);
+                foreach (var module in module_list)
+                {
+                    yield return module;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Access the object files required to create this executable.
+        /// </summary>
         public System.Collections.Generic.IEnumerable<Bam.Core.Module>
         ObjectFiles
         {
@@ -111,6 +130,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Access the built libraries required to create this executable.
+        /// </summary>
         public System.Collections.Generic.IEnumerable<Bam.Core.Module>
         Libraries
         {
@@ -458,7 +480,7 @@ namespace C
 
 #if D_PACKAGE_VSSOLUTIONBUILDER
                 case "VSSolution":
-                    //VSSolutionSupport.Link(this);
+                    VSSolutionSupport.Link(this);
                     break;
 #endif
 
