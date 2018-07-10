@@ -72,7 +72,7 @@ namespace C
             );
             intDir.Parse();
             settingsGroup.AddSetting("ObjectFileName", "$(IntDir)" + intDir.ToString());
-            if (!(module as C.ObjectFileBase).PerformCompilation)
+            if (!module.PerformCompilation)
             {
                 settingsGroup.AddSetting("ExcludedFromBuild", true);
             }
