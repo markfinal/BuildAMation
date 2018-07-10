@@ -34,8 +34,8 @@ namespace WindowsSDKCommon
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
-#endif
         VisualStudioProcessor.IConvertToProject,
+#endif
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
         C.ICommonWinResourceCompilerSettings,
@@ -56,7 +56,6 @@ namespace WindowsSDKCommon
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
-#endif
 
         void
         VisualStudioProcessor.IConvertToProject.Convert(
@@ -66,6 +65,7 @@ namespace WindowsSDKCommon
         {
             VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("")]
