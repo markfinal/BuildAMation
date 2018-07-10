@@ -175,10 +175,10 @@ namespace VisualCCommon
         [CommandLineProcessor.Enum(EAssemblerWarningLevel.Level1, "-W1")]
         [CommandLineProcessor.Enum(EAssemblerWarningLevel.Level2, "-W2")]
         [CommandLineProcessor.Enum(EAssemblerWarningLevel.Level3, "-W3")]
-        [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level0, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
-        [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level1, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
-        [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level2, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
-        [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level3, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
+        [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level0, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
+        [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level1, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
+        [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level2, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
+        [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level3, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
 #endif
         EAssemblerWarningLevel ICommonAssemblerSettings.WarningLevel
         {
