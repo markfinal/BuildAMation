@@ -89,7 +89,12 @@ namespace VSSolutionBuilder
             {
                 return;
             }
-            var newGroup = new VSSettingsGroup(this.Project, sourceGroup.Module, sourceGroup.Group, sourceGroup.Include);
+            var newGroup = new VSSettingsGroup(
+                this.Project,
+                sourceGroup.Module,
+                sourceGroup.Group,
+                sourceGroup.Include
+            );
             newGroup.AddSetting("Filter", sourceGroup.RelativeDirectory);
             filter.AddUnique(newGroup);
         }

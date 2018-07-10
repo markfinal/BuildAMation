@@ -68,7 +68,8 @@ namespace C
                 module.Settings,
                 module.Settings.GetType(),
                 module,
-                linkerGroup
+                linkerGroup,
+                config
             );
 
             // add order only dependents

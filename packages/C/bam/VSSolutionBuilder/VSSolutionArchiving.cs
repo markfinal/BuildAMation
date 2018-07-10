@@ -59,7 +59,8 @@ namespace C
                 module.Settings,
                 module.Settings.GetType(),
                 module,
-                librarianGroup
+                librarianGroup,
+                config
             );
 
             // add order only dependents

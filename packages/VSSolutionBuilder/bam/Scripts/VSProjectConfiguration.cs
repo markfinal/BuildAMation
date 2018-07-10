@@ -368,6 +368,7 @@ namespace VSSolutionBuilder
 
         public void
         AddSourceFile(
+            VSProjectConfiguration config,
             Bam.Core.Module module,
             Bam.Core.Settings patchSettings)
         {
@@ -380,6 +381,7 @@ namespace VSSolutionBuilder
                     module.Settings.GetType(),
                     module,
                     settings,
+                    config,
                     condition: this.ConditionText
                 );
 #else
@@ -408,6 +410,7 @@ namespace VSSolutionBuilder
 
         public void
         AddResourceFile(
+            VSProjectConfiguration config,
             C.WinResource resource,
             Bam.Core.Settings patchSettings)
         {
@@ -420,6 +423,7 @@ namespace VSSolutionBuilder
                     resource.Settings.GetType(),
                     resource,
                     settings,
+                    config,
                     condition: this.ConditionText
                 );
 #else
@@ -433,6 +437,7 @@ namespace VSSolutionBuilder
 
         public void
         AddAssemblyFile(
+            VSProjectConfiguration config,
             C.AssembledObjectFile assembler,
             Bam.Core.Settings patchSettings)
         {
@@ -445,6 +450,7 @@ namespace VSSolutionBuilder
                     assembler.Settings.GetType(),
                     assembler,
                     settings,
+                    config,
                     condition: this.ConditionText
                 );
 #else

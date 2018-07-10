@@ -100,9 +100,12 @@ namespace VisualCCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.EnumAttribute(C.ESubsystem.NotSet, "")]
-        [CommandLineProcessor.EnumAttribute(C.ESubsystem.Console, "-SUBSYSTEM:CONSOLE")]
-        [CommandLineProcessor.EnumAttribute(C.ESubsystem.Windows, "-SUBSYSTEM:WINDOWS")]
+        [CommandLineProcessor.Enum(C.ESubsystem.NotSet, "")]
+        [CommandLineProcessor.Enum(C.ESubsystem.Console, "-SUBSYSTEM:CONSOLE")]
+        [CommandLineProcessor.Enum(C.ESubsystem.Windows, "-SUBSYSTEM:WINDOWS")]
+        [VisualStudioProcessor.Enum(C.ESubsystem.NotSet, "SubSystem", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
+        [VisualStudioProcessor.Enum(C.ESubsystem.Console, "SubSystem", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
+        [VisualStudioProcessor.Enum(C.ESubsystem.Windows, "SubSystem", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
 #endif
         C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem
         {
@@ -112,6 +115,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-DEF:")]
+        [VisualStudioProcessor.Path("ModuleDefinitionFile")]
 #endif
         Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile
         {
@@ -122,6 +126,8 @@ namespace VisualCCommon
 #if BAM_V2
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-MACHINE:X86")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-MACHINE:X64")]
+        [VisualStudioProcessor.Enum(C.EBit.ThirtyTwo, "TargetMachine", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "MachineX86")]
+        [VisualStudioProcessor.Enum(C.EBit.SixtyFour, "TargetMachine", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "MachineX64")]
 #endif
         C.EBit C.ICommonLinkerSettings.Bits
         {
@@ -132,6 +138,8 @@ namespace VisualCCommon
 #if BAM_V2
         [CommandLineProcessor.Enum(C.ELinkerOutput.Executable, "")]
         [CommandLineProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "-DLL")]
+        [VisualStudioProcessor.Enum(C.ELinkerOutput.Executable, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
+        [VisualStudioProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
 #endif
         C.ELinkerOutput C.ICommonLinkerSettings.OutputType
         {
@@ -141,6 +149,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-LIBPATH:")]
+        [VisualStudioProcessor.PathArray("AdditionalLibraryDirectories")]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
         {
@@ -150,6 +159,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
+        [VisualStudioProcessor.StringArray("AdditionalDependencies")]
 #endif
         Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
         {
@@ -159,6 +169,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-DEBUG", "")]
+        [VisualStudioProcessor.Bool("GenerateDebugInformation")]
 #endif
         bool C.ICommonLinkerSettings.DebugSymbols
         {
@@ -168,6 +179,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
+        [VisualStudioProcessor.StringArray("")]
 #endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
@@ -177,6 +189,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-NOLOGO", "")]
+        [VisualStudioProcessor.Bool("SuppressStartupBanner")]
 #endif
         bool ICommonLinkerSettings.NoLogo
         {
@@ -186,6 +199,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-MANIFEST", "-MANIFEST:NO")]
+        [VisualStudioProcessor.Bool("EnableManifest", target: VisualStudioProcessor.BaseAttribute.TargetGroup.Configuration)]
 #endif
         bool ICommonLinkerSettings.GenerateManifest
         {
@@ -195,6 +209,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-SAFESEH", "-SAFESEH:NO")]
+        [VisualStudioProcessor.Bool("ImageHasSafeExceptionHandlers")]
 #endif
         bool ICommonLinkerSettings.SafeExceptionHandlers
         {

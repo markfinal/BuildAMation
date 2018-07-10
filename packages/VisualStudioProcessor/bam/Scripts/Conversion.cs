@@ -36,12 +36,20 @@ namespace VisualStudioProcessor
     public abstract class BaseAttribute :
         System.Attribute
     {
+        public enum TargetGroup
+        {
+            Settings,
+            Configuration
+        }
+
         protected BaseAttribute(
             string property,
-            bool inheritExisting)
+            bool inheritExisting,
+            TargetGroup targetGroup)
         {
             this.Property = property;
             this.InheritExisting = inheritExisting;
+            this.Target = targetGroup;
         }
 
         public string Property
@@ -51,6 +59,12 @@ namespace VisualStudioProcessor
         }
 
         public bool InheritExisting
+        {
+            get;
+            private set;
+        }
+
+        public TargetGroup Target
         {
             get;
             private set;
@@ -77,9 +91,10 @@ namespace VisualStudioProcessor
             EMode mode,
             bool inheritExisting = false,
             string verbatimString = null,
-            string prefix = null)
+            string prefix = null,
+            TargetGroup target = TargetGroup.Settings)
             :
-            base(property, inheritExisting)
+            base(property, inheritExisting, target)
         {
             this.Key = key as System.Enum;
             this.Mode = mode;
@@ -119,9 +134,10 @@ namespace VisualStudioProcessor
         public PathAttribute(
             string command_switch,
             bool inheritExisting = false,
-            bool ignored = false)
+            bool ignored = false,
+            TargetGroup target = TargetGroup.Settings)
             :
-            base(command_switch, inheritExisting)
+            base(command_switch, inheritExisting, target)
         {
             this.Ignored = ignored;
         }
@@ -139,9 +155,10 @@ namespace VisualStudioProcessor
     {
         public PathArrayAttribute(
             string command_switch,
-            bool inheritExisting = false)
+            bool inheritExisting = false,
+            TargetGroup target = TargetGroup.Settings)
             :
-            base(command_switch, inheritExisting)
+            base(command_switch, inheritExisting, target)
         { }
     }
 
@@ -151,9 +168,10 @@ namespace VisualStudioProcessor
     {
         public StringAttribute(
             string command_switch,
-            bool inheritExisting = false)
+            bool inheritExisting = false,
+            TargetGroup target = TargetGroup.Settings)
             :
-            base(command_switch, inheritExisting)
+            base(command_switch, inheritExisting, target)
         { }
     }
 
@@ -163,9 +181,10 @@ namespace VisualStudioProcessor
     {
         public StringArrayAttribute(
             string command_switch,
-            bool inheritExisting = false)
+            bool inheritExisting = false,
+            TargetGroup target = TargetGroup.Settings)
             :
-            base(command_switch, inheritExisting)
+            base(command_switch, inheritExisting, target)
         { }
     }
 
@@ -176,9 +195,10 @@ namespace VisualStudioProcessor
         public BoolAttribute(
             string property,
             bool inheritExisting = false,
-            bool inverted = false)
+            bool inverted = false,
+            TargetGroup target = TargetGroup.Settings)
             :
-            base(property, inheritExisting)
+            base(property, inheritExisting, target)
         {
             this.Inverted = inverted;
         }
@@ -187,9 +207,10 @@ namespace VisualStudioProcessor
             string property,
             string truth,
             string falisy,
-            bool inheritExisting = false)
+            bool inheritExisting = false,
+            TargetGroup target = TargetGroup.Settings)
             :
-            base(property, inheritExisting)
+            base(property, inheritExisting, target)
         {
             this.Inverted = false;
             this.Truth = truth;
@@ -223,7 +244,7 @@ namespace VisualStudioProcessor
             string command_switch,
             bool inheritExisting = false)
             :
-            base(command_switch, inheritExisting)
+            base(command_switch, inheritExisting, TargetGroup.Settings)
         { }
     }
 
@@ -235,6 +256,7 @@ namespace VisualStudioProcessor
             System.Type real_settings_type,
             Bam.Core.Module module, // cannot use settings.Module as this may be null for per-file settings
             VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            VSSolutionBuilder.VSProjectConfiguration vsConfig,
             string condition = null)
         {
             var commandLine = new Bam.Core.StringArray();
@@ -276,6 +298,10 @@ namespace VisualStudioProcessor
                     {
                         var associated_attribute = attributeArray.First(
                             item => (item as EnumAttribute).Key.Equals(property_value)) as EnumAttribute;
+                        if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
+                        {
+                            throw new Bam.Core.Exception("Unable to use property target, {0}", associated_attribute.Target.ToString());
+                        }
                         System.Diagnostics.Debug.Assert(!associated_attribute.InheritExisting);
                         switch (associated_attribute.Mode)
                         {
@@ -329,6 +355,10 @@ namespace VisualStudioProcessor
                     else if (attributeArray.First() is PathAttribute)
                     {
                         var associated_attribute = attributeArray.First() as PathAttribute;
+                        if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
+                        {
+                            throw new Bam.Core.Exception("Unable to use property target, {0}", associated_attribute.Target.ToString());
+                        }
                         if (!associated_attribute.Ignored)
                         {
                             throw new System.NotImplementedException();
@@ -337,6 +367,10 @@ namespace VisualStudioProcessor
                     else if (attributeArray.First() is PathArrayAttribute)
                     {
                         var associated_attribute = attributeArray.First() as BaseAttribute;
+                        if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
+                        {
+                            throw new Bam.Core.Exception("Unable to use property target, {0}", associated_attribute.Target.ToString());
+                        }
                         vsSettingsGroup.AddSetting(
                             associated_attribute.Property,
                             property_value as Bam.Core.TokenizedStringArray,
@@ -352,6 +386,10 @@ namespace VisualStudioProcessor
                     else if (attributeArray.First() is StringArrayAttribute)
                     {
                         var associated_attribute = attributeArray.First() as BaseAttribute;
+                        if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
+                        {
+                            throw new Bam.Core.Exception("Unable to use property target, {0}", associated_attribute.Target.ToString());
+                        }
                         vsSettingsGroup.AddSetting(
                             associated_attribute.Property,
                             property_value as Bam.Core.StringArray,
@@ -362,31 +400,57 @@ namespace VisualStudioProcessor
                     else if (attributeArray.First() is BoolAttribute)
                     {
                         var value = (bool)property_value;
-                        var bool_attr = attributeArray.First() as BoolAttribute;
-                        if (bool_attr.Inverted)
+                        var associated_attribute = attributeArray.First() as BoolAttribute;
+                        if (associated_attribute.Inverted)
                         {
                             value = !value;
                         }
-                        if (null == bool_attr.Truth && null == bool_attr.Falisy)
+                        if (associated_attribute.Target == BaseAttribute.TargetGroup.Settings)
                         {
-                            vsSettingsGroup.AddSetting(
-                                bool_attr.Property,
-                                value,
-                                condition
-                            );
+                            if (null == associated_attribute.Truth && null == associated_attribute.Falisy)
+                            {
+                                vsSettingsGroup.AddSetting(
+                                    associated_attribute.Property,
+                                    value,
+                                    condition
+                                );
+                            }
+                            else
+                            {
+                                vsSettingsGroup.AddSetting(
+                                    associated_attribute.Property,
+                                    value ? associated_attribute.Truth : associated_attribute.Falisy,
+                                    condition
+                                );
+                            }
                         }
-                        else
+                        else if (associated_attribute.Target == BaseAttribute.TargetGroup.Configuration)
                         {
-                            vsSettingsGroup.AddSetting(
-                                bool_attr.Property,
-                                value ? bool_attr.Truth : bool_attr.Falisy,
-                                condition
-                            );
+                            var prop = vsConfig.GetType().GetProperty(associated_attribute.Property);
+                            var setter = prop.GetSetMethod();
+                            if (null == associated_attribute.Truth && null == associated_attribute.Falisy)
+                            {
+                                setter.Invoke(
+                                    vsConfig,
+                                    new[] { property_value }
+                                );
+                            }
+                            else
+                            {
+                                setter.Invoke(
+                                    vsConfig,
+                                    new[] { value ? associated_attribute.Truth : associated_attribute.Falisy }
+                                );
+                            }
                         }
                     }
                     else if (attributeArray.First() is PreprocessorDefinesAttribute)
                     {
                         var associated_attribute = attributeArray.First() as BaseAttribute;
+                        if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
+                        {
+                            throw new Bam.Core.Exception("Unable to use property target, {0}", associated_attribute.Target.ToString());
+                        }
                         vsSettingsGroup.AddSetting(
                             associated_attribute.Property,
                             property_value as C.PreprocessorDefinitions,
