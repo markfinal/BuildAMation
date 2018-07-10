@@ -69,6 +69,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-Fo")]
+        [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
@@ -78,6 +79,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("")]
+        [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
         {
@@ -87,6 +89,8 @@ namespace VisualCCommon
 
 #if BAM_V2
         // defined in the executable used
+        [VisualStudioProcessor.Enum(C.EBit.ThirtyTwo, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
+        [VisualStudioProcessor.Enum(C.EBit.SixtyFour, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
 #endif
         C.EBit? C.ICommonAssemblerSettings.Bits
         {
@@ -96,6 +100,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-Zi", "")]
+        [VisualStudioProcessor.Bool("GenerateDebugInformation")]
 #endif
         bool C.ICommonAssemblerSettings.DebugSymbols
         {
@@ -106,6 +111,8 @@ namespace VisualCCommon
 #if BAM_V2
         [CommandLineProcessor.Enum(C.ECompilerOutput.CompileOnly, "-c")]
         [CommandLineProcessor.Enum(C.ECompilerOutput.Preprocess, "-E")]
+        [VisualStudioProcessor.Enum(C.ECompilerOutput.CompileOnly, "GeneratePreprocessedSourceListing", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "false")]
+        [VisualStudioProcessor.Enum(C.ECompilerOutput.Preprocess, "GeneratePreprocessedSourceListing", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "true")]
 #endif
         C.ECompilerOutput C.ICommonAssemblerSettings.OutputType
         {
@@ -115,6 +122,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-WX", "-WX-")]
+        [VisualStudioProcessor.Bool("TreatWarningsAsErrors")]
 #endif
         bool C.ICommonAssemblerSettings.WarningsAsErrors
         {
@@ -124,6 +132,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-I")]
+        [VisualStudioProcessor.PathArray("IncludePaths", inheritExisting: true)]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
         {
@@ -133,6 +142,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.PreprocessorDefines("-D")]
+        [VisualStudioProcessor.PreprocessorDefines("PreprocessorDefinitions", inheritExisting: true)]
 #endif
         C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
         {
@@ -142,6 +152,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
+        [VisualStudioProcessor.StringArray("AdditionalOptions")]
 #endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
@@ -151,6 +162,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-nologo", "")]
+        [VisualStudioProcessor.Bool("NoLogo")]
 #endif
         bool ICommonAssemblerSettings.NoLogo
         {
@@ -163,6 +175,10 @@ namespace VisualCCommon
         [CommandLineProcessor.Enum(EAssemblerWarningLevel.Level1, "-W1")]
         [CommandLineProcessor.Enum(EAssemblerWarningLevel.Level2, "-W2")]
         [CommandLineProcessor.Enum(EAssemblerWarningLevel.Level3, "-W3")]
+        [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level0, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
+        [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level1, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
+        [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level2, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
+        [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level3, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
 #endif
         EAssemblerWarningLevel ICommonAssemblerSettings.WarningLevel
         {
@@ -172,6 +188,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-safeseh", "")]
+        [VisualStudioProcessor.Bool("UseSafeExceptionHandlers")]
 #endif
         bool ICommonAssemblerSettings.SafeExceptionHandlers
         {
