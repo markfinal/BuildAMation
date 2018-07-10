@@ -42,9 +42,23 @@ namespace C
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 
-            var group = (module is C.WinResource) ?
-                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Resource :
-                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler;
+            VSSolutionBuilder.VSSettingsGroup.ESettingsGroup group;
+            if (module is C.WinResource)
+            {
+                group = VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Resource;
+            }
+            else if (module is C.AssembledObjectFile)
+            {
+                group = VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Assembler;
+            }
+            else if (module is C.ObjectFile)
+            {
+                group = VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler;
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Unknown settings group for module {0}", module.ToString());
+            }
 
             var settingsGroup = config.GetSettingsGroup(
                 group,
