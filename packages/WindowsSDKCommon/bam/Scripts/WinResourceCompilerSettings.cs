@@ -69,6 +69,7 @@ namespace WindowsSDKCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("")]
+        [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
         {
@@ -78,6 +79,7 @@ namespace WindowsSDKCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-Fo")]
+        [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
@@ -87,6 +89,7 @@ namespace WindowsSDKCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-v", "")]
+        [VisualStudioProcessor.Bool("ShowProgress")]
 #endif
         bool? C.ICommonWinResourceCompilerSettings.Verbose
         {
@@ -96,6 +99,7 @@ namespace WindowsSDKCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-i")]
+        [VisualStudioProcessor.PathArray("AdditionalIncludeDirectories", inheritExisting: true)]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths
         {
@@ -105,6 +109,7 @@ namespace WindowsSDKCommon
 
 #if BAM_V2
         [CommandLineProcessor.PreprocessorDefines("-D")]
+        [VisualStudioProcessor.PreprocessorDefines("PreprocessorDefinitions", inheritExisting: true)]
 #endif
         C.PreprocessorDefinitions C.ICommonWinResourceCompilerSettings.PreprocessorDefines
         {
@@ -114,6 +119,7 @@ namespace WindowsSDKCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
+        [VisualStudioProcessor.StringArray("AdditionalOptions")]
 #endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
@@ -123,6 +129,7 @@ namespace WindowsSDKCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-NOLOGO", "")]
+        [VisualStudioProcessor.Bool("SuppressStartupBanner")]
 #endif
         bool? ICommonWinResourceCompilerSettings.NoLogo
         {
