@@ -63,10 +63,7 @@ namespace C
             );
 
             // order only dependents
-            foreach (var proj in GetOrderOnlyDependentProjects(module))
-            {
-                config.RequiresProject(proj);
-            }
+            AddOrderOnlyDependentProjects(module, config);
         }
     }
 #else

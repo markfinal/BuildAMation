@@ -120,10 +120,7 @@ namespace C
             );
 
             // order only dependents
-            foreach (var proj in GetOrderOnlyDependentProjects(module))
-            {
-                config.RequiresProject(proj);
-            }
+            AddOrderOnlyDependentProjects(module, config);
         }
 
         public static void
@@ -197,9 +194,10 @@ namespace C
             return;
         }
 
-        public static System.Collections.Generic.HashSet<VSSolutionBuilder.VSProject>
-        GetOrderOnlyDependentProjects(
-            Bam.Core.Module module)
+        public static void
+        AddOrderOnlyDependentProjects(
+            Bam.Core.Module module,
+            VSSolutionBuilder.VSProjectConfiguration config)
         {
             var required_projects = new System.Collections.Generic.HashSet<VSSolutionBuilder.VSProject>();
             // order only dependencies - recurse into each, so that all layers
@@ -241,7 +239,6 @@ namespace C
                     required_projects.Add(dependentProject);
                 }
             }
-            return required_projects;
         }
     }
 #else
