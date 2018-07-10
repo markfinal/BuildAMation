@@ -66,12 +66,17 @@ namespace C
                 uniqueToProject: true
             );
 
+            // TODO: not sure of the benefit of doing this
+            // both here, and at all
+#if false
             var intDir = module.CreateTokenizedString(
                 "@trimstart(@relativeto($(0),$(packagebuilddir)/$(moduleoutputdir)),../)",
                 module.GeneratedPaths[C.ObjectFileBase.Key]
             );
             intDir.Parse();
             settingsGroup.AddSetting("ObjectFileName", "$(IntDir)" + intDir.ToString());
+#endif
+
             if (!module.PerformCompilation)
             {
                 settingsGroup.AddSetting("ExcludedFromBuild", true);
