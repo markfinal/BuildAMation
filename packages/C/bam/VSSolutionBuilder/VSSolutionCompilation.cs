@@ -66,16 +66,18 @@ namespace C
                 uniqueToProject: true
             );
 
-            // TODO: not sure of the benefit of doing this
-            // both here, and at all
-#if false
-            var intDir = module.CreateTokenizedString(
-                "@trimstart(@relativeto($(0),$(packagebuilddir)/$(moduleoutputdir)),../)",
-                module.GeneratedPaths[C.ObjectFileBase.Key]
-            );
-            intDir.Parse();
-            settingsGroup.AddSetting("ObjectFileName", "$(IntDir)" + intDir.ToString());
-#endif
+            // must specify an ObjectFileName, in case two source files have the same leafname
+            // which would then map to the same output file without intervention
+            // note that this doesn't seem to work for assembly files - results in weird errors
+            if (!(module is AssembledObjectFile))
+            {
+                var intDir = module.CreateTokenizedString(
+                    "@trimstart(@relativeto($(0),$(packagebuilddir)/$(moduleoutputdir)),../)",
+                    module.GeneratedPaths[C.ObjectFileBase.Key]
+                );
+                intDir.Parse();
+                settingsGroup.AddSetting("ObjectFileName", "$(IntDir)" + intDir.ToString());
+            }
 
             if (!module.PerformCompilation)
             {
