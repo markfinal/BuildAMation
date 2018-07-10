@@ -239,6 +239,26 @@ namespace C
                     required_projects.Add(dependentProject);
                 }
             }
+            // however, there may be forwarded libraries, and these are useful order only dependents
+            if (module is IForwardedLibraries)
+            {
+                foreach (var dependent in (module as IForwardedLibraries).ForwardedLibraries)
+                {
+                    if (null == dependent.MetaData)
+                    {
+                        continue;
+                    }
+                    var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
+                    if (null != dependentProject)
+                    {
+                        required_projects.Add(dependentProject);
+                    }
+                }
+            }
+            foreach (var proj in required_projects)
+            {
+                config.RequiresProject(proj);
+            }
         }
     }
 #else
