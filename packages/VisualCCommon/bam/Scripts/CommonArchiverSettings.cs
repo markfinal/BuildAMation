@@ -67,6 +67,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-OUT:")]
+        [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
@@ -76,6 +77,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
+        [VisualStudioProcessor.StringArray("AdditionalOptions")]
 #endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
@@ -85,6 +87,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-NOLOGO", "")]
+        [VisualStudioProcessor.Bool("SuppressStartupBanner")]
 #endif
         bool ICommonArchiverSettings.NoLogo
         {

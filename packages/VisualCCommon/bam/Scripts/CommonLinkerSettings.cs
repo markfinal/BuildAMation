@@ -179,7 +179,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
-        [VisualStudioProcessor.StringArray("")]
+        [VisualStudioProcessor.StringArray("AdditionalOptions")]
 #endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
