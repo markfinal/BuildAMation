@@ -34,8 +34,8 @@ namespace VisualCCommon
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
-#endif
         VisualStudioProcessor.IConvertToProject,
+#endif
         C.ICommonHasOutputPath,
         C.ICommonHasImportLibraryPathWin,
         C.ICommonHasProgramDatabasePathWin,
@@ -58,7 +58,6 @@ namespace VisualCCommon
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
-#endif
 
         void
         VisualStudioProcessor.IConvertToProject.Convert(
@@ -68,6 +67,7 @@ namespace VisualCCommon
         {
             VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("-OUT:")]

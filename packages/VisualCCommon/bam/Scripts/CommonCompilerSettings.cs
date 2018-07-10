@@ -35,8 +35,8 @@ namespace VisualCCommon
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
-#endif
         VisualStudioProcessor.IConvertToProject,
+#endif
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
         C.ICommonCompilerSettingsWin,
@@ -65,7 +65,6 @@ namespace VisualCCommon
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
-#endif
 
         void
         VisualStudioProcessor.IConvertToProject.Convert(
@@ -75,6 +74,7 @@ namespace VisualCCommon
         {
             VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Enum(C.ECharacterSet.NotSet, "")]

@@ -27,6 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+#if BAM_V2
+#else
 namespace VisualCCommon
 {
     public static partial class VSSolutionImplementation
@@ -128,8 +130,6 @@ namespace VisualCCommon
                 vsSettingsGroup.AddSetting("TreatWarningAsError", settings.WarningsAsErrors.Value, condition);
             }
 
-#if BAM_V2
-#else
             if (settings.OutputType.HasValue)
             {
                 vsSettingsGroup.AddSetting("PreprocessToFile", settings.OutputType.Value == C.ECompilerOutput.Preprocess, condition);
@@ -138,7 +138,6 @@ namespace VisualCCommon
                     vsSettingsGroup.AddSetting("ObjectFileName", module.GeneratedPaths[C.ObjectFile.Key], condition);
                 }
             }
-#endif
 
             if (settings.NamedHeaders.Count > 0)
             {
@@ -147,3 +146,4 @@ namespace VisualCCommon
         }
     }
 }
+#endif
