@@ -71,6 +71,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-OUT:")]
+        [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
@@ -80,6 +81,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-IMPLIB:")]
+        [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasImportLibraryPathWin.ImportLibraryPath
         {
@@ -89,6 +91,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-PDB:")]
+        [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasProgramDatabasePathWin.PDBPath
         {

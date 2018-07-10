@@ -263,7 +263,7 @@ namespace VisualStudioProcessor
                         Bam.Core.Log.MessageAll("\t\tNo attrs");
                         throw new Bam.Core.Exception(
                             "No attributes for property {0} in module {1}",
-                            interface_property.Name,
+                            full_property_interface_name,
                             module.ToString()
                         );
                     }
