@@ -61,6 +61,12 @@ namespace C
                 module,
                 librarianGroup
             );
+
+            // order only dependents
+            foreach (var proj in GetOrderOnlyDependentProjects(module))
+            {
+                config.RequiresProject(proj);
+            }
         }
     }
 #else

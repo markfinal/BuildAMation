@@ -118,6 +118,12 @@ namespace C
                 module,
                 linkerGroup
             );
+
+            // order only dependents
+            foreach (var proj in GetOrderOnlyDependentProjects(module))
+            {
+                config.RequiresProject(proj);
+            }
         }
 
         public static void
@@ -189,6 +195,53 @@ namespace C
             }
 
             return;
+        }
+
+        public static System.Collections.Generic.HashSet<VSSolutionBuilder.VSProject>
+        GetOrderOnlyDependentProjects(
+            Bam.Core.Module module)
+        {
+            var required_projects = new System.Collections.Generic.HashSet<VSSolutionBuilder.VSProject>();
+            // order only dependencies - recurse into each, so that all layers
+            // of order only dependencies are included
+            var queue = new System.Collections.Generic.Queue<Bam.Core.Module>(module.Requirements);
+            while (queue.Count > 0)
+            {
+                var required = queue.Dequeue();
+                foreach (var additional in required.Requirements)
+                {
+                    queue.Enqueue(additional);
+                }
+
+                if (null == required.MetaData)
+                {
+                    continue;
+                }
+
+                var requiredProject = required.MetaData as VSSolutionBuilder.VSProject;
+                if (null != requiredProject)
+                {
+                    required_projects.Add(requiredProject);
+                }
+            }
+            // any non-C module projects should be order-only dependencies
+            foreach (var dependent in module.Dependents)
+            {
+                if (null == dependent.MetaData)
+                {
+                    continue;
+                }
+                if (dependent is C.CModule)
+                {
+                    continue;
+                }
+                var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
+                if (null != dependentProject)
+                {
+                    required_projects.Add(dependentProject);
+                }
+            }
+            return required_projects;
         }
     }
 #else
