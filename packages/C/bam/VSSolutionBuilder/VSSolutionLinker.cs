@@ -59,6 +59,30 @@ namespace C
             }
 
             // now link against libraries
+            ProcessLibraryDependencies(
+                module,
+                config,
+                solution);
+
+            // now add the linker settings
+            var linkerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Linker);
+            VisualStudioProcessor.VSSolutionConversion.Convert(
+                module.Settings,
+                module.Settings.GetType(),
+                module,
+                linkerGroup
+            );
+
+            // order only dependents
+            AddOrderOnlyDependentProjects(module, config);
+        }
+
+        public static void
+        ProcessLibraryDependencies(
+            ConsoleApplication module,
+            VSSolutionBuilder.VSProjectConfiguration config,
+            VSSolutionBuilder.VSSolution solution)
+        {
             foreach (var input in module.Libraries)
             {
                 if ((null != input.MetaData) && VSSolutionBuilder.VSProject.IsBuildable(input))
@@ -109,18 +133,6 @@ namespace C
                     }
                 }
             }
-
-            // now add the linker settings
-            var linkerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Linker);
-            VisualStudioProcessor.VSSolutionConversion.Convert(
-                module.Settings,
-                module.Settings.GetType(),
-                module,
-                linkerGroup
-            );
-
-            // order only dependents
-            AddOrderOnlyDependentProjects(module, config);
         }
 
         public static void
