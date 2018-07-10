@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace C
 {
 #if BAM_V2
@@ -40,6 +39,7 @@ namespace C
             VSSolutionBuilder.VSSolution solution;
             VSSolutionBuilder.VSProjectConfiguration config;
 
+            // add headers, source, compiler settings
             LinkOrArchive(
                 out solution,
                 out config,
@@ -53,7 +53,7 @@ namespace C
                 return;
             }
 
-            // now add the librarian settings
+            // add the librarian settings
             var librarianGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Librarian);
             VisualStudioProcessor.VSSolutionConversion.Convert(
                 module.Settings,
@@ -62,7 +62,7 @@ namespace C
                 librarianGroup
             );
 
-            // order only dependents
+            // add order only dependents
             AddOrderOnlyDependentProjects(module, config);
         }
     }
