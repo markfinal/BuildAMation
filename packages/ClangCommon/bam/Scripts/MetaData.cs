@@ -49,7 +49,8 @@ namespace ClangCommon
             this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
             if (!this.Contains("MinVersion"))
             {
-                this.MinimumVersionSupported = "10.6";
+                // 10.7 is the minimum version required for libc++ currently
+                this.MinimumVersionSupported = "macosx10.7";
             }
         }
 
