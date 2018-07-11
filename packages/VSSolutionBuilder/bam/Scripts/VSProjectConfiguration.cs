@@ -691,8 +691,7 @@ namespace VSSolutionBuilder
                 var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PreBuild);
                 preBuildGroup.AddSetting(
                     "Command",
-                    this.PreBuildCommands.ToString(System.Environment.NewLine),
-                    this
+                    this.PreBuildCommands.ToString(System.Environment.NewLine)
                 );
                 preBuildGroup.Serialize(document, itemDefnGroup);
             }
@@ -701,8 +700,7 @@ namespace VSSolutionBuilder
                 var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PostBuild);
                 preBuildGroup.AddSetting(
                     "Command",
-                    this.PostBuildCommands.ToString(System.Environment.NewLine),
-                    this
+                    this.PostBuildCommands.ToString(System.Environment.NewLine)
                 );
                 preBuildGroup.Serialize(document, itemDefnGroup);
             }

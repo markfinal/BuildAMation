@@ -63,25 +63,21 @@ namespace C
                 customBuild.AddSetting(
                     "Command",
                     args.ToString(' '),
-                    config,
                     condition: config.ConditionText
                 );
                 customBuild.AddSetting(
                     "Message",
                     System.String.Format("Generating outputs from {0}", input.ToString()),
-                    config,
                     condition: config.ConditionText
                 );
                 customBuild.AddSetting(
                     "Outputs",
                     expected_output_files.Values,
-                    config,
                     condition: config.ConditionText
                 );
                 customBuild.AddSetting(
                     "AdditionalInputs",
                     input_files.Values,
-                    config,
                     condition: config.ConditionText
                 );
             }

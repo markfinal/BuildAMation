@@ -464,7 +464,6 @@ namespace VSSolutionBuilder
                             group.AddSetting(
                                 "ExcludedFromBuild",
                                 "true",
-                                config.Value,
                                 config.Value.ConditionText
                             );
                         }
@@ -484,7 +483,6 @@ namespace VSSolutionBuilder
                             group.AddSetting(
                                 "ExcludedFromBuild",
                                 "true",
-                                config.Value,
                                 config.Value.ConditionText
                             );
                         }
@@ -512,7 +510,6 @@ namespace VSSolutionBuilder
                             group.AddSetting(
                                 "ExcludedFromBuild",
                                 "true",
-                                config.Value,
                                 config.Value.ConditionText
                             );
                         }
@@ -532,7 +529,6 @@ namespace VSSolutionBuilder
                             group.AddSetting(
                                 "ExcludedFromBuild",
                                 "true",
-                                config.Value,
                                 config.Value.ConditionText
                             );
                         }

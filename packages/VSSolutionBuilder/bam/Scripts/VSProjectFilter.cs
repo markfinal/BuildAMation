@@ -98,8 +98,7 @@ namespace VSSolutionBuilder
             );
             newGroup.AddSetting(
                 "Filter",
-                sourceGroup.RelativeDirectory,
-                config
+                sourceGroup.RelativeDirectory
             );
             filter.AddUnique(newGroup);
         }

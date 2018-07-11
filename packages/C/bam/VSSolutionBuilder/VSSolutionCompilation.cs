@@ -78,8 +78,7 @@ namespace C
                 intDir.Parse();
                 settingsGroup.AddSetting(
                     "ObjectFileName",
-                    "$(IntDir)" + intDir.ToString(),
-                    config
+                    "$(IntDir)" + intDir.ToString()
                 );
             }
 
@@ -87,8 +86,8 @@ namespace C
             {
                 settingsGroup.AddSetting(
                     "ExcludedFromBuild",
-                    true,
-                    config);
+                    true
+                );
             }
             module.MetaData = settingsGroup;
 

@@ -106,11 +106,18 @@ namespace VSSolutionBuilder
             set;
         }
 
+        private VSProjectConfiguration Configuration
+        {
+            get
+            {
+                return this.Project.GetConfiguration(this.Module);
+            }
+        }
+
         public void
         AddSetting(
             string name,
             bool value,
-            VSProjectConfiguration config,
             string condition = null)
         {
             lock (this.Settings)
@@ -129,7 +136,6 @@ namespace VSSolutionBuilder
         AddSetting(
             string name,
             string value,
-            VSProjectConfiguration config,
             string condition = null)
         {
             lock (this.Settings)
@@ -147,14 +153,13 @@ namespace VSSolutionBuilder
         AddSetting(
             string name,
             Bam.Core.TokenizedString path,
-            VSProjectConfiguration config,
             string condition = null,
             bool inheritExisting = false,
             bool isPath = false)
         {
             lock (this.Settings)
             {
-                var stringValue = isPath ? config.ToRelativePath(path) : path.ToString();
+                var stringValue = isPath ? this.Configuration.ToRelativePath(path) : path.ToString();
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != stringValue))
                 {
                     throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, path.ToString());
@@ -168,7 +173,6 @@ namespace VSSolutionBuilder
         AddSetting(
             string name,
             Bam.Core.TokenizedStringArray value,
-            VSProjectConfiguration config,
             string condition = null,
             bool inheritExisting = false,
             bool arePaths = false)
@@ -176,7 +180,6 @@ namespace VSSolutionBuilder
             this.AddSetting(
                 name,
                 value.ToEnumerableWithoutDuplicates(),
-                config,
                 condition,
                 inheritExisting,
                 arePaths
@@ -187,7 +190,6 @@ namespace VSSolutionBuilder
         AddSetting(
             string name,
             System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> value,
-            VSProjectConfiguration config,
             string condition = null,
             bool inheritExisting = false,
             bool arePaths = false)
@@ -198,7 +200,7 @@ namespace VSSolutionBuilder
                 {
                     return;
                 }
-                var linearized = arePaths ? config.ToRelativePaths(value) : new Bam.Core.TokenizedStringArray(value.Distinct()).ToString(';');
+                var linearized = arePaths ? this.Configuration.ToRelativePaths(value) : new Bam.Core.TokenizedStringArray(value.Distinct()).ToString(';');
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
                 {
                     var settingOption = this.Settings.First(item => item.Name == name && item.Condition == condition);
@@ -221,7 +223,6 @@ namespace VSSolutionBuilder
         AddSetting(
             string name,
             Bam.Core.StringArray value,
-            VSProjectConfiguration config,
             string condition = null,
             bool inheritExisting = false)
         {
@@ -254,7 +255,6 @@ namespace VSSolutionBuilder
         AddSetting(
             string name,
             C.PreprocessorDefinitions definitions,
-            VSProjectConfiguration config,
             string condition = null,
             bool inheritExisting = false)
         {
