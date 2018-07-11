@@ -165,6 +165,7 @@ namespace VSSolutionBuilder
         toRelativePath(
             Bam.Core.TokenizedString path)
         {
+            // TODO: in C#7 use a local function to yield return an IEnumerable with the single value
             return this.toRelativePaths(new[] { path });
         }
 
