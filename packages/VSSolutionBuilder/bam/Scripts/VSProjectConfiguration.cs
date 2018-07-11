@@ -180,14 +180,11 @@ namespace VSSolutionBuilder
             set;
         }
 
-#if BAM_V2
-#else
-        private string OutputDirectory
+        private Bam.Core.TokenizedString OutputDirectory
         {
             get;
             set;
         }
-#endif
 
         private string IntermediateDirectory
         {
@@ -331,10 +328,24 @@ namespace VSSolutionBuilder
             set;
         }
 
+        private Bam.Core.TokenizedString _OutputFile;
         public Bam.Core.TokenizedString OutputFile
         {
-            get;
-            set;
+            get
+            {
+                return this._OutputFile;
+            }
+            set
+            {
+                this._OutputFile = value;
+                // Note: MSB8004 requires the OutDir to have a trailing slash
+                this.OutputDirectory = Bam.Core.TokenizedString.Create(
+                    "@dir($(0))\\",
+                    null,
+                    new Bam.Core.TokenizedStringArray { value }
+                );
+                this.OutputDirectory.Parse();
+            }
         }
 
         public VSSettingsGroup
@@ -620,19 +631,9 @@ namespace VSSolutionBuilder
 #if BAM_V2
             if (null != this.OutputFile)
             {
-                var macros = new Bam.Core.MacroList();
-                // TODO: ideally, $(ProjectDir) should replace the following directory separator as well,
-                // but it does not seem to be a show stopper if it doesn't
-                macros.Add("packagebuilddir", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectDir)"));
-                macros.Add("modulename", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectName)"));
-
-                var output_dir = Bam.Core.TokenizedString.Create(
-                    System.String.Format("@dir({0})\\", this.OutputFile.UnparsedString),
-                    this.Module
-                );
                 document.CreateVSElement(
                     "OutDir",
-                    value: output_dir.UncachedParse(new Bam.Core.Array<Bam.Core.MacroList>(macros)),
+                    value: this.ToRelativePath(this.OutputDirectory),
                     parentEl: propGroup
                 );
 
@@ -738,6 +739,7 @@ namespace VSSolutionBuilder
                     output_paths.Add(pathString);
                     continue;
                 }
+
                 var relative = Bam.Core.RelativePathUtilities.GetPath(pathString, this.Project.ProjectPath);
                 if (!Bam.Core.RelativePathUtilities.IsPathAbsolute(relative))
                 {
