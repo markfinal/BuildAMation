@@ -323,20 +323,17 @@ namespace VSSolutionBuilder
             var group = document.CreateVSElement(this.GetGroupName(), parentEl: parentEl);
             if (null != this.Include)
             {
-                var path = this.Include.ToString();
-                var relPath = Bam.Core.RelativePathUtilities.GetPath(path, this.Project.ProjectPath);
-                if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
-                {
-                    group.SetAttribute("Include", relPath);
-                }
-                else
-                {
-                    group.SetAttribute("Include", System.String.Format("$(ProjectDir){0}", relPath));
-                }
+                var rel_path = this.Project.GetConfiguration(this.Module).ToRelativePath(this.Include);
+                group.SetAttribute("Include", rel_path);
             }
             foreach (var setting in this.Settings.OrderBy(pair => pair.Name))
             {
-                document.CreateVSElement(setting.Name, value: setting.Value, condition: setting.Condition, parentEl: group);
+                document.CreateVSElement(
+                    setting.Name,
+                    value: setting.Value,
+                    condition: setting.Condition,
+                    parentEl: group
+                );
             }
         }
     }
