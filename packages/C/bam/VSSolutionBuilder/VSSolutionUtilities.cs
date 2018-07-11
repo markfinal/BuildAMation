@@ -114,10 +114,6 @@ namespace C
 
             // ensure the project type is accurate
             config.SetType(type);
-            if (module.Settings is ICommonHasOutputPath)
-            {
-                config.SetOutputPath((module.Settings as ICommonHasOutputPath).OutputPath);
-            }
             config.EnableIntermediatePath();
 
             foreach (var header in headerFiles)

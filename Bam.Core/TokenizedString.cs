@@ -1325,5 +1325,16 @@ namespace Bam.Core
             }
             this.hash = newHash;
         }
+
+        /// <summary>
+        /// Extract the unparsed string, containing all original tokens.
+        /// </summary>
+        public string UnparsedString
+        {
+            get
+            {
+                return this.OriginalString;
+            }
+        }
     }
 }

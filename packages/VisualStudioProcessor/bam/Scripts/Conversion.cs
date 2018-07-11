@@ -359,9 +359,28 @@ namespace VisualStudioProcessor
                         {
                             throw new Bam.Core.Exception("Unable to use property target, {0}", associated_attribute.Target.ToString());
                         }
-                        if (!associated_attribute.Ignored)
+
+                        if (associated_attribute.Ignored)
                         {
-                            throw new System.NotImplementedException();
+                            continue;
+                        }
+
+                        // TODO: this will add an absolute path
+                        // not sure how to set that it's relative to a VS macro
+                        vsSettingsGroup.AddSetting(
+                            associated_attribute.Property,
+                            property_value as Bam.Core.TokenizedString,
+                            condition
+                        );
+
+                        var prop = vsConfig.GetType().GetProperty(associated_attribute.Property);
+                        if (null != prop)
+                        {
+                            var setter = prop.GetSetMethod();
+                            if (null != setter)
+                            {
+                                setter.Invoke(vsConfig, new[] { property_value });
+                            }
                         }
                     }
                     else if (attributeArray.First() is PathArrayAttribute)

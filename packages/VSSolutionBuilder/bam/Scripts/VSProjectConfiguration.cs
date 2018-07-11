@@ -179,11 +179,14 @@ namespace VSSolutionBuilder
             set;
         }
 
+#if BAM_V2
+#else
         private string OutputDirectory
         {
             get;
             set;
         }
+#endif
 
         private string IntermediateDirectory
         {
@@ -191,6 +194,8 @@ namespace VSSolutionBuilder
             set;
         }
 
+#if BAM_V2
+#else
         private string TargetName
         {
             get;
@@ -202,6 +207,7 @@ namespace VSSolutionBuilder
             get;
             set;
         }
+#endif
 
         private Bam.Core.Array<VSSettingsGroup> SettingGroups
         {
@@ -280,6 +286,8 @@ namespace VSSolutionBuilder
             this.CharacterSet = charSet;
         }
 
+#if BAM_V2
+#else
         public void
         SetOutputPath(
             Bam.Core.TokenizedString path)
@@ -308,6 +316,7 @@ namespace VSSolutionBuilder
                 this.TargetExt = ext;
             }
         }
+#endif
 
         public void
         EnableIntermediatePath()
@@ -316,6 +325,12 @@ namespace VSSolutionBuilder
         }
 
         public bool EnableManifest
+        {
+            get;
+            set;
+        }
+
+        public Bam.Core.TokenizedString OutputFile
         {
             get;
             set;
@@ -592,13 +607,43 @@ namespace VSSolutionBuilder
             System.Xml.XmlElement parentEl)
         {
             var propGroup = document.CreateVSPropertyGroup(condition: this.ConditionText, parentEl: parentEl);
+#if BAM_V2
+            if (null != this.OutputFile)
+            {
+                var macros = new Bam.Core.MacroList();
+                // TODO: ideally, $(ProjectDir) should replace the following directory separator as well,
+                // but it does not seem to be a show stopper if it doesn't
+                macros.Add("packagebuilddir", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectDir)"));
+                macros.Add("modulename", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectName)"));
+
+                var output_dir = Bam.Core.TokenizedString.Create(
+                    System.String.Format("@dir({0})\\", this.OutputFile.UnparsedString),
+                    this.Module
+                );
+                document.CreateVSElement(
+                    "OutDir",
+                    value: output_dir.UncachedParse(new Bam.Core.Array<Bam.Core.MacroList>(macros)),
+                    parentEl: propGroup
+                );
+
+                var targetNameTS = this.Module.CreateTokenizedString("@basename($(0))", this.OutputFile);
+                targetNameTS.Parse();
+                var targetName = targetNameTS.ToString();
+                if (!string.IsNullOrEmpty(targetName))
+                {
+                    var filenameTS = this.Module.CreateTokenizedString("@filename($(0))", this.OutputFile);
+                    filenameTS.Parse();
+                    var filename = filenameTS.ToString();
+                    var ext = filename.Replace(targetName, string.Empty);
+
+                    document.CreateVSElement("TargetName", value: targetName, parentEl: propGroup);
+                    document.CreateVSElement("TargetExt", value: ext, parentEl: propGroup);
+                }
+            }
+#else
             if (null != this.OutputDirectory)
             {
                 document.CreateVSElement("OutDir", value: this.OutputDirectory, parentEl: propGroup);
-            }
-            if (null != this.IntermediateDirectory)
-            {
-                document.CreateVSElement("IntDir", value: this.IntermediateDirectory, parentEl: propGroup);
             }
             if (null != this.TargetName)
             {
@@ -607,6 +652,11 @@ namespace VSSolutionBuilder
             if (null != this.TargetExt)
             {
                 document.CreateVSElement("TargetExt", value: this.TargetExt, parentEl: propGroup);
+            }
+#endif
+            if (null != this.IntermediateDirectory)
+            {
+                document.CreateVSElement("IntDir", value: this.IntermediateDirectory, parentEl: propGroup);
             }
             document.CreateVSElement("GenerateManifest", value: this.EnableManifest.ToString().ToLower(), parentEl: propGroup);
         }

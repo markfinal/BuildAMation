@@ -71,7 +71,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-OUT:")]
-        [VisualStudioProcessor.Path("", ignored: true)]
+        [VisualStudioProcessor.Path("OutputFile")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
