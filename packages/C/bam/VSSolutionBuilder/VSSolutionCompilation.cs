@@ -76,12 +76,19 @@ namespace C
                     module.GeneratedPaths[C.ObjectFileBase.Key]
                 );
                 intDir.Parse();
-                settingsGroup.AddSetting("ObjectFileName", "$(IntDir)" + intDir.ToString());
+                settingsGroup.AddSetting(
+                    "ObjectFileName",
+                    "$(IntDir)" + intDir.ToString(),
+                    config
+                );
             }
 
             if (!module.PerformCompilation)
             {
-                settingsGroup.AddSetting("ExcludedFromBuild", true);
+                settingsGroup.AddSetting(
+                    "ExcludedFromBuild",
+                    true,
+                    config);
             }
             module.MetaData = settingsGroup;
 

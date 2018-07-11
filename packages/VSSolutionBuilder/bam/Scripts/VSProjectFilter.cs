@@ -70,7 +70,8 @@ namespace VSSolutionBuilder
 
         public void
         AddFile(
-            VSSettingsGroup sourceGroup)
+            VSSettingsGroup sourceGroup,
+            VSProjectConfiguration config)
         {
             var path = sourceGroup.RelativeDirectory.ToString();
             this.AddFilters(sourceGroup.Module, path);
@@ -95,7 +96,11 @@ namespace VSSolutionBuilder
                 sourceGroup.Group,
                 sourceGroup.Include
             );
-            newGroup.AddSetting("Filter", sourceGroup.RelativeDirectory);
+            newGroup.AddSetting(
+                "Filter",
+                sourceGroup.RelativeDirectory,
+                config
+            );
             filter.AddUnique(newGroup);
         }
 

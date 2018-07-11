@@ -110,6 +110,7 @@ namespace VSSolutionBuilder
         AddSetting(
             string name,
             bool value,
+            VSProjectConfiguration config,
             string condition = null)
         {
             lock (this.Settings)
@@ -128,6 +129,7 @@ namespace VSSolutionBuilder
         AddSetting(
             string name,
             string value,
+            VSProjectConfiguration config,
             string condition = null)
         {
             lock (this.Settings)
@@ -145,13 +147,14 @@ namespace VSSolutionBuilder
         AddSetting(
             string name,
             Bam.Core.TokenizedString path,
+            VSProjectConfiguration config,
             string condition = null,
             bool inheritExisting = false,
             bool isPath = false)
         {
             lock (this.Settings)
             {
-                var stringValue = isPath ? toRelativePath(path) : path.ToString();
+                var stringValue = isPath ? config.ToRelativePath(path) : path.ToString();
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != stringValue))
                 {
                     throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, path.ToString());
@@ -161,51 +164,11 @@ namespace VSSolutionBuilder
             }
         }
 
-        private string
-        toRelativePath(
-            Bam.Core.TokenizedString path)
-        {
-            // TODO: in C#7 use a local function to yield return an IEnumerable with the single value
-            return this.toRelativePaths(new[] { path });
-        }
-
-        private string
-        toRelativePaths(
-            Bam.Core.TokenizedStringArray paths)
-        {
-            return toRelativePaths(paths.ToEnumerableWithoutDuplicates());
-        }
-
-        private string
-        toRelativePaths(
-            System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> paths)
-        {
-            var programFiles = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
-            var programFilesX86 = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
-
-            var distinct_source_paths = paths.Distinct();
-            var output_paths = new Bam.Core.StringArray();
-            foreach (var path in distinct_source_paths)
-            {
-                var pathString = path.ToString();
-                if (pathString.StartsWith(programFiles) || pathString.StartsWith(programFilesX86))
-                {
-                    output_paths.Add(pathString);
-                    continue;
-                }
-                var relative = Bam.Core.RelativePathUtilities.GetPath(pathString, this.Project.ProjectPath);
-                if (!Bam.Core.RelativePathUtilities.IsPathAbsolute(relative))
-                {
-                    output_paths.Add(System.String.Format("$(ProjectDir){0}", relative));
-                }
-            }
-            return output_paths.ToString(';');
-        }
-
         public void
         AddSetting(
             string name,
             Bam.Core.TokenizedStringArray value,
+            VSProjectConfiguration config,
             string condition = null,
             bool inheritExisting = false,
             bool arePaths = false)
@@ -213,6 +176,7 @@ namespace VSSolutionBuilder
             this.AddSetting(
                 name,
                 value.ToEnumerableWithoutDuplicates(),
+                config,
                 condition,
                 inheritExisting,
                 arePaths
@@ -223,6 +187,7 @@ namespace VSSolutionBuilder
         AddSetting(
             string name,
             System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> value,
+            VSProjectConfiguration config,
             string condition = null,
             bool inheritExisting = false,
             bool arePaths = false)
@@ -233,7 +198,7 @@ namespace VSSolutionBuilder
                 {
                     return;
                 }
-                var linearized = arePaths ? this.toRelativePaths(value) : new Bam.Core.TokenizedStringArray(value.Distinct()).ToString(';');
+                var linearized = arePaths ? config.ToRelativePaths(value) : new Bam.Core.TokenizedStringArray(value.Distinct()).ToString(';');
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
                 {
                     var settingOption = this.Settings.First(item => item.Name == name && item.Condition == condition);
@@ -256,6 +221,7 @@ namespace VSSolutionBuilder
         AddSetting(
             string name,
             Bam.Core.StringArray value,
+            VSProjectConfiguration config,
             string condition = null,
             bool inheritExisting = false)
         {
@@ -288,6 +254,7 @@ namespace VSSolutionBuilder
         AddSetting(
             string name,
             C.PreprocessorDefinitions definitions,
+            VSProjectConfiguration config,
             string condition = null,
             bool inheritExisting = false)
         {

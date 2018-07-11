@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace VSSolutionBuilder
 {
     // abstraction of a project configuration, consisting of platform and configuration
@@ -376,14 +377,17 @@ namespace VSSolutionBuilder
         AddHeaderFile(
             C.HeaderFile header)
         {
-            var headerGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.Header, header.InputPath);
+            var headerGroup = this.Project.GetUniqueSettingsGroup(
+                this.Module,
+                VSSettingsGroup.ESettingsGroup.Header,
+                header.InputPath
+            );
             this.Headers.AddUnique(headerGroup);
-            this.Project.AddHeader(headerGroup);
+            this.Project.AddHeader(headerGroup, this);
         }
 
         public void
         AddSourceFile(
-            VSProjectConfiguration config,
             Bam.Core.Module module,
             Bam.Core.Settings patchSettings)
         {
@@ -396,7 +400,7 @@ namespace VSSolutionBuilder
                     module.Settings.GetType(),
                     module,
                     settings,
-                    config,
+                    this,
                     condition: this.ConditionText
                 );
 #else
@@ -404,28 +408,35 @@ namespace VSSolutionBuilder
 #endif
             }
             this.Sources.AddUnique(settings);
-            this.Project.AddSource(settings);
+            this.Project.AddSource(settings, this);
         }
 
         public void
         AddOtherFile(
             Bam.Core.IInputPath other)
         {
-            var otherGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, other.InputPath);
-            this.Project.AddOtherFile(otherGroup);
+            var otherGroup = this.Project.GetUniqueSettingsGroup(
+                this.Module,
+                VSSettingsGroup.ESettingsGroup.CustomBuild,
+                other.InputPath
+            );
+            this.Project.AddOtherFile(otherGroup, this);
         }
 
         public void
         AddOtherFile(
             Bam.Core.TokenizedString other_path)
         {
-            var otherGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, other_path);
-            this.Project.AddOtherFile(otherGroup);
+            var otherGroup = this.Project.GetUniqueSettingsGroup(
+                this.Module,
+                VSSettingsGroup.ESettingsGroup.CustomBuild,
+                other_path
+            );
+            this.Project.AddOtherFile(otherGroup, this);
         }
 
         public void
         AddResourceFile(
-            VSProjectConfiguration config,
             C.WinResource resource,
             Bam.Core.Settings patchSettings)
         {
@@ -438,7 +449,7 @@ namespace VSSolutionBuilder
                     resource.Settings.GetType(),
                     resource,
                     settings,
-                    config,
+                    this,
                     condition: this.ConditionText
                 );
 #else
@@ -447,12 +458,11 @@ namespace VSSolutionBuilder
             }
             var resourceGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.Resource, resource.InputPath);
             this.ResourceFiles.AddUnique(resourceGroup);
-            this.Project.AddResourceFile(resourceGroup);
+            this.Project.AddResourceFile(resourceGroup, this);
         }
 
         public void
         AddAssemblyFile(
-            VSProjectConfiguration config,
             C.AssembledObjectFile assembler,
             Bam.Core.Settings patchSettings)
         {
@@ -465,7 +475,7 @@ namespace VSSolutionBuilder
                     assembler.Settings.GetType(),
                     assembler,
                     settings,
-                    config,
+                    this,
                     condition: this.ConditionText
                 );
 #else
@@ -474,7 +484,7 @@ namespace VSSolutionBuilder
             }
             var assemblyGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, assembler.InputPath);
             this.AssemblyFiles.AddUnique(assemblyGroup);
-            this.Project.AddAssemblyFile(assemblyGroup);
+            this.Project.AddAssemblyFile(assemblyGroup, this);
         }
 
         public void
@@ -679,15 +689,64 @@ namespace VSSolutionBuilder
             if (this.PreBuildCommands.Count > 0)
             {
                 var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PreBuild);
-                preBuildGroup.AddSetting("Command", this.PreBuildCommands.ToString(System.Environment.NewLine));
+                preBuildGroup.AddSetting(
+                    "Command",
+                    this.PreBuildCommands.ToString(System.Environment.NewLine),
+                    this
+                );
                 preBuildGroup.Serialize(document, itemDefnGroup);
             }
             if (this.PostBuildCommands.Count > 0)
             {
                 var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PostBuild);
-                preBuildGroup.AddSetting("Command", this.PostBuildCommands.ToString(System.Environment.NewLine));
+                preBuildGroup.AddSetting(
+                    "Command",
+                    this.PostBuildCommands.ToString(System.Environment.NewLine),
+                    this
+                );
                 preBuildGroup.Serialize(document, itemDefnGroup);
             }
+        }
+
+        public string
+        ToRelativePath(
+            Bam.Core.TokenizedString path)
+        {
+            // TODO: in C#7 use a local function to yield return an IEnumerable with the single value
+            return this.ToRelativePaths(new[] { path });
+        }
+
+        public string
+        ToRelativePaths(
+            Bam.Core.TokenizedStringArray paths)
+        {
+            return ToRelativePaths(paths.ToEnumerableWithoutDuplicates());
+        }
+
+        public string
+        ToRelativePaths(
+            System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> paths)
+        {
+            var programFiles = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
+            var programFilesX86 = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
+
+            var distinct_source_paths = paths.Distinct();
+            var output_paths = new Bam.Core.StringArray();
+            foreach (var path in distinct_source_paths)
+            {
+                var pathString = path.ToString();
+                if (pathString.StartsWith(programFiles) || pathString.StartsWith(programFilesX86))
+                {
+                    output_paths.Add(pathString);
+                    continue;
+                }
+                var relative = Bam.Core.RelativePathUtilities.GetPath(pathString, this.Project.ProjectPath);
+                if (!Bam.Core.RelativePathUtilities.IsPathAbsolute(relative))
+                {
+                    output_paths.Add(System.String.Format("$(ProjectDir){0}", relative));
+                }
+            }
+            return output_paths.ToString(';');
         }
     }
 }

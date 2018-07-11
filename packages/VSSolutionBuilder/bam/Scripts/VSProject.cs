@@ -146,67 +146,73 @@ namespace VSSolutionBuilder
 
         private void
         AddToFilter(
-            VSSettingsGroup group)
+            VSSettingsGroup group,
+            VSProjectConfiguration config)
         {
             lock (this.Filter)
             {
-                this.Filter.AddFile(group);
+                this.Filter.AddFile(group, config);
             }
         }
 
         public void
         AddHeader(
-            VSSettingsGroup header)
+            VSSettingsGroup header,
+            VSProjectConfiguration config)
         {
             lock (this.Headers)
             {
                 this.Headers.AddUnique(header);
             }
-            AddToFilter(header);
+            AddToFilter(header, config);
         }
 
         public void
         AddSource(
-            VSSettingsGroup source)
+            VSSettingsGroup source,
+            VSProjectConfiguration config)
         {
             lock (this.Sources)
             {
                 this.Sources.AddUnique(source);
             }
-            AddToFilter(source);
+            AddToFilter(source, config);
         }
 
         public void
         AddOtherFile(
-            VSSettingsGroup other)
+            VSSettingsGroup other,
+            VSProjectConfiguration config)
         {
             lock (this.Others)
             {
                 this.Others.AddUnique(other);
             }
-            AddToFilter(other);
+            AddToFilter(other, config);
         }
 
         public void
         AddResourceFile(
-            VSSettingsGroup other)
+            VSSettingsGroup other,
+            VSProjectConfiguration config)
         {
             lock (this.Resources)
             {
                 this.Resources.AddUnique(other);
             }
-            AddToFilter(other);
+            AddToFilter(other, config);
         }
 
         public void
         AddAssemblyFile(
-            VSSettingsGroup other)
+            VSSettingsGroup other,
+            VSProjectConfiguration config)
         {
             lock (this.AssemblyFiles)
             {
                 this.AssemblyFiles.AddUnique(other);
             }
-            AddToFilter(other);
+            AddToFilter(other, config);
         }
 
         public void
@@ -455,7 +461,12 @@ namespace VSSolutionBuilder
                     {
                         if (!config.Value.ContainsSource(group))
                         {
-                            group.AddSetting("ExcludedFromBuild", "true", config.Value.ConditionText);
+                            group.AddSetting(
+                                "ExcludedFromBuild",
+                                "true",
+                                config.Value,
+                                config.Value.ConditionText
+                            );
                         }
                     }
                     group.Serialize(document, sourcesGroup);
@@ -470,7 +481,12 @@ namespace VSSolutionBuilder
                     {
                         if (!config.Value.ContainsHeader(group))
                         {
-                            group.AddSetting("ExcludedFromBuild", "true", config.Value.ConditionText);
+                            group.AddSetting(
+                                "ExcludedFromBuild",
+                                "true",
+                                config.Value,
+                                config.Value.ConditionText
+                            );
                         }
                     }
                     group.Serialize(document, headersGroup);
@@ -493,7 +509,12 @@ namespace VSSolutionBuilder
                     {
                         if (!config.Value.ContainsResourceFile(group))
                         {
-                            group.AddSetting("ExcludedFromBuild", "true", config.Value.ConditionText);
+                            group.AddSetting(
+                                "ExcludedFromBuild",
+                                "true",
+                                config.Value,
+                                config.Value.ConditionText
+                            );
                         }
                     }
                     group.Serialize(document, resourceGroup);
@@ -508,7 +529,12 @@ namespace VSSolutionBuilder
                     {
                         if (!config.Value.ContainsAssemblyFile(group))
                         {
-                            group.AddSetting("ExcludedFromBuild", "true", config.Value.ConditionText);
+                            group.AddSetting(
+                                "ExcludedFromBuild",
+                                "true",
+                                config.Value,
+                                config.Value.ConditionText
+                            );
                         }
                     }
                     group.Serialize(document, assemblerGroup);
