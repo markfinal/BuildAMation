@@ -753,38 +753,55 @@ namespace VSSolutionBuilder
                 }
 
                 // get relative paths to interesting macros
+                // KEY=macro, VALUE=original path
                 // projects without output, e.g. headerlibrary projects, will not have a valid OutputDirectory property
-                var relative_to_output_dir = (this.OutputDirectory != null) ? Bam.Core.RelativePathUtilities.GetPath(path, this.OutputDirectory.ToString()) : null;
-                var relative_to_project_path = Bam.Core.RelativePathUtilities.GetPath(path, this.Project.ProjectPath);
-
-                var relative_to_output_dir_valid = !System.String.IsNullOrEmpty(relative_to_output_dir) && !Bam.Core.RelativePathUtilities.IsPathAbsolute(relative_to_output_dir);
-                var relative_to_project_path_valid = !System.String.IsNullOrEmpty(relative_to_project_path) && !Bam.Core.RelativePathUtilities.IsPathAbsolute(relative_to_project_path);
-
-                // determine which one to use
-                if (relative_to_output_dir_valid && relative_to_project_path_valid)
+                var mapping = new System.Collections.Generic.Dictionary<string, string>();
+                mapping.Add("$(ProjectDir)", this.Project.ProjectPath);
+                if (null != this.OutputDirectory)
                 {
-                    // both are relative, and valid, use the shorter
-                    if (relative_to_project_path.Length <= relative_to_output_dir.Length)
+                    mapping.Add("$(OutDir)", this.OutputDirectory.ToString());
+                }
+
+                System.Collections.Generic.KeyValuePair<string, string> candidate = default(System.Collections.Generic.KeyValuePair<string, string>);
+                foreach (var item in mapping)
+                {
+                    var relative_path = Bam.Core.RelativePathUtilities.GetPath(path, item.Value);
+                    if (System.String.IsNullOrEmpty(relative_path))
                     {
-                        output_paths.Add(System.String.Format("$(ProjectDir){0}", relative_to_project_path));
+                        continue;
+                    }
+                    if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relative_path))
+                    {
+                        continue;
+                    }
+                    if (null == candidate.Key)
+                    {
+                        candidate = new System.Collections.Generic.KeyValuePair<string, string>(item.Key, relative_path);
                     }
                     else
                     {
-                        output_paths.Add(System.String.Format("$(OutDir){0}", relative_to_output_dir));
+                        // already a candidate, use the shorter of that and the current option
+                        if (relative_path.Length <= candidate.Value.Length)
+                        {
+                            candidate = new System.Collections.Generic.KeyValuePair<string, string>(item.Key, relative_path);
+                        }
                     }
                 }
-                else if (relative_to_project_path_valid)
+                if (null == candidate.Key)
                 {
-                    output_paths.Add(System.String.Format("$(ProjectDir){0}", relative_to_project_path));
-                }
-                else if (relative_to_output_dir_valid)
-                {
-                    output_paths.Add(System.String.Format("$(OutDir){0}", relative_to_output_dir));
+                    // no candidate, use original path
+                    output_paths.Add(path);
                 }
                 else
                 {
-                    // fall back to original path
-                    output_paths.Add(path);
+                    // prefix the relative path with the VS macro
+                    output_paths.Add(
+                        System.String.Format(
+                            "{0}{1}",
+                            candidate.Key,
+                            candidate.Value
+                        )
+                    );
                 }
             }
             return output_paths.ToString(';');
