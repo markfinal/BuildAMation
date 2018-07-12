@@ -637,7 +637,7 @@ namespace VSSolutionBuilder
             {
                 document.CreateVSElement(
                     "OutDir",
-                    value: this.ToRelativePath(this.OutputDirectory),
+                    value: this.ToRelativePath(this.OutputDirectory, isOutputDir: true),
                     parentEl: propGroup
                 );
 
@@ -673,7 +673,7 @@ namespace VSSolutionBuilder
             {
                 document.CreateVSElement(
                     "IntDir",
-                    value: @"$(ProjectDir)\$(ProjectName)\$(Configuration)\",
+                    value: @"$(ProjectDir)$(ProjectName)\$(Configuration)\",
                     parentEl: propGroup);
             }
             document.CreateVSElement("GenerateManifest", value: this.EnableManifest.ToString().ToLower(), parentEl: propGroup);
@@ -725,10 +725,14 @@ namespace VSSolutionBuilder
 
         public string
         ToRelativePath(
-            Bam.Core.TokenizedString path)
+            Bam.Core.TokenizedString path,
+            bool isOutputDir = false)
         {
             // TODO: in C#7 use a local function to yield return an IEnumerable with the single value
-            return this.ToRelativePaths(new[] { path.ToString() });
+            return this.ToRelativePaths(
+                new[] { path.ToString() },
+                isOutputDir: isOutputDir
+            );
         }
 
         public string
@@ -740,7 +744,8 @@ namespace VSSolutionBuilder
 
         public string
         ToRelativePaths(
-            System.Collections.Generic.IEnumerable<string> paths)
+            System.Collections.Generic.IEnumerable<string> paths,
+            bool isOutputDir = false)
         {
             var programFiles = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
             var programFilesX86 = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
@@ -764,11 +769,12 @@ namespace VSSolutionBuilder
                 // projects without output, e.g. headerlibrary projects, will not have a valid OutputDirectory property
                 var mapping = new System.Collections.Generic.Dictionary<string, string>();
                 mapping.Add("$(ProjectDir)", this.Project.ProjectPath);
-                if (null != this.OutputDirectory)
+                if (null != this.OutputDirectory && !isOutputDir)
                 {
                     mapping.Add("$(OutDir)", this.OutputDirectory.ToString());
                 }
-                if (null != this.IntermediateDirectory)
+                // cannot generate the OutDir in terms of the IntDir
+                if (null != this.IntermediateDirectory && !isOutputDir)
                 {
                     mapping.Add("$(IntDir)", this.IntermediateDirectory.ToString());
                 }
