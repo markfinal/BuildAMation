@@ -73,6 +73,7 @@ namespace C.DefaultSettings
             this C.ICommonHasOutputPath shared,
             C.ICommonHasOutputPath other)
         {
+            shared.OutputPath = shared.OutputPath.Equals(other.OutputPath) ? shared.OutputPath : null;
         }
 
         public static void
@@ -81,6 +82,7 @@ namespace C.DefaultSettings
             C.ICommonHasOutputPath lhs,
             C.ICommonHasOutputPath rhs)
         {
+            delta.OutputPath = !lhs.OutputPath.Equals(rhs.OutputPath) ? lhs.OutputPath : null;
         }
 
         public static void
@@ -88,6 +90,7 @@ namespace C.DefaultSettings
             this C.ICommonHasOutputPath settings,
             C.ICommonHasOutputPath other)
         {
+            settings.OutputPath = other.OutputPath;
         }
     }
 }

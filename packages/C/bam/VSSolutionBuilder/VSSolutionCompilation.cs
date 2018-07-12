@@ -66,6 +66,7 @@ namespace C
                 uniqueToProject: true
             );
 
+#if false
             // must specify an ObjectFileName, in case two source files have the same leafname
             // which would then map to the same output file without intervention
             // note that this doesn't seem to work for assembly files - results in weird errors
@@ -81,6 +82,7 @@ namespace C
                     "$(IntDir)" + intDir.ToString()
                 );
             }
+#endif
 
             if (!module.PerformCompilation)
             {

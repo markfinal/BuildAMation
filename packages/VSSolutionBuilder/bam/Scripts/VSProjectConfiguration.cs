@@ -186,7 +186,7 @@ namespace VSSolutionBuilder
             set;
         }
 
-        private string IntermediateDirectory
+        private Bam.Core.TokenizedString IntermediateDirectory
         {
             get;
             set;
@@ -319,7 +319,11 @@ namespace VSSolutionBuilder
         public void
         EnableIntermediatePath()
         {
-            this.IntermediateDirectory = @"$(ProjectDir)\$(ProjectName)\$(Configuration)\";
+            this.IntermediateDirectory = Bam.Core.TokenizedString.Create(
+                "$(packagebuilddir)/$(moduleoutputdir)/",
+                this.Module
+            );
+            this.IntermediateDirectory.Parse();
         }
 
         public bool EnableManifest
@@ -667,7 +671,10 @@ namespace VSSolutionBuilder
 #endif
             if (null != this.IntermediateDirectory)
             {
-                document.CreateVSElement("IntDir", value: this.IntermediateDirectory, parentEl: propGroup);
+                document.CreateVSElement(
+                    "IntDir",
+                    value: @"$(ProjectDir)\$(ProjectName)\$(Configuration)\",
+                    parentEl: propGroup);
             }
             document.CreateVSElement("GenerateManifest", value: this.EnableManifest.ToString().ToLower(), parentEl: propGroup);
         }
@@ -760,6 +767,10 @@ namespace VSSolutionBuilder
                 if (null != this.OutputDirectory)
                 {
                     mapping.Add("$(OutDir)", this.OutputDirectory.ToString());
+                }
+                if (null != this.IntermediateDirectory)
+                {
+                    mapping.Add("$(IntDir)", this.IntermediateDirectory.ToString());
                 }
 
                 System.Collections.Generic.KeyValuePair<string, string> candidate = default(System.Collections.Generic.KeyValuePair<string, string>);

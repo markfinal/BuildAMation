@@ -102,7 +102,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-Fo")]
-        [VisualStudioProcessor.Path("", ignored: true)]
+        [VisualStudioProcessor.Path("ObjectFileName")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
