@@ -38,6 +38,7 @@ namespace ClangCommon
         XcodeProjectProcessor.IConvertToProject,
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
+        C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonCompilerSettings,
         C.ICommonCompilerSettingsOSX,
         C.IAdditionalSettings,
@@ -88,9 +89,18 @@ namespace ClangCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.Path("-o ")]
+        [CommandLineProcessor.Path("-c -o ")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-E -o ")]
+#endif
+        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
         {
             get;
             set;
@@ -128,18 +138,6 @@ namespace ClangCommon
         [CommandLineProcessor.PathArray("-I")]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Enum(C.ECompilerOutput.CompileOnly, "-c")]
-        [CommandLineProcessor.Enum(C.ECompilerOutput.Preprocess, "-E")]
-        [XcodeProjectProcessor.Enum(C.ECompilerOutput.CompileOnly, "")]
-        [XcodeProjectProcessor.Enum(C.ECompilerOutput.Preprocess, "")]
-#endif
-        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
             get;
             set;
@@ -320,6 +318,14 @@ namespace ClangCommon
             {
                 throw new Bam.Core.Exception(
                     "Compiler specific optimizations can only be set when the common optimization is C.EOptimization.Custom"
+                );
+            }
+
+            if (((this as C.ICommonHasOutputPath).OutputPath != null) &&
+                ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
+            {
+                throw new Bam.Core.Exception(
+                    "Both output and preprocessed output paths cannot be set"
                 );
             }
         }

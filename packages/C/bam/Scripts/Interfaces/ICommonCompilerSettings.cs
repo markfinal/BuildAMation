@@ -78,16 +78,6 @@ namespace C
         }
 
         /// <summary>
-        /// Define what output the compiler generates.
-        /// </summary>
-        /// <value>The type of the output.</value>
-        C.ECompilerOutput? OutputType
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Compile with debug symbols.
         /// </summary>
         /// <value>The debug symbols.</value>

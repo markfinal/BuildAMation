@@ -27,21 +27,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-namespace C.DefaultSettings
+namespace C
 {
-    public static partial class DefaultSettingsExtensions
+    /// <summary>
+    /// Common interface that specifies that the preprocessed output path is available.
+    /// Generally, this preprocessed path is a view onto the real preprocessed path, which is
+    /// set by other means.
+    /// preprocessed output paths are sometimes required to be the penultimate item on the command
+    /// line, following all other options, and only followed by source paths.
+    /// </summary>
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
+    [Bam.Core.SettingsPrecedence(System.Int32.MinValue + 2)]
+    public interface ICommonHasCompilerPreprocessedOutputPath :
+        Bam.Core.ISettingsBase
     {
-        public static void
-        Defaults(
-            this C.ICommonAssemblerSettings settings,
-            Bam.Core.Module module)
+        /// <summary>
+        /// Path to the preprocessed output file.
+        /// Automatically set by package code. DO NOT set this path in a patch.
+        /// </summary>
+        Bam.Core.TokenizedString PreprocessedOutputPath
         {
-            settings.Bits = (module as CModule).BitDepth;
-            settings.DebugSymbols = (0 != (module.BuildEnvironment.Configuration & (Bam.Core.EConfiguration.Debug | Bam.Core.EConfiguration.Profile)));
-            settings.WarningsAsErrors = true;
-            settings.IncludePaths = new Bam.Core.TokenizedStringArray();
-            settings.PreprocessorDefines = new PreprocessorDefinitions();
+            get;
+            set;
         }
     }
 }

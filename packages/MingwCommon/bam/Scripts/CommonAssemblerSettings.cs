@@ -36,6 +36,7 @@ namespace MingwCommon
         CommandLineProcessor.IConvertToCommandLine,
 #endif
         C.ICommonHasOutputPath,
+        C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonHasSourcePath,
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
@@ -58,9 +59,18 @@ namespace MingwCommon
 #endif
 
 #if BAM_V2
-        [CommandLineProcessor.Path("-o ")]
+        [CommandLineProcessor.Path("-c -o ")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-E -o ")]
+#endif
+        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
         {
             get;
             set;
@@ -89,16 +99,6 @@ namespace MingwCommon
         [CommandLineProcessor.Bool("-g", "")]
 #endif
         bool C.ICommonAssemblerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Enum(C.ECompilerOutput.CompileOnly, "-c")]
-        [CommandLineProcessor.Enum(C.ECompilerOutput.Preprocess, "-E")]
-#endif
-        C.ECompilerOutput C.ICommonAssemblerSettings.OutputType
         {
             get;
             set;
@@ -138,6 +138,20 @@ namespace MingwCommon
         {
             get;
             set;
+        }
+
+        public override void
+        Validate()
+        {
+            base.Validate();
+
+            if (((this as C.ICommonHasOutputPath).OutputPath != null) &&
+                ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
+            {
+                throw new Bam.Core.Exception(
+                    "Both output and preprocessed output paths cannot be set"
+                );
+            }
         }
     }
 }

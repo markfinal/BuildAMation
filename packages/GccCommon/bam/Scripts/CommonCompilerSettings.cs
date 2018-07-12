@@ -37,6 +37,7 @@ namespace GccCommon
 #endif
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
+        C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonCompilerSettings,
         C.IAdditionalSettings,
         ICommonCompilerSettings
@@ -74,9 +75,18 @@ namespace GccCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.Path("-o ")]
+        [CommandLineProcessor.Path("-c -o ")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-E -o ")]
+#endif
+        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
         {
             get;
             set;
@@ -114,16 +124,6 @@ namespace GccCommon
         [CommandLineProcessor.PathArray("-I")]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Enum(C.ECompilerOutput.CompileOnly, "-c")]
-        [CommandLineProcessor.Enum(C.ECompilerOutput.Preprocess, "-E")]
-#endif
-        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
             get;
             set;
@@ -287,11 +287,20 @@ namespace GccCommon
         Validate()
         {
             base.Validate();
+
             if ((this as ICommonCompilerSettings).Optimization.HasValue &&
                 (this as C.ICommonCompilerSettings).Optimization != C.EOptimization.Custom)
             {
                 throw new Bam.Core.Exception(
                     "Compiler specific optimizations can only be set when the common optimization is C.EOptimization.Custom"
+                );
+            }
+
+            if (((this as C.ICommonHasOutputPath).OutputPath != null) &&
+                ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
+            {
+                throw new Bam.Core.Exception(
+                    "Both output and preprocessed output paths cannot be set"
                 );
             }
         }

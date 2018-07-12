@@ -39,6 +39,7 @@ namespace VisualCCommon
 #endif
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
+        C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
         C.IAdditionalSettings,
@@ -101,10 +102,20 @@ namespace VisualCCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.Path("-Fo")]
+        [CommandLineProcessor.Path("-c -Fo")]
         [VisualStudioProcessor.Path("ObjectFileName")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-E -Fo")]
+        [VisualStudioProcessor.Path("PreprocessToFile")]
+#endif
+        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
         {
             get;
             set;
@@ -146,18 +157,6 @@ namespace VisualCCommon
         [VisualStudioProcessor.PathArray("AdditionalIncludeDirectories", inheritExisting: true)]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Enum(C.ECompilerOutput.CompileOnly, "-c")]
-        [CommandLineProcessor.Enum(C.ECompilerOutput.Preprocess, "-E")]
-        [VisualStudioProcessor.Enum(C.ECompilerOutput.CompileOnly, "ObjectFileName", VisualStudioProcessor.EnumAttribute.EMode.Empty)]
-        [VisualStudioProcessor.Enum(C.ECompilerOutput.Preprocess, "PreprocessToFile", VisualStudioProcessor.EnumAttribute.EMode.Empty)]
-#endif
-        C.ECompilerOutput? C.ICommonCompilerSettings.OutputType
         {
             get;
             set;
@@ -340,11 +339,20 @@ namespace VisualCCommon
         Validate()
         {
             base.Validate();
+
             if ((this as ICommonCompilerSettings).Optimization.HasValue &&
                 (this as C.ICommonCompilerSettings).Optimization != C.EOptimization.Custom)
             {
                 throw new Bam.Core.Exception(
                     "Compiler specific optimizations can only be set when the common optimization is C.EOptimization.Custom"
+                );
+            }
+
+            if (((this as C.ICommonHasOutputPath).OutputPath != null) &&
+                ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
+            {
+                throw new Bam.Core.Exception(
+                    "Both output and preprocessed output paths cannot be set"
                 );
             }
         }

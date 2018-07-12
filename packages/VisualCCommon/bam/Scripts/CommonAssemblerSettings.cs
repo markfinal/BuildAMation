@@ -37,6 +37,7 @@ namespace VisualCCommon
         VisualStudioProcessor.IConvertToProject,
 #endif
         C.ICommonHasOutputPath,
+        C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonHasSourcePath,
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
@@ -68,10 +69,20 @@ namespace VisualCCommon
 #endif
 
 #if BAM_V2
-        [CommandLineProcessor.Path("-Fo")]
-        [VisualStudioProcessor.Path("", ignored: true)]
+        [CommandLineProcessor.Path("-c -Fo")]
+        [VisualStudioProcessor.Path("GeneratePreprocessedSourceListing")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-E -Fo")]
+        [VisualStudioProcessor.Path("GeneratePreprocessedSourceListing")]
+#endif
+        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
         {
             get;
             set;
@@ -103,18 +114,6 @@ namespace VisualCCommon
         [VisualStudioProcessor.Bool("GenerateDebugInformation")]
 #endif
         bool C.ICommonAssemblerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Enum(C.ECompilerOutput.CompileOnly, "-c")]
-        [CommandLineProcessor.Enum(C.ECompilerOutput.Preprocess, "-E")]
-        [VisualStudioProcessor.Enum(C.ECompilerOutput.CompileOnly, "GeneratePreprocessedSourceListing", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "false")]
-        [VisualStudioProcessor.Enum(C.ECompilerOutput.Preprocess, "GeneratePreprocessedSourceListing", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "true")]
-#endif
-        C.ECompilerOutput C.ICommonAssemblerSettings.OutputType
         {
             get;
             set;
@@ -207,6 +206,14 @@ namespace VisualCCommon
                 {
                     throw new Bam.Core.Exception("Safe exception handlers are only valid in 32-bit");
                 }
+            }
+
+            if (((this as C.ICommonHasOutputPath).OutputPath != null) &&
+                ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
+            {
+                throw new Bam.Core.Exception(
+                    "Both output and preprocessed output paths cannot be set"
+                );
             }
         }
     }

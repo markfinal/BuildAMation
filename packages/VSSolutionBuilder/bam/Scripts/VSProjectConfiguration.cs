@@ -320,7 +320,7 @@ namespace VSSolutionBuilder
         EnableIntermediatePath()
         {
             this.IntermediateDirectory = Bam.Core.TokenizedString.Create(
-                "$(packagebuilddir)/$(moduleoutputdir)/",
+                "$(packagebuilddir)/$(encapsulatingmodulename)/$(config)/",
                 this.Module
             );
             this.IntermediateDirectory.Parse();
