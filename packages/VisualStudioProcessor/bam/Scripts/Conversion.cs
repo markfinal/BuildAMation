@@ -259,40 +259,36 @@ namespace VisualStudioProcessor
             VSSolutionBuilder.VSProjectConfiguration vsConfig,
             string condition = null)
         {
-            var commandLine = new Bam.Core.StringArray();
-            Bam.Core.Log.MessageAll("Module: {0}", module.ToString());
-            Bam.Core.Log.MessageAll("Settings {0}", settings.ToString());
             foreach (var settings_interface in settings.Interfaces())
             {
-                Bam.Core.Log.MessageAll(settings_interface.ToString());
                 foreach (var interface_property in settings_interface.GetProperties())
                 {
                     // must use the fully qualified property name from the originating interface
                     // to look for the instance in the concrete settings class
                     // this is to allow for the same property leafname to appear in multiple interfaces
-                    var full_property_interface_name = System.String.Join(".", new[] { interface_property.DeclaringType.FullName, interface_property.Name });
+                    var full_property_interface_name = System.String.Join(
+                        ".",
+                        new[] { interface_property.DeclaringType.FullName, interface_property.Name }
+                    );
                     var value_settings_property = settings.Properties.First(
                         item => full_property_interface_name == item.Name
                     );
                     var property_value = value_settings_property.GetValue(settings);
+                    if (null == property_value)
+                    {
+                        continue;
+                    }
                     var attribute_settings_property = Bam.Core.Settings.FindProperties(real_settings_type).First(
                         item => full_property_interface_name == item.Name
                     );
-                    Bam.Core.Log.MessageAll("\t{0}", attribute_settings_property.ToString());
                     var attributeArray = attribute_settings_property.GetCustomAttributes(typeof(BaseAttribute), false);
                     if (!attributeArray.Any())
                     {
-                        Bam.Core.Log.MessageAll("\t\tNo attrs");
                         throw new Bam.Core.Exception(
-                            "No attributes for property {0} in module {1}",
+                            "No VisualStudioProcessor attributes for property {0} in module {1}",
                             full_property_interface_name,
                             module.ToString()
                         );
-                    }
-                    if (null == property_value)
-                    {
-                        // TODO: move to earlier
-                        continue;
                     }
                     if (attributeArray.First() is EnumAttribute)
                     {
@@ -300,7 +296,10 @@ namespace VisualStudioProcessor
                             item => (item as EnumAttribute).Key.Equals(property_value)) as EnumAttribute;
                         if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
                         {
-                            throw new Bam.Core.Exception("Unable to use property target, {0}", associated_attribute.Target.ToString());
+                            throw new Bam.Core.Exception(
+                                "Unable to use property target, {0}",
+                                associated_attribute.Target.ToString()
+                            );
                         }
                         System.Diagnostics.Debug.Assert(!associated_attribute.InheritExisting);
                         switch (associated_attribute.Mode)
@@ -324,7 +323,11 @@ namespace VisualStudioProcessor
                             case EnumAttribute.EMode.AsIntegerWithPrefix:
                                 vsSettingsGroup.AddSetting(
                                     associated_attribute.Property,
-                                    System.String.Format("{0}{1}", associated_attribute.Prefix, ((int)property_value).ToString("D")),
+                                    System.String.Format(
+                                        "{0}{1}",
+                                        associated_attribute.Prefix,
+                                        ((int)property_value).ToString("D")
+                                    ),
                                     condition: condition
                                 );
                                 break;
@@ -349,7 +352,10 @@ namespace VisualStudioProcessor
                                 break;
 
                             default:
-                                throw new Bam.Core.Exception("Unhandled enum mode, {0}", associated_attribute.Mode.ToString());
+                                throw new Bam.Core.Exception(
+                                    "Unhandled enum mode, {0}",
+                                    associated_attribute.Mode.ToString()
+                                );
                         }
                     }
                     else if (attributeArray.First() is PathAttribute)
@@ -357,7 +363,10 @@ namespace VisualStudioProcessor
                         var associated_attribute = attributeArray.First() as PathAttribute;
                         if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
                         {
-                            throw new Bam.Core.Exception("Unable to use property target, {0}", associated_attribute.Target.ToString());
+                            throw new Bam.Core.Exception(
+                                "Unable to use property target, {0}",
+                                associated_attribute.Target.ToString()
+                            );
                         }
 
                         if (associated_attribute.Ignored)
@@ -389,7 +398,10 @@ namespace VisualStudioProcessor
                         var associated_attribute = attributeArray.First() as BaseAttribute;
                         if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
                         {
-                            throw new Bam.Core.Exception("Unable to use property target, {0}", associated_attribute.Target.ToString());
+                            throw new Bam.Core.Exception(
+                                "Unable to use property target, {0}",
+                                associated_attribute.Target.ToString()
+                            );
                         }
                         vsSettingsGroup.AddSetting(
                             associated_attribute.Property,
@@ -408,7 +420,10 @@ namespace VisualStudioProcessor
                         var associated_attribute = attributeArray.First() as BaseAttribute;
                         if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
                         {
-                            throw new Bam.Core.Exception("Unable to use property target, {0}", associated_attribute.Target.ToString());
+                            throw new Bam.Core.Exception(
+                                "Unable to use property target, {0}",
+                                associated_attribute.Target.ToString()
+                            );
                         }
                         vsSettingsGroup.AddSetting(
                             associated_attribute.Property,
@@ -469,7 +484,10 @@ namespace VisualStudioProcessor
                         var associated_attribute = attributeArray.First() as BaseAttribute;
                         if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
                         {
-                            throw new Bam.Core.Exception("Unable to use property target, {0}", associated_attribute.Target.ToString());
+                            throw new Bam.Core.Exception(
+                                "Unable to use property target, {0}",
+                                associated_attribute.Target.ToString()
+                            );
                         }
                         vsSettingsGroup.AddSetting(
                             associated_attribute.Property,
