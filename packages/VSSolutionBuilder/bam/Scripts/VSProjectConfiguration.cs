@@ -753,7 +753,8 @@ namespace VSSolutionBuilder
                 }
 
                 // get relative paths to interesting macros
-                var relative_to_output_dir = Bam.Core.RelativePathUtilities.GetPath(path, this.OutputDirectory.ToString());
+                // projects without output, e.g. headerlibrary projects, will not have a valid OutputDirectory property
+                var relative_to_output_dir = (this.OutputDirectory != null) ? Bam.Core.RelativePathUtilities.GetPath(path, this.OutputDirectory.ToString()) : null;
                 var relative_to_project_path = Bam.Core.RelativePathUtilities.GetPath(path, this.Project.ProjectPath);
 
                 var relative_to_output_dir_valid = !System.String.IsNullOrEmpty(relative_to_output_dir) && !Bam.Core.RelativePathUtilities.IsPathAbsolute(relative_to_output_dir);
