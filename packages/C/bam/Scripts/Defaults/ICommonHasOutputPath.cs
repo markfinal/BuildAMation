@@ -93,6 +93,14 @@ namespace C.DefaultSettings
             {
                 delta.OutputPath = !lhs.OutputPath.Equals(rhs.OutputPath) ? lhs.OutputPath : null;
             }
+            else if (null != lhs.OutputPath)
+            {
+                delta.OutputPath = lhs.OutputPath;
+            }
+            else if (null != rhs.OutputPath)
+            {
+                delta.OutputPath = rhs.OutputPath;
+            }
             else
             {
                 delta.OutputPath = null;

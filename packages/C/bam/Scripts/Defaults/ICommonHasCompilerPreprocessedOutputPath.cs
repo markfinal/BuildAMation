@@ -81,9 +81,17 @@ namespace C.DefaultSettings
             C.ICommonHasCompilerPreprocessedOutputPath lhs,
             C.ICommonHasCompilerPreprocessedOutputPath rhs)
         {
-            if (lhs.PreprocessedOutputPath != null && rhs.PreprocessedOutputPath != null)
+            if (null != lhs.PreprocessedOutputPath && null != rhs.PreprocessedOutputPath)
             {
                 delta.PreprocessedOutputPath = !lhs.PreprocessedOutputPath.Equals(rhs.PreprocessedOutputPath) ? lhs.PreprocessedOutputPath : null;
+            }
+            else if (null != lhs.PreprocessedOutputPath)
+            {
+                delta.PreprocessedOutputPath = lhs.PreprocessedOutputPath;
+            }
+            else if (null != rhs.PreprocessedOutputPath)
+            {
+                delta.PreprocessedOutputPath = rhs.PreprocessedOutputPath;
             }
             else
             {
