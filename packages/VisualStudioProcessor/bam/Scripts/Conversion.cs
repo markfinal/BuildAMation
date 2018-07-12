@@ -309,7 +309,7 @@ namespace VisualStudioProcessor
                                 vsSettingsGroup.AddSetting(
                                     associated_attribute.Property,
                                     property_value.ToString(),
-                                    condition
+                                    condition: condition
                                 );
                                 break;
 
@@ -317,7 +317,7 @@ namespace VisualStudioProcessor
                                 vsSettingsGroup.AddSetting(
                                     associated_attribute.Property,
                                     ((int)property_value).ToString("D"),
-                                    condition
+                                    condition: condition
                                 );
                                 break;
 
@@ -325,7 +325,7 @@ namespace VisualStudioProcessor
                                 vsSettingsGroup.AddSetting(
                                     associated_attribute.Property,
                                     System.String.Format("{0}{1}", associated_attribute.Prefix, ((int)property_value).ToString("D")),
-                                    condition
+                                    condition: condition
                                 );
                                 break;
 
@@ -333,7 +333,7 @@ namespace VisualStudioProcessor
                                 vsSettingsGroup.AddSetting(
                                     associated_attribute.Property,
                                     associated_attribute.VerbatimString,
-                                    condition
+                                    condition: condition
                                 );
                                 break;
 
@@ -341,7 +341,7 @@ namespace VisualStudioProcessor
                                 vsSettingsGroup.AddSetting(
                                     associated_attribute.Property,
                                     "",
-                                    condition
+                                    condition: condition
                                 );
                                 break;
 
@@ -370,7 +370,8 @@ namespace VisualStudioProcessor
                         vsSettingsGroup.AddSetting(
                             associated_attribute.Property,
                             property_value as Bam.Core.TokenizedString,
-                            condition
+                            condition: condition,
+                            isPath: true
                         );
 
                         var prop = vsConfig.GetType().GetProperty(associated_attribute.Property);
@@ -393,7 +394,7 @@ namespace VisualStudioProcessor
                         vsSettingsGroup.AddSetting(
                             associated_attribute.Property,
                             property_value as Bam.Core.TokenizedStringArray,
-                            condition,
+                            condition: condition,
                             inheritExisting: associated_attribute.InheritExisting,
                             arePaths: true
                         );
@@ -412,7 +413,7 @@ namespace VisualStudioProcessor
                         vsSettingsGroup.AddSetting(
                             associated_attribute.Property,
                             property_value as Bam.Core.StringArray,
-                            condition,
+                            condition: condition,
                             inheritExisting: associated_attribute.InheritExisting
                         );
                     }
@@ -431,7 +432,7 @@ namespace VisualStudioProcessor
                                 vsSettingsGroup.AddSetting(
                                     associated_attribute.Property,
                                     value,
-                                    condition
+                                    condition: condition
                                 );
                             }
                             else
@@ -439,7 +440,7 @@ namespace VisualStudioProcessor
                                 vsSettingsGroup.AddSetting(
                                     associated_attribute.Property,
                                     value ? associated_attribute.Truth : associated_attribute.Falisy,
-                                    condition
+                                    condition: condition
                                 );
                             }
                         }
@@ -473,7 +474,7 @@ namespace VisualStudioProcessor
                         vsSettingsGroup.AddSetting(
                             associated_attribute.Property,
                             property_value as C.PreprocessorDefinitions,
-                            condition,
+                            condition: condition,
                             inheritExisting: associated_attribute.InheritExisting
                         );
                     }

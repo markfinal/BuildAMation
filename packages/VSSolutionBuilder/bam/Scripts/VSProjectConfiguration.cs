@@ -709,41 +709,81 @@ namespace VSSolutionBuilder
 
         public string
         ToRelativePath(
+            string joinedPaths)
+        {
+            var paths = joinedPaths.Split(new[] { ';' });
+            var relative_paths = this.ToRelativePaths(paths);
+            return System.String.Join(";", relative_paths);
+        }
+
+        public string
+        ToRelativePath(
             Bam.Core.TokenizedString path)
         {
             // TODO: in C#7 use a local function to yield return an IEnumerable with the single value
-            return this.ToRelativePaths(new[] { path });
+            return this.ToRelativePaths(new[] { path.ToString() });
         }
 
         public string
         ToRelativePaths(
             Bam.Core.TokenizedStringArray paths)
         {
-            return ToRelativePaths(paths.ToEnumerableWithoutDuplicates());
+            return ToRelativePaths(paths.ToEnumerableWithoutDuplicates().Select(item => item.ToString()));
         }
 
         public string
         ToRelativePaths(
-            System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> paths)
+            System.Collections.Generic.IEnumerable<string> paths)
         {
             var programFiles = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
             var programFilesX86 = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
 
             var distinct_source_paths = paths.Distinct();
             var output_paths = new Bam.Core.StringArray();
+            var invalid_chars = System.IO.Path.GetInvalidPathChars();
             foreach (var path in distinct_source_paths)
             {
-                var pathString = path.ToString();
-                if (pathString.StartsWith(programFiles) || pathString.StartsWith(programFilesX86))
+                if (path.IndexOfAny(invalid_chars) >= 0 || // speaks for itself
+                    path.StartsWith("%(") ||               // VS environment variable
+                    path.StartsWith(programFiles) ||       // special folders
+                    path.StartsWith(programFilesX86))
                 {
-                    output_paths.Add(pathString);
+                    output_paths.Add(path);
                     continue;
                 }
 
-                var relative = Bam.Core.RelativePathUtilities.GetPath(pathString, this.Project.ProjectPath);
-                if (!Bam.Core.RelativePathUtilities.IsPathAbsolute(relative))
+                // get relative paths to interesting macros
+                var relative_to_output_dir = Bam.Core.RelativePathUtilities.GetPath(path, this.OutputDirectory.ToString());
+                var relative_to_project_path = Bam.Core.RelativePathUtilities.GetPath(path, this.Project.ProjectPath);
+
+                var relative_to_output_dir_valid = !System.String.IsNullOrEmpty(relative_to_output_dir) && !Bam.Core.RelativePathUtilities.IsPathAbsolute(relative_to_output_dir);
+                var relative_to_project_path_valid = !System.String.IsNullOrEmpty(relative_to_project_path) && !Bam.Core.RelativePathUtilities.IsPathAbsolute(relative_to_project_path);
+
+                // determine which one to use
+                if (relative_to_output_dir_valid && relative_to_project_path_valid)
                 {
-                    output_paths.Add(System.String.Format("$(ProjectDir){0}", relative));
+                    // both are relative, and valid, use the shorter
+                    if (relative_to_project_path.Length <= relative_to_output_dir.Length)
+                    {
+                        output_paths.Add(System.String.Format("$(ProjectDir){0}", relative_to_project_path));
+                    }
+                    else
+                    {
+                        output_paths.Add(System.String.Format("$(OutDir){0}", relative_to_output_dir));
+                    }
+                }
+                else if (relative_to_project_path_valid)
+                {
+                    output_paths.Add(System.String.Format("$(ProjectDir){0}", relative_to_project_path));
+                }
+                else if (relative_to_output_dir_valid)
+                {
+                    output_paths.Add(System.String.Format("$(OutDir){0}", relative_to_output_dir));
+                }
+                else
+                {
+                    // fall back to original path
+                    output_paths.Add(path);
                 }
             }
             return output_paths.ToString(';');

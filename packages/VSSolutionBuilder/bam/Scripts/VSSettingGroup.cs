@@ -128,7 +128,14 @@ namespace VSSolutionBuilder
                     throw new Bam.Core.Exception("Cannot change the value of existing boolean option {0} to {1}", name, value);
                 }
 
-                this.Settings.AddUnique(new VSSetting(name, stringValue, condition));
+                this.Settings.AddUnique(
+                    new VSSetting(
+                        name,
+                        stringValue,
+                        false,
+                        condition: condition
+                    )
+                );
             }
         }
 
@@ -145,7 +152,14 @@ namespace VSSolutionBuilder
                     throw new Bam.Core.Exception("Cannot change the value of existing string option {0} to {1}", name, value);
                 }
 
-                this.Settings.AddUnique(new VSSetting(name, value, condition));
+                this.Settings.AddUnique(
+                    new VSSetting(
+                        name,
+                        value,
+                        false,
+                        condition: condition
+                    )
+                );
             }
         }
 
@@ -159,13 +173,20 @@ namespace VSSolutionBuilder
         {
             lock (this.Settings)
             {
-                var stringValue = isPath ? this.Configuration.ToRelativePath(path) : path.ToString();
+                var stringValue = path.ToString();
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != stringValue))
                 {
                     throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, path.ToString());
                 }
 
-                this.Settings.AddUnique(new VSSetting(name, stringValue, condition));
+                this.Settings.AddUnique(
+                    new VSSetting(
+                        name,
+                        stringValue,
+                        isPath: isPath,
+                        condition: condition
+                    )
+                );
             }
         }
 
@@ -200,7 +221,7 @@ namespace VSSolutionBuilder
                 {
                     return;
                 }
-                var linearized = arePaths ? this.Configuration.ToRelativePaths(value) : new Bam.Core.TokenizedStringArray(value.Distinct()).ToString(';');
+                var linearized = new Bam.Core.TokenizedStringArray(value.Distinct()).ToString(';');
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
                 {
                     var settingOption = this.Settings.First(item => item.Name == name && item.Condition == condition);
@@ -215,7 +236,14 @@ namespace VSSolutionBuilder
                         linearized);
                 }
 
-                this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized, condition));
+                this.Settings.AddUnique(
+                    new VSSetting(
+                        name,
+                        inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized,
+                        arePaths,
+                        condition
+                    )
+                );
             }
         }
 
@@ -247,7 +275,14 @@ namespace VSSolutionBuilder
                         linearized);
                 }
 
-                this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized, condition));
+                this.Settings.AddUnique(
+                    new VSSetting(
+                        name,
+                        inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized,
+                        false,
+                        condition
+                    )
+                );
             }
         }
 
@@ -270,7 +305,14 @@ namespace VSSolutionBuilder
                 }
 
                 var defString = definitions.ToString();
-                this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0}%({1})", defString, name) : defString, condition));
+                this.Settings.AddUnique(
+                    new VSSetting(
+                        name,
+                        inheritExisting ? System.String.Format("{0}%({1})", defString, name) : defString,
+                        false,
+                        condition
+                    )
+                );
             }
         }
 
@@ -323,17 +365,29 @@ namespace VSSolutionBuilder
             var group = document.CreateVSElement(this.GetGroupName(), parentEl: parentEl);
             if (null != this.Include)
             {
-                var rel_path = this.Project.GetConfiguration(this.Module).ToRelativePath(this.Include);
+                var rel_path = this.Configuration.ToRelativePath(this.Include);
                 group.SetAttribute("Include", rel_path);
             }
             foreach (var setting in this.Settings.OrderBy(pair => pair.Name))
             {
-                document.CreateVSElement(
-                    setting.Name,
-                    value: setting.Value,
-                    condition: setting.Condition,
-                    parentEl: group
-                );
+                if (setting.IsPath)
+                {
+                    document.CreateVSElement(
+                        setting.Name,
+                        value: this.Configuration.ToRelativePath(setting.Value),
+                        condition: setting.Condition,
+                        parentEl: group
+                    );
+                }
+                else
+                {
+                    document.CreateVSElement(
+                        setting.Name,
+                        value: setting.Value,
+                        condition: setting.Condition,
+                        parentEl: group
+                    );
+                }
             }
         }
     }
