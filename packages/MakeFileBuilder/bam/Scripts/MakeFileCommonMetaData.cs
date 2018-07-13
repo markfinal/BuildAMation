@@ -35,6 +35,9 @@ namespace MakeFileBuilder
     // A recipe is a collection of commands
     public sealed class MakeFileCommonMetaData
     {
+        // experimental
+        public static bool IsNMAKE = false;
+
         public MakeFileCommonMetaData()
         {
             this.Directories = new Bam.Core.StringArray();
@@ -81,7 +84,7 @@ namespace MakeFileBuilder
                     }
                     foreach (var path in env.Value)
                     {
-                        this.Environment[env.Key].AddUnique(path.ToString());
+                        this.Environment[env.Key].AddUnique(path.ToStringQuoteIfNecessary());
                     }
                 }
             }
@@ -113,8 +116,17 @@ namespace MakeFileBuilder
         {
             foreach (var env in this.Environment)
             {
-                output.AppendFormat("{0}:={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
-                output.AppendLine();
+                if (IsNMAKE)
+                {
+                    output.AppendFormat("{0} = {1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
+                    output.AppendLine();
+                    output.AppendLine();
+                }
+                else
+                {
+                    output.AppendFormat("{0}:={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
+                    output.AppendLine();
+                }
             }
         }
 
@@ -136,12 +148,23 @@ namespace MakeFileBuilder
                 // https://stackoverflow.com/questions/9838384/can-gnu-make-handle-filenames-with-spaces
                 Bam.Core.Log.ErrorMessage("WARNING: MakeFiles do not support spaces in pathnames.");
             }
-            output.Append("DIRS:=");
+            if (IsNMAKE)
+            {
+                output.Append("DIRS = ");
+            }
+            else
+            {
+                output.Append("DIRS:=");
+            }
             foreach (var dir in this.Directories)
             {
                 output.AppendFormat("{0} ", dir);
             }
             output.AppendLine();
+            if (IsNMAKE)
+            {
+                output.AppendLine();
+            }
         }
     }
 }

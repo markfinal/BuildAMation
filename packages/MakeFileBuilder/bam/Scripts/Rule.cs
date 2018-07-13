@@ -160,8 +160,17 @@ namespace MakeFileBuilder
                         target.Path.Parse();
                     }
                 }
-                variables.AppendFormat("{0}:={1}", name, target.Path.ToString());
-                variables.AppendLine();
+                if (MakeFileCommonMetaData.IsNMAKE)
+                {
+                    variables.AppendFormat("{0} = {1}", name, target.Path.ToString());
+                    variables.AppendLine();
+                    variables.AppendLine();
+                }
+                else
+                {
+                    variables.AppendFormat("{0}:={1}", name, target.Path.ToString());
+                    variables.AppendLine();
+                }
             }
         }
 
@@ -236,9 +245,16 @@ namespace MakeFileBuilder
                         rules.AppendFormat("$({0}) ", preName);
                     }
                 }
-                if (this.OrderOnlyDependencies.Count > 0)
+                if (MakeFileCommonMetaData.IsNMAKE)
                 {
-                    rules.AppendFormat("| {0}", this.OrderOnlyDependencies.ToString(' '));
+                    // NMake offers no support for order only dependents
+                }
+                else
+                {
+                    if (this.OrderOnlyDependencies.Count > 0)
+                    {
+                        rules.AppendFormat("| {0}", this.OrderOnlyDependencies.ToString(' '));
+                    }
                 }
                 rules.AppendLine();
                 foreach (var command in this.ShellCommands)

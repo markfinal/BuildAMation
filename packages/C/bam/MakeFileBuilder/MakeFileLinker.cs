@@ -107,7 +107,15 @@ namespace C
             var tool = module.Tool as Bam.Core.ICommandLineTool;
             var commands = new System.Text.StringBuilder();
             // if there were no object files, you probably intended to use all prerequisites anyway
-            var filter = (null != objExt) ? System.String.Format("$(filter %{0},$^)", objExt) : "$^";
+            string filter;
+            if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
+            {
+                filter = (null != objExt) ? System.String.Format("$(filter %{0},$**)", objExt) : "$**";
+            }
+            else
+            {
+                filter = (null != objExt) ? System.String.Format("$(filter %{0},$^)", objExt) : "$^";
+            }
             commands.AppendFormat("{0} {1} {2} {3}",
                 CommandLineProcessor.Processor.StringifyTool(tool),
                 filter,
