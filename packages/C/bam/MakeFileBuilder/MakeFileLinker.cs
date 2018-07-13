@@ -106,14 +106,15 @@ namespace C
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;
             var commands = new System.Text.StringBuilder();
-            // if there were no object files, you probably intended to use all prerequisites anyway
             string filter;
             if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
             {
-                filter = (null != objExt) ? System.String.Format("$(filter %{0},$**)", objExt) : "$**";
+                // no filter function, and compiled resource files generally end up first (and thus the extension is found)
+                filter = "$**";
             }
             else
             {
+                // if there were no object files, you probably intended to use all prerequisites anyway
                 filter = (null != objExt) ? System.String.Format("$(filter %{0},$^)", objExt) : "$^";
             }
             commands.AppendFormat("{0} {1} {2} {3}",
