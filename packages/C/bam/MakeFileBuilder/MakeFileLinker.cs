@@ -37,6 +37,87 @@ namespace C
         Link(
             ConsoleApplication module)
         {
+            // any libraries added prior to here, need to be moved to the end
+            // they are external dependencies, and thus all built modules (to be added now) may have
+            // a dependency on them (and not vice versa)
+            var linker = module.Settings as C.ICommonLinkerSettings;
+            var externalLibs = linker.Libraries;
+            linker.Libraries = new Bam.Core.StringArray();
+            foreach (var library in module.Libraries)
+            {
+                (module.Tool as C.LinkerTool).ProcessLibraryDependency(module, library as CModule);
+            }
+            linker.Libraries.AddRange(externalLibs);
+
+            var output_path = (module.Settings as ICommonHasOutputPath).OutputPath;
+
+            var meta = new MakeFileBuilder.MakeFileMeta(module);
+            var rule = meta.AddRule();
+            rule.AddTarget(output_path);
+            string objExt = null; // try to get the object file extension from a compiled source file
+            foreach (var input in module.ObjectFiles)
+            {
+                if (null == objExt)
+                {
+                    objExt = input.Tool.Macros["objext"].ToString();
+                }
+                if (!(input as C.ObjectFileBase).PerformCompilation)
+                {
+                    continue;
+                }
+                rule.AddPrerequisite(input, C.ObjectFile.Key);
+            }
+            foreach (var input in module.Libraries)
+            {
+                if (input is StaticLibrary)
+                {
+                    rule.AddPrerequisite(input, C.StaticLibrary.Key);
+                }
+                else if (input is IDynamicLibrary)
+                {
+                    var dynLib = input as IDynamicLibrary;
+                    if (dynLib.LinkerNameSymbolicLink != null)
+                    {
+                        var linkerNameSymLink = dynLib.LinkerNameSymbolicLink;
+                        rule.AddPrerequisite(linkerNameSymLink, C.SharedObjectSymbolicLink.Key);
+                    }
+                    else
+                    {
+                        rule.AddPrerequisite(input, C.DynamicLibrary.Key);
+                    }
+                }
+                else if (input is CSDKModule)
+                {
+                    continue;
+                }
+                else if (input is OSXFramework)
+                {
+                    continue;
+                }
+                else if (input is HeaderLibrary)
+                {
+                    continue;
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("Unknown module library type: {0}", input.GetType());
+                }
+            }
+
+            var tool = module.Tool as Bam.Core.ICommandLineTool;
+            var commands = new System.Text.StringBuilder();
+            // if there were no object files, you probably intended to use all prerequisites anyway
+            var filter = (null != objExt) ? System.String.Format("$(filter %{0},$^)", objExt) : "$^";
+            commands.AppendFormat("{0} {1} {2} {3}",
+                CommandLineProcessor.Processor.StringifyTool(tool),
+                filter,
+                CommandLineProcessor.NativeConversion.Convert(module).ToString(' '),
+                CommandLineProcessor.Processor.TerminatingArgs(tool));
+            rule.AddShellCommand(commands.ToString());
+
+            var output_dir = System.IO.Path.GetDirectoryName(output_path.ToString());
+            meta.CommonMetaData.AddDirectory(output_dir);
+            meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
         }
     }
 #else
