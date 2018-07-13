@@ -135,14 +135,22 @@ namespace VisualStudioProcessor
             string command_switch,
             bool inheritExisting = false,
             bool ignored = false,
-            TargetGroup target = TargetGroup.Settings)
+            TargetGroup target = TargetGroup.Settings,
+            string boolWhenValid = null)
             :
             base(command_switch, inheritExisting, target)
         {
             this.Ignored = ignored;
+            this.BoolPropertyWhenValid = boolWhenValid;
         }
 
         public bool Ignored
+        {
+            get;
+            private set;
+        }
+
+        public string BoolPropertyWhenValid
         {
             get;
             private set;
@@ -391,6 +399,15 @@ namespace VisualStudioProcessor
                             {
                                 setter.Invoke(vsConfig, new[] { property_value });
                             }
+                        }
+
+                        if (associated_attribute.BoolPropertyWhenValid != null)
+                        {
+                            vsSettingsGroup.AddSetting(
+                                associated_attribute.BoolPropertyWhenValid,
+                                true,
+                                condition: condition
+                            );
                         }
                     }
                     else if (attributeArray.First() is PathArrayAttribute)

@@ -70,7 +70,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-c -Fo")]
-        [VisualStudioProcessor.Path("GeneratePreprocessedSourceListing")]
+        [VisualStudioProcessor.Path("ObjectFileName", ignored: true)] // if deeper than just $(IntDir)myobj.obj, MASM seems to fail
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
@@ -80,7 +80,7 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-E -Fo")]
-        [VisualStudioProcessor.Path("GeneratePreprocessedSourceListing")]
+        [VisualStudioProcessor.Path("ObjectFileName", boolWhenValid: "GeneratePreprocessedSourceListing")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
         {
