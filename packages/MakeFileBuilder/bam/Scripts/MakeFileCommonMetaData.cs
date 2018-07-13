@@ -84,7 +84,7 @@ namespace MakeFileBuilder
                     }
                     foreach (var path in env.Value)
                     {
-                        this.Environment[env.Key].AddUnique(path.ToStringQuoteIfNecessary());
+                        this.Environment[env.Key].AddUnique(path.ToString());
                     }
                 }
             }
