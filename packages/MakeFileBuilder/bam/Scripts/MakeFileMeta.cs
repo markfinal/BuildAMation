@@ -151,6 +151,11 @@ namespace MakeFileBuilder
                 }
             }
             makeRules.Append("all:");
+            if (MakeFileCommonMetaData.IsNMAKE)
+            {
+                // as NMAKE does not support order only dependencies
+                makeRules.Append(" $(DIRS) ");
+            }
             makeRules.AppendLine(prerequisitesOfTargetAll.ToString(' '));
 
             // directory direction rule
