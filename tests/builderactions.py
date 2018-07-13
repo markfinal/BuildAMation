@@ -108,9 +108,24 @@ def makefile_post(package, options, flavour, output_messages, error_messages):
         output_messages:
         error_messages:
     """
+    make_executable = 'make'
+    make_args = []
     if sys.platform.startswith("win"):
-        # TODO: allow configuring where make is
-        return 0
+        arg_list = [
+            'where',
+            '/R',
+            os.path.expandvars('%ProgramFiles(x86)%'),
+            'nmake.exe'
+        ]
+        p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        (output_stream, error_stream) = p.communicate()  # this should WAIT
+        if output_stream:
+            split = output_stream.splitlines()
+            make_executable = split[0].strip()
+            make_args.append('-NOLOGO')
+        else:
+            print 'No version of NMAKE was found'
+            return 0
     exit_code = 0
     makefile_dir = os.path.join(package.get_path(), options.buildRoot)
     if not os.path.exists(makefile_dir):
@@ -120,8 +135,9 @@ def makefile_post(package, options, flavour, output_messages, error_messages):
     try:
         # currently do not support building configurations separately
         arg_list = [
-            "make"
+            make_executable
         ]
+        arg_list.extend(make_args)
         print "Running '%s' in %s\n" % (' '.join(arg_list), makefile_dir)
         p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=makefile_dir)
         (output_stream, error_stream) = p.communicate()  # this should WAIT
