@@ -259,16 +259,24 @@ namespace MakeFileBuilder
                 rules.AppendLine();
                 foreach (var command in this.ShellCommands)
                 {
-                    // look for text like $ORIGIN, which needs a double $ prefix (and quotes) to avoid being interpreted as an environment variable by Make
-                    var escapedCommand = System.Text.RegularExpressions.Regex.Replace(command, @"\$([A-Za-z0-9]+)", @"'$$$$$1'");
-                    // any parentheses that are not associated with MakeFile commands must be escaped
-                    if (!System.Text.RegularExpressions.Regex.IsMatch(escapedCommand, @"\$\(.*\)"))
+                    if (!MakeFileCommonMetaData.IsNMAKE)
                     {
-                        EscapeCharacter(ref escapedCommand, '(');
-                        EscapeCharacter(ref escapedCommand, ')');
+                        // look for text like $ORIGIN, which needs a double $ prefix (and quotes) to avoid being interpreted as an environment variable by Make
+                        var escapedCommand = System.Text.RegularExpressions.Regex.Replace(command, @"\$([A-Za-z0-9]+)", @"'$$$$$1'");
+                        // any parentheses that are not associated with MakeFile commands must be escaped
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(escapedCommand, @"\$\(.*\)"))
+                        {
+                            EscapeCharacter(ref escapedCommand, '(');
+                            EscapeCharacter(ref escapedCommand, ')');
+                        }
+                        rules.AppendFormat("\t{0}", escapedCommand);
+                        rules.AppendLine();
                     }
-                    rules.AppendFormat("\t{0}", escapedCommand);
-                    rules.AppendLine();
+                    else
+                    {
+                        rules.AppendFormat("\t{0}", command);
+                        rules.AppendLine();
+                    }
                 }
             }
         }
