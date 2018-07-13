@@ -199,7 +199,7 @@ namespace GccCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.StringArray("-U")]
+        [CommandLineProcessor.StringArray("-include ")]
 #endif
         Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
         {
