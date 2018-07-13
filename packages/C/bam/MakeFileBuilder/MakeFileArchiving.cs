@@ -29,6 +29,16 @@
 #endregion // License
 namespace C
 {
+#if BAM_V2
+    public static partial class MakeFileSupport
+    {
+        public static void
+        Archive(
+            StaticLibrary module)
+        {
+        }
+    }
+#else
     public sealed class MakeFileLibrarian :
         IArchivingPolicy
     {
@@ -68,4 +78,5 @@ namespace C
             meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
         }
     }
+#endif
 }

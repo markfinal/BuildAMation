@@ -30,6 +30,16 @@
 using Bam.Core;
 namespace C
 {
+#if BAM_V2
+    public static partial class MakeFileSupport
+    {
+        public static void
+        Link(
+            ConsoleApplication module)
+        {
+        }
+    }
+#else
     public sealed class MakeFileLinker :
         ILinkingPolicy
     {
@@ -126,4 +136,5 @@ namespace C
             meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
         }
     }
+#endif
 }

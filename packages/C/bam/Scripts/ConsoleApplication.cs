@@ -468,7 +468,7 @@ namespace C
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    //MakeFileSupport.Link(this);
+                    MakeFileSupport.Link(this);
                     break;
 #endif
 

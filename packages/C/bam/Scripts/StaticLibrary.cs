@@ -248,7 +248,7 @@ namespace C
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    //MakeFileSupport.Archive(this);
+                    MakeFileSupport.Archive(this);
                     break;
 #endif
 
