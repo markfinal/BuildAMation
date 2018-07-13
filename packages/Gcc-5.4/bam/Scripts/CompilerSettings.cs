@@ -30,7 +30,7 @@
 namespace Gcc
 {
     public class CCompilerSettings :
-        GccCommon.CommonCompilerSettings
+        GccCommon.CommonCCompilerSettings
     {
         public CCompilerSettings(
             Bam.Core.Module module)
