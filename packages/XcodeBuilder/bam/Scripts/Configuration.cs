@@ -107,7 +107,7 @@ namespace XcodeBuilder
                 }
                 else
                 {
-                    this.Settings[key].Merge(value);
+                    this.Settings[key].Merge(key, value);
                 }
             }
         }

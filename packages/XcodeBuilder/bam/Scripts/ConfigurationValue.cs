@@ -42,6 +42,7 @@ namespace XcodeBuilder
 
         public abstract void
         Merge(
+            string key,
             ConfigurationValue value);
     }
 
@@ -56,6 +57,7 @@ namespace XcodeBuilder
 
         public override void
         Merge(
+            string key,
             ConfigurationValue value)
         {
             var newValue = (value as UniqueConfigurationValue).Value;
@@ -63,7 +65,7 @@ namespace XcodeBuilder
             {
                 return;
             }
-            Bam.Core.Log.Info("Warning: Replacing '{0}' with '{1}'", this.Value, newValue);
+            Bam.Core.Log.Info("Warning: Replacing '{0}' with '{1}' for '{2}'", this.Value, newValue, key);
             this.Value = (value as UniqueConfigurationValue).Value;
         }
 
@@ -105,6 +107,7 @@ namespace XcodeBuilder
 
         public override void
         Merge(
+            string key,
             ConfigurationValue value)
         {
             this.Value.AddRangeUnique((value as MultiConfigurationValue).Value);
