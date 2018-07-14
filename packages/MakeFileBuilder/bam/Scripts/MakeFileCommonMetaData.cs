@@ -114,20 +114,32 @@ namespace MakeFileBuilder
         ExportEnvironment(
             System.Text.StringBuilder output)
         {
+            System.Diagnostics.Debug.Assert(!MakeFileCommonMetaData.IsNMAKE);
             foreach (var env in this.Environment)
             {
-                if (IsNMAKE)
-                {
-                    output.AppendFormat("{0} = {1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
-                    output.AppendLine();
-                    output.AppendLine();
-                }
-                else
-                {
-                    output.AppendFormat("{0}:={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
-                    output.AppendLine();
-                }
+                output.AppendFormat("{0}:={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
+                output.AppendLine();
             }
+        }
+
+        /// <summary>
+        /// Write a phony target that sets the environment variables.
+        /// Required for NMAKE since macros are not exported as environment variables.
+        /// </summary>
+        /// <param name="output"></param>
+        public void
+        ExportEnvironmentAsPhonyTarget(
+            System.Text.StringBuilder output)
+        {
+            System.Diagnostics.Debug.Assert(MakeFileCommonMetaData.IsNMAKE);
+            output.AppendLine(".PHONY: nmakesetenv");
+            output.AppendLine("nmakesetenv:");
+            foreach (var env in this.Environment)
+            {
+                output.AppendFormat("\t@set {0}={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
+                output.AppendLine();
+            }
+            output.AppendLine();
         }
 
         /// <summary>

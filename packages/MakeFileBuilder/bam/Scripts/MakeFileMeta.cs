@@ -136,7 +136,14 @@ namespace MakeFileBuilder
             // delete suffix rules
             makeEnvironment.AppendLine(".SUFFIXES:");
 
-            commonMeta.ExportEnvironment(makeEnvironment);
+            if (MakeFileCommonMetaData.IsNMAKE)
+            {
+                // macros in NMAKE do not export as environment variables to commands
+            }
+            else
+            {
+                commonMeta.ExportEnvironment(makeEnvironment);
+            }
             commonMeta.ExportDirectories(makeVariables);
 
             // all rule
@@ -155,8 +162,15 @@ namespace MakeFileBuilder
             {
                 // as NMAKE does not support order only dependencies
                 makeRules.Append(" $(DIRS) ");
+                // as NMAKE does not support defining macros to be exposed as environment variables for commands
+                makeRules.Append(" nmakesetenv ");
             }
             makeRules.AppendLine(prerequisitesOfTargetAll.ToString(' '));
+
+            if (MakeFileCommonMetaData.IsNMAKE)
+            {
+                commonMeta.ExportEnvironmentAsPhonyTarget(makeRules);
+            }
 
             // directory direction rule
             makeRules.AppendLine("$(DIRS):");
