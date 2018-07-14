@@ -92,8 +92,7 @@ def find_all_packages_to_test(root, options):
 
 
 def _pre_execute(builder):
-    if builder.pre_action:
-        builder.pre_action()
+    builder.pre_action()
 
 
 def _run_buildamation(options, package, extra_args, output_messages, error_messages):
@@ -131,10 +130,9 @@ def _run_buildamation(options, package, extra_args, output_messages, error_messa
 
 
 def _post_execute(builder, options, flavour, package, output_messages, error_messages):
-    if builder.post_action:
-        exit_code = builder.post_action(package, options, flavour, output_messages, error_messages)
-        return exit_code
-    return 0
+    exit_code = builder.post_action(package, options, flavour, output_messages, error_messages)
+    return exit_code
+
 
 class Stats(object):
     def __init__(self):
