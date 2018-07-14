@@ -52,7 +52,10 @@ namespace C
             CommandLineProcessor.Processor.Execute(
                 context,
                 module.Tool as Bam.Core.ICommandLineTool,
-                CommandLineProcessor.NativeConversion.Convert(module)
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                )
             );
         }
     }

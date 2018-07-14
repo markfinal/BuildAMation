@@ -52,7 +52,10 @@ namespace C
             var command = new System.Text.StringBuilder();
             command.AppendFormat("{0} {1} {2}",
                 CommandLineProcessor.Processor.StringifyTool(tool),
-                CommandLineProcessor.NativeConversion.Convert(module).ToString(' '),
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                ).ToString(' '),
                 CommandLineProcessor.Processor.TerminatingArgs(tool));
             rule.AddShellCommand(command.ToString());
 

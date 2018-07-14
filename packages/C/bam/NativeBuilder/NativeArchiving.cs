@@ -37,7 +37,10 @@ namespace C
             StaticLibrary module,
             Bam.Core.ExecutionContext context)
         {
-            var commandLine = CommandLineProcessor.NativeConversion.Convert(module);
+            var commandLine = CommandLineProcessor.NativeConversion.Convert(
+                module.Settings,
+                module
+            );
 
             if (module.Settings is ICommonHasOutputPath)
             {

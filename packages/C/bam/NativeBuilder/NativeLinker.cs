@@ -69,7 +69,12 @@ namespace C
             }
 
             // then all options
-            commandLine.AddRange(CommandLineProcessor.NativeConversion.Convert(module));
+            commandLine.AddRange(
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                )
+            );
 
             CommandLineProcessor.Processor.Execute(
                 context,

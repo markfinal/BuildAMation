@@ -127,7 +127,10 @@ namespace C
             commands.AppendFormat("{0} {1} {2} {3}",
                 CommandLineProcessor.Processor.StringifyTool(tool),
                 filter,
-                CommandLineProcessor.NativeConversion.Convert(module).ToString(' '),
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                ).ToString(' '),
                 CommandLineProcessor.Processor.TerminatingArgs(tool));
             rule.AddShellCommand(commands.ToString());
 

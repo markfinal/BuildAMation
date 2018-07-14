@@ -394,10 +394,10 @@ namespace CommandLineProcessor
 
         public static Bam.Core.StringArray
         Convert(
+            Bam.Core.Settings settings,
             Bam.Core.Module module)
         {
             var commandLine = new Bam.Core.StringArray();
-            var settings = module.Settings;
             //Bam.Core.Log.MessageAll("Module: {0}", module.ToString());
             //Bam.Core.Log.MessageAll("Settings: {0}", settings.ToString());
             foreach (var settings_interface in settings.Interfaces())
@@ -419,6 +419,10 @@ namespace CommandLineProcessor
                         continue;
                     }
                     var property_value = settings_property.GetValue(settings);
+                    if (null == property_value)
+                    {
+                        continue;
+                    }
                     if (attributeArray.First() is EnumAttribute)
                     {
                         HandleEnum(
