@@ -36,6 +36,70 @@ namespace C
         Compile(
             ObjectFileBase module)
         {
+            var encapsulating = module.GetEncapsulatingReferencedModule();
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            var target = workspace.EnsureTargetExists(encapsulating);
+
+            XcodeBuilder.FileReference.EFileType fileType;
+            if (module is C.ObjectFile)
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeC;
+            }
+            else if (module is C.Cxx.ObjectFile)
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeCxx;
+            }
+            else if (module is C.ObjC.ObjectFile)
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeObjC;
+            }
+            else if (module is C.ObjCxx.ObjectFile)
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeObjCxx;
+            }
+            else
+            {
+                throw new Bam.Core.Exception(
+                    "Unknown object file type, {0}",
+                    module.GetType().ToString()
+                );
+            }
+            module.MetaData = target.EnsureSourceBuildFileExists(
+                (module.Settings as C.ICommonHasSourcePath).SourcePath,
+                fileType
+            );
+
+            // this is for stand-alone object files
+            if (encapsulating == module || encapsulating == (module as Bam.Core.IChildModule).Parent)
+            {
+                target.SetType(XcodeBuilder.Target.EProductType.ObjFile);
+                var configuration = target.GetConfiguration(module);
+                configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+                XcodeProjectProcessor.XcodeConversion.Convert(
+                    module.Settings,
+                    module.Settings.GetType(),
+                    module,
+                    configuration
+                );
+            }
+
+            // any non-C module targets should be order-only dependencies
+            foreach (var dependent in module.Dependents)
+            {
+                if (null == dependent.MetaData)
+                {
+                    continue;
+                }
+                if (dependent is C.CModule)
+                {
+                    continue;
+                }
+                var dependentTarget = dependent.MetaData as XcodeBuilder.Target;
+                if (null != dependentTarget)
+                {
+                    target.Requires(dependentTarget);
+                }
+            }
         }
     }
 #else
