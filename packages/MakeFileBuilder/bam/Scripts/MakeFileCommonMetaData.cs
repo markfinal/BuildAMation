@@ -136,7 +136,8 @@ namespace MakeFileBuilder
             output.AppendLine("nmakesetenv:");
             foreach (var env in this.Environment)
             {
-                output.AppendFormat("\t@set {0}={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
+                // trim the end of 'continuation" characters
+                output.AppendFormat("\tset {0}={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator).TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar }));
                 output.AppendLine();
             }
             output.AppendLine();
