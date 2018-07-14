@@ -75,6 +75,8 @@ namespace ClangCommon
                 }
                 configuration["WARNING_CFLAGS"] = warnings;
             }
+#if BAM_V2
+#else
             if (settings.IncludePaths.Count > 0)
             {
                 var paths = new XcodeBuilder.MultiConfigurationValue();
@@ -102,6 +104,7 @@ namespace ClangCommon
                 }
                 configuration["USER_HEADER_SEARCH_PATHS"] = paths;
             }
+#endif
             if (settings.Optimization.HasValue)
             {
                 switch (settings.Optimization.Value)

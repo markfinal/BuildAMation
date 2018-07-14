@@ -163,11 +163,10 @@ namespace XcodeProjectProcessor
         BaseAttribute
     {
         public PathArrayAttribute(
-            string property,
-            ValueType type
+            string property
         )
             :
-            base(property, type)
+            base(property, ValueType.MultiValued)
         { }
     }
 
@@ -350,7 +349,31 @@ namespace XcodeProjectProcessor
                     }
                     else if (attributeArray.First() is PathArrayAttribute)
                     {
-                        throw new System.NotImplementedException();
+                        var associated_attr = attributeArray.First() as PathArrayAttribute;
+                        var paths = new XcodeBuilder.MultiConfigurationValue();
+                        foreach (var path in (property_value as Bam.Core.TokenizedStringArray).ToEnumerableWithoutDuplicates())
+                        {
+                            var fullPath = path.ToString();
+                            var relPath = Bam.Core.RelativePathUtilities.GetPath(fullPath, configuration.Project.SourceRoot);
+                            // spaces need to be double escaped
+                            if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
+                            {
+                                if (fullPath.Contains(" "))
+                                {
+                                    fullPath = fullPath.Replace(" ", "\\\\ ");
+                                }
+                                paths.Add(fullPath);
+                            }
+                            else
+                            {
+                                if (relPath.Contains(" "))
+                                {
+                                    relPath = relPath.Replace(" ", "\\\\ ");
+                                }
+                                paths.Add(System.String.Format("$(SRCROOT)/{0}", relPath));
+                            }
+                        }
+                        configuration[associated_attr.Property] = paths;
                     }
                     else if (attributeArray.First() is StringAttribute)
                     {
