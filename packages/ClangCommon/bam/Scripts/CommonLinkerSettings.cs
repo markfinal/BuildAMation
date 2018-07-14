@@ -49,7 +49,7 @@ namespace ClangCommon
 
             // not in the defaults in the C package to avoid a compile-time dependency on the Clang package
             (this as C.ICommonLinkerSettingsOSX).MacOSMinimumVersionSupported =
-                Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MinimumVersionSupported;
+                Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MacOSXMinimumVersionSupported;
         }
 
 #if BAM_V2

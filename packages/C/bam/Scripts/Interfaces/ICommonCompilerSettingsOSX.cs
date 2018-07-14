@@ -47,11 +47,11 @@ namespace C
         }
 
         /// <summary>
-        /// Minimum version of macOS supported, which will report deprecated messages if features of
+        /// Minimum version of macOSX supported, which will report deprecated messages if features of
         /// the operating system are used but should not be.
         /// </summary>
         /// <value>The minimum version supported.</value>
-        string MacOSMinimumVersionSupported
+        string MacOSXMinimumVersionSupported
         {
             get;
             set;

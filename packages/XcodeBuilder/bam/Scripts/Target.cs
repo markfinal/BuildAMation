@@ -708,7 +708,7 @@ namespace XcodeBuilder
                 newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
 
                 // set the minimum version of macOS/iOS to run against
-                newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(clangMeta.MinimumVersionSupported);
+                newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(clangMeta.MacOSXMinimumVersionSupported);
 
                 return newConfig;
             }

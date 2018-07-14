@@ -57,8 +57,8 @@ namespace ClangCommon
             this.InitializeAllInterfaces(module, true, useDefaults);
 
             // not in the defaults in the C package to avoid a compile-time dependency on the Clang package
-            (this as C.ICommonCompilerSettingsOSX).MacOSMinimumVersionSupported =
-                Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MinimumVersionSupported;
+            (this as C.ICommonCompilerSettingsOSX).MacOSXMinimumVersionSupported =
+                Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MacOSXMinimumVersionSupported;
         }
 
 #if BAM_V2
@@ -234,7 +234,7 @@ namespace ClangCommon
 #if BAM_V2
         [CommandLineProcessor.String("-mmacosx-version-min=")]
 #endif
-        string C.ICommonCompilerSettingsOSX.MacOSMinimumVersionSupported
+        string C.ICommonCompilerSettingsOSX.MacOSXMinimumVersionSupported
         {
             get;
             set;

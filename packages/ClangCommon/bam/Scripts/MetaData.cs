@@ -47,10 +47,10 @@ namespace ClangCommon
             this.Meta.Add("LastUpgradeCheck", lastUpgradeCheck);
 
             this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
-            if (!this.Contains("MinVersion"))
+            if (!this.Contains("MacOSXMinVersion"))
             {
                 // 10.7 is the minimum version required for libc++ currently
-                this.MinimumVersionSupported = "macosx10.7";
+                this.MacOSXMinimumVersionSupported = "10.7";
             }
         }
 
@@ -82,16 +82,16 @@ namespace ClangCommon
             }
         }
 
-        public string MinimumVersionSupported
+        public string MacOSXMinimumVersionSupported
         {
             get
             {
-                return this.Meta["MinVersion"] as string;
+                return this.Meta["MacOSXMinVersion"] as string;
             }
 
             set
             {
-                this.Meta["MinVersion"] = value;
+                this.Meta["MacOSXMinVersion"] = value;
             }
         }
 
