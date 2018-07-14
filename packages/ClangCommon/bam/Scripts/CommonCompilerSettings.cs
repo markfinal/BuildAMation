@@ -140,6 +140,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-I")]
+        [XcodeProjectProcessor.PathArray("HEADER_SEARCH_PATHS")]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
         {

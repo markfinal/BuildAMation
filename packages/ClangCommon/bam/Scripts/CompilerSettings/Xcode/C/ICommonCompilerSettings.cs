@@ -169,6 +169,8 @@ namespace ClangCommon
                 }
                 configuration["OTHER_CFLAGS"] = undefines;
             }
+#if BAM_V2
+#else
             if (settings.SystemIncludePaths.Count > 0)
             {
                 var paths = new XcodeBuilder.MultiConfigurationValue();
@@ -183,6 +185,7 @@ namespace ClangCommon
                 }
                 configuration["HEADER_SEARCH_PATHS"] = paths;
             }
+#endif
             if (settings.TargetLanguage.HasValue)
             {
                 switch (settings.TargetLanguage.Value)
