@@ -73,7 +73,7 @@ def configure_repository():
     configs["InstallerTest1"] = TestSetup(win={"Native": [visualc64, visualc32, mingw32], "VSSolution": [visualc64, visualc32], "MakeFile": [visualc64, visualc32, mingw32]},
                                           linux={"Native": [gcc64, gcc32], "MakeFile": [gcc64, gcc32]},
                                           osx={"Native": [clang64, clang32], "MakeFile": [clang64, clang32], "Xcode": [clang64, clang32]})
-    configs["MultiBitDepthModuleTest"] = TestSetup(win={"Native": [visualc], "VSSolution": [visualc], "MakeFile": [visualc]},
+    configs["MultiBitDepthModuleTest"] = TestSetup(win={"Native": [visualc], "VSSolution": [visualc]},
                                                    linux={"Native": [gcc], "MakeFile": [gcc]},
                                                    osx={"Native": [clang], "MakeFile": [clang], "Xcode": [clang]})
     configs["DuplicateSourceFilenameTest"] = TestSetup(win={"Native": [visualc64, visualc32, mingw32], "VSSolution": [visualc64, visualc32], "MakeFile": [visualc64, visualc32, mingw32]},
