@@ -64,12 +64,13 @@ namespace XcodeProjectProcessor
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
-    public class EnumAttribute :
+    public abstract class EnumAttribute :
         BaseAttribute
     {
-        public EnumAttribute(
+        protected EnumAttribute(
             object key,
             string property,
+            string value,
             ValueType type
         )
             :
@@ -83,6 +84,38 @@ namespace XcodeProjectProcessor
             get;
             private set;
         }
+
+        public string Value
+        {
+            get;
+            private set;
+        }
+    }
+
+    public sealed class UniqueEnumAttribute :
+        EnumAttribute
+    {
+        public UniqueEnumAttribute(
+            object key,
+            string property,
+            string value
+        )
+            :
+            base(key, property, value, ValueType.Unique)
+        {}
+    }
+
+    public sealed class MultiEnumAttribute :
+        EnumAttribute
+    {
+        public MultiEnumAttribute(
+            object key,
+            string property,
+            string value
+        )
+            :
+            base(key, property, value, ValueType.MultiValued)
+        { }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -253,7 +286,30 @@ namespace XcodeProjectProcessor
                     }
                     if (attributeArray.First() is EnumAttribute)
                     {
-                        throw new System.NotImplementedException();
+                        var associated_attribute = attributeArray.First(
+                            item => (item as EnumAttribute).Key.Equals(property_value)) as EnumAttribute;
+                        switch (associated_attribute.Type)
+                        {
+                            case BaseAttribute.ValueType.Unique:
+                                {
+                                    var new_config_value = new XcodeBuilder.UniqueConfigurationValue(associated_attribute.Value);
+                                    configuration[associated_attribute.Property] = new_config_value;
+                                }
+                                break;
+
+                            case BaseAttribute.ValueType.MultiValued:
+                                {
+                                    var new_config_value = new XcodeBuilder.MultiConfigurationValue(associated_attribute.Value);
+                                    configuration[associated_attribute.Property] = new_config_value;
+                                }
+                                break;
+
+                            default:
+                                throw new Bam.Core.Exception(
+                                    "Unknown Xcode configuration value type, {0}",
+                                    associated_attribute.Type.ToString()
+                                );
+                        }
                     }
                     else if (attributeArray.First() is PathAttribute)
                     {

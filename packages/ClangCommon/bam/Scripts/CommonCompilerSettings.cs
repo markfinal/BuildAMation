@@ -284,6 +284,10 @@ namespace ClangCommon
         [CommandLineProcessor.Enum(EVisibility.Hidden, "-fvisibility=hidden")]
         [CommandLineProcessor.Enum(EVisibility.Internal, "-fvisibility=internal")]
         [CommandLineProcessor.Enum(EVisibility.Protected, "-fvisibility=protected")]
+        [XcodeProjectProcessor.UniqueEnum(EVisibility.Default, "GCC_SYMBOLS_PRIVATE_EXTERN", "NO")]
+        [XcodeProjectProcessor.UniqueEnum(EVisibility.Hidden, "GCC_SYMBOLS_PRIVATE_EXTERN", "YES")]
+        [XcodeProjectProcessor.UniqueEnum(EVisibility.Internal, "GCC_SYMBOLS_PRIVATE_EXTERN", "YES")]
+        [XcodeProjectProcessor.UniqueEnum(EVisibility.Protected, "GCC_SYMBOLS_PRIVATE_EXTERN", "YES")]
 #endif
         EVisibility? ICommonCompilerSettings.Visibility
         {
