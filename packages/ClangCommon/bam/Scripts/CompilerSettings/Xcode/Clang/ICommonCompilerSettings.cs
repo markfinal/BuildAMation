@@ -27,6 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+#if BAM_V2
+#else
 namespace ClangCommon
 {
     public static partial class XcodeCompilerImplementation
@@ -37,8 +39,6 @@ namespace ClangCommon
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-#if BAM_V2
-#else
             if (settings.AllWarnings.HasValue)
             {
                 var warnings = new XcodeBuilder.MultiConfigurationValue();
@@ -77,7 +77,6 @@ namespace ClangCommon
             {
                 configuration["GCC_STRICT_ALIASING"] = new XcodeBuilder.UniqueConfigurationValue(settings.StrictAliasing.Value ? "YES" : "NO");
             }
-#endif
             if (settings.Optimization.HasValue)
             {
                 var common_optimization = (settings as C.ICommonCompilerSettings).Optimization;
@@ -104,3 +103,4 @@ namespace ClangCommon
         }
     }
 }
+#endif

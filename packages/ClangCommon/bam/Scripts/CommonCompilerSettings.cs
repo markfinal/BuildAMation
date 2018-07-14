@@ -309,6 +309,9 @@ namespace ClangCommon
         [CommandLineProcessor.Enum(EOptimization.O1, "-O1")]
         [CommandLineProcessor.Enum(EOptimization.O3, "-O3")]
         [CommandLineProcessor.Enum(EOptimization.Ofast, "-Ofast")]
+        [XcodeProjectProcessor.UniqueEnum(EOptimization.O1, "GCC_OPTIMIZATION_LEVEL", "1")]
+        [XcodeProjectProcessor.UniqueEnum(EOptimization.O3, "GCC_OPTIMIZATION_LEVEL", "3")]
+        [XcodeProjectProcessor.UniqueEnum(EOptimization.Ofast, "GCC_OPTIMIZATION_LEVEL", "fast")]
 #endif
         EOptimization? ICommonCompilerSettings.Optimization
         {
