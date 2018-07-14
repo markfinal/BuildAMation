@@ -103,7 +103,33 @@ namespace XcodeProjectProcessor
         )
             :
             base(key, property, value, ValueType.Unique)
-        {}
+        { }
+
+        public UniqueEnumAttribute(
+            object key,
+            string property,
+            string value,
+            string property2,
+            string value2
+        )
+            :
+            this(key, property, value)
+        {
+            this.Property2 = property2;
+            this.Value2 = value2;
+        }
+
+        public string Property2
+        {
+            get;
+            private set;
+        }
+
+        public string Value2
+        {
+            get;
+            private set;
+        }
     }
 
     public sealed class MultiEnumAttribute :
@@ -295,6 +321,13 @@ namespace XcodeProjectProcessor
                                 {
                                     var new_config_value = new XcodeBuilder.UniqueConfigurationValue(associated_attribute.Value);
                                     configuration[associated_attribute.Property] = new_config_value;
+
+                                    var unique_associated_attr = (associated_attribute as UniqueEnumAttribute);
+                                    if (unique_associated_attr.Property2 != null)
+                                    {
+                                        var new_config_value2 = new XcodeBuilder.UniqueConfigurationValue(unique_associated_attr.Value2);
+                                        configuration[unique_associated_attr.Property2] = new_config_value2;
+                                    }
                                 }
                                 break;
 

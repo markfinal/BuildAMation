@@ -37,6 +37,8 @@ namespace ClangCommon
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
+#if BAM_V2
+#else
             if (settings.Bits.HasValue)
             {
                 switch (settings.Bits.Value)
@@ -59,6 +61,7 @@ namespace ClangCommon
                         throw new Bam.Core.Exception("Unknown bit depth, {0}", settings.Bits.Value);
                 }
             }
+#endif
             if (settings.DebugSymbols.HasValue)
             {
                 configuration["GCC_GENERATE_DEBUGGING_SYMBOLS"] = new XcodeBuilder.UniqueConfigurationValue(settings.DebugSymbols.Value ? "YES" : "NO");
