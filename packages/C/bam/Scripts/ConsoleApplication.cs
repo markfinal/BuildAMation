@@ -56,7 +56,8 @@ namespace C
             base.Init(parent);
             this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)"));
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                Bam.Core.Graph.Instance.Mode != "Xcode")
             {
                 if (this.Linker.Macros.Contains("pdbext"))
                 {

@@ -31,6 +31,61 @@ using System.Linq;
 namespace C
 {
 #if BAM_V2
+    public static partial class XcodeSupport
+    {
+        public static void
+        Link(
+            ConsoleApplication module)
+        {
+            Bam.Core.TokenizedString productName;
+            if (module is IDynamicLibrary && !((module is Plugin) || (module is C.Cxx.Plugin)))
+            {
+                if (module.Macros["OutputName"].ToString().Equals(module.Macros["modulename"].ToString()))
+                {
+                    productName = module.CreateTokenizedString("${TARGET_NAME}.$(MajorVersion)");
+
+                }
+                else
+                {
+                    productName = module.CreateTokenizedString("$(OutputName).$(MajorVersion)");
+                }
+            }
+            else
+            {
+                if (module.Macros["OutputName"].ToString().Equals(module.Macros["modulename"].ToString()))
+                {
+                    productName = Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}");
+                }
+                else
+                {
+                    productName = module.Macros["OutputName"];
+                }
+            }
+
+            XcodeBuilder.FileReference.EFileType fileType;
+            XcodeBuilder.Target.EProductType productType;
+
+            if (module is IDynamicLibrary)
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.DynamicLibrary;
+                productType = XcodeBuilder.Target.EProductType.DynamicLibrary;
+            }
+            else
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.Executable;
+                productType = XcodeBuilder.Target.EProductType.Executable;
+            }
+
+            LinkOrArchive(
+                module,
+                fileType,
+                productType,
+                productName,
+                module.ObjectFiles,
+                module.HeaderFiles
+            );
+        }
+    }
 #else
     public sealed class XcodeLinker :
         ILinkingPolicy
