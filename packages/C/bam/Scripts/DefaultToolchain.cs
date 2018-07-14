@@ -66,6 +66,7 @@ namespace C
         GetToolsFromMetaData<T>()
             where T : ToolRegistrationAttribute
         {
+            var discoverAllToolchains = Bam.Core.CommandLineProcessor.Evaluate(new Options.DiscoverAllToolchains());
             var allTypes = Bam.Core.Graph.Instance.ScriptAssembly.GetTypes();
             foreach (var type in allTypes)
             {
@@ -76,7 +77,7 @@ namespace C
                 }
                 foreach (var tool in tools)
                 {
-                    if (Bam.Core.OSUtilities.CurrentOS != tool.Platform)
+                    if (!discoverAllToolchains && Bam.Core.OSUtilities.CurrentOS != tool.Platform)
                     {
                         continue;
                     }
