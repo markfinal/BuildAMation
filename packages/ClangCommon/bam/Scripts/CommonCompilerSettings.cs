@@ -244,6 +244,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-F")]
+        [XcodeProjectProcessor.PathArray("FRAMEWORK_SEARCH_PATHS")]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettingsOSX.FrameworkSearchPaths
         {
@@ -253,6 +254,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.String("-mmacosx-version-min=")]
+        [XcodeProjectProcessor.String("", ignore: true)]
 #endif
         string C.ICommonCompilerSettingsOSX.MacOSXMinimumVersionSupported
         {
@@ -262,6 +264,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
+        [XcodeProjectProcessor.StringArray("OTHER_CFLAGS", spacesSeparate: true)] // TODO: would be handy to guide to OTHER_CPLUSPLUSFLAGS for C++
 #endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {

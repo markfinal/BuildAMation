@@ -185,11 +185,19 @@ namespace XcodeProjectProcessor
     {
         public StringAttribute(
             string property,
-            ValueType type
+            bool ignore = false
         )
             :
-            base(property, type)
-        { }
+            base(property, ValueType.Unique)
+        {
+            this.Ignore = ignore;
+        }
+
+        public bool Ignore
+        {
+            get;
+            private set;
+        }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -198,15 +206,24 @@ namespace XcodeProjectProcessor
     {
         public StringArrayAttribute(
             string property,
-            string prefix = null
+            string prefix = null,
+            bool spacesSeparate = false
         )
             :
             base(property, ValueType.MultiValued)
         {
             this.Prefix = prefix;
+            this.SpacesSeparate = spacesSeparate;
         }
 
         public string Prefix
+        {
+            get;
+            private set;
+        }
+
+        // any extra arguments separated by spaces splits them onto separate lines in the project file
+        public bool SpacesSeparate
         {
             get;
             private set;
@@ -398,21 +415,30 @@ namespace XcodeProjectProcessor
                     }
                     else if (attributeArray.First() is StringAttribute)
                     {
+                        var associated_attr = attributeArray.First() as StringAttribute;
+                        if (associated_attr.Ignore)
+                        {
+                            continue;
+                        }
                         throw new System.NotImplementedException();
                     }
                     else if (attributeArray.First() is StringArrayAttribute)
                     {
                         var associated_attr = attributeArray.First() as StringArrayAttribute;
                         var values = new XcodeBuilder.MultiConfigurationValue();
+                        var prefix = (associated_attr.Prefix != null) ? associated_attr.Prefix : System.String.Empty;
                         foreach (var item in property_value as Bam.Core.StringArray)
                         {
-                            if (null != associated_attr.Prefix)
+                            if (associated_attr.SpacesSeparate)
                             {
-                                values.Add(System.String.Format("{0}{1}", associated_attr.Prefix, item));
+                                foreach (var split_item in item.Split(' '))
+                                {
+                                    values.Add(System.String.Format("{0}{1}", prefix, item));
+                                }
                             }
                             else
                             {
-                                values.Add(item);
+                                values.Add(System.String.Format("{0}{1}", prefix, item));
                             }
                         }
                         configuration[associated_attr.Property] = values;
