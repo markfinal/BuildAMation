@@ -616,10 +616,21 @@ namespace XcodeBuilder
             text.AppendFormat("{0}attributes = {{", indent2);
             text.AppendLine();
 
-            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+            try
+            {
+                var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+                text.AppendFormat("{0}LastUpgradeCheck = {1};", indent3, clangMeta.LastUpgradeCheck);
+                text.AppendLine();
+            }
+            catch (System.Collections.Generic.KeyNotFoundException)
+            {
+                if (Bam.Core.OSUtilities.IsOSXHosting)
+                {
+                    throw;
+                }
 
-            text.AppendFormat("{0}LastUpgradeCheck = {1};", indent3, clangMeta.LastUpgradeCheck);
-            text.AppendLine();
+                // otherwise, silently ignore
+            }
             text.AppendFormat("{0}}};", indent2);
             text.AppendLine();
             // project configuration list is always the first

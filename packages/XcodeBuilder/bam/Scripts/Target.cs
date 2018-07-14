@@ -702,13 +702,28 @@ namespace XcodeBuilder
                 project.appendAllConfigurations(newConfig);
                 configList.AddConfiguration(newConfig);
 
-                var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
 
-                // set which SDK to build against
-                newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
+                try
+                {
+                    var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
 
-                // set the minimum version of macOS/iOS to run against
-                newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(clangMeta.MacOSXMinimumVersionSupported);
+                    // set which SDK to build against
+                    newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
+
+                    // set the minimum version of macOS/iOS to run against
+                    newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(clangMeta.MacOSXMinimumVersionSupported);
+                }
+                catch (System.Collections.Generic.KeyNotFoundException)
+                {
+                    if (Bam.Core.OSUtilities.IsOSXHosting)
+                    {
+                        throw;
+                    }
+                    // arbitrary choice as we're not on macOS to look for valid SDK versions
+                    var sdk_version = "10.13";
+                    newConfig["SDKROOT"] = new UniqueConfigurationValue("macosx" + sdk_version);
+                    newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(sdk_version);
+                }
 
                 return newConfig;
             }
