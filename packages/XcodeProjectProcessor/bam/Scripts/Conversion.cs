@@ -77,6 +77,7 @@ namespace XcodeProjectProcessor
             base(property, type)
         {
             this.Key = key as System.Enum;
+            this.Value = value;
         }
 
         public System.Enum Key
