@@ -11,7 +11,7 @@ class Builder(object):
     def __init__(self, repeat_no_clean):
         self.repeat_no_clean = repeat_no_clean
 
-    def init(self):
+    def init(self, options):
         pass
 
     def pre_action(self):
@@ -43,6 +43,36 @@ class NativeBuilder(Builder):
 class VSSolutionBuilder(Builder):
     def __init__(self):
         super(VSSolutionBuilder, self).__init__(False)
+        self._ms_build_path = None
+
+    def init(self, options):
+        try:
+            for f in options.Flavours:
+                if f.startswith("--VisualC.version"):
+                    visualc_version = f.split("=")[1]
+                    break
+        except TypeError:  # Flavours can be None
+            pass
+        try:
+            visualc_version_split = visualc_version.split('.')
+        except UnboundLocalError:
+            visualc_version = defaultVCVersion
+            visualc_version_split = visualc_version.split('.')
+        visualc_major_version = int(visualc_version_split[0])
+        # location of MSBuild changed in VS2013, and VS2017
+        if visualc_major_version >= 15:
+            if os.environ.has_key("ProgramFiles(x86)"):
+                self._ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\%s\Bin\MSBuild.exe" % visualc_version
+            else:
+                self._ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\%s\Bin\amd64\MSBuild.exe" % visualc_version
+        elif visualc_major_version >= 12:
+            # VS2013 onwards path for MSBuild
+            if os.environ.has_key("ProgramFiles(x86)"):
+                self._ms_build_path = r"C:\Program Files (x86)\MSBuild\%s\bin\MSBuild.exe" % visualc_version
+            else:
+                self._ms_build_path = r"C:\Program Files\MSBuild\%s\bin\MSBuild.exe" % visualc_version
+        else:
+            self._ms_build_path = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe" % msBuildVersionToNetMapping[visualc_version]
 
     def post_action(self, package, options, flavour, output_messages, error_messages):
         exit_code = 0
@@ -53,36 +83,9 @@ class VSSolutionBuilder(Builder):
             output_messages.write("VisualStudio solution expected at %s did not exist" % solution_path)
             return 0
         try:
-            try:
-                for f in options.Flavours:
-                    if f.startswith("--VisualC.version"):
-                        visualc_version = f.split("=")[1]
-                        break
-            except TypeError:  # Flavours can be None
-                pass
-            try:
-                visualc_version_split = visualc_version.split('.')
-            except UnboundLocalError:
-                visualc_version = defaultVCVersion
-                visualc_version_split = visualc_version.split('.')
-            visualc_major_version = int(visualc_version_split[0])
-            # location of MSBuild changed in VS2013, and VS2017
-            if visualc_major_version >= 15:
-                if os.environ.has_key("ProgramFiles(x86)"):
-                    ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\%s\Bin\MSBuild.exe" % visualc_version
-                else:
-                    ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\%s\Bin\amd64\MSBuild.exe" % visualc_version
-            elif visualc_major_version >= 12:
-                # VS2013 onwards path for MSBuild
-                if os.environ.has_key("ProgramFiles(x86)"):
-                    ms_build_path = r"C:\Program Files (x86)\MSBuild\%s\bin\MSBuild.exe" % visualc_version
-                else:
-                    ms_build_path = r"C:\Program Files\MSBuild\%s\bin\MSBuild.exe" % visualc_version
-            else:
-                ms_build_path = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe" % msBuildVersionToNetMapping[visualc_version]
             for config in options.configurations:
                 arg_list = [
-                    ms_build_path,
+                    self._ms_build_path,
                     "/verbosity:normal",
                     solution_path
                 ]
@@ -113,7 +116,7 @@ class MakeFileBuilder(Builder):
         self._make_executable = 'make'
         self._make_args = []
 
-    def init(self):
+    def init(self, options):
         if sys.platform.startswith("win"):
             arg_list = [
                 'where',
