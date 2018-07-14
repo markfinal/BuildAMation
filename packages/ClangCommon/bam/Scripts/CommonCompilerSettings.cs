@@ -190,6 +190,11 @@ namespace ClangCommon
         [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-x c++")]
         [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveC, "-x objective-c")]
         [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveCxx, "-x objective-c++")]
+        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.Default, "GCC_INPUT_FILETYPE", "automatic")]
+        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.C, "GCC_INPUT_FILETYPE", "sourcecode.c.c")]
+        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.Cxx, "GCC_INPUT_FILETYPE", "sourcecode.cpp.cpp")]
+        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.ObjectiveC, "GCC_INPUT_FILETYPE", "sourcecode.c.objc")]
+        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.ObjectiveCxx, "GCC_INPUT_FILETYPE", "sourcecode.cpp.objcpp")]
 #endif
         C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
         {

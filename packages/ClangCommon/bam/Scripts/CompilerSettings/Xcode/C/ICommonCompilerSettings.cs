@@ -185,7 +185,6 @@ namespace ClangCommon
                 }
                 configuration["HEADER_SEARCH_PATHS"] = paths;
             }
-#endif
             if (settings.TargetLanguage.HasValue)
             {
                 switch (settings.TargetLanguage.Value)
@@ -209,8 +208,6 @@ namespace ClangCommon
                         throw new Bam.Core.Exception("Unsupported target language, {0}", settings.TargetLanguage.Value);
                 }
             }
-#if BAM_V2
-#else
             if (settings.WarningsAsErrors.HasValue)
             {
                 configuration["GCC_TREAT_WARNINGS_AS_ERRORS"] = new XcodeBuilder.UniqueConfigurationValue(settings.WarningsAsErrors.Value ? "YES" : "NO");
