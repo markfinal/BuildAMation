@@ -37,6 +37,8 @@ namespace ClangCommon
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
+#if BAM_V2
+#else
             if (settings.AllWarnings.HasValue)
             {
                 var warnings = new XcodeBuilder.MultiConfigurationValue();
@@ -67,6 +69,7 @@ namespace ClangCommon
             {
                 configuration["GCC_WARN_PEDANTIC"] = new XcodeBuilder.UniqueConfigurationValue(settings.Pedantic.Value ? "YES" : "NO");
             }
+#endif
             if (settings.Visibility.HasValue)
             {
                 configuration["GCC_SYMBOLS_PRIVATE_EXTERN"] = new XcodeBuilder.UniqueConfigurationValue((settings.Visibility.Value == EVisibility.Default) ? "NO" : "YES");

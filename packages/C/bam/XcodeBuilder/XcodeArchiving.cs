@@ -79,7 +79,8 @@ namespace C
                 XcodeProjectProcessor.XcodeConversion.Convert(
                     sharedSettings,
                     realObjectFiles.First().Settings.GetType(),
-                    module
+                    module,
+                    configuration
                 );
 
                 foreach (var objFile in realObjectFiles)

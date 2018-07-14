@@ -251,6 +251,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-Wall", "-Wno-all")]
+        [XcodeProjectProcessor.Bool("WARNING_CFLAGS", "-Wall", "-Wno-all", XcodeProjectProcessor.BaseAttribute.ValueType.MultiValued)]
 #endif
         bool? ICommonCompilerSettings.AllWarnings
         {
@@ -260,6 +261,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-Wextra", "-Wno-extra")]
+        [XcodeProjectProcessor.Bool("WARNING_CFLAGS", "-Wextra", "-Wno-extra", XcodeProjectProcessor.BaseAttribute.ValueType.MultiValued)]
 #endif
         bool? ICommonCompilerSettings.ExtraWarnings
         {
@@ -269,6 +271,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-Wpedantic", "-Wno-pedantic")]
+        [XcodeProjectProcessor.Bool("GCC_WARN_PEDANTIC", "YES", "NO", XcodeProjectProcessor.BaseAttribute.ValueType.Unique)]
 #endif
         bool? ICommonCompilerSettings.Pedantic
         {

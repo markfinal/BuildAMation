@@ -36,6 +36,12 @@ namespace XcodeProjectProcessor
     public abstract class BaseAttribute :
         System.Attribute
     {
+        public enum ValueType
+        {
+            Unique,
+            MultiValued
+        }
+
         protected BaseAttribute(
             string property)
         {
@@ -123,11 +129,36 @@ namespace XcodeProjectProcessor
         BaseAttribute
     {
         public BoolAttribute(
-            string property
+            string property,
+            string truth_value,
+            string false_value,
+            BaseAttribute.ValueType type
         )
             :
             base(property)
-        {}
+        {
+            this.Truth = truth_value;
+            this.Falisy = false_value;
+            this.Type = type;
+        }
+
+        public string Truth
+        {
+            get;
+            private set;
+        }
+
+        public string Falisy
+        {
+            get;
+            private set;
+        }
+
+        public BaseAttribute.ValueType Type
+        {
+            get;
+            private set;
+        }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -147,7 +178,8 @@ namespace XcodeProjectProcessor
         Convert(
             Bam.Core.Settings settings,
             System.Type real_settings_type,
-            Bam.Core.Module module // cannot use settings.Module as this may be null for per-file settings
+            Bam.Core.Module module, // cannot use settings.Module as this may be null for per-file settings
+            XcodeBuilder.Configuration configuration
         )
         {
             foreach (var settings_interface in settings.Interfaces())
@@ -203,7 +235,34 @@ namespace XcodeProjectProcessor
                     }
                     else if (attributeArray.First() is BoolAttribute)
                     {
-                        throw new System.NotImplementedException();
+                        var associated_attr = attributeArray.First() as BoolAttribute;
+                        var real_value = (bool)property_value;
+                        if (associated_attr.Type == BaseAttribute.ValueType.MultiValued)
+                        {
+                            var new_config_value = new XcodeBuilder.MultiConfigurationValue();
+                            if (real_value)
+                            {
+                                new_config_value.Add(associated_attr.Truth);
+                            }
+                            else
+                            {
+                                new_config_value.Add(associated_attr.Falisy);
+                            }
+                            configuration[associated_attr.Property] = new_config_value;
+                        }
+                        else if (associated_attr.Type == BaseAttribute.ValueType.Unique)
+                        {
+                            var new_config_value = new XcodeBuilder.UniqueConfigurationValue(
+                                real_value ?
+                                associated_attr.Truth :
+                                associated_attr.Falisy
+                            );
+                            configuration[associated_attr.Property] = new_config_value;
+                        }
+                        else
+                        {
+                            throw new Bam.Core.Exception("Unrecognised value type, {0}", associated_attr.Type.ToString());
+                        }
                     }
                     else if (attributeArray.First() is PreprocessorDefinesAttribute)
                     {
