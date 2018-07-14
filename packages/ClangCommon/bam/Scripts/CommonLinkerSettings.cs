@@ -82,6 +82,8 @@ namespace ClangCommon
 #if BAM_V2
         [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-arch i386")]
         [CommandLineProcessor.EnumAttribute(C.EBit.SixtyFour, "-arch x86_64")]
+        [XcodeProjectProcessor.UniqueEnum(C.EBit.ThirtyTwo, "VALID_ARCHS", "i386", "ARCHS", "$(ARCHS_STANDARD_32_BIT)")]
+        [XcodeProjectProcessor.UniqueEnum(C.EBit.SixtyFour, "VALID_ARCHS", "x86_64", "ARCHS", "$(ARCHS_STANDARD_64_BIT)")]
 #endif
         C.EBit C.ICommonLinkerSettings.Bits
         {
@@ -92,6 +94,10 @@ namespace ClangCommon
 #if BAM_V2
         [CommandLineProcessor.Enum(C.ELinkerOutput.Executable, "")]
         [CommandLineProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "-dynamiclib")]
+        [XcodeProjectProcessor.UniqueEnum(C.ELinkerOutput.Executable, "EXECUTABLE_PREFIX", "", "EXECUTABLE_EXTENSION", "")] // TODO: should really use $(exeext)
+        [XcodeProjectProcessor.UniqueEnum(C.ELinkerOutput.DynamicLibrary, "EXECUTABLE_PREFIX", "lib", "EXECUTABLE_EXTENSION", "dylib")] // TODO: should really use $(dynamicprefix) and $(dynamicextonly)
+        // TODO: should we have a Plugin on the enum?
+        // TODO: current version and compatibility version
 #endif
         C.ELinkerOutput C.ICommonLinkerSettings.OutputType
         {
@@ -101,6 +107,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-L")]
+        [XcodeProjectProcessor.PathArray("LIBRARY_SEARCH_PATHS")]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
         {
@@ -110,6 +117,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
+        [XcodeProjectProcessor.StringArray("", ignore: true)] // TODO: need to do something custom here
 #endif
         Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
         {
@@ -119,6 +127,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-g", "")]
+        [XcodeProjectProcessor.MultiBool("OTHER_LDFLAGS", "-g", "")]
 #endif
         bool C.ICommonLinkerSettings.DebugSymbols
         {
