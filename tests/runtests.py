@@ -91,6 +91,10 @@ def find_all_packages_to_test(root, options):
     return tests
 
 
+def _init_builder(builder):
+    builder.init()
+
+
 def _pre_execute(builder):
     builder.pre_action()
 
@@ -167,6 +171,7 @@ def execute_tests(package, configuration, options, output_buffer, stats):
             print_message(" (excluding %s)" % options.excludedVariations)
     non_kwargs = []
     the_builder = get_builder_details(options.buildmode)
+    _init_builder(the_builder)
     exit_code = 0
     for variation in variation_args:
         stats._total += 1

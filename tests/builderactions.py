@@ -11,6 +11,9 @@ class Builder(object):
     def __init__(self, repeat_no_clean):
         self.repeat_no_clean = repeat_no_clean
 
+    def init(self):
+        pass
+
     def pre_action(self):
         pass
 
@@ -107,10 +110,10 @@ class VSSolutionBuilder(Builder):
 class MakeFileBuilder(Builder):
     def __init__(self):
         super(MakeFileBuilder, self).__init__(False)
+        self._make_executable = 'make'
+        self._make_args = []
 
-    def post_action(self, package, options, flavour, output_messages, error_messages):
-        make_executable = 'make'
-        make_args = []
+    def init(self):
         if sys.platform.startswith("win"):
             arg_list = [
                 'where',
@@ -122,11 +125,10 @@ class MakeFileBuilder(Builder):
             (output_stream, error_stream) = p.communicate()  # this should WAIT
             if output_stream:
                 split = output_stream.splitlines()
-                make_executable = split[0].strip()
-                make_args.append('-NOLOGO')
-            else:
-                print 'No version of NMAKE was found'
-                return 0
+                self._make_executable = split[0].strip()
+                self._make_args.append('-NOLOGO')
+
+    def post_action(self, package, options, flavour, output_messages, error_messages):
         exit_code = 0
         makefile_dir = os.path.join(package.get_path(), options.buildRoot)
         if not os.path.exists(makefile_dir):
@@ -136,9 +138,9 @@ class MakeFileBuilder(Builder):
         try:
             # currently do not support building configurations separately
             arg_list = [
-                make_executable
+                self._make_executable
             ]
-            arg_list.extend(make_args)
+            arg_list.extend(self._make_args)
             print "Running '%s' in %s\n" % (' '.join(arg_list), makefile_dir)
             p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=makefile_dir)
             (output_stream, error_stream) = p.communicate()  # this should WAIT
