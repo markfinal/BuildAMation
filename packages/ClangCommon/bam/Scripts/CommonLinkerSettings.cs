@@ -186,9 +186,12 @@ namespace ClangCommon
             base.Validate();
             if (null != (this as C.ICommonLinkerSettingsOSX).InstallName)
             {
-                if (!(this.Module is C.DynamicLibrary))
+                if (!(this.Module is C.IDynamicLibrary))
                 {
-                    throw new Bam.Core.Exception("Install name is only applicable to dynamic libraries");
+                    throw new Bam.Core.Exception(
+                        "Install name is only applicable to dynamic libraries; trying to apply to {0}",
+                        this.Module.ToString()
+                    );
                 }
             }
         }
