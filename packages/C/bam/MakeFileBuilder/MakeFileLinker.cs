@@ -83,7 +83,14 @@ namespace C
                     }
                     else
                     {
-                        rule.AddPrerequisite(input, C.DynamicLibrary.Key);
+                        if (Bam.Core.OSUtilities.IsWindowsHosting)
+                        {
+                            rule.AddPrerequisite(input, C.DynamicLibrary.ImportLibraryKey);
+                        }
+                        else
+                        {
+                            rule.AddPrerequisite(input, C.DynamicLibrary.Key);
+                        }
                     }
                 }
                 else if (input is CSDKModule)
