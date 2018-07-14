@@ -62,6 +62,86 @@ namespace C
             {
                 configuration.SetProductName(module.Macros["OutputName"]);
             }
+
+            foreach (var header in module.HeaderFiles)
+            {
+                target.EnsureHeaderFileExists((header as HeaderFile).InputPath);
+            }
+
+            var excludedSource = new XcodeBuilder.MultiConfigurationValue();
+            var realObjectFiles = module.ObjectFiles.Where(item => item is ObjectFile); // C,C++,ObjC,ObjC++
+            if (realObjectFiles.Any())
+            {
+                var sharedSettings = C.SettingsBase.SharedSettings(
+                    realObjectFiles
+                );
+                XcodeSharedSettings.Tweak(sharedSettings);
+                XcodeProjectProcessor.XcodeConversion.Convert(
+                    sharedSettings,
+                    realObjectFiles.First().Settings.GetType(),
+                    module
+                );
+
+                foreach (var objFile in realObjectFiles)
+                {
+                    var asObjFileBase = objFile as C.ObjectFileBase;
+                    if (!asObjFileBase.PerformCompilation)
+                    {
+                        var fullPath = asObjFileBase.InputPath.ToString();
+                        var filename = System.IO.Path.GetFileName(fullPath);
+                        excludedSource.Add(filename);
+                    }
+
+                    var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
+                    var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
+                    if (null != deltaSettings)
+                    {
+                        var commandLine = new Bam.Core.StringArray();
+                        (deltaSettings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+                        if (commandLine.Count > 0)
+                        {
+                            // Cannot set per-file-per-configuration settings, so blend them together
+                            if (null == buildFile.Settings)
+                            {
+                                buildFile.Settings = commandLine;
+                            }
+                            else
+                            {
+                                buildFile.Settings.AddRangeUnique(commandLine);
+                            }
+                        }
+                    }
+                    configuration.BuildFiles.Add(buildFile);
+                }
+
+                // now deal with other object file types
+                var assembledObjectFiles = module.ObjectFiles.Where(item => item is AssembledObjectFile);
+                foreach (var asmObj in assembledObjectFiles)
+                {
+                    var buildFile = asmObj.MetaData as XcodeBuilder.BuildFile;
+                    configuration.BuildFiles.Add(buildFile);
+                }
+            }
+            else
+            {
+                // TODO
+                //(module.ObjectFiles.First().Settings as XcodeProjectProcessor.IConvertToProject).Convert(module, configuration);
+                foreach (var objFile in module.ObjectFiles)
+                {
+                    var asObjFileBase = objFile as C.ObjectFileBase;
+                    if (!asObjFileBase.PerformCompilation)
+                    {
+                        var fullPath = asObjFileBase.InputPath.ToString();
+                        var filename = System.IO.Path.GetFileName(fullPath);
+                        excludedSource.Add(filename);
+                    }
+
+                    var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
+                    configuration.BuildFiles.Add(buildFile);
+                }
+            }
+
+            configuration["EXCLUDED_SOURCE_FILE_NAMES"] = excludedSource;
         }
     }
 #else
