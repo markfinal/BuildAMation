@@ -36,6 +36,10 @@ namespace C
         Tweak(
             Bam.Core.Settings settings)
         {
+            if (!(settings is ClangCommon.ICommonCompilerSettings))
+            {
+                throw new Bam.Core.Exception("Xcode compiler settings do not implement the ClangCommon.ICommonCompilerSettings interface. Is this building on a platform other than macOS?");
+            }
             // if Pedantic is variable among sources, and there are warning suppressions,
             // take the default of Pedantic as true
             // this is because the Xcode build setting for Pedantic appears BEFORE warning

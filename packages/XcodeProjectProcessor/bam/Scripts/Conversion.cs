@@ -176,7 +176,7 @@ namespace XcodeProjectProcessor
                     if (!attributeArray.Any())
                     {
                         throw new Bam.Core.Exception(
-                            "No VisualStudioProcessor attributes for property {0} in module {1}",
+                            "No XcodeProcessor attributes for property {0} in module {1}",
                             full_property_interface_name,
                             module.ToString()
                         );
