@@ -144,7 +144,10 @@ namespace MakeFileBuilder
             {
                 commonMeta.ExportEnvironment(makeEnvironment);
             }
-            commonMeta.ExportDirectories(makeVariables);
+            commonMeta.ExportDirectories(
+                makeVariables,
+                explicitlyCreateHierarchy: MakeFileCommonMetaData.IsNMAKE
+            );
 
             // all rule
             var prerequisitesOfTargetAll = new Bam.Core.StringArray();

@@ -146,9 +146,11 @@ namespace MakeFileBuilder
         /// Write the directories to be created when running the MakeFile.
         /// </summary>
         /// <param name="output">Where to write the directories to.</param>
+        /// <param name="explicitlyCreateHierarchy">Optional bool indicating that the entire directory hierarchy needs to be make. Defaults to false.</param>
         public void
         ExportDirectories(
-            System.Text.StringBuilder output)
+            System.Text.StringBuilder output,
+            bool explicitlyCreateHierarchy = false)
         {
             if (!this.Directories.Any())
             {
@@ -159,6 +161,31 @@ namespace MakeFileBuilder
                 // http://savannah.gnu.org/bugs/?712
                 // https://stackoverflow.com/questions/9838384/can-gnu-make-handle-filenames-with-spaces
                 Bam.Core.Log.ErrorMessage("WARNING: MakeFiles do not support spaces in pathnames.");
+            }
+            if (explicitlyCreateHierarchy)
+            {
+                var extraDirs = new Bam.Core.StringArray();
+                foreach (var dir in this.Directories)
+                {
+                    var current_dir = dir;
+                    for (;;)
+                    {
+                        var parent = System.IO.Path.GetDirectoryName(current_dir);
+                        if (null == parent)
+                        {
+                            break;
+                        }
+                        if (!System.IO.Directory.Exists(parent) && !this.Directories.Contains(parent))
+                        {
+                            extraDirs.AddUnique(parent);
+                            current_dir = parent;
+                            continue;
+                        }
+                        break;
+                    }
+                }
+                this.Directories.AddRange(extraDirs);
+                this.Directories = new Bam.Core.StringArray(this.Directories.OrderBy(item => item.Length));
             }
             if (IsNMAKE)
             {
