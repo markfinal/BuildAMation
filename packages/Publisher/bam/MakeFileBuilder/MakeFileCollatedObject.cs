@@ -109,10 +109,21 @@ namespace Publisher
             }
             else
             {
-                rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@) {2}",
-                    CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                    commandLine.ToString(' '),
-                    CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
+                {
+                    // $< didn't work in NMAKE here
+                    rule.AddShellCommand(System.String.Format(@"{0} {1} $** $(@D) {2}",
+                        CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                        commandLine.ToString(' '),
+                        CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                }
+                else
+                {
+                    rule.AddShellCommand(System.String.Format(@"{0} {1} $< $(dir $@) {2}",
+                        CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
+                        commandLine.ToString(' '),
+                        CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+                }
             }
             rule.AddPrerequisite(Bam.Core.TokenizedString.CreateVerbatim(prerequisitePath));
         }
