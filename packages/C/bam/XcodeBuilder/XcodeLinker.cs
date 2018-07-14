@@ -76,13 +76,22 @@ namespace C
                 productType = XcodeBuilder.Target.EProductType.Executable;
             }
 
-            LinkOrArchive(
+            var target = LinkOrArchive(
                 module,
                 fileType,
                 productType,
                 productName,
                 module.ObjectFiles,
                 module.HeaderFiles
+            );
+            if (null == target)
+            {
+                return;
+            }
+
+            ProcessLibraryDependencies(
+                module,
+                target
             );
         }
     }

@@ -33,7 +33,7 @@ namespace C
 #if BAM_V2
     public static partial class XcodeSupport
     {
-        public static void
+        public static XcodeBuilder.Target
         LinkOrArchive(
             CModule module,
             XcodeBuilder.FileReference.EFileType fileType,
@@ -44,7 +44,7 @@ namespace C
         {
             if (!objectFiles.Any())
             {
-                return;
+                return null;
             }
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
@@ -130,8 +130,12 @@ namespace C
             }
             else
             {
-                // TODO
-                //(module.ObjectFiles.First().Settings as XcodeProjectProcessor.IConvertToProject).Convert(module, configuration);
+                XcodeProjectProcessor.XcodeConversion.Convert(
+                    objectFiles.First().Settings,
+                    objectFiles.First().GetType(),
+                    module,
+                    configuration
+                );
                 foreach (var objFile in objectFiles)
                 {
                     var asObjFileBase = objFile as C.ObjectFileBase;
@@ -148,6 +152,113 @@ namespace C
             }
 
             configuration["EXCLUDED_SOURCE_FILE_NAMES"] = excludedSource;
+
+            return target;
+        }
+
+        public static void
+        ProcessLibraryDependencies(
+            ConsoleApplication module,
+            XcodeBuilder.Target target
+        )
+        {
+            // add library search paths prior to converting linker settings
+            var linker = module.Settings as C.ICommonLinkerSettings;
+            foreach (var library in module.Libraries)
+            {
+                if (library is C.StaticLibrary)
+                {
+                    var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
+                    lock (libDir)
+                    {
+                        if (!libDir.IsParsed)
+                        {
+                            libDir.Parse();
+                        }
+                    }
+                    linker.LibraryPaths.Add(libDir);
+                }
+                else if (library is C.IDynamicLibrary)
+                {
+                    var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
+                    lock (libDir)
+                    {
+                        if (!libDir.IsParsed)
+                        {
+                            libDir.Parse();
+                        }
+                    }
+                    linker.LibraryPaths.Add(libDir);
+                }
+                else if (library is C.CSDKModule)
+                {
+                    // SDK modules are collections of libraries, not one in particular
+                    // thus do nothing as they are undefined at this point, and may yet be pulled in automatically
+                }
+                else if (library is C.HeaderLibrary)
+                {
+                    // no library
+                }
+                else if (library is OSXFramework)
+                {
+                    // frameworks are dealt with elsewhere
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("Don't know how to handle this module type, {0}", library.ToString());
+                }
+            }
+
+            foreach (var library in module.Libraries)
+            {
+                var libAsCModule = library as C.CModule;
+                if (null == libAsCModule)
+                {
+                    throw new Bam.Core.Exception("Don't know how to handle library module of type '{0}'", library.GetType().ToString());
+                }
+                if (libAsCModule.IsPrebuilt)
+                {
+                    if (library is OSXFramework)
+                    {
+                        // frameworks are dealt with elsewhere
+                    }
+                    else if (library is C.StaticLibrary)
+                    {
+                        (module.Tool as C.LinkerTool).ProcessLibraryDependency(module as CModule, libAsCModule);
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Don't know how to handle this prebuilt module dependency, '{0}'", library.GetType().ToString());
+                    }
+                }
+                else
+                {
+                    if (library is C.StaticLibrary)
+                    {
+                        target.DependsOn(library.MetaData as XcodeBuilder.Target);
+                    }
+                    else if (library is C.IDynamicLibrary)
+                    {
+                        target.DependsOn(library.MetaData as XcodeBuilder.Target);
+                    }
+                    else if (library is C.CSDKModule)
+                    {
+                        // do nothing, just an area for external
+                    }
+                    else if (library is C.HeaderLibrary)
+                    {
+                        // no library
+                    }
+                    else if (library is OSXFramework)
+                    {
+                        // frameworks are dealt with elsewhere
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Don't know how to handle this module type");
+                    }
+                }
+            }
         }
     }
 #endif
