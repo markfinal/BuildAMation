@@ -487,7 +487,7 @@ namespace C
 
 #if D_PACKAGE_XCODEBUILDER
                 case "Xcode":
-                    //XcodeSupport.Link(this);
+                    XcodeSupport.Link(this);
                     break;
 #endif
 
