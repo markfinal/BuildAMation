@@ -47,7 +47,14 @@ namespace C
             rule.AddPrerequisite(tool.Executable);
 
             var args = new Bam.Core.StringArray();
-            args.Add("$< > $@");
+            if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
+            {
+                args.Add("$** > $@");
+            }
+            else
+            {
+                args.Add("$< > $@");
+            }
             rule.AddShellCommand(args.ToString(' '));
 
             var outputDir = System.IO.Path.GetDirectoryName(outputPath.ToString());

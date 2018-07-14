@@ -54,7 +54,14 @@ namespace CodeGenTest
             commandLineArgs.Add("Generated");
 
             var command = new System.Text.StringBuilder();
-            command.AppendFormat("{0} {1} $^", compiler.Executable.ToStringQuoteIfNecessary(), commandLineArgs.ToString(' '));
+            if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
+            {
+                command.AppendFormat("{0} {1} $**", compiler.Executable.ToStringQuoteIfNecessary(), commandLineArgs.ToString(' '));
+            }
+            else
+            {
+                command.AppendFormat("{0} {1} $^", compiler.Executable.ToStringQuoteIfNecessary(), commandLineArgs.ToString(' '));
+            }
             rule.AddShellCommand(command.ToString());
         }
     }
