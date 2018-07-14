@@ -160,11 +160,19 @@ namespace XcodeProjectProcessor
     {
         public PathAttribute(
             string property,
-            ValueType type
+            bool ignore = false
         )
             :
-            base(property, type)
-        {}
+            base(property, ValueType.Unique)
+        {
+            this.Ignore = ignore;
+        }
+
+        public bool Ignore
+        {
+            get;
+            private set;
+        }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -383,6 +391,11 @@ namespace XcodeProjectProcessor
                     }
                     else if (attributeArray.First() is PathAttribute)
                     {
+                        var associated_attr = attributeArray.First() as PathAttribute;
+                        if (associated_attr.Ignore)
+                        {
+                            continue;
+                        }
                         throw new System.NotImplementedException();
                     }
                     else if (attributeArray.First() is PathArrayAttribute)

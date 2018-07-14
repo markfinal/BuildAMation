@@ -52,6 +52,11 @@ namespace ClangCommon
         [CommandLineProcessor.Enum(C.ELanguageStandard.GNU89, "-std=gnu89")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.C99, "-std=c99")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.GNU99, "-std=gnu99")]
+        [XcodeProjectProcessor.UniqueEnum(C.ELanguageStandard.NotSet, "GCC_C_LANGUAGE_STANDARD", "", ignore: true)]
+        [XcodeProjectProcessor.UniqueEnum(C.ELanguageStandard.C89, "GCC_C_LANGUAGE_STANDARD", "c89")]
+        [XcodeProjectProcessor.UniqueEnum(C.ELanguageStandard.GNU89, "GCC_C_LANGUAGE_STANDARD", "gnu89")]
+        [XcodeProjectProcessor.UniqueEnum(C.ELanguageStandard.C99, "GCC_C_LANGUAGE_STANDARD", "c99")]
+        [XcodeProjectProcessor.UniqueEnum(C.ELanguageStandard.GNU99, "GCC_C_LANGUAGE_STANDARD", "gnu99")]
 #endif
         C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
         {

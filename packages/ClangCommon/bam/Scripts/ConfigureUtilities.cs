@@ -165,7 +165,7 @@ namespace ClangCommon
             }
             catch (System.NullReferenceException)
             {
-                return "Unknown";
+                return "Unknown Clang Version";
             }
         }
     }
