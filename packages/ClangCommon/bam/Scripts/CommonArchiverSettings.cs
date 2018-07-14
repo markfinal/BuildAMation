@@ -58,6 +58,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("")]
+        [XcodeProjectProcessor.Path("", ignore: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
@@ -67,6 +68,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-s", "")]
+        [XcodeProjectProcessor.UniqueBool("", "", "", ignore: true)]
 #endif
         bool ICommonArchiverSettings.Ranlib
         {
@@ -76,6 +78,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-c", "")]
+        [XcodeProjectProcessor.UniqueBool("", "", "", ignore: true)]
 #endif
         bool ICommonArchiverSettings.DoNotWarnIfLibraryCreated
         {
@@ -85,6 +88,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
+        [XcodeProjectProcessor.StringArray("", ignore: true)]
 #endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
@@ -94,6 +98,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Enum(EArchiverCommand.Replace, "-r")]
+        [XcodeProjectProcessor.UniqueEnum(EArchiverCommand.Replace, "", "", ignore: true)]
 #endif
         EArchiverCommand ICommonArchiverSettings.Command
         {

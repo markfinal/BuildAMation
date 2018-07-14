@@ -44,10 +44,12 @@ namespace XcodeProjectProcessor
 
         protected BaseAttribute(
             string property,
-            ValueType type)
+            ValueType type,
+            bool ignore = false)
         {
             this.Property = property;
             this.Type = type;
+            this.Ignore = ignore;
         }
 
         public string Property
@@ -57,6 +59,12 @@ namespace XcodeProjectProcessor
         }
 
         public ValueType Type
+        {
+            get;
+            private set;
+        }
+
+        public bool Ignore
         {
             get;
             private set;
@@ -75,11 +83,10 @@ namespace XcodeProjectProcessor
             bool ignore = false
         )
             :
-            base(property, type)
+            base(property, type, ignore)
         {
             this.Key = key as System.Enum;
             this.Value = value;
-            this.Ignore = ignore;
         }
 
         public System.Enum Key
@@ -89,12 +96,6 @@ namespace XcodeProjectProcessor
         }
 
         public string Value
-        {
-            get;
-            private set;
-        }
-
-        public bool Ignore
         {
             get;
             private set;
@@ -147,10 +148,11 @@ namespace XcodeProjectProcessor
         public MultiEnumAttribute(
             object key,
             string property,
-            string value
+            string value,
+            bool ignore = false
         )
             :
-            base(key, property, value, ValueType.MultiValued)
+            base(key, property, value, ValueType.MultiValued, ignore: ignore)
         { }
     }
 
@@ -163,16 +165,8 @@ namespace XcodeProjectProcessor
             bool ignore = false
         )
             :
-            base(property, ValueType.Unique)
-        {
-            this.Ignore = ignore;
-        }
-
-        public bool Ignore
-        {
-            get;
-            private set;
-        }
+            base(property, ValueType.Unique, ignore: ignore)
+        {}
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -180,10 +174,11 @@ namespace XcodeProjectProcessor
         BaseAttribute
     {
         public PathArrayAttribute(
-            string property
+            string property,
+            bool ignore = false
         )
             :
-            base(property, ValueType.MultiValued)
+            base(property, ValueType.MultiValued, ignore: ignore)
         { }
     }
 
@@ -196,16 +191,8 @@ namespace XcodeProjectProcessor
             bool ignore = false
         )
             :
-            base(property, ValueType.Unique)
-        {
-            this.Ignore = ignore;
-        }
-
-        public bool Ignore
-        {
-            get;
-            private set;
-        }
+            base(property, ValueType.Unique, ignore: ignore)
+        {}
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -215,10 +202,11 @@ namespace XcodeProjectProcessor
         public StringArrayAttribute(
             string property,
             string prefix = null,
-            bool spacesSeparate = false
+            bool spacesSeparate = false,
+            bool ignore = false
         )
             :
-            base(property, ValueType.MultiValued)
+            base(property, ValueType.MultiValued, ignore: ignore)
         {
             this.Prefix = prefix;
             this.SpacesSeparate = spacesSeparate;
@@ -246,10 +234,11 @@ namespace XcodeProjectProcessor
             string property,
             string truth_value,
             string false_value,
-            BaseAttribute.ValueType type
+            BaseAttribute.ValueType type,
+            bool ignore = false
         )
             :
-            base(property, type)
+            base(property, type, ignore: ignore)
         {
             this.Truth = truth_value;
             this.Falisy = false_value;
@@ -274,10 +263,11 @@ namespace XcodeProjectProcessor
         public UniqueBoolAttribute(
             string property,
             string truth_value,
-            string false_value
+            string false_value,
+            bool ignore = false
         )
             :
-            base(property, truth_value, false_value, ValueType.Unique)
+            base(property, truth_value, false_value, ValueType.Unique, ignore: ignore)
         {}
     }
 
@@ -287,10 +277,11 @@ namespace XcodeProjectProcessor
         public MultiBoolAttribute(
             string property,
             string truth_value,
-            string false_value
+            string false_value,
+            bool ignore = false
         )
             :
-            base(property, truth_value, false_value, ValueType.MultiValued)
+            base(property, truth_value, false_value, ValueType.MultiValued, ignore: ignore)
         { }
     }
 
@@ -299,9 +290,11 @@ namespace XcodeProjectProcessor
         BaseAttribute
     {
         public PreprocessorDefinesAttribute(
-            string property)
+            string property,
+            bool ignore = false
+        )
             :
-            base(property, ValueType.MultiValued)
+            base(property, ValueType.MultiValued, ignore: ignore)
         { }
     }
 
@@ -401,6 +394,10 @@ namespace XcodeProjectProcessor
                     else if (attributeArray.First() is PathArrayAttribute)
                     {
                         var associated_attr = attributeArray.First() as PathArrayAttribute;
+                        if (associated_attr.Ignore)
+                        {
+                            continue;
+                        }
                         var paths = new XcodeBuilder.MultiConfigurationValue();
                         foreach (var path in (property_value as Bam.Core.TokenizedStringArray).ToEnumerableWithoutDuplicates())
                         {
@@ -438,6 +435,10 @@ namespace XcodeProjectProcessor
                     else if (attributeArray.First() is StringArrayAttribute)
                     {
                         var associated_attr = attributeArray.First() as StringArrayAttribute;
+                        if (associated_attr.Ignore)
+                        {
+                            continue;
+                        }
                         var values = new XcodeBuilder.MultiConfigurationValue();
                         var prefix = (associated_attr.Prefix != null) ? associated_attr.Prefix : System.String.Empty;
                         foreach (var item in property_value as Bam.Core.StringArray)
@@ -459,6 +460,10 @@ namespace XcodeProjectProcessor
                     else if (attributeArray.First() is BoolAttribute)
                     {
                         var associated_attr = attributeArray.First() as BoolAttribute;
+                        if (associated_attr.Ignore)
+                        {
+                            continue;
+                        }
                         var real_value = (bool)property_value;
                         if (associated_attr.Type == BaseAttribute.ValueType.MultiValued)
                         {
@@ -490,6 +495,10 @@ namespace XcodeProjectProcessor
                     else if (attributeArray.First() is PreprocessorDefinesAttribute)
                     {
                         var associated_attr = attributeArray.First() as PreprocessorDefinesAttribute;
+                        if (associated_attr.Ignore)
+                        {
+                            continue;
+                        }
                         var defines = new XcodeBuilder.MultiConfigurationValue();
                         foreach (var define in property_value as C.PreprocessorDefinitions)
                         {
