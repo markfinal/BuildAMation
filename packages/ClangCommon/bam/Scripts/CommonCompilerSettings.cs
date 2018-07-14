@@ -150,6 +150,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-g", "")]
+        [XcodeProjectProcessor.UniqueBool("GCC_GENERATE_DEBUGGING_SYMBOLS", "YES", "NO")]
 #endif
         bool? C.ICommonCompilerSettings.DebugSymbols
         {
@@ -159,6 +160,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-Werror", "-Wno-error")]
+        [XcodeProjectProcessor.UniqueBool("GCC_TREAT_WARNINGS_AS_ERRORS", "YES", "NO")]
 #endif
         bool? C.ICommonCompilerSettings.WarningsAsErrors
         {

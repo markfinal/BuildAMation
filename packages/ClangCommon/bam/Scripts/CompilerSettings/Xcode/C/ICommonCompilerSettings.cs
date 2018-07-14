@@ -61,11 +61,11 @@ namespace ClangCommon
                         throw new Bam.Core.Exception("Unknown bit depth, {0}", settings.Bits.Value);
                 }
             }
-#endif
             if (settings.DebugSymbols.HasValue)
             {
                 configuration["GCC_GENERATE_DEBUGGING_SYMBOLS"] = new XcodeBuilder.UniqueConfigurationValue(settings.DebugSymbols.Value ? "YES" : "NO");
             }
+#endif
             if (settings.DisableWarnings.Count > 0)
             {
                 var warnings = new XcodeBuilder.MultiConfigurationValue();
@@ -209,12 +209,12 @@ namespace ClangCommon
                         throw new Bam.Core.Exception("Unsupported target language, {0}", settings.TargetLanguage.Value);
                 }
             }
+#if BAM_V2
+#else
             if (settings.WarningsAsErrors.HasValue)
             {
                 configuration["GCC_TREAT_WARNINGS_AS_ERRORS"] = new XcodeBuilder.UniqueConfigurationValue(settings.WarningsAsErrors.Value ? "YES" : "NO");
             }
-#if BAM_V2
-#else
             if (settings.OutputType.HasValue)
             {
                 // TODO: anything?
