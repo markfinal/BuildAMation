@@ -43,12 +43,20 @@ namespace XcodeProjectProcessor
         }
 
         protected BaseAttribute(
-            string property)
+            string property,
+            ValueType type)
         {
             this.Property = property;
+            this.Type = type;
         }
 
         public string Property
+        {
+            get;
+            private set;
+        }
+
+        public ValueType Type
         {
             get;
             private set;
@@ -61,10 +69,11 @@ namespace XcodeProjectProcessor
     {
         public EnumAttribute(
             object key,
-            string property
+            string property,
+            ValueType type
         )
             :
-            base(property)
+            base(property, type)
         {
             this.Key = key as System.Enum;
         }
@@ -81,10 +90,11 @@ namespace XcodeProjectProcessor
         BaseAttribute
     {
         public PathAttribute(
-            string property
+            string property,
+            ValueType type
         )
             :
-            base(property)
+            base(property, type)
         {}
     }
 
@@ -93,10 +103,11 @@ namespace XcodeProjectProcessor
         BaseAttribute
     {
         public PathArrayAttribute(
-            string property
+            string property,
+            ValueType type
         )
             :
-            base(property)
+            base(property, type)
         { }
     }
 
@@ -105,10 +116,11 @@ namespace XcodeProjectProcessor
         BaseAttribute
     {
         public StringAttribute(
-            string property
+            string property,
+            ValueType type
         )
             :
-            base(property)
+            base(property, type)
         { }
     }
 
@@ -117,29 +129,29 @@ namespace XcodeProjectProcessor
         BaseAttribute
     {
         public StringArrayAttribute(
-            string property
+            string property,
+            ValueType type
         )
             :
-            base(property)
+            base(property, type)
         { }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public class BoolAttribute :
+    public abstract class BoolAttribute :
         BaseAttribute
     {
-        public BoolAttribute(
+        protected BoolAttribute(
             string property,
             string truth_value,
             string false_value,
             BaseAttribute.ValueType type
         )
             :
-            base(property)
+            base(property, type)
         {
             this.Truth = truth_value;
             this.Falisy = false_value;
-            this.Type = type;
         }
 
         public string Truth
@@ -153,12 +165,32 @@ namespace XcodeProjectProcessor
             get;
             private set;
         }
+    }
 
-        public BaseAttribute.ValueType Type
-        {
-            get;
-            private set;
-        }
+    public sealed class UniqueBoolAttribute :
+        BoolAttribute
+    {
+        public UniqueBoolAttribute(
+            string property,
+            string truth_value,
+            string false_value
+        )
+            :
+            base(property, truth_value, false_value, ValueType.Unique)
+        {}
+    }
+
+    public sealed class MultiBoolAttribute :
+        BoolAttribute
+    {
+        public MultiBoolAttribute(
+            string property,
+            string truth_value,
+            string false_value
+        )
+            :
+            base(property, truth_value, false_value, ValueType.MultiValued)
+        { }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -166,9 +198,10 @@ namespace XcodeProjectProcessor
         BaseAttribute
     {
         public PreprocessorDefinesAttribute(
-            string property)
+            string property,
+            ValueType type)
             :
-            base(property)
+            base(property, type)
         { }
     }
 
