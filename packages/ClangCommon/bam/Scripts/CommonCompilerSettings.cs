@@ -297,6 +297,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-fstrict-aliasing", "-fno-strict-aliasing")]
+        [XcodeProjectProcessor.UniqueBool("GCC_STRICT_ALIASING", "YES", "NO")]
 #endif
         bool? ICommonCompilerSettings.StrictAliasing
         {

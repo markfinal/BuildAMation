@@ -69,7 +69,6 @@ namespace ClangCommon
             {
                 configuration["GCC_WARN_PEDANTIC"] = new XcodeBuilder.UniqueConfigurationValue(settings.Pedantic.Value ? "YES" : "NO");
             }
-#endif
             if (settings.Visibility.HasValue)
             {
                 configuration["GCC_SYMBOLS_PRIVATE_EXTERN"] = new XcodeBuilder.UniqueConfigurationValue((settings.Visibility.Value == EVisibility.Default) ? "NO" : "YES");
@@ -78,6 +77,7 @@ namespace ClangCommon
             {
                 configuration["GCC_STRICT_ALIASING"] = new XcodeBuilder.UniqueConfigurationValue(settings.StrictAliasing.Value ? "YES" : "NO");
             }
+#endif
             if (settings.Optimization.HasValue)
             {
                 var common_optimization = (settings as C.ICommonCompilerSettings).Optimization;
