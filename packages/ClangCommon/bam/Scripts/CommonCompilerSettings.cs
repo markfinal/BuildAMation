@@ -204,6 +204,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-fomit-frame-pointer", "-fno-omit-frame-pointer")]
+        [XcodeProjectProcessor.MultiBool("OTHER_CFLAGS", "-fomit-frame-pointer", "-fno-omit-frame-pointer")]
 #endif
         bool? C.ICommonCompilerSettings.OmitFramePointer
         {
@@ -213,6 +214,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("-Wno-")]
+        [XcodeProjectProcessor.StringArray("WARNING_CFLAGS", prefix: "-Wno-")]
 #endif
         Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
         {
@@ -222,6 +224,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("-U")]
+        [XcodeProjectProcessor.StringArray("OTHER_CFLAGS", prefix: "-U")]
 #endif
         Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
         {
@@ -231,6 +234,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("-include ")]
+        [XcodeProjectProcessor.StringArray("OTHER_CFLAGS", prefix: "-include ")]
 #endif
         Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
         {

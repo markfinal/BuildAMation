@@ -27,6 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+#if BAM_V2
+#else
 namespace ClangCommon
 {
     public static partial class XcodeCompilerImplementation
@@ -37,8 +39,6 @@ namespace ClangCommon
             Bam.Core.Module module,
             XcodeBuilder.Configuration configuration)
         {
-#if BAM_V2
-#else
             if (settings.Bits.HasValue)
             {
                 switch (settings.Bits.Value)
@@ -65,7 +65,6 @@ namespace ClangCommon
             {
                 configuration["GCC_GENERATE_DEBUGGING_SYMBOLS"] = new XcodeBuilder.UniqueConfigurationValue(settings.DebugSymbols.Value ? "YES" : "NO");
             }
-#endif
             if (settings.DisableWarnings.Count > 0)
             {
                 var warnings = new XcodeBuilder.MultiConfigurationValue();
@@ -75,8 +74,6 @@ namespace ClangCommon
                 }
                 configuration["WARNING_CFLAGS"] = warnings;
             }
-#if BAM_V2
-#else
             if (settings.IncludePaths.Count > 0)
             {
                 var paths = new XcodeBuilder.MultiConfigurationValue();
@@ -124,14 +121,11 @@ namespace ClangCommon
                         throw new Bam.Core.Exception("Unsupported optimization, {0}", settings.Optimization.Value);
                 }
             }
-#endif
             if (settings.OmitFramePointer.HasValue)
             {
                 var arg = settings.OmitFramePointer.Value ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer";
                 configuration["OTHER_CFLAGS"] = new XcodeBuilder.MultiConfigurationValue(arg);
             }
-#if BAM_V2
-#else
             if (settings.PreprocessorDefines.Count > 0)
             {
                 var defines = new XcodeBuilder.MultiConfigurationValue();
@@ -159,7 +153,6 @@ namespace ClangCommon
                 }
                 configuration["GCC_PREPROCESSOR_DEFINITIONS"] = defines;
             }
-#endif
             if (settings.PreprocessorUndefines.Count > 0)
             {
                 var undefines = new XcodeBuilder.MultiConfigurationValue();
@@ -169,8 +162,6 @@ namespace ClangCommon
                 }
                 configuration["OTHER_CFLAGS"] = undefines;
             }
-#if BAM_V2
-#else
             if (settings.SystemIncludePaths.Count > 0)
             {
                 var paths = new XcodeBuilder.MultiConfigurationValue();
@@ -216,7 +207,6 @@ namespace ClangCommon
             {
                 // TODO: anything?
             }
-#endif
             if (settings.NamedHeaders.Count > 0)
             {
                 var namedHeaders = new XcodeBuilder.MultiConfigurationValue();
@@ -231,3 +221,4 @@ namespace ClangCommon
         }
     }
 }
+#endif

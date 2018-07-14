@@ -198,11 +198,19 @@ namespace XcodeProjectProcessor
     {
         public StringArrayAttribute(
             string property,
-            ValueType type
+            string prefix = null
         )
             :
-            base(property, type)
-        { }
+            base(property, ValueType.MultiValued)
+        {
+            this.Prefix = prefix;
+        }
+
+        public string Prefix
+        {
+            get;
+            private set;
+        }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -394,7 +402,20 @@ namespace XcodeProjectProcessor
                     }
                     else if (attributeArray.First() is StringArrayAttribute)
                     {
-                        throw new System.NotImplementedException();
+                        var associated_attr = attributeArray.First() as StringArrayAttribute;
+                        var values = new XcodeBuilder.MultiConfigurationValue();
+                        foreach (var item in property_value as Bam.Core.StringArray)
+                        {
+                            if (null != associated_attr.Prefix)
+                            {
+                                values.Add(System.String.Format("{0}{1}", associated_attr.Prefix, item));
+                            }
+                            else
+                            {
+                                values.Add(item);
+                            }
+                        }
+                        configuration[associated_attr.Property] = values;
                     }
                     else if (attributeArray.First() is BoolAttribute)
                     {
