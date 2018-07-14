@@ -47,13 +47,25 @@ namespace C
                 productName = module.Macros["OutputName"];
             }
 
+            XcodeBuilder.Target target;
+            XcodeBuilder.Configuration configuration;
             LinkOrArchive(
+                out target,
+                out configuration,
                 module,
                 XcodeBuilder.FileReference.EFileType.Archive,
                 XcodeBuilder.Target.EProductType.StaticLibrary,
                 productName,
                 module.ObjectFiles,
                 module.HeaderFiles
+            );
+
+            // convert librarian settings to the Xcode project
+            XcodeProjectProcessor.XcodeConversion.Convert(
+                module.Settings,
+                module.Settings.GetType(),
+                module,
+                configuration
             );
         }
     }

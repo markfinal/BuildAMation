@@ -33,8 +33,10 @@ namespace C
 #if BAM_V2
     public static partial class XcodeSupport
     {
-        public static XcodeBuilder.Target
+        public static void
         LinkOrArchive(
+            out XcodeBuilder.Target outTarget,
+            out XcodeBuilder.Configuration outConfiguration,
             CModule module,
             XcodeBuilder.FileReference.EFileType fileType,
             XcodeBuilder.Target.EProductType productType,
@@ -44,7 +46,9 @@ namespace C
         {
             if (!objectFiles.Any())
             {
-                return null;
+                outTarget = null;
+                outConfiguration = null;
+                return;
             }
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
@@ -153,14 +157,14 @@ namespace C
 
             configuration["EXCLUDED_SOURCE_FILE_NAMES"] = excludedSource;
 
-            return target;
+            outTarget = target;
+            outConfiguration = configuration;
         }
 
         public static void
         ProcessLibraryDependencies(
             ConsoleApplication module,
-            XcodeBuilder.Target target
-        )
+            XcodeBuilder.Target target)
         {
             // add library search paths prior to converting linker settings
             var linker = module.Settings as C.ICommonLinkerSettings;

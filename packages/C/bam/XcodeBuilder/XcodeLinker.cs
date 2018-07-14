@@ -76,7 +76,11 @@ namespace C
                 productType = XcodeBuilder.Target.EProductType.Executable;
             }
 
-            var target = LinkOrArchive(
+            XcodeBuilder.Target target;
+            XcodeBuilder.Configuration configuration;
+            LinkOrArchive(
+                out target,
+                out configuration,
                 module,
                 fileType,
                 productType,
@@ -92,6 +96,14 @@ namespace C
             ProcessLibraryDependencies(
                 module,
                 target
+            );
+
+            // convert link settings to the Xcode project
+            XcodeProjectProcessor.XcodeConversion.Convert(
+                module.Settings,
+                module.Settings.GetType(),
+                module,
+                configuration
             );
         }
     }
