@@ -39,18 +39,26 @@ namespace ClangCommon
             string lastUpgradeCheck,
             Bam.Core.StringArray expectedSDKs)
         {
-            if (!Bam.Core.OSUtilities.IsOSXHosting)
-            {
-                return;
-            }
-
             this.Meta.Add("LastUpgradeCheck", lastUpgradeCheck);
 
-            this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
-            if (!this.Contains("MacOSXMinVersion"))
+            try
             {
-                // 10.7 is the minimum version required for libc++ currently
-                this.MacOSXMinimumVersionSupported = "10.7";
+                this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
+                if (!this.Contains("MacOSXMinVersion"))
+                {
+                    // 10.7 is the minimum version required for libc++ currently
+                    this.MacOSXMinimumVersionSupported = "10.7";
+                }
+            }
+            catch (System.ComponentModel.Win32Exception)
+            {
+                if (Bam.Core.OSUtilities.IsOSXHosting)
+                {
+                    throw;
+                }
+                // arbitrary choice for non-macOS platforms
+                this.SDK = "macos10.13";
+                this.MacOSXMinimumVersionSupported = "10.13";
             }
         }
 
@@ -130,12 +138,24 @@ namespace ClangCommon
             {
                 return;
             }
-            this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
-            Bam.Core.Log.Info("Using {0} and {1} SDK installed at {2}",
-                ClangCommon.ConfigureUtilities.GetClangVersion(this.SDK),
-                this.SDK,
-                this.SDKPath
-            );
+            try
+            {
+                this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
+                Bam.Core.Log.Info("Using {0} and {1} SDK installed at {2}",
+                    ClangCommon.ConfigureUtilities.GetClangVersion(this.SDK),
+                    this.SDK,
+                    this.SDKPath
+                );
+            }
+            catch (System.InvalidOperationException)
+            {
+                if (Bam.Core.OSUtilities.IsOSXHosting)
+                {
+                    throw;
+                }
+
+                this.SDKPath = "";
+            }
         }
     }
 }

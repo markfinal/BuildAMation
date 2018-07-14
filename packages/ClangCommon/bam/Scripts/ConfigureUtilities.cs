@@ -34,7 +34,21 @@ namespace ClangCommon
     {
         static ConfigureUtilities()
         {
-            xcrunPath = Bam.Core.OSUtilities.GetInstallLocation("xcrun").First();
+            try
+            {
+                xcrunPath = Bam.Core.OSUtilities.GetInstallLocation("xcrun").First();
+            }
+            catch (Bam.Core.Exception)
+            {
+                if (Bam.Core.OSUtilities.IsOSXHosting)
+                {
+                    throw;
+                }
+
+                // this needs to be an executable that exists, and will return immediately
+                // as it's checked for in the PrebuiltTool code
+                xcrunPath = Bam.Core.OSUtilities.GetInstallLocation("dir").First();
+            }
         }
 
         public static string
@@ -140,12 +154,19 @@ namespace ClangCommon
         GetClangVersion(
             string sdkType)
         {
-            var versionOutput = Bam.Core.OSUtilities.RunExecutable(
-                xcrunPath,
-                System.String.Format("--sdk {0} clang --version", sdkType)
-            );
-            var split = versionOutput.Split(new[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries);
-            return split[0];
+            try
+            {
+                var versionOutput = Bam.Core.OSUtilities.RunExecutable(
+                    xcrunPath,
+                    System.String.Format("--sdk {0} clang --version", sdkType)
+                );
+                var split = versionOutput.Split(new[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries);
+                return split[0];
+            }
+            catch (System.NullReferenceException)
+            {
+                return "Unknown";
+            }
         }
     }
 }
