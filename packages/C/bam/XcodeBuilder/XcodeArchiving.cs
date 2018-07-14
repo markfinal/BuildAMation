@@ -67,6 +67,12 @@ namespace C
                 module,
                 configuration
             );
+
+            // add order only dependents
+            AddOrderOnlyDependentProjects(
+                module,
+                target
+            );
         }
     }
 #else

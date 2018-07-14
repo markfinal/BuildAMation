@@ -264,6 +264,79 @@ namespace C
                 }
             }
         }
+
+        public static void
+        AddOrderOnlyDependentProjects(
+            Bam.Core.Module module,
+            XcodeBuilder.Target target)
+        {
+            var required_targets = new System.Collections.Generic.HashSet<XcodeBuilder.Target>();
+            // order only dependencies - recurse into each, so that all layers
+            // of order only dependencies are included
+            var queue = new System.Collections.Generic.Queue<Bam.Core.Module>(module.Requirements);
+            while (queue.Count > 0)
+            {
+                var required = queue.Dequeue();
+                foreach (var additional in required.Requirements)
+                {
+                    queue.Enqueue(additional);
+                }
+
+                if (null == required.MetaData)
+                {
+                    continue;
+                }
+                if (required is HeaderLibrary)
+                {
+                    // the target for a HeaderLibrary has no FileReference output, and thus cannot be an order only dependency
+                    continue;
+                }
+
+                var requiredTarget = required.MetaData as XcodeBuilder.Target;
+                if (null != requiredTarget)
+                {
+                    required_targets.Add(requiredTarget);
+                }
+            }
+            // any non-C module projects should be order-only dependencies
+            foreach (var dependent in module.Dependents)
+            {
+                if (null == dependent.MetaData)
+                {
+                    continue;
+                }
+                if (dependent is C.CModule)
+                {
+                    continue;
+                }
+                var dependentTarget = dependent.MetaData as XcodeBuilder.Target;
+                if (null != dependentTarget)
+                {
+                    required_targets.Add(dependentTarget);
+                }
+            }
+            if (module is IForwardedLibraries)
+            {
+                // however, there may be forwarded libraries, and these are useful order only dependents
+                foreach (var dependent in (module as IForwardedLibraries).ForwardedLibraries)
+                {
+                    if (null == dependent.MetaData)
+                    {
+                        continue;
+                    }
+                    var dependentTarget = dependent.MetaData as XcodeBuilder.Target;
+                    if (null != dependentTarget)
+                    {
+                        required_targets.Add(dependentTarget);
+                    }
+                }
+            }
+
+            foreach (var reqTarget in required_targets)
+            {
+                target.Requires(reqTarget);
+            }
+        }
     }
 #endif
 }
