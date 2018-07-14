@@ -127,6 +127,8 @@ namespace ClangCommon
                 var arg = settings.OmitFramePointer.Value ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer";
                 configuration["OTHER_CFLAGS"] = new XcodeBuilder.MultiConfigurationValue(arg);
             }
+#if BAM_V2
+#else
             if (settings.PreprocessorDefines.Count > 0)
             {
                 var defines = new XcodeBuilder.MultiConfigurationValue();
@@ -154,6 +156,7 @@ namespace ClangCommon
                 }
                 configuration["GCC_PREPROCESSOR_DEFINITIONS"] = defines;
             }
+#endif
             if (settings.PreprocessorUndefines.Count > 0)
             {
                 var undefines = new XcodeBuilder.MultiConfigurationValue();

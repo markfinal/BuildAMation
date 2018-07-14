@@ -258,10 +258,9 @@ namespace XcodeProjectProcessor
         BaseAttribute
     {
         public PreprocessorDefinesAttribute(
-            string property,
-            ValueType type)
+            string property)
             :
-            base(property, type)
+            base(property, ValueType.MultiValued)
         { }
     }
 
@@ -394,7 +393,31 @@ namespace XcodeProjectProcessor
                     }
                     else if (attributeArray.First() is PreprocessorDefinesAttribute)
                     {
-                        throw new System.NotImplementedException();
+                        var associated_attr = attributeArray.First() as PreprocessorDefinesAttribute;
+                        var defines = new XcodeBuilder.MultiConfigurationValue();
+                        foreach (var define in property_value as C.PreprocessorDefinitions)
+                        {
+                            if (null == define.Value)
+                            {
+                                defines.Add(define.Key);
+                            }
+                            else
+                            {
+                                var defineValue = define.Value.ToString();
+                                if (defineValue.Contains(" "))
+                                {
+                                    defineValue = defineValue.Replace(" ", "\\\\ ");
+                                }
+                                if (defineValue.Contains("\""))
+                                {
+                                    // note the number of back slashes here
+                                    // required to get \\\" for each " in the original value
+                                    defineValue = defineValue.Replace("\"", "\\\\\\\"");
+                                }
+                                defines.Add(System.String.Format("{0}={1}", define.Key, defineValue));
+                            }
+                        }
+                        configuration[associated_attr.Property] = defines;
                     }
                     else
                     {

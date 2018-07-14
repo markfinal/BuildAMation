@@ -120,6 +120,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.PreprocessorDefines("-D")]
+        [XcodeProjectProcessor.PreprocessorDefines("GCC_PREPROCESSOR_DEFINITIONS")]
 #endif
         C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
         {
