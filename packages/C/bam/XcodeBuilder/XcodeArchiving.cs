@@ -37,111 +37,24 @@ namespace C
         Archive(
             StaticLibrary module)
         {
-            if (!module.ObjectFiles.Any())
-            {
-                return;
-            }
-
-            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            var target = workspace.EnsureTargetExists(module);
-            var libraryFilename = module.CreateTokenizedString(
-                "@filename($(0))",
-                (module.Settings as C.ICommonHasOutputPath).OutputPath
-            );
-            libraryFilename.Parse();
-            target.EnsureOutputFileReferenceExists(
-                libraryFilename,
-                XcodeBuilder.FileReference.EFileType.Archive,
-                XcodeBuilder.Target.EProductType.StaticLibrary);
-            var configuration = target.GetConfiguration(module);
+            Bam.Core.TokenizedString productName;
             if (module.Macros["OutputName"].ToString().Equals(module.Macros["modulename"].ToString()))
             {
-                configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+                productName = Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}");
             }
             else
             {
-                configuration.SetProductName(module.Macros["OutputName"]);
+                productName = module.Macros["OutputName"];
             }
 
-            foreach (var header in module.HeaderFiles)
-            {
-                target.EnsureHeaderFileExists((header as HeaderFile).InputPath);
-            }
-
-            var excludedSource = new XcodeBuilder.MultiConfigurationValue();
-            var realObjectFiles = module.ObjectFiles.Where(item => item is ObjectFile); // C,C++,ObjC,ObjC++
-            if (realObjectFiles.Any())
-            {
-                var sharedSettings = C.SettingsBase.SharedSettings(
-                    realObjectFiles
-                );
-                XcodeSharedSettings.Tweak(sharedSettings);
-                XcodeProjectProcessor.XcodeConversion.Convert(
-                    sharedSettings,
-                    realObjectFiles.First().Settings.GetType(),
-                    module,
-                    configuration
-                );
-
-                foreach (var objFile in realObjectFiles)
-                {
-                    var asObjFileBase = objFile as C.ObjectFileBase;
-                    if (!asObjFileBase.PerformCompilation)
-                    {
-                        var fullPath = asObjFileBase.InputPath.ToString();
-                        var filename = System.IO.Path.GetFileName(fullPath);
-                        excludedSource.Add(filename);
-                    }
-
-                    var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
-                    var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
-                    if (null != deltaSettings)
-                    {
-                        var commandLine = CommandLineProcessor.NativeConversion.Convert(deltaSettings, module);
-                        if (commandLine.Count > 0)
-                        {
-                            // Cannot set per-file-per-configuration settings, so blend them together
-                            if (null == buildFile.Settings)
-                            {
-                                buildFile.Settings = commandLine;
-                            }
-                            else
-                            {
-                                buildFile.Settings.AddRangeUnique(commandLine);
-                            }
-                        }
-                    }
-                    configuration.BuildFiles.Add(buildFile);
-                }
-
-                // now deal with other object file types
-                var assembledObjectFiles = module.ObjectFiles.Where(item => item is AssembledObjectFile);
-                foreach (var asmObj in assembledObjectFiles)
-                {
-                    var buildFile = asmObj.MetaData as XcodeBuilder.BuildFile;
-                    configuration.BuildFiles.Add(buildFile);
-                }
-            }
-            else
-            {
-                // TODO
-                //(module.ObjectFiles.First().Settings as XcodeProjectProcessor.IConvertToProject).Convert(module, configuration);
-                foreach (var objFile in module.ObjectFiles)
-                {
-                    var asObjFileBase = objFile as C.ObjectFileBase;
-                    if (!asObjFileBase.PerformCompilation)
-                    {
-                        var fullPath = asObjFileBase.InputPath.ToString();
-                        var filename = System.IO.Path.GetFileName(fullPath);
-                        excludedSource.Add(filename);
-                    }
-
-                    var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
-                    configuration.BuildFiles.Add(buildFile);
-                }
-            }
-
-            configuration["EXCLUDED_SOURCE_FILE_NAMES"] = excludedSource;
+            LinkOrArchive(
+                module,
+                XcodeBuilder.FileReference.EFileType.Archive,
+                XcodeBuilder.Target.EProductType.StaticLibrary,
+                productName,
+                module.ObjectFiles,
+                module.HeaderFiles
+            );
         }
     }
 #else
