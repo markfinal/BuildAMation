@@ -71,13 +71,15 @@ namespace XcodeProjectProcessor
             object key,
             string property,
             string value,
-            ValueType type
+            ValueType type,
+            bool ignore = false
         )
             :
             base(property, type)
         {
             this.Key = key as System.Enum;
             this.Value = value;
+            this.Ignore = ignore;
         }
 
         public System.Enum Key
@@ -91,6 +93,12 @@ namespace XcodeProjectProcessor
             get;
             private set;
         }
+
+        public bool Ignore
+        {
+            get;
+            private set;
+        }
     }
 
     public sealed class UniqueEnumAttribute :
@@ -99,10 +107,11 @@ namespace XcodeProjectProcessor
         public UniqueEnumAttribute(
             object key,
             string property,
-            string value
+            string value,
+            bool ignore = false
         )
             :
-            base(key, property, value, ValueType.Unique)
+            base(key, property, value, ValueType.Unique, ignore: ignore)
         { }
 
         public UniqueEnumAttribute(
@@ -313,6 +322,10 @@ namespace XcodeProjectProcessor
                     {
                         var associated_attribute = attributeArray.First(
                             item => (item as EnumAttribute).Key.Equals(property_value)) as EnumAttribute;
+                        if (associated_attribute.Ignore)
+                        {
+                            continue;
+                        }
                         switch (associated_attribute.Type)
                         {
                             case BaseAttribute.ValueType.Unique:

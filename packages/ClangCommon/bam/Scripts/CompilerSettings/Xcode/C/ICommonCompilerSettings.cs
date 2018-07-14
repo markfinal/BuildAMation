@@ -104,7 +104,6 @@ namespace ClangCommon
                 }
                 configuration["USER_HEADER_SEARCH_PATHS"] = paths;
             }
-#endif
             if (settings.Optimization.HasValue)
             {
                 switch (settings.Optimization.Value)
@@ -125,6 +124,7 @@ namespace ClangCommon
                         throw new Bam.Core.Exception("Unsupported optimization, {0}", settings.Optimization.Value);
                 }
             }
+#endif
             if (settings.OmitFramePointer.HasValue)
             {
                 var arg = settings.OmitFramePointer.Value ? "-fomit-frame-pointer" : "-fno-omit-frame-pointer";

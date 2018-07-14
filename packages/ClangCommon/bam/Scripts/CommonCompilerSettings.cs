@@ -173,6 +173,10 @@ namespace ClangCommon
         [CommandLineProcessor.Enum(C.EOptimization.Size, "-Os")] // TODO: is this right?
         [CommandLineProcessor.Enum(C.EOptimization.Speed, "-O2")]
         [CommandLineProcessor.Enum(C.EOptimization.Custom, "")]
+        [XcodeProjectProcessor.UniqueEnum(C.EOptimization.Off, "GCC_OPTIMIZATION_LEVEL", "0")]
+        [XcodeProjectProcessor.UniqueEnum(C.EOptimization.Size, "GCC_OPTIMIZATION_LEVEL", "s")]
+        [XcodeProjectProcessor.UniqueEnum(C.EOptimization.Speed, "GCC_OPTIMIZATION_LEVEL", "2")]
+        [XcodeProjectProcessor.UniqueEnum(C.EOptimization.Custom, "GCC_OPTIMIZATION_LEVEL", "", ignore: true)]
 #endif
         C.EOptimization? C.ICommonCompilerSettings.Optimization
         {
