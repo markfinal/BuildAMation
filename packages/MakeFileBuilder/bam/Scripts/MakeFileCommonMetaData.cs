@@ -36,7 +36,7 @@ namespace MakeFileBuilder
     public sealed class MakeFileCommonMetaData
     {
         // experimental
-        public static bool IsNMAKE = false;
+        public static bool IsNMAKE = ("NMAKE" == Bam.Core.CommandLineProcessor.Evaluate(new Options.ChooseFormat()));
 
         public MakeFileCommonMetaData()
         {
