@@ -266,7 +266,7 @@ namespace C
 
 #if D_PACKAGE_XCODEBUILDER
                 case "Xcode":
-                    //XcodeSupport.Archive(this);
+                    XcodeSupport.Archive(this);
                     break;
 #endif
 

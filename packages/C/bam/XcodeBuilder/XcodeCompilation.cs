@@ -30,7 +30,7 @@
 namespace C
 {
 #if BAM_V2
-    public static class XcodeSupport
+    public static partial class XcodeSupport
     {
         public static void
         Compile(

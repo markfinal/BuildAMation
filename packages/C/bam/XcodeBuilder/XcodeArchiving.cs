@@ -31,6 +31,39 @@ using System.Linq;
 namespace C
 {
 #if BAM_V2
+    public static partial class XcodeSupport
+    {
+        public static void
+        Archive(
+            StaticLibrary module)
+        {
+            if (!module.ObjectFiles.Any())
+            {
+                return;
+            }
+
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            var target = workspace.EnsureTargetExists(module);
+            var libraryFilename = module.CreateTokenizedString(
+                "@filename($(0))",
+                (module.Settings as C.ICommonHasOutputPath).OutputPath
+            );
+            libraryFilename.Parse();
+            target.EnsureOutputFileReferenceExists(
+                libraryFilename,
+                XcodeBuilder.FileReference.EFileType.Archive,
+                XcodeBuilder.Target.EProductType.StaticLibrary);
+            var configuration = target.GetConfiguration(module);
+            if (module.Macros["OutputName"].ToString().Equals(module.Macros["modulename"].ToString()))
+            {
+                configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+            }
+            else
+            {
+                configuration.SetProductName(module.Macros["OutputName"]);
+            }
+        }
+    }
 #else
     public sealed class XcodeLibrarian :
         IArchivingPolicy
