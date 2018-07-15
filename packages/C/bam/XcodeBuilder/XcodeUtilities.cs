@@ -136,7 +136,7 @@ namespace C
             {
                 XcodeProjectProcessor.XcodeConversion.Convert(
                     objectFiles.First().Settings,
-                    objectFiles.First().GetType(),
+                    objectFiles.First().Settings.GetType(),
                     module,
                     configuration
                 );
