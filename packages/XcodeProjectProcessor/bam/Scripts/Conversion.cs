@@ -445,16 +445,11 @@ namespace XcodeProjectProcessor
                     var attributeArray = attribute_settings_property.GetCustomAttributes(typeof(BaseAttribute), false);
                     if (!attributeArray.Any())
                     {
-#if true
-                        Bam.Core.Log.MessageAll("MISSING {0}", full_property_interface_name);
-                        continue;
-#else
                         throw new Bam.Core.Exception(
                             "No XcodeProcessor attributes for property {0} in module {1}",
                             full_property_interface_name,
                             module.ToString()
                         );
-#endif
                     }
                     if (attributeArray.First() is EnumAttribute)
                     {
