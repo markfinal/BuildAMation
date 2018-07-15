@@ -346,12 +346,11 @@ namespace XcodeProjectProcessor
                     }
                     if (!found)
                     {
-                        var buildFile = target.EnsureFrameworksBuildFileExists(
+                        target.EnsureFrameworksBuildFileExists(
                             Bam.Core.TokenizedString.CreateVerbatim("System/Library/Frameworks/" + framework_path),
                             XcodeBuilder.FileReference.EFileType.WrapperFramework,
                             XcodeBuilder.FileReference.ESourceTree.SDKRoot
                         );
-                        project.MainGroup.AddChild(buildFile.FileRef);
                     }
                 }
             }

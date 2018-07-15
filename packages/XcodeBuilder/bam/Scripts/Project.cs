@@ -73,7 +73,9 @@ namespace XcodeBuilder
 
             this.appendGroup(new Group(this, null)); // main group
             this.appendGroup(new Group(this, "Products")); // product ref group
+            this.appendGroup(new Group(this, "Frameworks")); // all frameworks
             this.MainGroup.AddChild(this.ProductRefGroup);
+            this.MainGroup.AddChild(this.Frameworks);
 
             // add the project's configuration list first
             this.appendConfigurationList(new ConfigurationList(this));
@@ -448,6 +450,15 @@ namespace XcodeBuilder
             {
                 // order is assumed - added in the constructor
                 return this.Groups[1];
+            }
+        }
+
+        public Group Frameworks
+        {
+            get
+            {
+                // order is assumed - added in the constructor
+                return this.Groups[2];
             }
         }
 

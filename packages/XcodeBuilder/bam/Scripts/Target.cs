@@ -381,6 +381,7 @@ namespace XcodeBuilder
             {
                 var buildFile = this.EnsureBuildFileExists(path, type, requestedSourceTree: sourceTree);
                 this.FrameworksBuildPhase.Value.AddBuildFile(buildFile);
+                this.Project.Frameworks.AddChild(buildFile.FileRef);
                 return buildFile;
             }
         }
