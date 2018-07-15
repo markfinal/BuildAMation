@@ -55,6 +55,10 @@ namespace ClangCommon
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Asynchronous, "-fexceptions")]
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Synchronous, "-fexceptions")]
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.SyncWithCExternFunctions, "-fexceptions")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.EExceptionHandler.Disabled, "GCC_ENABLE_CPP_EXCEPTIONS", "NO")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.EExceptionHandler.Asynchronous, "GCC_ENABLE_CPP_EXCEPTIONS", "YES")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.EExceptionHandler.Synchronous, "GCC_ENABLE_CPP_EXCEPTIONS", "YES")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.EExceptionHandler.SyncWithCExternFunctions, "GCC_ENABLE_CPP_EXCEPTIONS", "YES")]
 #endif
         C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
         {
@@ -64,6 +68,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-frtti", "-fno-rtti")]
+        [XcodeProjectProcessor.UniqueBool("GCC_ENABLE_CPP_RTTI", "YES", "NO")]
 #endif
         bool? C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo
         {
@@ -81,6 +86,15 @@ namespace ClangCommon
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx11, "-std=gnu++11")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.Cxx14, "-std=c++14")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx14, "-std=gnu++14")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.NotSet, "CLANG_CXX_LANGUAGE_STANDARD", "", ignore: true)]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.Cxx98, "CLANG_CXX_LANGUAGE_STANDARD", "c++98")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.GnuCxx98, "CLANG_CXX_LANGUAGE_STANDARD", "gnu++98")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.Cxx03, "CLANG_CXX_LANGUAGE_STANDARD", "c++03")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.GnuCxx03, "CLANG_CXX_LANGUAGE_STANDARD", "gnu++03")]// TODO: actually not supported
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.Cxx11, "CLANG_CXX_LANGUAGE_STANDARD", "c++11")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.GnuCxx11, "CLANG_CXX_LANGUAGE_STANDARD", "gnu++11")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.Cxx14, "CLANG_CXX_LANGUAGE_STANDARD", "c++14")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.GnuCxx14, "CLANG_CXX_LANGUAGE_STANDARD", "gnu++14")]
 #endif
         C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
         {
@@ -92,6 +106,9 @@ namespace ClangCommon
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.NotSet, "")]
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libstdcxx, "-stdlib=libstdc++")]
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libcxx, "-stdlib=libc++")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.EStandardLibrary.NotSet, "CLANG_CXX_LIBRARY", "", ignore: true)]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.EStandardLibrary.libstdcxx, "CLANG_CXX_LIBRARY", "libstdc++", ignore: true)]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.EStandardLibrary.libcxx, "CLANG_CXX_LIBRARY", "libc++", ignore: true)]
 #endif
         C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
         {
