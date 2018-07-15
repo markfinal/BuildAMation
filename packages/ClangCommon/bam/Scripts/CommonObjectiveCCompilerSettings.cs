@@ -52,6 +52,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.String("-fconstant-string-class=")]
+        [XcodeProjectProcessor.String("", ignore: true)] // TODO
 #endif
         string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
         {
