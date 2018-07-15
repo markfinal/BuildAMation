@@ -34,8 +34,8 @@ namespace ClangCommon
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
-#endif
         XcodeProjectProcessor.IConvertToProject,
+#endif
         C.ICommonHasOutputPath,
         C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonHasSourcePath,
@@ -57,7 +57,6 @@ namespace ClangCommon
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineAssemblerImplementation), this, commandLine);
         }
-#endif
 
         void
         XcodeProjectProcessor.IConvertToProject.Convert(
@@ -66,6 +65,7 @@ namespace ClangCommon
         {
             XcodeProjectProcessor.Conversion.Convert(typeof(XcodeAssemblerImplementation), this, module, configuration);
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("-c -o ")]
@@ -97,6 +97,8 @@ namespace ClangCommon
 #if BAM_V2
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-arch i386")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-arch x86_64")]
+        [XcodeProjectProcessor.UniqueEnum(C.EBit.ThirtyTwo, "VALID_ARCHS", "i386", "ARCHS", "$(ARCHS_STANDARD_32_BIT)")]
+        [XcodeProjectProcessor.UniqueEnum(C.EBit.SixtyFour, "VALID_ARCHS", "x86_64", "ARCHS", "$(ARCHS_STANDARD_64_BIT)")]
 #endif
         C.EBit? C.ICommonAssemblerSettings.Bits
         {
@@ -106,6 +108,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-g", "")]
+        [XcodeProjectProcessor.UniqueBool("GCC_GENERATE_DEBUGGING_SYMBOLS", "YES", "NO")]
 #endif
         bool C.ICommonAssemblerSettings.DebugSymbols
         {
@@ -115,6 +118,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-Werror", "-Wno-error")]
+        [XcodeProjectProcessor.UniqueBool("GCC_TREAT_WARNINGS_AS_ERRORS", "YES", "NO")]
 #endif
         bool C.ICommonAssemblerSettings.WarningsAsErrors
         {
@@ -124,6 +128,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-I")]
+        [XcodeProjectProcessor.PathArray("USER_HEADER_SEARCH_PATHS")]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
         {
@@ -133,6 +138,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.PreprocessorDefines("-D")]
+        [XcodeProjectProcessor.PreprocessorDefines("GCC_PREPROCESSOR_DEFINITIONS")]
 #endif
         C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
         {
@@ -142,6 +148,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
+        [XcodeProjectProcessor.StringArray("OTHER_CFLAGS", spacesSeparate: true)]
 #endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
