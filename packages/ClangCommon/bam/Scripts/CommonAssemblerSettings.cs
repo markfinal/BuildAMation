@@ -69,6 +69,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-c -o ")]
+        [XcodeProjectProcessor.Path("", ignore: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
@@ -78,6 +79,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-E -o ")]
+        [XcodeProjectProcessor.Path("", ignore: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
         {
@@ -87,6 +89,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("")]
+        [XcodeProjectProcessor.Path("", ignore: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
         {
