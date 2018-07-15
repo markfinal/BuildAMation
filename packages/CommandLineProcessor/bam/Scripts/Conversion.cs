@@ -384,7 +384,16 @@ namespace CommandLineProcessor
                     var defineValue = define.Value.ToString();
                     if (defineValue.Contains("\""))
                     {
-                        defineValue = defineValue.Replace("\"", "\\\"");
+                        if (Bam.Core.Graph.Instance.Mode == "Xcode")
+                        {
+                            // note the number of back slashes here
+                            // required to get \\\" for each " in the original value
+                            defineValue = defineValue.Replace("\"", "\\\\\\\"");
+                        }
+                        else
+                        {
+                            defineValue = defineValue.Replace("\"", "\\\"");
+                        }
                     }
                     defineValue = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(defineValue);
                     commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
