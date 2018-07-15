@@ -107,8 +107,8 @@ namespace ClangCommon
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libstdcxx, "-stdlib=libstdc++")]
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libcxx, "-stdlib=libc++")]
         [XcodeProjectProcessor.UniqueEnum(C.Cxx.EStandardLibrary.NotSet, "CLANG_CXX_LIBRARY", "", ignore: true)]
-        [XcodeProjectProcessor.UniqueEnum(C.Cxx.EStandardLibrary.libstdcxx, "CLANG_CXX_LIBRARY", "libstdc++", ignore: true)]
-        [XcodeProjectProcessor.UniqueEnum(C.Cxx.EStandardLibrary.libcxx, "CLANG_CXX_LIBRARY", "libc++", ignore: true)]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.EStandardLibrary.libstdcxx, "CLANG_CXX_LIBRARY", "libstdc++")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.EStandardLibrary.libcxx, "CLANG_CXX_LIBRARY", "libc++")]
 #endif
         C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
         {
