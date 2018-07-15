@@ -389,7 +389,8 @@ namespace XcodeProjectProcessor
                         {
                             continue;
                         }
-                        throw new System.NotImplementedException();
+                        var path = new XcodeBuilder.UniqueConfigurationValue((property_value as Bam.Core.TokenizedString).ToString());
+                        configuration[associated_attr.Property] = path;
                     }
                     else if (attributeArray.First() is PathArrayAttribute)
                     {
