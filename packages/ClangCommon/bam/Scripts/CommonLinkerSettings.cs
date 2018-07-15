@@ -72,6 +72,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-o ")]
+        [XcodeProjectProcessor.Path("", ignore: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
         {
@@ -137,6 +138,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-framework ")]
+        [XcodeProjectProcessor.PathArray("", ignore: true)] // TODO requires something custom
 #endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.Frameworks
         {
@@ -146,6 +148,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-F ")]
+        [XcodeProjectProcessor.PathArray("FRAMEWORK_SEARCH_PATHS")]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.FrameworkSearchPaths
         {
@@ -155,6 +158,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-Wl,-dylib_install_name,")]
+        [XcodeProjectProcessor.Path("LD_DYLIB_INSTALL_NAME")]
 #endif
         Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.InstallName
         {
@@ -164,6 +168,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.String("-mmacosx-version-min=")]
+        [XcodeProjectProcessor.String("", ignore: true)] // dealt with separately
 #endif
         string C.ICommonLinkerSettingsOSX.MacOSMinimumVersionSupported
         {
@@ -173,6 +178,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
+        [XcodeProjectProcessor.StringArray("OTHER_LDFLAGS", spacesSeparate: true)]
 #endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
@@ -182,6 +188,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-Wl,-rpath,{0}")]
+        [XcodeProjectProcessor.PathArray("LD_RUNPATH_SEARCH_PATHS")]
 #endif
         Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPath
         {
