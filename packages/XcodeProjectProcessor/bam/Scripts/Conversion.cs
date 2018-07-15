@@ -237,6 +237,16 @@ namespace XcodeProjectProcessor
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class LibraryArrayAttribute :
+        BaseAttribute
+    {
+        public LibraryArrayAttribute()
+            :
+            base(null, ValueType.MultiValued)
+        {}
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public abstract class BoolAttribute :
         BaseAttribute
     {
@@ -351,6 +361,52 @@ namespace XcodeProjectProcessor
                             XcodeBuilder.FileReference.EFileType.WrapperFramework,
                             XcodeBuilder.FileReference.ESourceTree.SDKRoot
                         );
+                    }
+                }
+            }
+        }
+
+        private static void
+        HandleLibraryArray(
+            Bam.Core.Module module,
+            Bam.Core.StringArray libraries,
+            Bam.Core.TokenizedStringArray librarySearchPaths
+        )
+        {
+            // TODO: should support .tbd files (text based definition)
+            var target = module.MetaData as XcodeBuilder.Target;
+            var project = target.Project;
+            foreach (var library in libraries)
+            {
+                var stripped_library_name = library.Replace("-l", System.String.Empty);
+                var proposed_library_filename = "lib" + stripped_library_name + ".dylib";
+                var found = false;
+                foreach (var searchPath in librarySearchPaths.ToEnumerableWithoutDuplicates())
+                {
+                    var searchPath_string = searchPath.ToString();
+                    var proposed_path = System.IO.Path.Combine(searchPath_string, proposed_library_filename);
+                    if (System.IO.File.Exists(proposed_path))
+                    {
+                        Bam.Core.Log.MessageAll("Found {0} in search path: {1}", stripped_library_name, proposed_path);
+                        found = true;
+                        throw new System.NotImplementedException();
+                    }
+                }
+                if (!found)
+                {
+                    var proposed_system_lib_path = System.IO.Path.Combine("/usr/lib", proposed_library_filename);
+                    if (System.IO.File.Exists(proposed_system_lib_path))
+                    {
+                        Bam.Core.Log.MessageAll("Found system library {0} at {1}", stripped_library_name, proposed_system_lib_path);
+                        target.EnsureFrameworksBuildFileExists(
+                            Bam.Core.TokenizedString.CreateVerbatim(proposed_system_lib_path),
+                            XcodeBuilder.FileReference.EFileType.DynamicLibrary,
+                            XcodeBuilder.FileReference.ESourceTree.Absolute
+                        );
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception("Unable to locate library on any system or user search path: {0}", stripped_library_name);
                     }
                 }
             }
@@ -526,6 +582,14 @@ namespace XcodeProjectProcessor
                             }
                         }
                         configuration[associated_attr.Property] = values;
+                    }
+                    else if (attributeArray.First() is LibraryArrayAttribute)
+                    {
+                        HandleLibraryArray(
+                            module,
+                            property_value as Bam.Core.StringArray,
+                            (settings as C.ICommonLinkerSettings).LibraryPaths
+                        );
                     }
                     else if (attributeArray.First() is BoolAttribute)
                     {

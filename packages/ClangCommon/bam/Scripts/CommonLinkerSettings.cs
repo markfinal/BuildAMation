@@ -118,7 +118,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
-        [XcodeProjectProcessor.StringArray("", ignore: true)] // TODO: need to do something custom here
+        [XcodeProjectProcessor.LibraryArray()]
 #endif
         Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
         {
