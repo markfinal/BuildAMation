@@ -34,8 +34,8 @@ namespace ClangCommon
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
-#endif
         XcodeProjectProcessor.IConvertToProject,
+#endif
         C.ICommonHasOutputPath,
         C.ICommonLinkerSettings,
         C.ICommonLinkerSettingsOSX,
@@ -60,7 +60,6 @@ namespace ClangCommon
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineLinkerImplementation), this, commandLine);
         }
-#endif
 
         void
         XcodeProjectProcessor.IConvertToProject.Convert(
@@ -69,6 +68,7 @@ namespace ClangCommon
         {
             XcodeProjectProcessor.Conversion.Convert(typeof(XcodeLinkerImplementation), this, module, configuration);
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("-o ")]
