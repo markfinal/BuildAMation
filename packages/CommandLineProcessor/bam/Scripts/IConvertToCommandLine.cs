@@ -27,8 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-#if BAM_V2
-#else
 namespace CommandLineProcessor
 {
     public interface IConvertToCommandLine
@@ -38,4 +36,3 @@ namespace CommandLineProcessor
             Bam.Core.StringArray commandLine);
     }
 }
-#endif
