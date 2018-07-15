@@ -30,6 +30,8 @@
 using Bam.Core;
 namespace C
 {
+#if BAM_V2
+#else
     public sealed class MakeFileProceduralHeaderFromToolOutput :
         IProceduralHeaderFromToolOutputPolicy
     {
@@ -61,5 +63,5 @@ namespace C
             meta.CommonMetaData.AddDirectory(outputDir);
         }
     }
-
+#endif
 }

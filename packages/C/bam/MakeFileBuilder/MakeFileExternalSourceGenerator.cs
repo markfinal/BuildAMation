@@ -30,6 +30,8 @@
 using System.Linq;
 namespace C
 {
+#if BAM_V2
+#else
     public sealed class MakeFileExternalSourceGenerator :
         IExternalSourceGeneratorPolicy
     {
@@ -59,4 +61,5 @@ namespace C
             meta.CommonMetaData.AddDirectory(output_directory.ToString());
         }
     }
+#endif
 }

@@ -35,7 +35,10 @@ namespace C
     public class ExternalSourceGenerator :
         Bam.Core.Module
     {
+#if BAM_V2
+#else
         private IExternalSourceGeneratorPolicy policy = null;
+#endif
 
         public ExternalSourceGenerator()
         {
@@ -189,6 +192,8 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+#else
             if (null == this.policy)
             {
                 throw new Bam.Core.Exception(
@@ -210,12 +215,15 @@ namespace C
                 this.InternalExpectedOutputFileDictionary,
                 this.InputFiles
             );
+#endif
         }
 
         protected override void
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             switch (mode)
             {
                 case "Native":
@@ -226,6 +234,7 @@ namespace C
                     this.policy = Bam.Core.ExecutionPolicyUtilities<IExternalSourceGeneratorPolicy>.Create(className);
                     break;
             }
+#endif
         }
     }
 }

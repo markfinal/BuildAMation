@@ -29,6 +29,8 @@
 #endregion // License
 namespace C
 {
+#if BAM_V2
+#else
     public sealed class NativeExternalSourceGenerator :
         IExternalSourceGeneratorPolicy
     {
@@ -61,4 +63,5 @@ namespace C
             }
         }
     }
+#endif
 }

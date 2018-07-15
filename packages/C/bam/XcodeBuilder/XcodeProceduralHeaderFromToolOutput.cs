@@ -30,6 +30,8 @@
 using Bam.Core;
 namespace C
 {
+#if BAM_V2
+#else
     public sealed class XcodeProceduralHeaderFromToolOutput :
         IProceduralHeaderFromToolOutputPolicy
     {
@@ -57,4 +59,5 @@ namespace C
             sender.MetaData = toolTarget;
         }
     }
+#endif
 }

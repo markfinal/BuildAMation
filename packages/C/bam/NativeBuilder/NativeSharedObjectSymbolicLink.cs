@@ -30,6 +30,8 @@
 using Bam.Core;
 namespace C
 {
+#if BAM_V2
+#else
     public sealed class NativeSharedObjectSymbolicLink :
         ISharedObjectSymbolicLinkPolicy
     {
@@ -64,4 +66,5 @@ namespace C
             CommandLineProcessor.Processor.Execute(context, tool, commandLine);
         }
     }
+#endif
 }

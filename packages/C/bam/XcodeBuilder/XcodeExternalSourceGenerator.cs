@@ -30,6 +30,8 @@
 using System.Linq;
 namespace C
 {
+#if BAM_V2
+#else
     public sealed class XcodeExternalSourceGenerator :
         IExternalSourceGeneratorPolicy
     {
@@ -96,4 +98,5 @@ namespace C
             target.AddPreBuildCommands(commands, configuration);
         }
     }
+#endif
 }

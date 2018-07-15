@@ -34,7 +34,10 @@ namespace C
     public abstract class ProceduralHeaderFileFromToolOutput :
         C.HeaderFile
     {
+#if BAM_V2
+#else
         private IProceduralHeaderFromToolOutputPolicy Policy = null;
+#endif
 
         /// <summary>
         /// Override this function to specify the path of the header to be written to.
@@ -102,15 +105,21 @@ namespace C
 
         protected override void GetExecutionPolicy(string mode)
         {
+#if BAM_V2
+#else
             var className = "C." + mode + "ProceduralHeaderFromToolOutput";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IProceduralHeaderFromToolOutputPolicy>.Create(className);
+#endif
         }
 
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+#else
             this.Policy.HeaderFromToolOutput(this, context, this.GeneratedPaths[C.HeaderFile.Key], this.Tool as Bam.Core.ICommandLineTool);
+#endif
         }
     }
 }

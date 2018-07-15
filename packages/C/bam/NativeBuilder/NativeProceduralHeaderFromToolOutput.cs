@@ -30,6 +30,8 @@
 using Bam.Core;
 namespace C
 {
+#if BAM_V2
+#else
     public sealed class NativeProceduralHeaderFromToolOutput :
         IProceduralHeaderFromToolOutputPolicy
     {
@@ -82,4 +84,5 @@ namespace C
             context.OutputStringBuilder.Clear();
         }
     }
+#endif
 }

@@ -34,8 +34,11 @@ namespace C
     {
         static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("SharedObjectSymbolicLink");
 
+#if BAM_V2
+#else
         private ISharedObjectSymbolicLinkPolicy SymlinkPolicy;
         private SharedObjectSymbolicLinkTool SymlinkTool;
+#endif
         private ConsoleApplication sharedObject;
 
         /// <summary>
@@ -80,11 +83,14 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+#else
             if (this.IsPrebuilt)
             {
                 return;
             }
             this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.SharedObject);
+#endif
         }
 
         protected override void
@@ -118,6 +124,8 @@ namespace C
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             if (this.IsPrebuilt)
             {
                 return;
@@ -125,6 +133,7 @@ namespace C
             var className = "C." + mode + "SharedObjectSymbolicLink";
             this.SymlinkPolicy = Bam.Core.ExecutionPolicyUtilities<ISharedObjectSymbolicLinkPolicy>.Create(className);
             this.SymlinkTool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
+#endif
         }
     }
 }
