@@ -34,8 +34,8 @@ namespace ClangCommon
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
-#endif
         XcodeProjectProcessor.IConvertToProject,
+#endif
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
         C.ICommonHasCompilerPreprocessedOutputPath,
@@ -69,7 +69,6 @@ namespace ClangCommon
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineCompilerImplementation), this, commandLine);
         }
-#endif
 
         void
         XcodeProjectProcessor.IConvertToProject.Convert(
@@ -78,6 +77,7 @@ namespace ClangCommon
         {
             XcodeProjectProcessor.Conversion.Convert(typeof(XcodeCompilerImplementation), this, module, configuration);
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("")]
