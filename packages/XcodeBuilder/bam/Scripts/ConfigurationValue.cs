@@ -31,7 +31,7 @@ namespace XcodeBuilder
 {
     public abstract class ConfigurationValue
     {
-        private static char[] SpecialChars = { '$', '@', '=', '+' };
+        private static char[] SpecialChars = { '$', '@', '=', '+', ' ' };
 
         protected bool
         StringRequiresQuoting(
