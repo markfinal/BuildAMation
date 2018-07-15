@@ -29,6 +29,18 @@
 #endregion // License
 namespace Publisher
 {
+#if BAM_V2
+    public static partial class NativeSupport
+    {
+        public static void
+        CollateObject(
+            CollatedObject module,
+            Bam.Core.ExecutionContext context)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+#else
     public sealed class NativeCollatedObject :
         ICollatedObjectPolicy
     {
@@ -78,4 +90,5 @@ namespace Publisher
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
-}
+#endif
+        }

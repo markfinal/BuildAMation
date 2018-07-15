@@ -37,6 +37,8 @@ namespace Publisher
         ExecuteInternal(
             ExecutionContext context)
         {
+#if BAM_V2
+#else
             foreach (var framework in this.Frameworks)
             {
                 this.Policy.InstallName(
@@ -45,6 +47,7 @@ namespace Publisher
                     (framework as ICollatedObject).SourceModule.Macros["IDName"],
                     framework.Macros["IDName"]);
             }
+#endif
         }
 
         public Bam.Core.Array<CollatedFile> Frameworks

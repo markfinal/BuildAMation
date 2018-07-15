@@ -29,6 +29,8 @@
 #endregion // License
 namespace Publisher
 {
+#if BAM_V2
+#else
     public sealed class MakeFileStrippedBinaryCollation :
         IStrippedBinaryCollationPolicy
     {
@@ -56,4 +58,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

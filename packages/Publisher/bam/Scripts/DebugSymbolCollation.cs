@@ -45,7 +45,10 @@ namespace Publisher
     {
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Debug Symbol Collation Root");
 
+#if BAM_V2
+#else
         private IDebugSymbolCollationPolicy Policy = null;
+#endif
 
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
@@ -73,17 +76,22 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+#else
             if (null == this.Policy)
             {
                 return;
             }
             this.Policy.CollateDebugSymbols(this, context);
+#endif
         }
 
         protected sealed override void
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             switch (mode)
             {
                 case "MakeFile":
@@ -93,6 +101,7 @@ namespace Publisher
                     }
                     break;
             }
+#endif
         }
 
         private void

@@ -29,6 +29,17 @@
 #endregion // License
 namespace Publisher
 {
+#if BAM_V2
+    public static partial class MakeFileSupport
+    {
+        public static void
+        CollateObject(
+            CollatedObject module)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+#else
     public sealed class MakeFileCollatedObject :
         ICollatedObjectPolicy
     {
@@ -128,4 +139,5 @@ namespace Publisher
             rule.AddPrerequisite(Bam.Core.TokenizedString.CreateVerbatim(prerequisitePath));
         }
     }
+#endif
 }

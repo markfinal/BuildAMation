@@ -29,6 +29,17 @@
 #endregion // License
 namespace Publisher
 {
+#if BAM_V2
+    public static partial class VSSolutionSupport
+    {
+        public static void
+        CollateObject(
+            CollatedObject module)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+#else
     public sealed class VSSolutionCollatedObject :
         ICollatedObjectPolicy
     {
@@ -140,4 +151,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }

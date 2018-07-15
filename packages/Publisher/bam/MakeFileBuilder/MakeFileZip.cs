@@ -29,6 +29,8 @@
 #endregion // License
 namespace Publisher
 {
+#if BAM_V2
+#else
     public sealed class MakeFileZip :
         IZipToolPolicy
     {
@@ -64,4 +66,5 @@ namespace Publisher
             rule.AddShellCommand(args.ToString(' '));
         }
     }
+#endif
 }

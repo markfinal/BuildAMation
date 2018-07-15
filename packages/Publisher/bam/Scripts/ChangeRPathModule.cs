@@ -34,7 +34,10 @@ namespace Publisher
         Bam.Core.Module
     {
         private CollatedFile TheSource;
+#if BAM_V2
+#else
         private IChangeRPathPolicy Policy;
+#endif
 
         protected override void
         Init(
@@ -48,8 +51,11 @@ namespace Publisher
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             var className = "Publisher." + mode + "ChangeRPath";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IChangeRPathPolicy>.Create(className);
+#endif
         }
 
         protected override void
@@ -62,7 +68,10 @@ namespace Publisher
         ExecuteInternal(
             ExecutionContext context)
         {
+#if BAM_V2
+#else
             this.Policy.Change(this, context, this.Source, this.NewRPath);
+#endif
         }
 
         public CollatedFile Source

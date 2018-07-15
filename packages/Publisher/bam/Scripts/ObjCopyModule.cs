@@ -40,7 +40,10 @@ namespace Publisher
         private Bam.Core.PathKey sourcePathKey;
         private ICollatedObject anchor = null;
 
+#if BAM_V2
+#else
         private IObjCopyToolPolicy Policy;
+#endif
 
         protected override void
         Init(
@@ -86,17 +89,22 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+#else
             if (null == this.Policy)
             {
                 return;
             }
             this.Policy.ObjCopy(this, context, this.sourceModule.GeneratedPaths[this.sourcePathKey], this.GeneratedPaths[Key]);
+#endif
         }
 
         protected override void
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             switch (mode)
             {
                 case "Native":
@@ -107,6 +115,7 @@ namespace Publisher
                     }
                     break;
             }
+#endif
         }
 
         Bam.Core.Module ICollatedObject.SourceModule

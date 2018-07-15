@@ -64,7 +64,10 @@ namespace Publisher
                 });
         }
 
+#if BAM_V2
+#else
         private ICollationPolicy Policy = null;
+#endif
 
         protected override void
         Init(
@@ -88,17 +91,22 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+#else
             if (null == this.Policy)
             {
                 return;
             }
             this.Policy.Collate(this, context);
+#endif
         }
 
         protected sealed override void
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             switch (mode)
             {
                 case "MakeFile":
@@ -108,6 +116,7 @@ namespace Publisher
                     }
                     break;
             }
+#endif
         }
 
         /// <summary>

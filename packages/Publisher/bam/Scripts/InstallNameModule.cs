@@ -34,7 +34,10 @@ namespace Publisher
         Bam.Core.Module
     {
         protected CollatedFile CopiedFileModule = null;
+#if BAM_V2
+#else
         protected IInstallNameToolPolicy Policy = null;
+#endif
 
         protected override void
         Init(
@@ -48,8 +51,11 @@ namespace Publisher
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             var className = "Publisher." + mode + this.GetType().Name;
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IInstallNameToolPolicy>.Create(className);
+#endif
         }
 
         protected override void

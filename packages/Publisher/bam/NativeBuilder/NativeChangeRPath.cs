@@ -29,6 +29,8 @@
 #endregion // License
 namespace Publisher
 {
+#if BAM_V2
+#else
     public sealed class NativeChangeRPath :
         IChangeRPathPolicy
     {
@@ -46,4 +48,5 @@ namespace Publisher
             CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
         }
     }
+#endif
 }

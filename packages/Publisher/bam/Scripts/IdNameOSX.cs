@@ -37,6 +37,8 @@ namespace Publisher
         ExecuteInternal(
             ExecutionContext context)
         {
+#if BAM_V2
+#else
             var framework = (this.CopiedFileModule as ICollatedObject).SourceModule as C.OSXFramework;
             if (null == framework)
             {
@@ -52,6 +54,7 @@ namespace Publisher
                 context,
                 null,
                 this.CopiedFileModule.Macros["IDName"]);
+#endif
         }
     }
 }

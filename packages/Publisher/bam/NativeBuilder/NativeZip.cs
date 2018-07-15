@@ -29,6 +29,8 @@
 #endregion // License
 namespace Publisher
 {
+#if BAM_V2
+#else
     public sealed class NativeZip :
         IZipToolPolicy
     {
@@ -62,4 +64,5 @@ namespace Publisher
             );
         }
     }
+#endif
 }

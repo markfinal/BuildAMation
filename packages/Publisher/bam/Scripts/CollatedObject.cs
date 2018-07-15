@@ -36,7 +36,10 @@ namespace Publisher
     {
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Copied Object");
 
+#if BAM_V2
+#else
         private ICollatedObjectPolicy policy = null;
+#endif
 
         private Bam.Core.Module sourceModule;
         private Bam.Core.PathKey sourcePathKey;
@@ -243,15 +246,50 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileSupport.CollateObject(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeSupport.CollateObject(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    VSSolutionSupport.CollateObject(this);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    XcodeSupport.CollateObject(this);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
+            }
+#else
             this.policy.Collate(this, context);
+#endif
         }
 
         protected override void
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             var className = "Publisher." + mode + "CollatedObject";
             this.policy = Bam.Core.ExecutionPolicyUtilities<ICollatedObjectPolicy>.Create(className);
+#endif
         }
     }
 }

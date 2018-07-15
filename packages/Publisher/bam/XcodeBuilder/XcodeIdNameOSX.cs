@@ -29,6 +29,8 @@
 #endregion // License
 namespace Publisher
 {
+#if BAM_V2
+#else
     public sealed class XcodeIdNameOSX :
         IInstallNameToolPolicy
     {
@@ -65,4 +67,5 @@ namespace Publisher
             target.AddPostBuildCommands(commands, configuration);
         }
     }
+#endif
 }

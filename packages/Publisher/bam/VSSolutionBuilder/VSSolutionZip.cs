@@ -29,6 +29,8 @@
 #endregion // License
 namespace Publisher
 {
+#if BAM_V2
+#else
     public sealed class VSSolutionZip :
         IZipToolPolicy
     {
@@ -55,4 +57,5 @@ namespace Publisher
             config.AddPreBuildCommand(args.ToString(' '));
         }
     }
+#endif
 }

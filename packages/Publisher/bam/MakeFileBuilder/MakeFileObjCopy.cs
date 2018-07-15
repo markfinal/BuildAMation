@@ -29,6 +29,8 @@
 #endregion // License
 namespace Publisher
 {
+#if BAM_V2
+#else
     public sealed class MakeFileObjCopy :
         IObjCopyToolPolicy
     {
@@ -70,4 +72,5 @@ namespace Publisher
                 CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
         }
     }
+#endif
 }

@@ -35,7 +35,10 @@ namespace Publisher
     {
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Zip files or directories");
 
+#if BAM_V2
+#else
         private IZipToolPolicy Policy;
+#endif
         private Bam.Core.TokenizedString InputPath;
 
         protected override void
@@ -81,6 +84,8 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+#else
             if (null == this.Policy)
             {
                 return;
@@ -91,14 +96,18 @@ namespace Publisher
                 this.GeneratedPaths[Key],
                 this.InputPath
             );
+#endif
         }
 
         protected override void
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             var className = "Publisher." + mode + "Zip";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IZipToolPolicy>.Create(className);
+#endif
         }
     }
 }

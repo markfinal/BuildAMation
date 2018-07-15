@@ -29,6 +29,8 @@
 #endregion // License
 namespace Publisher
 {
+#if BAM_V2
+#else
     public sealed class XcodeZip :
         IZipToolPolicy
     {
@@ -64,4 +66,5 @@ namespace Publisher
             target.AddPreBuildCommands(commands, configuration);
         }
     }
+#endif
 }

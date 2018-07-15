@@ -29,6 +29,17 @@
 #endregion // License
 namespace Publisher
 {
+#if BAM_V2
+    public static partial class XcodeSupport
+    {
+        public static void
+        CollateObject(
+            CollatedObject module)
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+#else
     public sealed class XcodeCollatedObject :
         ICollatedObjectPolicy
     {
@@ -153,4 +164,5 @@ namespace Publisher
             }
         }
     }
+#endif
 }
