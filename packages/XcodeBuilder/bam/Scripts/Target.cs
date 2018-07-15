@@ -258,19 +258,28 @@ namespace XcodeBuilder
         private BuildFile
         EnsureBuildFileExists(
             Bam.Core.TokenizedString path,
-            FileReference.EFileType type)
+            FileReference.EFileType type,
+            FileReference.ESourceTree? requestedSourceTree = null)
         {
             lock (this.Project)
             {
                 var relativePath = this.Project.GetRelativePathToProject(path);
-                var sourceTree = FileReference.ESourceTree.NA;
-                if (null == relativePath)
+                FileReference.ESourceTree sourceTree;
+                if (requestedSourceTree.HasValue)
                 {
-                    sourceTree = FileReference.ESourceTree.Absolute;
+                    sourceTree = requestedSourceTree.Value;
                 }
                 else
                 {
-                    sourceTree = FileReference.ESourceTree.SourceRoot;
+                    // guess
+                    if (null == relativePath)
+                    {
+                        sourceTree = FileReference.ESourceTree.Absolute;
+                    }
+                    else
+                    {
+                        sourceTree = FileReference.ESourceTree.SourceRoot;
+                    }
                 }
                 var fileRef = this.Project.EnsureFileReferenceExists(
                     path,
@@ -365,11 +374,12 @@ namespace XcodeBuilder
         public BuildFile
         EnsureFrameworksBuildFileExists(
             Bam.Core.TokenizedString path,
-            FileReference.EFileType type)
+            FileReference.EFileType type,
+            FileReference.ESourceTree sourceTree)
         {
             lock (this.FrameworksBuildPhase)
             {
-                var buildFile = this.EnsureBuildFileExists(path, type);
+                var buildFile = this.EnsureBuildFileExists(path, type, requestedSourceTree: sourceTree);
                 this.FrameworksBuildPhase.Value.AddBuildFile(buildFile);
                 return buildFile;
             }

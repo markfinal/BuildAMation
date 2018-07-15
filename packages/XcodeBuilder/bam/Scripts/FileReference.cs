@@ -152,13 +152,13 @@ namespace XcodeBuilder
 
         public enum ESourceTree
         {
-            NA,       /* maps to <unknown> */
-            Absolute, /* absolute path */
-            Group,    /* group of things? (which group, where?) */
-            SourceRoot, /* relative to project */
-            DeveloperDir, /* relative to developer directory */
+            NA,               /* maps to <unknown> */
+            Absolute,         /* absolute path */
+            Group,            /* group of things? (which group, where?) */
+            SourceRoot,       /* relative to project */
+            DeveloperDir,     /* relative to developer directory */
             BuiltProductsDir, /* relative to where products are built in project */
-            SDKRoot /* relative to SDK root */
+            SDKRoot           /* relative to SDK root */
         }
 
         public FileReference(

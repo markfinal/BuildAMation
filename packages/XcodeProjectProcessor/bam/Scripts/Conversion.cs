@@ -183,6 +183,16 @@ namespace XcodeProjectProcessor
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class FrameworkArrayAttribute :
+        BaseAttribute
+    {
+        public FrameworkArrayAttribute()
+            :
+            base(null, ValueType.MultiValued, ignore: false)
+        { }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class StringAttribute :
         BaseAttribute
     {
@@ -300,6 +310,53 @@ namespace XcodeProjectProcessor
 
     public static class XcodeConversion
     {
+        private static void
+        HandleFrameworks(
+            Bam.Core.Module module,
+            Bam.Core.TokenizedStringArray frameworks,
+            Bam.Core.TokenizedStringArray frameworkSearchPaths
+        )
+        {
+            var target = module.MetaData as XcodeBuilder.Target;
+            var project = target.Project;
+            foreach (var framework in frameworks.ToEnumerableWithoutDuplicates())
+            {
+                var framework_path = framework.ToString();
+                if (!framework_path.EndsWith(".framework"))
+                {
+                    framework_path += ".framework";
+                }
+                if (Bam.Core.RelativePathUtilities.IsPathAbsolute(framework_path))
+                {
+                    Bam.Core.Log.MessageAll("Absolute framework: {0}", framework_path);
+                    throw new System.NotImplementedException();
+                }
+                else
+                {
+                    var found = false;
+                    foreach (var searchPath in frameworkSearchPaths.ToEnumerableWithoutDuplicates())
+                    {
+                        var potential_framework_path = System.IO.Path.Combine(searchPath.ToString(), framework_path);
+                        if (System.IO.Directory.Exists(potential_framework_path))
+                        {
+                            Bam.Core.Log.MessageAll("Found framework at {0}", potential_framework_path);
+                            found = true;
+                            throw new System.NotImplementedException();
+                        }
+                    }
+                    if (!found)
+                    {
+                        var buildFile = target.EnsureFrameworksBuildFileExists(
+                            Bam.Core.TokenizedString.CreateVerbatim("System/Library/Frameworks/" + framework_path),
+                            XcodeBuilder.FileReference.EFileType.WrapperFramework,
+                            XcodeBuilder.FileReference.ESourceTree.SDKRoot
+                        );
+                        project.MainGroup.AddChild(buildFile.FileRef);
+                    }
+                }
+            }
+        }
+
         public static void
         Convert(
             Bam.Core.Settings settings,
@@ -423,6 +480,19 @@ namespace XcodeProjectProcessor
                             }
                         }
                         configuration[associated_attr.Property] = paths;
+                    }
+                    else if (attributeArray.First() is FrameworkArrayAttribute)
+                    {
+                        var associated_attr = attributeArray.First() as FrameworkArrayAttribute;
+                        if (associated_attr.Ignore)
+                        {
+                            continue;
+                        }
+                        HandleFrameworks(
+                            module,
+                            property_value as Bam.Core.TokenizedStringArray,
+                            (settings as C.ICommonLinkerSettingsOSX).FrameworkSearchPaths
+                        );
                     }
                     else if (attributeArray.First() is StringAttribute)
                     {

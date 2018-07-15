@@ -138,7 +138,7 @@ namespace ClangCommon
 
 #if BAM_V2
         [CommandLineProcessor.PathArray("-framework ")]
-        [XcodeProjectProcessor.PathArray("", ignore: true)] // TODO requires something custom
+        [XcodeProjectProcessor.FrameworkArray()]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.Frameworks
         {
