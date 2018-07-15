@@ -57,6 +57,10 @@ namespace C
             {
                 fileType = XcodeBuilder.FileReference.EFileType.SourceCodeObjCxx;
             }
+            else if (module is C.AssembledObjectFile)
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.Assembler;
+            }
             else
             {
                 throw new Bam.Core.Exception(
