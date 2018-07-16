@@ -125,7 +125,11 @@ namespace MissingDependencyTest1
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+#if BAM_V2
+            this.Include<PluginTest>(C.ConsoleApplication.ExecutableKey);
+#else
             this.Include<PluginTest>(C.ConsoleApplication.Key);
+#endif
         }
     }
 }

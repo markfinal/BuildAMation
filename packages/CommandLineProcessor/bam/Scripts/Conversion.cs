@@ -209,10 +209,10 @@ namespace CommandLineProcessor
             }
             if (!typeof(Bam.Core.TokenizedString).IsAssignableFrom(propertyInfo.PropertyType))
             {
-                if (!typeof(Bam.Core.PathKey).IsAssignableFrom(propertyInfo.PropertyType))
+                if (!typeof(string).IsAssignableFrom(propertyInfo.PropertyType))
                 {
                     throw new Bam.Core.Exception(
-                        "Attribute expected either a Bam.Core.TokenizedString or Bam.Core.PathKey, but property {0} is of type {1}",
+                        "Attribute expected either a Bam.Core.TokenizedString or string, but property {0} is of type {1}",
                         propertyInfo.Name,
                         propertyInfo.PropertyType.ToString()
                     );
@@ -230,7 +230,7 @@ namespace CommandLineProcessor
             }
             else
             {
-                var path = module.GeneratedPaths[propertyValue as Bam.Core.PathKey];
+                var path = module.GeneratedPaths[propertyValue as string];
                 commandLine.Add(
                     System.String.Format(
                         "{0}{1}",

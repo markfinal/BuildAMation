@@ -33,7 +33,11 @@ namespace C
         Bam.Core.Module,
         Bam.Core.IInputPath
     {
+#if BAM_V2
+        public const string SourceFileKey = "Source File";
+#else
         static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Source File");
+#endif
 
         protected override void
         EvaluateInternal()
@@ -60,15 +64,27 @@ namespace C
         {
             get
             {
+#if BAM_V2
+                return this.GeneratedPaths[SourceFileKey];
+#else
                 return this.GeneratedPaths[Key];
+#endif
             }
             set
             {
+#if BAM_V2
+                if (this.GeneratedPaths.ContainsKey(SourceFileKey))
+                {
+                    throw new Bam.Core.Exception("Source path has already been set");
+                }
+                this.RegisterGeneratedFile(SourceFileKey, value);
+#else
                 if (this.GeneratedPaths.ContainsKey(Key))
                 {
                     throw new Bam.Core.Exception("Source path has already been set");
                 }
                 this.RegisterGeneratedFile(Key, value);
+#endif
             }
         }
     }

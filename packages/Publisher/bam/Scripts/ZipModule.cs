@@ -33,10 +33,11 @@ namespace Publisher
     public class ZipModule :
         Bam.Core.Module
     {
+#if BAM_V2
+        public const string ZipKey = "Zip Files or Directories";
+#else
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Zip files or directories");
 
-#if BAM_V2
-#else
         private IZipToolPolicy Policy;
 #endif
         private Bam.Core.TokenizedString InputPath;
@@ -56,7 +57,11 @@ namespace Publisher
                 this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ZipPosix>();
             }
             this.RegisterGeneratedFile(
+#if BAM_V2
+                ZipKey,
+#else
                 Key,
+#endif
                 this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(zipoutputbasename).zip")
             );
 

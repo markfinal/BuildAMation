@@ -67,9 +67,9 @@ namespace VisualCCommon
 
 #if BAM_V2
         [CommandLineProcessor.Path("-OUT:")]
-        [VisualStudioProcessor.Path("OutputFile")]
+        [VisualStudioProcessor.Path(C.StaticLibrary.LibraryKey)]
 #endif
-        Bam.Core.PathKey C.ICommonHasOutputPath.OutputPath
+        string C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

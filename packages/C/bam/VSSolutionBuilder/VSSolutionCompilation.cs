@@ -62,7 +62,7 @@ namespace C
 
             var settingsGroup = config.GetSettingsGroup(
                 group,
-                include: (module as C.IRequiresSourceModule).Source.GeneratedPaths[C.SourceFile.Key],
+                include: (module as C.IRequiresSourceModule).Source.GeneratedPaths[C.SourceFile.SourceFileKey],
                 uniqueToProject: true
             );
 
@@ -166,4 +166,4 @@ namespace C
         }
     }
 #endif
-}
+        }

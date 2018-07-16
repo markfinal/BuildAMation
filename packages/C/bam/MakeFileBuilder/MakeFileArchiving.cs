@@ -47,7 +47,7 @@ namespace C
                 {
                     continue;
                 }
-                rule.AddPrerequisite(input, C.ObjectFile.Key);
+                rule.AddPrerequisite(input, C.ObjectFile.ObjectFileKey);
             }
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;

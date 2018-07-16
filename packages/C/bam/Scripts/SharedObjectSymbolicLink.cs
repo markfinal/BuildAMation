@@ -32,10 +32,11 @@ namespace C
     public class SharedObjectSymbolicLink :
         Bam.Core.Module
     {
+#if BAM_V2
+        public const string SOSymLinkKey = "Shared object symbolic link";
+#else
         static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("SharedObjectSymbolicLink");
 
-#if BAM_V2
-#else
         private ISharedObjectSymbolicLinkPolicy SymlinkPolicy;
         private SharedObjectSymbolicLinkTool SymlinkTool;
 #endif
@@ -58,10 +59,17 @@ namespace C
 
             this.IsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);
 
+#if BAM_V2
+            this.RegisterGeneratedFile(SOSymLinkKey,
+                                       this.CreateTokenizedString("@dir($(0))/$(1)",
+                                                                  this.SharedObject.GeneratedPaths[ConsoleApplication.ExecutableKey],
+                                                                  this.SharedObject.Macros[this.Macros["SymlinkUsage"].ToString()]));
+#else
             this.RegisterGeneratedFile(Key,
                                        this.CreateTokenizedString("@dir($(0))/$(1)",
                                                                   this.SharedObject.GeneratedPaths[ConsoleApplication.Key],
                                                                   this.SharedObject.Macros[this.Macros["SymlinkUsage"].ToString()]));
+#endif
         }
 
         public ConsoleApplication

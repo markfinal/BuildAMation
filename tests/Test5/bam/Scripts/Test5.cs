@@ -67,7 +67,11 @@ namespace Test5
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
 
+#if BAM_V2
+            var appAnchor = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.ExecutableKey);
+#else
             var appAnchor = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key);
+#endif
 
             // copy the required runtime library next to the binary
             if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&
@@ -91,7 +95,11 @@ namespace Test5
 
             this.SetDefaultMacrosAndMappings(EPublishingType.Library);
 
+#if BAM_V2
+            var dynamicLibAnchor = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ExecutableKey);
+#else
             var dynamicLibAnchor = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key);
+#endif
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey);

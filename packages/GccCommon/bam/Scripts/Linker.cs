@@ -106,11 +106,19 @@ namespace GccCommon
         {
             if (library is C.StaticLibrary)
             {
+#if BAM_V2
+                return library.GeneratedPaths[C.StaticLibrary.LibraryKey];
+#else
                 return library.GeneratedPaths[C.StaticLibrary.Key];
+#endif
             }
             else if (library is C.IDynamicLibrary)
             {
+#if BAM_V2
+                return library.GeneratedPaths[C.DynamicLibrary.ExecutableKey];
+#else
                 return library.GeneratedPaths[C.DynamicLibrary.Key];
+#endif
             }
             else if ((library is C.CSDKModule) ||
                      (library is C.HeaderLibrary) ||
@@ -130,7 +138,11 @@ namespace GccCommon
             if (library is C.StaticLibrary)
             {
                 // TODO: @filenamenoext
+#if BAM_V2
+                var libraryPath = library.GeneratedPaths[C.StaticLibrary.LibraryKey].ToString();
+#else
                 var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].ToString();
+#endif
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 var libraryName = GetLPrefixLibraryName(libraryPath);
                 if (linker.Libraries.Contains(libraryName))
@@ -139,7 +151,14 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
-                var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
+                var libDir = library.CreateTokenizedString(
+                    "@dir($(0))",
+#if BAM_V2
+                    library.GeneratedPaths[C.StaticLibrary.LibraryKey]
+#else
+                    library.GeneratedPaths[C.StaticLibrary.Key]
+#endif
+                );
                 lock (libDir)
                 {
                     if (!libDir.IsParsed)
@@ -152,12 +171,24 @@ namespace GccCommon
             else if (library is C.IDynamicLibrary)
             {
                 // TODO: @filenamenoext
+#if BAM_V2
+                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.ExecutableKey].ToString();
+#else
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].ToString();
+#endif
                 var linkerNameSymLink = (library as C.IDynamicLibrary).LinkerNameSymbolicLink;
                 // TODO: I think there's a problem when there's no linkerName symlink - i.e. taking the full shared object path
                 var libraryName = (linkerNameSymLink != null) ?
-                    GetLPrefixLibraryName(linkerNameSymLink.GeneratedPaths[C.SharedObjectSymbolicLink.Key].ToString()) :
-                    GetLPrefixLibraryName(libraryPath);
+                    GetLPrefixLibraryName(
+#if BAM_V2
+                        linkerNameSymLink.GeneratedPaths[C.SharedObjectSymbolicLink.SOSymLinkKey].ToString()
+#else
+                        linkerNameSymLink.GeneratedPaths[C.SharedObjectSymbolicLink.Key].ToString()
+#endif
+                    ) :
+                    GetLPrefixLibraryName(
+                        libraryPath
+                    );
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 if (linker.Libraries.Contains(libraryName))
                 {
@@ -165,7 +196,14 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
-                var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
+                var libDir = library.CreateTokenizedString(
+                    "@dir($(0))",
+#if BAM_V2
+                    library.GeneratedPaths[C.DynamicLibrary.ExecutableKey]
+#else
+                    library.GeneratedPaths[C.DynamicLibrary.Key]
+#endif
+                );
                 lock (libDir)
                 {
                     if (!libDir.IsParsed)
@@ -186,7 +224,14 @@ namespace GccCommon
                 var allDynamicDependents = FindAllDynamicDependents(library as C.IDynamicLibrary);
                 foreach (var dep in allDynamicDependents)
                 {
-                    var rpathLinkDir = dep.CreateTokenizedString("@dir($(0))", dep.GeneratedPaths[C.DynamicLibrary.Key]);
+                    var rpathLinkDir = dep.CreateTokenizedString(
+                        "@dir($(0))",
+#if BAM_V2
+                        dep.GeneratedPaths[C.DynamicLibrary.ExecutableKey]
+#else
+                        dep.GeneratedPaths[C.DynamicLibrary.Key]
+#endif
+                    );
                     // only need to add to rpath-link, if there's been no explicit link to the library already
                     if (!linker.LibraryPaths.Contains(rpathLinkDir))
                     {

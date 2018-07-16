@@ -64,11 +64,11 @@ namespace ClangCommon
         {
             if (library is C.StaticLibrary)
             {
-                return library.GeneratedPaths[C.StaticLibrary.Key];
+                return library.GeneratedPaths[C.StaticLibrary.LibraryKey];
             }
             else if (library is C.IDynamicLibrary)
             {
-                return library.GeneratedPaths[C.DynamicLibrary.Key];
+                return library.GeneratedPaths[C.DynamicLibrary.ExecutableKey];
             }
             else if ((library is C.CSDKModule) ||
                      (library is C.HeaderLibrary) ||
@@ -88,10 +88,21 @@ namespace ClangCommon
             if (library is C.StaticLibrary)
             {
                 // TODO: @filenamenoext
+#if BAM_V2
+                var libraryPath = library.GeneratedPaths[C.StaticLibrary.LibraryKey].ToString();
+#else
                 var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].ToString();
+#endif
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
-                var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
+                var libDir = library.CreateTokenizedString(
+                    "@dir($(0))",
+#if BAM_V2
+                    library.GeneratedPaths[C.StaticLibrary.LibraryKey]
+#else
+                    library.GeneratedPaths[C.StaticLibrary.Key]
+#endif
+                );
                 lock (libDir)
                 {
                     if (!libDir.IsParsed)
@@ -105,10 +116,21 @@ namespace ClangCommon
             else if (library is C.IDynamicLibrary)
             {
                 // TODO: @filenamenoext
+#if BAM_V2
+                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.ExecutableKey].ToString();
+#else
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].ToString();
+#endif
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
-                var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
+                var libDir = library.CreateTokenizedString(
+                    "@dir($(0))",
+#if BAM_V2
+                    library.GeneratedPaths[C.DynamicLibrary.ExecutableKey]
+#else
+                    library.GeneratedPaths[C.DynamicLibrary.Key]
+#endif
+                );
                 lock (libDir)
                 {
                     if (!libDir.IsParsed)

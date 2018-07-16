@@ -47,8 +47,17 @@ namespace C
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.GeneratedPaths[Key] = this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)");
+#if BAM_V2
+            this.GeneratedPaths[ExecutableKey] = this.CreateTokenizedString(
+                "$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)"
+            );
+            this.Macros.Add("LinkOutput", this.GeneratedPaths[ExecutableKey]);
+#else
+            this.GeneratedPaths[Key] = this.CreateTokenizedString(
+                "$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)"
+            );
             this.Macros.Add("LinkOutput", this.GeneratedPaths[Key]);
+#endif
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {

@@ -60,7 +60,7 @@ namespace MingwCommon
 #if BAM_V2
         [CommandLineProcessor.Path("-o ")]
 #endif
-        Bam.Core.PathKey C.ICommonHasOutputPath.OutputPath
+        string C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

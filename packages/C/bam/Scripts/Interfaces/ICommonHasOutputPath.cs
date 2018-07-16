@@ -42,7 +42,7 @@ namespace C
         /// <summary>
         /// Handle to the generated output path for this module
         /// </summary>
-        Bam.Core.PathKey OutputPath
+        string OutputPath
         {
             get;
             set;

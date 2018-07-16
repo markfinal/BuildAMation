@@ -32,8 +32,13 @@ namespace Installer
     class NSISScript :
         Bam.Core.Module
     {
+#if BAM_V2
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
+#else
         private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
         private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
+#endif
 
         protected override void
         Init(
@@ -52,7 +57,11 @@ namespace Installer
         public void
         AddFile(
             Bam.Core.Module module,
+#if BAM_V2
+            string key)
+#else
             Bam.Core.PathKey key)
+#endif
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
@@ -61,7 +70,11 @@ namespace Installer
         public void
         AddPath(
             Bam.Core.Module module,
+#if BAM_V2
+            string key)
+#else
             Bam.Core.PathKey key)
+#endif
         {
             this.DependsOn(module);
             this.Paths.Add(module, key);
@@ -178,7 +191,12 @@ namespace Installer
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         Include<DependentModule>(
-            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
+#if BAM_V2
+            string key
+#else
+            Bam.Core.PathKey key
+#endif
+        ) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -195,7 +213,12 @@ namespace Installer
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
+#if BAM_V2
+            string key
+#else
+            Bam.Core.PathKey key
+#endif
+        ) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)

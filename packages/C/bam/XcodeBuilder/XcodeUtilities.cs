@@ -172,7 +172,14 @@ namespace C
             {
                 if (library is C.StaticLibrary)
                 {
-                    var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
+                    var libDir = library.CreateTokenizedString(
+                        "@dir($(0))",
+#if BAM_V2
+                        library.GeneratedPaths[C.StaticLibrary.LibraryKey]
+#else
+                        library.GeneratedPaths[C.StaticLibrary.Key]
+#endif
+                    );
                     lock (libDir)
                     {
                         if (!libDir.IsParsed)
@@ -184,7 +191,14 @@ namespace C
                 }
                 else if (library is C.IDynamicLibrary)
                 {
-                    var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
+                    var libDir = library.CreateTokenizedString(
+                        "@dir($(0))",
+#if BAM_V2
+                        library.GeneratedPaths[C.DynamicLibrary.ExecutableKey]
+#else
+                        library.GeneratedPaths[C.DynamicLibrary.Key]
+#endif
+                    );
                     lock (libDir)
                     {
                         if (!libDir.IsParsed)
@@ -283,4 +297,4 @@ namespace C
         }
     }
 #endif
-}
+                }

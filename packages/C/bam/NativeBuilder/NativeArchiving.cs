@@ -55,7 +55,7 @@ namespace C
                 {
                     continue;
                 }
-                commandLine.Add(input.GeneratedPaths[C.ObjectFile.Key].ToStringQuoteIfNecessary());
+                commandLine.Add(input.GeneratedPaths[C.ObjectFile.ObjectFileKey].ToStringQuoteIfNecessary());
             }
 
             CommandLineProcessor.Processor.Execute(

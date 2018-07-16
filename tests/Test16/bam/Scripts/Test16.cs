@@ -105,7 +105,11 @@ namespace Test16
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+#if BAM_V2
+            this.Include<StaticApplication>(C.ConsoleApplication.ExecutableKey);
+#else
             this.Include<StaticApplication>(C.ConsoleApplication.Key);
+#endif
         }
     }
 
@@ -119,7 +123,11 @@ namespace Test16
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+#if BAM_V2
+            this.Include<DynamicApplication>(C.ConsoleApplication.ExecutableKey);
+#else
             this.Include<DynamicApplication>(C.ConsoleApplication.Key);
+#endif
         }
     }
 
@@ -133,7 +141,11 @@ namespace Test16
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+#if BAM_V2
+            this.Include<DynamicApplicationNonPublicForwarder>(C.ConsoleApplication.ExecutableKey);
+#else
             this.Include<DynamicApplicationNonPublicForwarder>(C.ConsoleApplication.Key);
+#endif
         }
     }
 }

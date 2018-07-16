@@ -46,7 +46,7 @@ namespace C
             var meta = new MakeFileBuilder.MakeFileMeta(module);
             var rule = meta.AddRule();
             rule.AddTarget(output_path);
-            rule.AddPrerequisite((module as IRequiresSourceModule).Source, C.SourceFile.Key);
+            rule.AddPrerequisite((module as IRequiresSourceModule).Source, C.SourceFile.SourceFileKey);
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;
             var command = new System.Text.StringBuilder();

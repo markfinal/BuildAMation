@@ -43,10 +43,11 @@ namespace Publisher
     public abstract class DebugSymbolCollation :
         Bam.Core.Module
     {
+#if BAM_V2
+        public const string DebugSymbolsDirectoryKey = "Debug Symbol Collation Root";
+#else
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Debug Symbol Collation Root");
 
-#if BAM_V2
-#else
         private IDebugSymbolCollationPolicy Policy = null;
 #endif
 
@@ -60,10 +61,24 @@ namespace Publisher
         {
             base.Init(parent);
 
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            this.RegisterGeneratedFile(
+#if BAM_V2
+                DebugSymbolsDirectoryKey,
+#else
+                Key,
+#endif
+                this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)")
+            );
 
             // one value, as debug symbols are not generated in IDE projects
-            this.Macros.Add("publishroot", this.GeneratedPaths[Key]);
+            this.Macros.Add(
+                "publishroot",
+#if BAM_V2
+                this.GeneratedPaths[DebugSymbolsDirectoryKey]
+#else
+                this.GeneratedPaths[Key]
+#endif
+            );
         }
 
         protected sealed override void

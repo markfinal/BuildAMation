@@ -42,7 +42,11 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_InnoSetupInstaller");
 
+#if BAM_V2
+            this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
+#else
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+#endif
         }
     }
 
@@ -58,7 +62,11 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_InnoSetupInstaller");
 
+#if BAM_V2
+            this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
+#else
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+#endif
         }
     }
 
@@ -74,7 +82,11 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_NSISInstaller");
 
+#if BAM_V2
+            this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
+#else
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+#endif
         }
     }
 
@@ -90,7 +102,11 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_NSISInstaller");
 
+#if BAM_V2
+            this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
+#else
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+#endif
         }
     }
 }

@@ -60,7 +60,11 @@ namespace CodeGenTest
                 return;
             }
 
+#if BAM_V2
+            this.Policy.GenerateSource(this, context, this.Compiler, this.GeneratedPaths[SourceFileKey]);
+#else
             this.Policy.GenerateSource(this, context, this.Compiler, this.GeneratedPaths[Key]);
+#endif
         }
 
         protected override void

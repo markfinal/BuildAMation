@@ -81,7 +81,11 @@ namespace Bam.Core
             this.TokenizedStringCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
             this.Macros = new MacroList(this.GetType().FullName);
             // TODO: Can this be generalized to be a collection of files?
+#if BAM_V2
+            this.GeneratedPaths = new System.Collections.Generic.Dictionary<string, TokenizedString>();
+#else
             this.GeneratedPaths = new System.Collections.Generic.Dictionary<PathKey, TokenizedString>();
+#endif
 
             // capture the details of the encapsulating module
             this.EncapsulatingModule = null;
@@ -338,7 +342,11 @@ namespace Bam.Core
         /// <param name="path">Path.</param>
         protected void
         RegisterGeneratedFile(
+#if BAM_V2
+            string key,
+#else
             PathKey key,
+#endif
             TokenizedString path)
         {
             if (this.GeneratedPaths.ContainsKey(key))
@@ -355,7 +363,11 @@ namespace Bam.Core
         /// <param name="key">Key.</param>
         private void
         RegisterGeneratedFile(
+#if BAM_V2
+            string key)
+#else
             PathKey key)
+#endif
         {
             this.RegisterGeneratedFile(key, null);
         }
@@ -649,7 +661,11 @@ namespace Bam.Core
         /// Get the dictionary of keys and strings for all registered generated paths with the module.
         /// </summary>
         /// <value>The generated paths.</value>
+#if BAM_V2
+        public System.Collections.Generic.Dictionary<string, TokenizedString> GeneratedPaths
+#else
         public System.Collections.Generic.Dictionary<PathKey, TokenizedString> GeneratedPaths
+#endif
         {
             get;
             private set;

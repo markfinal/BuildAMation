@@ -34,10 +34,17 @@ namespace Publisher
         Bam.Core.Module,
         ICollatedObject
     {
+#if BAM_V2
+        public const string StripBinaryKey = "Stripped Binary Destination";
+
+        private Bam.Core.Module sourceModule;
+        private string sourcePathKey;
+#else
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Binary Destination");
 
         private Bam.Core.Module sourceModule;
         private Bam.Core.PathKey sourcePathKey;
+#endif
         private ICollatedObject anchor = null;
 
 #if BAM_V2
@@ -52,9 +59,17 @@ namespace Publisher
             base.Init(parent);
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<StripTool>();
-            this.RegisterGeneratedFile(Key,
-                this.CreateTokenizedString("$(0)/@filename($(1))",
-                                           new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+            this.RegisterGeneratedFile(
+#if BAM_V2
+                StripBinaryKey,
+#else
+                Key,
+#endif
+                this.CreateTokenizedString(
+                    "$(0)/@filename($(1))",
+                    new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
+                )
+            );
 
             this.Requires(this.sourceModule);
         }
@@ -114,6 +129,22 @@ namespace Publisher
             }
         }
 
+#if BAM_V2
+        string ICollatedObject.SourcePathKey
+        {
+            get
+            {
+                return this.sourcePathKey;
+            }
+        }
+        public string SourcePathKey
+        {
+            set
+            {
+                this.sourcePathKey = value;
+            }
+        }
+#else
         Bam.Core.PathKey ICollatedObject.SourcePathKey
         {
             get
@@ -128,6 +159,7 @@ namespace Publisher
                 this.sourcePathKey = value;
             }
         }
+#endif
 
         Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
         {

@@ -44,10 +44,11 @@ namespace Publisher
     public abstract class StrippedBinaryCollation :
         Bam.Core.Module
     {
+#if BAM_V2
+        public const string StripBinaryDirectoryKey = "Stripped Collation Root Directory";
+#else
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Collation Root");
 
-#if BAM_V2
-#else
         private IStrippedBinaryCollationPolicy Policy = null;
 #endif
 
@@ -61,10 +62,24 @@ namespace Publisher
         {
             base.Init(parent);
 
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            this.RegisterGeneratedFile(
+#if BAM_V2
+                StripBinaryDirectoryKey,
+#else
+                Key,
+#endif
+                this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)")
+            );
 
             // one value, as stripped binaries are not generated in IDE projects
+#if BAM_V2
+            this.Macros.Add(
+                "publishroot",
+                this.GeneratedPaths[StripBinaryDirectoryKey]
+            );
+#else
             this.Macros.Add("publishroot", this.GeneratedPaths[Key]);
+#endif
         }
 
         protected sealed override void
@@ -112,7 +127,11 @@ namespace Publisher
             var stripBinary = Bam.Core.Module.Create<StripModule>(preInitCallback: module =>
                 {
                     module.SourceModule = collatedFile as Bam.Core.Module;
+#if BAM_V2
+                    module.SourcePathKey = CollatedObject.CopiedObjectKey;
+#else
                     module.SourcePathKey = CollatedObject.Key;
+#endif
                     module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
                 });
 
@@ -140,7 +159,11 @@ namespace Publisher
                     // no need to take RenameLeaf macro into account, as the rename occurred
                     // in the original collation, so this is a straight copy
                     module.SourceModule = collatedObject as Bam.Core.Module;
+#if BAM_V2
+                    module.SourcePathKey = CollatedObject.CopiedObjectKey;
+#else
                     module.SourcePathKey = CollatedObject.Key;
+#endif
                     module.SetPublishingDirectory("$(0)", collatedObject.PublishingDirectory.Clone(module));
                 });
             this.DependsOn(clonedFile);
@@ -333,13 +356,17 @@ namespace Publisher
         /// generated following the initial collation.
         /// </summary>
         /// <typeparam name="DependentModule">Module type containing the file to incorporate into the collation.</typeparam>
-        /// <param name="key">The PathKey of the above module, containing the path to the file.</param>
+        /// <param name="key">The string Key of the above module, containing the path to the file.</param>
         /// <param name="collator">The original collator from which the stripped objects will be sourced.</param>
         /// <param name="anchor">The anchor in the stripped collation.</param>
         /// <returns>A reference to the stripped collated file.</returns>
         public ICollatedObject
         Include<DependentModule>(
+#if BAM_V2
+            string key,
+#else
             Bam.Core.PathKey key,
+#endif
             Collation collator,
             CollatedObject anchor) where DependentModule : Bam.Core.Module, new()
         {

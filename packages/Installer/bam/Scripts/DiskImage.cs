@@ -56,10 +56,17 @@ namespace Installer
     public abstract class DiskImage :
         Bam.Core.Module
     {
+#if BAM_V2
+        public const string DMGKey = "Disk Image Installer";
+#else
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Installer");
+#endif
 
         private Bam.Core.TokenizedString SourceFolderPath;
+#if BAM_V2
+#else
         private IDiskImagePolicy Policy;
+#endif
 
         protected override void
         Init(
@@ -67,7 +74,14 @@ namespace Installer
         {
             base.Init(parent);
 
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).dmg"));
+            this.RegisterGeneratedFile(
+#if BAM_V2
+                DMGKey,
+#else
+                Key,
+#endif
+                this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).dmg")
+            );
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<DiskImageCompiler>();
         }
@@ -80,7 +94,12 @@ namespace Installer
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
+#if BAM_V2
+            string key
+#else
+            Bam.Core.PathKey key
+#endif
+        ) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -101,21 +120,28 @@ namespace Installer
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+            throw new System.NotImplementedException();
+#else
             if (null != this.Policy)
             {
                 this.Policy.CreateDMG(this, context, this.Tool as DiskImageCompiler, this.SourceFolderPath, this.GeneratedPaths[Key]);
             }
+#endif
         }
 
         protected sealed override void
         GetExecutionPolicy(
             string mode)
         {
+#if BAM_V2
+#else
             if (mode == "Native")
             {
                 var className = "Installer." + mode + "DMG";
                 this.Policy = Bam.Core.ExecutionPolicyUtilities<IDiskImagePolicy>.Create(className);
             }
+#endif
         }
     }
 }

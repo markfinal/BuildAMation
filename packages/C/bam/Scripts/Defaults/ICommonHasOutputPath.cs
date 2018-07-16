@@ -40,6 +40,20 @@ namespace C.DefaultSettings
             {
                 return;
             }
+#if BAM_V2
+            if (module is ObjectFileBase)
+            {
+                settings.OutputPath = ObjectFileBase.ObjectFileKey;
+            }
+            else if (module is StaticLibrary)
+            {
+                settings.OutputPath = StaticLibrary.LibraryKey;
+            }
+            else if (module is ConsoleApplication)
+            {
+                settings.OutputPath = ConsoleApplication.ExecutableKey;
+            }
+#else
             if (module is ObjectFileBase)
             {
                 settings.OutputPath = ObjectFileBase.Key;
@@ -52,6 +66,7 @@ namespace C.DefaultSettings
             {
                 settings.OutputPath = ConsoleApplication.Key;
             }
+#endif
             else
             {
                 throw new Bam.Core.Exception(

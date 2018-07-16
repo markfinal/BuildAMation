@@ -78,7 +78,11 @@ namespace CocoaTest1
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
+#if BAM_V2
+            this.Include<CocoaTest>(C.ConsoleApplication.ExecutableKey);
+#else
             this.Include<CocoaTest>(C.ConsoleApplication.Key);
+#endif
         }
     }
 }

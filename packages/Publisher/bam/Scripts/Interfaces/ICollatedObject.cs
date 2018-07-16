@@ -37,7 +37,11 @@ namespace Publisher
             get;
         }
 
+#if BAM_V2
+        string SourcePathKey
+#else
         Bam.Core.PathKey SourcePathKey
+#endif
         {
             get;
         }

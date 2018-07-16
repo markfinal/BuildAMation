@@ -65,13 +65,13 @@ namespace C
                 {
                     continue;
                 }
-                rule.AddPrerequisite(input, C.ObjectFile.Key);
+                rule.AddPrerequisite(input, C.ObjectFile.ObjectFileKey);
             }
             foreach (var input in module.Libraries)
             {
                 if (input is StaticLibrary)
                 {
-                    rule.AddPrerequisite(input, C.StaticLibrary.Key);
+                    rule.AddPrerequisite(input, C.StaticLibrary.LibraryKey);
                 }
                 else if (input is IDynamicLibrary)
                 {
@@ -79,7 +79,11 @@ namespace C
                     if (dynLib.LinkerNameSymbolicLink != null)
                     {
                         var linkerNameSymLink = dynLib.LinkerNameSymbolicLink;
+#if BAM_V2
+                        rule.AddPrerequisite(linkerNameSymLink, C.SharedObjectSymbolicLink.SOSymLinkKey);
+#else
                         rule.AddPrerequisite(linkerNameSymLink, C.SharedObjectSymbolicLink.Key);
+#endif
                     }
                     else
                     {
@@ -89,7 +93,11 @@ namespace C
                         }
                         else
                         {
+#if BAM_V2
+                            rule.AddPrerequisite(input, C.DynamicLibrary.ExecutableKey);
+#else
                             rule.AddPrerequisite(input, C.DynamicLibrary.Key);
+#endif
                         }
                     }
                 }
@@ -237,4 +245,4 @@ namespace C
         }
     }
 #endif
-}
+                        }

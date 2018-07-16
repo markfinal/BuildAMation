@@ -34,7 +34,11 @@ namespace C
         Bam.Core.IInputPath,
         Bam.Core.IChildModule
     {
+#if BAM_V2
+        public const string HeaderFileKey = "Header File";
+#else
         static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Header File");
+#endif
 
         protected override void
         EvaluateInternal()
@@ -59,6 +63,16 @@ namespace C
 
         public Bam.Core.TokenizedString InputPath
         {
+#if BAM_V2
+            get
+            {
+                return this.GeneratedPaths[HeaderFileKey];
+            }
+            set
+            {
+                this.GeneratedPaths[HeaderFileKey] = value;
+            }
+#else
             get
             {
                 return this.GeneratedPaths[Key];
@@ -67,6 +81,7 @@ namespace C
             {
                 this.GeneratedPaths[Key] = value;
             }
+#endif
         }
 
         Bam.Core.Module Bam.Core.IChildModule.Parent

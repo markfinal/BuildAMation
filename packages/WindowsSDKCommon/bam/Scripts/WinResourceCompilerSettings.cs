@@ -81,7 +81,7 @@ namespace WindowsSDKCommon
         [CommandLineProcessor.Path("-Fo")]
         [VisualStudioProcessor.Path("", ignored: true)]
 #endif
-        Bam.Core.PathKey C.ICommonHasOutputPath.OutputPath
+        string C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

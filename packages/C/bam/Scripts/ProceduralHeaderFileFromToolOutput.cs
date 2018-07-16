@@ -100,7 +100,11 @@ namespace C
         {
             // TODO
             // always build
+#if BAM_V2
+            this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[HeaderFileKey]);
+#else
             this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+#endif
         }
 
         protected override void GetExecutionPolicy(string mode)

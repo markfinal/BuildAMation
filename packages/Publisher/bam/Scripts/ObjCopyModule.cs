@@ -34,10 +34,17 @@ namespace Publisher
         Bam.Core.Module,
         ICollatedObject
     {
+#if BAM_V2
+        public const string ObjCopyKey = "ObjCopy Destination";
+
+        private Bam.Core.Module sourceModule;
+        private string sourcePathKey;
+#else
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("ObjCopy Destination");
 
         private Bam.Core.Module sourceModule;
         private Bam.Core.PathKey sourcePathKey;
+#endif
         private ICollatedObject anchor = null;
 
 #if BAM_V2
@@ -64,15 +71,31 @@ namespace Publisher
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) &&
                 trueSourceModule is C.IDynamicLibrary)
             {
-                this.RegisterGeneratedFile(Key,
-                    this.CreateTokenizedString("$(0)/@filename($(1)).debug",
-                                               new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+                this.RegisterGeneratedFile(
+#if BAM_V2
+                    ObjCopyKey,
+#else
+                    Key,
+#endif
+                    this.CreateTokenizedString(
+                        "$(0)/@filename($(1)).debug",
+                        new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
+                    )
+                );
             }
             else
             {
-                this.RegisterGeneratedFile(Key,
-                    this.CreateTokenizedString("$(0)/@basename($(1)).debug",
-                                               new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+                this.RegisterGeneratedFile(
+#if BAM_V2
+                    ObjCopyKey,
+#else
+                    Key,
+#endif
+                    this.CreateTokenizedString(
+                        "$(0)/@basename($(1)).debug",
+                        new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
+                    )
+                );
             }
 
             this.Requires(this.sourceModule);
@@ -133,6 +156,22 @@ namespace Publisher
             }
         }
 
+#if BAM_V2
+        string ICollatedObject.SourcePathKey
+        {
+            get
+            {
+                return this.sourcePathKey;
+            }
+        }
+        public string SourcePathKey
+        {
+            set
+            {
+                this.sourcePathKey = value;
+            }
+        }
+#else
         Bam.Core.PathKey ICollatedObject.SourcePathKey
         {
             get
@@ -147,8 +186,9 @@ namespace Publisher
                 this.sourcePathKey = value;
             }
         }
+#endif
 
-        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
+            Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
         {
             get
             {
@@ -178,7 +218,11 @@ namespace Publisher
             var linkDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
                 {
                     module.SourceModule = strippedCollatedObject;
+#if BAM_V2
+                    module.SourcePathKey = StripModule.StripBinaryKey;
+#else
                     module.SourcePathKey = StripModule.Key;
+#endif
                     module.Macros.Add("publishingdir", strippedCollatedObject.Macros["publishingdir"].Clone(module));
                 });
             linkDebugSymbols.DependsOn(strippedCollatedObject);

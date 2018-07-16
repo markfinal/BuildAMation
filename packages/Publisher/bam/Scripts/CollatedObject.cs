@@ -34,19 +34,28 @@ namespace Publisher
         Bam.Core.Module,
         ICollatedObject
     {
+#if BAM_V2
+        public const string CopiedObjectKey = "Copied Object";
+#else
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Copied Object");
 
-#if BAM_V2
-#else
         private ICollatedObjectPolicy policy = null;
 #endif
 
         private Bam.Core.Module sourceModule;
+#if BAM_V2
+        private string sourcePathKey;
+#else
         private Bam.Core.PathKey sourcePathKey;
+#endif
         private Bam.Core.TokenizedString publishingDirectory;
         private ICollatedObject anchor = null;
 
+#if BAM_V2
+        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, string>, CollatedObject>();
+#else
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
+#endif
 
         Bam.Core.Module ICollatedObject.SourceModule
         {
@@ -63,14 +72,22 @@ namespace Publisher
             }
         }
 
+#if BAM_V2
+        string ICollatedObject.SourcePathKey
+#else
         Bam.Core.PathKey ICollatedObject.SourcePathKey
+#endif
         {
             get
             {
                 return this.sourcePathKey;
             }
         }
+#if BAM_V2
+        public string SourcePathKey
+#else
         public Bam.Core.PathKey SourcePathKey
+#endif
         {
             set
             {
@@ -169,7 +186,11 @@ namespace Publisher
         }
 
         // TODO: add accessors, rather than direct to the field
+#if BAM_V2
+        public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, CollatedObject> DependentCollations
+#else
         public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> DependentCollations
+#endif
         {
             get
             {
@@ -236,9 +257,17 @@ namespace Publisher
                         this.sourceModule.ToString());
                 }
             }
-            this.RegisterGeneratedFile(Key,
-                                       this.CreateTokenizedString("$(0)/#valid($(RenameLeaf),@filename($(1)))",
-                                                                  new[] { this.publishingDirectory, this.SourcePath }));
+            this.RegisterGeneratedFile(
+#if BAM_V2
+                CopiedObjectKey,
+#else
+                Key,
+#endif
+                this.CreateTokenizedString(
+                    "$(0)/#valid($(RenameLeaf),@filename($(1)))",
+                    new[] { this.publishingDirectory, this.SourcePath }
+                )
+            );
             this.Ignore = false;
         }
 

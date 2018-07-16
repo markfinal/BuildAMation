@@ -66,7 +66,11 @@ namespace CodeGenTest
         {
             get
             {
+#if BAM_V2
+                return this.GeneratedPaths[C.ConsoleApplication.ExecutableKey];
+#else
                 return this.GeneratedPaths[C.ConsoleApplication.Key];
+#endif
             }
         }
 
