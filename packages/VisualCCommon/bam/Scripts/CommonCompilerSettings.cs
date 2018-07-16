@@ -105,7 +105,7 @@ namespace VisualCCommon
         [CommandLineProcessor.Path("-c -Fo")]
         [VisualStudioProcessor.Path("ObjectFileName")]
 #endif
-        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        Bam.Core.PathKey C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

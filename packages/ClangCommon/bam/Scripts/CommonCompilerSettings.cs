@@ -93,7 +93,7 @@ namespace ClangCommon
         [CommandLineProcessor.Path("-c -o ")]
         [XcodeProjectProcessor.Path("", ignore: true)]
 #endif
-        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        Bam.Core.PathKey C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

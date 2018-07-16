@@ -72,7 +72,7 @@ namespace VisualCCommon
         [CommandLineProcessor.Path("-c -Fo")]
         [VisualStudioProcessor.Path("ObjectFileName", ignored: true)] // if deeper than just $(IntDir)myobj.obj, MASM seems to fail
 #endif
-        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        Bam.Core.PathKey C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

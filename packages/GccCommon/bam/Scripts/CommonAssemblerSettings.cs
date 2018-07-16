@@ -61,7 +61,7 @@ namespace GccCommon
 #if BAM_V2
         [CommandLineProcessor.Path("-c -o ")]
 #endif
-        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        Bam.Core.PathKey C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

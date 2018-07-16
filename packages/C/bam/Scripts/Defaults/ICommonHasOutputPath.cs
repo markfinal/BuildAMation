@@ -42,15 +42,15 @@ namespace C.DefaultSettings
             }
             if (module is ObjectFileBase)
             {
-                settings.OutputPath = module.GeneratedPaths[ObjectFileBase.Key];
+                settings.OutputPath = ObjectFileBase.Key;
             }
             else if (module is StaticLibrary)
             {
-                settings.OutputPath = module.GeneratedPaths[StaticLibrary.Key];
+                settings.OutputPath = StaticLibrary.Key;
             }
             else if (module is ConsoleApplication)
             {
-                settings.OutputPath = module.GeneratedPaths[ConsoleApplication.Key];
+                settings.OutputPath = ConsoleApplication.Key;
             }
             else
             {
@@ -75,7 +75,7 @@ namespace C.DefaultSettings
         {
             if (null != shared.OutputPath && null != other.OutputPath)
             {
-                shared.OutputPath = shared.OutputPath.Equals(other.OutputPath) ? shared.OutputPath : null;
+                shared.OutputPath = shared.OutputPath.Intersect(other.OutputPath);
             }
             else
             {
@@ -91,7 +91,7 @@ namespace C.DefaultSettings
         {
             if (null != lhs.OutputPath && null != rhs.OutputPath)
             {
-                delta.OutputPath = !lhs.OutputPath.Equals(rhs.OutputPath) ? lhs.OutputPath : null;
+                delta.OutputPath = lhs.OutputPath.Complement(rhs.OutputPath);
             }
             else if (null != lhs.OutputPath)
             {

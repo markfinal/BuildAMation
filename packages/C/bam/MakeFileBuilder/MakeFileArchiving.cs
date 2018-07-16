@@ -36,7 +36,7 @@ namespace C
         Archive(
             StaticLibrary module)
         {
-            var output_path = (module.Settings as ICommonHasOutputPath).OutputPath;
+            var output_path = module.GeneratedPaths[(module.Settings as ICommonHasOutputPath).OutputPath];
 
             var meta = new MakeFileBuilder.MakeFileMeta(module);
             var rule = meta.AddRule();

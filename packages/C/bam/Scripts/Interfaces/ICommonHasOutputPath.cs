@@ -31,8 +31,6 @@ namespace C
 {
     /// <summary>
     /// Common interface that specifies that the output path is available.
-    /// Generally, this output path is a view onto the real output path, which is
-    /// set by other means.
     /// Output paths are sometimes required to be the penultimate item on the command
     /// line, following all other options, and only followed by source paths.
     /// </summary>
@@ -42,10 +40,9 @@ namespace C
         Bam.Core.ISettingsBase
     {
         /// <summary>
-        /// Path to the compiled output file.
-        /// Automatically set by package code. DO NOT set this path in a patch.
+        /// Handle to the generated output path for this module
         /// </summary>
-        Bam.Core.TokenizedString OutputPath
+        Bam.Core.PathKey OutputPath
         {
             get;
             set;

@@ -104,5 +104,37 @@ namespace Bam.Core
         {
             return this.Id;
         }
+
+        /// <summary>
+        /// If two PathKeys are the same, return 'this'. Otherwise return null.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public PathKey
+        Intersect(
+            PathKey other)
+        {
+            if (this.Id.Equals(other.Id))
+            {
+                return this;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// If two PathKeys are not the same, return this. Otherwise return null.
+        /// </summary>
+        /// <param name="other"></param>
+        /// <returns></returns>
+        public PathKey
+        Complement(
+            PathKey other)
+        {
+            if (!this.Id.Equals(other.Id))
+            {
+                return this;
+            }
+            return null;
+        }
     }
 }

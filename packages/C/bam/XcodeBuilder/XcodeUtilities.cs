@@ -55,7 +55,7 @@ namespace C
             var target = workspace.EnsureTargetExists(module);
             var output_filename = module.CreateTokenizedString(
                 "@filename($(0))",
-                (module.Settings as C.ICommonHasOutputPath).OutputPath
+                module.GeneratedPaths[(module.Settings as C.ICommonHasOutputPath).OutputPath]
             );
             output_filename.Parse();
             target.EnsureOutputFileReferenceExists(

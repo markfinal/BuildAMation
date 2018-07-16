@@ -196,6 +196,7 @@ namespace CommandLineProcessor
 
         private static void
         HandleSinglePath(
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine,
             System.Reflection.PropertyInfo interfacePropertyInfo,
             System.Reflection.PropertyInfo propertyInfo,
@@ -208,19 +209,36 @@ namespace CommandLineProcessor
             }
             if (!typeof(Bam.Core.TokenizedString).IsAssignableFrom(propertyInfo.PropertyType))
             {
-                throw new Bam.Core.Exception(
-                    "Attribute expected a Bam.Core.TokenizedString, but property {0} is of type {1}",
-                    propertyInfo.Name,
-                    propertyInfo.PropertyType.ToString()
+                if (!typeof(Bam.Core.PathKey).IsAssignableFrom(propertyInfo.PropertyType))
+                {
+                    throw new Bam.Core.Exception(
+                        "Attribute expected either a Bam.Core.TokenizedString or Bam.Core.PathKey, but property {0} is of type {1}",
+                        propertyInfo.Name,
+                        propertyInfo.PropertyType.ToString()
+                    );
+                }
+            }
+            if (typeof(Bam.Core.TokenizedString).IsAssignableFrom(propertyInfo.PropertyType))
+            {
+                commandLine.Add(
+                    System.String.Format(
+                        "{0}{1}",
+                        (attributeArray.First() as BaseAttribute).CommandSwitch,
+                        (propertyValue as Bam.Core.TokenizedString).ToStringQuoteIfNecessary()
+                    )
                 );
             }
-            commandLine.Add(
-                System.String.Format(
-                    "{0}{1}",
-                    (attributeArray.First() as BaseAttribute).CommandSwitch,
-                    (propertyValue as Bam.Core.TokenizedString).ToStringQuoteIfNecessary()
-                )
-            );
+            else
+            {
+                var path = module.GeneratedPaths[propertyValue as Bam.Core.PathKey];
+                commandLine.Add(
+                    System.String.Format(
+                        "{0}{1}",
+                        (attributeArray.First() as BaseAttribute).CommandSwitch,
+                        path.ToStringQuoteIfNecessary()
+                    )
+                );
+            }
         }
 
         private static void
@@ -445,6 +463,7 @@ namespace CommandLineProcessor
                     else if (attributeArray.First() is PathAttribute)
                     {
                         HandleSinglePath(
+                            module,
                             commandLine,
                             interface_property,
                             settings_property,

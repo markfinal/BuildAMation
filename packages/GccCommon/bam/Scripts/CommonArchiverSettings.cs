@@ -58,7 +58,7 @@ namespace GccCommon
 #if BAM_V2
         [CommandLineProcessor.Path("")]
 #endif
-        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        Bam.Core.PathKey C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

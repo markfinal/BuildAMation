@@ -60,7 +60,7 @@ namespace ClangCommon
         [CommandLineProcessor.Path("")]
         [XcodeProjectProcessor.Path("", ignore: true)]
 #endif
-        Bam.Core.TokenizedString C.ICommonHasOutputPath.OutputPath
+        Bam.Core.PathKey C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;
