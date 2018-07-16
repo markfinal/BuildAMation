@@ -267,5 +267,40 @@ namespace C
             this.headerModules.Add(headers);
             return headers;
         }
+
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        OrderOnlyDependents()
+        {
+            // order only dependencies - recurse into each, so that all layers
+            // of order only dependencies are included
+            var queue = new System.Collections.Generic.Queue<Bam.Core.Module>(this.Requirements);
+            while (queue.Count > 0)
+            {
+                var required = queue.Dequeue();
+                foreach (var additional in required.Requirements)
+                {
+                    queue.Enqueue(additional);
+                }
+
+                yield return required;
+            }
+            // any non-C module projects should be order-only dependencies
+            foreach (var dependent in this.Dependents)
+            {
+                if (dependent is C.CModule)
+                {
+                    continue;
+                }
+                yield return dependent;
+            }
+            if (this is IForwardedLibraries)
+            {
+                // however, there may be forwarded libraries, and these are useful order only dependents
+                foreach (var dependent in (this as IForwardedLibraries).ForwardedLibraries)
+                {
+                    yield return dependent;
+                }
+            }
+        }
     }
 }

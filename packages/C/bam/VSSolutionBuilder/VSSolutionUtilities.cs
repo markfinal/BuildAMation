@@ -161,66 +161,15 @@ namespace C
 
         public static void
         AddOrderOnlyDependentProjects(
-            Bam.Core.Module module,
+            C.CModule module,
             VSSolutionBuilder.VSProjectConfiguration config)
         {
-            var required_projects = new System.Collections.Generic.HashSet<VSSolutionBuilder.VSProject>();
-            // order only dependencies - recurse into each, so that all layers
-            // of order only dependencies are included
-            var queue = new System.Collections.Generic.Queue<Bam.Core.Module>(module.Requirements);
-            while (queue.Count > 0)
-            {
-                var required = queue.Dequeue();
-                foreach (var additional in required.Requirements)
-                {
-                    queue.Enqueue(additional);
-                }
-
-                if (null == required.MetaData)
-                {
-                    continue;
-                }
-
-                var requiredProject = required.MetaData as VSSolutionBuilder.VSProject;
-                if (null != requiredProject)
-                {
-                    required_projects.Add(requiredProject);
-                }
-            }
-            // any non-C module projects should be order-only dependencies
-            foreach (var dependent in module.Dependents)
-            {
-                if (null == dependent.MetaData)
-                {
-                    continue;
-                }
-                if (dependent is C.CModule)
-                {
-                    continue;
-                }
-                var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
-                if (null != dependentProject)
-                {
-                    required_projects.Add(dependentProject);
-                }
-            }
-            // however, there may be forwarded libraries, and these are useful order only dependents
-            if (module is IForwardedLibraries)
-            {
-                foreach (var dependent in (module as IForwardedLibraries).ForwardedLibraries)
-                {
-                    if (null == dependent.MetaData)
-                    {
-                        continue;
-                    }
-                    var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
-                    if (null != dependentProject)
-                    {
-                        required_projects.Add(dependentProject);
-                    }
-                }
-            }
-            foreach (var proj in required_projects)
+            var order_only_projects =
+                module.OrderOnlyDependents().
+                Distinct().
+                Where(item => item.MetaData != null && item.MetaData is VSSolutionBuilder.VSProject).
+                Select(item => item.MetaData as VSSolutionBuilder.VSProject);
+            foreach (var proj in order_only_projects)
             {
                 config.RequiresProject(proj);
             }
