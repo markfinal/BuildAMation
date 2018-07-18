@@ -29,13 +29,17 @@
 #endregion // License
 namespace GccCommon
 {
+    [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-o ")]
+    [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonLinkerSettings :
         C.SettingsBase,
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
+#if false
         C.ICommonHasOutputPath,
+#endif
         C.ICommonHasSONameLinux,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings,
@@ -57,6 +61,7 @@ namespace GccCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("-o ")]
 #endif
@@ -65,6 +70,7 @@ namespace GccCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("-Wl,-soname,")]
@@ -165,6 +171,11 @@ namespace GccCommon
         {
             get;
             set;
+        }
+
+        public override void AssignFileLayout ()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

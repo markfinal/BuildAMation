@@ -29,14 +29,18 @@
 #endregion // License
 namespace GccCommon
 {
+    [CommandLineProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "-o ")]
+    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ", max_file_count: 1)]
     public abstract class CommonCompilerSettings :
         C.SettingsBase,
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
+#if false
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
+#endif
         C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonCompilerSettings,
         C.IAdditionalSettings,
@@ -65,6 +69,7 @@ namespace GccCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("")]
 #endif
@@ -82,6 +87,7 @@ namespace GccCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("-E -o ")]
@@ -296,13 +302,19 @@ namespace GccCommon
                 );
             }
 
-            if (((this as C.ICommonHasOutputPath).OutputPath != null) &&
+            if (((this is C.ICommonHasOutputPath) && (this as C.ICommonHasOutputPath).OutputPath != null) &&
                 ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
             {
                 throw new Bam.Core.Exception(
                     "Both output and preprocessed output paths cannot be set"
                 );
             }
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

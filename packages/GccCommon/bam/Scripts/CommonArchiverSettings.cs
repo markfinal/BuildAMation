@@ -29,13 +29,17 @@
 #endregion // License
 namespace GccCommon
 {
+    [CommandLineProcessor.OutputPath(C.StaticLibrary.LibraryKey, "")]
+    [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonArchiverSettings :
         C.SettingsBase,
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
+#if false
         C.ICommonHasOutputPath,
+#endif
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
@@ -55,6 +59,7 @@ namespace GccCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("")]
 #endif
@@ -63,6 +68,7 @@ namespace GccCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-s", "")]
@@ -95,6 +101,11 @@ namespace GccCommon
         {
             get;
             set;
+        }
+
+        public override void AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }
