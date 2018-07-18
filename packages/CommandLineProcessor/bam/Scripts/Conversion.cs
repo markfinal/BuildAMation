@@ -634,54 +634,16 @@ namespace CommandLineProcessor
             switch (settings.FileLayout)
             {
                 case Bam.Core.Settings.ELayout.Cmds_Outputs_Inputs:
-                    {
-                        foreach (var generatedPath in settings.Module.GeneratedPaths)
-                        {
-                            if (null == generatedPath.Value)
-                            {
-                                continue;
-                            }
-                            var outputKey = generatedPath.Key;
-                            var matching_attr = output_file_attributes.FirstOrDefault(item => item.PathKey == outputKey);
-                            if (null == matching_attr)
-                            {
-                                throw new Bam.Core.Exception(
-                                    "Unable to locate OutputPath class attribute on {0} for path key {1}",
-                                    settings.ToString(),
-                                    outputKey
-                                );
-                            }
-                            commandLine.Add(
-                                System.String.Format(
-                                    "{0}{1}",
-                                    matching_attr.CommandSwitch,
-                                    module.GeneratedPaths[outputKey]
-                                )
-                            );
-                        }
-                        var matching_input_attr = input_files_attributes.First();
-                        foreach (var input_module in settings.Module.InputModules)
-                        {
-                            try
-                            {
-                                commandLine.Add(
-                                    System.String.Format(
-                                        "{0}{1}",
-                                        matching_input_attr.CommandSwitch,
-                                        input_module.GeneratedPaths[matching_input_attr.PathKey]
-                                    )
-                                );
-                            }
-                            catch (System.Collections.Generic.KeyNotFoundException)
-                            {
-                                throw new Bam.Core.Exception(
-                                    "Unable to locate path key {0} for input module of type {1}",
-                                    matching_input_attr.PathKey,
-                                    input_module.ToString()
-                                );
-                            }
-                        }
-                    }
+                    ProcessOutputPaths(settings, module, commandLine, output_file_attributes);
+                    ProcessInputPaths(settings, commandLine, input_files_attributes);
+                    break;
+
+                case Bam.Core.Settings.ELayout.Inputs_Cmds_Outputs:
+                    var newCommandLine = new Bam.Core.StringArray();
+                    ProcessInputPaths(settings, newCommandLine, input_files_attributes);
+                    newCommandLine.AddRange(commandLine);
+                    ProcessOutputPaths(settings, module, newCommandLine, output_file_attributes);
+                    commandLine = newCommandLine;
                     break;
 
                 default:
@@ -692,6 +654,69 @@ namespace CommandLineProcessor
                     );
             }
             return commandLine;
+        }
+
+        private static void
+        ProcessInputPaths(
+            Bam.Core.Settings settings,
+            Bam.Core.StringArray commandLine,
+            InputPathsAttribute[] input_files_attributes)
+        {
+            var matching_input_attr = input_files_attributes.First();
+            foreach (var input_module in settings.Module.InputModules)
+            {
+                try
+                {
+                    commandLine.Add(
+                        System.String.Format(
+                            "{0}{1}",
+                            matching_input_attr.CommandSwitch,
+                            input_module.GeneratedPaths[matching_input_attr.PathKey]
+                        )
+                    );
+                }
+                catch (System.Collections.Generic.KeyNotFoundException)
+                {
+                    throw new Bam.Core.Exception(
+                        "Unable to locate path key {0} for input module of type {1}",
+                        matching_input_attr.PathKey,
+                        input_module.ToString()
+                    );
+                }
+            }
+        }
+
+        private static void
+        ProcessOutputPaths(
+            Bam.Core.Settings settings,
+            Bam.Core.Module module,
+            Bam.Core.StringArray commandLine,
+            OutputPathAttribute[] output_file_attributes)
+        {
+            foreach (var generatedPath in settings.Module.GeneratedPaths)
+            {
+                if (null == generatedPath.Value)
+                {
+                    continue;
+                }
+                var outputKey = generatedPath.Key;
+                var matching_attr = output_file_attributes.FirstOrDefault(item => item.PathKey == outputKey);
+                if (null == matching_attr)
+                {
+                    throw new Bam.Core.Exception(
+                        "Unable to locate OutputPath class attribute on {0} for path key {1}",
+                        settings.ToString(),
+                        outputKey
+                    );
+                }
+                commandLine.Add(
+                    System.String.Format(
+                        "{0}{1}",
+                        matching_attr.CommandSwitch,
+                        module.GeneratedPaths[outputKey]
+                    )
+                );
+            }
         }
     }
 #endif

@@ -160,7 +160,7 @@ namespace MingwCommon
         public override void
         AssignFileLayout()
         {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
+            this.FileLayout = ELayout.Inputs_Cmds_Outputs;
         }
     }
 }

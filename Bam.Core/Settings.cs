@@ -242,7 +242,13 @@ namespace Bam.Core
             /// Command lines appear as:
             /// [non-patch switches] [output paths] [input paths]
             /// </summary>
-            Cmds_Outputs_Inputs
+            Cmds_Outputs_Inputs,
+
+            /// <summary>
+            /// Command lines appear as:
+            /// [input paths] [non-patch switches] [output paths]
+            /// </summary>
+            Inputs_Cmds_Outputs
         }
 
         /// <summary>
