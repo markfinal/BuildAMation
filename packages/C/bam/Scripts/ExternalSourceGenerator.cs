@@ -151,7 +151,7 @@ namespace C
                 throw new Bam.Core.Exception("Expected output file with key '{0}' has already been registered", name);
             }
             this.InternalExpectedOutputFileDictionary.Add(name, path);
-            this.Macros.Add(name, path);
+            this.RegisterGeneratedFile(name, path);
         }
 
         protected override void EvaluateInternal()
@@ -193,6 +193,35 @@ namespace C
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    //MakeFileSupport.Link(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeSupport.GenerateSource(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    //VSSolutionSupport.Link(this);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    //XcodeSupport.Link(this);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
+            }
 #else
             if (null == this.policy)
             {

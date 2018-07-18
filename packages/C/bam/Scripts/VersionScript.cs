@@ -68,7 +68,10 @@ namespace C
         {
             base.Init(parent);
             this.InputPath = this.OutputPath;
-            this.GeneratedPaths.Add(HashFileKey, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@filename($(0)).hash", this.OutputPath));
+            this.RegisterGeneratedFile(
+                HashFileKey,
+                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@filename($(0)).hash", this.OutputPath)
+            );
         }
 
         private delegate int GetHashFn(string inPath);

@@ -29,6 +29,8 @@
 #endregion // License
 namespace VisualCCommon
 {
+    [CommandLineProcessor.OutputPath(C.AssembledObjectFile.ObjectFileKey, "-Fo")]
+    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ")]
     public abstract class CommonAssemblerSettings :
         C.SettingsBase,
 #if BAM_V2
@@ -36,9 +38,13 @@ namespace VisualCCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
 #endif
+#if false
         C.ICommonHasOutputPath,
+#endif
         C.ICommonHasCompilerPreprocessedOutputPath,
+#if false
         C.ICommonHasSourcePath,
+#endif
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
@@ -68,6 +74,7 @@ namespace VisualCCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("-c -Fo")]
         [VisualStudioProcessor.Path("ObjectFileName", ignored: true)] // if deeper than just $(IntDir)myobj.obj, MASM seems to fail
@@ -77,6 +84,7 @@ namespace VisualCCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("-E -Fo")]
@@ -88,6 +96,7 @@ namespace VisualCCommon
             set;
         }
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("")]
         [VisualStudioProcessor.Path("", ignored: true)]
@@ -97,6 +106,7 @@ namespace VisualCCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         // defined in the executable used
@@ -208,13 +218,19 @@ namespace VisualCCommon
                 }
             }
 
-            if (((this as C.ICommonHasOutputPath).OutputPath != null) &&
+            if (((this is C.ICommonHasOutputPath) && (this as C.ICommonHasOutputPath).OutputPath != null) &&
                 ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
             {
                 throw new Bam.Core.Exception(
                     "Both output and preprocessed output paths cannot be set"
                 );
             }
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

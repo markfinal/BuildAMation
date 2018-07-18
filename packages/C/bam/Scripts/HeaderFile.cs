@@ -70,7 +70,10 @@ namespace C
             }
             set
             {
-                this.GeneratedPaths[HeaderFileKey] = value;
+                this.RegisterGeneratedFile(
+                    HeaderFileKey,
+                    value
+                );
             }
 #else
             get

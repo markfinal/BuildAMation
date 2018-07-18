@@ -31,6 +31,81 @@ using Bam.Core;
 namespace C
 {
 #if BAM_V2
+    public static partial class NativeSupport
+    {
+        // redirect the captured output from running the tool into a file
+        // and then clear the captured output so it's not written to the log
+        private static void
+        sendCapturedOutputToFile(
+            ProceduralHeaderFileFromToolOutput module,
+            Bam.Core.ExecutionContext context)
+        {
+            var tempPath = Bam.Core.IOWrapper.CreateTemporaryFile();
+            using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(tempPath))
+            {
+                writeFile.Write(context.OutputStringBuilder.ToString());
+            }
+
+            var destPath = module.GeneratedPaths[ProceduralHeaderFileFromToolOutput.HeaderFileKey].ToString();
+
+            var moveFile = true;
+            if (System.IO.File.Exists(destPath))
+            {
+                // compare contents
+                using (System.IO.TextReader existingFile = new System.IO.StreamReader(destPath))
+                {
+                    var contents = existingFile.ReadToEnd();
+                    var contentsL = contents.Length;
+                    var oldL = context.OutputStringBuilder.ToString().Length;
+                    if (contents.Equals(context.OutputStringBuilder.ToString()))
+                    {
+                        moveFile = false;
+                    }
+                }
+            }
+            if (moveFile)
+            {
+                Bam.Core.Log.Info(
+                    "Written procedurally generated header : {0}, from the output of {1}",
+                    destPath,
+                    (module.Tool as Bam.Core.ICommandLineTool).Executable.ToString()
+                );
+                System.IO.File.Delete(destPath);
+                System.IO.File.Move(tempPath, destPath);
+            }
+            else
+            {
+                Bam.Core.Log.Info("{0} contents have not changed", destPath);
+                System.IO.File.Delete(tempPath);
+            }
+            context.OutputStringBuilder.Clear();
+        }
+
+        public static void
+        GenerateHeader(
+            ProceduralHeaderFileFromToolOutput module,
+            Bam.Core.ExecutionContext context)
+        {
+            foreach (var dir in module.OutputDirectories)
+            {
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
+            }
+
+            CommandLineProcessor.Processor.Execute(
+                context,
+                module.Tool as Bam.Core.ICommandLineTool,
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                )
+            );
+
+            sendCapturedOutputToFile(
+                module,
+                context
+            );
+        }
+    }
 #else
     public sealed class NativeProceduralHeaderFromToolOutput :
         IProceduralHeaderFromToolOutputPolicy

@@ -48,8 +48,11 @@ namespace C
         {
             base.Init(parent);
 #if BAM_V2
-            this.GeneratedPaths[ExecutableKey] = this.CreateTokenizedString(
-                "$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)"
+            this.RegisterGeneratedFile(
+                ExecutableKey,
+                this.CreateTokenizedString(
+                    "$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)"
+                )
             );
             this.Macros.Add("LinkOutput", this.GeneratedPaths[ExecutableKey]);
 #else

@@ -30,6 +30,8 @@
 using System.Linq;
 namespace VisualCCommon
 {
+    [CommandLineProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "-Fo")]
+    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ", max_file_count: 1)]
     public abstract class CommonCompilerSettings :
         C.SettingsBase,
 #if BAM_V2
@@ -37,8 +39,10 @@ namespace VisualCCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
 #endif
+#if false
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
+#endif
         C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
@@ -91,6 +95,7 @@ namespace VisualCCommon
             set;
         }
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("")]
         [VisualStudioProcessor.Path("", ignored: true)]
@@ -110,6 +115,7 @@ namespace VisualCCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("-E -Fo")]
@@ -348,13 +354,18 @@ namespace VisualCCommon
                 );
             }
 
-            if (((this as C.ICommonHasOutputPath).OutputPath != null) &&
+            if (((this is C.ICommonHasOutputPath) && (this as C.ICommonHasOutputPath).OutputPath != null) &&
                 ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
             {
                 throw new Bam.Core.Exception(
                     "Both output and preprocessed output paths cannot be set"
                 );
             }
+        }
+
+        public override void AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

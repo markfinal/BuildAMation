@@ -67,6 +67,20 @@ namespace CommandLineProcessor
         Execute(
             Bam.Core.ExecutionContext context,
             string executablePath,
+            Bam.Core.TokenizedStringArray commandLineArguments)
+        {
+            var arguments = new Bam.Core.StringArray();
+            foreach (var arg in commandLineArguments)
+            {
+                arguments.Add(arg.ToString());
+            }
+            Execute(context, executablePath, commandLineArguments: arguments);
+        }
+
+        public static void
+        Execute(
+            Bam.Core.ExecutionContext context,
+            string executablePath,
             Bam.Core.StringArray commandLineArguments = null,
             string workingDirectory = null,
             Bam.Core.StringArray inheritedEnvironmentVariables = null,

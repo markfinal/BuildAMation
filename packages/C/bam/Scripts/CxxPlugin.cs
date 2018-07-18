@@ -42,11 +42,14 @@ namespace C.Cxx
         {
             base.Init(parent);
 #if BAM_V2
-            this.GeneratedPaths[ExecutableKey] = this.CreateTokenizedString(
+            this.RegisterGeneratedFile(
+                ExecutableKey,
+                this.CreateTokenizedString(
 #else
-            this.GeneratedPaths[Key] = this.CreateTokenizedString(
+                this.GeneratedPaths[Key] = this.CreateTokenizedString(
 #endif
-                "$(packagebuilddir)/$(moduleoutputdir)/$(pluginprefix)$(OutputName)$(pluginext)"
+                    "$(packagebuilddir)/$(moduleoutputdir)/$(pluginprefix)$(OutputName)$(pluginext)"
+                )
             );
         }
     }

@@ -35,6 +35,15 @@ namespace Bam.Core
     /// </summary>
     public abstract class Settings
     {
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        protected Settings()
+        {
+            this.FileLayout = ELayout.Unassigned;
+            this.AssignFileLayout();
+        }
+
         private class InterfaceData
         {
             public System.Type InterfaceType;
@@ -217,6 +226,39 @@ namespace Bam.Core
         /// </summary>
         public virtual void
         Validate()
+        { }
+
+        /// <summary>
+        /// If settings are linearised to a command line, layout of where files are placed.
+        /// </summary>
+        public enum ELayout
+        {
+            /// <summary>
+            /// File layout is unassigned - this is invalid.
+            /// </summary>
+            Unassigned,
+
+            /// <summary>
+            /// Command lines appear as:
+            /// [non-patch switches] [output paths] [input paths]
+            /// </summary>
+            Cmds_Outputs_Inputs
+        }
+
+        /// <summary>
+        /// Access to the specified layout.
+        /// </summary>
+        public ELayout FileLayout
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// Abstract function to assign the layout of the linearised settings.
+        /// </summary>
+        public /*abstract*/virtual void
+        AssignFileLayout()
         {}
 
         /// <summary>

@@ -80,9 +80,12 @@ namespace C
                 this.SourceModule = value;
                 this.DependsOn(value);
 #if BAM_V2
-                this.GeneratedPaths[ObjectFileKey] = this.CreateTokenizedString(
-                    "$(packagebuilddir)/$(moduleoutputdir)/@changeextension(@trimstart(@relativeto($(0),$(packagedir)),../),$(objext))",
-                    value.GeneratedPaths[SourceFile.SourceFileKey]
+                this.RegisterGeneratedFile(
+                    ObjectFileKey,
+                    this.CreateTokenizedString(
+                        "$(packagebuilddir)/$(moduleoutputdir)/@changeextension(@trimstart(@relativeto($(0),$(packagedir)),../),$(objext))",
+                        value.GeneratedPaths[SourceFile.SourceFileKey]
+                    )
                 );
 #else
                 this.GeneratedPaths[Key] = this.CreateTokenizedString(
@@ -400,6 +403,14 @@ namespace C
             }
 
             return;
+        }
+
+        public override System.Collections.Generic.IEnumerable<Bam.Core.Module> InputModules
+        {
+            get
+            {
+                yield return this.SourceModule;
+            }
         }
     }
 }

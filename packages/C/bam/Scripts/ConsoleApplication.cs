@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
+using System.Linq;
 namespace C
 {
     /// <summary>
@@ -147,6 +148,14 @@ namespace C
                 {
                     yield return module;
                 }
+            }
+        }
+
+        public override System.Collections.Generic.IEnumerable<Bam.Core.Module> InputModules
+        {
+            get
+            {
+                return this.ObjectFiles.Where(item => (item as ObjectFileBase).PerformCompilation);
             }
         }
 

@@ -121,6 +121,7 @@ namespace C
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
+            NativeSupport.GenerateHeader(this, context);
 #else
             this.Policy.HeaderFromToolOutput(this, context, this.GeneratedPaths[C.HeaderFile.Key], this.Tool as Bam.Core.ICommandLineTool);
 #endif

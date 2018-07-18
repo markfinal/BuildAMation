@@ -49,37 +49,19 @@ namespace C
             }
             linker.Libraries.AddRange(externalLibs);
 
-            if (module.Settings is ICommonHasOutputPath)
+            foreach (var dir in module.OutputDirectories)
             {
-                var output_path = module.GeneratedPaths[(module.Settings as ICommonHasOutputPath).OutputPath].ToString();
-                var output_dir = System.IO.Path.GetDirectoryName(output_path);
-                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(output_dir);
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
             }
 
-            var commandLine = new Bam.Core.StringArray();
-
-            // first object files
-            foreach (var input in module.ObjectFiles)
-            {
-                if (!(input as C.ObjectFileBase).PerformCompilation)
-                {
-                    continue;
-                }
-                commandLine.Add(input.GeneratedPaths[C.ObjectFile.ObjectFileKey].ToStringQuoteIfNecessary());
-            }
-
-            // then all options
-            commandLine.AddRange(
+            CommandLineProcessor.Processor.Execute(
+                context,
+                module.Tool as Bam.Core.ICommandLineTool,
                 CommandLineProcessor.NativeConversion.Convert(
                     module.Settings,
                     module
                 )
             );
-
-            CommandLineProcessor.Processor.Execute(
-                context,
-                module.Tool as Bam.Core.ICommandLineTool,
-                commandLine);
         }
     }
 #else

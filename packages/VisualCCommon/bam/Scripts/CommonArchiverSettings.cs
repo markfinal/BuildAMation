@@ -29,6 +29,8 @@
 #endregion // License
 namespace VisualCCommon
 {
+    [CommandLineProcessor.OutputPath(C.StaticLibrary.LibraryKey, "-OUT:")]
+    [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonArchiverSettings :
         C.SettingsBase,
 #if BAM_V2
@@ -36,7 +38,9 @@ namespace VisualCCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
 #endif
+#if false
         C.ICommonHasOutputPath,
+#endif
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
@@ -65,6 +69,7 @@ namespace VisualCCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("-OUT:")]
         [VisualStudioProcessor.Path(C.StaticLibrary.LibraryKey)]
@@ -74,6 +79,7 @@ namespace VisualCCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.StringArray("")]
@@ -93,6 +99,12 @@ namespace VisualCCommon
         {
             get;
             set;
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

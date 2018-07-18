@@ -75,7 +75,55 @@ namespace CommandLineProcessor
             string command_switch)
             :
             base(command_switch)
-        {}
+        { }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = true)] // because there may be multiple outputs
+    public class OutputPathAttribute :
+        BaseAttribute
+    {
+        public OutputPathAttribute(
+            string pathKey,
+            string command_switch)
+            :
+            base(command_switch)
+        {
+            this.PathKey = pathKey;
+        }
+
+        public string PathKey
+        {
+            get;
+            private set;
+        }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]
+    public class InputPathsAttribute :
+        BaseAttribute
+    {
+        public InputPathsAttribute(
+            string pathKey,
+            string command_switch,
+            int max_file_count = -1)
+            :
+            base(command_switch)
+        {
+            this.PathKey = pathKey;
+            this.MaxFileCount = max_file_count;
+        }
+
+        public string PathKey
+        {
+            get;
+            private set;
+        }
+
+        public int MaxFileCount
+        {
+            get;
+            private set;
+        }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -424,6 +472,17 @@ namespace CommandLineProcessor
             Bam.Core.Settings settings,
             Bam.Core.Module module)
         {
+            if (null == settings)
+            {
+                return new Bam.Core.StringArray();
+            }
+            if (settings.FileLayout == Bam.Core.Settings.ELayout.Unassigned)
+            {
+                throw new Bam.Core.Exception(
+                    "File layout for {0} settings is unassigned. Override AssignFileLayout in this class.",
+                    settings.ToString()
+                );
+            }
             var commandLine = new Bam.Core.StringArray();
             //Bam.Core.Log.MessageAll("Module: {0}", module.ToString());
             //Bam.Core.Log.MessageAll("Settings: {0}", settings.ToString());
@@ -533,6 +592,105 @@ namespace CommandLineProcessor
                 }
             }
             //Bam.Core.Log.MessageAll("{0}: Executing '{1}'", module.ToString(), commandLine.ToString(' '));
+
+            var output_file_attributes = settings.GetType().GetCustomAttributes(
+                typeof(CommandLineProcessor.OutputPathAttribute),
+                true // since generally specified in an abstract class
+            ) as CommandLineProcessor.OutputPathAttribute[];
+            if (!output_file_attributes.Any() && settings.Module.GeneratedPaths.Any())
+            {
+                throw new Bam.Core.Exception(
+                    "There are no OutputPath attributes associated with the {0} settings class",
+                    settings.ToString()
+                );
+            }
+            var input_files_attributes = settings.GetType().GetCustomAttributes(
+                typeof(CommandLineProcessor.InputPathsAttribute),
+                true // since generally specified in an abstract class
+            ) as CommandLineProcessor.InputPathsAttribute[];
+            if (settings.Module.InputModules.Any())
+            {
+                if (!input_files_attributes.Any())
+                {
+                    throw new Bam.Core.Exception(
+                        "There is no InputPaths attribute associated with the {0} settings class",
+                        settings.ToString()
+                    );
+                }
+                var attr = input_files_attributes.First();
+                var max_files = attr.MaxFileCount;
+                if (max_files >= 0)
+                {
+                    if (max_files != settings.Module.InputModules.Count())
+                    {
+                        throw new Bam.Core.Exception(
+                            "InputPaths attribute specifies a maximum of {0} files, but {1} are available",
+                            max_files,
+                            settings.Module.InputModules.Count()
+                        );
+                    }
+                }
+            }
+            switch (settings.FileLayout)
+            {
+                case Bam.Core.Settings.ELayout.Cmds_Outputs_Inputs:
+                    {
+                        foreach (var generatedPath in settings.Module.GeneratedPaths)
+                        {
+                            if (null == generatedPath.Value)
+                            {
+                                continue;
+                            }
+                            var outputKey = generatedPath.Key;
+                            var matching_attr = output_file_attributes.FirstOrDefault(item => item.PathKey == outputKey);
+                            if (null == matching_attr)
+                            {
+                                throw new Bam.Core.Exception(
+                                    "Unable to locate OutputPath class attribute on {0} for path key {1}",
+                                    settings.ToString(),
+                                    outputKey
+                                );
+                            }
+                            commandLine.Add(
+                                System.String.Format(
+                                    "{0}{1}",
+                                    matching_attr.CommandSwitch,
+                                    module.GeneratedPaths[outputKey]
+                                )
+                            );
+                        }
+                        var matching_input_attr = input_files_attributes.First();
+                        foreach (var input_module in settings.Module.InputModules)
+                        {
+                            try
+                            {
+                                commandLine.Add(
+                                    System.String.Format(
+                                        "{0}{1}",
+                                        matching_input_attr.CommandSwitch,
+                                        input_module.GeneratedPaths[matching_input_attr.PathKey]
+                                    )
+                                );
+                            }
+                            catch (System.Collections.Generic.KeyNotFoundException)
+                            {
+                                throw new Bam.Core.Exception(
+                                    "Unable to locate path key {0} for input module of type {1}",
+                                    matching_input_attr.PathKey,
+                                    input_module.ToString()
+                                );
+                            }
+                        }
+                    }
+                    break;
+
+                default:
+                    throw new Bam.Core.Exception(
+                        "Unhandled file layout {0} for settings {1}",
+                        settings.FileLayout.ToString(),
+                        settings.ToString()
+                    );
+            }
             return commandLine;
         }
     }

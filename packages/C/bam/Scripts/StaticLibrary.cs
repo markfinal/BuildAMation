@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
     /// <summary>
@@ -83,6 +84,14 @@ namespace C
                 {
                     yield return module;
                 }
+            }
+        }
+
+        public override System.Collections.Generic.IEnumerable<Bam.Core.Module> InputModules
+        {
+            get
+            {
+                return this.ObjectFiles.Where(item => (item as ObjectFileBase).PerformCompilation);
             }
         }
 

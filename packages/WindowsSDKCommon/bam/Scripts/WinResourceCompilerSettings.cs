@@ -29,6 +29,8 @@
 #endregion // License
 namespace WindowsSDKCommon
 {
+    [CommandLineProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "-Fo")]
+    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     public abstract class CommonWinResourceCompilerSettings :
         C.SettingsBase,
 #if BAM_V2
@@ -36,8 +38,10 @@ namespace WindowsSDKCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
 #endif
+#if false
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
+#endif
         C.ICommonWinResourceCompilerSettings,
         C.IAdditionalSettings,
         ICommonWinResourceCompilerSettings
@@ -67,6 +71,7 @@ namespace WindowsSDKCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("")]
         [VisualStudioProcessor.Path("", ignored: true)]
@@ -86,6 +91,7 @@ namespace WindowsSDKCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-v", "")]
@@ -135,6 +141,11 @@ namespace WindowsSDKCommon
         {
             get;
             set;
+        }
+
+        public override void AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

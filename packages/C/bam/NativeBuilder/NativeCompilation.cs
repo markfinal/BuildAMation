@@ -42,11 +42,9 @@ namespace C
                 return;
             }
 
-            if (module.Settings is ICommonHasOutputPath)
+            foreach (var dir in module.OutputDirectories)
             {
-                var output_path = module.GeneratedPaths[(module.Settings as ICommonHasOutputPath).OutputPath].ToString();
-                var output_dir = System.IO.Path.GetDirectoryName(output_path);
-                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(output_dir);
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
             }
 
             CommandLineProcessor.Processor.Execute(

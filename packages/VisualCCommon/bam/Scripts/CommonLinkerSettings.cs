@@ -29,6 +29,10 @@
 #endregion // License
 namespace VisualCCommon
 {
+    [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-OUT:")]
+    [CommandLineProcessor.OutputPath(C.ConsoleApplication.PDBKey, "-PDB:")]
+    [CommandLineProcessor.OutputPath(C.ConsoleApplication.ImportLibraryKey, "-IMPLIB:")]
+    [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonLinkerSettings :
         C.SettingsBase,
 #if BAM_V2
@@ -36,9 +40,11 @@ namespace VisualCCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
 #endif
+#if false
         C.ICommonHasOutputPath,
         C.ICommonHasImportLibraryPathWin,
         C.ICommonHasProgramDatabasePathWin,
+#endif
         C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings,
@@ -69,6 +75,7 @@ namespace VisualCCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("-OUT:")]
         [VisualStudioProcessor.Path("OutputFile")]
@@ -98,6 +105,7 @@ namespace VisualCCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Enum(C.ESubsystem.NotSet, "")]
@@ -215,6 +223,11 @@ namespace VisualCCommon
         {
             get;
             set;
+        }
+
+        public override void AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

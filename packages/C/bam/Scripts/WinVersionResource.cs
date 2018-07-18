@@ -49,7 +49,10 @@ namespace C
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.GeneratedPaths.Add(HashFileKey, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@filename($(0)).hash", this.InputPath));
+            this.RegisterGeneratedFile(
+                HashFileKey,
+                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@filename($(0)).hash", this.InputPath)
+            );
         }
 
         public ConsoleApplication BinaryModule

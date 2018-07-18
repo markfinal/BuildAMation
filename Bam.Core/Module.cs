@@ -82,9 +82,9 @@ namespace Bam.Core
             this.Macros = new MacroList(this.GetType().FullName);
             // TODO: Can this be generalized to be a collection of files?
 #if BAM_V2
-            this.GeneratedPaths = new System.Collections.Generic.Dictionary<string, TokenizedString>();
+            this._GeneratedPaths = new System.Collections.Generic.Dictionary<string, TokenizedString>();
 #else
-            this.GeneratedPaths = new System.Collections.Generic.Dictionary<PathKey, TokenizedString>();
+            this._GeneratedPaths = new System.Collections.Generic.Dictionary<PathKey, TokenizedString>();
 #endif
 
             // capture the details of the encapsulating module
@@ -349,12 +349,13 @@ namespace Bam.Core
 #endif
             TokenizedString path)
         {
-            if (this.GeneratedPaths.ContainsKey(key))
+            if (this._GeneratedPaths.ContainsKey(key))
             {
                 Log.DebugMessage("Key '{0}' already exists", key);
                 return;
             }
-            this.GeneratedPaths.Add(key, path);
+            this._GeneratedPaths.Add(key, path);
+            this.OutputDirs.Add(this.CreateTokenizedString("@dir($(0))", path));
         }
 
         /// <summary>
@@ -657,18 +658,48 @@ namespace Bam.Core
         private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> PrivateInheritedPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
         private PrivatePatchDelegate TheClosingPatch = null;
 
+#if BAM_V2
+        private System.Collections.Generic.Dictionary<string, TokenizedString> _GeneratedPaths
+#else
         /// <summary>
         /// Get the dictionary of keys and strings for all registered generated paths with the module.
         /// </summary>
         /// <value>The generated paths.</value>
-#if BAM_V2
-        public System.Collections.Generic.Dictionary<string, TokenizedString> GeneratedPaths
-#else
-        public System.Collections.Generic.Dictionary<PathKey, TokenizedString> GeneratedPaths
+        public System.Collections.Generic.Dictionary<PathKey, TokenizedString> _GeneratedPaths
 #endif
         {
             get;
-            private set;
+            set;
+        }
+
+#if BAM_V2
+        /// <summary>
+        /// Get the dictionary of keys and strings for all registered generated paths with the module.
+        /// </summary>
+        /// <value>The generated paths.</value>
+        public System.Collections.Generic.IReadOnlyDictionary<string, TokenizedString> GeneratedPaths
+        {
+            get
+            {
+                return this._GeneratedPaths;
+            }
+        }
+#endif
+
+        private TokenizedStringArray OutputDirs = new TokenizedStringArray();
+
+        /// <summary>
+        /// Return output directories required to exist for this module.
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<TokenizedString> OutputDirectories
+        {
+            get
+            {
+                foreach (var dir in this.OutputDirs)
+                {
+                    yield return dir;
+                }
+            }
         }
 
         /// <summary>
@@ -1204,5 +1235,24 @@ namespace Bam.Core
             get;
             private set;
         }
+
+#if BAM_V2
+        /// <summary>
+        /// Enumerable of Modules that are considered inputs to this Module, as in, they need
+        /// to be operated on in order to generate the output(s) of this Module.
+        /// By default, this is the list of Dependents (not Required), although subclasses can
+        /// override this property to give a more precise meaning.
+        /// </summary>
+        public virtual System.Collections.Generic.IEnumerable<Module> InputModules
+        {
+            get
+            {
+                foreach (var module in this.DependentsList)
+                {
+                    yield return module;
+                }
+            }
+        }
+#endif
     }
 }
