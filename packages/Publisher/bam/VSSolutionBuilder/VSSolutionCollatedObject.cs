@@ -36,7 +36,7 @@ namespace Publisher
         CollateObject(
             CollatedObject module)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
     }
 #else

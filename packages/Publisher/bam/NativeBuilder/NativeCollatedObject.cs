@@ -37,7 +37,7 @@ namespace Publisher
             CollatedObject module,
             Bam.Core.ExecutionContext context)
         {
-            throw new System.NotImplementedException();
+            //throw new System.NotImplementedException();
         }
     }
 #else
