@@ -29,14 +29,18 @@
 #endregion // License
 namespace ClangCommon
 {
+    [CommandLineProcessor.OutputPath(C.StaticLibrary.LibraryKey, "")]
+    [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonArchiverSettings :
         C.SettingsBase,
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
-#endif
         // TODO: Xcode translation
+#endif
+#if false
         C.ICommonHasOutputPath,
+#endif
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
@@ -56,6 +60,7 @@ namespace ClangCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("")]
         [XcodeProjectProcessor.Path("", ignore: true)]
@@ -65,6 +70,7 @@ namespace ClangCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-s", "")]
@@ -104,6 +110,12 @@ namespace ClangCommon
         {
             get;
             set;
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

@@ -29,6 +29,8 @@
 #endregion // License
 namespace ClangCommon
 {
+    [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-o ")]
+    [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonLinkerSettings :
         C.SettingsBase,
 #if BAM_V2
@@ -36,7 +38,9 @@ namespace ClangCommon
         CommandLineProcessor.IConvertToCommandLine,
         XcodeProjectProcessor.IConvertToProject,
 #endif
+#if false
         C.ICommonHasOutputPath,
+#endif
         C.ICommonLinkerSettings,
         C.ICommonLinkerSettingsOSX,
         C.IAdditionalSettings,
@@ -70,6 +74,7 @@ namespace ClangCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("-o ")]
         [XcodeProjectProcessor.Path("", ignore: true)]
@@ -79,6 +84,7 @@ namespace ClangCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-arch i386")]
@@ -210,6 +216,12 @@ namespace ClangCommon
                     );
                 }
             }
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }
