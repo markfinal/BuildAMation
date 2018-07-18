@@ -110,17 +110,20 @@ namespace C
                 return;
             }
             this.ReasonToExecute = null;
-            var symlinkPath = this.GeneratedPaths[Key].ToString();
+            var symlinkPath = this.GeneratedPaths[SOSymLinkKey].ToString();
             var symlinkInfo = new Mono.Unix.UnixSymbolicLinkInfo(symlinkPath);
             if (!symlinkInfo.Exists)
             {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[SOSymLinkKey]);
                 return;
             }
             var targetPath = symlinkInfo.ContentsPath;
-            if (targetPath != System.IO.Path.GetFileName(this.SharedObject.GeneratedPaths[ConsoleApplication.Key].ToString()))
+            if (targetPath != System.IO.Path.GetFileName(this.SharedObject.GeneratedPaths[ConsoleApplication.ExecutableKey].ToString()))
             {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SharedObject.Macros[this.Macros["SymlinkUsage"].ToString()]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                    this.GeneratedPaths[SOSymLinkKey],
+                    this.SharedObject.Macros[this.Macros["SymlinkUsage"].ToString()]
+                );
                 return;
             }
 #else
