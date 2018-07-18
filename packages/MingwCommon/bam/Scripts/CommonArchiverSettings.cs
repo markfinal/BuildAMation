@@ -29,13 +29,17 @@
 #endregion // License
 namespace MingwCommon
 {
+    [CommandLineProcessor.OutputPath(C.StaticLibrary.LibraryKey, "")]
+    [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonArchiverSettings :
         C.SettingsBase,
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
+#if false
         C.ICommonHasOutputPath,
+#endif
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
@@ -55,6 +59,7 @@ namespace MingwCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("")]
 #endif
@@ -63,6 +68,7 @@ namespace MingwCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-s", "")]
@@ -89,12 +95,18 @@ namespace MingwCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.Bool("-r", "")]
+        [CommandLineProcessor.Enum(EArchiverCommand.Replace, "-r")]
 #endif
         EArchiverCommand ICommonArchiverSettings.Command
         {
             get;
             set;
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

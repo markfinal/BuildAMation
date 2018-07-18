@@ -29,14 +29,18 @@
 #endregion // License
 namespace MingwCommon
 {
+    [CommandLineProcessor.OutputPath(C.WinResource.ObjectFileKey, "-o ")]
+    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     public abstract class CommonWinResourceCompilerSettings :
         C.SettingsBase,
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
+#if false
         C.ICommonHasSourcePath,
         C.ICommonHasOutputPath,
+#endif
         C.ICommonWinResourceCompilerSettings,
         C.IAdditionalSettings,
         ICommonWinResourceCompilerSettings
@@ -57,6 +61,7 @@ namespace MingwCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("")]
 #endif
@@ -74,6 +79,7 @@ namespace MingwCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Bool("-v", "")]
@@ -112,12 +118,17 @@ namespace MingwCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.Bool("", "--use-temp-file")]
+        [CommandLineProcessor.Bool("--use-temp-file", "")]
 #endif
         bool? ICommonWinResourceCompilerSettings.UseTempFile
         {
             get;
             set;
+        }
+
+        public override void AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

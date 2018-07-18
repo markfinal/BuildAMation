@@ -29,13 +29,17 @@
 #endregion // License
 namespace MingwCommon
 {
+    [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-o ")]
+    [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonLinkerSettings :
         C.SettingsBase,
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
+#if false
         C.ICommonHasOutputPath,
+#endif
         C.ICommonHasImportLibraryPathWin,
         C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
@@ -57,6 +61,7 @@ namespace MingwCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("-o ")]
 #endif
@@ -65,6 +70,7 @@ namespace MingwCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("-Wl,--out-implib,")]
@@ -149,6 +155,12 @@ namespace MingwCommon
         {
             get;
             set;
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }
