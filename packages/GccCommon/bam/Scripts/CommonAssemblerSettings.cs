@@ -29,15 +29,19 @@
 #endregion // License
 namespace GccCommon
 {
+    [CommandLineProcessor.OutputPath(C.AssembledObjectFile.ObjectFileKey, "-o ")]
+    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ", max_file_count: 1)]
     public abstract class CommonAssemblerSettings :
         C.SettingsBase,
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
-        C.ICommonHasOutputPath,
         C.ICommonHasCompilerPreprocessedOutputPath,
+#if false
+        C.ICommonHasOutputPath,
         C.ICommonHasSourcePath,
+#endif
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
@@ -59,18 +63,19 @@ namespace GccCommon
 #endif
 
 #if BAM_V2
-        [CommandLineProcessor.Path("-c -o ")]
+        [CommandLineProcessor.Path("-E -o ")]
 #endif
-        string C.ICommonHasOutputPath.OutputPath
+        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
         {
             get;
             set;
         }
 
+#if false
 #if BAM_V2
-        [CommandLineProcessor.Path("-E -o ")]
+        [CommandLineProcessor.Path("-c -o ")]
 #endif
-        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
+        string C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;
@@ -84,6 +89,7 @@ namespace GccCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
@@ -145,13 +151,19 @@ namespace GccCommon
         {
             base.Validate();
 
-            if (((this as C.ICommonHasOutputPath).OutputPath != null) &&
+            if (((this is C.ICommonHasOutputPath) && (this as C.ICommonHasOutputPath).OutputPath != null) &&
                 ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
             {
                 throw new Bam.Core.Exception(
                     "Both output and preprocessed output paths cannot be set"
                 );
             }
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }
