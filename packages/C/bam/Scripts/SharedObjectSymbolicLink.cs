@@ -57,6 +57,7 @@ namespace C
         {
             base.Init(parent);
 
+            this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
             this.IsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);
 
 #if BAM_V2
@@ -82,8 +83,10 @@ namespace C
             set
             {
                 this.sharedObject = value;
-                this.Macros["OutputName"] = value.Macros["OutputName"];
                 this.DependsOn(value);
+
+                // ensure that the symlink is called the same as what it is linking to
+                this.Macros["OutputName"] = value.Macros["OutputName"];
             }
         }
 
@@ -91,12 +94,23 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
-#else
             if (this.IsPrebuilt)
             {
                 return;
             }
+#if BAM_V2
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeSupport.SymLink(this, context);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
+            }
+#else
             this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.SharedObject);
 #endif
         }

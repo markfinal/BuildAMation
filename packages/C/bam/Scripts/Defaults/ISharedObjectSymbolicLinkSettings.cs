@@ -28,25 +28,18 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
-using System.Linq;
-namespace C
+namespace C.DefaultSettings
 {
-    public sealed class SharedObjectSymbolicLinkTool :
-        Bam.Core.PreBuiltTool
+    public static partial class DefaultSettingsExtensions
     {
-        public override Settings
-        CreateDefaultSettings<T>(
-            T module)
+        public static void
+        Defaults(
+            this C.ISharedObjectSymbolicLinkSettings settings,
+            Bam.Core.Module module)
         {
-            return new SharedObjectSymbolicLinkSettings(module);
-        }
-
-        public override TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("ln").First());
-            }
+            settings.Force = true;
+            settings.SoftLink = true;
+            settings.MakeRelativeToTarget = true;
         }
     }
 }

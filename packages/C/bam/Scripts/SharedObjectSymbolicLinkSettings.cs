@@ -27,26 +27,44 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-using System.Linq;
 namespace C
 {
-    public sealed class SharedObjectSymbolicLinkTool :
-        Bam.Core.PreBuiltTool
+    [CommandLineProcessor.OutputPath(C.SharedObjectSymbolicLink.SOSymLinkKey, "")]
+    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
+    public sealed class SharedObjectSymbolicLinkSettings :
+        Bam.Core.Settings,
+        ISharedObjectSymbolicLinkSettings
     {
-        public override Settings
-        CreateDefaultSettings<T>(
-            T module)
+        public SharedObjectSymbolicLinkSettings(
+            Bam.Core.Module module)
         {
-            return new SharedObjectSymbolicLinkSettings(module);
+            this.InitializeAllInterfaces(module, false, true);
         }
 
-        public override TokenizedString Executable
+        [CommandLineProcessor.Bool("-f", "")]
+        bool ISharedObjectSymbolicLinkSettings.Force
         {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("ln").First());
-            }
+            get;
+            set;
+        }
+
+        [CommandLineProcessor.Bool("-s", "")]
+        bool ISharedObjectSymbolicLinkSettings.SoftLink
+        {
+            get;
+            set;
+        }
+
+        [CommandLineProcessor.Bool("-r", "")]
+        bool ISharedObjectSymbolicLinkSettings.MakeRelativeToTarget
+        {
+            get;
+            set;
+        }
+
+        public override void AssignFileLayout ()
+        {
+            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
         }
     }
 }

@@ -27,26 +27,43 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-using System.Linq;
 namespace C
 {
-    public sealed class SharedObjectSymbolicLinkTool :
-        Bam.Core.PreBuiltTool
+    /// <summary>
+    /// Symbolic link generator settings
+    /// </summary>
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ISharedObjectSymbolicLinkSettings :
+        Bam.Core.ISettingsBase
     {
-        public override Settings
-        CreateDefaultSettings<T>(
-            T module)
+        /// <summary>
+        /// Determine if the symbolic link should always be written, regardless of whether it exists
+        /// </summary>
+        /// <value><c>true</c> if force; otherwise, <c>false</c>.</value>
+        bool Force
         {
-            return new SharedObjectSymbolicLinkSettings(module);
+            get;
+            set;
         }
 
-        public override TokenizedString Executable
+        /// <summary>
+        /// Should symbolic links be soft or hard
+        /// </summary>
+        /// <value><c>true</c> if soft link; otherwise, <c>false</c>.</value>
+        bool SoftLink
         {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("ln").First());
-            }
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Determine if the symbolic link is made relative to the target.
+        /// </summary>
+        /// <value><c>true</c> if make relative to target; otherwise, <c>false</c>.</value>
+        bool MakeRelativeToTarget
+        {
+            get;
+            set;
         }
     }
 }

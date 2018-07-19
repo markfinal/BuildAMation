@@ -638,6 +638,11 @@ namespace CommandLineProcessor
                     ProcessInputPaths(settings, commandLine, input_files_attributes);
                     break;
 
+                case Bam.Core.Settings.ELayout.Cmds_Inputs_Outputs:
+                    ProcessInputPaths(settings, commandLine, input_files_attributes);
+                    ProcessOutputPaths(settings, module, commandLine, output_file_attributes);
+                    break;
+
                 case Bam.Core.Settings.ELayout.Inputs_Cmds_Outputs:
                     var newCommandLine = new Bam.Core.StringArray();
                     ProcessInputPaths(settings, newCommandLine, input_files_attributes);
