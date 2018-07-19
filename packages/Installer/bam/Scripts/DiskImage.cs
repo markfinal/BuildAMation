@@ -121,7 +121,7 @@ namespace Installer
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
-            throw new System.NotImplementedException();
+            Bam.Core.Log.MessageAll("DiskImage for {0}... TODO", this.SourceFolderPath.ToString());
 #else
             if (null != this.Policy)
             {
