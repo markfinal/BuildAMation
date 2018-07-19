@@ -90,6 +90,7 @@ namespace Publisher
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
+            Bam.Core.Log.MessageAll("Zipping {0}... TODO", this.InputPath.ToString());
 #else
             if (null == this.Policy)
             {
