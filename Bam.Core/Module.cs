@@ -337,6 +337,8 @@ namespace Bam.Core
 
         /// <summary>
         /// Register a path against a particular key for the module. Useful for output paths that are referenced in dependents.
+        /// Will throw an exception if the key has already been registered and parsed, otherwise it can be replaced, for example
+        /// in Module subclasses that share a path key.
         /// </summary>
         /// <param name="key">Key.</param>
         /// <param name="path">Path.</param>
@@ -351,11 +353,22 @@ namespace Bam.Core
         {
             if (this._GeneratedPaths.ContainsKey(key))
             {
-                Log.DebugMessage("Key '{0}' already exists", key);
-                return;
+                if (this._GeneratedPaths[key].IsParsed)
+                {
+                    throw new Exception(
+                        "Key '{0}' has already been registered as a generated file for module {1}",
+                        key,
+                        this.ToString()
+                    );
+                }
+                this.OutputDirs.Remove(key);
+                this._GeneratedPaths[key] = path;
             }
-            this._GeneratedPaths.Add(key, path);
-            this.OutputDirs.Add(this.CreateTokenizedString("@dir($(0))", path));
+            else
+            {
+                this._GeneratedPaths.Add(key, path);
+            }
+            this.OutputDirs.Add(key, this.CreateTokenizedString("@dir($(0))", path));
         }
 
         /// <summary>
@@ -686,7 +699,7 @@ namespace Bam.Core
         }
 #endif
 
-        private TokenizedStringArray OutputDirs = new TokenizedStringArray();
+        private System.Collections.Generic.Dictionary<string, TokenizedString> OutputDirs = new System.Collections.Generic.Dictionary<string, TokenizedString>();
 
         /// <summary>
         /// Return output directories required to exist for this module.
@@ -695,7 +708,7 @@ namespace Bam.Core
         {
             get
             {
-                foreach (var dir in this.OutputDirs)
+                foreach (var dir in this.OutputDirs.Values)
                 {
                     yield return dir;
                 }
