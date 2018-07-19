@@ -166,7 +166,7 @@ namespace MakeFileBuilder
                 // as NMAKE does not support order only dependencies
                 makeRules.Append(" $(DIRS) ");
                 // as NMAKE does not support defining macros to be exposed as environment variables for commands
-                makeRules.Append(" nmakesetenv ");
+                makeRules.Append("nmakesetenv ");
             }
             makeRules.AppendLine(prerequisitesOfTargetAll.ToString(' '));
 
