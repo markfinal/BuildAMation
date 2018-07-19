@@ -144,7 +144,7 @@ namespace MakeFileBuilder
             {
                 commonMeta.ExportEnvironment(makeEnvironment);
             }
-            commonMeta.ExportDirectories(
+            var has_dirs = commonMeta.ExportDirectories(
                 makeVariables,
                 explicitlyCreateHierarchy: MakeFileCommonMetaData.IsNMAKE
             );
@@ -163,8 +163,11 @@ namespace MakeFileBuilder
             makeRules.Append("all:");
             if (MakeFileCommonMetaData.IsNMAKE)
             {
-                // as NMAKE does not support order only dependencies
-                makeRules.Append(" $(DIRS) ");
+                if (has_dirs)
+                {
+                    // as NMAKE does not support order only dependencies
+                    makeRules.Append(" $(DIRS) ");
+                }
                 // as NMAKE does not support defining macros to be exposed as environment variables for commands
                 makeRules.Append("nmakesetenv ");
             }
@@ -175,27 +178,33 @@ namespace MakeFileBuilder
                 commonMeta.ExportEnvironmentAsPhonyTarget(makeRules);
             }
 
-            // directory direction rule
-            makeRules.AppendLine("$(DIRS):");
-            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            if (has_dirs)
             {
-                makeRules.AppendLine("\tmkdir $@");
-            }
-            else
-            {
-                makeRules.AppendLine("\tmkdir -pv $@");
+                // directory direction rule
+                makeRules.AppendLine("$(DIRS):");
+                if (Bam.Core.OSUtilities.IsWindowsHosting)
+                {
+                    makeRules.AppendLine("\tmkdir $@");
+                }
+                else
+                {
+                    makeRules.AppendLine("\tmkdir -pv $@");
+                }
             }
 
             // clean rule
             makeRules.AppendLine(".PHONY: clean");
             makeRules.AppendLine("clean:");
-            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            if (has_dirs)
             {
-                makeRules.AppendLine("\t-cmd.exe /C RMDIR /S /Q $(DIRS)");
-            }
-            else
-            {
-                makeRules.AppendLine("\t@rm -frv $(DIRS)");
+                if (Bam.Core.OSUtilities.IsWindowsHosting)
+                {
+                    makeRules.AppendLine("\t-cmd.exe /C RMDIR /S /Q $(DIRS)");
+                }
+                else
+                {
+                    makeRules.AppendLine("\t@rm -frv $(DIRS)");
+                }
             }
 
             // write all variables and rules

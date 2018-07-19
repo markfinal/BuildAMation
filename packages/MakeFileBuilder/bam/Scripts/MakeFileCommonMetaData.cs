@@ -148,14 +148,15 @@ namespace MakeFileBuilder
         /// </summary>
         /// <param name="output">Where to write the directories to.</param>
         /// <param name="explicitlyCreateHierarchy">Optional bool indicating that the entire directory hierarchy needs to be make. Defaults to false.</param>
-        public void
+        /// <returns>True if directories were exported, false if none were.</returns>
+        public bool
         ExportDirectories(
             System.Text.StringBuilder output,
             bool explicitlyCreateHierarchy = false)
         {
             if (!this.Directories.Any())
             {
-                return;
+                return false;
             }
             if (this.Directories.Any(item => item.Contains(" ")))
             {
@@ -205,6 +206,7 @@ namespace MakeFileBuilder
             {
                 output.AppendLine();
             }
+            return true;
         }
     }
 }
