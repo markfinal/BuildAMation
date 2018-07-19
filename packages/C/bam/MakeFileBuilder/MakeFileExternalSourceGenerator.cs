@@ -31,6 +31,33 @@ using System.Linq;
 namespace C
 {
 #if BAM_V2
+    public static partial class MakeFileSupport
+    {
+        public static void
+        GenerateSource(
+            ExternalSourceGenerator module)
+        {
+            var meta = new MakeFileBuilder.MakeFileMeta(module);
+            var rule = meta.AddRule();
+            rule.AddTarget(module.ExpectedOutputFiles.First().Value);
+            foreach (var input in module.InputModules)
+            {
+                rule.AddPrerequisite(input, C.SourceFile.SourceFileKey);
+            }
+            rule.AddShellCommand(
+                System.String.Format(
+                    "{0} {1}",
+                    module.Executable.ToStringQuoteIfNecessary(),
+                    module.Arguments.ToString(' ')
+                )
+            );
+
+            foreach (var dir in module.OutputDirectories)
+            {
+                meta.CommonMetaData.AddDirectory(dir.ToString());
+            }
+        }
+    }
 #else
     public sealed class MakeFileExternalSourceGenerator :
         IExternalSourceGeneratorPolicy

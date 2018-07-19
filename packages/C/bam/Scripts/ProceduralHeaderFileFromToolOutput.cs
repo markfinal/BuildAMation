@@ -121,7 +121,35 @@ namespace C
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
-            NativeSupport.GenerateHeader(this, context);
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileSupport.GenerateHeader(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeSupport.GenerateHeader(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    //VSSolutionSupport.GenerateHeader(this);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    //XcodeSupport.GenerateHeader(this);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
+            }
 #else
             this.Policy.HeaderFromToolOutput(this, context, this.GeneratedPaths[C.HeaderFile.Key], this.Tool as Bam.Core.ICommandLineTool);
 #endif

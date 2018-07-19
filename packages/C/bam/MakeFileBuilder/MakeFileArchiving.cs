@@ -36,47 +36,31 @@ namespace C
         Archive(
             StaticLibrary module)
         {
-            var output_path = module.GeneratedPaths[(module.Settings as ICommonHasOutputPath).OutputPath];
-
             var meta = new MakeFileBuilder.MakeFileMeta(module);
             var rule = meta.AddRule();
-            rule.AddTarget(output_path);
-            foreach (var input in module.ObjectFiles)
+            rule.AddTarget(module.GeneratedPaths[StaticLibrary.LibraryKey]);
+            foreach (var input in module.InputModules)
             {
-                if (!(input as C.ObjectFileBase).PerformCompilation)
-                {
-                    continue;
-                }
                 rule.AddPrerequisite(input, C.ObjectFile.ObjectFileKey);
             }
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;
+            meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
+
             var command = new System.Text.StringBuilder();
-            if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
-            {
-                command.AppendFormat("{0} {1} $** {2}",
-                    CommandLineProcessor.Processor.StringifyTool(tool),
-                    CommandLineProcessor.NativeConversion.Convert(
-                        module.Settings,
-                        module
-                    ).ToString(' '),
-                    CommandLineProcessor.Processor.TerminatingArgs(tool));
-            }
-            else
-            {
-                command.AppendFormat("{0} {1} $^ {2}",
-                    CommandLineProcessor.Processor.StringifyTool(tool),
-                    CommandLineProcessor.NativeConversion.Convert(
-                        module.Settings,
-                        module
-                    ).ToString(' '),
-                    CommandLineProcessor.Processor.TerminatingArgs(tool));
-            }
+            command.AppendFormat("{0} {1} {2}",
+                CommandLineProcessor.Processor.StringifyTool(tool),
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                ).ToString(' '),
+                CommandLineProcessor.Processor.TerminatingArgs(tool));
             rule.AddShellCommand(command.ToString());
 
-            var output_dir = System.IO.Path.GetDirectoryName(output_path.ToString());
-            meta.CommonMetaData.AddDirectory(output_dir);
-            meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
+            foreach (var dir in module.OutputDirectories)
+            {
+                meta.CommonMetaData.AddDirectory(dir.ToString());
+            }
         }
     }
 #else

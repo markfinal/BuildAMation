@@ -41,14 +41,14 @@ namespace C
                 return;
             }
 
-            var output_path = module.GeneratedPaths[(module.Settings as ICommonHasOutputPath).OutputPath];
-
             var meta = new MakeFileBuilder.MakeFileMeta(module);
             var rule = meta.AddRule();
-            rule.AddTarget(output_path);
+            rule.AddTarget(module.GeneratedPaths[ObjectFileBase.ObjectFileKey]);
             rule.AddPrerequisite((module as IRequiresSourceModule).Source, C.SourceFile.SourceFileKey);
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;
+            meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
+
             var command = new System.Text.StringBuilder();
             command.AppendFormat("{0} {1} {2}",
                 CommandLineProcessor.Processor.StringifyTool(tool),
@@ -59,9 +59,10 @@ namespace C
                 CommandLineProcessor.Processor.TerminatingArgs(tool));
             rule.AddShellCommand(command.ToString());
 
-            var output_dir = System.IO.Path.GetDirectoryName(output_path.ToString());
-            meta.CommonMetaData.AddDirectory(output_dir);
-            meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
+            foreach (var dir in module.OutputDirectories)
+            {
+                meta.CommonMetaData.AddDirectory(dir.ToString());
+            }
 
             // add dependencies, such as procedurally generated headers
             foreach (var dep in module.Dependents)

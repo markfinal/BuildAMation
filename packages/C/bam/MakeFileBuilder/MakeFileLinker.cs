@@ -49,21 +49,15 @@ namespace C
             }
             linker.Libraries.AddRange(externalLibs);
 
-            var output_path = module.GeneratedPaths[(module.Settings as ICommonHasOutputPath).OutputPath];
-
             var meta = new MakeFileBuilder.MakeFileMeta(module);
             var rule = meta.AddRule();
-            rule.AddTarget(output_path);
+            rule.AddTarget(module.GeneratedPaths[ConsoleApplication.ExecutableKey]);
             string objExt = null; // try to get the object file extension from a compiled source file
-            foreach (var input in module.ObjectFiles)
+            foreach (var input in module.InputModules)
             {
                 if (null == objExt)
                 {
                     objExt = input.Tool.Macros["objext"].ToString();
-                }
-                if (!(input as C.ObjectFileBase).PerformCompilation)
-                {
-                    continue;
                 }
                 rule.AddPrerequisite(input, C.ObjectFile.ObjectFileKey);
             }
@@ -120,21 +114,11 @@ namespace C
             }
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;
+            meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
+
             var commands = new System.Text.StringBuilder();
-            string filter;
-            if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
-            {
-                // no filter function, and compiled resource files generally end up first (and thus the extension is found)
-                filter = "$**";
-            }
-            else
-            {
-                // if there were no object files, you probably intended to use all prerequisites anyway
-                filter = (null != objExt) ? System.String.Format("$(filter %{0},$^)", objExt) : "$^";
-            }
-            commands.AppendFormat("{0} {1} {2} {3}",
+            commands.AppendFormat("{0} {1} {2}",
                 CommandLineProcessor.Processor.StringifyTool(tool),
-                filter,
                 CommandLineProcessor.NativeConversion.Convert(
                     module.Settings,
                     module
@@ -142,9 +126,10 @@ namespace C
                 CommandLineProcessor.Processor.TerminatingArgs(tool));
             rule.AddShellCommand(commands.ToString());
 
-            var output_dir = System.IO.Path.GetDirectoryName(output_path.ToString());
-            meta.CommonMetaData.AddDirectory(output_dir);
-            meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
+            foreach (var dir in module.OutputDirectories)
+            {
+                meta.CommonMetaData.AddDirectory(dir.ToString());
+            }
         }
     }
 #else

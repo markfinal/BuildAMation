@@ -31,6 +31,34 @@ using Bam.Core;
 namespace C
 {
 #if BAM_V2
+    public static partial class MakeFileSupport
+    {
+        public static void
+        GenerateHeader(
+            ProceduralHeaderFileFromToolOutput module)
+        {
+            var meta = new MakeFileBuilder.MakeFileMeta(module);
+            var rule = meta.AddRule();
+            rule.AddTarget(module.GeneratedPaths[C.HeaderFile.HeaderFileKey]);
+            rule.AddPrerequisite((module.Tool as Bam.Core.ICommandLineTool).Executable);
+
+            var args = new Bam.Core.StringArray();
+            if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
+            {
+                args.Add("$** > $@");
+            }
+            else
+            {
+                args.Add("$< > $@");
+            }
+            rule.AddShellCommand(args.ToString(' '));
+
+            foreach (var dir in module.OutputDirectories)
+            {
+                meta.CommonMetaData.AddDirectory(dir.ToString());
+            }
+        }
+    }
 #else
     public sealed class MakeFileProceduralHeaderFromToolOutput :
         IProceduralHeaderFromToolOutputPolicy
