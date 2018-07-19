@@ -29,6 +29,8 @@
 #endregion // License
 namespace ClangCommon
 {
+    [CommandLineProcessor.OutputPath(C.AssembledObjectFile.ObjectFileKey, "-o ")]
+    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ", max_file_count: 1)]
     public abstract class CommonAssemblerSettings :
         C.SettingsBase,
 #if BAM_V2
@@ -36,9 +38,11 @@ namespace ClangCommon
         CommandLineProcessor.IConvertToCommandLine,
         XcodeProjectProcessor.IConvertToProject,
 #endif
+#if false
         C.ICommonHasOutputPath,
-        C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonHasSourcePath,
+#endif
+        C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
@@ -67,6 +71,7 @@ namespace ClangCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("-c -o ")]
         [XcodeProjectProcessor.Path("", ignore: true)]
@@ -78,20 +83,21 @@ namespace ClangCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.Path("-E -o ")]
-        [XcodeProjectProcessor.Path("", ignore: true)]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
         [CommandLineProcessor.Path("")]
         [XcodeProjectProcessor.Path("", ignore: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
+        {
+            get;
+            set;
+        }
+#endif
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-E -o ")]
+        [XcodeProjectProcessor.Path("", ignore: true)]
+#endif
+        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
         {
             get;
             set;
@@ -164,13 +170,19 @@ namespace ClangCommon
         {
             base.Validate();
 
-            if (((this as C.ICommonHasOutputPath).OutputPath != null) &&
+            if (((this is C.ICommonHasOutputPath) && (this as C.ICommonHasOutputPath).OutputPath != null) &&
                 ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
             {
                 throw new Bam.Core.Exception(
                     "Both output and preprocessed output paths cannot be set"
                 );
             }
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
         }
     }
 }
