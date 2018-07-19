@@ -193,7 +193,7 @@ namespace ClangCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.PathArray("-Wl,-rpath,{0}")]
+        [CommandLineProcessor.PathArray("-Wl,-rpath,")]
         [XcodeProjectProcessor.PathArray("LD_RUNPATH_SEARCH_PATHS")]
 #endif
         Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPath
