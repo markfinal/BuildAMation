@@ -177,9 +177,7 @@ namespace Publisher
 
             copyPDBModule.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
-            // since PDBs aren't guaranteed to exist as it depends on build settings, allow missing files to go through
-            // TODO
-            //copyPDBModule.FailWhenSourceDoesNotExist = false;
+            // TODO: since PDBs aren't guaranteed to exist as it depends on build settings, allow missing files to go through
             this.collatedObjects.Add(copyPDBModule);
         }
 

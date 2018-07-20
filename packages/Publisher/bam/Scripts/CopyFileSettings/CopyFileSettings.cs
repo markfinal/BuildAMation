@@ -31,6 +31,7 @@ namespace Publisher
 {
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedObjectKey, "")]
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
+    [CommandLineProcessor.InputPaths(PreExistingFile.ExistingFileKey, "", max_file_count: 1)]
     public sealed class PosixCopyFileSettings :
         Bam.Core.Settings,
 #if BAM_V2
@@ -100,8 +101,12 @@ namespace Publisher
         }
     }
 
-    [CommandLineProcessor.OutputPath(CollatedObject.CopiedObjectKey, "")]
+    [CommandLineProcessor.OutputPath(CollatedObject.CopiedObjectKey, "", path_modifier: "@dir($(0))/")]
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
+    [CommandLineProcessor.InputPaths(C.ConsoleApplication.PDBKey, "", max_file_count: 1)]
+    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ImportLibraryKey, "", max_file_count: 1)]
+    [CommandLineProcessor.InputPaths(PreExistingFile.ExistingFileKey, "", max_file_count: 1)]
+    [CommandLineProcessor.InputPaths(CollatedObject.CopiedObjectKey, "", max_file_count: 1)]
     public sealed class WinCopyFileSettings :
         Bam.Core.Settings,
 #if BAM_V2
@@ -130,7 +135,7 @@ namespace Publisher
 #endif
 
 #if BAM_V2
-        [CommandLineProcessor.Bool("/Y", "")]
+        [CommandLineProcessor.Bool("/Y /R", "")]
 #endif
         bool ICopyFileSettings.Force
         {

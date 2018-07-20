@@ -1266,6 +1266,18 @@ namespace Bam.Core
                 }
             }
         }
+
+        /// <summary>
+        /// Extended version of InputModules, with each Module associated with a string path key.
+        /// </summary>
+        public virtual System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string,Module>> InputModulesWithPathKey
+        {
+            get
+            {
+                //return System.Linq.Enumerable.Empty<System.Collections.Generic.KeyValuePair<string, Module>>();
+                return null;
+            }
+        }
 #endif
     }
 }

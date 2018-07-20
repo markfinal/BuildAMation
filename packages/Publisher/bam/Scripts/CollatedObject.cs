@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Collections.Generic;
 using Bam.Core;
 namespace Publisher
 {
@@ -257,17 +258,25 @@ namespace Publisher
                         this.sourceModule.ToString());
                 }
             }
-            this.RegisterGeneratedFile(
+            if (this.Tool is CopyFileWin)
+            {
+                this.RegisterGeneratedFile(
 #if BAM_V2
-                CopiedObjectKey,
+                    CopiedObjectKey,
 #else
-                Key,
+                    Key,
 #endif
-                this.CreateTokenizedString(
-                    "$(0)/#valid($(RenameLeaf),@filename($(1)))",
-                    new[] { this.publishingDirectory, this.SourcePath }
-                )
-            );
+                    // this must be full copied path, in order for clones to work
+                    this.CreateTokenizedString(
+                        "$(0)/#valid($(RenameLeaf),@filename($(1)))",
+                        new[] { this.publishingDirectory, this.SourcePath }
+                    )
+                );
+            }
+            else
+            {
+                throw new System.NotImplementedException();
+            }
             this.Ignore = false;
         }
 
@@ -321,11 +330,11 @@ namespace Publisher
 #endif
         }
 
-        public override System.Collections.Generic.IEnumerable<Bam.Core.Module> InputModules
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModulesWithPathKey
         {
             get
             {
-                yield return this.sourceModule;
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.sourcePathKey, this.sourceModule);
             }
         }
     }
