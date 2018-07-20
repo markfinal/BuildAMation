@@ -45,7 +45,6 @@ namespace C
                 out config,
                 module,
                 VSSolutionBuilder.VSProjectConfiguration.EType.StaticLibrary,
-                module.ObjectFiles,
                 module.HeaderFiles
             );
             if (null == config)

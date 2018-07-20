@@ -30,6 +30,64 @@
 namespace C
 {
 #if BAM_V2
+    public static partial class VSSolutionSupport
+    {
+        public static void
+        GenerateSource(
+            ExternalSourceGenerator module)
+        {
+            var encapsulating = module.GetEncapsulatingReferencedModule();
+
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            var project = solution.EnsureProjectExists(encapsulating);
+            var config = project.GetConfiguration(encapsulating);
+
+            var args = new Bam.Core.StringArray();
+            args.Add(
+                System.String.Format(
+                    "{0} {1}",
+                    module.Executable.ToStringQuoteIfNecessary(),
+                    module.Arguments.ToString(' ')
+                )
+            );
+
+            bool added_rule_to_first_input = false;
+            foreach (var inputPath in module.InputFiles)
+            {
+                config.AddOtherFile(inputPath);
+                if (added_rule_to_first_input)
+                {
+                    continue;
+                }
+                var customBuild = config.GetSettingsGroup(
+                    VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.CustomBuild,
+                    include: inputPath,
+                    uniqueToProject: true
+                );
+                customBuild.AddSetting(
+                    "Command",
+                    args.ToString(' '),
+                    condition: config.ConditionText
+                );
+                customBuild.AddSetting(
+                    "Message",
+                    System.String.Format("Generating outputs from {0}", inputPath.ToString()),
+                    condition: config.ConditionText
+                );
+                customBuild.AddSetting(
+                    "Outputs",
+                    module.ExpectedOutputFiles.Values,
+                    condition: config.ConditionText
+                );
+                customBuild.AddSetting(
+                    "AdditionalInputs",
+                    module.InputFiles,
+                    condition: config.ConditionText
+                );
+                added_rule_to_first_input = true;
+            }
+        }
+    }
 #else
     public sealed class VSSolutionExternalSourceGenerator :
         IExternalSourceGeneratorPolicy

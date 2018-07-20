@@ -31,6 +31,8 @@ namespace VisualCCommon
 {
     [CommandLineProcessor.OutputPath(C.StaticLibrary.LibraryKey, "-OUT:")]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
+    [VisualStudioProcessor.OutputPath(C.StaticLibrary.LibraryKey, "", handledByMetaData: true)]
+    [VisualStudioProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "", handledByMetaData: true)]
     public abstract class CommonArchiverSettings :
         C.SettingsBase,
 #if BAM_V2

@@ -43,7 +43,7 @@ namespace C
         public ExternalSourceGenerator()
         {
             this.Arguments = new Bam.Core.TokenizedStringArray();
-            this.InputFiles = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
+            this.InternalInputFiles = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
             this.InternalExpectedOutputFileDictionary = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
         }
 
@@ -68,10 +68,21 @@ namespace C
         }
 
         private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>
-        InputFiles
+        InternalInputFiles
         {
             get;
             set;
+        }
+
+        public System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> InputFiles
+        {
+            get
+            {
+                foreach (var input in this.InternalInputFiles)
+                {
+                    yield return input.Value;
+                }
+            }
         }
 
         public void
@@ -79,11 +90,11 @@ namespace C
             string name,
             Bam.Core.TokenizedString path)
         {
-            if (this.InputFiles.ContainsKey(name))
+            if (this.InternalInputFiles.ContainsKey(name))
             {
                 throw new Bam.Core.Exception("Input file '{0}' has already been added", name);
             }
-            this.InputFiles.Add(name, path);
+            this.InternalInputFiles.Add(name, path);
             this.Macros.Add(name, path);
         }
 
@@ -176,7 +187,7 @@ namespace C
                 }
             }
 
-            foreach (var input in this.InputFiles)
+            foreach (var input in this.InternalInputFiles)
             {
                 var path = input.Value.ToString();
                 var writeTime = System.IO.File.GetLastWriteTime(path);
@@ -209,13 +220,13 @@ namespace C
 
 #if D_PACKAGE_VSSOLUTIONBUILDER
                 case "VSSolution":
-                    //VSSolutionSupport.Link(this);
+                    VSSolutionSupport.GenerateSource(this);
                     break;
 #endif
 
 #if D_PACKAGE_XCODEBUILDER
                 case "Xcode":
-                    //XcodeSupport.Link(this);
+                    //XcodeSupport.GenerateSource(this);
                     break;
 #endif
 
@@ -242,7 +253,7 @@ namespace C
                 this.Arguments,
                 this.OutputDirectory,
                 this.InternalExpectedOutputFileDictionary,
-                this.InputFiles
+                this.InternalInputFiles
             );
 #endif
         }

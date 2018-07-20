@@ -157,6 +157,83 @@ namespace VisualStudioProcessor
         }
     }
 
+    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = true)] // because there may be multiple outputs
+    public class OutputPathAttribute :
+        BaseAttribute
+    {
+        public OutputPathAttribute(
+            string pathKey,
+            string command_switch,
+            bool inheritExisting = false,
+            TargetGroup target = TargetGroup.Settings,
+            bool handledByMetaData = false,
+            bool enableSideEffets = false)
+            :
+            base(command_switch, inheritExisting, target)
+        {
+            this.PathKey = pathKey;
+            this.HandledByMetaData = handledByMetaData;
+            this.EnableSideEffects = enableSideEffets;
+        }
+
+        public string PathKey
+        {
+            get;
+            private set;
+        }
+
+        public bool HandledByMetaData
+        {
+            get;
+            set;
+        }
+
+        public bool EnableSideEffects
+        {
+            get;
+            set;
+        }
+    }
+
+
+    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]
+    public class InputPathsAttribute :
+        BaseAttribute
+    {
+        public InputPathsAttribute(
+            string pathKey,
+            string command_switch,
+            int max_file_count = -1,
+            bool inheritExisting = false,
+            TargetGroup target = TargetGroup.Settings,
+            bool handledByMetaData = false)
+            :
+            base(command_switch, inheritExisting, target)
+        {
+            this.PathKey = pathKey;
+            this.MaxFileCount = max_file_count;
+            this.HandledByMetaData = handledByMetaData;
+        }
+
+        public string PathKey
+        {
+            get;
+            private set;
+        }
+
+        public int MaxFileCount
+        {
+            get;
+            set;
+        }
+
+        public bool HandledByMetaData
+        {
+            get;
+            set;
+        }
+    }
+
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PathArrayAttribute :
         BaseAttribute
@@ -522,6 +599,168 @@ namespace VisualStudioProcessor
                             module.ToString()
                         );
                     }
+                }
+            }
+
+            var output_file_attributes = real_settings_type.GetCustomAttributes(
+                typeof(OutputPathAttribute),
+                true // since generally specified in an abstract class
+            ) as OutputPathAttribute[];
+            if (!output_file_attributes.Any() && settings.Module.GeneratedPaths.Any())
+            {
+                throw new Bam.Core.Exception(
+                    "There are no OutputPath attributes associated with the {0} settings class",
+                    settings.ToString()
+                );
+            }
+            var input_files_attributes = real_settings_type.GetCustomAttributes(
+                typeof(InputPathsAttribute),
+                true // since generally specified in an abstract class
+            ) as InputPathsAttribute[];
+            if (settings.Module.InputModules.Any())
+            {
+                if (!input_files_attributes.Any())
+                {
+                    throw new Bam.Core.Exception(
+                        "There is no InputPaths attribute associated with the {0} settings class",
+                        settings.ToString()
+                    );
+                }
+                var attr = input_files_attributes.First();
+                var max_files = attr.MaxFileCount;
+                if (max_files >= 0)
+                {
+                    if (max_files != settings.Module.InputModules.Count())
+                    {
+                        throw new Bam.Core.Exception(
+                            "InputPaths attribute specifies a maximum of {0} files, but {1} are available",
+                            max_files,
+                            settings.Module.InputModules.Count()
+                        );
+                    }
+                }
+            }
+            if (real_settings_type == settings.GetType())
+            {
+                // only process outputs when NOT in a shared settings (compiled) object
+                // these will be specified on the per-compiled object, rather than
+                // the shared state
+                ProcessOutputPaths(
+                    settings,
+                    module,
+                    output_file_attributes,
+                    vsConfig,
+                    vsSettingsGroup,
+                    condition
+                );
+            }
+
+            ProcessInputPaths(
+                settings,
+                input_files_attributes,
+                vsSettingsGroup,
+                condition
+            );
+        }
+
+        private static void
+        ProcessInputPaths(
+            Bam.Core.Settings settings,
+            InputPathsAttribute[] input_files_attributes,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
+        {
+            var matching_input_attr = input_files_attributes.First();
+            if (matching_input_attr.HandledByMetaData)
+            {
+                // this input file has been dealt with in the metdata for Visual
+                // Studio projects already
+                return;
+            }
+            foreach (var input_module in settings.Module.InputModules)
+            {
+                try
+                {
+                    // note that this will add an absolute path
+                    // it will be updated later using VS macros
+                    vsSettingsGroup.AddSetting(
+                        matching_input_attr.Property,
+                        input_module.GeneratedPaths[matching_input_attr.Property],
+                        condition: condition,
+                        isPath: true
+                    );
+                }
+                catch (System.Collections.Generic.KeyNotFoundException)
+                {
+                    throw new Bam.Core.Exception(
+                        "Unable to locate path key {0} for input module of type {1}",
+                        matching_input_attr.PathKey,
+                        input_module.ToString()
+                    );
+                }
+            }
+        }
+
+        private static void
+        ProcessOutputPaths(
+            Bam.Core.Settings settings,
+            Bam.Core.Module module,
+            OutputPathAttribute[] output_file_attributes,
+            VSSolutionBuilder.VSProjectConfiguration vsConfig,
+            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
+            string condition)
+        {
+            foreach (var generatedPath in settings.Module.GeneratedPaths)
+            {
+                if (null == generatedPath.Value)
+                {
+                    continue;
+                }
+                var outputKey = generatedPath.Key;
+                var matching_attr = output_file_attributes.FirstOrDefault(item => item.PathKey == outputKey);
+                if (null == matching_attr)
+                {
+                    throw new Bam.Core.Exception(
+                        "Unable to locate OutputPath class attribute on {0} for path key {1}",
+                        settings.ToString(),
+                        outputKey
+                    );
+                }
+                if (matching_attr.HandledByMetaData)
+                {
+                    // this input file has been dealt with in the metdata for Visual
+                    // Studio projects already
+                    continue;
+                }
+                // note that this will add an absolute path
+                // it will be updated later using VS macros
+                vsSettingsGroup.AddSetting(
+                    matching_attr.Property,
+                    generatedPath.Value,
+                    condition: condition,
+                    isPath: true
+                );
+                if (matching_attr.EnableSideEffects)
+                {
+                    // there may be a property of the same name on the VS configuration
+                    // if there is, set it with the path
+                    var prop = vsConfig.GetType().GetProperty(matching_attr.Property);
+                    if (null == prop)
+                    {
+                        throw new Bam.Core.Exception(
+                            "A side-effect was enabled, but no property called {0} exists on the VSConfiguration",
+                            matching_attr.Property
+                        );
+                    }
+                    var setter = prop.GetSetMethod();
+                    if (null == setter)
+                    {
+                        throw new Bam.Core.Exception(
+                            "No setter was available on property {0} on the VSConfiguration",
+                            matching_attr.Property
+                        );
+                    }
+                    setter.Invoke(vsConfig, new[] { generatedPath.Value });
                 }
             }
         }

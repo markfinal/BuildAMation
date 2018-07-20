@@ -137,7 +137,7 @@ namespace C
 
 #if D_PACKAGE_VSSOLUTIONBUILDER
                 case "VSSolution":
-                    //VSSolutionSupport.GenerateHeader(this);
+                    VSSolutionSupport.GenerateHeader(this);
                     break;
 #endif
 

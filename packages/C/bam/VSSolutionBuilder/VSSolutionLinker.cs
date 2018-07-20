@@ -48,7 +48,6 @@ namespace C
                 out config,
                 module,
                 type,
-                module.ObjectFiles,
                 module.HeaderFiles
             );
             if (null == config)

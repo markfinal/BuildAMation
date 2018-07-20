@@ -33,6 +33,10 @@ namespace VisualCCommon
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.PDBKey, "-PDB:")]
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.ImportLibraryKey, "-IMPLIB:")]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
+    [VisualStudioProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "OutputFile", enableSideEffets: true)]
+    [VisualStudioProcessor.OutputPath(C.ConsoleApplication.PDBKey, "", handledByMetaData: true)]
+    [VisualStudioProcessor.OutputPath(C.ConsoleApplication.ImportLibraryKey, "", handledByMetaData: true)]
+    [VisualStudioProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "", handledByMetaData: true)]
     public abstract class CommonLinkerSettings :
         C.SettingsBase,
 #if BAM_V2

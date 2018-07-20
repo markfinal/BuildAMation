@@ -32,6 +32,8 @@ namespace VisualCCommon
 {
     [CommandLineProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "-Fo")]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ", max_file_count: 1)]
+    [VisualStudioProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "ObjectFileName")]
+    [VisualStudioProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1, handledByMetaData: true)]
     public abstract class CommonCompilerSettings :
         C.SettingsBase,
 #if BAM_V2
