@@ -594,9 +594,9 @@ namespace CommandLineProcessor
             //Bam.Core.Log.MessageAll("{0}: Executing '{1}'", module.ToString(), commandLine.ToString(' '));
 
             var output_file_attributes = settings.GetType().GetCustomAttributes(
-                typeof(CommandLineProcessor.OutputPathAttribute),
+                typeof(OutputPathAttribute),
                 true // since generally specified in an abstract class
-            ) as CommandLineProcessor.OutputPathAttribute[];
+            ) as OutputPathAttribute[];
             if (!output_file_attributes.Any() && settings.Module.GeneratedPaths.Any())
             {
                 throw new Bam.Core.Exception(
@@ -605,9 +605,9 @@ namespace CommandLineProcessor
                 );
             }
             var input_files_attributes = settings.GetType().GetCustomAttributes(
-                typeof(CommandLineProcessor.InputPathsAttribute),
+                typeof(InputPathsAttribute),
                 true // since generally specified in an abstract class
-            ) as CommandLineProcessor.InputPathsAttribute[];
+            ) as InputPathsAttribute[];
             if (settings.Module.InputModules.Any())
             {
                 if (!input_files_attributes.Any())
