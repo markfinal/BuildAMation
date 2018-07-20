@@ -143,7 +143,7 @@ namespace C
 
 #if D_PACKAGE_XCODEBUILDER
                 case "Xcode":
-                    //XcodeSupport.GenerateHeader(this);
+                    XcodeSupport.GenerateHeader(this);
                     break;
 #endif
 
