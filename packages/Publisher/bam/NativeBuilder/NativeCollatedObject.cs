@@ -41,6 +41,12 @@ namespace Publisher
             {
                 return;
             }
+
+            foreach (var dir in module.OutputDirectories)
+            {
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
+            }
+
             var collatedInterface = module as ICollatedObject;
 
             var copyFileTool = module.Tool as CopyFileTool;
@@ -68,8 +74,6 @@ namespace Publisher
                     copySourcePath,
                     destinationDir);
             }
-
-            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destinationDir);
 
 #if BAM_V2
 #else

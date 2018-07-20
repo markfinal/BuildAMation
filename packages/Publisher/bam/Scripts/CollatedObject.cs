@@ -320,5 +320,13 @@ namespace Publisher
             this.policy = Bam.Core.ExecutionPolicyUtilities<ICollatedObjectPolicy>.Create(className);
 #endif
         }
+
+        public override System.Collections.Generic.IEnumerable<Bam.Core.Module> InputModules
+        {
+            get
+            {
+                yield return this.sourceModule;
+            }
+        }
     }
 }

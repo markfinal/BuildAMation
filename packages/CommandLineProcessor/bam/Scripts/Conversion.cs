@@ -651,11 +651,23 @@ namespace CommandLineProcessor
                     break;
 
                 case Bam.Core.Settings.ELayout.Inputs_Cmds_Outputs:
-                    var newCommandLine = new Bam.Core.StringArray();
-                    ProcessInputPaths(settings, newCommandLine, input_files_attributes);
-                    newCommandLine.AddRange(commandLine);
-                    ProcessOutputPaths(settings, module, newCommandLine, output_file_attributes);
-                    commandLine = newCommandLine;
+                    {
+                        var newCommandLine = new Bam.Core.StringArray();
+                        ProcessInputPaths(settings, newCommandLine, input_files_attributes);
+                        newCommandLine.AddRange(commandLine);
+                        ProcessOutputPaths(settings, module, newCommandLine, output_file_attributes);
+                        commandLine = newCommandLine;
+                    }
+                    break;
+
+                case Bam.Core.Settings.ELayout.Inputs_Outputs_Cmds:
+                    {
+                        var newCommandLine = new Bam.Core.StringArray();
+                        ProcessInputPaths(settings, newCommandLine, input_files_attributes);
+                        ProcessOutputPaths(settings, module, newCommandLine, output_file_attributes);
+                        newCommandLine.AddRange(commandLine);
+                        commandLine = newCommandLine;
+                    }
                     break;
 
                 default:

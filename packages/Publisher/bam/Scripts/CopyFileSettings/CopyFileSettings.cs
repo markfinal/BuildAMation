@@ -30,6 +30,7 @@
 namespace Publisher
 {
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedObjectKey, "")]
+    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
     public sealed class PosixCopyFileSettings :
         Bam.Core.Settings,
 #if BAM_V2
@@ -100,6 +101,7 @@ namespace Publisher
     }
 
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedObjectKey, "")]
+    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
     public sealed class WinCopyFileSettings :
         Bam.Core.Settings,
 #if BAM_V2
@@ -165,7 +167,7 @@ namespace Publisher
 
         public override void AssignFileLayout()
         {
-            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
+            this.FileLayout = ELayout.Inputs_Outputs_Cmds;
         }
     }
 }
