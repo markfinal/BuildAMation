@@ -56,7 +56,7 @@ namespace C
                 XcodeBuilder.FileReference.EFileType.Archive,
                 XcodeBuilder.Target.EProductType.StaticLibrary,
                 productName,
-                module.ObjectFiles,
+                module.GeneratedPaths[C.StaticLibrary.LibraryKey],
                 module.HeaderFiles
             );
 

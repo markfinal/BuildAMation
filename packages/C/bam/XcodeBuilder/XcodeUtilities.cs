@@ -41,10 +41,10 @@ namespace C
             XcodeBuilder.FileReference.EFileType fileType,
             XcodeBuilder.Target.EProductType productType,
             Bam.Core.TokenizedString productName,
-            System.Collections.Generic.IEnumerable<Bam.Core.Module> objectFiles,
+            Bam.Core.TokenizedString outputPath,
             System.Collections.Generic.IEnumerable<Bam.Core.Module> headerFiles)
         {
-            if (!objectFiles.Any())
+            if (!module.InputModules.Any())
             {
                 outTarget = null;
                 outConfiguration = null;
@@ -55,7 +55,7 @@ namespace C
             var target = workspace.EnsureTargetExists(module);
             var output_filename = module.CreateTokenizedString(
                 "@filename($(0))",
-                module.GeneratedPaths[(module.Settings as C.ICommonHasOutputPath).OutputPath]
+                outputPath
             );
             output_filename.Parse();
             target.EnsureOutputFileReferenceExists(
@@ -79,7 +79,7 @@ namespace C
             }
 
             var excludedSource = new XcodeBuilder.MultiConfigurationValue();
-            var realObjectFiles = objectFiles.Where(item => item is ObjectFile); // C,C++,ObjC,ObjC++
+            var realObjectFiles = module.InputModules.Where(item => item is ObjectFile); // C,C++,ObjC,ObjC++
             if (realObjectFiles.Any())
             {
                 var sharedSettings = C.SettingsBase.SharedSettings(
@@ -107,7 +107,11 @@ namespace C
                     var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                     if (null != deltaSettings)
                     {
-                        var commandLine = CommandLineProcessor.NativeConversion.Convert(deltaSettings, module);
+                        var commandLine = CommandLineProcessor.NativeConversion.Convert(
+                            deltaSettings,
+                            objFile,
+                            createDelta: true
+                        );
                         if (commandLine.Count > 0)
                         {
                             // Cannot set per-file-per-configuration settings, so blend them together
@@ -125,7 +129,7 @@ namespace C
                 }
 
                 // now deal with other object file types
-                var assembledObjectFiles = objectFiles.Where(item => item is AssembledObjectFile);
+                var assembledObjectFiles = module.InputModules.Where(item => item is AssembledObjectFile);
                 foreach (var asmObj in assembledObjectFiles)
                 {
                     var buildFile = asmObj.MetaData as XcodeBuilder.BuildFile;
@@ -135,12 +139,12 @@ namespace C
             else
             {
                 XcodeProjectProcessor.XcodeConversion.Convert(
-                    objectFiles.First().Settings,
-                    objectFiles.First().Settings.GetType(),
+                    module.InputModules.First().Settings,
+                    module.InputModules.First().Settings.GetType(),
                     module,
                     configuration
                 );
-                foreach (var objFile in objectFiles)
+                foreach (var objFile in module.InputModules)
                 {
                     var asObjFileBase = objFile as C.ObjectFileBase;
                     if (!asObjFileBase.PerformCompilation)

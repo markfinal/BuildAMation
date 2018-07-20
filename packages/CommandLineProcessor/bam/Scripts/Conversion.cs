@@ -470,7 +470,8 @@ namespace CommandLineProcessor
         public static Bam.Core.StringArray
         Convert(
             Bam.Core.Settings settings,
-            Bam.Core.Module module)
+            Bam.Core.Module module,
+            bool createDelta = false)
         {
             if (null == settings)
             {
@@ -592,6 +593,12 @@ namespace CommandLineProcessor
                 }
             }
             //Bam.Core.Log.MessageAll("{0}: Executing '{1}'", module.ToString(), commandLine.ToString(' '));
+
+            if (createDelta)
+            {
+                // don't want to introduce outputs or inputs in deltas
+                return commandLine;
+            }
 
             var output_file_attributes = settings.GetType().GetCustomAttributes(
                 typeof(OutputPathAttribute),

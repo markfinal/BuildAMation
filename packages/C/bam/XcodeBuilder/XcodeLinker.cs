@@ -85,7 +85,7 @@ namespace C
                 fileType,
                 productType,
                 productName,
-                module.ObjectFiles,
+                module.GeneratedPaths[C.ConsoleApplication.ExecutableKey],
                 module.HeaderFiles
             );
             if (null == target)

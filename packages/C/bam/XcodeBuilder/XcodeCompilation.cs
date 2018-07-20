@@ -69,7 +69,7 @@ namespace C
                 );
             }
             module.MetaData = target.EnsureSourceBuildFileExists(
-                (module.Settings as C.ICommonHasSourcePath).SourcePath,
+                (module as C.IRequiresSourceModule).Source.GeneratedPaths[C.SourceFile.SourceFileKey],
                 fileType
             );
 
