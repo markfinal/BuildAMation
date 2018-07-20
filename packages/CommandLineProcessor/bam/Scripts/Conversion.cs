@@ -674,6 +674,10 @@ namespace CommandLineProcessor
             Bam.Core.StringArray commandLine,
             InputPathsAttribute[] input_files_attributes)
         {
+            if (!input_files_attributes.Any())
+            {
+                return;
+            }
             var matching_input_attr = input_files_attributes.First();
             foreach (var input_module in settings.Module.InputModules)
             {

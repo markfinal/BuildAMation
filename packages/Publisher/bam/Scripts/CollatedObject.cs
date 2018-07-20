@@ -52,7 +52,7 @@ namespace Publisher
         private ICollatedObject anchor = null;
 
 #if BAM_V2
-        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, string>, CollatedObject>();
+        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, CollatedObject>();
 #else
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
 #endif
