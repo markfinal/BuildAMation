@@ -226,7 +226,7 @@ namespace C
 
 #if D_PACKAGE_XCODEBUILDER
                 case "Xcode":
-                    //XcodeSupport.GenerateSource(this);
+                    XcodeSupport.GenerateSource(this);
                     break;
 #endif
 
