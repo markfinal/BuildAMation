@@ -57,9 +57,10 @@ namespace C
             {
                 if (null == objExt)
                 {
-                    objExt = input.Tool.Macros["objext"].ToString();
+                    objExt = input.Value.Tool.Macros["objext"].ToString();
                 }
-                rule.AddPrerequisite(input, C.ObjectFile.ObjectFileKey);
+                System.Diagnostics.Debug.Assert(input.Key == C.ObjectFile.ObjectFileKey);
+                rule.AddPrerequisite(input.Value, input.Key);
             }
             foreach (var input in module.Libraries)
             {

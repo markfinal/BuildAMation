@@ -405,11 +405,11 @@ namespace C
             return;
         }
 
-        public override System.Collections.Generic.IEnumerable<Bam.Core.Module> InputModules
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get
             {
-                yield return this.SourceModule;
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.SourceFile.SourceFileKey, this.SourceModule);
             }
         }
     }

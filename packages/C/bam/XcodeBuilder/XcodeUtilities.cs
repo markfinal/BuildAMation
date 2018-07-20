@@ -79,7 +79,7 @@ namespace C
             }
 
             var excludedSource = new XcodeBuilder.MultiConfigurationValue();
-            var realObjectFiles = module.InputModules.Where(item => item is ObjectFile); // C,C++,ObjC,ObjC++
+            var realObjectFiles = module.InputModules.Select(item => item.Value).Where(item => item is ObjectFile); // C,C++,ObjC,ObjC++
             if (realObjectFiles.Any())
             {
                 var sharedSettings = C.SettingsBase.SharedSettings(
@@ -129,7 +129,7 @@ namespace C
                 }
 
                 // now deal with other object file types
-                var assembledObjectFiles = module.InputModules.Where(item => item is AssembledObjectFile);
+                var assembledObjectFiles = module.InputModules.Select(item => item.Value).Where(item => item is AssembledObjectFile);
                 foreach (var asmObj in assembledObjectFiles)
                 {
                     var buildFile = asmObj.MetaData as XcodeBuilder.BuildFile;
@@ -139,12 +139,12 @@ namespace C
             else
             {
                 XcodeProjectProcessor.XcodeConversion.Convert(
-                    module.InputModules.First().Settings,
-                    module.InputModules.First().Settings.GetType(),
+                    module.InputModules.First().Value.Settings,
+                    module.InputModules.First().Value.Settings.GetType(),
                     module,
                     configuration
                 );
-                foreach (var objFile in module.InputModules)
+                foreach (var objFile in module.InputModules.Select(item => item.Value))
                 {
                     var asObjFileBase = objFile as C.ObjectFileBase;
                     if (!asObjFileBase.PerformCompilation)

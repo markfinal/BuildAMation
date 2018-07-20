@@ -698,61 +698,26 @@ namespace CommandLineProcessor
             {
                 return;
             }
-            if (null != settings.Module.InputModulesWithPathKey)
+            foreach (var input_module_and_pathkey in settings.Module.InputModules)
             {
-                foreach (var input_module_and_pathkey in settings.Module.InputModulesWithPathKey)
-                {
-                    var matching_input_attr = input_files_attributes.FirstOrDefault(
-                        item => item.PathKey == input_module_and_pathkey.Key
-                    );
-                    if (null == matching_input_attr)
-                    {
-                        throw new Bam.Core.Exception(
-                            "Unable to locate InputPathsAttribute suitable for input module {0} and path key {1}",
-                            input_module_and_pathkey.Value.ToString(),
-                            input_module_and_pathkey.Key
-                        );
-                    }
-                    commandLine.Add(
-                        System.String.Format(
-                            "{0}{1}",
-                            matching_input_attr.CommandSwitch,
-                            input_module_and_pathkey.Value.GeneratedPaths[matching_input_attr.PathKey].ToStringQuoteIfNecessary()
-                        )
-                    );
-                }
-            }
-            else
-            {
-                if (input_files_attributes.Count() > 1)
+                var matching_input_attr = input_files_attributes.FirstOrDefault(
+                    item => item.PathKey == input_module_and_pathkey.Key
+                );
+                if (null == matching_input_attr)
                 {
                     throw new Bam.Core.Exception(
-                        "Unable to disambiguate different types of InputPathsAttributes on {0}",
-                        settings.ToString()
+                        "Unable to locate InputPathsAttribute suitable for input module {0} and path key {1}",
+                        input_module_and_pathkey.Value.ToString(),
+                        input_module_and_pathkey.Key
                     );
                 }
-                var matching_input_attr = input_files_attributes.First();
-                foreach (var input_module in settings.Module.InputModules)
-                {
-                    try
-                    {
-                        commandLine.Add(
-                            System.String.Format(
-                                "{0}{1}",
-                                matching_input_attr.CommandSwitch,
-                                input_module.GeneratedPaths[matching_input_attr.PathKey].ToStringQuoteIfNecessary()
-                            )
-                        );
-                    }
-                    catch (System.Collections.Generic.KeyNotFoundException)
-                    {
-                        throw new Bam.Core.Exception(
-                            "Unable to locate path key {0} for input module of type {1}",
-                            matching_input_attr.PathKey,
-                            input_module.ToString()
-                        );
-                    }
-                }
+                commandLine.Add(
+                    System.String.Format(
+                        "{0}{1}",
+                        matching_input_attr.CommandSwitch,
+                        input_module_and_pathkey.Value.GeneratedPaths[matching_input_attr.PathKey].ToStringQuoteIfNecessary()
+                    )
+                );
             }
         }
 

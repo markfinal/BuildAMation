@@ -123,7 +123,7 @@ namespace C
             var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler);
 
             // add real C/C++ source files to the project
-            var realObjectFiles = module.InputModules.Where(item => item is ObjectFile);
+            var realObjectFiles = module.InputModules.Select(item => item.Value).Where(item => item is ObjectFile);
             if (realObjectFiles.Any())
             {
                 var sharedSettings = C.SettingsBase.SharedSettings(
@@ -144,13 +144,13 @@ namespace C
             }
 
             // add windows resource files
-            foreach (var winResObj in module.InputModules.Where(item => item is WinResource))
+            foreach (var winResObj in module.InputModules.Select(item => item.Value).Where(item => item is WinResource))
             {
                 config.AddResourceFile(winResObj as WinResource, winResObj.Settings);
             }
 
             // add assembly files
-            foreach (var asmObj in module.InputModules.Where(item => item is AssembledObjectFile))
+            foreach (var asmObj in module.InputModules.Select(item => item.Value).Where(item => item is AssembledObjectFile))
             {
                 config.AddAssemblyFile(asmObj as AssembledObjectFile, asmObj.Settings);
             }

@@ -677,7 +677,7 @@ namespace VisualStudioProcessor
                 // Studio projects already
                 return;
             }
-            foreach (var input_module in settings.Module.InputModules)
+            foreach (var input_module in settings.Module.InputModules.Select(item => item.Value))
             {
                 try
                 {

@@ -42,7 +42,8 @@ namespace C
             rule.AddTarget(module.ExpectedOutputFiles.First().Value);
             foreach (var input in module.InputModules)
             {
-                rule.AddPrerequisite(input, C.SourceFile.SourceFileKey);
+                System.Diagnostics.Debug.Assert(input.Key == C.SourceFile.SourceFileKey);
+                rule.AddPrerequisite(input.Value, input.Key);
             }
             rule.AddShellCommand(
                 System.String.Format(

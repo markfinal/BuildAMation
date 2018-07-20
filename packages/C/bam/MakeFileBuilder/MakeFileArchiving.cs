@@ -41,7 +41,8 @@ namespace C
             rule.AddTarget(module.GeneratedPaths[StaticLibrary.LibraryKey]);
             foreach (var input in module.InputModules)
             {
-                rule.AddPrerequisite(input, C.ObjectFile.ObjectFileKey);
+                System.Diagnostics.Debug.Assert(input.Key == C.ObjectFile.ObjectFileKey);
+                rule.AddPrerequisite(input.Value, input.Key);
             }
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;

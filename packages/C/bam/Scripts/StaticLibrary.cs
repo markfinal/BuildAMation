@@ -87,11 +87,14 @@ namespace C
             }
         }
 
-        public override System.Collections.Generic.IEnumerable<Bam.Core.Module> InputModules
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get
             {
-                return this.ObjectFiles.Where(item => (item as ObjectFileBase).PerformCompilation);
+                foreach (var obj in this.ObjectFiles.Where(item => (item as ObjectFileBase).PerformCompilation))
+                {
+                    yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.ObjectFileBase.ObjectFileKey, obj);
+                }
             }
         }
 

@@ -1255,27 +1255,18 @@ namespace Bam.Core
         /// to be operated on in order to generate the output(s) of this Module.
         /// By default, this is the list of Dependents (not Required), although subclasses can
         /// override this property to give a more precise meaning.
+        /// This default implementation is not aware of path keys of derived Module types
+        /// so if a caller requires knowledge of that, it is expected the Module types of interest
+        /// will override this property to provide the necessary path keys.
         /// </summary>
-        public virtual System.Collections.Generic.IEnumerable<Module> InputModules
+        public virtual System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string,Module>> InputModules
         {
             get
             {
                 foreach (var module in this.DependentsList)
                 {
-                    yield return module;
+                    yield return new System.Collections.Generic.KeyValuePair<string, Module>("unspecified path key", module);
                 }
-            }
-        }
-
-        /// <summary>
-        /// Extended version of InputModules, with each Module associated with a string path key.
-        /// </summary>
-        public virtual System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string,Module>> InputModulesWithPathKey
-        {
-            get
-            {
-                //return System.Linq.Enumerable.Empty<System.Collections.Generic.KeyValuePair<string, Module>>();
-                return null;
             }
         }
 #endif
