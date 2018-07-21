@@ -1269,6 +1269,20 @@ namespace Bam.Core
                 }
             }
         }
+
+        /// <summary>
+        /// Create an instance of the Settings class used for the Module.
+        /// By default, this will come from the Tool (if defined).
+        /// Overriding this function allows Modules to use different Settings classes,
+        /// although they must implement the appropriate interfaces.
+        /// </summary>
+        /// <returns>Instance of the Settings class for this Module.</returns>
+        public virtual Settings
+        MakeSettings()
+        {
+            System.Diagnostics.Debug.Assert(null != this.Tool);
+            return (this.Tool as ITool).CreateDefaultSettings(this);
+        }
 #endif
     }
 }

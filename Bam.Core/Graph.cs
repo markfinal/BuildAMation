@@ -540,9 +540,10 @@ namespace Bam.Core
                         // children inherit the settings from their parents
                         module.UsePublicPatches(module.Tool);
                     }
+
                     try
                     {
-                        module.Settings = (module.Tool as ITool).CreateDefaultSettings(module);
+                        module.Settings = module.MakeSettings();
                     }
                     catch (System.TypeInitializationException ex)
                     {
