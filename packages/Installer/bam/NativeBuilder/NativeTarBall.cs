@@ -29,6 +29,30 @@
 #endregion // License
 namespace Installer
 {
+#if BAM_V2
+    public static partial class NativeSupport
+    {
+        public static void
+        CreateTarBall(
+            TarBall module,
+            Bam.Core.ExecutionContext context)
+        {
+            foreach (var dir in module.OutputDirectories)
+            {
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
+            }
+
+            CommandLineProcessor.Processor.Execute(
+                context,
+                module.Tool as Bam.Core.ICommandLineTool,
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                )
+            );
+        }
+    }
+#else
     public sealed class NativeTarBall :
         ITarPolicy
     {
@@ -56,4 +80,5 @@ namespace Installer
             CommandLineProcessor.Processor.Execute(context, compiler, commandLine);
         }
     }
+#endif
 }

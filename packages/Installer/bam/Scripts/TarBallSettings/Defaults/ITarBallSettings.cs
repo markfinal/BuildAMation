@@ -36,7 +36,9 @@ namespace Installer.DefaultSettings
             this ITarBallSettings settings,
             Bam.Core.Module module)
         {
+            settings.Operation = ETarOperation.Create;
             settings.CompressionType = ETarCompressionType.None;
+            settings.Verbose = true;
         }
     }
 }

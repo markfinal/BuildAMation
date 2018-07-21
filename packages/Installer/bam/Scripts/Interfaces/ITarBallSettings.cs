@@ -29,10 +29,21 @@
 #endregion // License
 namespace Installer
 {
+    public enum ETarOperation
+    {
+        Create
+    }
+
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ITarBallSettings :
         Bam.Core.ISettingsBase
     {
+        ETarOperation Operation
+        {
+            get;
+            set;
+        }
+
         ETarCompressionType CompressionType
         {
             get;
@@ -40,6 +51,12 @@ namespace Installer
         }
 
         string TransformRegEx
+        {
+            get;
+            set;
+        }
+
+        bool Verbose
         {
             get;
             set;

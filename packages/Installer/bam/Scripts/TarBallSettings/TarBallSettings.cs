@@ -30,6 +30,9 @@
 using Bam.Core;
 namespace Installer
 {
+    [CommandLineProcessor.OutputPath(TarBall.TarBallKey, "-f ")]
+    [CommandLineProcessor.InputPaths(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey, "")]
+    [CommandLineProcessor.InputPaths(Publisher.DebugSymbolCollation.DebugSymbolsDirectoryKey, "")]
     public sealed class TarBallSettings :
         Bam.Core.Settings,
         CommandLineProcessor.IConvertToCommandLine,
@@ -49,6 +52,13 @@ namespace Installer
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
+        }
+
+        [CommandLineProcessor.Enum(ETarOperation.Create, "-c")]
+        ETarOperation ITarBallSettings.Operation
+        {
+            get;
+            set;
         }
 
         private ETarCompressionType _compression;
@@ -85,10 +95,24 @@ namespace Installer
             }
         }
 
+        [CommandLineProcessor.String("--transform=")]
         string ITarBallSettings.TransformRegEx
         {
             get;
             set;
+        }
+
+
+        [CommandLineProcessor.Bool("-v", "")]
+        bool ITarBallSettings.Verbose
+        {
+            get;
+            set;
+        }
+
+        public override void AssignFileLayout ()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

@@ -42,6 +42,17 @@ namespace Installer
         private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
 #endif
 
+#if BAM_V2
+        // TODO: this could be improved
+        public System.Collections.Generic.KeyValuePair<string, Bam.Core.Module> ModulePathKeyPair
+        {
+            get
+            {
+                return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.Paths.First().Value, this.Paths.First().Key);
+            }
+        }
+#endif
+
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -253,7 +264,7 @@ namespace Installer
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
-            throw new System.NotImplementedException();
+            NativeSupport.CreateTarBall(this, context);
 #else
             if (null != this.Policy)
             {
@@ -274,6 +285,14 @@ namespace Installer
                 this.Policy = Bam.Core.ExecutionPolicyUtilities<ITarPolicy>.Create(className);
             }
 #endif
+        }
+
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        {
+            get
+            {
+                yield return this.InputFiles.ModulePathKeyPair;
+            }
         }
     }
 }
