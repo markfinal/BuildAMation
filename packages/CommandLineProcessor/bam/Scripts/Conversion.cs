@@ -706,16 +706,17 @@ namespace CommandLineProcessor
                 if (null == matching_input_attr)
                 {
                     throw new Bam.Core.Exception(
-                        "Unable to locate InputPathsAttribute suitable for input module {0} and path key {1}",
+                        "Unable to locate InputPathsAttribute suitable for input module {0} and path key {1} while dealing with inputs on module {2}. Does {2} override the InputModules property?",
                         input_module_and_pathkey.Value.ToString(),
-                        input_module_and_pathkey.Key
+                        input_module_and_pathkey.Key,
+                        settings.Module.ToString()
                     );
                 }
                 commandLine.Add(
                     System.String.Format(
                         "{0}{1}",
                         matching_input_attr.CommandSwitch,
-                        input_module_and_pathkey.Value.GeneratedPaths[matching_input_attr.PathKey].ToStringQuoteIfNecessary()
+                        input_module_and_pathkey.Value.GeneratedPaths[input_module_and_pathkey.Key].ToStringQuoteIfNecessary()
                     )
                 );
             }

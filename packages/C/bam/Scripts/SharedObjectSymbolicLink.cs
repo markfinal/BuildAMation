@@ -160,5 +160,14 @@ namespace C
             this.SymlinkTool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
 #endif
         }
+
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        {
+            get
+            {
+                System.Diagnostics.Debug.Assert(1 == this.Dependents.Count);
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.DynamicLibrary.ExecutableKey, this.Dependents[0]);
+            }
+        }
     }
 }

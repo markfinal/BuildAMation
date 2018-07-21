@@ -260,13 +260,40 @@ namespace Publisher
                         this.sourceModule.ToString());
                 }
             }
-            if (this.Tool is CopyFileWin)
-            {
 #if BAM_V2
-                if (this is CollatedFile)
+            if (this is CollatedFile)
+            {
+                this.RegisterGeneratedFile(
+                    CopiedFileKey,
+                    this.CreateTokenizedString(
+                        "$(0)/@filename($(1))",
+                        new[]
+                        {
+                            this.publishingDirectory,
+                            this.SourcePath
+                        }
+                    )
+                );
+            }
+            else if (this is CollatedDirectory)
+            {
+                if (this.Macros.Contains("RenameLeaf"))
                 {
                     this.RegisterGeneratedFile(
-                        CopiedFileKey,
+                        CopiedDirectoryKey,
+                        this.CreateTokenizedString(
+                            "$(0)/$(RenameLeaf)",
+                            new[]
+                            {
+                                this.publishingDirectory
+                            }
+                        )
+                    );
+                }
+                else
+                {
+                    this.RegisterGeneratedFile(
+                        CopiedDirectoryKey,
                         this.CreateTokenizedString(
                             "$(0)/@filename($(1))",
                             new[]
@@ -277,56 +304,22 @@ namespace Publisher
                         )
                     );
                 }
-                else if (this is CollatedDirectory)
-                {
-                    if (this.Macros.Contains("RenameLeaf"))
-                    {
-                        this.RegisterGeneratedFile(
-                            CopiedDirectoryKey,
-                            this.CreateTokenizedString(
-                                "$(0)/$(RenameLeaf)",
-                                new[]
-                                {
-                                    this.publishingDirectory
-                                }
-                            )
-                        );
-                    }
-                    else
-                    {
-                        this.RegisterGeneratedFile(
-                            CopiedDirectoryKey,
-                            this.CreateTokenizedString(
-                                "$(0)/@filename($(1))",
-                                new[]
-                                {
-                                    this.publishingDirectory,
-                                    this.SourcePath
-                                }
-                            )
-                        );
-                    }
-                }
-                else
-#endif
-                {
-#if BAM_V2
-                    throw new System.NotSupportedException();
-#else
-                    this.RegisterGeneratedFile(
-                        Key,
-                        // this must be full copied path, in order for clones to work
-                        this.CreateTokenizedString(
-                            "$(0)/#valid($(RenameLeaf),@filename($(1)))",
-                            new[] { this.publishingDirectory, this.SourcePath }
-                        )
-                    );
-#endif
-                }
             }
             else
+#endif
             {
-                throw new System.NotImplementedException();
+#if BAM_V2
+                throw new System.NotSupportedException();
+#else
+                this.RegisterGeneratedFile(
+                    Key,
+                    // this must be full copied path, in order for clones to work
+                    this.CreateTokenizedString(
+                        "$(0)/#valid($(RenameLeaf),@filename($(1)))",
+                        new[] { this.publishingDirectory, this.SourcePath }
+                    )
+                );
+#endif
             }
             this.Ignore = false;
         }

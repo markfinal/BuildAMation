@@ -33,6 +33,7 @@ namespace Publisher
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedDirectoryKey, "")]
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedRenamedDirectoryKey, "")]
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
+    [CommandLineProcessor.InputPaths(C.SharedObjectSymbolicLink.SOSymLinkKey, "", max_file_count: 1)]
     [CommandLineProcessor.InputPaths(PreExistingFile.ExistingFileKey, "", max_file_count: 1)]
     [CommandLineProcessor.InputPaths(PreExistingDirectory.ExistingDirectoryKey, "", max_file_count: 1)] // TODO path modifier, add /* upon rename
     [CommandLineProcessor.InputPaths(CollatedObject.CopiedFileKey, "", max_file_count: 1)]
