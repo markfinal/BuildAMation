@@ -128,7 +128,8 @@ namespace Publisher
                 {
                     module.SourceModule = collatedFile as Bam.Core.Module;
 #if BAM_V2
-                    module.SourcePathKey = CollatedObject.CopiedObjectKey;
+                    System.Diagnostics.Debug.Assert(1 == (collatedFile as Bam.Core.Module).GeneratedPaths.Count());
+                    module.SourcePathKey = (collatedFile as Bam.Core.Module).GeneratedPaths.First().Key;
 #else
                     module.SourcePathKey = CollatedObject.Key;
 #endif
@@ -160,7 +161,8 @@ namespace Publisher
                     // in the original collation, so this is a straight copy
                     module.SourceModule = collatedObject as Bam.Core.Module;
 #if BAM_V2
-                    module.SourcePathKey = CollatedObject.CopiedObjectKey;
+                    System.Diagnostics.Debug.Assert(1 == (collatedObject as Bam.Core.Module).GeneratedPaths.Count());
+                    module.SourcePathKey = (collatedObject as Bam.Core.Module).GeneratedPaths.First().Key;
 #else
                     module.SourcePathKey = CollatedObject.Key;
 #endif

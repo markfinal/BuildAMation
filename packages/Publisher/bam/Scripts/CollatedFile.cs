@@ -38,7 +38,7 @@ namespace Publisher
         {
             this.ReasonToExecute = null;
 #if BAM_V2
-            var copiedPath = this.GeneratedPaths[CopiedObjectKey].ToString();
+            var copiedPath = this.GeneratedPaths[CopiedFileKey].ToString();
 #else
             var copiedPath = this.GeneratedPaths[Key].ToString();
 #endif
@@ -46,7 +46,7 @@ namespace Publisher
             if (!exists)
             {
 #if BAM_V2
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[CopiedObjectKey]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[CopiedFileKey]);
 #else
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
 #endif
@@ -65,7 +65,7 @@ namespace Publisher
                     {
                         this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
 #if BAM_V2
-                            this.GeneratedPaths[CopiedObjectKey],
+                            this.GeneratedPaths[CopiedFileKey],
 #else
                             this.GeneratedPaths[Key],
 #endif
@@ -82,7 +82,7 @@ namespace Publisher
                         {
                             this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
 #if BAM_V2
-                                this.GeneratedPaths[CopiedObjectKey],
+                                this.GeneratedPaths[CopiedFileKey],
 #else
                                 this.GeneratedPaths[Key],
 #endif
@@ -100,7 +100,7 @@ namespace Publisher
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
 #if BAM_V2
-                    this.GeneratedPaths[CopiedObjectKey],
+                    this.GeneratedPaths[CopiedFileKey],
 #else
                     this.GeneratedPaths[Key],
 #endif

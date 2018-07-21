@@ -36,7 +36,9 @@ namespace Publisher
         ICollatedObject
     {
 #if BAM_V2
-        public const string CopiedObjectKey = "Copied Object";
+        public const string CopiedFileKey = "Copied file";
+        public const string CopiedDirectoryKey = "Copied directory";
+        public const string CopiedRenamedDirectoryKey = "Copied renamed directory";
 #else
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Copied Object");
 
@@ -260,18 +262,67 @@ namespace Publisher
             }
             if (this.Tool is CopyFileWin)
             {
-                this.RegisterGeneratedFile(
 #if BAM_V2
-                    CopiedObjectKey,
-#else
-                    Key,
+                if (this is CollatedFile)
+                {
+                    this.RegisterGeneratedFile(
+                        CopiedFileKey,
+                        this.CreateTokenizedString(
+                            "$(0)/@filename($(1))",
+                            new[]
+                            {
+                                this.publishingDirectory,
+                                this.SourcePath
+                            }
+                        )
+                    );
+                }
+                else if (this is CollatedDirectory)
+                {
+                    if (this.Macros.Contains("RenameLeaf"))
+                    {
+                        this.RegisterGeneratedFile(
+                            CopiedDirectoryKey,
+                            this.CreateTokenizedString(
+                                "$(0)/$(RenameLeaf)",
+                                new[]
+                                {
+                                    this.publishingDirectory
+                                }
+                            )
+                        );
+                    }
+                    else
+                    {
+                        this.RegisterGeneratedFile(
+                            CopiedDirectoryKey,
+                            this.CreateTokenizedString(
+                                "$(0)/@filename($(1))",
+                                new[]
+                                {
+                                    this.publishingDirectory,
+                                    this.SourcePath
+                                }
+                            )
+                        );
+                    }
+                }
+                else
 #endif
-                    // this must be full copied path, in order for clones to work
-                    this.CreateTokenizedString(
-                        "$(0)/#valid($(RenameLeaf),@filename($(1)))",
-                        new[] { this.publishingDirectory, this.SourcePath }
-                    )
-                );
+                {
+#if BAM_V2
+                    throw new System.NotSupportedException();
+#else
+                    this.RegisterGeneratedFile(
+                        Key,
+                        // this must be full copied path, in order for clones to work
+                        this.CreateTokenizedString(
+                            "$(0)/#valid($(RenameLeaf),@filename($(1)))",
+                            new[] { this.publishingDirectory, this.SourcePath }
+                        )
+                    );
+#endif
+                }
             }
             else
             {

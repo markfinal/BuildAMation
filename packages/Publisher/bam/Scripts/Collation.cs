@@ -911,7 +911,7 @@ namespace Publisher
             }
             else
             {
-                collatedFile = this.CreateCollatedModuleGeneratedFile(dependent, key, modulePublishDir, anchor, anchorPublishRoot);
+                collatedFile = this.CreateCollatedModuleGeneratedFile<CollatedFile>(dependent, key, modulePublishDir, anchor, anchorPublishRoot);
             }
 #if BAM_V2
             this.recordCollatedObject(
@@ -1227,7 +1227,7 @@ namespace Publisher
                     module.Macros.Add("ExistingFile", sourcePath);
                 }
             );
-            var collatedFile = this.CreateCollatedModuleGeneratedFile(
+            var collatedFile = this.CreateCollatedModuleGeneratedFile<CollatedFile>(
                 preexisting,
                 PreExistingFile.ExistingFileKey,
                 destinationDir,
@@ -1320,12 +1320,13 @@ namespace Publisher
                     module.Macros.Add("ExistingDirectory", sourcePath);
                 }
             );
-            var collatedDir = this.CreateCollatedModuleGeneratedFile(
+            var collatedDir = this.CreateCollatedModuleGeneratedFile<CollatedDirectory>(
                 preexisting,
                 PreExistingDirectory.ExistingDirectoryKey,
                 destinationDir,
                 anchor,
-                null
+                null,
+                renameLeaf: renameLeaf
             );
             this.recordCollatedObject(
                 collatedDir,
@@ -1400,8 +1401,8 @@ namespace Publisher
 #endif
         }
 
-        private CollatedFile
-        CreateCollatedModuleGeneratedFile(
+        private CollatedObject
+        CreateCollatedModuleGeneratedFile<CollationType>(
             Bam.Core.Module dependent,
 #if BAM_V2
             string key,
@@ -1410,14 +1411,19 @@ namespace Publisher
 #endif
             Bam.Core.TokenizedString modulePublishDir,
             ICollatedObject anchor,
-            Bam.Core.TokenizedString anchorPublishRoot)
+            Bam.Core.TokenizedString anchorPublishRoot,
+            string renameLeaf = null) where CollationType: CollatedObject, new()
         {
-            var collatedFile = Bam.Core.Module.Create<CollatedFile>(preInitCallback: module =>
+            var collatedFile = Bam.Core.Module.Create<CollationType>(preInitCallback: module =>
                 {
                     module.SourceModule = dependent;
                     module.SourcePathKey = key;
                     module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
                     module.Anchor = anchor;
+                    if (null != renameLeaf)
+                    {
+                        module.Macros.AddVerbatim("RenameLeaf", renameLeaf);
+                    }
                 });
             if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
             {
