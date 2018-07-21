@@ -34,7 +34,7 @@ using System;
 namespace Publisher
 {
 #if BAM_V2
-    class PreExistingFile :
+    sealed class PreExistingFile :
         Bam.Core.Module
     {
         public const string ExistingFileKey = "Preexisting file to be copied";
@@ -46,6 +46,42 @@ namespace Publisher
             base.Init(parent);
 
             this.RegisterGeneratedFile(ExistingFileKey, this.Macros["ExistingFile"]);
+        }
+
+        protected override void
+        GetExecutionPolicy(
+            string mode)
+        {
+            // do nothing
+        }
+
+        protected override void
+        EvaluateInternal()
+        {
+            // pre-existing so never needs evaluating
+            this.ReasonToExecute = null;
+        }
+
+        protected override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
+        {
+            // pre-existing so never needs executing
+        }
+    }
+
+    sealed class PreExistingDirectory :
+        Bam.Core.Module
+    {
+        public const string ExistingDirectoryKey = "Preexisting directory to be copied";
+
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.RegisterGeneratedFile(ExistingDirectoryKey, this.Macros["ExistingDirectory"]);
         }
 
         protected override void
@@ -1278,7 +1314,34 @@ namespace Publisher
             string renameLeaf)
         {
 #if BAM_V2
-            return null;
+            var preexisting = Bam.Core.Module.Create<PreExistingDirectory>(
+                preInitCallback: module =>
+                {
+                    module.Macros.Add("ExistingDirectory", sourcePath);
+                }
+            );
+            var collatedDir = this.CreateCollatedModuleGeneratedFile(
+                preexisting,
+                PreExistingDirectory.ExistingDirectoryKey,
+                destinationDir,
+                anchor,
+                null
+            );
+            this.recordCollatedObject(
+                collatedDir,
+                preexisting,
+                PreExistingDirectory.ExistingDirectoryKey,
+                anchor
+            );
+            if (null != anchor)
+            {
+                // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
+                (collatedDir as CollatedObject).Macros.Add(
+                    "AnchorOutputName",
+                    (anchor as Bam.Core.Module).Macros["AnchorOutputName"]
+                );
+            }
+            return collatedDir;
 #else
             var anchorObj = anchor as CollatedObject;
             if (null != anchor)
