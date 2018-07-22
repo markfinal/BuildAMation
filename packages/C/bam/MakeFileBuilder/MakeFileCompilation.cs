@@ -44,7 +44,11 @@ namespace C
             var meta = new MakeFileBuilder.MakeFileMeta(module);
             var rule = meta.AddRule();
             rule.AddTarget(module.GeneratedPaths[ObjectFileBase.ObjectFileKey]);
-            rule.AddPrerequisite((module as IRequiresSourceModule).Source, C.SourceFile.SourceFileKey);
+            foreach (var input in module.InputModules)
+            {
+                System.Diagnostics.Debug.Assert(input.Key == C.SourceFile.SourceFileKey);
+                rule.AddPrerequisite(input.Value, input.Key);
+            }
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;
             meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);

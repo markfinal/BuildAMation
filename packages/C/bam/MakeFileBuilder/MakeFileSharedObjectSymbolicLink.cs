@@ -53,7 +53,10 @@ namespace C
             variableName.Append(module.Macros["SymlinkUsage"].ToString()); // intended usage
 
             rule.AddTarget(module.GeneratedPaths[SharedObjectSymbolicLink.SOSymLinkKey], variableName:variableName.ToString());
-            rule.AddPrerequisite(module.SharedObject, C.ConsoleApplication.ExecutableKey);
+            foreach (var input in module.InputModules)
+            {
+                rule.AddPrerequisite(input.Value, input.Key);
+            }
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;
             var command = new System.Text.StringBuilder();

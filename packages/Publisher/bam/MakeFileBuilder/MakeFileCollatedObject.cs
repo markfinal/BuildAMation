@@ -74,7 +74,10 @@ namespace Publisher
                     module.GetType().ToString()
                 );
             }
-            rule.AddPrerequisite((module as ICollatedObject).SourceModule.GeneratedPaths[(module as ICollatedObject).SourcePathKey]);
+            foreach (var input in module.InputModules)
+            {
+                rule.AddPrerequisite(input.Value, input.Key);
+            }
 
             rule.AddShellCommand(System.String.Format("{0} {1} {2}",
                 CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool),

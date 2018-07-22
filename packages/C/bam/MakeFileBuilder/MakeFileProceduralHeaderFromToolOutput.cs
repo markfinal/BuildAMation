@@ -40,7 +40,10 @@ namespace C
             var meta = new MakeFileBuilder.MakeFileMeta(module);
             var rule = meta.AddRule();
             rule.AddTarget(module.GeneratedPaths[C.HeaderFile.HeaderFileKey]);
-            rule.AddPrerequisite((module.Tool as Bam.Core.ICommandLineTool).Executable);
+            foreach (var input in module.InputModules)
+            {
+                rule.AddPrerequisite(input.Value, input.Key);
+            }
 
             var args = new Bam.Core.StringArray();
             if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)

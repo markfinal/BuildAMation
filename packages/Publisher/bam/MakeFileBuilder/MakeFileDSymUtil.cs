@@ -52,6 +52,10 @@ namespace Publisher
                 module.GeneratedPaths[DSymUtilModule.DSymBundleKey],
                 variableName: "dSYM" + variableName
             );
+            foreach (var input in module.InputModules)
+            {
+                rule.AddPrerequisite(input.Value, input.Key);
+            }
 
             rule.AddShellCommand(System.String.Format("{0} {1} {2}",
                 CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool),
