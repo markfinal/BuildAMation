@@ -31,6 +31,44 @@ using Bam.Core;
 namespace C
 {
 #if BAM_V2
+    public static partial class MakeFileSupport
+    {
+        public static void
+        SymLink(
+            SharedObjectSymbolicLink module)
+        {
+            var meta = new MakeFileBuilder.MakeFileMeta(module);
+
+            foreach (var dir in module.OutputDirectories)
+            {
+                meta.CommonMetaData.AddDirectory(dir.ToString());
+            }
+
+            var rule = meta.AddRule();
+
+            // since this is not a referenced type, need to specify a variable name for the MakeFile
+            var variableName = new System.Text.StringBuilder();
+            variableName.Append(module.SharedObject.GetType().Name); // this is what it's building the symlink for
+            variableName.Append("_");
+            variableName.Append(module.Macros["SymlinkUsage"].ToString()); // intended usage
+
+            rule.AddTarget(module.GeneratedPaths[SharedObjectSymbolicLink.SOSymLinkKey], variableName:variableName.ToString());
+            rule.AddPrerequisite(module.SharedObject, C.ConsoleApplication.ExecutableKey);
+
+            var tool = module.Tool as Bam.Core.ICommandLineTool;
+            var command = new System.Text.StringBuilder();
+            command.AppendFormat(
+                "{0} {1} {2}",
+                CommandLineProcessor.Processor.StringifyTool(tool),
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                ).ToString(' '),
+                CommandLineProcessor.Processor.TerminatingArgs(tool)
+            );
+            rule.AddShellCommand(command.ToString());
+        }
+    }
 #else
     public sealed class MakeFileSharedObjectSymbolicLink :
         ISharedObjectSymbolicLinkPolicy

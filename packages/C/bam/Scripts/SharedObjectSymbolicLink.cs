@@ -107,6 +107,12 @@ namespace C
                     break;
 #endif
 
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileSupport.SymLink(this);
+                    break;
+#endif
+
                 default:
                     throw new System.NotImplementedException();
             }
