@@ -30,6 +30,38 @@
 using System.Linq;
 namespace Installer
 {
+#if BAM_V2
+    public static partial class NativeSupport
+    {
+        public static void
+        CreateDMG(
+            DiskImage module,
+            Bam.Core.ExecutionContext context)
+        {
+            // hdiutil will fail on an incremental build if the DMG exists
+            // 'hdiutil: create failed - File exists'
+            var dmg_path = module.GeneratedPaths[DiskImage.DMGKey].ToString();
+            if (System.IO.File.Exists(dmg_path))
+            {
+                System.IO.File.Delete(dmg_path);
+            }
+
+            foreach (var dir in module.OutputDirectories)
+            {
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
+            }
+
+            CommandLineProcessor.Processor.Execute(
+                context,
+                module.Tool as Bam.Core.ICommandLineTool,
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                )
+            );
+        }
+    }
+#else
     public sealed class NativeDMG :
         IDiskImagePolicy
     {
@@ -126,4 +158,5 @@ namespace Installer
             }
         }
     }
+#endif
 }

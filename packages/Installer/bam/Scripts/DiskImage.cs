@@ -62,9 +62,11 @@ namespace Installer
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Installer");
 #endif
 
-        private Bam.Core.TokenizedString SourceFolderPath;
 #if BAM_V2
+        private Bam.Core.Module SourceModule;
+        private string SourcePathKey;
 #else
+        private Bam.Core.TokenizedString SourceFolderPath;
         private IDiskImagePolicy Policy;
 #endif
 
@@ -107,7 +109,12 @@ namespace Installer
                 return;
             }
             this.DependsOn(dependent);
+#if BAM_V2
+            this.SourceModule = dependent;
+            this.SourcePathKey = key;
+#else
             this.SourceFolderPath = dependent.GeneratedPaths[key];
+#endif
         }
 
         protected sealed override void
@@ -121,7 +128,7 @@ namespace Installer
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
-            Bam.Core.Log.MessageAll("DiskImage for {0}... TODO", this.SourceFolderPath.ToString());
+            NativeSupport.CreateDMG(this, context);
 #else
             if (null != this.Policy)
             {
@@ -142,6 +149,14 @@ namespace Installer
                 this.Policy = Bam.Core.ExecutionPolicyUtilities<IDiskImagePolicy>.Create(className);
             }
 #endif
+        }
+
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        {
+            get
+            {
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.SourcePathKey, this.SourceModule);
+            }
         }
     }
 }

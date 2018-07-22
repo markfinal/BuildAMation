@@ -33,6 +33,18 @@ namespace Installer
     public interface IDiskImageSettings :
         Bam.Core.ISettingsBase
     {
+        EDiskImageVerb Verb
+        {
+            get;
+            set;
+        }
+
+        EDiskImageFormat Format
+        {
+            get;
+            set;
+        }
+
         EDiskImageVerbosity Verbosity
         {
             get;
