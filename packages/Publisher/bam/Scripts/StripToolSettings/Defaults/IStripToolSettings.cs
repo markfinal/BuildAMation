@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core;
 namespace Publisher.DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
@@ -36,8 +37,11 @@ namespace Publisher.DefaultSettings
             this IStripToolSettings settings,
             Bam.Core.Module module)
         {
-            settings.Verbose = true;
-            settings.PreserveTimestamp = true;
+            if (!module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+            {
+                settings.Verbose = true;
+                settings.PreserveTimestamp = true;
+            }
             settings.StripDebugSymbols = true;
             settings.StripLocalSymbols = true;
         }
