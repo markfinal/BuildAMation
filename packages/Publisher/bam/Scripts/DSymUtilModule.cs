@@ -82,7 +82,23 @@ namespace Publisher
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
-            NativeSupport.DSymBundle(this, context);
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileSupport.DSymBundle(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeSupport.DSymBundle(this, context);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotSupportedException();
+            }
 #else
             if (null == this.Policy)
             {

@@ -47,41 +47,6 @@ namespace Publisher
                 Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
             }
 
-            var collatedInterface = module as ICollatedObject;
-
-            var copyFileTool = module.Tool as CopyFileTool;
-            string copySourcePath;
-            string destinationDir;
-            copyFileTool.convertPaths(
-                module,
-                module.SourcePath,
-                collatedInterface.PublishingDirectory,
-                out copySourcePath,
-                out destinationDir);
-
-            if (null == module.PreExistingSourcePath)
-            {
-                Bam.Core.Log.DebugMessage("** {0}[{1}]:\t'{2}' -> '{3}'",
-                    collatedInterface.SourceModule.ToString(),
-                    collatedInterface.SourcePathKey.ToString(),
-                    copySourcePath,
-                    destinationDir);
-            }
-            else
-            {
-                Bam.Core.Log.DebugMessage("** {0}: '{1}' -> '{2}'",
-                    module,
-                    copySourcePath,
-                    destinationDir);
-            }
-
-#if BAM_V2
-#else
-            var commandLine = new Bam.Core.StringArray();
-            (module.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-            commandLine.Add(copyFileTool.escapePath(copySourcePath));
-            commandLine.Add(copyFileTool.escapePath(destinationDir));
-#endif
             CommandLineProcessor.Processor.Execute(
                 context,
                 module.Tool as Bam.Core.ICommandLineTool,

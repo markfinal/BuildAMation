@@ -27,14 +27,14 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Publisher
+namespace Installer
 {
 #if BAM_V2
     public static partial class MakeFileSupport
     {
         public static void
-        DSymBundle(
-            DSymUtilModule module)
+        CreateTarBall(
+            TarBall module)
         {
             var meta = new MakeFileBuilder.MakeFileMeta(module);
 
@@ -45,13 +45,13 @@ namespace Publisher
 
             var rule = meta.AddRule();
 
-            var variableName = new System.Text.StringBuilder();
-            variableName.Append((module as ICollatedObject).SourceModule.GetType().Name);
-
             rule.AddTarget(
-                module.GeneratedPaths[DSymUtilModule.DSymBundleKey],
-                variableName: "dSYM" + variableName
+                module.GeneratedPaths[TarBall.TarBallKey]
             );
+            foreach (var input in module.InputModules)
+            {
+                rule.AddPrerequisite(input.Value, input.Key);
+            }
 
             rule.AddShellCommand(System.String.Format("{0} {1} {2}",
                 CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool),
@@ -64,35 +64,31 @@ namespace Publisher
         }
     }
 #else
-    public sealed class MakeFileDSymUtil :
-        IDSymUtilToolPolicy
+    public sealed class NativeTarBall :
+        ITarPolicy
     {
         void
-        IDSymUtilToolPolicy.CreateBundle(
-            DSymUtilModule sender,
+        ITarPolicy.CreateTarBall(
+            TarBall sender,
             Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString originalPath,
-            Bam.Core.TokenizedString copiedPath)
+            Bam.Core.ICommandLineTool compiler,
+            Bam.Core.TokenizedString scriptPath,
+            Bam.Core.TokenizedString outputPath)
         {
-            var meta = new MakeFileBuilder.MakeFileMeta(sender);
-            var rule = meta.AddRule();
-
-            var sourceFilename = System.IO.Path.GetFileName(originalPath.ToString());
-
-            var dir = sender.CreateTokenizedString("@dir($(0))", copiedPath);
-            dir.Parse();
-            meta.CommonMetaData.AddDirectory(dir.ToString());
-            rule.AddTarget(copiedPath, variableName: "dSYM" + sourceFilename, isPhony: true);
+            var tarPath = outputPath.ToString();
+            var tarDir = System.IO.Path.GetDirectoryName(tarPath);
+            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(tarDir);
 
             var commandLine = new Bam.Core.StringArray();
             (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
 
-            rule.AddShellCommand(System.String.Format("{0} {1} -o {2} {3} {4}",
-                CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                commandLine.ToString(' '),
-                copiedPath.ToString(),
-                originalPath.ToString(),
-                CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+            commandLine.Add("-c");
+            commandLine.Add("-v");
+            commandLine.Add("-T");
+            commandLine.Add(scriptPath.ToStringQuoteIfNecessary());
+            commandLine.Add("-f");
+            commandLine.Add(outputPath.ToStringQuoteIfNecessary()); // tarPath
+            CommandLineProcessor.Processor.Execute(context, compiler, commandLine);
         }
     }
 #endif

@@ -36,7 +36,54 @@ namespace Publisher
         CollateObject(
             CollatedObject module)
         {
-            //throw new System.NotImplementedException();
+            if (module.Ignore)
+            {
+                return;
+            }
+
+            var meta = new MakeFileBuilder.MakeFileMeta(module);
+
+            foreach (var dir in module.OutputDirectories)
+            {
+                meta.CommonMetaData.AddDirectory(dir.ToString());
+            }
+
+            var rule = meta.AddRule();
+
+            var variableName = new System.Text.StringBuilder();
+            variableName.Append((module as ICollatedObject).SourceModule.GetType().Name);
+
+            if (module is CollatedFile)
+            {
+                rule.AddTarget(
+                    module.GeneratedPaths[CollatedObject.CopiedFileKey],
+                    variableName: "CollatedFile" + variableName
+                );
+            }
+            else if (module is CollatedDirectory)
+            {
+                rule.AddTarget(
+                    module.GeneratedPaths[CollatedObject.CopiedDirectoryKey],
+                    variableName: "CollatedDir" + variableName
+                );
+            }
+            else
+            {
+                throw new Bam.Core.Exception(
+                    "Unsupported module type {0} for MakeFile collation",
+                    module.GetType().ToString()
+                );
+            }
+            rule.AddPrerequisite((module as ICollatedObject).SourceModule.GeneratedPaths[(module as ICollatedObject).SourcePathKey]);
+
+            rule.AddShellCommand(System.String.Format("{0} {1} {2}",
+                CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool),
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                ).ToString(' '),
+                CommandLineProcessor.Processor.TerminatingArgs(module.Tool as Bam.Core.ICommandLineTool))
+            );
         }
     }
 #else
