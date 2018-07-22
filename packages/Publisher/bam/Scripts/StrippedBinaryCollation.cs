@@ -260,11 +260,15 @@ namespace Publisher
                 }
                 else
                 {
-                    var stripped = this.StripBinary(collatedObj);
                     var debugSymbolsCollation = customData as DebugSymbolCollation;
+#if BAM_V2
+                    var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as MakeDebugSymbolFile;
+#else
                     var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as ObjCopyModule;
+#endif
                     if (null != debugSymbols)
                     {
+                        var stripped = this.StripBinary(collatedObj);
                         var linkBack = debugSymbols.LinkBackToDebugSymbols(stripped);
                         this.DependsOn(linkBack);
                     }
@@ -272,11 +276,15 @@ namespace Publisher
             }
             else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
-                var stripped = this.StripBinary(collatedObj);
                 var debugSymbolsCollation = customData as DebugSymbolCollation;
+#if BAM_V2
+                var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as MakeDebugSymbolFile;
+#else
                 var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as ObjCopyModule;
+#endif
                 if (null != debugSymbols)
                 {
+                    var stripped = this.StripBinary(collatedObj);
                     var linkBack = debugSymbols.LinkBackToDebugSymbols(stripped);
                     this.DependsOn(linkBack);
                 }

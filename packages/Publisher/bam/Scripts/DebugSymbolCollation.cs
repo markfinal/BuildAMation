@@ -143,7 +143,11 @@ namespace Publisher
         CopyDebugSymbols(
             ICollatedObject collatedFile)
         {
+#if BAM_V2
+            var createDebugSymbols = Bam.Core.Module.Create<MakeDebugSymbolFile>(preInitCallback: module =>
+#else
             var createDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
+#endif
                 {
                     module.SourceModule = collatedFile.SourceModule;
                     module.SourcePathKey = collatedFile.SourcePathKey;
@@ -156,7 +160,11 @@ namespace Publisher
             createDebugSymbols.PrivatePatch(settings =>
                 {
                     var objCopySettings = settings as IObjCopyToolSettings;
+#if BAM_V2
+                    objCopySettings.OnlyKeepDebug = true;
+#else
                     objCopySettings.Mode = EObjCopyToolMode.OnlyKeepDebug;
+#endif
                 });
 
             this.collatedObjects.Add(createDebugSymbols);

@@ -27,11 +27,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core;
 namespace Publisher
 {
+    [CommandLineProcessor.OutputPath(StripModule.StripBinaryKey, "-o ")]
+    [CommandLineProcessor.InputPaths(CollatedObject.CopiedFileKey, "", max_file_count: 1)]
     public sealed class StripToolSettings :
         Bam.Core.Settings,
+#if BAM_V2
+#else
         CommandLineProcessor.IConvertToCommandLine,
+#endif
         IStripToolSettings
     {
         public StripToolSettings()
@@ -43,35 +49,64 @@ namespace Publisher
             this.InitializeAllInterfaces(module, false, true);
         }
 
+#if BAM_V2
+#else
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
+#endif
 
+        [CommandLineProcessor.Bool("-v", "")]
         bool IStripToolSettings.Verbose
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.Bool("-p", "")]
         bool IStripToolSettings.PreserveTimestamp
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.Bool("-S", "")]
         bool IStripToolSettings.StripDebugSymbols
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.Bool("-x", "")]
         bool IStripToolSettings.StripLocalSymbols
         {
             get;
             set;
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
+        }
+
+        public override void
+        Validate()
+        {
+            base.Validate();
+
+            if ((this as IStripToolSettings).Verbose || (this as IStripToolSettings).PreserveTimestamp)
+            {
+                if (this.Module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
+                {
+                    throw new Bam.Core.Exception(
+                        "Cannot use Verbose or PreserveTimestamp settings for macOS strip"
+                    );
+                }
+            }
         }
     }
 }

@@ -86,6 +86,7 @@ namespace Publisher
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
+            NativeSupport.Strip(this, context);
 #else
             if (null == this.Policy)
             {
@@ -181,6 +182,14 @@ namespace Publisher
             set
             {
                 this.anchor = value;
+            }
+        }
+
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        {
+            get
+            {
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.sourcePathKey, this.sourceModule);
             }
         }
     }
