@@ -30,6 +30,68 @@
 namespace Publisher
 {
 #if BAM_V2
+    public static partial class MakeFileSupport
+    {
+        public static void
+        ObjCopy(
+            ObjCopyModule module)
+        {
+            MakeFileBuilder.MakeFileMeta meta;
+            MakeFileBuilder.Rule rule;
+
+            var variableName = new System.Text.StringBuilder();
+            variableName.Append((module as ICollatedObject).SourceModule.GetType().Name);
+
+            if (module is MakeDebugSymbolFile)
+            {
+                meta = new MakeFileBuilder.MakeFileMeta(module);
+                rule = meta.AddRule();
+
+                rule.AddTarget(
+                    module.GeneratedPaths[MakeDebugSymbolFile.DebugSymbolFileKey],
+                    variableName: "DebugSymbols" + variableName
+                );
+            }
+            else if (module is LinkBackDebugSymbolFile)
+            {
+                // append to the strip rule
+                System.Diagnostics.Debug.Assert((module as ICollatedObject).SourceModule is StripModule);
+                meta = (module as ICollatedObject).SourceModule.MetaData as MakeFileBuilder.MakeFileMeta;
+                rule = meta.Rules[0];
+
+                rule.AddTarget(
+                    module.GeneratedPaths[LinkBackDebugSymbolFile.UpdateOriginalExecutable],
+                    variableName: "LinkDebugSymbols" + variableName
+                );
+            }
+            else
+            {
+                throw new Bam.Core.Exception(
+                    "Unsupported type of ObjCopy module: {0}",
+                    module.GetType().ToString()
+                );
+            }
+
+            foreach (var input in module.InputModules)
+            {
+                rule.AddPrerequisite(input.Value, input.Key);
+            }
+
+            foreach (var dir in module.OutputDirectories)
+            {
+                meta.CommonMetaData.AddDirectory(dir.ToString());
+            }
+
+            rule.AddShellCommand(System.String.Format("{0} {1} {2}",
+                CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool),
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                ).ToString(' '),
+                CommandLineProcessor.Processor.TerminatingArgs(module.Tool as Bam.Core.ICommandLineTool))
+            );
+        }
+    }
 #else
     public sealed class MakeFileObjCopy :
         IObjCopyToolPolicy

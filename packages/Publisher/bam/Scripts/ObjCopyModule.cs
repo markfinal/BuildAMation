@@ -59,7 +59,29 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            NativeSupport.ObjCopy(this, context);
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileSupport.ObjCopy(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeSupport.ObjCopy(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    Bam.Core.Log.DebugMessage("ObjCopy not supported on Xcode builds");
+                    break;
+#endif
+
+                default:
+                    throw new System.NotSupportedException();
+            }
         }
 
         protected override void
