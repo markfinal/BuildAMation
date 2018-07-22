@@ -142,6 +142,12 @@ namespace Installer
                     break;
 #endif
 
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    Bam.Core.Log.DebugMessage("DiskImage not supported on Xcode builds");
+                    break;
+#endif
+
                 default:
                     throw new System.NotSupportedException();
             }

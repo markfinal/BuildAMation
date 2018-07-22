@@ -96,6 +96,12 @@ namespace Publisher
                     break;
 #endif
 
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    Bam.Core.Log.DebugMessage("DSym not supported on Xcode builds");
+                    break;
+#endif
+
                 default:
                     throw new System.NotSupportedException();
             }
