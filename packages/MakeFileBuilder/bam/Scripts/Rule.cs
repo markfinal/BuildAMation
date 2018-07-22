@@ -228,7 +228,7 @@ namespace MakeFileBuilder
                 }
                 foreach (var pre in this.Prequisities)
                 {
-                    rules.AppendFormat("{0} ", pre.Key.GeneratedPaths[pre.Value]);
+                    rules.AppendFormat("{0} ", pre.Key.GeneratedPaths[pre.Value].ToStringQuoteIfNecessary());
                 }
                 foreach (var pre in this.PrerequisitePaths)
                 {
