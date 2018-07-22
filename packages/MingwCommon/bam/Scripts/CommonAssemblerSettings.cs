@@ -29,15 +29,19 @@
 #endregion // License
 namespace MingwCommon
 {
+    [CommandLineProcessor.OutputPath(C.AssembledObjectFile.ObjectFileKey, "-o ")]
+    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ", max_file_count: 1)]
     public abstract class CommonAssemblerSettings :
         C.SettingsBase,
 #if BAM_V2
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
+#if false
         C.ICommonHasOutputPath,
         C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonHasSourcePath,
+#endif
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
@@ -58,6 +62,7 @@ namespace MingwCommon
         }
 #endif
 
+#if false
 #if BAM_V2
         [CommandLineProcessor.Path("-c -o ")]
 #endif
@@ -84,6 +89,7 @@ namespace MingwCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-m32")]
@@ -145,13 +151,19 @@ namespace MingwCommon
         {
             base.Validate();
 
-            if (((this as C.ICommonHasOutputPath).OutputPath != null) &&
+            if (((this is C.ICommonHasOutputPath) && (this as C.ICommonHasOutputPath).OutputPath != null) &&
                 ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
             {
                 throw new Bam.Core.Exception(
                     "Both output and preprocessed output paths cannot be set"
                 );
             }
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
         }
     }
 }
