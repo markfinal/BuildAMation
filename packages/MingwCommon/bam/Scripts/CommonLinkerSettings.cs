@@ -30,6 +30,7 @@
 namespace MingwCommon
 {
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-o ")]
+    [CommandLineProcessor.OutputPath(C.ConsoleApplication.ImportLibraryKey, "-Wl,--out-implib,")]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonLinkerSettings :
         C.SettingsBase,
@@ -39,9 +40,9 @@ namespace MingwCommon
 #endif
 #if false
         C.ICommonHasOutputPath,
-#endif
         C.ICommonHasImportLibraryPathWin,
-        C.ICommonLinkerSettingsWin,
+#endif
+ C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings
     {
@@ -70,7 +71,6 @@ namespace MingwCommon
             get;
             set;
         }
-#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("-Wl,--out-implib,")]
@@ -80,6 +80,7 @@ namespace MingwCommon
             get;
             set;
         }
+#endif
 
 #if BAM_V2
         [CommandLineProcessor.Enum(C.ESubsystem.NotSet, "")]
