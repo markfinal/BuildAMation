@@ -29,4 +29,43 @@
 #endregion // License
 namespace Installer
 {
+    public static partial class MakeFileSupport
+    {
+        public static void
+        CreateNSIS(
+            NSISInstaller module)
+        {
+            var meta = new MakeFileBuilder.MakeFileMeta(module);
+
+            foreach (var dir in module.OutputDirectories)
+            {
+                meta.CommonMetaData.AddDirectory(dir.ToString());
+            }
+
+            var rule = meta.AddRule();
+
+            rule.AddTarget(
+                Bam.Core.TokenizedString.CreateVerbatim(
+                    System.String.Format(
+                        "{0}_NSIS",
+                        module.ToString()
+                    )
+                ),
+                isPhony: true
+            );
+            foreach (var input in module.InputModules)
+            {
+                rule.AddPrerequisite(input.Value, input.Key);
+            }
+
+            rule.AddShellCommand(System.String.Format("{0} {1} {2}",
+                CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool),
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                ).ToString(' '),
+                CommandLineProcessor.Processor.TerminatingArgs(module.Tool as Bam.Core.ICommandLineTool))
+            );
+        }
+    }
 }
