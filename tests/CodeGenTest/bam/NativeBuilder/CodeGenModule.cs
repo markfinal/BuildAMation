@@ -30,6 +30,28 @@
 namespace CodeGenTest
 {
 #if BAM_V2
+    public static partial class NativeSupport
+    {
+        public static void
+        GenerateSource(
+            GeneratedSourceModule module,
+            Bam.Core.ExecutionContext context)
+        {
+            foreach (var dir in module.OutputDirectories)
+            {
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
+            }
+
+            CommandLineProcessor.Processor.Execute(
+                context,
+                module.Tool as Bam.Core.ICommandLineTool,
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                )
+            );
+        }
+    }
 #else
     public sealed class NativeGenerateSource :
         IGeneratedSourcePolicy

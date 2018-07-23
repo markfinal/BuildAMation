@@ -30,6 +30,32 @@
 namespace CodeGenTest
 {
 #if BAM_V2
+    public static partial class VSSolutionSupport
+    {
+        public static void
+        GenerateSource(
+            GeneratedSourceModule module)
+        {
+            var encapsulating = module.GetEncapsulatingReferencedModule();
+
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            var project = solution.EnsureProjectExists(encapsulating);
+            var config = project.GetConfiguration(encapsulating);
+
+            var command = new System.Text.StringBuilder();
+            command.AppendFormat("{0} ", (module.Tool as Bam.Core.ICommandLineTool).Executable.ToStringQuoteIfNecessary());
+            command.Append(
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                ).ToString(' ')
+            );
+            config.AddPreBuildCommand(command.ToString());
+
+            var compilerProject = solution.EnsureProjectExists(module.Tool as Bam.Core.Module);
+            config.RequiresProject(compilerProject);
+        }
+    }
 #else
     public sealed class VSSolutionGenerateSource :
         IGeneratedSourcePolicy

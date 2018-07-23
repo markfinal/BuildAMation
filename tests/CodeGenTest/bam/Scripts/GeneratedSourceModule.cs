@@ -32,7 +32,6 @@ namespace CodeGenTest
     public class GeneratedSourceModule :
         C.SourceFile
     {
-        private Bam.Core.ICommandLineTool Compiler;
 #if BAM_V2
 #else
         private IGeneratedSourcePolicy Policy;
@@ -43,9 +42,10 @@ namespace CodeGenTest
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
-            this.Requires(this.Compiler as Bam.Core.Module);
-            this.InputPath = this.CreateTokenizedString("$(buildroot)/Generated.c");
+            this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
+            this.Requires(this.Tool as Bam.Core.Module);
+            this.Macros.AddVerbatim("GenerateBasename", "Generated");
+            this.InputPath = this.CreateTokenizedString("$(buildroot)/$(GenerateBasename).c");
         }
 
         protected override void
@@ -59,6 +59,35 @@ namespace CodeGenTest
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileSupport.GenerateSource(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeSupport.GenerateSource(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    VSSolutionSupport.GenerateSource(this);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    XcodeSupport.GenerateSource(this);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
+            }
 #else
             if (null == this.Policy)
             {

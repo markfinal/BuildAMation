@@ -50,9 +50,9 @@ main(int argc, char* argv[])
         FILE *file;
 
 #ifdef WIN32
-        sprintf(path, "%s\\%s.c", argv[1], argv[2]);
+        sprintf(path, "%s", argv[1]);
 #else
-        sprintf(path, "%s/%s.c", argv[1], argv[2]);
+        sprintf(path, "%s", argv[1]);
 #endif
         file = fopen(path, "wt");
         if (0 == file)
@@ -61,7 +61,7 @@ main(int argc, char* argv[])
             return -2;
         }
 
-        sprintf(body, "#include <stdio.h>\n\nvoid MyGeneratedFunction(){ printf(\"Hello world\\n\"); }\n");
+        sprintf(body, "#include <stdio.h>\n\nvoid MyGeneratedFunction(){ printf(\"Hello world, using keyword setting %s\\n\"); }\n", argv[2]);
         fwrite(body, 1, strlen(body), file);
 
         fclose(file);

@@ -29,8 +29,53 @@
 #endregion // License
 namespace CodeGenTest
 {
-    public sealed class GeneratedSourceSettings :
-        Bam.Core.Settings
+    namespace DefaultSettings
     {
+        public static class DefaultSettingsExtensions
+        {
+            public static void
+            Defaults(
+                this IGeneratedSourceSettings settings,
+                Bam.Core.Module module)
+            {
+                settings.Keyword = module.Macros["GenerateBasename"].ToString();
+            }
+        }
+    }
+
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    public interface IGeneratedSourceSettings :
+        Bam.Core.ISettingsBase
+    {
+        string Keyword
+        {
+            get;
+            set;
+        }
+    }
+
+    [CommandLineProcessor.OutputPath(GeneratedSourceModule.SourceFileKey, " ")]
+    public sealed class GeneratedSourceSettings :
+        Bam.Core.Settings,
+        IGeneratedSourceSettings
+    {
+        public GeneratedSourceSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        [CommandLineProcessor.String("")]
+        string IGeneratedSourceSettings.Keyword
+        {
+            get;
+            set;
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Inputs_Outputs_Cmds;
+        }
     }
 }

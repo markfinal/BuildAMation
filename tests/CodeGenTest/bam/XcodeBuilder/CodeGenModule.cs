@@ -30,6 +30,35 @@
 namespace CodeGenTest
 {
 #if BAM_V2
+    public static partial class XcodeSupport
+    {
+        public static void
+        GenerateSource(
+            GeneratedSourceModule module)
+        {
+            var encapsulating = module.GetEncapsulatingReferencedModule();
+
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            var target = workspace.EnsureTargetExists(encapsulating);
+            var configuration = target.GetConfiguration(encapsulating);
+
+            var command = new System.Text.StringBuilder();
+            command.AppendFormat("{0} ", (module.Tool as Bam.Core.ICommandLineTool).Executable.ToStringQuoteIfNecessary());
+            command.Append(
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                ).ToString(' ')
+            );
+
+            var commands = new Bam.Core.StringArray();
+            commands.Add(command.ToString());
+            target.AddPreBuildCommands(commands, configuration);
+
+            var compilerTarget = workspace.EnsureTargetExists(module.Tool as Bam.Core.Module);
+            target.Requires(compilerTarget);
+        }
+    }
 #else
     public sealed class XcodeGenerateSource :
         IGeneratedSourcePolicy
