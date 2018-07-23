@@ -27,10 +27,32 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-#if BAM_V2
-#else
 namespace Installer
 {
+#if BAM_V2
+    public static partial class NativeSupport
+    {
+        public static void
+        CreateNSIS(
+            NSISInstaller module,
+            Bam.Core.ExecutionContext context)
+        {
+            foreach (var dir in module.OutputDirectories)
+            {
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
+            }
+
+            CommandLineProcessor.Processor.Execute(
+                context,
+                module.Tool as Bam.Core.ICommandLineTool,
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                )
+            );
+        }
+    }
+#else
     public sealed class NativeNSIS :
         INSISPolicy
     {
@@ -46,5 +68,5 @@ namespace Installer
             CommandLineProcessor.Processor.Execute(context, compiler, args);
         }
     }
-}
 #endif
+}
