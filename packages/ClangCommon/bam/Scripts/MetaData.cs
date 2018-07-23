@@ -34,32 +34,14 @@ namespace ClangCommon
         C.IToolchainDiscovery
     {
         protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
+        private Bam.Core.StringArray expectedSDKs;
 
         protected MetaData(
             string lastUpgradeCheck,
             Bam.Core.StringArray expectedSDKs)
         {
             this.Meta.Add("LastUpgradeCheck", lastUpgradeCheck);
-
-            try
-            {
-                this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
-                if (!this.Contains("MacOSXMinVersion"))
-                {
-                    // 10.7 is the minimum version required for libc++ currently
-                    this.MacOSXMinimumVersionSupported = "10.7";
-                }
-            }
-            catch (System.ComponentModel.Win32Exception)
-            {
-                if (Bam.Core.OSUtilities.IsOSXHosting)
-                {
-                    throw;
-                }
-                // arbitrary choice for non-macOS platforms
-                this.SDK = "macos10.13";
-                this.MacOSXMinimumVersionSupported = "10.13";
-            }
+            this.expectedSDKs = expectedSDKs;
         }
 
         public override object this[string index]
@@ -138,8 +120,33 @@ namespace ClangCommon
             {
                 return;
             }
+
             try
             {
+
+                try
+                {
+                    this.SDK = ClangCommon.ConfigureUtilities.SetSDK(
+                        this.expectedSDKs,
+                        this.Contains("SDK") ? this.SDK : null
+                    );
+                    if (!this.Contains("MacOSXMinVersion"))
+                    {
+                        // 10.7 is the minimum version required for libc++ currently
+                        this.MacOSXMinimumVersionSupported = "10.7";
+                    }
+                }
+                catch (System.ComponentModel.Win32Exception)
+                {
+                    if (Bam.Core.OSUtilities.IsOSXHosting)
+                    {
+                        throw;
+                    }
+                    // arbitrary choice for non-macOS platforms
+                    this.SDK = "macos10.13";
+                    this.MacOSXMinimumVersionSupported = "10.13";
+                }
+
                 this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
                 Bam.Core.Log.Info("Using {0} and {1} SDK installed at {2}",
                     ClangCommon.ConfigureUtilities.GetClangVersion(this.SDK),
