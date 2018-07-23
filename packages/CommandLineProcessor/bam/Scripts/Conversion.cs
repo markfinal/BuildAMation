@@ -608,6 +608,14 @@ namespace CommandLineProcessor
                 return commandLine;
             }
 
+            if (null == settings.Module)
+            {
+                throw new Bam.Core.Exception(
+                    "No Module was associated with the settings class {0}",
+                    settings.ToString()
+                );
+            }
+
             var output_file_attributes = settings.GetType().GetCustomAttributes(
                 typeof(OutputPathAttribute),
                 true // since generally specified in an abstract class
