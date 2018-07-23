@@ -45,11 +45,13 @@ namespace CodeGenTest
                 rule.AddPrerequisite(input.Value, input.Key);
             }
 
+            var tool_metadata = ((module.Tool as Bam.Core.Module).MetaData as MakeFileBuilder.MakeFileMeta);
+            rule.AddPrerequisite(tool_metadata.Rules[0].FirstTarget);
+
             var tool = module.Tool as Bam.Core.ICommandLineTool;
             if (null != tool.EnvironmentVariables)
             {
                 meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
-                // TODO: need a prerequisite or order only dependency on the tool
             }
 
             var command = new System.Text.StringBuilder();
