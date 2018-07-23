@@ -29,6 +29,8 @@
 #endregion // License
 namespace CodeGenTest
 {
+#if BAM_V2
+#else
     public sealed class MakeFileGenerateSource :
         IGeneratedSourcePolicy
     {
@@ -65,4 +67,5 @@ namespace CodeGenTest
             rule.AddShellCommand(command.ToString());
         }
     }
+#endif
 }

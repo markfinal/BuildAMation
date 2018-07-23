@@ -49,13 +49,6 @@ namespace Publisher
         }
 
         protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // do nothing
-        }
-
-        protected override void
         EvaluateInternal()
         {
             // pre-existing so never needs evaluating
@@ -82,13 +75,6 @@ namespace Publisher
             base.Init(parent);
 
             this.RegisterGeneratedFile(ExistingDirectoryKey, this.Macros["ExistingDirectory"]);
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // do nothing
         }
 
         protected override void
@@ -180,12 +166,12 @@ namespace Publisher
 #endif
         }
 
+#if BAM_V2
+#else
         protected sealed override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             switch (mode)
             {
                 case "MakeFile":
@@ -195,8 +181,8 @@ namespace Publisher
                     }
                     break;
             }
+    }
 #endif
-        }
 
         /// <summary>
         /// The type of application being published.

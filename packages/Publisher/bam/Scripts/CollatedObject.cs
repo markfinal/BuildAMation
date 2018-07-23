@@ -363,16 +363,16 @@ namespace Publisher
 #endif
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             var className = "Publisher." + mode + "CollatedObject";
             this.policy = Bam.Core.ExecutionPolicyUtilities<ICollatedObjectPolicy>.Create(className);
+    }
 #endif
-        }
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {

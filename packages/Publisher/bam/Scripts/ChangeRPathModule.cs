@@ -47,16 +47,16 @@ namespace Publisher
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ChangeRPathTool>();
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             var className = "Publisher." + mode + "ChangeRPath";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IChangeRPathPolicy>.Create(className);
+    }
 #endif
-        }
 
         protected override void
         EvaluateInternal()

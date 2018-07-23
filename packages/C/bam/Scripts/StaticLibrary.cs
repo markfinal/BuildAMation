@@ -301,16 +301,16 @@ namespace C
 #endif
         }
 
+#if BAM_V2
+#else
         protected sealed override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             var className = "C." + mode + "Librarian";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IArchivingPolicy>.Create(className);
+    }
 #endif
-        }
 
         protected sealed override void
         EvaluateInternal()

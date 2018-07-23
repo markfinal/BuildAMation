@@ -84,12 +84,6 @@ namespace Publisher
             }
         }
 
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-        }
-
         Bam.Core.Module ICollatedObject.SourceModule
         {
             get

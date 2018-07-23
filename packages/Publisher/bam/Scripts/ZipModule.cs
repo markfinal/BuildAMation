@@ -105,15 +105,15 @@ namespace Publisher
 #endif
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             var className = "Publisher." + mode + "Zip";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IZipToolPolicy>.Create(className);
-#endif
         }
+#endif
     }
 }

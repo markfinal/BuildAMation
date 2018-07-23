@@ -114,12 +114,12 @@ namespace Publisher
 #endif
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             switch (mode)
             {
                 case "Native":
@@ -130,8 +130,8 @@ namespace Publisher
                     }
                     break;
             }
-#endif
         }
+#endif
 
         Bam.Core.Module ICollatedObject.SourceModule
         {

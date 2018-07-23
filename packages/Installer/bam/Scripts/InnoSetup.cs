@@ -142,12 +142,15 @@ namespace Installer
             }
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
         {
             // do nothing
         }
+#endif
     }
 
     public sealed class InnoSetupCompilerSettings :
@@ -193,7 +196,10 @@ namespace Installer
     {
         private InnoSetupScript ScriptModule;
         private Bam.Core.PreBuiltTool Compiler;
+#if BAM_V2
+#else
         private IInnoSetupPolicy Policy;
+#endif
 
         protected override void
         Init(
@@ -258,12 +264,17 @@ namespace Installer
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+#else
             if (null != this.Policy)
             {
                 this.Policy.CreateInstaller(this, context, this.Compiler, this.ScriptModule.ScriptPath);
             }
+#endif
         }
 
+#if BAM_V2
+#else
         protected sealed override void
         GetExecutionPolicy(
             string mode)
@@ -274,5 +285,6 @@ namespace Installer
                 this.Policy = Bam.Core.ExecutionPolicyUtilities<IInnoSetupPolicy>.Create(className);
             }
         }
+#endif
     }
 }

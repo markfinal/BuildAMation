@@ -29,6 +29,8 @@
 #endregion // License
 namespace CodeGenTest
 {
+#if BAM_V2
+#else
     public sealed class NativeGenerateSource :
         IGeneratedSourcePolicy
     {
@@ -48,4 +50,5 @@ namespace CodeGenTest
             CommandLineProcessor.Processor.Execute(context, compiler, args);
         }
     }
+#endif
 }

@@ -151,12 +151,12 @@ namespace C
 #endif
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             if (this.IsPrebuilt)
             {
                 return;
@@ -164,8 +164,8 @@ namespace C
             var className = "C." + mode + "SharedObjectSymbolicLink";
             this.SymlinkPolicy = Bam.Core.ExecutionPolicyUtilities<ISharedObjectSymbolicLinkPolicy>.Create(className);
             this.SymlinkTool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
+    }
 #endif
-        }
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {

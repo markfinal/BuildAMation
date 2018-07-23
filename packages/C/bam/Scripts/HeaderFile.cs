@@ -54,12 +54,15 @@ namespace C
             // TODO: exception to this is generated source, but there ought to be an override for that
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
         {
             // there is no execution policy
         }
+#endif
 
         public Bam.Core.TokenizedString InputPath
         {

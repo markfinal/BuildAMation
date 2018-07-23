@@ -107,14 +107,14 @@ namespace C
 #endif
         }
 
-        protected override void GetExecutionPolicy(string mode)
-        {
 #if BAM_V2
 #else
+        protected override void GetExecutionPolicy(string mode)
+        {
             var className = "C." + mode + "ProceduralHeaderFromToolOutput";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IProceduralHeaderFromToolOutputPolicy>.Create(className);
-#endif
         }
+#endif
 
         protected override void
         ExecuteInternal(

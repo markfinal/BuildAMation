@@ -541,12 +541,12 @@ namespace C
 #endif
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             if (this.IsPrebuilt &&
                 !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
             {
@@ -554,8 +554,8 @@ namespace C
             }
             var className = "C." + mode + "Linker";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkingPolicy>.Create(className);
-#endif
         }
+#endif
 
         protected override void
         EvaluateInternal()

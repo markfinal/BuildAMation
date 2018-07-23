@@ -159,19 +159,19 @@ namespace Installer
 #endif
         }
 
+#if BAM_V2
+#else
         protected sealed override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             if (mode == "Native")
             {
                 var className = "Installer." + mode + "DMG";
                 this.Policy = Bam.Core.ExecutionPolicyUtilities<IDiskImagePolicy>.Create(className);
             }
-#endif
         }
+#endif
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {

@@ -102,12 +102,12 @@ namespace Publisher
 #endif
         }
 
+#if BAM_V2
+#else
         protected sealed override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             switch (mode)
             {
                 case "MakeFile":
@@ -117,8 +117,8 @@ namespace Publisher
                     }
                     break;
             }
-#endif
         }
+#endif
 
         private StripModule
         StripBinary(

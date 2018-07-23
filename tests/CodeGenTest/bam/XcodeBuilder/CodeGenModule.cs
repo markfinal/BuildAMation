@@ -29,6 +29,8 @@
 #endregion // License
 namespace CodeGenTest
 {
+#if BAM_V2
+#else
     public sealed class XcodeGenerateSource :
         IGeneratedSourcePolicy
     {
@@ -72,4 +74,5 @@ namespace CodeGenTest
             target.Requires(compilerTarget);
         }
     }
+#endif
 }

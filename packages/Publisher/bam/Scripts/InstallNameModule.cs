@@ -47,16 +47,16 @@ namespace Publisher
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<InstallNameTool>();
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             var className = "Publisher." + mode + this.GetType().Name;
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IInstallNameToolPolicy>.Create(className);
-#endif
         }
+#endif
 
         protected override void
         EvaluateInternal()

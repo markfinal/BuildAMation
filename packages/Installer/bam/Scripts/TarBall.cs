@@ -141,12 +141,15 @@ namespace Installer
             }
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
         {
             // do nothing
         }
+#endif
     }
 
     public sealed class TarCompiler :
@@ -295,19 +298,19 @@ namespace Installer
 #endif
         }
 
+#if BAM_V2
+#else
         protected sealed override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             if (mode == "Native")
             {
                 var className = "Installer." + mode + "TarBall";
                 this.Policy = Bam.Core.ExecutionPolicyUtilities<ITarPolicy>.Create(className);
             }
-#endif
         }
+#endif
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {

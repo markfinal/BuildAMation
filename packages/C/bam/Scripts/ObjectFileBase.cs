@@ -188,16 +188,16 @@ namespace C
 #endif
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             var className = "C." + mode + "Compilation";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<ICompilationPolicy>.Create(className);
+    }
 #endif
-        }
 
         protected override void
         EvaluateInternal()

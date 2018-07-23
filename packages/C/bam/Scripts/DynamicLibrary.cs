@@ -259,6 +259,8 @@ namespace C
             base.ExecuteInternal(context);
         }
 
+#if BAM_V2
+#else
         protected sealed override void
         GetExecutionPolicy(
             string mode)
@@ -270,6 +272,7 @@ namespace C
             }
             base.GetExecutionPolicy(mode);
         }
+#endif
 
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
         {

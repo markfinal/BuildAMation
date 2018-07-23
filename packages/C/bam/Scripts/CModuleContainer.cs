@@ -301,6 +301,8 @@ namespace C
             // do nothing
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
@@ -308,6 +310,7 @@ namespace C
             // do nothing
             // TODO: might have to get the policy, for the sharing settings
         }
+#endif
 
         protected override void
         EvaluateInternal()

@@ -167,6 +167,8 @@ namespace Bam.Core
             // by default, a PreBuiltTool's execution does nothing as it's on disk
         }
 
+#if BAM_V2
+#else
         /// <summary>
         /// No execution policy required for a prebuilt tool.
         /// </summary>
@@ -177,6 +179,7 @@ namespace Bam.Core
         {
             // by default, the execution policy of a PreBuiltTool is to do nothing as it's on disk
         }
+#endif
 
         /// <summary>
         /// Confirm that the prebuilt executable exists.

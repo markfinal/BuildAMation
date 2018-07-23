@@ -64,12 +64,12 @@ namespace C
 #endif
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             switch (mode)
             {
             case "VSSolution":
@@ -80,8 +80,8 @@ namespace C
                 }
                 break;
             }
-#endif
         }
+#endif
 
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
         {

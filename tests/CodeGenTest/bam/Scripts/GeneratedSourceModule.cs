@@ -33,7 +33,10 @@ namespace CodeGenTest
         C.SourceFile
     {
         private Bam.Core.ICommandLineTool Compiler;
+#if BAM_V2
+#else
         private IGeneratedSourcePolicy Policy;
+#endif
 
         protected override void
         Init(
@@ -55,18 +58,19 @@ namespace CodeGenTest
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
+#if BAM_V2
+#else
             if (null == this.Policy)
             {
                 return;
             }
 
-#if BAM_V2
-            this.Policy.GenerateSource(this, context, this.Compiler, this.GeneratedPaths[SourceFileKey]);
-#else
             this.Policy.GenerateSource(this, context, this.Compiler, this.GeneratedPaths[Key]);
 #endif
         }
 
+#if BAM_V2
+#else
         protected override void
         GetExecutionPolicy(
             string mode)
@@ -74,5 +78,6 @@ namespace CodeGenTest
             var className = "CodeGenTest." + mode + "GenerateSource";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
         }
+#endif
     }
 }

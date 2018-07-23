@@ -279,7 +279,10 @@ namespace Bam.Core
                 {
                     postInitCallback(module);
                 }
+#if BAM_V2
+#else
                 module.GetExecutionPolicy(Graph.Instance.Mode);
+#endif
                 AllModules.Add(module);
                 stopwatch.Stop();
                 module.CreationTime = new System.TimeSpan(stopwatch.ElapsedTicks);
@@ -800,6 +803,8 @@ namespace Bam.Core
             set;
         }
 
+#if BAM_V2
+#else
         /// <summary>
         /// For the given build mode, perform the necessary actions to generate an execution policy.
         /// </summary>
@@ -807,6 +812,7 @@ namespace Bam.Core
         protected abstract void
         GetExecutionPolicy(
             string mode);
+#endif
 
         private Module TheTool;
         /// <summary>

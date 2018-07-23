@@ -29,6 +29,8 @@
 #endregion // License
 namespace CodeGenTest
 {
+#if BAM_V2
+#else
     public sealed class VSSolutionGenerateSource :
         IGeneratedSourcePolicy
     {
@@ -58,4 +60,5 @@ namespace CodeGenTest
             config.RequiresProject(compilerProject);
         }
     }
+#endif
 }
