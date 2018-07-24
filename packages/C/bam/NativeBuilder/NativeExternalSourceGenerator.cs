@@ -42,10 +42,19 @@ namespace C
                 Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
             }
 
+            Bam.Core.Array<int> successfulExitCodes;
+            if (module is Bam.Core.ICommandLineTool)
+            {
+                successfulExitCodes = (module as Bam.Core.ICommandLineTool).SuccessfulExitCodes;
+            }
+            else
+            {
+                successfulExitCodes = new Bam.Core.Array<int> { 0 };
+            }
             CommandLineProcessor.Processor.Execute(
                 context,
                 module.Executable.ToString(),
-                (module as Bam.Core.ICommandLineTool).SuccessfulExitCodes,
+                successfulExitCodes,
                 module.Arguments
             );
         }
