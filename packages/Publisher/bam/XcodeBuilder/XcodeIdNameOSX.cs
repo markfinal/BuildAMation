@@ -30,6 +30,44 @@
 namespace Publisher
 {
 #if BAM_V2
+    public static partial class XcodeSupport
+    {
+        public static void
+        InstallName(
+            InstallNameModule module)
+        {
+            // add it to the source module's target
+            var encapsulating = module.Source.GetEncapsulatingReferencedModule();
+
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            var target = workspace.EnsureTargetExists(encapsulating);
+            var configuration = target.GetConfiguration(encapsulating);
+
+            var commands = new Bam.Core.StringArray();
+            foreach (var dir in module.OutputDirectories)
+            {
+                commands.Add(
+                    System.String.Format(
+                        "[[ ! -d {0} ]] && mkdir -p {0}",
+                        dir.ToStringQuoteIfNecessary()
+                    )
+                );
+            }
+
+            var args = new Bam.Core.StringArray();
+            args.Add(CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool));
+            args.AddRange(
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                )
+            );
+            args.Add(CommandLineProcessor.Processor.TerminatingArgs(module.Tool as Bam.Core.ICommandLineTool));
+            commands.Add(args.ToString(' '));
+
+            target.AddPostBuildCommands(commands, configuration);
+        }
+    }
 #else
     public sealed class XcodeIdNameOSX :
         IInstallNameToolPolicy

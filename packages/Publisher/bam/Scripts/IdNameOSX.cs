@@ -27,17 +27,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
-    public sealed class IdNameOSX :
+    public class IdNameOSX :
         InstallNameModule
     {
         protected override void
         ExecuteInternal(
-            ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileSupport.InstallName(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeSupport.InstallName(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    XcodeSupport.InstallName(this);
+                    break;
+#endif
+            }
 #else
             var framework = (this.CopiedFileModule as ICollatedObject).SourceModule as C.OSXFramework;
             if (null == framework)
@@ -55,6 +74,14 @@ namespace Publisher
                 null,
                 this.CopiedFileModule.Macros["IDName"]);
 #endif
+        }
+
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        {
+            get
+            {
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.ConsoleApplication.ExecutableKey, this.CopiedFileModule);
+            }
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Publisher
                 XcodeBuilder.FileReference.EFileType.ZipArchive,
                 XcodeBuilder.Target.EProductType.Utility);
             var configuration = target.GetConfiguration(encapsulating);
-            configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("PythonZip"));
+            configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("DirectoryZip"));
 
             var commands = new Bam.Core.StringArray();
             foreach (var dir in module.OutputDirectories)
