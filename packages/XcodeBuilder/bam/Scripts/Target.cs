@@ -728,7 +728,7 @@ namespace XcodeBuilder
                 {
                     if (Bam.Core.OSUtilities.IsOSXHosting)
                     {
-                        throw;
+                        Bam.Core.Log.DebugMessage("No macOS SDK was found. If this is a project without any source code, this is expected");
                     }
                     // arbitrary choice as we're not on macOS to look for valid SDK versions
                     var sdk_version = "10.13";

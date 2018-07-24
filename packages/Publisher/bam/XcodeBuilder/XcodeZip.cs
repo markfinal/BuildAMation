@@ -48,6 +48,16 @@ namespace Publisher
             configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("PythonZip"));
 
             var commands = new Bam.Core.StringArray();
+            foreach (var dir in module.OutputDirectories)
+            {
+                commands.Add(
+                    System.String.Format(
+                        "[[ ! -d {0} ]] && mkdir -p {0}",
+                        dir.ToStringQuoteIfNecessary()
+                    )
+                );
+            }
+
             var args = new Bam.Core.StringArray();
             if (module.WorkingDirectory != null)
             {
