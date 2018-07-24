@@ -45,6 +45,7 @@ namespace C
             CommandLineProcessor.Processor.Execute(
                 context,
                 module.Executable.ToString(),
+                (module as Bam.Core.ICommandLineTool).SuccessfulExitCodes,
                 module.Arguments
             );
         }

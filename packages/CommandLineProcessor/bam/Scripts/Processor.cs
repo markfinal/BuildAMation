@@ -67,6 +67,7 @@ namespace CommandLineProcessor
         Execute(
             Bam.Core.ExecutionContext context,
             string executablePath,
+            Bam.Core.Array<int> successfulExitCodes,
             Bam.Core.TokenizedStringArray commandLineArguments)
         {
             var arguments = new Bam.Core.StringArray();
@@ -74,13 +75,14 @@ namespace CommandLineProcessor
             {
                 arguments.Add(arg.ToString());
             }
-            Execute(context, executablePath, commandLineArguments: arguments);
+            Execute(context, executablePath, successfulExitCodes, commandLineArguments: arguments);
         }
 
         public static void
         Execute(
             Bam.Core.ExecutionContext context,
             string executablePath,
+            Bam.Core.Array<int> successfulExitCodes,
             Bam.Core.StringArray commandLineArguments = null,
             string workingDirectory = null,
             Bam.Core.StringArray inheritedEnvironmentVariables = null,
@@ -236,7 +238,7 @@ namespace CommandLineProcessor
                 System.IO.File.Delete(responseFilePath);
             }
 
-            if (exitCode != 0)
+            if (!successfulExitCodes.Contains(exitCode))
             {
                 var message = new System.Text.StringBuilder();
                 message.AppendFormat("Command failed: {0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
@@ -279,6 +281,7 @@ namespace CommandLineProcessor
             Execute(
                 context,
                 tool.Executable.ToString(),
+                tool.SuccessfulExitCodes,
                 commandLineArgs,
                 workingDirectory: workingDirectory,
                 inheritedEnvironmentVariables: tool.InheritedEnvironmentVariables,
@@ -314,6 +317,7 @@ namespace CommandLineProcessor
             Execute(
                 context,
                 tool.Executable.ToString(),
+                tool.SuccessfulExitCodes,
                 commandLineArgs,
                 workingDirectory: module.WorkingDirectory.ToString(),
                 inheritedEnvironmentVariables: tool.InheritedEnvironmentVariables,

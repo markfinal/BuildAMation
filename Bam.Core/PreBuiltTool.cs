@@ -157,6 +157,18 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// Prebuilt tool generally has a successful exit code of 0.
+        /// </summary>
+        /// <value>The successful exit codes.</value>
+        public virtual Array<int> SuccessfulExitCodes
+        {
+            get
+            {
+                return new Array<int> { 0 };
+            }
+        }
+
+        /// <summary>
         /// No execution needed to update the prebuilt tool.
         /// </summary>
         /// <param name="context">Context.</param>

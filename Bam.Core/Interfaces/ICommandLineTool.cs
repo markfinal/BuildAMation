@@ -92,5 +92,15 @@ namespace Bam.Core
         {
             get;
         }
+
+        /// <summary>
+        /// Array of integers identifying successful exit codes.
+        /// Some tools may have more than a single exit code indicating success.
+        /// </summary>
+        /// <value>The successful exit codes.</value>
+        Array<int> SuccessfulExitCodes
+        {
+            get;
+        }
     }
 }

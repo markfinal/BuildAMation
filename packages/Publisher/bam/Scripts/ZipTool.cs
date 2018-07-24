@@ -79,6 +79,16 @@ namespace Publisher
                 return termArgs;
             }
         }
+
+        public override Bam.Core.Array<int> SuccessfulExitCodes
+        {
+            get
+            {
+                var exit_codes = base.SuccessfulExitCodes;
+                exit_codes.Add(12); // means 'nothing to do'
+                return exit_codes;
+            }
+        }
     }
 
     public sealed class ZipWin :
