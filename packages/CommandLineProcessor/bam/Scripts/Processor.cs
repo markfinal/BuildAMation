@@ -285,5 +285,41 @@ namespace CommandLineProcessor
                 addedEnvironmentVariables: tool.EnvironmentVariables,
                 useResponseFileOption: tool.UseResponseFileOption);
         }
+
+        public static void
+        Execute(
+            Bam.Core.Module module,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool tool,
+            Bam.Core.StringArray commandLine,
+            string workingDirectory = null)
+        {
+            var commandLineArgs = new Bam.Core.StringArray();
+            if (tool.InitialArguments != null)
+            {
+                foreach (var arg in tool.InitialArguments)
+                {
+                    commandLineArgs.Add(arg.ToString());
+                }
+            }
+            commandLineArgs.AddRange(commandLine);
+            if (null != tool.TerminatingArguments)
+            {
+                foreach (var arg in tool.TerminatingArguments)
+                {
+                    commandLineArgs.Add(arg.ToString());
+                }
+            }
+
+            Execute(
+                context,
+                tool.Executable.ToString(),
+                commandLineArgs,
+                workingDirectory: module.WorkingDirectory.ToString(),
+                inheritedEnvironmentVariables: tool.InheritedEnvironmentVariables,
+                addedEnvironmentVariables: tool.EnvironmentVariables,
+                useResponseFileOption: tool.UseResponseFileOption);
+        }
+
     }
 }

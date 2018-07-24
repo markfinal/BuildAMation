@@ -90,7 +90,35 @@ namespace Publisher
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
-            Bam.Core.Log.MessageAll("Zipping {0}... TODO", this.InputPath.ToString());
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileSupport.Zip(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeSupport.Zip(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    VSSolutionSupport.Zip(this);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    XcodeSupport.Zip(this);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotSupportedException();
+            }
 #else
             if (null == this.Policy)
             {
@@ -106,6 +134,13 @@ namespace Publisher
         }
 
 #if BAM_V2
+        public override Bam.Core.TokenizedString WorkingDirectory
+        {
+            get
+            {
+                return this.InputPath;
+            }
+        }
 #else
         protected override void
         GetExecutionPolicy(

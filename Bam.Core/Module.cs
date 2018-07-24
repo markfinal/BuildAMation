@@ -1289,6 +1289,19 @@ namespace Bam.Core
             System.Diagnostics.Debug.Assert(null != this.Tool);
             return (this.Tool as ITool).CreateDefaultSettings(this);
         }
+
+        /// <summary>
+        /// Allow a Module to specify the working directory in which its Tool is executed.
+        /// By default, this is null, meaning that either no working directory is needed
+        /// or the call site for Tool execution can specify it.
+        /// </summary>
+        public virtual TokenizedString WorkingDirectory
+        {
+            get
+            {
+                return null;
+            }
+        }
 #endif
     }
 }

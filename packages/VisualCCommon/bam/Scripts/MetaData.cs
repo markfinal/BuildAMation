@@ -376,7 +376,12 @@ namespace VisualCCommon
         Environment(
             C.EBit depth)
         {
-            return this.Meta[EnvironmentKey(depth)] as System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>; 
+            var environmentKey = EnvironmentKey(depth);
+            if (!this.Meta.ContainsKey(environmentKey))
+            {
+                return new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>();
+            }
+            return this.Meta[environmentKey] as System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>;
         }
 
         private string vswherePath

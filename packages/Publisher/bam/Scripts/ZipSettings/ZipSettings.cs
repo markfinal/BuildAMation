@@ -29,9 +29,66 @@
 #endregion // License
 namespace Publisher
 {
+    [CommandLineProcessor.OutputPath(ZipModule.ZipKey, "")]
+    public sealed class SevenZipSettings :
+        Bam.Core.Settings,
+#if BAM_V2
+#else
+        CommandLineProcessor.IConvertToCommandLine,
+#endif
+        IZipSettings
+    {
+        public SevenZipSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+#if BAM_V2
+#else
+        void
+        CommandLineProcessor.IConvertToCommandLine.Convert(
+            Bam.Core.StringArray commandLine)
+        {
+            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
+        }
+#endif
+
+        [CommandLineProcessor.Bool("-bb3", "")]
+        bool IZipSettings.Verbose
+        {
+            get;
+            set;
+        }
+
+        [CommandLineProcessor.Bool("-r", "")]
+        bool IZipSettings.RecursivePaths
+        {
+            get;
+            set;
+        }
+
+        [CommandLineProcessor.Bool("u", "a")]
+        bool IZipSettings.Update
+        {
+            get;
+            set;
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
+        }
+    }
+
+    [CommandLineProcessor.OutputPath(ZipModule.ZipKey, "")]
     public sealed class ZipSettings :
         Bam.Core.Settings,
+#if BAM_V2
+#else
         CommandLineProcessor.IConvertToCommandLine,
+#endif
         IZipSettings
     {
         public ZipSettings()
@@ -43,29 +100,41 @@ namespace Publisher
             this.InitializeAllInterfaces(module, false, true);
         }
 
+#if BAM_V2
+#else
         void
         CommandLineProcessor.IConvertToCommandLine.Convert(
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
+#endif
 
+        [CommandLineProcessor.Bool("-v", "")]
         bool IZipSettings.Verbose
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.Bool("-r", "")]
         bool IZipSettings.RecursivePaths
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.Bool("-u", "")]
         bool IZipSettings.Update
         {
             get;
             set;
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

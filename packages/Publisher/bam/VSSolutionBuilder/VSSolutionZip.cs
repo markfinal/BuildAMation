@@ -30,6 +30,33 @@
 namespace Publisher
 {
 #if BAM_V2
+    public static partial class VSSolutionSupport
+    {
+        public static void
+        Zip(
+            ZipModule module)
+        {
+            var encapsulating = module.GetEncapsulatingReferencedModule();
+
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            var project = solution.EnsureProjectExists(encapsulating);
+            var config = project.GetConfiguration(encapsulating);
+
+            var args = new Bam.Core.StringArray();
+            if (module.WorkingDirectory != null)
+            {
+                args.Add(System.String.Format("cmd /C cd /D {0} &&", module.WorkingDirectory.ToStringQuoteIfNecessary()));
+            }
+            args.Add(CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool));
+            args.AddRange(
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                )
+            );
+            config.AddPreBuildCommand(args.ToString(' '));
+        }
+    }
 #else
     public sealed class VSSolutionZip :
         IZipToolPolicy

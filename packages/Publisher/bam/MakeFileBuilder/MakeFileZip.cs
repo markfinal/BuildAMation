@@ -30,6 +30,55 @@
 namespace Publisher
 {
 #if BAM_V2
+    public static partial class MakeFileSupport
+    {
+        public static void
+        Zip(
+            ZipModule module)
+        {
+            var meta = new MakeFileBuilder.MakeFileMeta(module);
+
+            foreach (var dir in module.OutputDirectories)
+            {
+                meta.CommonMetaData.AddDirectory(dir.ToString());
+            }
+
+            var rule = meta.AddRule();
+
+            rule.AddTarget(
+                module.GeneratedPaths[ZipModule.ZipKey]
+            );
+            foreach (var input in module.InputModules)
+            {
+                rule.AddPrerequisite(input.Value, input.Key);
+            }
+
+            var shellCommands = new Bam.Core.StringArray();
+            if (module.WorkingDirectory != null)
+            {
+                if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
+                {
+                    shellCommands.Add(System.String.Format("cmd /C cd /D {0} &&", module.WorkingDirectory.ToStringQuoteIfNecessary()));
+                }
+                else
+                {
+                    shellCommands.Add(System.String.Format("cd {0};", module.WorkingDirectory.ToString()));
+                }
+            }
+            shellCommands.Add(
+                System.String.Format(
+                    "{0} {1} {2}",
+                    CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool),
+                    CommandLineProcessor.NativeConversion.Convert(
+                        module.Settings,
+                        module
+                    ).ToString(' '),
+                    CommandLineProcessor.Processor.TerminatingArgs(module.Tool as Bam.Core.ICommandLineTool)
+                )
+            );
+            rule.AddShellCommand(shellCommands.ToString(' '));
+        }
+    }
 #else
     public sealed class MakeFileZip :
         IZipToolPolicy

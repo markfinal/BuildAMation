@@ -75,7 +75,7 @@ namespace Publisher
             get
             {
                 var termArgs = new Bam.Core.TokenizedStringArray();
-                termArgs.Add(Bam.Core.TokenizedString.CreateVerbatim("\""));
+                termArgs.Add(Bam.Core.TokenizedString.CreateVerbatim("* \""));
                 return termArgs;
             }
         }
@@ -88,7 +88,7 @@ namespace Publisher
         CreateDefaultSettings<T>(
             T module)
         {
-            return new ZipSettings(module);
+            return new SevenZipSettings(module);
         }
 
         public override Bam.Core.TokenizedString Executable
@@ -96,6 +96,16 @@ namespace Publisher
             get
             {
                 return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("7z.exe").First());
+            }
+        }
+
+        public override Bam.Core.TokenizedStringArray TerminatingArguments
+        {
+            get
+            {
+                var termArgs = new Bam.Core.TokenizedStringArray();
+                termArgs.Add(Bam.Core.TokenizedString.CreateVerbatim("*"));
+                return termArgs;
             }
         }
     }

@@ -699,15 +699,6 @@ namespace C
         }
 
         /// <summary>
-        /// Define the working directory to use in IDE projects for debugging (if supported).
-        /// </summary>
-        virtual public Bam.Core.TokenizedString WorkingDirectory
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Reference to the module generated internally for Windows versioning of this binary.
         /// This can be used to attach local patches or dependencies, e.g. to satisfy header search paths.
         /// </summary>
