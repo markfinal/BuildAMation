@@ -728,12 +728,23 @@ namespace XcodeBuilder
                 {
                     if (Bam.Core.OSUtilities.IsOSXHosting)
                     {
-                        Bam.Core.Log.DebugMessage("No macOS SDK was found. If this is a project without any source code, this is expected");
+                        // try a forced discovery, since it doesn't appear to have happened prior to now
+                        // which suggests a project with no source files
+                        var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+                        (clangMeta as C.IToolchainDiscovery).discover(C.EBit.SixtyFour); // arbitrary
+
+                        // set which SDK to build against
+                        newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
+                        // set the minimum version of macOS/iOS to run against
+                        newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(clangMeta.MacOSXMinimumVersionSupported);
                     }
-                    // arbitrary choice as we're not on macOS to look for valid SDK versions
-                    var sdk_version = "10.13";
-                    newConfig["SDKROOT"] = new UniqueConfigurationValue("macosx" + sdk_version);
-                    newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(sdk_version);
+                    else
+                    {
+                        // arbitrary choice as we're not on macOS to look for valid SDK versions
+                        var sdk_version = "10.13";
+                        newConfig["SDKROOT"] = new UniqueConfigurationValue("macosx" + sdk_version);
+                        newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(sdk_version);
+                    }
                 }
 
                 return newConfig;
