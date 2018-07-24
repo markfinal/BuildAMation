@@ -97,5 +97,13 @@ namespace ProceduralHeaderTest2
                 return null;
             }
         }
+
+        Bam.Core.Array<int> Bam.Core.ICommandLineTool.SuccessfulExitCodes
+        {
+            get
+            {
+                return new Bam.Core.Array<int>(0);
+            }
+        }
     }
 }
