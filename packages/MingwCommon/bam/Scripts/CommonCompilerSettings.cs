@@ -30,7 +30,7 @@
 namespace MingwCommon
 {
     [CommandLineProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "-o ")]
-    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ", max_file_count: 1)]
+    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     public abstract class CommonCompilerSettings :
         C.SettingsBase,
 #if BAM_V2
@@ -221,6 +221,15 @@ namespace MingwCommon
         [CommandLineProcessor.StringArray("-include ")]
 #endif
         Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Bool("-E", "-c")]
+#endif
+        bool C.ICommonCompilerSettings.PreprocessOnly
         {
             get;
             set;

@@ -105,6 +105,23 @@ namespace Test
         }
     }
 
+    sealed class PreprocessSingleCFile :
+        C.ObjectFile
+    {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+            this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
+            this.PrivatePatch(settings =>
+                {
+                    var compiler = settings as C.ICommonCompilerSettings;
+                    compiler.PreprocessOnly = true;
+                });
+        }
+    }
+
     sealed class BuildTerminalApplicationFromC :
         C.ConsoleApplication
     {

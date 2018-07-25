@@ -156,5 +156,15 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// Stop after preprocessing the source file. Do not compile.
+        /// </summary>
+        bool
+        PreprocessOnly
+        {
+            get;
+            set;
+        }
     }
 }

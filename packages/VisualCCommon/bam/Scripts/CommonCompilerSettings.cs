@@ -31,7 +31,7 @@ using System.Linq;
 namespace VisualCCommon
 {
     [CommandLineProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "-Fo")]
-    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ", max_file_count: 1)]
+    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     [VisualStudioProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "ObjectFileName")]
     [VisualStudioProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1, handledByMetaData: true)]
     public abstract class CommonCompilerSettings :
@@ -254,6 +254,16 @@ namespace VisualCCommon
         [VisualStudioProcessor.StringArray("ForcedIncludeFiles", inheritExisting: true)]
 #endif
         Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Bool("-E", "-c")]
+        [VisualStudioProcessor.Bool("PreprocessToFile")]
+#endif
+        bool C.ICommonCompilerSettings.PreprocessOnly
         {
             get;
             set;
