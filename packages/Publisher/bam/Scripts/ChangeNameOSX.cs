@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace Publisher
 {
-    public sealed class ChangeNameOSX :
+    public class ChangeNameOSX :
         InstallNameModule
     {
         protected override void
@@ -38,6 +38,26 @@ namespace Publisher
             ExecutionContext context)
         {
 #if BAM_V2
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileSupport.InstallName(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeSupport.InstallName(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    XcodeSupport.InstallName(this);
+                    break;
+#endif
+            }
 #else
             foreach (var framework in this.Frameworks)
             {
@@ -50,10 +70,12 @@ namespace Publisher
 #endif
         }
 
-        public Bam.Core.Array<CollatedFile> Frameworks
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
-            get;
-            set;
+            get
+            {
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.ConsoleApplication.ExecutableKey, this.CopiedFileModule);
+            }
         }
     }
 }

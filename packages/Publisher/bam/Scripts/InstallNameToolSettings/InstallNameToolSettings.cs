@@ -58,6 +58,7 @@ namespace Publisher
 #endif
 
         [CommandLineProcessor.Enum(EInstallNameToolMode.UpdateIDName, "-id")]
+        [CommandLineProcessor.Enum(EInstallNameToolMode.ChangeIDName, "-change")]
         EInstallNameToolMode IInstallNameToolSettings.Mode
         {
             get;
@@ -100,6 +101,19 @@ namespace Publisher
                         if (null == install_name_tool.NewName)
                         {
                             throw new Bam.Core.Exception("Must specify a new name for Id mode");
+                        }
+                    }
+                    break;
+
+                case EInstallNameToolMode.ChangeIDName:
+                    {
+                        if (null == install_name_tool.OldName)
+                        {
+                            throw new Bam.Core.Exception("Must specify an old name for Change mode");
+                        }
+                        if (null == install_name_tool.NewName)
+                        {
+                            throw new Bam.Core.Exception("Must specify an old name for Change mode");
                         }
                     }
                     break;
