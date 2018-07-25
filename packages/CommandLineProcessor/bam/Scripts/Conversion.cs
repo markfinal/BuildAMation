@@ -239,8 +239,11 @@ namespace CommandLineProcessor
             if (null == matching_attribute)
             {
                 throw new Bam.Core.Exception(
-                    "Unable to locate enumeration mapping for {0}",
-                    interfacePropertyInfo.GetType().FullName
+                    "Unable to locate enumeration mapping of '{0}.{1}' for property {2}.{3}",
+                    propertyValue.GetType().ToString(),
+                    propertyValue.ToString(),
+                    interfacePropertyInfo.DeclaringType.FullName,
+                    interfacePropertyInfo.Name
                 );
             }
             var cmd = matching_attribute.CommandSwitch;
