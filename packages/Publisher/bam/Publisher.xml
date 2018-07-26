@@ -12,9 +12,6 @@
     <DotNetAssembly name="System.Xml" requiredTargetFramework="4.0.30319" />
     <DotNetAssembly name="System.Core" requiredTargetFramework="4.0.30319" />
   </DotNetAssemblies>
-  <Definitions>
-    <Definition name="D_NEW_PUBLISHING" />
-  </Definitions>
   <SupportedPlatforms>
     <Platform name="Windows" />
     <Platform name="Linux" />
