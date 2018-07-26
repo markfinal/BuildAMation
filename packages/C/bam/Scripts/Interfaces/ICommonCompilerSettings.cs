@@ -160,8 +160,7 @@ namespace C
         /// <summary>
         /// Stop after preprocessing the source file. Do not compile.
         /// </summary>
-        bool
-        PreprocessOnly
+        bool? PreprocessOnly
         {
             get;
             set;

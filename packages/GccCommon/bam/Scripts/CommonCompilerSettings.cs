@@ -216,7 +216,7 @@ namespace GccCommon
 #if BAM_V2
         [CommandLineProcessor.Bool("-E", "-c")]
 #endif
-        bool C.ICommonCompilerSettings.PreprocessOnly
+        bool? C.ICommonCompilerSettings.PreprocessOnly
         {
             get;
             set;

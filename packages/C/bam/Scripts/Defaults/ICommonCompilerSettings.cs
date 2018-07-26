@@ -76,6 +76,7 @@ namespace C.DefaultSettings
             }
             settings.TargetLanguage = ETargetLanguage.C;
             settings.WarningsAsErrors = true;
+            settings.PreprocessOnly = false;
         }
 
         public static void
@@ -107,6 +108,7 @@ namespace C.DefaultSettings
             shared.DisableWarnings = shared.DisableWarnings.Intersect(other.DisableWarnings);
             shared.PreprocessorUndefines = shared.PreprocessorUndefines.Intersect(other.PreprocessorUndefines);
             shared.NamedHeaders = shared.NamedHeaders.Intersect(other.NamedHeaders);
+            shared.PreprocessOnly = shared.PreprocessOnly.Intersect(other.PreprocessOnly);
         }
 
         public static void
@@ -127,6 +129,7 @@ namespace C.DefaultSettings
             delta.DisableWarnings = lhs.DisableWarnings.Complement(rhs.DisableWarnings);
             delta.PreprocessorUndefines = lhs.PreprocessorUndefines.Complement(rhs.PreprocessorUndefines);
             delta.NamedHeaders = lhs.NamedHeaders.Complement(rhs.NamedHeaders);
+            delta.PreprocessOnly = lhs.PreprocessOnly.Complement(rhs.PreprocessOnly);
         }
 
         public static void
@@ -164,6 +167,7 @@ namespace C.DefaultSettings
             {
                 settings.NamedHeaders.AddUnique(header);
             }
+            settings.PreprocessOnly = other.PreprocessOnly;
         }
     }
 }

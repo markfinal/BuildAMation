@@ -255,7 +255,7 @@ namespace ClangCommon
         [CommandLineProcessor.Bool("-E", "-c")]
         [XcodeProjectProcessor.MultiBool("OTHER_CFLAGS", "-E", "")]
 #endif
-        bool C.ICommonCompilerSettings.PreprocessOnly
+        bool? C.ICommonCompilerSettings.PreprocessOnly
         {
             get;
             set;

@@ -263,7 +263,7 @@ namespace VisualCCommon
         [CommandLineProcessor.Bool("-E", "-c")]
         [VisualStudioProcessor.Bool("PreprocessToFile")]
 #endif
-        bool C.ICommonCompilerSettings.PreprocessOnly
+        bool? C.ICommonCompilerSettings.PreprocessOnly
         {
             get;
             set;
