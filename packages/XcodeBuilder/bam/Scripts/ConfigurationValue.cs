@@ -137,6 +137,11 @@ namespace XcodeBuilder
             value.AppendFormat("(");
             foreach (var item in this.Value)
             {
+                if (System.String.IsNullOrEmpty(item))
+                {
+                    // to avoid pbxproj values such as ", ," which will not parse
+                    continue;
+                }
                 if (StringRequiresQuoting(item))
                 {
                     value.AppendFormat("\"{0}\", ", item);
