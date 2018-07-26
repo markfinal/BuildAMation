@@ -46,7 +46,6 @@ namespace VisualCCommon
 #endif
 #if false
         C.ICommonHasImportLibraryPathWin,
-        C.ICommonHasProgramDatabasePathWin,
 #endif
         C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
@@ -84,16 +83,6 @@ namespace VisualCCommon
         [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasImportLibraryPathWin.ImportLibraryPath
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Path("-PDB:")]
-        [VisualStudioProcessor.Path("", ignored: true)]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasProgramDatabasePathWin.PDBPath
         {
             get;
             set;
