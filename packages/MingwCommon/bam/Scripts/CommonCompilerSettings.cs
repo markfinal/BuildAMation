@@ -37,7 +37,6 @@ namespace MingwCommon
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
-        C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
         C.IAdditionalSettings,
@@ -72,15 +71,6 @@ namespace MingwCommon
         [CommandLineProcessor.Enum(C.ECharacterSet.MultiByte, "-D_MBCS")]
 #endif
         C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Path("-E -o ")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
         {
             get;
             set;

@@ -38,7 +38,6 @@ namespace ClangCommon
         CommandLineProcessor.IConvertToCommandLine,
         XcodeProjectProcessor.IConvertToProject,
 #endif
-        C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
@@ -66,16 +65,6 @@ namespace ClangCommon
             XcodeProjectProcessor.Conversion.Convert(typeof(XcodeAssemblerImplementation), this, module, configuration);
         }
 #endif
-
-#if BAM_V2
-        [CommandLineProcessor.Path("-E -o ")]
-        [XcodeProjectProcessor.Path("", ignore: true)]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
-        {
-            get;
-            set;
-        }
 
 #if BAM_V2
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-arch i386")]

@@ -40,7 +40,6 @@ namespace VisualCCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
 #endif
-        C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
@@ -69,16 +68,6 @@ namespace VisualCCommon
             VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
         }
 #endif
-
-#if BAM_V2
-        [CommandLineProcessor.Path("-E -Fo")]
-        [VisualStudioProcessor.Path("ObjectFileName", boolWhenValid: "GeneratePreprocessedSourceListing")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
-        {
-            get;
-            set;
-        }
 
 #if BAM_V2
         // defined in the executable used

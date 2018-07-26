@@ -37,9 +37,6 @@ namespace MingwCommon
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
-#if false
-        C.ICommonHasCompilerPreprocessedOutputPath,
-#endif
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
@@ -57,17 +54,6 @@ namespace MingwCommon
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-#if false
-#if BAM_V2
-        [CommandLineProcessor.Path("-E -o ")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
-        {
-            get;
-            set;
         }
 #endif
 

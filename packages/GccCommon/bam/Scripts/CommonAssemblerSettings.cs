@@ -37,7 +37,6 @@ namespace GccCommon
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
-        C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
@@ -57,15 +56,6 @@ namespace GccCommon
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineAssemblerImplementation), this, commandLine);
         }
 #endif
-
-#if BAM_V2
-        [CommandLineProcessor.Path("-E -o ")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
-        {
-            get;
-            set;
-        }
 
 #if BAM_V2
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]

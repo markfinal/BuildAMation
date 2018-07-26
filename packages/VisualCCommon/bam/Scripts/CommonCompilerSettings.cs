@@ -41,7 +41,6 @@ namespace VisualCCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
 #endif
-        C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
         C.IAdditionalSettings,
@@ -88,16 +87,6 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(C.ECharacterSet.MultiByte, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)] // ditto
 #endif
         C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Path("-E -Fo")]
-        [VisualStudioProcessor.Path("PreprocessToFile")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasCompilerPreprocessedOutputPath.PreprocessedOutputPath
         {
             get;
             set;
