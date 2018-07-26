@@ -44,9 +44,6 @@ namespace VisualCCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
 #endif
-#if false
-        C.ICommonHasImportLibraryPathWin,
-#endif
         C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings,
@@ -74,18 +71,6 @@ namespace VisualCCommon
             string condition)
         {
             VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-#endif
-
-#if false
-#if BAM_V2
-        [CommandLineProcessor.Path("-IMPLIB:")]
-        [VisualStudioProcessor.Path("", ignored: true)]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasImportLibraryPathWin.ImportLibraryPath
-        {
-            get;
-            set;
         }
 #endif
 

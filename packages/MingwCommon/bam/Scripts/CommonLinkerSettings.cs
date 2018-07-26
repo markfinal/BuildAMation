@@ -38,9 +38,6 @@ namespace MingwCommon
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
-#if false
-        C.ICommonHasImportLibraryPathWin,
-#endif
         C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings
@@ -58,17 +55,6 @@ namespace MingwCommon
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-#if false
-#if BAM_V2
-        [CommandLineProcessor.Path("-Wl,--out-implib,")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasImportLibraryPathWin.ImportLibraryPath
-        {
-            get;
-            set;
         }
 #endif
 
