@@ -40,9 +40,6 @@ namespace WindowsSDKCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
 #endif
-#if false
-        C.ICommonHasSourcePath,
-#endif
         C.ICommonWinResourceCompilerSettings,
         C.IAdditionalSettings,
         ICommonWinResourceCompilerSettings
@@ -69,18 +66,6 @@ namespace WindowsSDKCommon
             string condition)
         {
             VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-#endif
-
-#if false
-#if BAM_V2
-        [CommandLineProcessor.Path("")]
-        [VisualStudioProcessor.Path("", ignored: true)]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
-        {
-            get;
-            set;
         }
 #endif
 

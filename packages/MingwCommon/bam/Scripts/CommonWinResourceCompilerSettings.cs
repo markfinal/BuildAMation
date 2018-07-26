@@ -37,9 +37,6 @@ namespace MingwCommon
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
-#if false
-        C.ICommonHasSourcePath,
-#endif
         C.ICommonWinResourceCompilerSettings,
         C.IAdditionalSettings,
         ICommonWinResourceCompilerSettings
@@ -57,17 +54,6 @@ namespace MingwCommon
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-#if false
-#if BAM_V2
-        [CommandLineProcessor.Path("")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
-        {
-            get;
-            set;
         }
 #endif
 

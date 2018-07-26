@@ -41,9 +41,6 @@ namespace VisualCCommon
         VisualStudioProcessor.IConvertToProject,
 #endif
         C.ICommonHasCompilerPreprocessedOutputPath,
-#if false
-        C.ICommonHasSourcePath,
-#endif
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
@@ -82,18 +79,6 @@ namespace VisualCCommon
             get;
             set;
         }
-
-#if false
-#if BAM_V2
-        [CommandLineProcessor.Path("")]
-        [VisualStudioProcessor.Path("", ignored: true)]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
-        {
-            get;
-            set;
-        }
-#endif
 
 #if BAM_V2
         // defined in the executable used

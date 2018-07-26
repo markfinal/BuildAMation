@@ -37,9 +37,6 @@ namespace MingwCommon
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
-#if false
-        C.ICommonHasSourcePath,
-#endif
         C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
@@ -79,17 +76,6 @@ namespace MingwCommon
             get;
             set;
         }
-
-#if false
-#if BAM_V2
-        [CommandLineProcessor.Path("")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
-        {
-            get;
-            set;
-        }
-#endif
 
 #if BAM_V2
         [CommandLineProcessor.Path("-E -o ")]

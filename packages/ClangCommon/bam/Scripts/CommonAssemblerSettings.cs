@@ -38,9 +38,6 @@ namespace ClangCommon
         CommandLineProcessor.IConvertToCommandLine,
         XcodeProjectProcessor.IConvertToProject,
 #endif
-#if false
-        C.ICommonHasSourcePath,
-#endif
         C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
@@ -67,18 +64,6 @@ namespace ClangCommon
             XcodeBuilder.Configuration configuration)
         {
             XcodeProjectProcessor.Conversion.Convert(typeof(XcodeAssemblerImplementation), this, module, configuration);
-        }
-#endif
-
-#if false
-#if BAM_V2
-        [CommandLineProcessor.Path("")]
-        [XcodeProjectProcessor.Path("", ignore: true)]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
-        {
-            get;
-            set;
         }
 #endif
 
