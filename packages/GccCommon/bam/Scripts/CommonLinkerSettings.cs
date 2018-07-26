@@ -30,6 +30,8 @@
 namespace GccCommon
 {
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-o ")]
+    [CommandLineProcessor.OutputPath(C.ConsoleApplication.SONameKey, "-Wl,-soname,")] // ensure that the NEEDED flag is set to the expected symlink for the shared object
+    [CommandLineProcessor.OutputPath(C.ConsoleApplication.LinkerNameKey, "", ignore: true)]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonLinkerSettings :
         C.SettingsBase,
@@ -37,7 +39,6 @@ namespace GccCommon
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
-        C.ICommonHasSONameLinux,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings,
         ICommonLinkerSettings
@@ -57,15 +58,6 @@ namespace GccCommon
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
 #endif
-
-#if BAM_V2
-        [CommandLineProcessor.Path("-Wl,-soname,")]
-#endif
-        Bam.Core.TokenizedString C.ICommonHasSONameLinux.SOName
-        {
-            get;
-            set;
-        }
 
 #if BAM_V2
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]

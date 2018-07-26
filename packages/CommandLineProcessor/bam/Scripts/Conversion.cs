@@ -85,12 +85,14 @@ namespace CommandLineProcessor
         public OutputPathAttribute(
             string pathKey,
             string command_switch,
-            string path_modifier = null)
+            string path_modifier = null,
+            bool ignore = false)
             :
             base(command_switch)
         {
             this.PathKey = pathKey;
             this.PathModifier = path_modifier;
+            this.Ignore = ignore;
         }
 
         public string PathKey
@@ -100,6 +102,12 @@ namespace CommandLineProcessor
         }
 
         public string PathModifier
+        {
+            get;
+            private set;
+        }
+
+        public bool Ignore
         {
             get;
             private set;
@@ -755,6 +763,10 @@ namespace CommandLineProcessor
                         settings.ToString(),
                         outputKey
                     );
+                }
+                if (matching_attr.Ignore)
+                {
+                    continue;
                 }
                 if (null != matching_attr.PathModifier)
                 {

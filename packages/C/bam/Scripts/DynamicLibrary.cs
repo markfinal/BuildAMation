@@ -72,19 +72,25 @@ namespace C
                 if (!(this is Plugin) && !this.IsPrebuilt)
                 {
                     // TODO: I wonder if these macros can be removed? (requires a change to GccCommon.ICommonLinkerSettings)
-                    this.Macros.Add("SOName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
-                    this.Macros.Add("LinkerName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)"));
+                    this.RegisterGeneratedFile(
+                        SONameKey,
+                        this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)")
+                    );
+                    this.RegisterGeneratedFile(
+                        LinkerNameKey,
+                        this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)")
+                    );
 
                     var linkerName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
                         {
-                            module.Macros.AddVerbatim("SymlinkUsage", "LinkerName");
+                            module.Macros.AddVerbatim("SymlinkUsage", LinkerNameKey);
                             module.SharedObject = this;
                         });
                     this.LinkerNameSymbolicLink = linkerName;
 
                     var SOName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
                         {
-                            module.Macros.AddVerbatim("SymlinkUsage", "SOName");
+                            module.Macros.AddVerbatim("SymlinkUsage", SONameKey);
                             module.SharedObject = this;
                         });
                     this.SONameSymbolicLink = SOName;

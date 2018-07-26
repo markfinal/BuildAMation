@@ -711,7 +711,7 @@ namespace Bam.Core
         {
             get
             {
-                foreach (var dir in this.OutputDirs.Values)
+                foreach (var dir in this.OutputDirs.Values.Where(item => !System.String.IsNullOrEmpty(item.ToString())))
                 {
                     yield return dir;
                 }

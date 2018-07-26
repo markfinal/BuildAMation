@@ -64,7 +64,7 @@ namespace C
             this.RegisterGeneratedFile(SOSymLinkKey,
                                        this.CreateTokenizedString("@dir($(0))/$(1)",
                                                                   this.SharedObject.GeneratedPaths[ConsoleApplication.ExecutableKey],
-                                                                  this.SharedObject.Macros[this.Macros["SymlinkUsage"].ToString()]));
+                                                                  this.SharedObject.GeneratedPaths[this.Macros["SymlinkUsage"].ToString()]));
 #else
             this.RegisterGeneratedFile(Key,
                                        this.CreateTokenizedString("@dir($(0))/$(1)",
@@ -142,7 +142,7 @@ namespace C
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
                     this.GeneratedPaths[SOSymLinkKey],
-                    this.SharedObject.Macros[this.Macros["SymlinkUsage"].ToString()]
+                    this.SharedObject.Macros[this.GeneratedPaths["SymlinkUsage"].ToString()]
                 );
                 return;
             }
