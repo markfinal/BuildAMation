@@ -168,6 +168,26 @@ namespace ClangCommon
         }
 
 #if BAM_V2
+        [CommandLineProcessor.Path("-current_version ")]
+        [XcodeProjectProcessor.Path("DYLIB_CURRENT_VERSION")]
+#endif
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.CurrentVersion
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-compatibility_version ")]
+        [XcodeProjectProcessor.Path("DYLIB_COMPATIBILITY_VERSION")]
+#endif
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.CompatibilityVersion
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
         [CommandLineProcessor.StringArray("")]
         [XcodeProjectProcessor.StringArray("OTHER_LDFLAGS", spacesSeparate: true)]
 #endif

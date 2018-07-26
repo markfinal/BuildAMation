@@ -75,5 +75,25 @@ namespace C
             get;
             set;
         }
+
+        /// <summary>
+        /// Specifies the current version of the dylib, or null
+        /// if not defined.
+        /// </summary>
+        Bam.Core.TokenizedString CurrentVersion
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Specifies the compatibility version of the dylib, or null
+        /// if not defined.
+        /// </summary>
+        Bam.Core.TokenizedString CompatibilityVersion
+        {
+            get;
+            set;
+        }
     }
 }
