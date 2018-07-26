@@ -39,10 +39,9 @@ namespace MingwCommon
         CommandLineProcessor.IConvertToCommandLine,
 #endif
 #if false
-        C.ICommonHasOutputPath,
         C.ICommonHasImportLibraryPathWin,
 #endif
- C.ICommonLinkerSettingsWin,
+        C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings
     {
@@ -63,15 +62,6 @@ namespace MingwCommon
 #endif
 
 #if false
-#if BAM_V2
-        [CommandLineProcessor.Path("-o ")]
-#endif
-        string C.ICommonHasOutputPath.OutputPath
-        {
-            get;
-            set;
-        }
-
 #if BAM_V2
         [CommandLineProcessor.Path("-Wl,--out-implib,")]
 #endif

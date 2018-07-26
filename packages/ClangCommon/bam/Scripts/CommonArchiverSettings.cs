@@ -38,9 +38,6 @@ namespace ClangCommon
         CommandLineProcessor.IConvertToCommandLine,
         // TODO: Xcode translation
 #endif
-#if false
-        C.ICommonHasOutputPath,
-#endif
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
@@ -57,18 +54,6 @@ namespace ClangCommon
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineArchiverImplementation), this, commandLine);
-        }
-#endif
-
-#if false
-#if BAM_V2
-        [CommandLineProcessor.Path("")]
-        [XcodeProjectProcessor.Path("", ignore: true)]
-#endif
-        string C.ICommonHasOutputPath.OutputPath
-        {
-            get;
-            set;
         }
 #endif
 

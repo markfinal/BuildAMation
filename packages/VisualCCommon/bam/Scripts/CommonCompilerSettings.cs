@@ -43,7 +43,6 @@ namespace VisualCCommon
 #endif
 #if false
         C.ICommonHasSourcePath,
-        C.ICommonHasOutputPath,
 #endif
         C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonCompilerSettingsWin,
@@ -103,16 +102,6 @@ namespace VisualCCommon
         [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Path("-c -Fo")]
-        [VisualStudioProcessor.Path("ObjectFileName")]
-#endif
-        string C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;
@@ -363,14 +352,6 @@ namespace VisualCCommon
             {
                 throw new Bam.Core.Exception(
                     "Compiler specific optimizations can only be set when the common optimization is C.EOptimization.Custom"
-                );
-            }
-
-            if (((this is C.ICommonHasOutputPath) && (this as C.ICommonHasOutputPath).OutputPath != null) &&
-                ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
-            {
-                throw new Bam.Core.Exception(
-                    "Both output and preprocessed output paths cannot be set"
                 );
             }
         }

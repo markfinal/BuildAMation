@@ -40,9 +40,6 @@ namespace VisualCCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
 #endif
-#if false
-        C.ICommonHasOutputPath,
-#endif
         C.ICommonHasCompilerPreprocessedOutputPath,
 #if false
         C.ICommonHasSourcePath,
@@ -73,18 +70,6 @@ namespace VisualCCommon
             string condition)
         {
             VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-#endif
-
-#if false
-#if BAM_V2
-        [CommandLineProcessor.Path("-c -Fo")]
-        [VisualStudioProcessor.Path("ObjectFileName", ignored: true)] // if deeper than just $(IntDir)myobj.obj, MASM seems to fail
-#endif
-        string C.ICommonHasOutputPath.OutputPath
-        {
-            get;
-            set;
         }
 #endif
 
@@ -218,14 +203,6 @@ namespace VisualCCommon
                 {
                     throw new Bam.Core.Exception("Safe exception handlers are only valid in 32-bit");
                 }
-            }
-
-            if (((this is C.ICommonHasOutputPath) && (this as C.ICommonHasOutputPath).OutputPath != null) &&
-                ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
-            {
-                throw new Bam.Core.Exception(
-                    "Both output and preprocessed output paths cannot be set"
-                );
             }
         }
 

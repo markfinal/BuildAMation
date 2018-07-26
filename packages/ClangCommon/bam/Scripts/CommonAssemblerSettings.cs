@@ -39,7 +39,6 @@ namespace ClangCommon
         XcodeProjectProcessor.IConvertToProject,
 #endif
 #if false
-        C.ICommonHasOutputPath,
         C.ICommonHasSourcePath,
 #endif
         C.ICommonHasCompilerPreprocessedOutputPath,
@@ -72,16 +71,6 @@ namespace ClangCommon
 #endif
 
 #if false
-#if BAM_V2
-        [CommandLineProcessor.Path("-c -o ")]
-        [XcodeProjectProcessor.Path("", ignore: true)]
-#endif
-        string C.ICommonHasOutputPath.OutputPath
-        {
-            get;
-            set;
-        }
-
 #if BAM_V2
         [CommandLineProcessor.Path("")]
         [XcodeProjectProcessor.Path("", ignore: true)]
@@ -163,20 +152,6 @@ namespace ClangCommon
         {
             get;
             set;
-        }
-
-        public override void
-        Validate()
-        {
-            base.Validate();
-
-            if (((this is C.ICommonHasOutputPath) && (this as C.ICommonHasOutputPath).OutputPath != null) &&
-                ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
-            {
-                throw new Bam.Core.Exception(
-                    "Both output and preprocessed output paths cannot be set"
-                );
-            }
         }
 
         public override void

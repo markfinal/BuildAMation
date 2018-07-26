@@ -37,9 +37,6 @@ namespace GccCommon
 #else
         CommandLineProcessor.IConvertToCommandLine,
 #endif
-#if false
-        C.ICommonHasOutputPath,
-#endif
         C.ICommonHasSONameLinux,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings,
@@ -58,17 +55,6 @@ namespace GccCommon
             Bam.Core.StringArray commandLine)
         {
             CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-#if false
-#if BAM_V2
-        [CommandLineProcessor.Path("-o ")]
-#endif
-        string C.ICommonHasOutputPath.OutputPath
-        {
-            get;
-            set;
         }
 #endif
 

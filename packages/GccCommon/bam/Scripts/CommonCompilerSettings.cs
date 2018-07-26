@@ -39,7 +39,6 @@ namespace GccCommon
 #endif
 #if false
         C.ICommonHasSourcePath,
-        C.ICommonHasOutputPath,
 #endif
         C.ICommonHasCompilerPreprocessedOutputPath,
         C.ICommonCompilerSettings,
@@ -308,14 +307,6 @@ namespace GccCommon
             {
                 throw new Bam.Core.Exception(
                     "Compiler specific optimizations can only be set when the common optimization is C.EOptimization.Custom"
-                );
-            }
-
-            if (((this is C.ICommonHasOutputPath) && (this as C.ICommonHasOutputPath).OutputPath != null) &&
-                ((this as C.ICommonHasCompilerPreprocessedOutputPath).PreprocessedOutputPath != null))
-            {
-                throw new Bam.Core.Exception(
-                    "Both output and preprocessed output paths cannot be set"
                 );
             }
         }

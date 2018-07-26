@@ -42,7 +42,6 @@ namespace WindowsSDKCommon
 #endif
 #if false
         C.ICommonHasSourcePath,
-        C.ICommonHasOutputPath,
 #endif
         C.ICommonWinResourceCompilerSettings,
         C.IAdditionalSettings,
@@ -79,16 +78,6 @@ namespace WindowsSDKCommon
         [VisualStudioProcessor.Path("", ignored: true)]
 #endif
         Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Path("-Fo")]
-        [VisualStudioProcessor.Path("", ignored: true)]
-#endif
-        string C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

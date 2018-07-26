@@ -45,7 +45,6 @@ namespace VisualCCommon
         VisualStudioProcessor.IConvertToProject,
 #endif
 #if false
-        C.ICommonHasOutputPath,
         C.ICommonHasImportLibraryPathWin,
         C.ICommonHasProgramDatabasePathWin,
 #endif
@@ -80,16 +79,6 @@ namespace VisualCCommon
 #endif
 
 #if false
-#if BAM_V2
-        [CommandLineProcessor.Path("-OUT:")]
-        [VisualStudioProcessor.Path("OutputFile")]
-#endif
-        string C.ICommonHasOutputPath.OutputPath
-        {
-            get;
-            set;
-        }
-
 #if BAM_V2
         [CommandLineProcessor.Path("-IMPLIB:")]
         [VisualStudioProcessor.Path("", ignored: true)]

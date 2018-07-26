@@ -39,7 +39,6 @@ namespace MingwCommon
 #endif
 #if false
         C.ICommonHasSourcePath,
-        C.ICommonHasOutputPath,
 #endif
         C.ICommonWinResourceCompilerSettings,
         C.IAdditionalSettings,
@@ -66,15 +65,6 @@ namespace MingwCommon
         [CommandLineProcessor.Path("")]
 #endif
         Bam.Core.TokenizedString C.ICommonHasSourcePath.SourcePath
-        {
-            get;
-            set;
-        }
-
-#if BAM_V2
-        [CommandLineProcessor.Path("-o ")]
-#endif
-        string C.ICommonHasOutputPath.OutputPath
         {
             get;
             set;

@@ -40,9 +40,6 @@ namespace VisualCCommon
         CommandLineProcessor.IConvertToCommandLine,
         VisualStudioProcessor.IConvertToProject,
 #endif
-#if false
-        C.ICommonHasOutputPath,
-#endif
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
@@ -68,18 +65,6 @@ namespace VisualCCommon
             string condition)
         {
             VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-#endif
-
-#if false
-#if BAM_V2
-        [CommandLineProcessor.Path("-OUT:")]
-        [VisualStudioProcessor.Path(C.StaticLibrary.LibraryKey)]
-#endif
-        string C.ICommonHasOutputPath.OutputPath
-        {
-            get;
-            set;
         }
 #endif
 
