@@ -201,17 +201,23 @@ namespace Publisher
             }
         }
 
+#if BAM_V2
+#else
         public string PreExistingSourcePath
         {
             get;
             set;
         }
+#endif
 
         public Bam.Core.TokenizedString
         SourcePath
         {
             get
             {
+#if BAM_V2
+                return this.sourceModule.GeneratedPaths[this.sourcePathKey];
+#else
                 if (null == this.PreExistingSourcePath)
                 {
                     return this.sourceModule.GeneratedPaths[this.sourcePathKey];
@@ -220,6 +226,7 @@ namespace Publisher
                 {
                     return Bam.Core.TokenizedString.CreateVerbatim(this.PreExistingSourcePath);
                 }
+#endif
             }
         }
 
