@@ -36,7 +36,74 @@ namespace Publisher
         CollateObject(
             CollatedObject module)
         {
-            //throw new System.NotImplementedException();
+            if (module.Ignore)
+            {
+                return;
+            }
+
+            var collatedInterface = module as ICollatedObject;
+            var sourceModule = collatedInterface.SourceModule;
+            if (null == sourceModule.MetaData)
+            {
+                // this can happen for prebuilt frameworks
+                sourceModule = collatedInterface.Anchor.SourceModule;
+            }
+
+            var target = sourceModule.MetaData as XcodeBuilder.Target;
+
+            System.Diagnostics.Debug.Assert(null != collatedInterface.SourceModule);
+            if (module.IsAnchor)
+            {
+                if (module.IsAnchorAnApplicationBundle)
+                {
+                    // application bundles are a different output type in Xcode
+                    target.MakeApplicationBundle();
+                }
+
+                // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
+                return;
+            }
+
+            if (module.IsInAnchorPackage &&
+                !(collatedInterface.Anchor as CollatedObject).IsAnchorAnApplicationBundle)
+            {
+                // additionally, any module-based dependents in the same package as the anchor do not need copying as they
+                // are built into the right directory (since Xcode module build dirs do not include the module name)
+                return;
+            }
+
+            var copyFileTool = module.Tool as CopyFileTool;
+
+            var commands = new Bam.Core.StringArray();
+            foreach (var dir in module.OutputDirectories)
+            {
+                commands.Add(
+                    System.String.Format(
+                        "[[ ! -d {0} ]] && mkdir -p {0}",
+                        copyFileTool.escapePath(dir.ToString())
+                    )
+                );
+            }
+            commands.Add(
+                System.String.Format("{0} {1} {2}",
+                CommandLineProcessor.Processor.StringifyTool(copyFileTool as Bam.Core.ICommandLineTool),
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                ).ToString(' '),
+                CommandLineProcessor.Processor.TerminatingArgs(copyFileTool as Bam.Core.ICommandLineTool))
+            );
+
+            var configuration = target.GetConfiguration(sourceModule);
+            var arePostBuildCommands = true;
+            if (!target.isUtilityType && arePostBuildCommands)
+            {
+                target.AddPostBuildCommands(commands, configuration);
+            }
+            else
+            {
+                target.AddPreBuildCommands(commands, configuration);
+            }
         }
     }
 #else
