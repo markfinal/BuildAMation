@@ -42,6 +42,14 @@ namespace Publisher
             }
 
             var collatedInterface = module as ICollatedObject;
+            System.Diagnostics.Debug.Assert(null != collatedInterface.SourceModule);
+            if (module.IsAnchor && !(collatedInterface.SourceModule is PreExistingObject))
+            {
+                // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
+                // a no-op also applies to stripped executable copies
+                return;
+            }
+
             var projectModule = collatedInterface.SourceModule;
             var arePostBuildCommands = true;
             // check for runtime dependencies that won't have projects, use their anchor
@@ -73,13 +81,6 @@ namespace Publisher
                         );
                     }
                 }
-            }
-
-            System.Diagnostics.Debug.Assert(null != collatedInterface.SourceModule);
-            if (module.IsAnchor && !(collatedInterface.SourceModule is PreExistingObject))
-            {
-                // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
-                return;
             }
 
             var copyFileTool = module.Tool as CopyFileTool;
