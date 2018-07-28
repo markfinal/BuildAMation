@@ -76,7 +76,7 @@ namespace Publisher
             var target = targetModule.MetaData as XcodeBuilder.Target;
 
             System.Diagnostics.Debug.Assert(null != collatedInterface.SourceModule);
-            if (module.IsAnchor)
+            if (module.IsAnchor && !(collatedInterface.SourceModule is PreExistingObject))
             {
                 if (module.IsAnchorAnApplicationBundle)
                 {
@@ -89,6 +89,7 @@ namespace Publisher
             }
 
             if (module.IsInAnchorPackage &&
+                collatedInterface.Anchor != null &&
                 !(collatedInterface.Anchor as CollatedObject).IsAnchorAnApplicationBundle)
             {
                 // additionally, any module-based dependents in the same package as the anchor do not need copying as they
