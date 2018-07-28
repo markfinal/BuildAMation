@@ -371,7 +371,14 @@ namespace Bam.Core
             {
                 this._GeneratedPaths.Add(key, path);
             }
-            this.OutputDirs.Add(key, this.CreateTokenizedString("@dir($(0))", path));
+            if (null != path)
+            {
+                this.OutputDirs.Add(key, this.CreateTokenizedString("@dir($(0))", path));
+            }
+            else
+            {
+                this.OutputDirs.Add(key, path);
+            }
         }
 
         /// <summary>
