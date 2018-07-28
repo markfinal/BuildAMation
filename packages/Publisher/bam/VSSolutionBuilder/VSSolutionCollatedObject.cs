@@ -42,8 +42,41 @@ namespace Publisher
             }
 
             var collatedInterface = module as ICollatedObject;
+            var projectModule = collatedInterface.SourceModule;
+            var arePostBuildCommands = true;
+            // check for runtime dependencies that won't have projects, use their anchor
+            if (null == projectModule.MetaData)
+            {
+                if (null != collatedInterface.Anchor)
+                {
+                    projectModule = collatedInterface.Anchor.SourceModule;
+                }
+                else
+                {
+                    if (collatedInterface.SourceModule is PreExistingObject)
+                    {
+                        projectModule = (collatedInterface.SourceModule as PreExistingObject).ParentOfCollationModule;
+
+                        // ensure a project exists, as this collation may be visited prior to
+                        // the source which invoked it
+                        var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+                        solution.EnsureProjectExists(projectModule);
+
+                        arePostBuildCommands = false;
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception(
+                            "No anchor set on '{0}' with source path '{1}'",
+                            module.GetType().ToString(),
+                            module.SourcePath
+                        );
+                    }
+                }
+            }
+
             System.Diagnostics.Debug.Assert(null != collatedInterface.SourceModule);
-            if (module.IsAnchor)
+            if (module.IsAnchor && !(collatedInterface.SourceModule is PreExistingObject))
             {
                 // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
                 return;
@@ -73,17 +106,9 @@ namespace Publisher
                 )
             );
 
-            var sourceModule = collatedInterface.SourceModule;
-            // check for runtime dependencies that won't have projects, use their anchor
-            if (null == sourceModule.MetaData)
-            {
-                sourceModule = collatedInterface.Anchor.SourceModule;
-            }
+            var project = projectModule.MetaData as VSSolutionBuilder.VSProject;
+            var config = project.GetConfiguration(projectModule);
 
-            var project = sourceModule.MetaData as VSSolutionBuilder.VSProject;
-            var config = project.GetConfiguration(sourceModule);
-
-            var arePostBuildCommands = true;
             if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility && arePostBuildCommands)
             {
                 config.AddPostBuildCommands(commands);

@@ -29,15 +29,17 @@
 #endregion // License
 using Bam.Core;
 using System.Linq;
-using System;
-
 namespace Publisher
 {
 #if BAM_V2
-    sealed class PreExistingFile :
+    abstract class PreExistingObject :
         Bam.Core.Module
     {
-        public const string ExistingFileKey = "Preexisting file to be copied";
+        public Bam.Core.Module ParentOfCollationModule
+        {
+            get;
+            private set;
+        }
 
         protected override void
         Init(
@@ -45,7 +47,17 @@ namespace Publisher
         {
             base.Init(parent);
 
-            this.RegisterGeneratedFile(ExistingFileKey, this.Macros["ExistingFile"]);
+            var graph = Bam.Core.Graph.Instance;
+            var index = (graph.CommonModuleType.Count > 1) ? 1 : 0;
+            // Peek(0) returns the Collation
+            // Peek(1) returns whatever asked for the Collation, either:
+            // - nothing, in which case the Collation was in the master package and is buildable
+            // - the module that asked for the Collation, generally used when library headers are published to a public include path
+            var anchorType = graph.CommonModuleType.Peek(index);
+            this.ParentOfCollationModule = graph.GetReferencedModule(
+                this.BuildEnvironment,
+                anchorType
+            );
         }
 
         protected override void
@@ -63,8 +75,23 @@ namespace Publisher
         }
     }
 
+    sealed class PreExistingFile :
+        PreExistingObject
+    {
+        public const string ExistingFileKey = "Preexisting file to be copied";
+
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.RegisterGeneratedFile(ExistingFileKey, this.Macros["ExistingFile"]);
+        }
+    }
+
     sealed class PreExistingDirectory :
-        Bam.Core.Module
+        PreExistingObject
     {
         public const string ExistingDirectoryKey = "Preexisting directory to be copied";
 
@@ -75,20 +102,6 @@ namespace Publisher
             base.Init(parent);
 
             this.RegisterGeneratedFile(ExistingDirectoryKey, this.Macros["ExistingDirectory"]);
-        }
-
-        protected override void
-        EvaluateInternal()
-        {
-            // pre-existing so never needs evaluating
-            this.ReasonToExecute = null;
-        }
-
-        protected override void
-        ExecuteInternal(
-            Bam.Core.ExecutionContext context)
-        {
-            // pre-existing so never needs executing
         }
     }
 #endif

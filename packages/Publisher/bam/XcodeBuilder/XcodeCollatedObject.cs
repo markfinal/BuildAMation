@@ -42,14 +42,38 @@ namespace Publisher
             }
 
             var collatedInterface = module as ICollatedObject;
-            var sourceModule = collatedInterface.SourceModule;
-            if (null == sourceModule.MetaData)
+            var targetModule = collatedInterface.SourceModule;
+            var arePostBuildCommands = true;
+            if (null == targetModule.MetaData)
             {
-                // this can happen for prebuilt frameworks
-                sourceModule = collatedInterface.Anchor.SourceModule;
+                if (null != collatedInterface.Anchor)
+                {
+                    // this can happen for prebuilt frameworks
+                    targetModule = collatedInterface.Anchor.SourceModule;
+                }
+                else
+                {
+                    if (collatedInterface.SourceModule is PreExistingObject)
+                    {
+                        targetModule = (collatedInterface.SourceModule as PreExistingObject).ParentOfCollationModule;
+
+                        var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+                        workspace.EnsureTargetExists(targetModule);
+
+                        arePostBuildCommands = false;
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception(
+                            "No anchor set on '{0}' with source path '{1}'",
+                            module.GetType().ToString(),
+                            module.SourcePath
+                        );
+                    }
+                }
             }
 
-            var target = sourceModule.MetaData as XcodeBuilder.Target;
+            var target = targetModule.MetaData as XcodeBuilder.Target;
 
             System.Diagnostics.Debug.Assert(null != collatedInterface.SourceModule);
             if (module.IsAnchor)
@@ -94,8 +118,7 @@ namespace Publisher
                 CommandLineProcessor.Processor.TerminatingArgs(copyFileTool as Bam.Core.ICommandLineTool))
             );
 
-            var configuration = target.GetConfiguration(sourceModule);
-            var arePostBuildCommands = true;
+            var configuration = target.GetConfiguration(targetModule);
             if (!target.isUtilityType && arePostBuildCommands)
             {
                 target.AddPostBuildCommands(commands, configuration);
