@@ -1,3 +1,5 @@
+27-Jul-2018 ======== Version 1.2.0 Release ========
+
 11-Jul-2018 Fixes #476. -bigobj is no longer unconditionally set in generated .vcxprojs.
 
 30-Jun-2018 Fixes #474. Increase default minimum macOS deployment version from 10.6 to 10.7, to be more useful with modern C++ and using libc++.
