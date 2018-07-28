@@ -175,11 +175,20 @@ namespace XcodeProjectProcessor
     {
         public PathArrayAttribute(
             string property,
-            bool ignore = false
+            bool ignore = false,
+            bool prefixWithSrcRoot = true
         )
             :
             base(property, ValueType.MultiValued, ignore: ignore)
-        { }
+        {
+            this.PrefixWithSrcRoot = prefixWithSrcRoot;
+        }
+
+        public bool PrefixWithSrcRoot
+        {
+            get;
+            private set;
+        }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -526,7 +535,14 @@ namespace XcodeProjectProcessor
                                 {
                                     relPath = relPath.Replace(" ", "\\\\ ");
                                 }
-                                paths.Add(System.String.Format("$(SRCROOT)/{0}", relPath));
+                                if (associated_attr.PrefixWithSrcRoot)
+                                {
+                                    paths.Add(System.String.Format("$(SRCROOT)/{0}", relPath));
+                                }
+                                else
+                                {
+                                    paths.Add(relPath);
+                                }
                             }
                         }
                         configuration[associated_attr.Property] = paths;
