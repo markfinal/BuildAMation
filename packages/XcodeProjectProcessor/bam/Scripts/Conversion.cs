@@ -347,8 +347,11 @@ namespace XcodeProjectProcessor
                 }
                 if (Bam.Core.RelativePathUtilities.IsPathAbsolute(framework_path))
                 {
-                    Bam.Core.Log.MessageAll("Absolute framework: {0}", framework_path);
-                    throw new System.NotImplementedException();
+                    target.EnsureFrameworksBuildFileExists(
+                        framework,
+                        XcodeBuilder.FileReference.EFileType.WrapperFramework,
+                        XcodeBuilder.FileReference.ESourceTree.Absolute
+                    );
                 }
                 else
                 {
