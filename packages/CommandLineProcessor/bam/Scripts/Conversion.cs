@@ -142,6 +142,17 @@ namespace CommandLineProcessor
         }
     }
 
+    [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)] // only ever one wildcard for files
+    public class AnyInputFileAttribute :
+        InputPathsAttribute
+    {
+        public AnyInputFileAttribute(
+            string command_switch)
+            :
+            base(null, command_switch, max_file_count: 1)
+        {}
+    }
+
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PathArrayAttribute :
         BaseAttribute
@@ -696,10 +707,24 @@ namespace CommandLineProcessor
             {
                 if (!input_files_attributes.Any())
                 {
-                    throw new Bam.Core.Exception(
-                        "There is no InputPaths attribute associated with the {0} settings class",
-                        settings.ToString()
+                    var message = new System.Text.StringBuilder();
+                    message.AppendFormat(
+                        "There is no InputPaths attribute associated with the {0} settings class and module {1}",
+                        settings.ToString(),
+                        settings.Module.ToString()
                     );
+                    message.AppendLine();
+                    message.AppendLine("The following input paths were identified for the module:");
+                    foreach (var input in settings.Module.InputModules)
+                    {
+                        message.AppendFormat("\t{0}[{1}]", input.Value.ToString(), input.Key);
+                        if (input.Value.GeneratedPaths.ContainsKey(input.Key))
+                        {
+                            message.AppendFormat("= '{0}'", input.Value.GeneratedPaths[input.Key].ToString());
+                        }
+                        message.AppendLine();
+                    }
+                    throw new Bam.Core.Exception(message.ToString());
                 }
                 var attr = input_files_attributes.First();
                 var max_files = attr.MaxFileCount;
@@ -774,15 +799,22 @@ namespace CommandLineProcessor
                 );
                 if (null == matching_input_attr)
                 {
-                    throw new Bam.Core.Exception(
-                        "Unable to locate InputPathsAttribute suitable for input module {0} and path key {1} while dealing with inputs on module {2}.\n" +
-                        "Does module {2} override the InputModules property?\n" +
-                        "Is settings class {3} missing an InputPaths attribute?",
-                        input_module_and_pathkey.Value.ToString(),
-                        input_module_and_pathkey.Key,
-                        settings.Module.ToString(),
-                        settings.ToString()
-                    );
+                    // first look to see if there's a generic 'catch all files' attribute
+                    // before failing
+                    var match_any = input_files_attributes.FirstOrDefault(item => item is AnyInputFileAttribute);
+                    if (null == match_any)
+                    {
+                        throw new Bam.Core.Exception(
+                            "Unable to locate InputPathsAttribute suitable for input module {0} and path key {1} while dealing with inputs on module {2}.\n" +
+                            "Does module {2} override the InputModules property?\n" +
+                            "Is settings class {3} missing an InputPaths attribute?",
+                            input_module_and_pathkey.Value.ToString(),
+                            input_module_and_pathkey.Key,
+                            settings.Module.ToString(),
+                            settings.ToString()
+                        );
+                    }
+                    matching_input_attr = match_any;
                 }
                 commandLine.Add(
                     System.String.Format(

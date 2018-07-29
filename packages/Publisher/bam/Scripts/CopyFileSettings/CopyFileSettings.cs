@@ -32,12 +32,7 @@ namespace Publisher
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedFileKey, "")]
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedDirectoryKey, "")]
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedRenamedDirectoryKey, "")]
-    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
-    [CommandLineProcessor.InputPaths(C.SharedObjectSymbolicLink.SOSymLinkKey, "", max_file_count: 1)]
-    [CommandLineProcessor.InputPaths(PreExistingFile.ExistingFileKey, "", max_file_count: 1)]
-    [CommandLineProcessor.InputPaths(PreExistingDirectory.ExistingDirectoryKey, "", max_file_count: 1)] // TODO path modifier, add /* upon rename
-    [CommandLineProcessor.InputPaths(CollatedObject.CopiedFileKey, "", max_file_count: 1)]
-    [CommandLineProcessor.InputPaths(CollatedObject.CopiedDirectoryKey, "", max_file_count: 1)]
+    [CommandLineProcessor.AnyInputFile("")]
     public sealed class PosixCopyFileSettings :
         Bam.Core.Settings,
 #if BAM_V2
@@ -110,13 +105,7 @@ namespace Publisher
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedFileKey, "", path_modifier: "@dir($(0))/")]
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedDirectoryKey, "", path_modifier: "$(0)/")]
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedRenamedDirectoryKey, "", path_modifier: "$(0)/")]
-    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
-    [CommandLineProcessor.InputPaths(C.ConsoleApplication.PDBKey, "", max_file_count: 1)]
-    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ImportLibraryKey, "", max_file_count: 1)]
-    [CommandLineProcessor.InputPaths(PreExistingFile.ExistingFileKey, "", max_file_count: 1)]
-    [CommandLineProcessor.InputPaths(PreExistingDirectory.ExistingDirectoryKey, "", max_file_count: 1)]
-    [CommandLineProcessor.InputPaths(CollatedObject.CopiedFileKey, "", max_file_count: 1)]
-    [CommandLineProcessor.InputPaths(CollatedObject.CopiedDirectoryKey, "", max_file_count: 1)]
+    [CommandLineProcessor.AnyInputFile("")]
     public sealed class WinCopyFileSettings :
         Bam.Core.Settings,
 #if BAM_V2
