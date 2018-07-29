@@ -67,6 +67,13 @@ namespace Publisher
                     variableName: "CollatedDir" + variableName
                 );
             }
+            else if (module is CollatedOSXFramework)
+            {
+                rule.AddTarget(
+                    module.GeneratedPaths[CollatedObject.CopiedFrameworkKey],
+                    variableName: "CollatedFramework" + variableName
+                );
+            }
             else
             {
                 throw new Bam.Core.Exception(
