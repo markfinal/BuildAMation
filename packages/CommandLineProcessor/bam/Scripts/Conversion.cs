@@ -775,10 +775,13 @@ namespace CommandLineProcessor
                 if (null == matching_input_attr)
                 {
                     throw new Bam.Core.Exception(
-                        "Unable to locate InputPathsAttribute suitable for input module {0} and path key {1} while dealing with inputs on module {2}. Does {2} override the InputModules property?",
+                        "Unable to locate InputPathsAttribute suitable for input module {0} and path key {1} while dealing with inputs on module {2}.\n" +
+                        "Does module {2} override the InputModules property?\n" +
+                        "Is settings class {3} missing an InputPaths attribute?",
                         input_module_and_pathkey.Value.ToString(),
                         input_module_and_pathkey.Key,
-                        settings.Module.ToString()
+                        settings.Module.ToString(),
+                        settings.ToString()
                     );
                 }
                 commandLine.Add(
