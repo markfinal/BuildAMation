@@ -29,7 +29,7 @@
 #endregion // License
 namespace Publisher
 {
-    [CommandLineProcessor.OutputPath(CollatedObject.CopiedFrameworkKey, "")]
+    [CommandLineProcessor.OutputPath(CollatedObject.CopiedFrameworkKey, "", path_modifier: "@dir($(0))")]
     [CommandLineProcessor.InputPaths(C.OSXFramework.FrameworkKey, "")]
     public sealed class RsyncSettings :
         Bam.Core.Settings,

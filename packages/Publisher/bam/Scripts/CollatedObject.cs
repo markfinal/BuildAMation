@@ -318,10 +318,11 @@ namespace Publisher
                 this.RegisterGeneratedFile(
                     CopiedFrameworkKey,
                     this.CreateTokenizedString(
-                        "$(0)",
+                        "$(0)/@filename($(1))",
                         new[]
                         {
-                            this.publishingDirectory
+                            this.publishingDirectory,
+                            this.SourcePath
                         }
                     )
                 );
