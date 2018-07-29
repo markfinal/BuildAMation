@@ -58,7 +58,7 @@ namespace Publisher
             {
                 if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
                 {
-                    shellCommands.Add(System.String.Format("cmd /C cd /D {0} &&", module.WorkingDirectory.ToStringQuoteIfNecessary()));
+                    shellCommands.Add(System.String.Format("cd /D {0} &&", module.WorkingDirectory.ToStringQuoteIfNecessary()));
                 }
                 else
                 {

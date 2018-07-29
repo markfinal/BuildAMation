@@ -45,7 +45,7 @@ namespace Publisher
             var args = new Bam.Core.StringArray();
             if (module.WorkingDirectory != null)
             {
-                args.Add(System.String.Format("cmd /C cd /D {0} &&", module.WorkingDirectory.ToStringQuoteIfNecessary()));
+                args.Add(System.String.Format("cd /D {0} &&", module.WorkingDirectory.ToStringQuoteIfNecessary()));
             }
             args.Add(CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool));
             args.AddRange(
