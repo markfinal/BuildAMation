@@ -37,6 +37,10 @@ namespace C
         Link(
             ConsoleApplication module)
         {
+            if (module.IsPrebuilt)
+            {
+                return;
+            }
             // any libraries added prior to here, need to be moved to the end
             // they are external dependencies, and thus all built modules (to be added now) may have
             // a dependency on them (and not vice versa)
