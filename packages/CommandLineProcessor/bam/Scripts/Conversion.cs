@@ -154,6 +154,17 @@ namespace CommandLineProcessor
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
+    public class FrameworkArrayAttribute :
+        BaseAttribute
+    {
+        public FrameworkArrayAttribute(
+            string command_switch)
+            :
+            base(command_switch)
+        { }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class StringAttribute :
         BaseAttribute
     {
@@ -334,6 +345,35 @@ namespace CommandLineProcessor
                         "{0}{1}",
                         command_switch,
                         path.ToStringQuoteIfNecessary()
+                    )
+                );
+            }
+        }
+
+        private static void
+        HandleFrameworkArray(
+            Bam.Core.StringArray commandLine,
+            System.Reflection.PropertyInfo interfacePropertyInfo,
+            System.Reflection.PropertyInfo propertyInfo,
+            object[] attributeArray,
+            object propertyValue)
+        {
+            if (!typeof(Bam.Core.TokenizedStringArray).IsAssignableFrom(propertyInfo.PropertyType))
+            {
+                throw new Bam.Core.Exception(
+                    "Attribute expected a Bam.Core.TokenizedStringArray, but property {0} is of type {1}",
+                    propertyInfo.Name,
+                    propertyInfo.PropertyType.ToString()
+                );
+            }
+            var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
+            foreach (var path in (propertyValue as Bam.Core.TokenizedStringArray).ToEnumerableWithoutDuplicates())
+            {
+                commandLine.Add(
+                    System.String.Format(
+                        "{0}{1}",
+                        command_switch,
+                        System.IO.Path.GetFileNameWithoutExtension(path.ToStringQuoteIfNecessary())
                     )
                 );
             }
@@ -553,6 +593,16 @@ namespace CommandLineProcessor
                     else if (attributeArray.First() is PathArrayAttribute)
                     {
                         HandlePathArray(
+                            commandLine,
+                            interface_property,
+                            settings_property,
+                            attributeArray,
+                            property_value
+                        );
+                    }
+                    else if (attributeArray.First() is FrameworkArrayAttribute)
+                    {
+                        HandleFrameworkArray(
                             commandLine,
                             interface_property,
                             settings_property,

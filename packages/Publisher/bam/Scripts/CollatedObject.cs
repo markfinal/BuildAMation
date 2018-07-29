@@ -39,6 +39,7 @@ namespace Publisher
         public const string CopiedFileKey = "Copied file";
         public const string CopiedDirectoryKey = "Copied directory";
         public const string CopiedRenamedDirectoryKey = "Copied renamed directory";
+        public const string CopiedFrameworkKey = "Copied framework";
 #else
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Copied Object");
 
@@ -55,7 +56,7 @@ namespace Publisher
         private ICollatedObject anchor = null;
 
 #if BAM_V2
-        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, CollatedObject>();
+        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject>();
 #else
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
 #endif
@@ -190,7 +191,7 @@ namespace Publisher
 
         // TODO: add accessors, rather than direct to the field
 #if BAM_V2
-        public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, CollatedObject> DependentCollations
+        public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> DependentCollations
 #else
         public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> DependentCollations
 #endif
@@ -311,6 +312,19 @@ namespace Publisher
                         )
                     );
                 }
+            }
+            else if (this is CollatedOSXFramework)
+            {
+                this.RegisterGeneratedFile(
+                    CopiedFrameworkKey,
+                    this.CreateTokenizedString(
+                        "$(0)",
+                        new[]
+                        {
+                            this.publishingDirectory
+                        }
+                    )
+                );
             }
             else
 #endif

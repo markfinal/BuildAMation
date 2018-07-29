@@ -225,7 +225,7 @@ namespace Publisher
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
 #if BAM_V2
-        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, CollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, string>, CollatedObject>();
+        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, string>, ICollatedObject>();
 #else
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
 #endif
@@ -852,7 +852,7 @@ namespace Publisher
 #if BAM_V2
         private void
         recordCollatedObject(
-            CollatedObject collatedFile,
+            ICollatedObject collatedFile,
             Bam.Core.Module dependent,
             string key,
             ICollatedObject anchor)
@@ -903,14 +903,26 @@ namespace Publisher
             ICollatedObject anchor,
             Bam.Core.TokenizedString anchorPublishRoot)
         {
-            CollatedObject collatedFile;
+            ICollatedObject collatedFile;
             if (dependent is C.OSXFramework)
             {
-                collatedFile = this.CreateCollatedModuleGeneratedOSXFramework(dependent, key, modulePublishDir, anchor, anchorPublishRoot);
+                collatedFile = this.CreateCollatedModuleGeneratedOSXFramework(
+                    dependent,
+                    key,
+                    modulePublishDir,
+                    anchor,
+                    anchorPublishRoot
+                );
             }
             else
             {
-                collatedFile = this.CreateCollatedModuleGeneratedFile<CollatedFile>(dependent, key, modulePublishDir, anchor, anchorPublishRoot);
+                collatedFile = this.CreateCollatedModuleGeneratedFile<CollatedFile>(
+                    dependent,
+                    key,
+                    modulePublishDir,
+                    anchor,
+                    anchorPublishRoot
+                );
             }
 #if BAM_V2
             this.recordCollatedObject(
@@ -1459,7 +1471,7 @@ namespace Publisher
             return collatedFile;
         }
 
-        private CollatedOSXFramework
+        private ICollatedObject
         CreateCollatedModuleGeneratedOSXFramework(
             Bam.Core.Module dependent,
 #if BAM_V2
@@ -1471,9 +1483,6 @@ namespace Publisher
             ICollatedObject anchor,
             Bam.Core.TokenizedString anchorPublishRoot)
         {
-#if BAM_V2
-            return null;
-#else
             var collatedFramework = Bam.Core.Module.Create<CollatedOSXFramework>(preInitCallback: module =>
                 {
                     module.SourceModule = dependent;
@@ -1515,7 +1524,6 @@ namespace Publisher
 
             this.Requires(collatedFramework);
             return collatedFramework;
-#endif
         }
 
         /// <summary>

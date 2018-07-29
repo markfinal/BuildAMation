@@ -128,7 +128,7 @@ namespace ClangCommon
         }
 
 #if BAM_V2
-        [CommandLineProcessor.PathArray("-framework ")]
+        [CommandLineProcessor.FrameworkArray("-framework ")]
         [XcodeProjectProcessor.FrameworkArray()]
 #endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.Frameworks
