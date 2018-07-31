@@ -254,6 +254,7 @@ namespace CommandLineProcessor
             }
         }
 
+        // TODO: deprecate this one, as you can't get the module override WorkingDirectory
         public static void
         Execute(
             Bam.Core.ExecutionContext context,
