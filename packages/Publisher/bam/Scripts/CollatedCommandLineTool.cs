@@ -33,6 +33,16 @@ namespace Publisher
         CollatedFile,
         Bam.Core.ICommandLineTool
     {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            // share the metadata in case it's queried
+            this.MetaData = (this as ICollatedObject).SourceModule.Tool.MetaData;
+        }
+
         private Bam.Core.ICommandLineTool
         GetTool()
         {
