@@ -74,6 +74,10 @@ namespace MakeFileBuilder
         ExtendEnvironmentVariables(
             System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> import)
         {
+            if (null == import)
+            {
+                return;
+            }
             lock (this.Environment)
             {
                 foreach (var env in import)
