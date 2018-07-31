@@ -914,6 +914,16 @@ namespace Publisher
                     anchorPublishRoot
                 );
             }
+            else if (dependent is Bam.Core.ICommandLineTool)
+            {
+                collatedFile = this.CreateCollatedModuleGeneratedFile<CollatedCommandLineTool>(
+                    dependent,
+                    key,
+                    modulePublishDir,
+                    anchor,
+                    anchorPublishRoot
+                );
+            }
             else
             {
                 collatedFile = this.CreateCollatedModuleGeneratedFile<CollatedFile>(
