@@ -692,7 +692,7 @@ namespace CommandLineProcessor
                 typeof(OutputPathAttribute),
                 true // since generally specified in an abstract class
             ) as OutputPathAttribute[];
-            if (!output_file_attributes.Any() && settings.Module.GeneratedPaths.Any())
+            if (!output_file_attributes.Any() && module.GeneratedPaths.Any())
             {
                 throw new Bam.Core.Exception(
                     "There are no OutputPath attributes associated with the {0} settings class",
@@ -703,7 +703,7 @@ namespace CommandLineProcessor
                 typeof(InputPathsAttribute),
                 true // since generally specified in an abstract class
             ) as InputPathsAttribute[];
-            if (settings.Module.InputModules.Any())
+            if (module.InputModules.Any())
             {
                 if (!input_files_attributes.Any())
                 {
@@ -711,11 +711,11 @@ namespace CommandLineProcessor
                     message.AppendFormat(
                         "There is no InputPaths attribute associated with the {0} settings class and module {1}",
                         settings.ToString(),
-                        settings.Module.ToString()
+                        module.ToString()
                     );
                     message.AppendLine();
                     message.AppendLine("The following input paths were identified for the module:");
-                    foreach (var input in settings.Module.InputModules)
+                    foreach (var input in module.InputModules)
                     {
                         message.AppendFormat("\t{0}[{1}]", input.Value.ToString(), input.Key);
                         if (input.Value.GeneratedPaths.ContainsKey(input.Key))
@@ -730,12 +730,12 @@ namespace CommandLineProcessor
                 var max_files = attr.MaxFileCount;
                 if (max_files >= 0)
                 {
-                    if (max_files != settings.Module.InputModules.Count())
+                    if (max_files != module.InputModules.Count())
                     {
                         throw new Bam.Core.Exception(
                             "InputPaths attribute specifies a maximum of {0} files, but {1} are available",
                             max_files,
-                            settings.Module.InputModules.Count()
+                            module.InputModules.Count()
                         );
                     }
                 }
@@ -744,18 +744,18 @@ namespace CommandLineProcessor
             {
                 case Bam.Core.Settings.ELayout.Cmds_Outputs_Inputs:
                     ProcessOutputPaths(settings, module, commandLine, output_file_attributes);
-                    ProcessInputPaths(settings, commandLine, input_files_attributes);
+                    ProcessInputPaths(settings, module, commandLine, input_files_attributes);
                     break;
 
                 case Bam.Core.Settings.ELayout.Cmds_Inputs_Outputs:
-                    ProcessInputPaths(settings, commandLine, input_files_attributes);
+                    ProcessInputPaths(settings, module, commandLine, input_files_attributes);
                     ProcessOutputPaths(settings, module, commandLine, output_file_attributes);
                     break;
 
                 case Bam.Core.Settings.ELayout.Inputs_Cmds_Outputs:
                     {
                         var newCommandLine = new Bam.Core.StringArray();
-                        ProcessInputPaths(settings, newCommandLine, input_files_attributes);
+                        ProcessInputPaths(settings, module, newCommandLine, input_files_attributes);
                         newCommandLine.AddRange(commandLine);
                         ProcessOutputPaths(settings, module, newCommandLine, output_file_attributes);
                         commandLine = newCommandLine;
@@ -765,7 +765,7 @@ namespace CommandLineProcessor
                 case Bam.Core.Settings.ELayout.Inputs_Outputs_Cmds:
                     {
                         var newCommandLine = new Bam.Core.StringArray();
-                        ProcessInputPaths(settings, newCommandLine, input_files_attributes);
+                        ProcessInputPaths(settings, module, newCommandLine, input_files_attributes);
                         ProcessOutputPaths(settings, module, newCommandLine, output_file_attributes);
                         newCommandLine.AddRange(commandLine);
                         commandLine = newCommandLine;
@@ -785,6 +785,7 @@ namespace CommandLineProcessor
         private static void
         ProcessInputPaths(
             Bam.Core.Settings settings,
+            Bam.Core.Module module,
             Bam.Core.StringArray commandLine,
             InputPathsAttribute[] input_files_attributes)
         {
@@ -792,7 +793,7 @@ namespace CommandLineProcessor
             {
                 return;
             }
-            foreach (var input_module_and_pathkey in settings.Module.InputModules)
+            foreach (var input_module_and_pathkey in module.InputModules)
             {
                 var matching_input_attr = input_files_attributes.FirstOrDefault(
                     item => item.PathKey == input_module_and_pathkey.Key
@@ -810,7 +811,7 @@ namespace CommandLineProcessor
                             "Is settings class {3} missing an InputPaths attribute?",
                             input_module_and_pathkey.Value.ToString(),
                             input_module_and_pathkey.Key,
-                            settings.Module.ToString(),
+                            module.ToString(),
                             settings.ToString()
                         );
                     }
@@ -833,7 +834,7 @@ namespace CommandLineProcessor
             Bam.Core.StringArray commandLine,
             OutputPathAttribute[] output_file_attributes)
         {
-            foreach (var generatedPath in settings.Module.GeneratedPaths)
+            foreach (var generatedPath in module.GeneratedPaths)
             {
                 if (null == generatedPath.Value)
                 {
