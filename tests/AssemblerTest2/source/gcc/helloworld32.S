@@ -18,6 +18,7 @@ main:
 	subl	$16, %esp
 	movl	$.LC0, (%esp)
 	call	puts
+	call	CFunction
 	xorl	%eax, %eax
 	leave
 	.cfi_restore 5
@@ -26,5 +27,5 @@ main:
 	.cfi_endproc
 .LFE24:
 	.size	main, .-main
-	.ident	"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04.3) 4.8.4"
+	.ident	"GCC: (Ubuntu 4.8.4-2ubuntu1~14.04.4) 4.8.4"
 	.section	.note.GNU-stack,"",@progbits
