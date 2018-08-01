@@ -85,7 +85,7 @@ namespace C
                 var sharedSettings = C.SettingsBase.SharedSettings(
                     realObjectFiles
                 );
-                XcodeSharedSettings.Tweak(sharedSettings);
+                XcodeSharedSettings.Tweak(sharedSettings, realObjectFiles.Count() != module.InputModules.Count());
                 XcodeProjectProcessor.XcodeConversion.Convert(
                     sharedSettings,
                     realObjectFiles.First().Settings.GetType(),

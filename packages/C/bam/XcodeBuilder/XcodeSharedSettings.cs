@@ -34,7 +34,8 @@ namespace C
     {
         public static void
         Tweak(
-            Bam.Core.Settings settings)
+            Bam.Core.Settings settings,
+            bool assemblerSourcesPresent)
         {
             if (!(settings is ClangCommon.ICommonCompilerSettings))
             {
@@ -53,6 +54,14 @@ namespace C
                 (settings as ICommonCompilerSettings).DisableWarnings.Any())
             {
                 (settings as ClangCommon.ICommonCompilerSettings).Pedantic = true;
+            }
+
+            // since assembly files share the 'common' settings, but are treated differently
+            // any common setting must be removed for the C/C++/ObjC/ObjC++ code
+            // otherwise the assembly is attempted to be used as that common target language
+            if (assemblerSourcesPresent)
+            {
+                (settings as C.ICommonCompilerSettings).TargetLanguage = ETargetLanguage.Default;
             }
         }
     }
