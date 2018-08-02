@@ -82,7 +82,8 @@ namespace VisualStudioProcessor
             AsIntegerWithPrefix,
             VerbatimString,
             Empty,
-            NoOp
+            NoOp,
+            PassThrough
         }
 
         public EnumAttribute(
@@ -379,68 +380,81 @@ namespace VisualStudioProcessor
                     {
                         var associated_attribute = attributeArray.First(
                             item => (item as EnumAttribute).Key.Equals(property_value)) as EnumAttribute;
-                        if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
+                        if (associated_attribute.Target == BaseAttribute.TargetGroup.Settings)
                         {
-                            throw new Bam.Core.Exception(
-                                "Unable to use property target, {0}",
-                                associated_attribute.Target.ToString()
-                            );
+                            System.Diagnostics.Debug.Assert(!associated_attribute.InheritExisting);
+                            switch (associated_attribute.Mode)
+                            {
+                                case EnumAttribute.EMode.AsString:
+                                    vsSettingsGroup.AddSetting(
+                                        associated_attribute.Property,
+                                        property_value.ToString(),
+                                        condition: condition
+                                    );
+                                    break;
+
+                                case EnumAttribute.EMode.AsInteger:
+                                    vsSettingsGroup.AddSetting(
+                                        associated_attribute.Property,
+                                        ((int)property_value).ToString("D"),
+                                        condition: condition
+                                    );
+                                    break;
+
+                                case EnumAttribute.EMode.AsIntegerWithPrefix:
+                                    vsSettingsGroup.AddSetting(
+                                        associated_attribute.Property,
+                                        System.String.Format(
+                                            "{0}{1}",
+                                            associated_attribute.Prefix,
+                                            ((int)property_value).ToString("D")
+                                        ),
+                                        condition: condition
+                                    );
+                                    break;
+
+                                case EnumAttribute.EMode.VerbatimString:
+                                    vsSettingsGroup.AddSetting(
+                                        associated_attribute.Property,
+                                        associated_attribute.VerbatimString,
+                                        condition: condition
+                                    );
+                                    break;
+
+                                case EnumAttribute.EMode.Empty:
+                                    vsSettingsGroup.AddSetting(
+                                        associated_attribute.Property,
+                                        "",
+                                        condition: condition
+                                    );
+                                    break;
+
+                                case EnumAttribute.EMode.NoOp:
+                                    break;
+
+                                default:
+                                    throw new Bam.Core.Exception(
+                                        "Unhandled enum mode, {0}",
+                                        associated_attribute.Mode.ToString()
+                                    );
+                            }
                         }
-                        System.Diagnostics.Debug.Assert(!associated_attribute.InheritExisting);
-                        switch (associated_attribute.Mode)
+                        else if (associated_attribute.Target == BaseAttribute.TargetGroup.Configuration)
                         {
-                            case EnumAttribute.EMode.AsString:
-                                vsSettingsGroup.AddSetting(
-                                    associated_attribute.Property,
-                                    property_value.ToString(),
-                                    condition: condition
-                                );
-                                break;
+                            var prop = vsConfig.GetType().GetProperty(associated_attribute.Property);
+                            var setter = prop.GetSetMethod();
+                            switch (associated_attribute.Mode)
+                            {
+                                case EnumAttribute.EMode.PassThrough:
+                                    setter.Invoke(vsConfig, new[] { property_value });
+                                    break;
 
-                            case EnumAttribute.EMode.AsInteger:
-                                vsSettingsGroup.AddSetting(
-                                    associated_attribute.Property,
-                                    ((int)property_value).ToString("D"),
-                                    condition: condition
-                                );
-                                break;
-
-                            case EnumAttribute.EMode.AsIntegerWithPrefix:
-                                vsSettingsGroup.AddSetting(
-                                    associated_attribute.Property,
-                                    System.String.Format(
-                                        "{0}{1}",
-                                        associated_attribute.Prefix,
-                                        ((int)property_value).ToString("D")
-                                    ),
-                                    condition: condition
-                                );
-                                break;
-
-                            case EnumAttribute.EMode.VerbatimString:
-                                vsSettingsGroup.AddSetting(
-                                    associated_attribute.Property,
-                                    associated_attribute.VerbatimString,
-                                    condition: condition
-                                );
-                                break;
-
-                            case EnumAttribute.EMode.Empty:
-                                vsSettingsGroup.AddSetting(
-                                    associated_attribute.Property,
-                                    "",
-                                    condition: condition
-                                );
-                                break;
-
-                            case EnumAttribute.EMode.NoOp:
-                                break;
-
-                            default:
-                                throw new Bam.Core.Exception(
-                                    "Unhandled enum mode, {0}",
-                                    associated_attribute.Mode.ToString()
-                                );
+                                default:
+                                    throw new Bam.Core.Exception(
+                                        "Unhandled enum mode, {0}",
+                                        associated_attribute.Mode.ToString()
+                                    );
+                            }
                         }
                     }
                     else if (attributeArray.First() is PathAttribute)

@@ -168,11 +168,14 @@ namespace VSSolutionBuilder
             set;
         }
 
+#if BAM_V2
+#else
         private C.ECharacterSet CharacterSet
         {
             get;
             set;
         }
+#endif
 
         private bool WholeProgramOptimization
         {
@@ -277,6 +280,13 @@ namespace VSSolutionBuilder
             this.Type = type;
         }
 
+#if BAM_V2
+        public C.ECharacterSet CharacterSet
+        {
+            get;
+            set;
+        }
+#else
         public void
         SetCharacterSet(
             C.ECharacterSet charSet)
@@ -284,8 +294,6 @@ namespace VSSolutionBuilder
             this.CharacterSet = charSet;
         }
 
-#if BAM_V2
-#else
         public void
         SetOutputPath(
             Bam.Core.TokenizedString path)
