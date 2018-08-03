@@ -121,15 +121,23 @@ namespace CommandLineProcessor
         public InputPathsAttribute(
             string pathKey,
             string command_switch,
+            string path_modifier = null,
             int max_file_count = -1)
             :
             base(command_switch)
         {
             this.PathKey = pathKey;
+            this.PathModifier = path_modifier;
             this.MaxFileCount = max_file_count;
         }
 
         public string PathKey
+        {
+            get;
+            private set;
+        }
+
+        public string PathModifier
         {
             get;
             private set;
@@ -817,13 +825,35 @@ namespace CommandLineProcessor
                     }
                     matching_input_attr = match_any;
                 }
-                commandLine.Add(
-                    System.String.Format(
-                        "{0}{1}",
-                        matching_input_attr.CommandSwitch,
-                        input_module_and_pathkey.Value.GeneratedPaths[input_module_and_pathkey.Key].ToStringQuoteIfNecessary()
-                    )
-                );
+                if (null != matching_input_attr.PathModifier)
+                {
+                    var modifiedPath = Bam.Core.TokenizedString.Create(
+                        matching_input_attr.PathModifier,
+                        module,
+                        new Bam.Core.TokenizedStringArray(input_module_and_pathkey.Value.GeneratedPaths[input_module_and_pathkey.Key])
+                    );
+                    if (!modifiedPath.IsParsed)
+                    {
+                        modifiedPath.Parse();
+                    }
+                    commandLine.Add(
+                        System.String.Format(
+                            "{0}{1}",
+                            matching_input_attr.CommandSwitch,
+                            modifiedPath.ToStringQuoteIfNecessary()
+                        )
+                    );
+                }
+                else
+                {
+                    commandLine.Add(
+                        System.String.Format(
+                            "{0}{1}",
+                            matching_input_attr.CommandSwitch,
+                            input_module_and_pathkey.Value.GeneratedPaths[input_module_and_pathkey.Key].ToStringQuoteIfNecessary()
+                        )
+                    );
+                }
             }
         }
 
