@@ -254,6 +254,7 @@ namespace CommandLineProcessor
             }
         }
 
+#if false
         // TODO: deprecate this one, as you can't get the module override WorkingDirectory
         public static void
         Execute(
@@ -289,6 +290,7 @@ namespace CommandLineProcessor
                 addedEnvironmentVariables: tool.EnvironmentVariables,
                 useResponseFileOption: tool.UseResponseFileOption);
         }
+#endif
 
         public static void
         Execute(

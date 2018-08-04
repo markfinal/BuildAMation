@@ -48,6 +48,7 @@ namespace Publisher
             }
 
             CommandLineProcessor.Processor.Execute(
+                module,
                 context,
                 module.Tool as Bam.Core.ICommandLineTool,
                 CommandLineProcessor.NativeConversion.Convert(
