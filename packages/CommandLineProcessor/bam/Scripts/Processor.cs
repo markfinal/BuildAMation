@@ -320,7 +320,7 @@ namespace CommandLineProcessor
                 tool.Executable.ToString(),
                 tool.SuccessfulExitCodes,
                 commandLineArgs,
-                workingDirectory: module.WorkingDirectory.ToString(),
+                workingDirectory: (module.WorkingDirectory != null) ? module.WorkingDirectory.ToString() : null,
                 inheritedEnvironmentVariables: tool.InheritedEnvironmentVariables,
                 addedEnvironmentVariables: tool.EnvironmentVariables,
                 useResponseFileOption: tool.UseResponseFileOption);
