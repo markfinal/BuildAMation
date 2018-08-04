@@ -285,7 +285,7 @@ namespace Installer
 
 #if D_PACKAGE_NATIVEBUILDER
                 case "Native":
-                    NativeSupport.CreateInnoSetup(this, context);
+                    NativeBuilder.Support.RunCommandLineTool(this, context);
                     break;
 #endif
 

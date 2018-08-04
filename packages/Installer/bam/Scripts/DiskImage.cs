@@ -138,7 +138,16 @@ namespace Installer
 
 #if D_PACKAGE_NATIVEBUILDER
                 case "Native":
-                    NativeSupport.CreateDMG(this, context);
+                    {
+                        // hdiutil will fail on an incremental build if the DMG exists
+                        // 'hdiutil: create failed - File exists'
+                        var dmg_path = this.GeneratedPaths[DiskImage.DMGKey].ToString();
+                        if (System.IO.File.Exists(dmg_path))
+                        {
+                            System.IO.File.Delete(dmg_path);
+                        }
+                        NativeBuilder.Support.RunCommandLineTool(this, context);
+                    }
                     break;
 #endif
 

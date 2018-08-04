@@ -265,7 +265,7 @@ namespace Installer
 
 #if D_PACKAGE_NATIVEBUILDER
                 case "Native":
-                    NativeSupport.CreateNSIS(this, context);
+                    NativeBuilder.Support.RunCommandLineTool(this, context);
                     break;
 #endif
 

@@ -30,6 +30,7 @@
 namespace Installer
 {
 #if BAM_V2
+#if false
     public static partial class NativeSupport
     {
         public static void
@@ -53,6 +54,7 @@ namespace Installer
             );
         }
     }
+#endif
 #else
     public sealed class NativeNSIS :
         INSISPolicy
