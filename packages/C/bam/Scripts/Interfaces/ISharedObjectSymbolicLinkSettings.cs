@@ -55,15 +55,5 @@ namespace C
             get;
             set;
         }
-
-        /// <summary>
-        /// Determine if the symbolic link is made relative to the target.
-        /// </summary>
-        /// <value><c>true</c> if make relative to target; otherwise, <c>false</c>.</value>
-        bool MakeRelativeToTarget
-        {
-            get;
-            set;
-        }
     }
 }

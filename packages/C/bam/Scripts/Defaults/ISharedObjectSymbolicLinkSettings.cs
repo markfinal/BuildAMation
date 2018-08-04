@@ -39,7 +39,6 @@ namespace C.DefaultSettings
         {
             settings.Force = true;
             settings.SoftLink = true;
-            settings.MakeRelativeToTarget = true;
         }
     }
 }

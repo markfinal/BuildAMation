@@ -29,8 +29,8 @@
 #endregion // License
 namespace C
 {
-    [CommandLineProcessor.OutputPath(C.SharedObjectSymbolicLink.SOSymLinkKey, "")]
-    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
+    [CommandLineProcessor.OutputPath(C.SharedObjectSymbolicLink.SOSymLinkKey, "", path_modifier: "@filename($(0))")]
+    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1, path_modifier: "@filename($(0))")]
     public sealed class SharedObjectSymbolicLinkSettings :
         Bam.Core.Settings,
         ISharedObjectSymbolicLinkSettings
@@ -50,13 +50,6 @@ namespace C
 
         [CommandLineProcessor.Bool("-s", "")]
         bool ISharedObjectSymbolicLinkSettings.SoftLink
-        {
-            get;
-            set;
-        }
-
-        [CommandLineProcessor.Bool("-r", "")]
-        bool ISharedObjectSymbolicLinkSettings.MakeRelativeToTarget
         {
             get;
             set;

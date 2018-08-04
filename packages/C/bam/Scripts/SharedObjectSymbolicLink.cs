@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
     public class SharedObjectSymbolicLink :
@@ -173,6 +174,14 @@ namespace C
             {
                 System.Diagnostics.Debug.Assert(1 == this.Dependents.Count);
                 yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.DynamicLibrary.ExecutableKey, this.Dependents[0]);
+            }
+        }
+
+        public override Bam.Core.TokenizedString WorkingDirectory
+        {
+            get
+            {
+                return this.OutputDirectories.First();
             }
         }
     }
