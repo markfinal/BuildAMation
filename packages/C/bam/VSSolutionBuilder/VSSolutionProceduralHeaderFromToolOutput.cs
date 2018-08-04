@@ -40,15 +40,20 @@ namespace C
             var toolProject = (tool as Bam.Core.Module).MetaData as VSSolutionBuilder.VSProject;
             var toolConfig = toolProject.GetConfiguration(tool as Bam.Core.Module);
 
-            var output = module.GeneratedPaths[ProceduralHeaderFileFromToolOutput.HeaderFileKey].ToString();
-            var output_parentdir = System.IO.Path.GetDirectoryName(output);
-            output_parentdir = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(output_parentdir);
-            output = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(output);
-
             var commands = new Bam.Core.StringArray();
-            commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", output_parentdir));
-            commands.Add(System.String.Format("{0} > {1}", CommandLineProcessor.Processor.StringifyTool(tool), output));
-            toolConfig.AddPostBuildCommands(commands);
+            commands.Add(
+                System.String.Format(
+                    "{0} > {1}",
+                    CommandLineProcessor.Processor.StringifyTool(tool),
+                    module.GeneratedPaths[ProceduralHeaderFileFromToolOutput.HeaderFileKey].ToString()
+                )
+            );
+
+            VSSolutionBuilder.Support.AddPostBuildStep(
+                toolConfig,
+                module,
+                commands
+            );
 
             // alias the tool's project so that inter-project dependencies can be set up
             module.MetaData = toolProject;

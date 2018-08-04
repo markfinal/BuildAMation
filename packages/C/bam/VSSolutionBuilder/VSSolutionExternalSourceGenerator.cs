@@ -51,41 +51,14 @@ namespace C
                 )
             );
 
-            bool added_rule_to_first_input = false;
-            foreach (var inputPath in module.InputFiles)
-            {
-                config.AddOtherFile(inputPath);
-                if (added_rule_to_first_input)
-                {
-                    continue;
-                }
-                var customBuild = config.GetSettingsGroup(
-                    VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.CustomBuild,
-                    include: inputPath,
-                    uniqueToProject: true
-                );
-                customBuild.AddSetting(
-                    "Command",
-                    args.ToString(' '),
-                    condition: config.ConditionText
-                );
-                customBuild.AddSetting(
-                    "Message",
-                    System.String.Format("Generating outputs from {0}", inputPath.ToString()),
-                    condition: config.ConditionText
-                );
-                customBuild.AddSetting(
-                    "Outputs",
-                    module.ExpectedOutputFiles.Values,
-                    condition: config.ConditionText
-                );
-                customBuild.AddSetting(
-                    "AdditionalInputs",
-                    module.InputFiles,
-                    condition: config.ConditionText
-                );
-                added_rule_to_first_input = true;
-            }
+            VSSolutionBuilder.Support.AddCustomBuildStep(
+                module.InputFiles,
+                module.ExpectedOutputFiles.Values,
+                config,
+                System.String.Format("Running '{0}'", args.ToString(' ')),
+                args.ToString(' '),
+                true
+            );
         }
     }
 #else
