@@ -30,6 +30,7 @@
 namespace C
 {
 #if BAM_V2
+#if false
     public static partial class NativeSupport
     {
         public static void
@@ -65,6 +66,7 @@ namespace C
             );
         }
     }
+#endif
 #else
     public sealed class NativeLinker :
         ILinkingPolicy
