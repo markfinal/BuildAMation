@@ -11,7 +11,7 @@ def convert_tabs_to_spaces(file_path):
         lines = infile.readlines()
     with open(file_path, mode='wt') as outfile:
         for line in lines:
-            stripped = re.sub('[\t]+', '    ', line)
+            stripped = re.sub('\t', '    ', line)
             outfile.write(stripped)
     if sys.platform.startswith("win"):
         convert_line_endings(file_path)
