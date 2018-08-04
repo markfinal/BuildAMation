@@ -361,7 +361,13 @@ namespace Publisher
 
 #if D_PACKAGE_NATIVEBUILDER
                 case "Native":
-                    NativeSupport.CollateObject(this, context);
+                    {
+                        if (this.Ignore)
+                        {
+                            return;
+                        }
+                        NativeBuilder.Support.RunCommandLineTool(this, context);
+                    }
                     break;
 #endif
 

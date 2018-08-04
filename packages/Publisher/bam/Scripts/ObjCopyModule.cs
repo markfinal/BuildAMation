@@ -69,7 +69,7 @@ namespace Publisher
 
 #if D_PACKAGE_NATIVEBUILDER
                 case "Native":
-                    NativeSupport.ObjCopy(this, context);
+                    NativeBuilder.Support.RunCommandLineTool(this, context);
                     break;
 #endif
 

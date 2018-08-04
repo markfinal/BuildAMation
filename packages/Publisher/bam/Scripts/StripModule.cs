@@ -96,7 +96,7 @@ namespace Publisher
 
 #if D_PACKAGE_NATIVEBUILDER
                 case "Native":
-                    NativeSupport.Strip(this, context);
+                    NativeBuilder.Support.RunCommandLineTool(this, context);
                     break;
 #endif
 
