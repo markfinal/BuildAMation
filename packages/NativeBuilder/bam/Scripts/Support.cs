@@ -36,6 +36,8 @@ namespace NativeBuilder
             Bam.Core.Module module,
             Bam.Core.ExecutionContext context)
         {
+            System.Diagnostics.Debug.Assert(module.Tool is Bam.Core.ICommandLineTool);
+
             foreach (var dir in module.OutputDirectories)
             {
                 Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
@@ -49,6 +51,29 @@ namespace NativeBuilder
                     module.Settings,
                     module
                 )
+            );
+        }
+
+        public static void
+        RunArbitraryCommandLineTool(
+            Bam.Core.Module module,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.TokenizedString executablePath,
+            Bam.Core.Array<int> successfulExitCodes,
+            Bam.Core.TokenizedStringArray argumentList)
+        {
+            System.Diagnostics.Debug.Assert(!(module.Tool is Bam.Core.ICommandLineTool));
+
+            foreach (var dir in module.OutputDirectories)
+            {
+                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
+            }
+
+            CommandLineProcessor.Processor.Execute(
+                context,
+                executablePath.ToString(),
+                successfulExitCodes,
+                argumentList
             );
         }
 

@@ -214,7 +214,22 @@ namespace C
 
 #if D_PACKAGE_NATIVEBUILDER
                 case "Native":
-                    NativeSupport.GenerateSource(this, context);
+                    {
+                        if (this.Tool is Bam.Core.ICommandLineTool)
+                        {
+                            NativeBuilder.Support.RunCommandLineTool(this, context);
+                        }
+                        else
+                        {
+                            NativeBuilder.Support.RunArbitraryCommandLineTool(
+                                this,
+                                context,
+                                this.Executable,
+                                new Bam.Core.Array<int> { 0 },
+                                this.Arguments
+                            );
+                        }
+                    }
                     break;
 #endif
 
