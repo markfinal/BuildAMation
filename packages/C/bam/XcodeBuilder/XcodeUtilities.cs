@@ -73,6 +73,60 @@ namespace C
             }
             configuration.SetProductName(productName);
 
+            // there are settings explicitly for prefix and suffix
+            if (module is C.Plugin || module is C.Cxx.Plugin)
+            {
+                var prefix = module.CreateTokenizedString("$(pluginprefix)");
+                if (!prefix.IsParsed)
+                {
+                    prefix.Parse();
+                }
+                configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(prefix.ToString());
+                var suffix = module.CreateTokenizedString("$(pluginext)");
+                if (!suffix.IsParsed)
+                {
+                    suffix.Parse();
+                }
+                configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(suffix.ToString().TrimStart(new[] { '.' }));
+            }
+            else if (module is C.DynamicLibrary || module is C.Cxx.DynamicLibrary)
+            {
+                    var prefix = module.CreateTokenizedString("$(dynamicprefix)");
+                if (!prefix.IsParsed)
+                {
+                    prefix.Parse();
+                }
+                configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(prefix.ToString());
+                var suffix = module.CreateTokenizedString("$(dynamicextonly)");
+                if (!suffix.IsParsed)
+                {
+                    suffix.Parse();
+                }
+                configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(suffix.ToString().TrimStart(new[] { '.' }));
+            }
+            else if (module is C.ConsoleApplication || module is C.Cxx.ConsoleApplication)
+            {
+                var prefix = string.Empty;
+                configuration["EXECUTABLE_PREFIX"] = new XcodeBuilder.UniqueConfigurationValue(prefix);
+                var suffix = module.CreateTokenizedString("$(exeext)");
+                if (!suffix.IsParsed)
+                {
+                    suffix.Parse();
+                }
+                configuration["EXECUTABLE_EXTENSION"] = new XcodeBuilder.UniqueConfigurationValue(suffix.ToString().TrimStart(new[] { '.' }));
+            }
+            else if (module is C.StaticLibrary)
+            {
+                // nothing to set
+            }
+            else
+            {
+                throw new Bam.Core.Exception(
+                    "Unknown type of executable is being processed: {0}",
+                    module.ToString()
+                );
+            }
+
             foreach (var header in headerFiles)
             {
                 target.EnsureHeaderFileExists((header as HeaderFile).InputPath);

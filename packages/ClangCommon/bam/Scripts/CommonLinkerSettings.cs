@@ -86,10 +86,8 @@ namespace ClangCommon
 #if BAM_V2
         [CommandLineProcessor.Enum(C.ELinkerOutput.Executable, "")]
         [CommandLineProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "-dynamiclib")]
-        [XcodeProjectProcessor.UniqueEnum(C.ELinkerOutput.Executable, "EXECUTABLE_PREFIX", "", "EXECUTABLE_EXTENSION", "")] // TODO: should really use $(exeext)
-        [XcodeProjectProcessor.UniqueEnum(C.ELinkerOutput.DynamicLibrary, "EXECUTABLE_PREFIX", "lib", "EXECUTABLE_EXTENSION", "dylib")] // TODO: should really use $(dynamicprefix) and $(dynamicextonly)
-        // TODO: should we have a Plugin on the enum?
-        // TODO: current version and compatibility version
+        [XcodeProjectProcessor.UniqueEnum(C.ELinkerOutput.Executable, "", "", ignore: true)] // EXECUTABLE_PREFIX and EXECUTABLE_EXTENSION handled in metadata
+        [XcodeProjectProcessor.UniqueEnum(C.ELinkerOutput.DynamicLibrary, "", "", ignore: true)]
 #endif
         C.ELinkerOutput C.ICommonLinkerSettings.OutputType
         {

@@ -90,7 +90,7 @@ namespace PluginTest
         {
             base.Init(parent);
 
-            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
+            this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
 #if BAM_V2
             this.Include<Application>(C.ConsoleApplication.ExecutableKey);
 #else
