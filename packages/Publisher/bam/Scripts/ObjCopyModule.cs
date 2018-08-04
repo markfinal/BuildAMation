@@ -262,23 +262,13 @@ namespace Publisher
         Bam.Core.Module,
         ICollatedObject
     {
-#if BAM_V2
-        public const string ObjCopyKey = "ObjCopy Destination";
-
-        private Bam.Core.Module sourceModule;
-        private string sourcePathKey;
-#else
         public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("ObjCopy Destination");
 
         private Bam.Core.Module sourceModule;
         private Bam.Core.PathKey sourcePathKey;
-#endif
         private ICollatedObject anchor = null;
 
-#if BAM_V2
-#else
         private IObjCopyToolPolicy Policy;
-#endif
 
         protected override void
         Init(
@@ -301,11 +291,7 @@ namespace Publisher
             {
                 // on Linux with a dynamic library, need to include the full versioning
                 this.RegisterGeneratedFile(
-#if BAM_V2
-                    ObjCopyKey,
-#else
                     Key,
-#endif
                     this.CreateTokenizedString(
                         "$(0)/@filename($(1)).debug",
                         new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
@@ -315,11 +301,7 @@ namespace Publisher
             else
             {
                 this.RegisterGeneratedFile(
-#if BAM_V2
-                    ObjCopyKey,
-#else
                     Key,
-#endif
                     this.CreateTokenizedString(
                         "$(0)/@basename($(1)).debug",
                         new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
@@ -341,23 +323,17 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
-            NativeSupport.ObjCopy(this, context);
-#else
             if (null == this.Policy)
             {
                 return;
             }
             this.Policy.ObjCopy(this, context, this.sourceModule.GeneratedPaths[this.sourcePathKey], this.GeneratedPaths[Key]);
-#endif
         }
 
         protected override void
         GetExecutionPolicy(
             string mode)
         {
-#if BAM_V2
-#else
             switch (mode)
             {
                 case "Native":
@@ -368,7 +344,6 @@ namespace Publisher
                     }
                     break;
             }
-#endif
         }
 
         Bam.Core.Module ICollatedObject.SourceModule
@@ -386,22 +361,6 @@ namespace Publisher
             }
         }
 
-#if BAM_V2
-        string ICollatedObject.SourcePathKey
-        {
-            get
-            {
-                return this.sourcePathKey;
-            }
-        }
-        public string SourcePathKey
-        {
-            set
-            {
-                this.sourcePathKey = value;
-            }
-        }
-#else
         Bam.Core.PathKey ICollatedObject.SourcePathKey
         {
             get
@@ -416,7 +375,6 @@ namespace Publisher
                 this.sourcePathKey = value;
             }
         }
-#endif
 
         Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
         {
@@ -448,11 +406,7 @@ namespace Publisher
             var linkDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
                 {
                     module.SourceModule = strippedCollatedObject;
-#if BAM_V2
-                    module.SourcePathKey = StripModule.StripBinaryKey;
-#else
                     module.SourcePathKey = StripModule.Key;
-#endif
                     module.Macros.Add("publishingdir", strippedCollatedObject.Macros["publishingdir"].Clone(module));
                 });
             linkDebugSymbols.DependsOn(strippedCollatedObject);
@@ -462,11 +416,7 @@ namespace Publisher
             linkDebugSymbols.PrivatePatch(settings =>
                 {
                     var objCopySettings = settings as IObjCopyToolSettings;
-#if BAM_V2
-                    objCopySettings.OnlyKeepDebug = false;
-#else
                     objCopySettings.Mode = EObjCopyToolMode.AddGNUDebugLink;
-#endif
                 });
 
             return linkDebugSymbols;
