@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace VSSolutionBuilder
 {
     static public partial class Support
@@ -37,7 +38,7 @@ namespace VSSolutionBuilder
             System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> outputs,
             VSProjectConfiguration config,
             string message,
-            string commandLine,
+            Bam.Core.StringArray commandList,
             bool commandIsForFirstInputOnly)
         {
             var is_first_input = true;
@@ -53,12 +54,76 @@ namespace VSSolutionBuilder
                     include: input,
                     uniqueToProject: true
                 );
-                customBuild.AddSetting("Command", commandLine, condition: config.ConditionText);
+                customBuild.AddSetting("Command", commandList.ToString(System.Environment.NewLine), condition: config.ConditionText);
                 customBuild.AddSetting("Message", message, condition: config.ConditionText);
                 customBuild.AddSetting("Outputs", outputs, condition: config.ConditionText);
                 customBuild.AddSetting("AdditionalInputs", inputs, condition: config.ConditionText); // TODO: incorrectly adds all inputs
                 is_first_input = false;
             }
+        }
+
+        static public void
+        AddCustomBuildStepForCommandLineTool(
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString outputPath,
+            string messagePrefix)
+        {
+            var encapsulating = module.GetEncapsulatingReferencedModule();
+
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            var project = solution.EnsureProjectExists(encapsulating);
+            var config = project.GetConfiguration(encapsulating);
+
+            var commands = new Bam.Core.StringArray();
+            foreach (var dir in module.OutputDirectories)
+            {
+                commands.Add(
+                    System.String.Format(
+                        "IF NOT EXIST {0} MKDIR {0}",
+                        dir.ToStringQuoteIfNecessary()
+                    )
+                );
+            }
+
+            var args = new Bam.Core.StringArray();
+            foreach (var envVar in (module.Tool as Bam.Core.ICommandLineTool).EnvironmentVariables)
+            {
+                args.Add("set");
+                var content = new System.Text.StringBuilder();
+                content.AppendFormat("{0}=", envVar.Key);
+                foreach (var value in envVar.Value)
+                {
+                    content.AppendFormat("{0};", value.ToStringQuoteIfNecessary());
+                }
+                content.AppendFormat("%{0}%", envVar.Key);
+                args.Add(content.ToString());
+                args.Add("&&");
+            }
+            args.Add(CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool));
+            args.AddRange(
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                )
+            );
+            commands.Add(args.ToString(' '));
+
+            System.Diagnostics.Debug.Assert(1 == module.InputModules.Count());
+            var firstInput = module.InputModules.First();
+            var sourcePath = firstInput.Value.GeneratedPaths[firstInput.Key];
+            AddCustomBuildStep(
+                System.Linq.Enumerable.Repeat(sourcePath, 1),
+                System.Linq.Enumerable.Repeat(outputPath, 1),
+                config,
+                System.String.Format(
+                    "{0} {1} into {2}",
+                    messagePrefix,
+                    sourcePath.ToString(),
+                    outputPath.ToString()
+                ),
+                commands,
+                true
+            );
         }
 
         static public void

@@ -56,7 +56,7 @@ namespace C
                 module.ExpectedOutputFiles.Values,
                 config,
                 System.String.Format("Running '{0}'", args.ToString(' ')),
-                args.ToString(' '),
+                args,
                 true
             );
         }
