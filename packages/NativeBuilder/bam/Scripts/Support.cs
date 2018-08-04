@@ -51,5 +51,54 @@ namespace NativeBuilder
                 )
             );
         }
+
+        public static void
+        SendCapturedOutputToFile(
+            Bam.Core.Module module,
+            Bam.Core.ExecutionContext context,
+            string outputPathKey)
+        {
+            // redirect the captured output from running the tool into a file
+            // and then clear the captured output so it's not written to the log
+            var tempPath = Bam.Core.IOWrapper.CreateTemporaryFile();
+            using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(tempPath))
+            {
+                writeFile.Write(context.OutputStringBuilder.ToString());
+            }
+
+            var destPath = module.GeneratedPaths[outputPathKey].ToString();
+
+            var moveFile = true;
+            if (System.IO.File.Exists(destPath))
+            {
+                // compare contents
+                using (System.IO.TextReader existingFile = new System.IO.StreamReader(destPath))
+                {
+                    var contents = existingFile.ReadToEnd();
+                    var contentsL = contents.Length;
+                    var oldL = context.OutputStringBuilder.ToString().Length;
+                    if (contents.Equals(context.OutputStringBuilder.ToString()))
+                    {
+                        moveFile = false;
+                    }
+                }
+            }
+            if (moveFile)
+            {
+                Bam.Core.Log.Info(
+                    "Generated '{0}' from the standard output of '{1}'",
+                    destPath,
+                    (module.Tool as Bam.Core.ICommandLineTool).Executable.ToString()
+                );
+                System.IO.File.Delete(destPath);
+                System.IO.File.Move(tempPath, destPath);
+            }
+            else
+            {
+                Bam.Core.Log.Info("Contents of '{0}' have not changed since it was last generated", destPath);
+                System.IO.File.Delete(tempPath);
+            }
+            context.OutputStringBuilder.Clear();
+        }
     }
 }

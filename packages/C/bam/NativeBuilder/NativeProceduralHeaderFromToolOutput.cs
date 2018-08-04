@@ -31,6 +31,7 @@ using Bam.Core;
 namespace C
 {
 #if BAM_V2
+#if false
     public static partial class NativeSupport
     {
         // redirect the captured output from running the tool into a file
@@ -107,6 +108,7 @@ namespace C
             );
         }
     }
+#endif
 #else
     public sealed class NativeProceduralHeaderFromToolOutput :
         IProceduralHeaderFromToolOutputPolicy

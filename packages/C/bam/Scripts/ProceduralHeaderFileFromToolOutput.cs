@@ -131,7 +131,14 @@ namespace C
 
 #if D_PACKAGE_NATIVEBUILDER
                 case "Native":
-                    NativeSupport.GenerateHeader(this, context);
+                    {
+                        NativeBuilder.Support.RunCommandLineTool(this, context);
+                        NativeBuilder.Support.SendCapturedOutputToFile(
+                            this,
+                            context,
+                            ProceduralHeaderFileFromToolOutput.HeaderFileKey
+                        );
+                    }
                     break;
 #endif
 
