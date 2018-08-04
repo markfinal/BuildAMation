@@ -162,7 +162,13 @@ namespace C
 
 #if D_PACKAGE_NATIVEBUILDER
                 case "Native":
-                    NativeSupport.Compile(this, context);
+                    {
+                        if (!this.PerformCompilation)
+                        {
+                            return;
+                        }
+                        NativeBuilder.Support.RunCommandLineTool(this, context);
+                    }
                     break;
 #endif
 

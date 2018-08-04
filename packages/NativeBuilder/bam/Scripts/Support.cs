@@ -27,28 +27,22 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace NativeBuilder
 {
-#if BAM_V2
-#if false
-    public static partial class NativeSupport
+    static public partial class Support
     {
         public static void
-        Compile(
-            ObjectFileBase module,
+        RunCommandLineTool(
+            Bam.Core.Module module,
             Bam.Core.ExecutionContext context)
         {
-            if (!module.PerformCompilation)
-            {
-                return;
-            }
-
             foreach (var dir in module.OutputDirectories)
             {
                 Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir.ToString());
             }
 
             CommandLineProcessor.Processor.Execute(
+                module,
                 context,
                 module.Tool as Bam.Core.ICommandLineTool,
                 CommandLineProcessor.NativeConversion.Convert(
@@ -58,31 +52,4 @@ namespace C
             );
         }
     }
-#endif
-#else
-    public sealed class NativeCompilation :
-        ICompilationPolicy
-    {
-        void
-        ICompilationPolicy.Compile(
-            ObjectFile sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString objectFilePath,
-            Bam.Core.Module source)
-        {
-            if (!sender.PerformCompilation)
-            {
-                return;
-            }
-
-            var objectFileDir = System.IO.Path.GetDirectoryName(objectFilePath.ToString());
-            Bam.Core.IOWrapper.CreateDirectoryIfNotExists(objectFileDir);
-
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-            commandLine.Add(source.GeneratedPaths[SourceFile.Key].ToStringQuoteIfNecessary());
-            CommandLineProcessor.Processor.Execute(context, sender.Tool as Bam.Core.ICommandLineTool, commandLine);
-        }
-    }
-#endif
 }
