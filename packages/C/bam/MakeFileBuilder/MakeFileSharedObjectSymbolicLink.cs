@@ -58,18 +58,31 @@ namespace C
                 rule.AddPrerequisite(input.Value, input.Key);
             }
 
+            var shellCommands = new Bam.Core.StringArray();
+            if (module.WorkingDirectory != null)
+            {
+                if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
+                {
+                    shellCommands.Add(System.String.Format("cd /D {0} &&", module.WorkingDirectory.ToStringQuoteIfNecessary()));
+                }
+                else
+                {
+                    shellCommands.Add(System.String.Format("cd {0};", module.WorkingDirectory.ToString()));
+                }
+            }
             var tool = module.Tool as Bam.Core.ICommandLineTool;
-            var command = new System.Text.StringBuilder();
-            command.AppendFormat(
-                "{0} {1} {2}",
-                CommandLineProcessor.Processor.StringifyTool(tool),
-                CommandLineProcessor.NativeConversion.Convert(
-                    module.Settings,
-                    module
-                ).ToString(' '),
-                CommandLineProcessor.Processor.TerminatingArgs(tool)
+            shellCommands.Add(
+                System.String.Format(
+	                "{0} {1} {2}",
+	                CommandLineProcessor.Processor.StringifyTool(tool),
+	                CommandLineProcessor.NativeConversion.Convert(
+	                    module.Settings,
+	                    module
+	                ).ToString(' '),
+	                CommandLineProcessor.Processor.TerminatingArgs(tool)
+	            )
             );
-            rule.AddShellCommand(command.ToString());
+            rule.AddShellCommand(shellCommands.ToString(' '));
         }
     }
 #else
