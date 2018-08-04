@@ -30,6 +30,7 @@
 namespace CodeGenTest
 {
 #if BAM_V2
+#if false
     public static partial class NativeSupport
     {
         public static void
@@ -52,6 +53,7 @@ namespace CodeGenTest
             );
         }
     }
+#endif
 #else
     public sealed class NativeGenerateSource :
         IGeneratedSourcePolicy
