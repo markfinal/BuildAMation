@@ -151,22 +151,10 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
-                var libDir = library.CreateTokenizedString(
-                    "@dir($(0))",
-#if BAM_V2
-                    library.GeneratedPaths[C.StaticLibrary.LibraryKey]
-#else
-                    library.GeneratedPaths[C.StaticLibrary.Key]
-#endif
-                );
-                lock (libDir)
+                foreach (var dir in library.OutputDirectories)
                 {
-                    if (!libDir.IsParsed)
-                    {
-                        libDir.Parse();
-                    }
+                    linker.LibraryPaths.AddUnique(dir);
                 }
-                linker.LibraryPaths.AddUnique(libDir);
             }
             else if (library is C.IDynamicLibrary)
             {
@@ -196,53 +184,28 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
-                var libDir = library.CreateTokenizedString(
-                    "@dir($(0))",
-#if BAM_V2
-                    library.GeneratedPaths[C.DynamicLibrary.ExecutableKey]
-#else
-                    library.GeneratedPaths[C.DynamicLibrary.Key]
-#endif
-                );
-                lock (libDir)
-                {
-                    if (!libDir.IsParsed)
-                    {
-                        libDir.Parse();
-                    }
-                }
-                linker.LibraryPaths.AddUnique(libDir);
                 var gccLinker = executable.Settings as GccCommon.ICommonLinkerSettings;
-
-                // if an explicit link occurs in this executable/shared object, the library path
-                // does not need to be on the rpath-link
-                if (gccLinker.RPathLink.Contains(libDir))
+                foreach (var dir in library.OutputDirectories)
                 {
-                    gccLinker.RPathLink.Remove(libDir);
+                    linker.LibraryPaths.AddUnique(dir);
+                    // if an explicit link occurs in this executable/shared object, the library path
+                    // does not need to be on the rpath-link
+                    if (gccLinker.RPathLink.Contains(dir))
+                    {
+                        gccLinker.RPathLink.Remove(dir);
+                    }
                 }
 
                 var allDynamicDependents = FindAllDynamicDependents(library as C.IDynamicLibrary);
                 foreach (var dep in allDynamicDependents)
                 {
-                    var rpathLinkDir = dep.CreateTokenizedString(
-                        "@dir($(0))",
-#if BAM_V2
-                        dep.GeneratedPaths[C.DynamicLibrary.ExecutableKey]
-#else
-                        dep.GeneratedPaths[C.DynamicLibrary.Key]
-#endif
-                    );
-                    // only need to add to rpath-link, if there's been no explicit link to the library already
-                    if (!linker.LibraryPaths.Contains(rpathLinkDir))
+                    foreach (var dir in dep.OutputDirectories)
                     {
-                        lock (rpathLinkDir)
+                        // only need to add to rpath-link, if there's been no explicit link to the library already
+                        if (!linker.LibraryPaths.Contains(dir))
                         {
-                            if (!rpathLinkDir.IsParsed)
-                            {
-                                rpathLinkDir.Parse();
-                            }
+                            gccLinker.RPathLink.AddUnique(dir);
                         }
-                        gccLinker.RPathLink.AddUnique(rpathLinkDir);
                     }
                 }
             }

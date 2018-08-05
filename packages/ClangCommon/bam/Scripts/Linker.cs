@@ -95,23 +95,10 @@ namespace ClangCommon
 #endif
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
-                var libDir = library.CreateTokenizedString(
-                    "@dir($(0))",
-#if BAM_V2
-                    library.GeneratedPaths[C.StaticLibrary.LibraryKey]
-#else
-                    library.GeneratedPaths[C.StaticLibrary.Key]
-#endif
-                );
-                lock (libDir)
+                foreach (var dir in library.OutputDirectories)
                 {
-                    if (!libDir.IsParsed)
-                    {
-                        libDir.Parse();
-                    }
+                    linker.LibraryPaths.AddUnique(dir);
                 }
-
-                linker.LibraryPaths.AddUnique(libDir);
             }
             else if (library is C.IDynamicLibrary)
             {
@@ -123,23 +110,10 @@ namespace ClangCommon
 #endif
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
-                var libDir = library.CreateTokenizedString(
-                    "@dir($(0))",
-#if BAM_V2
-                    library.GeneratedPaths[C.DynamicLibrary.ExecutableKey]
-#else
-                    library.GeneratedPaths[C.DynamicLibrary.Key]
-#endif
-                );
-                lock (libDir)
+                foreach (var dir in library.OutputDirectories)
                 {
-                    if (!libDir.IsParsed)
-                    {
-                        libDir.Parse();
-                    }
+                    linker.LibraryPaths.AddUnique(dir);
                 }
-
-                linker.LibraryPaths.AddUnique(libDir);
             }
         }
 

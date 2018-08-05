@@ -139,15 +139,10 @@ namespace MingwCommon
             var libFilename = GetLPrefixLibraryName(fullLibraryPath.ToString());
             var linker = executable.Settings as C.ICommonLinkerSettings;
             linker.Libraries.AddUnique(libFilename);
-            var libDir = library.CreateTokenizedString("@dir($(0))", fullLibraryPath);
-            lock (libDir)
+            foreach (var dir in library.OutputDirectories)
             {
-                if (!libDir.IsParsed)
-                {
-                    libDir.Parse();
-                }
+                linker.LibraryPaths.AddUnique(dir);
             }
-            linker.LibraryPaths.AddUnique(libDir);
         }
     }
 

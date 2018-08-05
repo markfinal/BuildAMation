@@ -162,15 +162,10 @@ namespace VisualCCommon
                 }
             }
             linker.Libraries.AddUnique(libFilename.ToString());
-            var libDir = library.CreateTokenizedString("@dir($(0))", fullLibraryPath);
-            lock (libDir)
+            foreach (var dir in library.OutputDirectories)
             {
-                if (!libDir.IsParsed)
-                {
-                    libDir.Parse();
-                }
+                linker.LibraryPaths.AddUnique(dir);
             }
-            linker.LibraryPaths.AddUnique(libDir);
         }
     }
 
