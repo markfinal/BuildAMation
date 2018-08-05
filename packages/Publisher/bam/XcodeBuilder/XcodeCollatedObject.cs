@@ -89,10 +89,11 @@ namespace Publisher
             }
 
             if (module.IsInAnchorPackage &&
+                !(collatedInterface.SourceModule is PreExistingObject) &&
                 collatedInterface.Anchor != null &&
                 !(collatedInterface.Anchor as CollatedObject).IsAnchorAnApplicationBundle)
             {
-                // additionally, any module-based dependents in the same package as the anchor do not need copying as they
+                // additionally, any built module-based dependents in the same package as the anchor do not need copying as they
                 // are built into the right directory (since Xcode module build dirs do not include the module name)
                 return;
             }
