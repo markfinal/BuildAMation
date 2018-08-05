@@ -89,6 +89,7 @@ namespace VSSolutionBuilder
                     module
                 )
             );
+            args.Add(CommandLineProcessor.Processor.TerminatingArgs(tool));
             shellCommandLines.Add(args.ToString(' '));
         }
 

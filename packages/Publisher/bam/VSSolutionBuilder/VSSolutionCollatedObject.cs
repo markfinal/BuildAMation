@@ -83,40 +83,22 @@ namespace Publisher
                 }
             }
 
-            var copyFileTool = module.Tool as CopyFileTool;
-
-            var commands = new Bam.Core.StringArray();
-            foreach (var dir in module.OutputDirectories)
-            {
-                commands.Add(
-                    System.String.Format(
-                        "IF NOT EXIST {0} MKDIR {0}",
-                        copyFileTool.escapePath(dir.ToString())
-                    )
-                );
-            }
-            commands.Add(
-                System.String.Format(
-                    "{0} {1} {2}",
-                    CommandLineProcessor.Processor.StringifyTool(copyFileTool as Bam.Core.ICommandLineTool),
-                    CommandLineProcessor.NativeConversion.Convert(
-                        module.Settings,
-                        module
-                    ).ToString(' '),
-                    CommandLineProcessor.Processor.TerminatingArgs(copyFileTool as Bam.Core.ICommandLineTool)
-                )
-            );
-
             var project = projectModule.MetaData as VSSolutionBuilder.VSProject;
             var config = project.GetConfiguration(projectModule);
 
             if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility && arePostBuildCommands)
             {
-                config.AddPostBuildCommands(commands);
+                VSSolutionBuilder.Support.AddPostBuildSteps(
+                    config,
+                    module
+                );
             }
             else
             {
-                config.AddPreBuildCommands(commands);
+                VSSolutionBuilder.Support.AddPreBuildSteps(
+                    config,
+                    module
+                );
             }
         }
     }
