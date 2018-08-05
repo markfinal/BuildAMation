@@ -93,16 +93,30 @@ namespace VSSolutionBuilder
             shellCommandLines.Add(args.ToString(' '));
         }
 
+        static private Bam.Core.Module
+        GetModuleForProject(
+            Bam.Core.Module requestingModule)
+        {
+            var projectModule = requestingModule.GetEncapsulatingReferencedModule();
+            return projectModule;
+        }
+
         static public void
         AddCustomBuildStep(
+            Bam.Core.Module module,
             System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> inputs,
             System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> outputs,
-            VSProjectConfiguration config,
             string message,
             Bam.Core.StringArray commandList,
             bool commandIsForFirstInputOnly,
             bool addInputFilesToProject)
         {
+            var projectModule = GetModuleForProject(module);
+
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            var project = solution.EnsureProjectExists(projectModule);
+            var config = project.GetConfiguration(projectModule);
+
             var is_first_input = true;
             foreach (var input in inputs)
             {
@@ -134,12 +148,6 @@ namespace VSSolutionBuilder
             string messagePrefix,
             bool addInputFilesToProject)
         {
-            var encapsulating = module.GetEncapsulatingReferencedModule();
-
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-            var project = solution.EnsureProjectExists(encapsulating);
-            var config = project.GetConfiguration(encapsulating);
-
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
             AddModuleCommandLineShellCommand(module, shellCommandLines);
@@ -148,9 +156,9 @@ namespace VSSolutionBuilder
             var firstInput = module.InputModules.First();
             var sourcePath = firstInput.Value.GeneratedPaths[firstInput.Key];
             AddCustomBuildStep(
+                module,
                 System.Linq.Enumerable.Repeat(sourcePath, 1),
                 System.Linq.Enumerable.Repeat(outputPath, 1),
-                config,
                 System.String.Format(
                     "{0} {1} into {2}",
                     messagePrefix,

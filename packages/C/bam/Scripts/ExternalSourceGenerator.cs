@@ -235,7 +235,26 @@ namespace C
 
 #if D_PACKAGE_VSSOLUTIONBUILDER
                 case "VSSolution":
-                    VSSolutionSupport.GenerateSource(this);
+                    {
+                        var args = new Bam.Core.StringArray();
+                        args.Add(
+                            System.String.Format(
+                                "{0} {1}",
+                                this.Executable.ToStringQuoteIfNecessary(),
+                                this.Arguments.ToString(' ')
+                            )
+                        );
+
+                        VSSolutionBuilder.Support.AddCustomBuildStep(
+                            this,
+                            this.InputFiles,
+                            this.ExpectedOutputFiles.Values,
+                            System.String.Format("Running '{0}'", args.ToString(' ')),
+                            args,
+                            true,
+                            true
+                        );
+                    }
                     break;
 #endif
 

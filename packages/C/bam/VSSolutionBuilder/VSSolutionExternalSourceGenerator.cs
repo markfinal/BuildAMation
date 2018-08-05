@@ -30,18 +30,13 @@
 namespace C
 {
 #if BAM_V2
+#if false
     public static partial class VSSolutionSupport
     {
         public static void
         GenerateSource(
             ExternalSourceGenerator module)
         {
-            var encapsulating = module.GetEncapsulatingReferencedModule();
-
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-            var project = solution.EnsureProjectExists(encapsulating);
-            var config = project.GetConfiguration(encapsulating);
-
             var args = new Bam.Core.StringArray();
             args.Add(
                 System.String.Format(
@@ -52,9 +47,9 @@ namespace C
             );
 
             VSSolutionBuilder.Support.AddCustomBuildStep(
+                module,
                 module.InputFiles,
                 module.ExpectedOutputFiles.Values,
-                config,
                 System.String.Format("Running '{0}'", args.ToString(' ')),
                 args,
                 true,
@@ -62,6 +57,7 @@ namespace C
             );
         }
     }
+#endif
 #else
     public sealed class VSSolutionExternalSourceGenerator :
         IExternalSourceGeneratorPolicy
