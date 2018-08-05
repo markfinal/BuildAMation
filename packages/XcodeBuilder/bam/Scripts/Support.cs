@@ -179,5 +179,23 @@ namespace XcodeBuilder
                 configuration
             );
         }
+
+        public static void
+        AddPostBuildStepForCommandLineTool(
+            Bam.Core.Module module,
+            Target target,
+            Configuration configuration)
+        {
+            var shellCommandLines = new Bam.Core.StringArray();
+            AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
+            AddNewerThanPreamble(module, shellCommandLines);
+            AddModuleCommandLineShellCommand(module, shellCommandLines);
+            AddNewerThanPostamble(module, shellCommandLines);
+
+            target.AddPostBuildCommands(
+                shellCommandLines,
+                configuration
+            );
+        }
     }
 }
