@@ -32,6 +32,22 @@ namespace VSSolutionBuilder
 {
     static public partial class Support
     {
+        static private void
+        AddModuleDirectoryCreationShellCommands(
+            Bam.Core.Module module,
+            Bam.Core.StringArray shellCommandLines)
+        {
+            foreach (var dir in module.OutputDirectories)
+            {
+                shellCommandLines.Add(
+                    System.String.Format(
+                        "IF NOT EXIST {0} MKDIR {0}",
+                        dir.ToStringQuoteIfNecessary()
+                    )
+                );
+            }
+        }
+
         static public void
         AddCustomBuildStep(
             System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> inputs,
@@ -74,16 +90,8 @@ namespace VSSolutionBuilder
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 
-            var commands = new Bam.Core.StringArray();
-            foreach (var dir in module.OutputDirectories)
-            {
-                commands.Add(
-                    System.String.Format(
-                        "IF NOT EXIST {0} MKDIR {0}",
-                        dir.ToStringQuoteIfNecessary()
-                    )
-                );
-            }
+            var shellCommandLines = new Bam.Core.StringArray();
+            AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
 
             var args = new Bam.Core.StringArray();
             foreach (var envVar in (module.Tool as Bam.Core.ICommandLineTool).EnvironmentVariables)
@@ -106,7 +114,7 @@ namespace VSSolutionBuilder
                     module
                 )
             );
-            commands.Add(args.ToString(' '));
+            shellCommandLines.Add(args.ToString(' '));
 
             System.Diagnostics.Debug.Assert(1 == module.InputModules.Count());
             var firstInput = module.InputModules.First();
@@ -121,7 +129,7 @@ namespace VSSolutionBuilder
                     sourcePath.ToString(),
                     outputPath.ToString()
                 ),
-                commands,
+                shellCommandLines,
                 true
             );
         }
@@ -132,13 +140,10 @@ namespace VSSolutionBuilder
             Bam.Core.Module module,
             Bam.Core.StringArray commands)
         {
-            var shellCommands = new Bam.Core.StringArray();
-            foreach (var dir in module.OutputDirectories)
-            {
-                shellCommands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", dir.ToString()));
-            }
-            shellCommands.AddRange(commands);
-            config.AddPostBuildCommands(shellCommands);
+            var shellCommandLines = new Bam.Core.StringArray();
+            AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
+            shellCommandLines.AddRange(commands);
+            config.AddPostBuildCommands(shellCommandLines);
         }
     }
 }
