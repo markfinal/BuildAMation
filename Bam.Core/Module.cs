@@ -364,7 +364,10 @@ namespace Bam.Core
                         this.ToString()
                     );
                 }
-                this.OutputDirs.Remove(key);
+                if (this.OutputDirs.ContainsKey(key))
+                {
+                    this.OutputDirs.Remove(key);
+                }
                 this._GeneratedPaths[key] = path;
             }
             else
@@ -373,11 +376,10 @@ namespace Bam.Core
             }
             if (null != path)
             {
-                this.OutputDirs.Add(key, this.CreateTokenizedString("@dir($(0))", path));
-            }
-            else
-            {
-                this.OutputDirs.Add(key, path);
+                this.OutputDirs.Add(
+                    key,
+                    this.CreateTokenizedString("@dir($(0))", path)
+                );
             }
         }
 
@@ -718,7 +720,7 @@ namespace Bam.Core
         {
             get
             {
-                foreach (var dir in this.OutputDirs.Values.Where(item => !System.String.IsNullOrEmpty(item.ToString())))
+                foreach (var dir in this.OutputDirs.Values)
                 {
                     yield return dir;
                 }
