@@ -64,8 +64,10 @@ namespace C
                 {
                     if (input is C.StaticLibrary)
                     {
-                        // TODO: probably a simplification of the DLL codepath
-                        throw new System.NotImplementedException();
+                        (module.Tool as C.LinkerTool).ProcessLibraryDependency(
+                            module as CModule,
+                            input as CModule
+                        );
                     }
                     else if (input is C.IDynamicLibrary)
                     {
