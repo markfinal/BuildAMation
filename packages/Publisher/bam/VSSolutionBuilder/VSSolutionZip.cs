@@ -30,6 +30,7 @@
 namespace Publisher
 {
 #if BAM_V2
+#if false
     public static partial class VSSolutionSupport
     {
         public static void
@@ -48,6 +49,7 @@ namespace Publisher
             );
         }
     }
+#endif
 #else
     public sealed class VSSolutionZip :
         IZipToolPolicy

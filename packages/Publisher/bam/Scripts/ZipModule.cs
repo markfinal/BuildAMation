@@ -106,7 +106,9 @@ namespace Publisher
 
 #if D_PACKAGE_VSSOLUTIONBUILDER
                 case "VSSolution":
-                    VSSolutionSupport.Zip(this);
+                    VSSolutionBuilder.Support.AddPreBuildSteps(
+                        this
+                    );
                     break;
 #endif
 

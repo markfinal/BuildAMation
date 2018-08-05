@@ -98,6 +98,18 @@ namespace VSSolutionBuilder
             Bam.Core.Module requestingModule)
         {
             var projectModule = requestingModule.GetEncapsulatingReferencedModule();
+#if D_PACKAGE_PUBLISHER
+            if (projectModule is Publisher.Collation)
+            {
+                (projectModule as Publisher.Collation).ForEachAnchor(
+                    (collation, anchor, customData) =>
+                    {
+                        projectModule = anchor.SourceModule;
+                    },
+                    null
+                );
+            }
+#endif
             return projectModule;
         }
 
@@ -112,8 +124,7 @@ namespace VSSolutionBuilder
             bool addInputFilesToProject)
         {
             var projectModule = GetModuleForProject(module);
-
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
             var project = solution.EnsureProjectExists(projectModule);
             var config = project.GetConfiguration(projectModule);
 
@@ -129,7 +140,7 @@ namespace VSSolutionBuilder
                     continue;
                 }
                 var customBuild = config.GetSettingsGroup(
-                    VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.CustomBuild,
+                    VSSettingsGroup.ESettingsGroup.CustomBuild,
                     include: input,
                     uniqueToProject: true
                 );
@@ -171,26 +182,46 @@ namespace VSSolutionBuilder
             );
         }
 
-        static public void
+        static public VSProjectConfiguration
         AddPreBuildSteps(
-            VSProjectConfiguration config,
-            Bam.Core.Module module)
+            Bam.Core.Module module,
+            VSProjectConfiguration config = null)
         {
+            if (config == null)
+            {
+                var projectModule = GetModuleForProject(module);
+                var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
+                var project = solution.EnsureProjectExists(projectModule);
+                config = project.GetConfiguration(projectModule);
+            }
+
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
             AddModuleCommandLineShellCommand(module, shellCommandLines);
             config.AddPreBuildCommands(shellCommandLines);
+
+            return config;
         }
 
-        static public void
+        static public VSProjectConfiguration
         AddPostBuildSteps(
-            VSProjectConfiguration config,
-            Bam.Core.Module module)
+            Bam.Core.Module module,
+            VSProjectConfiguration config = null)
         {
+            if (config == null)
+            {
+                var projectModule = GetModuleForProject(module);
+                var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
+                var project = solution.EnsureProjectExists(projectModule);
+                config = project.GetConfiguration(projectModule);
+            }
+
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
             AddModuleCommandLineShellCommand(module, shellCommandLines);
             config.AddPostBuildCommands(shellCommandLines);
+
+            return config;
         }
 
         static public void

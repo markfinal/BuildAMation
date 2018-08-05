@@ -89,15 +89,15 @@ namespace Publisher
             if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility && arePostBuildCommands)
             {
                 VSSolutionBuilder.Support.AddPostBuildSteps(
-                    config,
-                    module
+                    module,
+                    config: config
                 );
             }
             else
             {
                 VSSolutionBuilder.Support.AddPreBuildSteps(
-                    config,
-                    module
+                    module,
+                    config: config
                 );
             }
         }
