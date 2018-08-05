@@ -48,9 +48,10 @@ namespace VSSolutionBuilder
             }
         }
 
-        static private string
-        ModuleCommandLineStringified(
-            Bam.Core.Module module)
+        static private void
+        AddModuleCommandLineShellCommand(
+            Bam.Core.Module module,
+            Bam.Core.StringArray shellCommandLines)
         {
             System.Diagnostics.Debug.Assert(module.Tool is Bam.Core.ICommandLineTool);
             var tool = module.Tool as Bam.Core.ICommandLineTool;
@@ -79,7 +80,7 @@ namespace VSSolutionBuilder
                     module
                 )
             );
-            return args.ToString(' ');
+            shellCommandLines.Add(args.ToString(' '));
         }
 
         static public void
@@ -126,7 +127,7 @@ namespace VSSolutionBuilder
 
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
-            shellCommandLines.Add(ModuleCommandLineStringified(module));
+            AddModuleCommandLineShellCommand(module, shellCommandLines);
 
             System.Diagnostics.Debug.Assert(1 == module.InputModules.Count());
             var firstInput = module.InputModules.First();
@@ -144,6 +145,17 @@ namespace VSSolutionBuilder
                 shellCommandLines,
                 true
             );
+        }
+
+        static public void
+        AddPreBuildSteps(
+            VSProjectConfiguration config,
+            Bam.Core.Module module)
+        {
+            var shellCommandLines = new Bam.Core.StringArray();
+            AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
+            AddModuleCommandLineShellCommand(module, shellCommandLines);
+            config.AddPreBuildCommands(shellCommandLines);
         }
 
         static public void
