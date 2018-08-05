@@ -194,7 +194,7 @@ namespace VSSolutionBuilder
         }
 
         static public void
-        AddPostBuildStep(
+        AddCustomPostBuildStep(
             VSProjectConfiguration config,
             Bam.Core.Module module,
             Bam.Core.StringArray commands)

@@ -49,7 +49,7 @@ namespace C
                 )
             );
 
-            VSSolutionBuilder.Support.AddPostBuildStep(
+            VSSolutionBuilder.Support.AddCustomPostBuildStep(
                 toolConfig,
                 module,
                 commands
