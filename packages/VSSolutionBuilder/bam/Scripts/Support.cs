@@ -174,6 +174,17 @@ namespace VSSolutionBuilder
         }
 
         static public void
+        AddPostBuildSteps(
+            VSProjectConfiguration config,
+            Bam.Core.Module module)
+        {
+            var shellCommandLines = new Bam.Core.StringArray();
+            AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
+            AddModuleCommandLineShellCommand(module, shellCommandLines);
+            config.AddPostBuildCommands(shellCommandLines);
+        }
+
+        static public void
         AddPostBuildStep(
             VSProjectConfiguration config,
             Bam.Core.Module module,
