@@ -83,6 +83,35 @@ namespace XcodeBuilder
             shellCommandLines.Add("fi");
         }
 
+        static private void
+        AddModuleCommandLineShellCommand(
+            Bam.Core.Module module,
+            Bam.Core.StringArray shellCommandLines)
+        {
+            System.Diagnostics.Debug.Assert(module.Tool is Bam.Core.ICommandLineTool);
+
+            var args = new Bam.Core.StringArray();
+            if (module.WorkingDirectory != null)
+            {
+                args.Add(
+                    System.String.Format(
+                        "cd {0} &&",
+                        module.WorkingDirectory.ToStringQuoteIfNecessary()
+                    )
+                );
+            }
+            var tool = module.Tool as Bam.Core.ICommandLineTool;
+            args.Add(CommandLineProcessor.Processor.StringifyTool(tool));
+            args.AddRange(
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                )
+            );
+            args.Add(CommandLineProcessor.Processor.TerminatingArgs(tool));
+            shellCommandLines.Add(args.ToString(' '));
+        }
+
         public static void
         AddPreBuildCommands(
             Bam.Core.Module module,
@@ -101,6 +130,37 @@ namespace XcodeBuilder
                 shellCommandLines,
                 configuration
             );
+        }
+
+        public static void
+        AddPreBuildStepForCommandLineTool(
+            Bam.Core.Module module,
+            Target target,
+            Configuration configuration,
+            bool addInputFilesToProject,
+            FileReference.EFileType inputFileType)
+        {
+            var shellCommandLines = new Bam.Core.StringArray();
+            AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
+            AddNewerThanPreamble(module, shellCommandLines);
+            AddModuleCommandLineShellCommand(module, shellCommandLines);
+            AddNewerThanPostamble(module, shellCommandLines);
+
+            target.AddPreBuildCommands(
+                shellCommandLines,
+                configuration
+            );
+
+            if (addInputFilesToProject)
+            {
+                foreach (var input in module.InputModules)
+                {
+                    target.EnsureFileOfTypeExists(
+                        input.Value.GeneratedPaths[input.Key],
+                        inputFileType
+                    );
+                }
+            }
         }
 
         public static void
