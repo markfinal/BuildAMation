@@ -48,6 +48,40 @@ namespace VSSolutionBuilder
             }
         }
 
+        static private string
+        ModuleCommandLineStringified(
+            Bam.Core.Module module)
+        {
+            System.Diagnostics.Debug.Assert(module.Tool is Bam.Core.ICommandLineTool);
+            var tool = module.Tool as Bam.Core.ICommandLineTool;
+
+            var args = new Bam.Core.StringArray();
+            if (tool.EnvironmentVariables != null)
+            {
+                foreach (var envVar in tool.EnvironmentVariables)
+                {
+                    args.Add("set");
+                    var content = new System.Text.StringBuilder();
+                    content.AppendFormat("{0}=", envVar.Key);
+                    foreach (var value in envVar.Value)
+                    {
+                        content.AppendFormat("{0};", value.ToStringQuoteIfNecessary());
+                    }
+                    content.AppendFormat("%{0}%", envVar.Key);
+                    args.Add(content.ToString());
+                    args.Add("&&");
+                }
+            }
+            args.Add(CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool));
+            args.AddRange(
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                )
+            );
+            return args.ToString(' ');
+        }
+
         static public void
         AddCustomBuildStep(
             System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> inputs,
@@ -92,29 +126,7 @@ namespace VSSolutionBuilder
 
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
-
-            var args = new Bam.Core.StringArray();
-            foreach (var envVar in (module.Tool as Bam.Core.ICommandLineTool).EnvironmentVariables)
-            {
-                args.Add("set");
-                var content = new System.Text.StringBuilder();
-                content.AppendFormat("{0}=", envVar.Key);
-                foreach (var value in envVar.Value)
-                {
-                    content.AppendFormat("{0};", value.ToStringQuoteIfNecessary());
-                }
-                content.AppendFormat("%{0}%", envVar.Key);
-                args.Add(content.ToString());
-                args.Add("&&");
-            }
-            args.Add(CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool));
-            args.AddRange(
-                CommandLineProcessor.NativeConversion.Convert(
-                    module.Settings,
-                    module
-                )
-            );
-            shellCommandLines.Add(args.ToString(' '));
+            shellCommandLines.Add(ModuleCommandLineStringified(module));
 
             System.Diagnostics.Debug.Assert(1 == module.InputModules.Count());
             var firstInput = module.InputModules.First();
