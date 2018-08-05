@@ -182,15 +182,16 @@ namespace VSSolutionBuilder
             );
         }
 
-        static public VSProjectConfiguration
+        static public void
         AddPreBuildSteps(
             Bam.Core.Module module,
-            VSProjectConfiguration config = null)
+            VSProjectConfiguration config = null,
+            bool addOrderOnlyDependencyOnTool = false)
         {
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
             if (config == null)
             {
                 var projectModule = GetModuleForProject(module);
-                var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
                 var project = solution.EnsureProjectExists(projectModule);
                 config = project.GetConfiguration(projectModule);
             }
@@ -200,18 +201,32 @@ namespace VSSolutionBuilder
             AddModuleCommandLineShellCommand(module, shellCommandLines);
             config.AddPreBuildCommands(shellCommandLines);
 
-            return config;
+            if (addOrderOnlyDependencyOnTool)
+            {
+                var tool = module.Tool as Bam.Core.Module;
+#if D_PACKAGE_PUBLISHER
+                // note the custom handler here, which checks to see if we're running a tool
+                // that has been collated
+                if (tool is Publisher.CollatedCommandLineTool)
+                {
+                    tool = (tool as Publisher.ICollatedObject).SourceModule;
+                }
+#endif
+                var toolProject = solution.EnsureProjectExists(tool);
+                config.RequiresProject(toolProject);
+            }
         }
 
-        static public VSProjectConfiguration
+        static public void
         AddPostBuildSteps(
             Bam.Core.Module module,
-            VSProjectConfiguration config = null)
+            VSProjectConfiguration config = null,
+            bool addOrderOnlyDependencyOnTool = false)
         {
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
             if (config == null)
             {
                 var projectModule = GetModuleForProject(module);
-                var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
                 var project = solution.EnsureProjectExists(projectModule);
                 config = project.GetConfiguration(projectModule);
             }
@@ -221,7 +236,20 @@ namespace VSSolutionBuilder
             AddModuleCommandLineShellCommand(module, shellCommandLines);
             config.AddPostBuildCommands(shellCommandLines);
 
-            return config;
+            if (addOrderOnlyDependencyOnTool)
+            {
+                var tool = module.Tool as Bam.Core.Module;
+#if D_PACKAGE_PUBLISHER
+                // note the custom handler here, which checks to see if we're running a tool
+                // that has been collated
+                if (tool is Publisher.CollatedCommandLineTool)
+                {
+                    tool = (tool as Publisher.ICollatedObject).SourceModule;
+                }
+#endif
+                var toolProject = solution.EnsureProjectExists(tool);
+                config.RequiresProject(toolProject);
+            }
         }
 
         static public void

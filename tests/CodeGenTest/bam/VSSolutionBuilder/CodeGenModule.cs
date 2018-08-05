@@ -30,6 +30,7 @@
 namespace CodeGenTest
 {
 #if BAM_V2
+#if false
     public static partial class VSSolutionSupport
     {
         public static void
@@ -56,6 +57,7 @@ namespace CodeGenTest
             config.RequiresProject(compilerProject);
         }
     }
+#endif
 #else
     public sealed class VSSolutionGenerateSource :
         IGeneratedSourcePolicy

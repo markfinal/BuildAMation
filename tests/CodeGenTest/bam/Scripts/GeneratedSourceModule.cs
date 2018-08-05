@@ -75,7 +75,10 @@ namespace CodeGenTest
 
 #if D_PACKAGE_VSSOLUTIONBUILDER
                 case "VSSolution":
-                    VSSolutionSupport.GenerateSource(this);
+                    VSSolutionBuilder.Support.AddPreBuildSteps(
+                        this,
+                        addOrderOnlyDependencyOnTool: true // dependent upon the 'generator' being up to date before running
+                    );
                     break;
 #endif
 
