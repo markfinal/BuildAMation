@@ -82,7 +82,7 @@ namespace VSSolutionBuilder
                     args.Add("&&");
                 }
             }
-            args.Add(CommandLineProcessor.Processor.StringifyTool(tool);
+            args.Add(CommandLineProcessor.Processor.StringifyTool(tool));
             args.AddRange(
                 CommandLineProcessor.NativeConversion.Convert(
                     module.Settings,
