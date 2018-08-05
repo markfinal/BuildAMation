@@ -51,49 +51,17 @@ namespace C
                 configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
             }
 
-            var commands = new Bam.Core.StringArray();
-
-            foreach (var dir in module.OutputDirectories)
-            {
-                commands.Add(
-                    System.String.Format(
-                        "[[ ! -d {0} ]] && mkdir -p {0}",
-                        Bam.Core.IOWrapper.EscapeSpacesInPath(dir.ToString())
-                    )
-                );
-            }
-
-            var condition_text = new System.Text.StringBuilder();
-            condition_text.Append("if [[ ");
-            var last_output = module.ExpectedOutputFiles.Values.Last();
-            foreach (var output in module.ExpectedOutputFiles.Values)
-            {
-                var output_path = Bam.Core.IOWrapper.EscapeSpacesInPath(output.ToString());
-                condition_text.AppendFormat("! -e {0} ", output_path);
-                foreach (var input in module.InputFiles)
-                {
-                    var input_path = Bam.Core.IOWrapper.EscapeSpacesInPath(input.ToString());
-                    condition_text.AppendFormat("|| {1} -nt {0} ", output_path, input_path);
-                }
-                if (output != last_output)
-                {
-                    condition_text.AppendFormat("|| ");
-                }
-            }
-            condition_text.AppendLine("]]");
-            condition_text.AppendLine("then");
-
             var cmd_line = System.String.Format(
                 "{0} {1}",
                 module.Executable.ToStringQuoteIfNecessary(),
                 module.Arguments.ToString(' ')
             );
-            condition_text.AppendLine(System.String.Format("\techo {0}", cmd_line));
-            condition_text.AppendLine(System.String.Format("\t{0}", cmd_line));
-            condition_text.AppendLine("fi");
-            commands.Add(condition_text.ToString());
-
-            target.AddPreBuildCommands(commands, configuration);
+            XcodeBuilder.Support.AddPreBuildCommands(
+                module,
+                target,
+                configuration,
+                cmd_line
+            );
         }
     }
 #else
