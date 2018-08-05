@@ -99,12 +99,16 @@ namespace VSSolutionBuilder
             VSProjectConfiguration config,
             string message,
             Bam.Core.StringArray commandList,
-            bool commandIsForFirstInputOnly)
+            bool commandIsForFirstInputOnly,
+            bool addInputFilesToProject)
         {
             var is_first_input = true;
             foreach (var input in inputs)
             {
-                config.AddOtherFile(input);
+                if (addInputFilesToProject)
+                {
+                    config.AddOtherFile(input);
+                }
                 if (!is_first_input && commandIsForFirstInputOnly)
                 {
                     continue;
@@ -126,7 +130,8 @@ namespace VSSolutionBuilder
         AddCustomBuildStepForCommandLineTool(
             Bam.Core.Module module,
             Bam.Core.TokenizedString outputPath,
-            string messagePrefix)
+            string messagePrefix,
+            bool addInputFilesToProject)
         {
             var encapsulating = module.GetEncapsulatingReferencedModule();
 
@@ -152,7 +157,8 @@ namespace VSSolutionBuilder
                     outputPath.ToString()
                 ),
                 shellCommandLines,
-                true
+                true,
+                addInputFilesToProject
             );
         }
 

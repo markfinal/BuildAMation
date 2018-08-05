@@ -57,6 +57,7 @@ namespace C
                 config,
                 System.String.Format("Running '{0}'", args.ToString(' ')),
                 args,
+                true,
                 true
             );
         }
