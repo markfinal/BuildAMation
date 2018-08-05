@@ -54,9 +54,18 @@ namespace VSSolutionBuilder
             Bam.Core.StringArray shellCommandLines)
         {
             System.Diagnostics.Debug.Assert(module.Tool is Bam.Core.ICommandLineTool);
-            var tool = module.Tool as Bam.Core.ICommandLineTool;
 
             var args = new Bam.Core.StringArray();
+            if (module.WorkingDirectory != null)
+            {
+                args.Add(
+                    System.String.Format(
+                        "cd /D {0} &&",
+                        module.WorkingDirectory.ToStringQuoteIfNecessary()
+                    )
+                );
+            }
+            var tool = module.Tool as Bam.Core.ICommandLineTool;
             if (tool.EnvironmentVariables != null)
             {
                 foreach (var envVar in tool.EnvironmentVariables)
@@ -73,7 +82,7 @@ namespace VSSolutionBuilder
                     args.Add("&&");
                 }
             }
-            args.Add(CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool));
+            args.Add(CommandLineProcessor.Processor.StringifyTool(tool);
             args.AddRange(
                 CommandLineProcessor.NativeConversion.Convert(
                     module.Settings,

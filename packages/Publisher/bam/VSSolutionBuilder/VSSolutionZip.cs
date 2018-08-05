@@ -42,19 +42,10 @@ namespace Publisher
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 
-            var args = new Bam.Core.StringArray();
-            if (module.WorkingDirectory != null)
-            {
-                args.Add(System.String.Format("cd /D {0} &&", module.WorkingDirectory.ToStringQuoteIfNecessary()));
-            }
-            args.Add(CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool));
-            args.AddRange(
-                CommandLineProcessor.NativeConversion.Convert(
-                    module.Settings,
-                    module
-                )
+            VSSolutionBuilder.Support.AddPreBuildSteps(
+                config,
+                module
             );
-            config.AddPreBuildCommand(args.ToString(' '));
         }
     }
 #else
