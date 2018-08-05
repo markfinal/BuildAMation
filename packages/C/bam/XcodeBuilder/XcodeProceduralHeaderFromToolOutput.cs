@@ -41,15 +41,21 @@ namespace C
             var toolTarget = (tool as Bam.Core.Module).MetaData as XcodeBuilder.Target;
             var toolConfiguration = toolTarget.GetConfiguration(tool as Bam.Core.Module);
 
-            var output = module.GeneratedPaths[C.ProceduralHeaderFile.HeaderFileKey].ToString();
-            var output_parentdir = System.IO.Path.GetDirectoryName(output);
-            output_parentdir = Bam.Core.IOWrapper.EscapeSpacesInPath(output_parentdir);
-            output = Bam.Core.IOWrapper.EscapeSpacesInPath(output);
-
             var commands = new Bam.Core.StringArray();
-            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", output_parentdir));
-            commands.Add(System.String.Format("{0} > {1}", CommandLineProcessor.Processor.StringifyTool(tool), output));
-            toolTarget.AddPostBuildCommands(commands, toolConfiguration);
+            commands.Add(
+                System.String.Format(
+                    "{0} > {1}",
+                    CommandLineProcessor.Processor.StringifyTool(tool),
+                    module.GeneratedPaths[ProceduralHeaderFileFromToolOutput.HeaderFileKey].ToString()
+                )
+            );
+
+            XcodeBuilder.Support.AddPostBuildCommands(
+                module,
+                toolTarget,
+                toolConfiguration,
+                commands
+            );
 
             // alias the tool's target so that inter-target dependencies can be set up
             module.MetaData = toolTarget;

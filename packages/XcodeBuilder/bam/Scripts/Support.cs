@@ -102,5 +102,22 @@ namespace XcodeBuilder
                 configuration
             );
         }
+
+        public static void
+        AddPostBuildCommands(
+            Bam.Core.Module module,
+            Target target,
+            Configuration configuration,
+            Bam.Core.StringArray customCommands)
+        {
+            var shellCommandLines = new Bam.Core.StringArray();
+            AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
+            shellCommandLines.AddRange(customCommands);
+
+            target.AddPostBuildCommands(
+                shellCommandLines,
+                configuration
+            );
+        }
     }
 }
