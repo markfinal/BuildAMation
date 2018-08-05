@@ -53,6 +53,35 @@ namespace C
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    // do nothing
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    // do nothing
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    VSSolutionSupport.HeadersOnly(this);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    XcodeSupport.HeadersOnly(this);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
+            }
 #else
             if (null == this.Policy)
             {
@@ -112,6 +141,22 @@ namespace C
             // this delays the dependency until a link
             // (and recursively checks the dependent for more forwarded dependencies)
             this.forwardedDeps.AddUnique(dependent);
+        }
+
+        /// <summary>
+        /// Access the headers forming this library.
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        HeaderFiles
+        {
+            get
+            {
+                var module_list = FlattenHierarchicalFileList(this.headerModules);
+                foreach (var module in module_list)
+                {
+                    yield return module;
+                }
+            }
         }
     }
 }

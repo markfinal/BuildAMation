@@ -27,9 +27,33 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
 #if BAM_V2
+    public static partial class XcodeSupport
+    {
+        public static void
+        HeadersOnly(
+            HeaderLibrary module)
+        {
+            if (!module.HeaderFiles.Any())
+            {
+                return;
+            }
+
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            var target = workspace.EnsureTargetExists(module);
+            target.SetType(XcodeBuilder.Target.EProductType.Utility);
+            var configuration = target.GetConfiguration(module);
+            configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+
+            foreach (var header in module.HeaderFiles)
+            {
+                target.EnsureHeaderFileExists((header as HeaderFile).InputPath);
+            }
+        }
+    }
 #else
     public sealed class XcodeHeaderLibrary :
         IHeaderLibraryPolicy
