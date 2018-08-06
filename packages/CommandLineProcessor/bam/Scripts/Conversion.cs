@@ -835,6 +835,7 @@ namespace CommandLineProcessor
                     matching_input_attr = match_any;
                 }
                 var input_path = input_module_and_pathkey.Value.GeneratedPaths[input_module_and_pathkey.Key];
+#if D_PACKAGE_PUBLISHER
                 if (matching_input_attr is AnyInputFileAttribute &&
                     (matching_input_attr as AnyInputFileAttribute).PathModifierIfDirectory != null &&
                     module is Publisher.CollatedDirectory)
@@ -857,6 +858,7 @@ namespace CommandLineProcessor
                     );
                     continue;
                 }
+#endif
                 if (null != matching_input_attr.PathModifier)
                 {
                     var modifiedPath = Bam.Core.TokenizedString.Create(
