@@ -136,9 +136,7 @@ namespace XcodeBuilder
         AddPreBuildStepForCommandLineTool(
             Bam.Core.Module module,
             Target target,
-            Configuration configuration,
-            bool addInputFilesToProject,
-            FileReference.EFileType inputFileType)
+            Configuration configuration)
         {
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
@@ -150,16 +148,26 @@ namespace XcodeBuilder
                 shellCommandLines,
                 configuration
             );
+        }
 
-            if (addInputFilesToProject)
+        public static void
+        AddPreBuildStepForCommandLineTool(
+            Bam.Core.Module module,
+            Target target,
+            Configuration configuration,
+            FileReference.EFileType inputFileType)
+        {
+            AddPreBuildStepForCommandLineTool(
+                module,
+                target,
+                configuration
+            );
+            foreach (var input in module.InputModules)
             {
-                foreach (var input in module.InputModules)
-                {
-                    target.EnsureFileOfTypeExists(
-                        input.Value.GeneratedPaths[input.Key],
-                        inputFileType
-                    );
-                }
+                target.EnsureFileOfTypeExists(
+                    input.Value.GeneratedPaths[input.Key],
+                    inputFileType
+                );
             }
         }
 
