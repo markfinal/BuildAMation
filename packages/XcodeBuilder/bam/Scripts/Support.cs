@@ -53,6 +53,10 @@ namespace XcodeBuilder
             Bam.Core.Module module,
             Bam.Core.StringArray shellCommandLines)
         {
+            if (!module.GeneratedPaths.Any())
+            {
+                return;
+            }
             var condition_text = new System.Text.StringBuilder();
             condition_text.Append("if [[ ");
             var last_output = module.GeneratedPaths.Values.Last();
@@ -80,13 +84,18 @@ namespace XcodeBuilder
             Bam.Core.Module module,
             Bam.Core.StringArray shellCommandLines)
         {
+            if (!module.GeneratedPaths.Any())
+            {
+                return;
+            }
             shellCommandLines.Add("fi");
         }
 
         static private void
         AddModuleCommandLineShellCommand(
             Bam.Core.Module module,
-            Bam.Core.StringArray shellCommandLines)
+            Bam.Core.StringArray shellCommandLines,
+            bool allowNonZeroSuccessfulExitCodes)
         {
             System.Diagnostics.Debug.Assert(module.Tool is Bam.Core.ICommandLineTool);
 
@@ -108,6 +117,10 @@ namespace XcodeBuilder
                     module
                 )
             );
+            if (allowNonZeroSuccessfulExitCodes)
+            {
+                args.Add("|| true");
+            }
             args.Add(CommandLineProcessor.Processor.TerminatingArgs(tool));
             shellCommandLines.Add(args.ToString(' '));
         }
@@ -136,13 +149,25 @@ namespace XcodeBuilder
         AddPreBuildStepForCommandLineTool(
             Bam.Core.Module module,
             Target target,
-            Configuration configuration)
+            Configuration configuration,
+            bool checkForNewer,
+            bool allowNonZeroSuccessfulExitCodes)
         {
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
-            AddNewerThanPreamble(module, shellCommandLines);
-            AddModuleCommandLineShellCommand(module, shellCommandLines);
-            AddNewerThanPostamble(module, shellCommandLines);
+            if (checkForNewer)
+            {
+                AddNewerThanPreamble(module, shellCommandLines);
+            }
+            AddModuleCommandLineShellCommand(
+                module,
+                shellCommandLines,
+                allowNonZeroSuccessfulExitCodes
+            );
+            if (checkForNewer)
+            {
+                AddNewerThanPostamble(module, shellCommandLines);
+            }
 
             target.AddPreBuildCommands(
                 shellCommandLines,
@@ -155,12 +180,16 @@ namespace XcodeBuilder
             Bam.Core.Module module,
             Target target,
             Configuration configuration,
-            FileReference.EFileType inputFileType)
+            FileReference.EFileType inputFileType,
+            bool checkForNewer,
+            bool allowNonZeroSuccessfulExitCodes)
         {
             AddPreBuildStepForCommandLineTool(
                 module,
                 target,
-                configuration
+                configuration,
+                checkForNewer,
+                allowNonZeroSuccessfulExitCodes
             );
             foreach (var input in module.InputModules)
             {
@@ -197,7 +226,11 @@ namespace XcodeBuilder
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
             AddNewerThanPreamble(module, shellCommandLines);
-            AddModuleCommandLineShellCommand(module, shellCommandLines);
+            AddModuleCommandLineShellCommand(
+                module,
+                shellCommandLines,
+                false
+            );
             AddNewerThanPostamble(module, shellCommandLines);
 
             target.AddPostBuildCommands(

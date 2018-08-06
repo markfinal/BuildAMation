@@ -43,29 +43,11 @@ namespace Publisher
             var target = workspace.EnsureTargetExists(encapsulating);
             var configuration = target.GetConfiguration(encapsulating);
 
-            var commands = new Bam.Core.StringArray();
-            foreach (var dir in module.OutputDirectories)
-            {
-                commands.Add(
-                    System.String.Format(
-                        "[[ ! -d {0} ]] && mkdir -p {0}",
-                        dir.ToStringQuoteIfNecessary()
-                    )
-                );
-            }
-
-            var args = new Bam.Core.StringArray();
-            args.Add(CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool));
-            args.AddRange(
-                CommandLineProcessor.NativeConversion.Convert(
-                    module.Settings,
-                    module
-                )
+            XcodeBuilder.Support.AddPostBuildStepForCommandLineTool(
+                module,
+                target,
+                configuration
             );
-            args.Add(CommandLineProcessor.Processor.TerminatingArgs(module.Tool as Bam.Core.ICommandLineTool));
-            commands.Add(args.ToString(' '));
-
-            target.AddPostBuildCommands(commands, configuration);
         }
     }
 #else

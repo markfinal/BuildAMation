@@ -40,46 +40,19 @@ namespace Publisher
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
             var target = workspace.EnsureTargetExists(encapsulating);
-            target.EnsureOutputFileReferenceExists(
-                module.GeneratedPaths[ZipModule.ZipKey],
-                XcodeBuilder.FileReference.EFileType.ZipArchive,
-                XcodeBuilder.Target.EProductType.Utility);
             var configuration = target.GetConfiguration(encapsulating);
-            configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("DirectoryZip"));
 
-            var commands = new Bam.Core.StringArray();
-            foreach (var dir in module.OutputDirectories)
-            {
-                commands.Add(
-                    System.String.Format(
-                        "[[ ! -d {0} ]] && mkdir -p {0}",
-                        dir.ToStringQuoteIfNecessary()
-                    )
-                );
-            }
-
-            var args = new Bam.Core.StringArray();
-            if (module.WorkingDirectory != null)
-            {
-                args.Add(
-                    System.String.Format(
-                        "cd {0} &&",
-                        Bam.Core.IOWrapper.EscapeSpacesInPath(module.WorkingDirectory.ToString())
-                    )
-                );
-            }
-            args.Add(CommandLineProcessor.Processor.StringifyTool(module.Tool as Bam.Core.ICommandLineTool));
-            args.AddRange(
-                CommandLineProcessor.NativeConversion.Convert(
-                    module.Settings,
-                    module
-                )
+            XcodeBuilder.Support.AddPreBuildStepForCommandLineTool(
+                module,
+                target,
+                configuration,
+                XcodeBuilder.FileReference.EFileType.ZipArchive,
+                false,
+                true // because zip returns 12 (nothing to do) upon success for incrementals
             );
-            args.Add(CommandLineProcessor.Processor.TerminatingArgs(module.Tool as Bam.Core.ICommandLineTool));
-            args.Add("|| true"); // because zip returns 12 (nothing to do) upon success
-            commands.Add(args.ToString(' '));
 
-            target.AddPreBuildCommands(commands, configuration);
+            target.SetType(XcodeBuilder.Target.EProductType.Utility);
+            configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("DirectoryZip"));
         }
     }
 #else
