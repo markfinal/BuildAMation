@@ -393,15 +393,18 @@ namespace XcodeProjectProcessor
                 var proposed_path = System.IO.Path.Combine(searchPath_string, proposed_library_filename);
                 if (System.IO.File.Exists(proposed_path))
                 {
-                    Bam.Core.Log.MessageAll("Found {0} in search path: {1}", stripped_library_name, proposed_path);
-                    throw new System.NotImplementedException();
+                    target.EnsureFrameworksBuildFileExists(
+                        Bam.Core.TokenizedString.CreateVerbatim(proposed_path),
+                        fileType,
+                        XcodeBuilder.FileReference.ESourceTree.Absolute
+                    );
+                    return true;
                 }
             }
             // look in system library paths
             var proposed_system_lib_path = System.IO.Path.Combine("/usr/lib", proposed_library_filename);
             if (System.IO.File.Exists(proposed_system_lib_path))
             {
-                Bam.Core.Log.DebugMessage("Found system library {0} at {1}", stripped_library_name, proposed_system_lib_path);
                 target.EnsureFrameworksBuildFileExists(
                     Bam.Core.TokenizedString.CreateVerbatim(proposed_system_lib_path),
                     fileType,
@@ -415,7 +418,6 @@ namespace XcodeProjectProcessor
             proposed_sdk_lib_path = System.IO.Path.Combine(proposed_sdk_lib_path, proposed_library_filename);
             if (System.IO.File.Exists(proposed_sdk_lib_path))
             {
-                Bam.Core.Log.DebugMessage("Found SDK library {0} at {1}", stripped_library_name, proposed_sdk_lib_path);
                 target.EnsureFrameworksBuildFileExists(
                     Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.Combine("usr/lib", proposed_library_filename)),
                     fileType,
