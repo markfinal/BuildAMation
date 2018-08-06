@@ -155,10 +155,19 @@ namespace CommandLineProcessor
         InputPathsAttribute
     {
         public AnyInputFileAttribute(
-            string command_switch)
+            string command_switch,
+            string path_modifier_if_directory = null)
             :
             base(null, command_switch, max_file_count: 1)
-        {}
+        {
+            this.PathModifierIfDirectory = path_modifier_if_directory;
+        }
+
+        public string PathModifierIfDirectory
+        {
+            get;
+            private set;
+        }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
@@ -825,12 +834,35 @@ namespace CommandLineProcessor
                     }
                     matching_input_attr = match_any;
                 }
+                var input_path = input_module_and_pathkey.Value.GeneratedPaths[input_module_and_pathkey.Key];
+                if (matching_input_attr is AnyInputFileAttribute &&
+                    (matching_input_attr as AnyInputFileAttribute).PathModifierIfDirectory != null &&
+                    module is Publisher.CollatedDirectory)
+                {
+                    var modifiedPath = Bam.Core.TokenizedString.Create(
+                        (matching_input_attr as AnyInputFileAttribute).PathModifierIfDirectory,
+                        module,
+                        new Bam.Core.TokenizedStringArray(input_path)
+                    );
+                    if (!modifiedPath.IsParsed)
+                    {
+                        modifiedPath.Parse();
+                    }
+                    commandLine.Add(
+                        System.String.Format(
+                            "{0}{1}",
+                            matching_input_attr.CommandSwitch,
+                            modifiedPath.ToStringQuoteIfNecessary()
+                        )
+                    );
+                    continue;
+                }
                 if (null != matching_input_attr.PathModifier)
                 {
                     var modifiedPath = Bam.Core.TokenizedString.Create(
                         matching_input_attr.PathModifier,
                         module,
-                        new Bam.Core.TokenizedStringArray(input_module_and_pathkey.Value.GeneratedPaths[input_module_and_pathkey.Key])
+                        new Bam.Core.TokenizedStringArray(input_path)
                     );
                     if (!modifiedPath.IsParsed)
                     {
@@ -850,7 +882,7 @@ namespace CommandLineProcessor
                         System.String.Format(
                             "{0}{1}",
                             matching_input_attr.CommandSwitch,
-                            input_module_and_pathkey.Value.GeneratedPaths[input_module_and_pathkey.Key].ToStringQuoteIfNecessary()
+                            input_path.ToStringQuoteIfNecessary()
                         )
                     );
                 }

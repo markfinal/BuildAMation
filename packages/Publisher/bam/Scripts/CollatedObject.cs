@@ -288,7 +288,7 @@ namespace Publisher
                 if (this.Macros.Contains("RenameLeaf"))
                 {
                     this.RegisterGeneratedFile(
-                        CopiedDirectoryKey,
+                        CopiedRenamedDirectoryKey,
                         this.CreateTokenizedString(
                             "$(0)/$(RenameLeaf)",
                             new[]
