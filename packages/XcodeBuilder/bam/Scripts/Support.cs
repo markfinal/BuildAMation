@@ -117,11 +117,11 @@ namespace XcodeBuilder
                     module
                 )
             );
+            args.Add(CommandLineProcessor.Processor.TerminatingArgs(tool));
             if (allowNonZeroSuccessfulExitCodes)
             {
                 args.Add("|| true");
             }
-            args.Add(CommandLineProcessor.Processor.TerminatingArgs(tool));
             shellCommandLines.Add(args.ToString(' '));
         }
 
