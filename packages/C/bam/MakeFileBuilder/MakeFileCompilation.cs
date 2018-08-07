@@ -30,6 +30,7 @@
 namespace C
 {
 #if BAM_V2
+#if false
     public static partial class MakeFileSupport
     {
         public static void
@@ -93,6 +94,7 @@ namespace C
             }
         }
     }
+#endif
 #else
     public sealed class MakeFileCompilation :
         ICompilationPolicy

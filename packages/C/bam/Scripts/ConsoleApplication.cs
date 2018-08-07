@@ -502,7 +502,21 @@ namespace C
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.Link(this);
+                    {
+                        // any libraries added prior to here, need to be moved to the end
+                        // they are external dependencies, and thus all built modules (to be added now) may have
+                        // a dependency on them (and not vice versa)
+                        var linker = this.Settings as C.ICommonLinkerSettings;
+                        var externalLibs = linker.Libraries;
+                        linker.Libraries = new Bam.Core.StringArray();
+                        foreach (var library in this.Libraries)
+                        {
+                            (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, library as CModule);
+                        }
+                        linker.Libraries.AddRange(externalLibs);
+
+                        MakeFileBuilder.Support.Add(this);
+                    }
                     break;
 #endif
 

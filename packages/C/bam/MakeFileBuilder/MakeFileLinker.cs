@@ -31,6 +31,7 @@ using Bam.Core;
 namespace C
 {
 #if BAM_V2
+#if false
     public static partial class MakeFileSupport
     {
         public static void
@@ -78,11 +79,7 @@ namespace C
                     if (dynLib.LinkerNameSymbolicLink != null)
                     {
                         var linkerNameSymLink = dynLib.LinkerNameSymbolicLink;
-#if BAM_V2
                         rule.AddPrerequisite(linkerNameSymLink, C.SharedObjectSymbolicLink.SOSymLinkKey);
-#else
-                        rule.AddPrerequisite(linkerNameSymLink, C.SharedObjectSymbolicLink.Key);
-#endif
                     }
                     else
                     {
@@ -92,11 +89,7 @@ namespace C
                         }
                         else
                         {
-#if BAM_V2
                             rule.AddPrerequisite(input, C.DynamicLibrary.ExecutableKey);
-#else
-                            rule.AddPrerequisite(input, C.DynamicLibrary.Key);
-#endif
                         }
                     }
                 }
@@ -137,6 +130,7 @@ namespace C
             }
         }
     }
+#endif
 #else
     public sealed class MakeFileLinker :
         ILinkingPolicy
@@ -235,4 +229,4 @@ namespace C
         }
     }
 #endif
-                        }
+}

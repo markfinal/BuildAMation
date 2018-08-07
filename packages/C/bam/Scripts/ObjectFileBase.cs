@@ -156,7 +156,13 @@ namespace C
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.Compile(this);
+                    {
+                        if (!this.PerformCompilation)
+                        {
+                            return;
+                        }
+                        MakeFileBuilder.Support.Add(this);
+                    }
                     break;
 #endif
 
