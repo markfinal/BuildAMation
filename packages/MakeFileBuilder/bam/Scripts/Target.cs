@@ -36,7 +36,8 @@ namespace MakeFileBuilder
             bool isPhony,
             string variableName,
             Bam.Core.Module module,
-            int ruleIndex)
+            int ruleIndex,
+            string keyName)
         {
             this.Path = nameOrOutput;
             this.IsPhony = isPhony;
@@ -54,7 +55,23 @@ namespace MakeFileBuilder
                 // make the target names unique across configurations
                 if (System.String.IsNullOrEmpty(variableName))
                 {
-                    this.VariableName = System.String.Format("{0}_{1}", module.GetType().Name, module.BuildEnvironment.Configuration.ToString());
+                    if (System.String.IsNullOrEmpty(keyName))
+                    {
+                        this.VariableName = System.String.Format(
+                            "{0}_{1}",
+                            module.GetType().Name,
+                            module.BuildEnvironment.Configuration.ToString()
+                        );
+                    }
+                    else
+                    {
+                        this.VariableName = System.String.Format(
+                            "{0}_{1}_{2}",
+                            module.GetType().Name,
+                            keyName,
+                            module.BuildEnvironment.Configuration.ToString()
+                        );
+                    }
                 }
                 else
                 {

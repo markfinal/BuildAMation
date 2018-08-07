@@ -47,7 +47,10 @@ namespace MakeFileBuilder
             var rule = meta.AddRule();
             foreach (var output in module.GeneratedPaths)
             {
-                rule.AddTarget(output.Value);
+                rule.AddTarget(
+                    output.Value,
+                    keyName: output.Key
+                );
             }
             foreach (var input in module.InputModules)
             {
@@ -92,7 +95,10 @@ namespace MakeFileBuilder
             var rule = meta.AddRule();
             foreach (var output in module.GeneratedPaths)
             {
-                rule.AddTarget(output.Value);
+                rule.AddTarget(
+                    output.Value,
+                    keyName: output.Key
+                );
             }
             foreach (var input in module.InputModules)
             {

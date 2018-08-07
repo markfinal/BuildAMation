@@ -55,9 +55,17 @@ namespace MakeFileBuilder
         AddTarget(
             Bam.Core.TokenizedString targetNameOrOutput,
             bool isPhony = false,
-            string variableName = null)
+            string variableName = null,
+            string keyName = null)
         {
-            var target = new Target(targetNameOrOutput, isPhony, variableName, this.Module, this.RuleIndex);
+            var target = new Target(
+                targetNameOrOutput,
+                isPhony,
+                variableName,
+                this.Module,
+                this.RuleIndex,
+                keyName
+            );
             lock (this.Targets)
             {
                 this.Targets.Add(target);
