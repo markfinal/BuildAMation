@@ -148,11 +148,17 @@ namespace XcodeBuilder
         public static void
         AddPreBuildStepForCommandLineTool(
             Bam.Core.Module module,
-            Target target,
-            Configuration configuration,
+            out Target target,
+            out Configuration configuration,
             bool checkForNewer,
             bool allowNonZeroSuccessfulExitCodes)
         {
+            var encapsulating = module.GetEncapsulatingReferencedModule();
+
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            target = workspace.EnsureTargetExists(encapsulating);
+            configuration = target.GetConfiguration(encapsulating);
+
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
             if (checkForNewer)
@@ -178,16 +184,16 @@ namespace XcodeBuilder
         public static void
         AddPreBuildStepForCommandLineTool(
             Bam.Core.Module module,
-            Target target,
-            Configuration configuration,
+            out Target target,
+            out Configuration configuration,
             FileReference.EFileType inputFileType,
             bool checkForNewer,
             bool allowNonZeroSuccessfulExitCodes)
         {
             AddPreBuildStepForCommandLineTool(
                 module,
-                target,
-                configuration,
+                out target,
+                out configuration,
                 checkForNewer,
                 allowNonZeroSuccessfulExitCodes
             );

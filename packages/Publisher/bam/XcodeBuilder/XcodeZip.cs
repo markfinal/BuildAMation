@@ -36,16 +36,12 @@ namespace Publisher
         Zip(
             ZipModule module)
         {
-            var encapsulating = module.GetEncapsulatingReferencedModule();
-
-            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            var target = workspace.EnsureTargetExists(encapsulating);
-            var configuration = target.GetConfiguration(encapsulating);
-
+            XcodeBuilder.Target target;
+            XcodeBuilder.Configuration configuration;
             XcodeBuilder.Support.AddPreBuildStepForCommandLineTool(
                 module,
-                target,
-                configuration,
+                out target,
+                out configuration,
                 false,
                 true // because zip returns 12 (nothing to do) upon success for incrementals
             );
