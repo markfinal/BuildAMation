@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Publisher
 {
 #if BAM_V2
@@ -88,14 +89,17 @@ namespace Publisher
                 return;
             }
 
-            if (module.IsInAnchorPackage &&
-                !(collatedInterface.SourceModule is PreExistingObject) &&
-                collatedInterface.Anchor != null &&
-                !(collatedInterface.Anchor as CollatedObject).IsAnchorAnApplicationBundle)
+            if (module.IsInAnchorPackage)
             {
                 // additionally, any built module-based dependents in the same package as the anchor do not need copying as they
                 // are built into the right directory (since Xcode module build dirs do not include the module name)
-                return;
+                System.Diagnostics.Debug.Assert(1 == module.OutputDirectories.Count());
+                var output_dir = module.OutputDirectories.First().ToString();
+                var input_dir = System.IO.Path.GetDirectoryName(module.SourcePath.ToString());
+                if (output_dir == input_dir)
+                {
+                    return;
+                }
             }
 
             var copyFileTool = module.Tool as CopyFileTool;
