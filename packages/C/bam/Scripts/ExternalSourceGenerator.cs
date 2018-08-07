@@ -208,7 +208,20 @@ namespace C
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.GenerateSource(this);
+                    {
+                        if (this.Tool is Bam.Core.ICommandLineTool)
+                        {
+                            MakeFileBuilder.Support.Add(this);
+                        }
+                        else
+                        {
+                            MakeFileBuilder.Support.AddArbitraryTool(
+                                this,
+                                this.Executable,
+                                this.Arguments
+                            );
+                        }
+                    }
                     break;
 #endif
 

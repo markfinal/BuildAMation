@@ -32,6 +32,53 @@ namespace MakeFileBuilder
     public static partial class Support
     {
         public static void
+        AddArbitraryTool(
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString executable,
+            Bam.Core.TokenizedStringArray arguments)
+        {
+            var meta = new MakeFileBuilder.MakeFileMeta(module);
+
+            foreach (var dir in module.OutputDirectories)
+            {
+                meta.CommonMetaData.AddDirectory(dir.ToString());
+            }
+
+            var rule = meta.AddRule();
+            foreach (var output in module.GeneratedPaths)
+            {
+                rule.AddTarget(output.Value);
+            }
+            foreach (var input in module.InputModules)
+            {
+                rule.AddPrerequisite(input.Value, input.Key);
+            }
+            foreach (var dep in module.Dependents)
+            {
+                if (null == dep.MetaData)
+                {
+                    continue;
+                }
+                var depMeta = dep.MetaData as MakeFileBuilder.MakeFileMeta;
+                foreach (var depRule in depMeta.Rules)
+                {
+                    depRule.ForEachTarget(target =>
+                    {
+                        if (!target.IsPhony)
+                        {
+                            rule.AddPrerequisite(target.Path);
+                        }
+                    });
+                }
+            }
+
+            var commands = new Bam.Core.StringArray();
+            commands.Add(executable.ToString());
+            commands.Add(arguments.ToString(' '));
+            rule.AddShellCommand(commands.ToString(' '));
+        }
+
+        public static void
         Add(
             Bam.Core.Module module)
         {
@@ -50,6 +97,24 @@ namespace MakeFileBuilder
             foreach (var input in module.InputModules)
             {
                 rule.AddPrerequisite(input.Value, input.Key);
+            }
+            foreach (var dep in module.Dependents)
+            {
+                if (null == dep.MetaData)
+                {
+                    continue;
+                }
+                var depMeta = dep.MetaData as MakeFileBuilder.MakeFileMeta;
+                foreach (var depRule in depMeta.Rules)
+                {
+                    depRule.ForEachTarget(target =>
+                    {
+                        if (!target.IsPhony)
+                        {
+                            rule.AddPrerequisite(target.Path);
+                        }
+                    });
+                }
             }
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;
