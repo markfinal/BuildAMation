@@ -46,12 +46,15 @@ namespace Publisher
                 module,
                 target,
                 configuration,
-                XcodeBuilder.FileReference.EFileType.ZipArchive,
                 false,
                 true // because zip returns 12 (nothing to do) upon success for incrementals
             );
 
-            target.SetType(XcodeBuilder.Target.EProductType.Utility);
+            target.EnsureOutputFileReferenceExists(
+                module.GeneratedPaths[ZipModule.ZipKey],
+                XcodeBuilder.FileReference.EFileType.ZipArchive,
+                XcodeBuilder.Target.EProductType.Utility);
+
             configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("DirectoryZip"));
         }
     }
