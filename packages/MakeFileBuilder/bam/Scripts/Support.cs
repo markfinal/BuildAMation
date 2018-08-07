@@ -83,7 +83,8 @@ namespace MakeFileBuilder
 
         public static void
         Add(
-            Bam.Core.Module module)
+            Bam.Core.Module module,
+            Bam.Core.TokenizedString redirectOutputToFile = null)
         {
             var meta = new MakeFileBuilder.MakeFileMeta(module);
 
@@ -138,6 +139,11 @@ namespace MakeFileBuilder
                 ).ToString(' ')
             );
             commands.Add(CommandLineProcessor.Processor.TerminatingArgs(tool));
+            if (null != redirectOutputToFile)
+            {
+                commands.Add(">");
+                commands.Add(redirectOutputToFile.ToString());
+            }
             rule.AddShellCommand(commands.ToString(' '));
         }
     }

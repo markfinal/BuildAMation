@@ -125,7 +125,10 @@ namespace C
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.GenerateHeader(this);
+                    MakeFileBuilder.Support.Add(
+                        this,
+                        redirectOutputToFile: this.GeneratedPaths[HeaderFileKey]
+                    );
                     break;
 #endif
 
