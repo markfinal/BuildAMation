@@ -125,6 +125,31 @@ namespace XcodeBuilder
             shellCommandLines.Add(args.ToString(' '));
         }
 
+        private static void
+        GetTargetAndConfiguration(
+            Bam.Core.Module module,
+            out Target target,
+            out Configuration configuration)
+        {
+            var encapsulating = module.GetEncapsulatingReferencedModule();
+#if D_PACKAGE_PUBLISHER
+            if (encapsulating is Publisher.Collation)
+            {
+                (encapsulating as Publisher.Collation).ForEachAnchor(
+                    (collation, anchor, customData) =>
+                    {
+                        encapsulating = anchor.SourceModule;
+                    },
+                    null
+                );
+            }
+#endif
+
+            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+            target = workspace.EnsureTargetExists(encapsulating);
+            configuration = target.GetConfiguration(encapsulating);
+        }
+
         public static void
         AddPreBuildCommands(
             Bam.Core.Module module,
@@ -153,11 +178,11 @@ namespace XcodeBuilder
             bool checkForNewer,
             bool allowNonZeroSuccessfulExitCodes)
         {
-            var encapsulating = module.GetEncapsulatingReferencedModule();
-
-            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            target = workspace.EnsureTargetExists(encapsulating);
-            configuration = target.GetConfiguration(encapsulating);
+            GetTargetAndConfiguration(
+                module,
+                out target,
+                out configuration
+            );
 
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
@@ -226,9 +251,16 @@ namespace XcodeBuilder
         public static void
         AddPostBuildStepForCommandLineTool(
             Bam.Core.Module module,
-            Target target,
-            Configuration configuration)
+            Bam.Core.Module moduleToAddBuildStepTo,
+            out Target target,
+            out Configuration configuration)
         {
+            GetTargetAndConfiguration(
+                moduleToAddBuildStepTo,
+                out target,
+                out configuration
+            );
+
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
             AddNewerThanPreamble(module, shellCommandLines);

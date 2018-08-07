@@ -36,17 +36,13 @@ namespace Publisher
         InstallName(
             InstallNameModule module)
         {
-            // add it to the source module's target
-            var encapsulating = module.Source.GetEncapsulatingReferencedModule();
-
-            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            var target = workspace.EnsureTargetExists(encapsulating);
-            var configuration = target.GetConfiguration(encapsulating);
-
+            XcodeBuilder.Target target;
+            XcodeBuilder.Configuration configuration;
             XcodeBuilder.Support.AddPostBuildStepForCommandLineTool(
                 module,
-                target,
-                configuration
+                module.Source, // add it to the source module's target
+                out target,
+                out configuration
             );
         }
     }
