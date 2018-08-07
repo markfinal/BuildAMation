@@ -54,7 +54,16 @@ namespace Publisher
 
 #if D_PACKAGE_XCODEBUILDER
                 case "Xcode":
-                    XcodeSupport.InstallName(this);
+                    {
+                        XcodeBuilder.Target target;
+                        XcodeBuilder.Configuration configuration;
+                        XcodeBuilder.Support.AddPostBuildStepForCommandLineTool(
+                            this,
+                            this.Source, // add it to the source module's target
+                            out target,
+                            out configuration
+                        );
+                    }
                     break;
 #endif
             }

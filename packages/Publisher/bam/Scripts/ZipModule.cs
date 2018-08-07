@@ -114,7 +114,24 @@ namespace Publisher
 
 #if D_PACKAGE_XCODEBUILDER
                 case "Xcode":
-                    XcodeSupport.Zip(this);
+                    {
+                        XcodeBuilder.Target target;
+                        XcodeBuilder.Configuration configuration;
+                        XcodeBuilder.Support.AddPreBuildStepForCommandLineTool(
+                            this,
+                            out target,
+                            out configuration,
+                            false,
+                            true // because zip returns 12 (nothing to do) upon success for incrementals
+                        );
+
+                        target.EnsureOutputFileReferenceExists(
+                            this.GeneratedPaths[ZipModule.ZipKey],
+                            XcodeBuilder.FileReference.EFileType.ZipArchive,
+                            XcodeBuilder.Target.EProductType.Utility);
+
+                        configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("DirectoryZip"));
+                    }
                     break;
 #endif
 
