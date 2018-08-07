@@ -176,7 +176,8 @@ namespace XcodeBuilder
             out Target target,
             out Configuration configuration,
             bool checkForNewer,
-            bool allowNonZeroSuccessfulExitCodes)
+            bool allowNonZeroSuccessfulExitCodes,
+            bool addOrderOnlyDependencyOnTool = false)
         {
             GetTargetAndConfiguration(
                 module,
@@ -204,6 +205,24 @@ namespace XcodeBuilder
                 shellCommandLines,
                 configuration
             );
+
+            if (addOrderOnlyDependencyOnTool)
+            {
+                var tool = module.Tool;
+#if D_PACKAGE_PUBLISHER
+                // note the custom handler here, which checks to see if we're running a tool
+                // that has been collated
+                if (tool is Publisher.CollatedCommandLineTool)
+                {
+                    tool = (tool as Publisher.ICollatedObject).SourceModule;
+                }
+#endif
+                var toolTarget = tool.MetaData as Target;
+                if (null != toolTarget)
+                {
+                    target.Requires(toolTarget);
+                }
+            }
         }
 
         public static void
@@ -213,14 +232,16 @@ namespace XcodeBuilder
             out Configuration configuration,
             FileReference.EFileType inputFileType,
             bool checkForNewer,
-            bool allowNonZeroSuccessfulExitCodes)
+            bool allowNonZeroSuccessfulExitCodes,
+            bool addOrderOnlyDependencyOnTool = false)
         {
             AddPreBuildStepForCommandLineTool(
                 module,
                 out target,
                 out configuration,
                 checkForNewer,
-                allowNonZeroSuccessfulExitCodes
+                allowNonZeroSuccessfulExitCodes,
+                addOrderOnlyDependencyOnTool: allowNonZeroSuccessfulExitCodes
             );
             foreach (var input in module.InputModules)
             {
