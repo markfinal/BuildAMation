@@ -130,21 +130,32 @@ namespace MakeFileBuilder
                 meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
             }
 
-            var commands = new Bam.Core.StringArray();
-            commands.Add(CommandLineProcessor.Processor.StringifyTool(tool));
-            commands.Add(
+            var shellCommands = new Bam.Core.StringArray();
+            if (module.WorkingDirectory != null)
+            {
+                if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
+                {
+                    shellCommands.Add(System.String.Format("cd /D {0} &&", module.WorkingDirectory.ToStringQuoteIfNecessary()));
+                }
+                else
+                {
+                    shellCommands.Add(System.String.Format("cd {0};", module.WorkingDirectory.ToString()));
+                }
+            }
+            shellCommands.Add(CommandLineProcessor.Processor.StringifyTool(tool));
+            shellCommands.Add(
                 CommandLineProcessor.NativeConversion.Convert(
                     module.Settings,
                     module
                 ).ToString(' ')
             );
-            commands.Add(CommandLineProcessor.Processor.TerminatingArgs(tool));
+            shellCommands.Add(CommandLineProcessor.Processor.TerminatingArgs(tool));
             if (null != redirectOutputToFile)
             {
-                commands.Add(">");
-                commands.Add(redirectOutputToFile.ToString());
+                shellCommands.Add(">");
+                shellCommands.Add(redirectOutputToFile.ToString());
             }
-            rule.AddShellCommand(commands.ToString(' '));
+            rule.AddShellCommand(shellCommands.ToString(' '));
         }
     }
 }
