@@ -62,10 +62,20 @@ namespace Publisher
             }
             else if (module is CollatedDirectory)
             {
-                rule.AddTarget(
-                    module.GeneratedPaths[CollatedObject.CopiedDirectoryKey],
-                    variableName: "CollatedDir" + variableName
-                );
+                if (module.Macros.Contains("RenameLeaf"))
+                {
+                    rule.AddTarget(
+                        module.GeneratedPaths[CollatedObject.CopiedRenamedDirectoryKey],
+                        variableName: "CollatedRenamedDir" + variableName
+                    );
+                }
+                else
+                {
+                    rule.AddTarget(
+                        module.GeneratedPaths[CollatedObject.CopiedDirectoryKey],
+                        variableName: "CollatedDir" + variableName
+                    );
+                }
             }
             else if (module is CollatedOSXFramework)
             {
