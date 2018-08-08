@@ -78,10 +78,10 @@ namespace C
                         });
                     this.LinkerNameSymbolicLink = linkerName;
 
-					this.RegisterGeneratedFile(
-						SONameKey,
-						this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)")
-					);
+                    this.RegisterGeneratedFile(
+                        SONameKey,
+                        this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)")
+                    );
 
                     var SOName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
                         {
