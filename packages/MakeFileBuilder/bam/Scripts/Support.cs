@@ -84,7 +84,8 @@ namespace MakeFileBuilder
         public static void
         Add(
             Bam.Core.Module module,
-            Bam.Core.TokenizedString redirectOutputToFile = null)
+            Bam.Core.TokenizedString redirectOutputToFile = null,
+            bool isDependencyOfAll = false)
         {
             var meta = new MakeFileBuilder.MakeFileMeta(module);
 
@@ -98,7 +99,8 @@ namespace MakeFileBuilder
             {
                 rule.AddTarget(
                     output.Value,
-                    keyName: output.Key
+                    keyName: output.Key,
+                    isDependencyOfAll: isDependencyOfAll
                 );
             }
             foreach (var input in module.InputModules)
@@ -139,7 +141,7 @@ namespace MakeFileBuilder
                 }
                 else
                 {
-                    shellCommands.Add(System.String.Format("cd {0};", module.WorkingDirectory.ToString()));
+                    shellCommands.Add(System.String.Format("cd {0} &&", module.WorkingDirectory.ToString()));
                 }
             }
             shellCommands.Add(CommandLineProcessor.Processor.StringifyTool(tool));

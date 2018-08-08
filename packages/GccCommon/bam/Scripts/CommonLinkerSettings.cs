@@ -31,7 +31,6 @@ namespace GccCommon
 {
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-o ")]
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.SONameKey, "-Wl,-soname,")] // ensure that the NEEDED flag is set to the expected symlink for the shared object
-    [CommandLineProcessor.OutputPath(C.ConsoleApplication.LinkerNameKey, "", ignore: true)]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonLinkerSettings :
         C.SettingsBase,

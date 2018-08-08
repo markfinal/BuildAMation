@@ -46,7 +46,6 @@ namespace C
         public const string ImportLibraryKey = "Windows Import Library File";
         public const string PDBKey = "Windows Program DataBase File";
         public const string SONameKey = "Linux shared object name";
-        public const string LinkerNameKey = "Linux linker name";
 #else
         private ILinkingPolicy Policy = null;
 

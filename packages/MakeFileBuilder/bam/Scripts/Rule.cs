@@ -56,15 +56,25 @@ namespace MakeFileBuilder
             Bam.Core.TokenizedString targetNameOrOutput,
             bool isPhony = false,
             string variableName = null,
-            string keyName = null)
+            string keyName = null,
+            bool isDependencyOfAll = false)
         {
+            if (!Target.IsPrerequisiteOfAll(this.Module) && isDependencyOfAll)
+            {
+                System.Diagnostics.Debug.Assert(null == variableName);
+                variableName = Target.GetUnReferencedVariableName(
+                    this.Module,
+                    keyName
+                );
+            }
             var target = new Target(
                 targetNameOrOutput,
                 isPhony,
                 variableName,
                 this.Module,
                 this.RuleIndex,
-                keyName
+                keyName,
+                isDependencyOfAll
             );
             lock (this.Targets)
             {

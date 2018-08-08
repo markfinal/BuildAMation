@@ -65,7 +65,7 @@ namespace C
             this.RegisterGeneratedFile(SOSymLinkKey,
                                        this.CreateTokenizedString("@dir($(0))/$(1)",
                                                                   this.SharedObject.GeneratedPaths[ConsoleApplication.ExecutableKey],
-                                                                  this.SharedObject.GeneratedPaths[this.Macros["SymlinkUsage"].ToString()]));
+                                                                  this.Macros["SymlinkFilename"]));
 #else
             this.RegisterGeneratedFile(Key,
                                        this.CreateTokenizedString("@dir($(0))/$(1)",
@@ -110,7 +110,10 @@ namespace C
 
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.SymLink(this);
+                    MakeFileBuilder.Support.Add(
+                        this,
+                        isDependencyOfAll: true
+                    );
                     break;
 #endif
 

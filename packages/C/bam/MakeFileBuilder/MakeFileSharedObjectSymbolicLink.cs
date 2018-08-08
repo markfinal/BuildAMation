@@ -31,6 +31,7 @@ using Bam.Core;
 namespace C
 {
 #if BAM_V2
+#if false
     public static partial class MakeFileSupport
     {
         public static void
@@ -73,18 +74,19 @@ namespace C
             var tool = module.Tool as Bam.Core.ICommandLineTool;
             shellCommands.Add(
                 System.String.Format(
-	                "{0} {1} {2}",
-	                CommandLineProcessor.Processor.StringifyTool(tool),
-	                CommandLineProcessor.NativeConversion.Convert(
-	                    module.Settings,
-	                    module
-	                ).ToString(' '),
-	                CommandLineProcessor.Processor.TerminatingArgs(tool)
-	            )
+                    "{0} {1} {2}",
+                    CommandLineProcessor.Processor.StringifyTool(tool),
+                    CommandLineProcessor.NativeConversion.Convert(
+                        module.Settings,
+                        module
+                    ).ToString(' '),
+                    CommandLineProcessor.Processor.TerminatingArgs(tool)
+                )
             );
             rule.AddShellCommand(shellCommands.ToString(' '));
         }
     }
+#endif
 #else
     public sealed class MakeFileSharedObjectSymbolicLink :
         ISharedObjectSymbolicLinkPolicy

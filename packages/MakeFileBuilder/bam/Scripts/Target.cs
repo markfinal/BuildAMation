@@ -31,17 +31,44 @@ namespace MakeFileBuilder
 {
     public sealed class Target
     {
+        private static int UniqueCounter = 0; // TODO: this is probably not the best way of creating a unique name for all unreferenced modules
+
+        public static bool
+        IsPrerequisiteOfAll(
+            Bam.Core.Module module)
+        {
+            return Bam.Core.Graph.Instance.IsReferencedModule(module);
+        }
+
+        public static string
+        GetUnReferencedVariableName(
+            Bam.Core.Module module,
+            string keyName)
+        {
+            var encapsulating = module.GetEncapsulatingReferencedModule();
+            System.Diagnostics.Debug.Assert(encapsulating != module);
+            return System.String.Format(
+                "{0}_{1}_{2}_{3}_{4}",
+                encapsulating.GetType().Name,
+                module.GetType().Name,
+                keyName,
+                module.BuildEnvironment.Configuration.ToString(),
+                UniqueCounter++
+            );
+        }
+
         public Target(
             Bam.Core.TokenizedString nameOrOutput,
             bool isPhony,
             string variableName,
             Bam.Core.Module module,
             int ruleIndex,
-            string keyName)
+            string keyName,
+            bool isDependencyOfAll)
         {
             this.Path = nameOrOutput;
             this.IsPhony = isPhony;
-            this.IsPrerequisiteofAll = Bam.Core.Graph.Instance.IsReferencedModule(module) || !System.String.IsNullOrEmpty(variableName);
+            this.IsPrerequisiteofAll = isDependencyOfAll || Bam.Core.Graph.Instance.IsReferencedModule(module) || !System.String.IsNullOrEmpty(variableName);
             if (isPhony)
             {
                 return;
