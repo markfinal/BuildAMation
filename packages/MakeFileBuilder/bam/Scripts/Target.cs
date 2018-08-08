@@ -108,6 +108,8 @@ namespace MakeFileBuilder
                 }
                 // spaces are invalid syntax
                 this.VariableName = this.VariableName.Replace(' ', '_');
+                // slashes are invalid syntax
+                this.VariableName = this.VariableName.Replace('/', '_');
                 if (MakeFileCommonMetaData.IsNMAKE)
                 {
                     // periods are invalid syntax
