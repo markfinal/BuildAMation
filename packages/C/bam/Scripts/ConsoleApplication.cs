@@ -45,7 +45,6 @@ namespace C
         public const string ExecutableKey = "Executable File";
         public const string ImportLibraryKey = "Windows Import Library File";
         public const string PDBKey = "Windows Program DataBase File";
-        public const string SONameKey = "Linux shared object name";
 #else
         private ILinkingPolicy Policy = null;
 

@@ -30,7 +30,6 @@
 namespace GccCommon
 {
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-o ")]
-    [CommandLineProcessor.OutputPath(C.ConsoleApplication.SONameKey, "-Wl,-soname,")] // ensure that the NEEDED flag is set to the expected symlink for the shared object
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonLinkerSettings :
         C.SettingsBase,
@@ -145,6 +144,15 @@ namespace GccCommon
         [CommandLineProcessor.Path("-Wl,--version-script=")]
 #endif
         Bam.Core.TokenizedString ICommonLinkerSettings.VersionScript
+        {
+            get;
+            set;
+        }
+
+#if BAM_V2
+        [CommandLineProcessor.Path("-Wl,-soname,")] // ensure that the NEEDED flag is set to the expected symlink for the shared object
+#endif
+        Bam.Core.TokenizedString ICommonLinkerSettings.SharedObjectName
         {
             get;
             set;

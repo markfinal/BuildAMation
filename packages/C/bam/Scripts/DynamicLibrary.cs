@@ -78,17 +78,20 @@ namespace C
                         });
                     this.LinkerNameSymbolicLink = linkerName;
 
-                    this.RegisterGeneratedFile(
-                        SONameKey,
-                        this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)")
-                    );
-
                     var SOName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
                         {
-                            module.Macros.Add("SymlinkFilename", this.GeneratedPaths[SONameKey]);
+                            module.Macros.Add("SymlinkFilename", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
                             module.SharedObject = this;
                         });
                     this.SONameSymbolicLink = SOName;
+
+#if D_PACKAGE_GCCCOMMON
+                    this.PrivatePatch(settings =>
+                        {
+                            var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+                            gccLinker.SharedObjectName = SOName.Macros["SymlinkFilename"];
+                        });
+#endif
                 }
             }
 
