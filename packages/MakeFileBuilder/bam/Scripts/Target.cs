@@ -79,6 +79,8 @@ namespace MakeFileBuilder
                     MakeFileMeta.MakeVariableNameUnique(ref variableName);
                     this.VariableName = variableName;
                 }
+                // spaces are invalid syntax
+                this.VariableName = this.VariableName.Replace(' ', '_');
                 if (MakeFileCommonMetaData.IsNMAKE)
                 {
                     // periods are invalid syntax
