@@ -355,7 +355,7 @@ namespace Publisher
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.CollateObject(this);
+                    MakeFileBuilder.Support.Add(this);
                     break;
 #endif
 

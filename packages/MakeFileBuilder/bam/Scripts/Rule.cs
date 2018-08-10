@@ -163,38 +163,60 @@ namespace MakeFileBuilder
         WriteVariables(
             System.Text.StringBuilder variables)
         {
-            foreach (var target in this.Targets)
+            bool hasShellCommands = this.ShellCommands.Any();
+            if (hasShellCommands)
             {
-                var name = target.VariableName;
-                if (null == name)
+                foreach (var target in this.Targets)
                 {
-                    continue;
-                }
-
-                if (target.IsPhony)
-                {
-                    variables.AppendFormat(".PHONY: {0}", name);
-                    variables.AppendLine();
-                }
-
-                // simply expanded variable
-                lock (target.Path)
-                {
-                    if (!target.Path.IsParsed)
+                    var name = target.VariableName;
+                    if (null == name)
                     {
-                        // some sources may be generated after the string parsing phase
-                        target.Path.Parse();
+                        continue;
+                    }
+
+                    if (target.IsPhony)
+                    {
+                        variables.AppendFormat(".PHONY: {0}", name);
+                        variables.AppendLine();
+                    }
+
+                    // simply expanded variable
+                    lock (target.Path)
+                    {
+                        if (!target.Path.IsParsed)
+                        {
+                            // some sources may be generated after the string parsing phase
+                            target.Path.Parse();
+                        }
+                    }
+                    if (MakeFileCommonMetaData.IsNMAKE)
+                    {
+                        variables.AppendFormat("{0} = {1}", name, target.Path.ToString());
+                        variables.AppendLine();
+                        variables.AppendLine();
+                    }
+                    else
+                    {
+                        variables.AppendFormat("{0}:={1}", name, target.Path.ToString());
+                        variables.AppendLine();
                     }
                 }
-                if (MakeFileCommonMetaData.IsNMAKE)
+            }
+            else
+            {
+                foreach (var target in this.Targets)
                 {
-                    variables.AppendFormat("{0} = {1}", name, target.Path.ToString());
-                    variables.AppendLine();
-                    variables.AppendLine();
-                }
-                else
-                {
-                    variables.AppendFormat("{0}:={1}", name, target.Path.ToString());
+                    var name = target.VariableName;
+                    if (null == name)
+                    {
+                        name = target.Path.ToString();
+                    }
+
+                    variables.AppendFormat("{0} = ", name);
+                    foreach (var prereq in this.PrerequisitePaths)
+                    {
+                        variables.AppendFormat("{0} ", prereq.ToString());
+                    }
                     variables.AppendLine();
                 }
             }
@@ -228,6 +250,11 @@ namespace MakeFileBuilder
         WriteRules(
             System.Text.StringBuilder rules)
         {
+            bool hasShellCommands = this.ShellCommands.Any();
+            if (!hasShellCommands)
+            {
+                return;
+            }
             foreach (var target in this.Targets)
             {
                 var name = target.VariableName;

@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace MakeFileBuilder
 {
     public static partial class Support
@@ -82,6 +83,49 @@ namespace MakeFileBuilder
         }
 
         public static void
+        AddCheckpoint(
+            Bam.Core.Module module)
+        {
+            if (module.GeneratedPaths.Any())
+            {
+                throw new Bam.Core.Exception(
+                    "A checkpoint must have no outputs"
+                );
+            }
+            if (!Bam.Core.Graph.Instance.IsReferencedModule(module))
+            {
+                throw new Bam.Core.Exception(
+                    "A checkpoint must be a referenced module, {0} is not",
+                    module.ToString()
+                );
+            }
+            var meta = new MakeFileBuilder.MakeFileMeta(module);
+            var rule = meta.AddRule();
+            rule.AddTarget(
+                Bam.Core.TokenizedString.CreateVerbatim(Target.GetUnReferencedVariableName(module, null))
+            );
+            foreach (var dep in module.Requirements)
+            {
+                if (null == dep.MetaData)
+                {
+                    continue;
+                }
+                var depMeta = dep.MetaData as MakeFileBuilder.MakeFileMeta;
+                foreach (var depRule in depMeta.Rules)
+                {
+                    depRule.ForEachTarget(target =>
+                    {
+                        if (!target.IsPhony)
+                        {
+                            rule.AddPrerequisite(target.Path);
+                        }
+                    });
+                }
+            }
+            // no shell commands
+        }
+
+        public static void
         Add(
             Bam.Core.Module module,
             Bam.Core.TokenizedString redirectOutputToFile = null,
@@ -127,6 +171,11 @@ namespace MakeFileBuilder
             }
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;
+            if (null == tool)
+            {
+                // no shell commands, just target & prerequisites
+                return;
+            }
             if (null != tool.EnvironmentVariables)
             {
                 meta.CommonMetaData.ExtendEnvironmentVariables(tool.EnvironmentVariables);
