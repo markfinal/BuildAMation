@@ -19,4 +19,4 @@ test_script:
   - cd tests
   - python runtests.py -x Mingw --VisualC.version=12.0 -b Native -c debug -c profile -j0 -d
   - python runtests.py -x Mingw --VisualC.version=12.0 -b VSSolution -c debug -c profile -j0 -d
-  - python runtests.py -x Mingw --VisualC.version=12.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.Format=NMAKE
+  - python runtests.py -x Mingw --VisualC.version=12.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE

@@ -45,7 +45,7 @@ namespace MakeFileBuilder.Options
         {
             get
             {
-                return "--MakeFile.Format";
+                return "--MakeFile.format";
             }
         }
 
