@@ -30,6 +30,7 @@
 namespace Publisher
 {
 #if BAM_V2
+#if false
     public static partial class MakeFileSupport
     {
         public static void
@@ -79,6 +80,7 @@ namespace Publisher
             rule.AddShellCommand(shellCommands.ToString(' '));
         }
     }
+#endif
 #else
     public sealed class MakeFileZip :
         IZipToolPolicy

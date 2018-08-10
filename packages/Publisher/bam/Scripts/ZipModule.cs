@@ -94,7 +94,7 @@ namespace Publisher
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.Zip(this);
+                    MakeFileBuilder.Support.Add(this);
                     break;
 #endif
 
