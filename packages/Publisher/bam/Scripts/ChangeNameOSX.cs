@@ -42,7 +42,7 @@ namespace Publisher
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.InstallName(this);
+                    MakeFileBuilder.Support.Add(this)
                     break;
 #endif
 
