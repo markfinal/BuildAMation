@@ -41,7 +41,7 @@ namespace Publisher
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileBuilder.Support.Add(this)
+                    MakeFileBuilder.Support.Add(this);
                     break;
 #endif
 
