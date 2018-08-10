@@ -30,6 +30,7 @@
 namespace Publisher
 {
 #if BAM_V2
+#if false
     public static partial class MakeFileSupport
     {
         public static void
@@ -67,6 +68,7 @@ namespace Publisher
             );
         }
     }
+#endif
 #else
     public sealed class MakeFileDSymUtil :
         IDSymUtilToolPolicy

@@ -132,7 +132,7 @@ namespace Installer
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.CreateDMG(this);
+                    MakeFileBuilder.Support.Add(this);
                     break;
 #endif
 
