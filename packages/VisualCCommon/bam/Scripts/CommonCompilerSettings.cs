@@ -94,6 +94,8 @@ namespace VisualCCommon
 
 #if BAM_V2
         // no attributes as this mapping is in which compiler executable is used
+        [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "")]
+        [CommandLineProcessor.Enum(C.EBit.SixtyFour, "")]
         [VisualStudioProcessor.Enum(C.EBit.ThirtyTwo, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.EBit.SixtyFour, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
 #endif
