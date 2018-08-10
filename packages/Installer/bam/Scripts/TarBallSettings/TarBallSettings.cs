@@ -35,23 +35,12 @@ namespace Installer
     [CommandLineProcessor.InputPaths(Publisher.DebugSymbolCollation.DebugSymbolsDirectoryKey, "")]
     public sealed class TarBallSettings :
         Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
         ITarBallSettings
     {
-        public TarBallSettings()
-        {}
-
         public TarBallSettings(
             Bam.Core.Module module)
         {
             this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
 
         [CommandLineProcessor.Enum(ETarOperation.Create, "-c")]
@@ -62,6 +51,10 @@ namespace Installer
         }
 
         private ETarCompressionType _compression;
+        [CommandLineProcessor.Enum(ETarCompressionType.None, "")]
+        [CommandLineProcessor.Enum(ETarCompressionType.gzip, "-z")]
+        [CommandLineProcessor.Enum(ETarCompressionType.bzip, "-j")]
+        [CommandLineProcessor.Enum(ETarCompressionType.lzma, "--lzma")]
         ETarCompressionType ITarBallSettings.CompressionType
         {
             get
