@@ -279,7 +279,7 @@ namespace Installer
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.CreateInnoSetup(this);
+                    MakeFileBuilder.Support.Add(this);
                     break;
 #endif
 

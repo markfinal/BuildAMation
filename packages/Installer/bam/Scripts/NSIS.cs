@@ -259,7 +259,7 @@ namespace Installer
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.CreateNSIS(this);
+                    MakeFileBuilder.Support.Add(this);
                     break;
 #endif
 
