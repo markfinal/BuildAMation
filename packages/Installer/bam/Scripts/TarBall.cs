@@ -271,7 +271,7 @@ namespace Installer
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.CreateTarBall(this);
+                    MakeFileBuilder.Support.Add(this);
                     break;
 #endif
 

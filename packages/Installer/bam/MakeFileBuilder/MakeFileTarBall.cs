@@ -30,6 +30,7 @@
 namespace Installer
 {
 #if BAM_V2
+#if false
     public static partial class MakeFileSupport
     {
         public static void
@@ -63,6 +64,7 @@ namespace Installer
             );
         }
     }
+#endif
 #else
     public sealed class NativeTarBall :
         ITarPolicy
