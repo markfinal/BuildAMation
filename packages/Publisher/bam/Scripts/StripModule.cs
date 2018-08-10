@@ -90,7 +90,7 @@ namespace Publisher
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.Strip(this);
+                    MakeFileBuilder.Support.Add(this);
                     break;
 #endif
 
