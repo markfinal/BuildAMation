@@ -590,7 +590,12 @@ namespace CommandLineProcessor
                     var attributeArray = settings_property.GetCustomAttributes(typeof(BaseAttribute), false);
                     if (!attributeArray.Any())
                     {
-                        continue;
+                        throw new Bam.Core.Exception(
+                            "No attributes available for mapping property {0} to command line switches for module {1} and settings {2}",
+                            full_property_interface_name,
+                            module.ToString(),
+                            settings.ToString()
+                        );
                     }
                     var property_value = settings_property.GetValue(settings);
                     if (null == property_value)
