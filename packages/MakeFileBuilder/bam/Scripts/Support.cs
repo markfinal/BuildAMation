@@ -169,6 +169,24 @@ namespace MakeFileBuilder
                     });
                 }
             }
+            foreach (var dep in module.Requirements)
+            {
+                if (null == dep.MetaData)
+                {
+                    continue;
+                }
+                var depMeta = dep.MetaData as MakeFileBuilder.MakeFileMeta;
+                foreach (var depRule in depMeta.Rules)
+                {
+                    depRule.ForEachTarget(target =>
+                    {
+                        if (!target.IsPhony)
+                        {
+                            rule.AddOrderOnlyDependency(target.Path.ToString());
+                        }
+                    });
+                }
+            }
 
             var tool = module.Tool as Bam.Core.ICommandLineTool;
             if (null == tool)
