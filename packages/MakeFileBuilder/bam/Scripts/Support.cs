@@ -70,7 +70,7 @@ namespace MakeFileBuilder
                     {
                         if (!target.IsPhony)
                         {
-                            rule.AddPrerequisite(target.Path);
+                            rule.AddPrerequisite(target);
                         }
                     });
                 }
@@ -123,7 +123,7 @@ namespace MakeFileBuilder
                     {
                         if (!target.IsPhony)
                         {
-                            rule.AddPrerequisite(target.Path);
+                            rule.AddPrerequisite(target);
                         }
                     });
                 }
@@ -180,7 +180,7 @@ namespace MakeFileBuilder
                     {
                         if (!target.IsPhony)
                         {
-                            rule.AddPrerequisite(target.Path);
+                            rule.AddPrerequisite(target);
                         }
                     });
                 }
