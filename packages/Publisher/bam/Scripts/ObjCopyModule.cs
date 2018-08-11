@@ -256,6 +256,25 @@ namespace Publisher
                 yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(MakeDebugSymbolFile.DebugSymbolFileKey, this.DebugSymbolModule);
             }
         }
+
+        protected override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
+        {
+#if D_PACKAGE_MAKEFILEBUILDER
+            if ("MakeFile" == Bam.Core.Graph.Instance.Mode)
+            {
+                // append to the strip rule
+                System.Diagnostics.Debug.Assert((this as ICollatedObject).SourceModule is StripModule);
+                MakeFileBuilder.Support.Add(
+                    this,
+                    moduleToAppendTo: (this as ICollatedObject).SourceModule
+                );
+                return;
+            }
+#endif
+            base.ExecuteInternal(context);
+        }
     }
 #else
     public class ObjCopyModule :

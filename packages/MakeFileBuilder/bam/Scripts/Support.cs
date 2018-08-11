@@ -129,23 +129,33 @@ namespace MakeFileBuilder
         Add(
             Bam.Core.Module module,
             Bam.Core.TokenizedString redirectOutputToFile = null,
-            bool isDependencyOfAll = false)
+            bool isDependencyOfAll = false,
+            Bam.Core.Module moduleToAppendTo = null)
         {
-            var meta = new MakeFileBuilder.MakeFileMeta(module);
+            MakeFileMeta meta = null;
+            Rule rule = null;
+            if (null == moduleToAppendTo)
+            {
+	            meta = new MakeFileBuilder.MakeFileMeta(module);
+	            rule = meta.AddRule();
+	            foreach (var output in module.GeneratedPaths)
+	            {
+	                rule.AddTarget(
+	                    output.Value,
+	                    keyName: output.Key,
+	                    isDependencyOfAll: isDependencyOfAll
+	                );
+	            }
+            }
+            else
+            {
+                meta = moduleToAppendTo.MetaData as MakeFileMeta;
+                rule = meta.Rules[0];
+            }
 
             foreach (var dir in module.OutputDirectories)
             {
                 meta.CommonMetaData.AddDirectory(dir.ToString());
-            }
-
-            var rule = meta.AddRule();
-            foreach (var output in module.GeneratedPaths)
-            {
-                rule.AddTarget(
-                    output.Value,
-                    keyName: output.Key,
-                    isDependencyOfAll: isDependencyOfAll
-                );
             }
             foreach (var input in module.InputModules)
             {
