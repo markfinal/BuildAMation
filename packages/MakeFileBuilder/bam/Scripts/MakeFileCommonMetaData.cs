@@ -234,21 +234,31 @@ namespace MakeFileBuilder
             return packageName + "_DIR";
         }
 
+        private void
+        AppendVariable(
+            System.Text.StringBuilder output,
+            string path,
+            string variableName)
+        {
+            output.AppendFormat(
+                "{0} := {1}",
+                variableName,
+                path
+            );
+            output.AppendLine();
+            this.PackageVariables.Add(path, System.String.Format("$({0})", variableName));
+        }
+
         public void
         ExportPackageDirectories(
             System.Text.StringBuilder output,
             System.Collections.Generic.Dictionary<string, string> packageMap)
         {
+            this.AppendVariable(output, Bam.Core.Graph.Instance.Macros["buildroot"].ToString(), "BUILDROOT");
             foreach (var pkg in packageMap)
             {
                 var packageVar = VariableForPackageDir(pkg.Key);
-                output.AppendFormat(
-                    "{0} := {1}",
-                    packageVar,
-                    pkg.Value
-                );
-                output.AppendLine();
-                this.PackageVariables.Add(pkg.Value, System.String.Format("$({0})", packageVar));
+                this.AppendVariable(output, pkg.Value, packageVar);
             }
         }
 
