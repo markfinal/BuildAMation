@@ -31,6 +31,7 @@ namespace MakeFileBuilder
 {
     public sealed class Target
     {
+        private static object UniqueCounterGuard = new object();
         private static int UniqueCounter = 0; // TODO: this is probably not the best way of creating a unique name for all unreferenced modules
 
         public static bool
@@ -47,14 +48,17 @@ namespace MakeFileBuilder
         {
             var encapsulating = module.GetEncapsulatingReferencedModule();
             System.Diagnostics.Debug.Assert(encapsulating != module);
-            return System.String.Format(
-                "{0}_{1}_{2}_{3}_{4}",
-                encapsulating.GetType().Name,
-                module.GetType().Name,
-                keyName,
-                module.BuildEnvironment.Configuration.ToString(),
-                UniqueCounter++
-            );
+            lock (UniqueCounterGuard)
+            {
+	            return System.String.Format(
+	                "{0}_{1}_{2}_{3}_{4}",
+	                encapsulating.GetType().Name,
+	                module.GetType().Name,
+	                keyName,
+	                module.BuildEnvironment.Configuration.ToString(),
+	                UniqueCounter++
+	            );
+            }
         }
 
         public Target(
