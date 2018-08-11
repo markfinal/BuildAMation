@@ -240,11 +240,11 @@ namespace MakeFileBuilder
                 }
             }
 
-            Bam.Core.Log.DebugMessage("MAKEFILE CONTENTS: BEGIN");
-            Bam.Core.Log.DebugMessage(makeEnvironment.ToString());
-            Bam.Core.Log.DebugMessage(makeVariables.ToString());
-            Bam.Core.Log.DebugMessage(makeRules.ToString());
-            Bam.Core.Log.DebugMessage("MAKEFILE CONTENTS: END");
+            Bam.Core.Log.MessageAll("MAKEFILE CONTENTS: BEGIN");
+            Bam.Core.Log.MessageAll(makeEnvironment.ToString());
+            Bam.Core.Log.MessageAll(makeVariables.ToString());
+            Bam.Core.Log.MessageAll(makeRules.ToString());
+            Bam.Core.Log.MessageAll("MAKEFILE CONTENTS: END");
 
             var makeFilePath = Bam.Core.TokenizedString.Create("$(buildroot)/Makefile", null);
             makeFilePath.Parse();
