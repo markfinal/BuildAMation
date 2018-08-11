@@ -129,7 +129,7 @@ namespace Publisher
                     module.SourcePathKey = collatedFile.SourcePathKey;
                     module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
                 });
-            this.DependsOn(createDebugSymbols);
+            this.Requires(createDebugSymbols);
 
             createDebugSymbols.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
@@ -153,7 +153,7 @@ namespace Publisher
                     module.SourcePathKey = collatedFile.SourcePathKey;
                     module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
                 });
-            this.DependsOn(createDebugSymbols);
+            this.Requires(createDebugSymbols);
 
             createDebugSymbols.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
@@ -181,7 +181,7 @@ namespace Publisher
                     module.SourcePathKey = C.ConsoleApplication.PDBKey;
                     module.SetPublishingDirectory("$(0)", collatedFile.PublishingDirectory.Clone(module));
                 });
-            this.DependsOn(copyPDBModule);
+            this.Requires(copyPDBModule);
 
             copyPDBModule.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 

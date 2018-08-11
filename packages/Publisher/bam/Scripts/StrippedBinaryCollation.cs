@@ -136,7 +136,7 @@ namespace Publisher
                     module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
                 });
 
-            this.DependsOn(stripBinary);
+            this.Requires(stripBinary);
             stripBinary.DependsOn(collatedFile as Bam.Core.Module);
 
             // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
@@ -168,7 +168,7 @@ namespace Publisher
 #endif
                     module.SetPublishingDirectory("$(0)", collatedObject.PublishingDirectory.Clone(module));
                 });
-            this.DependsOn(clonedFile);
+            this.Requires(clonedFile);
 
             clonedFile.Anchor = collatedObject.Anchor;
 
@@ -270,7 +270,7 @@ namespace Publisher
                     {
                         var stripped = this.StripBinary(collatedObj);
                         var linkBack = debugSymbols.LinkBackToDebugSymbols(stripped);
-                        this.DependsOn(linkBack);
+                        this.Requires(linkBack);
                     }
                 }
             }
@@ -286,7 +286,7 @@ namespace Publisher
                 {
                     var stripped = this.StripBinary(collatedObj);
                     var linkBack = debugSymbols.LinkBackToDebugSymbols(stripped);
-                    this.DependsOn(linkBack);
+                    this.Requires(linkBack);
                 }
             }
             else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
