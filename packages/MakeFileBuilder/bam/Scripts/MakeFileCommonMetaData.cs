@@ -42,6 +42,7 @@ namespace MakeFileBuilder
         {
             this.Directories = new Bam.Core.StringArray();
             this.Environment = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
+            this.PackageVariables = new System.Collections.Generic.Dictionary<string, string>();
             if (Bam.Core.OSUtilities.IsLinuxHosting)
             {
                 // for system utilities, e.g. mkdir, cp, echo
@@ -58,6 +59,12 @@ namespace MakeFileBuilder
         }
 
         private System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> Environment
+        {
+            get;
+            set;
+        }
+
+        private System.Collections.Generic.Dictionary<string, string> PackageVariables
         {
             get;
             set;
@@ -121,7 +128,11 @@ namespace MakeFileBuilder
             System.Diagnostics.Debug.Assert(!MakeFileCommonMetaData.IsNMAKE);
             foreach (var env in this.Environment)
             {
-                output.AppendFormat("{0}:={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
+                output.AppendFormat(
+                    "{0}:={1}",
+                    env.Key,
+                    this.UseMacrosInPath(env.Value.ToString(System.IO.Path.PathSeparator))
+                );
                 output.AppendLine();
             }
         }
@@ -203,7 +214,10 @@ namespace MakeFileBuilder
             }
             foreach (var dir in this.Directories)
             {
-                output.AppendFormat("{0} ", dir);
+                output.AppendFormat(
+                    "{0} ",
+                    this.UseMacrosInPath(dir)
+                );
             }
             output.AppendLine();
             if (IsNMAKE)
@@ -211,6 +225,46 @@ namespace MakeFileBuilder
                 output.AppendLine();
             }
             return true;
+        }
+
+        public static string
+        VariableForPackageDir(
+            string packageName)
+        {
+            return packageName + "_DIR";
+        }
+
+        public void
+        ExportPackageDirectories(
+            System.Text.StringBuilder output,
+            System.Collections.Generic.Dictionary<string, string> packageMap)
+        {
+            foreach (var pkg in packageMap)
+            {
+                var packageVar = VariableForPackageDir(pkg.Key);
+                output.AppendFormat(
+                    "{0} := {1}",
+                    packageVar,
+                    pkg.Value
+                );
+                output.AppendLine();
+                this.PackageVariables.Add(pkg.Value, System.String.Format("$({0})", packageVar));
+            }
+        }
+
+        public string
+        UseMacrosInPath(
+            string path)
+        {
+            foreach (var pkg in this.PackageVariables)
+            {
+                if (!path.Contains(pkg.Key))
+                {
+                    continue;
+                }
+                path = path.Replace(pkg.Key, pkg.Value);
+            }
+            return path;
         }
     }
 }

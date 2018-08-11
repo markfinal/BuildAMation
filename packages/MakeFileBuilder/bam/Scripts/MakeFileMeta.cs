@@ -136,6 +136,29 @@ namespace MakeFileBuilder
             // delete suffix rules
             makeEnvironment.AppendLine(".SUFFIXES:");
 
+            // variables for package directories
+            var packageMap = new System.Collections.Generic.Dictionary<string, string>();
+            foreach (var metadata in allMeta)
+            {
+                var module = metadata.Module;
+                if (!Bam.Core.Graph.Instance.IsReferencedModule(module))
+                {
+                    continue;
+                }
+
+                var package = module.GetType().Namespace;
+                if (packageMap.ContainsKey(package))
+                {
+                    continue;
+                }
+                var packageDir = module.Macros["packagedir"].ToString();
+                packageMap.Add(package, packageDir);
+            }
+            commonMeta.ExportPackageDirectories(
+                makeVariables,
+                packageMap
+            );
+
             if (MakeFileCommonMetaData.IsNMAKE)
             {
                 // macros in NMAKE do not export as environment variables to commands
@@ -212,8 +235,8 @@ namespace MakeFileBuilder
             {
                 foreach (var rule in metadata.Rules)
                 {
-                    rule.WriteVariables(makeVariables);
-                    rule.WriteRules(makeRules);
+                    rule.WriteVariables(makeVariables, commonMeta);
+                    rule.WriteRules(makeRules, commonMeta);
                 }
             }
 

@@ -161,7 +161,8 @@ namespace MakeFileBuilder
 
         public void
         WriteVariables(
-            System.Text.StringBuilder variables)
+            System.Text.StringBuilder variables,
+            MakeFileCommonMetaData commonMeta)
         {
             bool hasShellCommands = this.ShellCommands.Any();
             if (hasShellCommands)
@@ -191,13 +192,21 @@ namespace MakeFileBuilder
                     }
                     if (MakeFileCommonMetaData.IsNMAKE)
                     {
-                        variables.AppendFormat("{0} = {1}", name, target.Path.ToString());
+                        variables.AppendFormat(
+                            "{0} = {1}",
+                            name,
+                            commonMeta.UseMacrosInPath(target.Path.ToString())
+                        );
                         variables.AppendLine();
                         variables.AppendLine();
                     }
                     else
                     {
-                        variables.AppendFormat("{0}:={1}", name, target.Path.ToString());
+                        variables.AppendFormat(
+                            "{0}:={1}",
+                            name,
+                            commonMeta.UseMacrosInPath(target.Path.ToString())
+                        );
                         variables.AppendLine();
                     }
                 }
@@ -248,7 +257,8 @@ namespace MakeFileBuilder
 
         public void
         WriteRules(
-            System.Text.StringBuilder rules)
+            System.Text.StringBuilder rules,
+            MakeFileCommonMetaData commonMeta)
         {
             bool hasShellCommands = this.ShellCommands.Any();
             if (!hasShellCommands)
@@ -269,11 +279,14 @@ namespace MakeFileBuilder
                         rules.AppendFormat(".PHONY: {0}", target.Path);
                         rules.AppendLine();
                     }
-                    rules.AppendFormat("{0}:", target.Path);
+                    rules.AppendFormat("{0}:", commonMeta.UseMacrosInPath(target.Path.ToString()));
                 }
                 foreach (var pre in this.Prequisities)
                 {
-                    rules.AppendFormat("{0} ", pre.Key.GeneratedPaths[pre.Value].ToStringQuoteIfNecessary());
+                    rules.AppendFormat(
+                        "{0} ",
+                        commonMeta.UseMacrosInPath(pre.Key.GeneratedPaths[pre.Value].ToStringQuoteIfNecessary())
+                    );
                 }
                 foreach (var pre in this.PrerequisitePaths)
                 {
@@ -284,18 +297,27 @@ namespace MakeFileBuilder
                             pre.Parse();
                         }
                     }
-                    rules.AppendFormat("{0} ", pre.ToStringQuoteIfNecessary());
+                    rules.AppendFormat(
+                        "{0} ",
+                        commonMeta.UseMacrosInPath(pre.ToStringQuoteIfNecessary())
+                    );
                 }
                 foreach (var pre in this.PrerequisiteTargets)
                 {
                     var preName = pre.VariableName;
                     if (null == preName)
                     {
-                        rules.AppendFormat("{0} ", pre.Path.ToString());
+                        rules.AppendFormat(
+                            "{0} ",
+                            commonMeta.UseMacrosInPath(pre.Path.ToString())
+                        );
                     }
                     else
                     {
-                        rules.AppendFormat("$({0}) ", preName);
+                        rules.AppendFormat(
+                            "$({0}) ",
+                            commonMeta.UseMacrosInPath(preName)
+                        );
                     }
                 }
                 if (MakeFileCommonMetaData.IsNMAKE)
@@ -306,7 +328,10 @@ namespace MakeFileBuilder
                 {
                     if (this.OrderOnlyDependencies.Count > 0)
                     {
-                        rules.AppendFormat("| {0}", this.OrderOnlyDependencies.ToString(' '));
+                        rules.AppendFormat(
+                            "| {0}",
+                            commonMeta.UseMacrosInPath(this.OrderOnlyDependencies.ToString(' '))
+                        );
                     }
                 }
                 rules.AppendLine();
