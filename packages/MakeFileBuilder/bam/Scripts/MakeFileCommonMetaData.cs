@@ -240,11 +240,22 @@ namespace MakeFileBuilder
             string path,
             string variableName)
         {
-            output.AppendFormat(
-                "{0} := {1}",
-                variableName,
-                path
-            );
+            if (IsNMAKE)
+            {
+                output.AppendFormat(
+                    "{0} = {1}",
+                    variableName,
+                    path
+                );
+            }
+            else
+            {
+                output.AppendFormat(
+                    "{0} := {1}",
+                    variableName,
+                    path
+                );
+            }
             output.AppendLine();
             this.PackageVariables.Add(path, System.String.Format("$({0})", variableName));
         }
