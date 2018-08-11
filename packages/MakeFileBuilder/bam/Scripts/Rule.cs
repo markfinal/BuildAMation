@@ -221,10 +221,13 @@ namespace MakeFileBuilder
                         name = target.Path.ToString();
                     }
 
-                    variables.AppendFormat("{0} = ", name);
+                    variables.AppendFormat("{0}=", name);
                     foreach (var prereq in this.PrerequisitePaths)
                     {
-                        variables.AppendFormat("{0} ", prereq.ToString());
+                        variables.AppendFormat(
+                            "{0} ",
+                            commonMeta.UseMacrosInPath(prereq.ToString())
+                        );
                     }
                     variables.AppendLine();
                 }
