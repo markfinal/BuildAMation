@@ -93,6 +93,21 @@ namespace Publisher
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileBuilder.Support.AddCheckpoint(
+                        this,
+                        excludingGeneratedPath: StripBinaryDirectoryKey
+                    );
+                    break;
+#endif
+
+                default:
+                    // does not need to do anything
+                    break;
+            }
 #else
             if (null == this.Policy)
             {

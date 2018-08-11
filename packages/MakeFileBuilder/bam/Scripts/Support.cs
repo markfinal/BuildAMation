@@ -84,13 +84,19 @@ namespace MakeFileBuilder
 
         public static void
         AddCheckpoint(
-            Bam.Core.Module module)
+            Bam.Core.Module module,
+            string excludingGeneratedPath = null)
         {
-            if (module.GeneratedPaths.Any())
+            if (module.GeneratedPaths.Any(item => (null == excludingGeneratedPath) || (item.Key != excludingGeneratedPath)))
             {
-                throw new Bam.Core.Exception(
-                    "A checkpoint must have no outputs"
-                );
+                var message = new System.Text.StringBuilder();
+                message.AppendLine("A checkpoint must have no outputs");
+                foreach (var genPath in module.GeneratedPaths)
+                {
+                    message.AppendFormat("\t{0} [{1}]", genPath.Value.ToString(), genPath.Key);
+                    message.AppendLine();
+                }
+                throw new Bam.Core.Exception(message.ToString());
             }
             if (!Bam.Core.Graph.Instance.IsReferencedModule(module))
             {

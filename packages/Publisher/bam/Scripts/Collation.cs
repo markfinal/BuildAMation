@@ -170,7 +170,7 @@ namespace Publisher
             Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
-    switch (Bam.Core.Graph.Instance.Mode)
+            switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
