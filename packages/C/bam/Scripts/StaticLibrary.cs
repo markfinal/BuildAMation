@@ -309,7 +309,7 @@ namespace C
         {
             var className = "C." + mode + "Librarian";
             this.Policy = Bam.Core.ExecutionPolicyUtilities<IArchivingPolicy>.Create(className);
-    }
+        }
 #endif
 
         protected sealed override void
