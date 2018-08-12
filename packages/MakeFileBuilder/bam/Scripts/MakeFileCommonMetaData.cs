@@ -240,6 +240,24 @@ namespace MakeFileBuilder
             string path,
             string variableName)
         {
+            if (this.PackageVariables.ContainsKey(path))
+            {
+                if (this.PackageVariables[path] == variableName)
+                {
+                    return;
+                }
+                if (variableName.EndsWith(".tests_DIR"))
+                {
+                    // this is a package test namespace
+                    return;
+                }
+                throw new Bam.Core.Exception(
+                    "Path '{0}' is already registered with macro '{1}'. Cannot re-register it with macro '{2}'",
+                    path,
+                    this.PackageVariables[path],
+                    variableName
+                );
+            }
             if (IsNMAKE)
             {
                 output.AppendFormat(
