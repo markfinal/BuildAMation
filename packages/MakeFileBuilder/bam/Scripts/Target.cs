@@ -50,14 +50,14 @@ namespace MakeFileBuilder
             System.Diagnostics.Debug.Assert(encapsulating != module);
             lock (UniqueCounterGuard)
             {
-	            return System.String.Format(
-	                "{0}_{1}_{2}_{3}_{4}",
-	                encapsulating.GetType().Name,
-	                module.GetType().Name,
-	                keyName,
-	                module.BuildEnvironment.Configuration.ToString(),
-	                UniqueCounter++
-	            );
+                return System.String.Format(
+                    "{0}_{1}_{2}_{3}_{4}",
+                    encapsulating.GetType().Name,
+                    module.GetType().Name,
+                    keyName,
+                    module.BuildEnvironment.Configuration.ToString(),
+                    UniqueCounter++
+                );
             }
         }
 

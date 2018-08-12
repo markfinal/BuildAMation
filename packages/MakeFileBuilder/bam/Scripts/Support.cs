@@ -142,16 +142,16 @@ namespace MakeFileBuilder
             Rule rule = null;
             if (null == moduleToAppendTo)
             {
-	            meta = new MakeFileBuilder.MakeFileMeta(module);
-	            rule = meta.AddRule();
-	            foreach (var output in module.GeneratedPaths)
-	            {
-	                rule.AddTarget(
-	                    output.Value,
-	                    keyName: output.Key,
-	                    isDependencyOfAll: isDependencyOfAll
-	                );
-	            }
+                meta = new MakeFileBuilder.MakeFileMeta(module);
+                rule = meta.AddRule();
+                foreach (var output in module.GeneratedPaths)
+                {
+                    rule.AddTarget(
+                        output.Value,
+                        keyName: output.Key,
+                        isDependencyOfAll: isDependencyOfAll
+                    );
+                }
             }
             else
             {
