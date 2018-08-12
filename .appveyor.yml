@@ -13,7 +13,7 @@ environment:
     platform: Any CPU
     project: BuildAMation.sln
 after_build:
-  - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bin\Release\*.dll
+  - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bin\
 artifacts:
   - path: bam.zip
     name: Bam
