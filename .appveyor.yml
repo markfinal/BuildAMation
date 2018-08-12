@@ -16,7 +16,7 @@ test_script:
   - "SET PATH=C:\\Python27-x64;%PATH%"
   - python codingtools\\test_bam.py
   - env.bat
-  - cd tests
-  - python runtests.py -x Mingw --VisualC.version=12.0 -b Native -c debug -c profile -j0 -d
-  - python runtests.py -x Mingw --VisualC.version=12.0 -b VSSolution -c debug -c profile -j0 -d
-  - python runtests.py -x Mingw --VisualC.version=12.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
+  #- cd tests
+  #- python runtests.py -x Mingw --VisualC.version=12.0 -b Native -c debug -c profile -j0 -d
+  #- python runtests.py -x Mingw --VisualC.version=12.0 -b VSSolution -c debug -c profile -j0 -d
+  #- python runtests.py -x Mingw --VisualC.version=12.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
