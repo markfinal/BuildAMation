@@ -1230,6 +1230,8 @@ namespace Publisher
             return this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, anchor, filter, renameLeaf);
         }
 
+#if BAM_V2
+#else
         /// <summary>
         /// For a collated ELF file, update it's RPATH.
         /// </summary>
@@ -1246,6 +1248,7 @@ namespace Publisher
             this.Requires(change);
             return change;
         }
+#endif
 
         private ICollatedObject
         CreateCollatedPreExistingFile(

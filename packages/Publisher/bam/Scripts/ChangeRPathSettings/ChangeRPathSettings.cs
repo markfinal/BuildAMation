@@ -27,38 +27,30 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace Publisher
 {
-    public sealed class ChangeRPathTool :
-        Bam.Core.PreBuiltTool
+    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "")]
+    public sealed class ChangeRPathSettings :
+        Bam.Core.Settings,
+        IChangeRPathSettings
     {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
+        public ChangeRPathSettings(
+            Bam.Core.Module module)
         {
-            base.Init(parent);
+            this.InitializeAllInterfaces(module, false, true);
         }
 
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
+        [CommandLineProcessor.String("-r ")]
+        string IChangeRPathSettings.NewRPath
         {
-            return new ChangeRPathSettings(module);
+            get;
+            set;
         }
 
-        public override Bam.Core.TokenizedString Executable
+        public override void
+        AssignFileLayout()
         {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("chrpath").First());
-            }
-        }
-
-        protected override void
-        EvaluateInternal()
-        {
-            this.ReasonToExecute = null;
+            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
         }
     }
 }
