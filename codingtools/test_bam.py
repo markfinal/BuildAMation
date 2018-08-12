@@ -14,7 +14,6 @@ def test_bam(build_dir, configuration='Release'):
         test_args = []
         test_args.append('./NuGetPackages/NUnit.ConsoleRunner.3.7.0/tools/nunit3-console.exe')
         test_args.append('--stoponerror')
-        test_args.append('--noresult')
         test_args.append('Bam.Core.Test/bin/%s/Bam.Core.Test.dll' % configuration)
         if platform.system() != "Windows":
             test_args.insert(0, 'mono')
