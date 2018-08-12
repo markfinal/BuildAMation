@@ -26,6 +26,6 @@ test_script:
   #- python runtests.py -x Mingw --VisualC.version=12.0 -b VSSolution -c debug -c profile -j0 -d
   #- python runtests.py -x Mingw --VisualC.version=12.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
 on_finish:
-  - ps: >-
+  - ps: |
       $wc = New-Object 'System.Net.WebClient'
       $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit3/$env:APPVEYOR_JOB_ID", (Resolve-Path .\TestResult.xml))
