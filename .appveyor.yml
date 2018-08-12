@@ -12,6 +12,11 @@ environment:
   - configuration: Release
     platform: Any CPU
     project: BuildAMation.sln
+after_build:
+  - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bin\Release\*.dll
+artifacts:
+  - path: bam.zip
+    name: Bam
 test_script:
   - "SET PATH=C:\\Python27-x64;%PATH%"
   - python codingtools\\test_bam.py
