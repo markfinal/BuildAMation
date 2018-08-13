@@ -65,7 +65,7 @@ namespace MakeFileBuilder
             if (!Target.IsPrerequisiteOfAll(this.Module) && isDependencyOfAll)
             {
                 System.Diagnostics.Debug.Assert(null == variableName);
-                variableName = Target.GetUnReferencedVariableName(
+                variableName = Target.MakeUniqueVariableName(
                     this.Module,
                     keyName
                 );

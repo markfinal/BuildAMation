@@ -42,23 +42,40 @@ namespace MakeFileBuilder
         }
 
         public static string
-        GetUnReferencedVariableName(
+        MakeUniqueVariableName(
             Bam.Core.Module module,
             string keyName)
         {
-            var encapsulating = module.GetEncapsulatingReferencedModule();
-            System.Diagnostics.Debug.Assert(encapsulating != module);
-            lock (UniqueCounterGuard)
+            var varName = new System.Text.StringBuilder();
+            var isReferenced = Bam.Core.Graph.Instance.IsReferencedModule(module);
+            if (isReferenced)
             {
-                return System.String.Format(
-                    "{0}_{1}_{2}_{3}_{4}",
-                    encapsulating.GetType().Name,
-                    module.GetType().Name,
-                    keyName,
-                    module.BuildEnvironment.Configuration.ToString(),
-                    UniqueCounter++
+                varName.Append(module.ToString());
+            }
+            else
+            {
+                var encapsulating = module.GetEncapsulatingReferencedModule();
+                varName.AppendFormat(
+                    "{0}_{1}",
+                    encapsulating.ToString(),
+                    module.ToString()
                 );
             }
+            if (null != keyName)
+            {
+                varName.AppendFormat("_{0}", keyName);
+            }
+            varName.AppendFormat("_{0}", module.BuildEnvironment.Configuration.ToString());
+            if (!isReferenced)
+            {
+                lock (UniqueCounterGuard)
+                {
+                    varName.AppendFormat("_{0}", UniqueCounter++);
+                }
+            }
+            var expanded_variable = varName.ToString();
+            MakeFileMeta.MakeVariableNameUnique(ref expanded_variable);
+            return expanded_variable;
         }
 
         public Target(
@@ -88,33 +105,7 @@ namespace MakeFileBuilder
             {
                 return;
             }
-
-            // make the target names unique across configurations
-            var varName = new System.Text.StringBuilder();
-            if (!System.String.IsNullOrEmpty(variableName))
-            {
-                varName.Append(variableName);
-            }
-            else
-            {
-                if (Bam.Core.Graph.Instance.IsReferencedModule(module))
-                {
-                    varName.Append(module.ToString());
-                }
-                else
-                {
-                    var encapsulated = module.GetEncapsulatingReferencedModule();
-                    varName.Append(encapsulated.ToString());
-                }
-                if (null != keyName)
-                {
-                    varName.AppendFormat("_{0}", keyName);
-                }
-            }
-            varName.AppendFormat("_{0}", module.BuildEnvironment.Configuration.ToString());
-            var expanded_variable = varName.ToString();
-            MakeFileMeta.MakeVariableNameUnique(ref expanded_variable);
-            this.VariableName = expanded_variable;
+            this.VariableName = MakeUniqueVariableName(module, keyName);
         }
 
         public bool
