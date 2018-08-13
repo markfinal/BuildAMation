@@ -38,6 +38,17 @@ namespace MakeFileBuilder
         // experimental
         public static bool IsNMAKE = ("NMAKE" == Bam.Core.CommandLineProcessor.Evaluate(new Options.ChooseFormat()));
 
+        // a fake Target for order only dependencies
+        public static Target DIRSTarget = new Target(
+            Bam.Core.TokenizedString.CreateVerbatim("$(DIRS)"),
+            false,
+            null,
+            null,
+            0,
+            string.Empty,
+            false
+        );
+
         public MakeFileCommonMetaData()
         {
             this.Directories = new Bam.Core.StringArray();

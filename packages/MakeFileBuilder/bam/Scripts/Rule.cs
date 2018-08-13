@@ -50,8 +50,8 @@ namespace MakeFileBuilder
             this.PrerequisitePaths = new Bam.Core.TokenizedStringArray();
 #endif
             this.ShellCommands = new Bam.Core.StringArray();
-            this.OrderOnlyDependencies = new Bam.Core.StringArray();
-            this.OrderOnlyDependencies.Add("$(DIRS)");
+            this.OrderOnlyDependencies = new Bam.Core.Array<Target>();
+            this.AddOrderOnlyDependency(MakeFileCommonMetaData.DIRSTarget);
         }
 
         public Target
@@ -160,9 +160,12 @@ namespace MakeFileBuilder
 
         public void
         AddOrderOnlyDependency(
-            string ooDep)
+            Target target)
         {
-            this.OrderOnlyDependencies.AddUnique(ooDep);
+            lock (this.OrderOnlyDependencies)
+            {
+                this.OrderOnlyDependencies.AddUnique(target);
+            }
         }
 
         public void
@@ -349,12 +352,29 @@ namespace MakeFileBuilder
                 }
                 else
                 {
-                    if (this.OrderOnlyDependencies.Count > 0)
+                    if (this.OrderOnlyDependencies.Any())
                     {
                         rules.AppendFormat(
-                            "| {0}",
-                            commonMeta.UseMacrosInPath(this.OrderOnlyDependencies.ToString(' '))
+                            "| "
                         );
+                    }
+                    foreach (var ood in this.OrderOnlyDependencies)
+                    {
+                        var oodName = ood.VariableName;
+                        if (null == oodName)
+                        {
+                            rules.AppendFormat(
+                                "{0} ",
+                                commonMeta.UseMacrosInPath(ood.Path.ToString())
+                            );
+                        }
+                        else
+                        {
+                            rules.AppendFormat(
+                                "$({0}) ",
+                                commonMeta.UseMacrosInPath(oodName)
+                            );
+                        }
                     }
                 }
                 rules.AppendLine();
@@ -475,7 +495,7 @@ namespace MakeFileBuilder
             set;
         }
 
-        private Bam.Core.StringArray OrderOnlyDependencies
+        private Bam.Core.Array<Target> OrderOnlyDependencies
         {
             get;
             set;

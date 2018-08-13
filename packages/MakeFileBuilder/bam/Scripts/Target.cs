@@ -72,7 +72,10 @@ namespace MakeFileBuilder
         {
             this.Path = nameOrOutput;
             this.IsPhony = isPhony;
-            this.IsPrerequisiteofAll = isDependencyOfAll || Bam.Core.Graph.Instance.IsReferencedModule(module) || !System.String.IsNullOrEmpty(variableName);
+            this.IsPrerequisiteofAll =
+                isDependencyOfAll ||
+                (module != null && Bam.Core.Graph.Instance.IsReferencedModule(module)) ||
+                !System.String.IsNullOrEmpty(variableName);
             if (isPhony)
             {
                 return;

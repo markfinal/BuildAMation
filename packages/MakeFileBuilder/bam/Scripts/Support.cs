@@ -198,7 +198,7 @@ namespace MakeFileBuilder
                     {
                         if (!target.IsPhony)
                         {
-                            rule.AddOrderOnlyDependency(target.Path.ToString());
+                            rule.AddOrderOnlyDependency(target);
                         }
                     });
                 }
