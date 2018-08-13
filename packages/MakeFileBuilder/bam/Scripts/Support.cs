@@ -108,7 +108,7 @@ namespace MakeFileBuilder
             var meta = new MakeFileBuilder.MakeFileMeta(module);
             var rule = meta.AddRule();
             rule.AddTarget(
-                Bam.Core.TokenizedString.CreateVerbatim(Target.GetUnReferencedVariableName(module, null))
+                Bam.Core.TokenizedString.CreateVerbatim(Target.MakeUniqueVariableName(module, null))
             );
             foreach (var dep in module.Requirements)
             {
