@@ -268,7 +268,13 @@ namespace C
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileBuilder.Support.Add(this);
+                    {
+                        if (this.IsPrebuilt)
+                        {
+                            return;
+                        }
+                        MakeFileBuilder.Support.Add(this);
+                    }
                     break;
 #endif
 
@@ -316,6 +322,10 @@ namespace C
         EvaluateInternal()
         {
             this.ReasonToExecute = null;
+            if (this.IsPrebuilt) // never check
+            {
+                return;
+            }
 #if BAM_V2
             var libraryPath = this.GeneratedPaths[LibraryKey].ToString();
 #else

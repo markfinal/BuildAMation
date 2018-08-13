@@ -304,6 +304,24 @@ namespace MakeFileBuilder
                     }
                     rules.AppendFormat("{0}:", commonMeta.UseMacrosInPath(target.Path.ToString()));
                 }
+
+                // non-first targets just require the first target to exist
+                // see https://stackoverflow.com/questions/2973445/gnu-makefile-rule-generating-a-few-targets-from-a-single-source-file
+                if (target != this.FirstTarget)
+                {
+                    var firstTargetname = this.FirstTarget.VariableName;
+                    if (null != firstTargetname)
+                    {
+                        rules.AppendFormat("$({0})", firstTargetname);
+                    }
+                    else
+                    {
+                        rules.AppendFormat("{0}:", commonMeta.UseMacrosInPath(this.FirstTarget.Path.ToString()));
+                    }
+                    rules.AppendLine();
+                    continue;
+                }
+
                 foreach (var pre in this.Prequisities)
                 {
                     rules.AppendFormat(
