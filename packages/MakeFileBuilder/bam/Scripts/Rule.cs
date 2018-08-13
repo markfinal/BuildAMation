@@ -45,10 +45,13 @@ namespace MakeFileBuilder
             this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
 #endif
             this.PrerequisiteTargets = new Bam.Core.Array<Target>();
+#if BAM_V2
+#else
             this.PrerequisitePaths = new Bam.Core.TokenizedStringArray();
+#endif
             this.ShellCommands = new Bam.Core.StringArray();
-            this.OrderOnlyDependencies = new Bam.Core.StringArray();
-            this.OrderOnlyDependencies.Add("$(DIRS)");
+            this.OrderOnlyDependencies = new Bam.Core.Array<Target>();
+            this.AddOrderOnlyDependency(MakeFileCommonMetaData.DIRSTarget);
         }
 
         public Target
@@ -98,12 +101,15 @@ namespace MakeFileBuilder
             }
         }
 
+#if BAM_V2
+#else
         public void
         AddPrerequisite(
             Bam.Core.TokenizedString path)
         {
             this.PrerequisitePaths.Add(path);
         }
+#endif
 
         public void
         AddPrerequisite(
@@ -154,9 +160,12 @@ namespace MakeFileBuilder
 
         public void
         AddOrderOnlyDependency(
-            string ooDep)
+            Target target)
         {
-            this.OrderOnlyDependencies.AddUnique(ooDep);
+            lock (this.OrderOnlyDependencies)
+            {
+                this.OrderOnlyDependencies.AddUnique(target);
+            }
         }
 
         public void
@@ -222,12 +231,23 @@ namespace MakeFileBuilder
                     }
 
                     variables.AppendFormat("{0}=", name);
-                    foreach (var prereq in this.PrerequisitePaths)
+                    foreach (var pre in this.PrerequisiteTargets)
                     {
-                        variables.AppendFormat(
-                            "{0} ",
-                            commonMeta.UseMacrosInPath(prereq.ToString())
-                        );
+                        var preName = pre.VariableName;
+                        if (null == preName)
+                        {
+                            variables.AppendFormat(
+                                "{0} ",
+                                commonMeta.UseMacrosInPath(pre.Path.ToString())
+                            );
+                        }
+                        else
+                        {
+                            variables.AppendFormat(
+                                "$({0}) ",
+                                commonMeta.UseMacrosInPath(preName)
+                            );
+                        }
                     }
                     variables.AppendLine();
                 }
@@ -240,7 +260,7 @@ namespace MakeFileBuilder
             char toReplace)
         {
             var offset = 0;
-            for (;;)
+            for (; ; )
             {
                 var index = input.IndexOf(toReplace, offset);
                 if (-1 == index)
@@ -291,6 +311,8 @@ namespace MakeFileBuilder
                         commonMeta.UseMacrosInPath(pre.Key.GeneratedPaths[pre.Value].ToStringQuoteIfNecessary())
                     );
                 }
+#if BAM_V2
+#else
                 foreach (var pre in this.PrerequisitePaths)
                 {
                     lock (pre)
@@ -305,6 +327,7 @@ namespace MakeFileBuilder
                         commonMeta.UseMacrosInPath(pre.ToStringQuoteIfNecessary())
                     );
                 }
+#endif
                 foreach (var pre in this.PrerequisiteTargets)
                 {
                     var preName = pre.VariableName;
@@ -329,12 +352,29 @@ namespace MakeFileBuilder
                 }
                 else
                 {
-                    if (this.OrderOnlyDependencies.Count > 0)
+                    if (this.OrderOnlyDependencies.Any())
                     {
                         rules.AppendFormat(
-                            "| {0}",
-                            commonMeta.UseMacrosInPath(this.OrderOnlyDependencies.ToString(' '))
+                            "| "
                         );
+                    }
+                    foreach (var ood in this.OrderOnlyDependencies)
+                    {
+                        var oodName = ood.VariableName;
+                        if (null == oodName)
+                        {
+                            rules.AppendFormat(
+                                "{0} ",
+                                commonMeta.UseMacrosInPath(ood.Path.ToString())
+                            );
+                        }
+                        else
+                        {
+                            rules.AppendFormat(
+                                "$({0}) ",
+                                commonMeta.UseMacrosInPath(oodName)
+                            );
+                        }
                     }
                 }
                 rules.AppendLine();
@@ -440,11 +480,14 @@ namespace MakeFileBuilder
             set;
         }
 
+#if BAM_V2
+#else
         private Bam.Core.TokenizedStringArray PrerequisitePaths
         {
             get;
             set;
         }
+#endif
 
         private Bam.Core.StringArray ShellCommands
         {
@@ -452,7 +495,7 @@ namespace MakeFileBuilder
             set;
         }
 
-        private Bam.Core.StringArray OrderOnlyDependencies
+        private Bam.Core.Array<Target> OrderOnlyDependencies
         {
             get;
             set;

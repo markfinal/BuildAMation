@@ -50,14 +50,14 @@ namespace MakeFileBuilder
             System.Diagnostics.Debug.Assert(encapsulating != module);
             lock (UniqueCounterGuard)
             {
-	            return System.String.Format(
-	                "{0}_{1}_{2}_{3}_{4}",
-	                encapsulating.GetType().Name,
-	                module.GetType().Name,
-	                keyName,
-	                module.BuildEnvironment.Configuration.ToString(),
-	                UniqueCounter++
-	            );
+                return System.String.Format(
+                    "{0}_{1}_{2}_{3}_{4}",
+                    encapsulating.GetType().Name,
+                    module.GetType().Name,
+                    keyName,
+                    module.BuildEnvironment.Configuration.ToString(),
+                    UniqueCounter++
+                );
             }
         }
 
@@ -72,7 +72,10 @@ namespace MakeFileBuilder
         {
             this.Path = nameOrOutput;
             this.IsPhony = isPhony;
-            this.IsPrerequisiteofAll = isDependencyOfAll || Bam.Core.Graph.Instance.IsReferencedModule(module) || !System.String.IsNullOrEmpty(variableName);
+            this.IsPrerequisiteofAll =
+                isDependencyOfAll ||
+                (module != null && Bam.Core.Graph.Instance.IsReferencedModule(module)) ||
+                !System.String.IsNullOrEmpty(variableName);
             if (isPhony)
             {
                 return;
@@ -81,45 +84,37 @@ namespace MakeFileBuilder
             {
                 return;
             }
-            if (this.IsPrerequisiteofAll)
+            if (!this.IsPrerequisiteofAll)
             {
-                // make the target names unique across configurations
-                if (System.String.IsNullOrEmpty(variableName))
+                return;
+            }
+
+            // make the target names unique across configurations
+            var varName = new System.Text.StringBuilder();
+            if (!System.String.IsNullOrEmpty(variableName))
+            {
+                varName.Append(variableName);
+            }
+            else
+            {
+                if (Bam.Core.Graph.Instance.IsReferencedModule(module))
                 {
-                    if (System.String.IsNullOrEmpty(keyName))
-                    {
-                        this.VariableName = System.String.Format(
-                            "{0}_{1}",
-                            module.GetType().Name,
-                            module.BuildEnvironment.Configuration.ToString()
-                        );
-                    }
-                    else
-                    {
-                        this.VariableName = System.String.Format(
-                            "{0}_{1}_{2}",
-                            module.GetType().Name,
-                            keyName,
-                            module.BuildEnvironment.Configuration.ToString()
-                        );
-                    }
+                    varName.Append(module.ToString());
                 }
                 else
                 {
-                    variableName = System.String.Format("{0}_{1}", variableName, module.BuildEnvironment.Configuration.ToString());
-                    MakeFileMeta.MakeVariableNameUnique(ref variableName);
-                    this.VariableName = variableName;
+                    var encapsulated = module.GetEncapsulatingReferencedModule();
+                    varName.Append(encapsulated.ToString());
                 }
-                // spaces are invalid syntax
-                this.VariableName = this.VariableName.Replace(' ', '_');
-                // slashes are invalid syntax
-                this.VariableName = this.VariableName.Replace('/', '_');
-                if (MakeFileCommonMetaData.IsNMAKE)
+                if (null != keyName)
                 {
-                    // periods are invalid syntax
-                    this.VariableName = this.VariableName.Replace('.', '_');
+                    varName.AppendFormat("_{0}", keyName);
                 }
             }
+            varName.AppendFormat("_{0}", module.BuildEnvironment.Configuration.ToString());
+            var expanded_variable = varName.ToString();
+            MakeFileMeta.MakeVariableNameUnique(ref expanded_variable);
+            this.VariableName = expanded_variable;
         }
 
         public bool

@@ -27,13 +27,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
     public class ChangeRPathModule :
         Bam.Core.Module
     {
-        private CollatedFile TheSource;
+        private C.ConsoleApplication TheSource;
 #if BAM_V2
 #else
         private IChangeRPathPolicy Policy;
@@ -66,15 +65,32 @@ namespace Publisher
 
         protected override void
         ExecuteInternal(
-            ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
 #if BAM_V2
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+            case "MakeFile":
+                MakeFileBuilder.Support.Add(this);
+                break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+            case "Native":
+                NativeBuilder.Support.RunCommandLineTool(this, context);
+                break;
+#endif
+
+            default:
+                throw new System.NotImplementedException();
+            }
 #else
             this.Policy.Change(this, context, this.Source, this.NewRPath);
 #endif
         }
 
-        public CollatedFile Source
+        public C.ConsoleApplication Source
         {
             get
             {
@@ -88,10 +104,24 @@ namespace Publisher
             }
         }
 
+#if BAM_V2
+#else
         public string NewRPath
         {
             get;
             set;
+        }
+#endif
+
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        {
+            get
+            {
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(
+                    C.ConsoleApplication.ExecutableKey,
+                    this.Source
+                );
+            }
         }
     }
 }

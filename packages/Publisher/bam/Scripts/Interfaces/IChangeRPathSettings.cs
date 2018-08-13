@@ -27,38 +27,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace Publisher
 {
-    public sealed class ChangeRPathTool :
-        Bam.Core.PreBuiltTool
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    public interface IChangeRPathSettings :
+        Bam.Core.ISettingsBase
     {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
+        string NewRPath
         {
-            base.Init(parent);
-        }
-
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            return new ChangeRPathSettings(module);
-        }
-
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("chrpath").First());
-            }
-        }
-
-        protected override void
-        EvaluateInternal()
-        {
-            this.ReasonToExecute = null;
+            get;
+            set;
         }
     }
 }

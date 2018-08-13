@@ -27,38 +27,44 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
-namespace Publisher
+namespace ChrpathTest1
 {
-    public sealed class ChangeRPathTool :
-        Bam.Core.PreBuiltTool
+    class TestExe :
+        C.ConsoleApplication
     {
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-        }
 
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            return new ChangeRPathSettings(module);
-        }
+            this.CreateCSourceContainer("$(packagedir)/source/*.c");
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
+            this.PrivatePatch(settings =>
             {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("chrpath").First());
-            }
+                var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+                gccLinker.CanUseOrigin = true;
+                gccLinker.RPath.AddUnique("$ORIGIN/lib_wrong");
+            });
         }
+    }
 
+    sealed class ChangeRPath :
+        Publisher.ChangeRPathModule
+    {
         protected override void
-        EvaluateInternal()
+        Init(
+            Bam.Core.Module parent)
         {
-            this.ReasonToExecute = null;
+            base.Init(parent);
+
+            this.Source = Bam.Core.Graph.Instance.FindReferencedModule<TestExe>();
+
+            this.PrivatePatch(settings =>
+                {
+                    var chrpath = settings as Publisher.IChangeRPathSettings;
+                    chrpath.NewRPath = "$ORIGIN/lib";
+                });
         }
     }
 }

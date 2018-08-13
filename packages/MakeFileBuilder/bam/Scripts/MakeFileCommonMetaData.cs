@@ -38,6 +38,17 @@ namespace MakeFileBuilder
         // experimental
         public static bool IsNMAKE = ("NMAKE" == Bam.Core.CommandLineProcessor.Evaluate(new Options.ChooseFormat()));
 
+        // a fake Target for order only dependencies
+        public static Target DIRSTarget = new Target(
+            Bam.Core.TokenizedString.CreateVerbatim("$(DIRS)"),
+            false,
+            null,
+            null,
+            0,
+            string.Empty,
+            false
+        );
+
         public MakeFileCommonMetaData()
         {
             this.Directories = new Bam.Core.StringArray();
@@ -240,6 +251,24 @@ namespace MakeFileBuilder
             string path,
             string variableName)
         {
+            if (this.PackageVariables.ContainsKey(path))
+            {
+                if (this.PackageVariables[path] == variableName)
+                {
+                    return;
+                }
+                if (variableName.EndsWith(".tests_DIR"))
+                {
+                    // this is a package test namespace
+                    return;
+                }
+                throw new Bam.Core.Exception(
+                    "Path '{0}' is already registered with macro '{1}'. Cannot re-register it with macro '{2}'",
+                    path,
+                    this.PackageVariables[path],
+                    variableName
+                );
+            }
             if (IsNMAKE)
             {
                 output.AppendFormat(

@@ -75,6 +75,12 @@ namespace MakeFileBuilder
                         break;
                     }
                 }
+                // spaces are invalid syntax
+                variableName = variableName.Replace(' ', '_');
+                // slashes are invalid syntax
+                variableName = variableName.Replace('/', '_');
+                // periods are invalid syntax
+                variableName = variableName.Replace('.', '_');
             }
         }
 

@@ -6,7 +6,7 @@ language: csharp
 solution: BuildAMation.sln
 install:
   # GCC ObjectiveC, GNUStep and 32-bit GCC and G++, and 32-bit X11 development files for Test12
-  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install gobjc gnustep-devel gcc-multilib g++-multilib libx11-dev:i386; fi
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install gobjc gnustep-devel gcc-multilib g++-multilib libx11-dev:i386 chrpath; fi
   - nuget restore BuildAMation.sln
 matrix:
   include:
