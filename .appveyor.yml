@@ -13,7 +13,7 @@ environment:
     platform: Any CPU
     project: BuildAMation.sln
 after_build:
-  - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bin\ %APPVEYOR_BUILD_FOLDER%\packages\ %APPVEYOR_BUILD_FOLDER%\tests\
+  - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bin\ %APPVEYOR_BUILD_FOLDER%\packages\ %APPVEYOR_BUILD_FOLDER%\tests\ %APPVEYOR_BUILD_FOLDER%\NuGetPackages\vswhere.2.4.1 %APPVEYOR_BUILD_FOLDER%\env.bat %APPVEYOR_BUILD_FOLDER%\Changelog.bat %APPVEYOR_BUILD_FOLDER%\License.md %APPVEYOR_BUILD_FOLDER%\MS-PL.md
 artifacts:
   - path: bam.zip
     name: Bam
