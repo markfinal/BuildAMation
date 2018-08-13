@@ -102,7 +102,7 @@ namespace C
             System.Collections.Generic.IEnumerable<Bam.Core.Module> headerFiles)
         {
             // early out
-            if (!module.InputModules.Any())
+            if (module.IsPrebuilt || !module.InputModules.Any())
             {
                 solution = null;
                 config = null;

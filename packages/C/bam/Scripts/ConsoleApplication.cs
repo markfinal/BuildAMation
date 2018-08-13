@@ -501,6 +501,10 @@ namespace C
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
                     {
+                        if (this.IsPrebuilt)
+                        {
+                            return;
+                        }
                         // any libraries added prior to here, need to be moved to the end
                         // they are external dependencies, and thus all built modules (to be added now) may have
                         // a dependency on them (and not vice versa)

@@ -44,7 +44,7 @@ namespace C
             Bam.Core.TokenizedString outputPath,
             System.Collections.Generic.IEnumerable<Bam.Core.Module> headerFiles)
         {
-            if (!module.InputModules.Any())
+            if (module.IsPrebuilt || !module.InputModules.Any())
             {
                 outTarget = null;
                 outConfiguration = null;
