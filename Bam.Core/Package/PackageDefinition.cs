@@ -471,6 +471,23 @@ namespace Bam.Core
             {
                 if (Graph.Instance.ForceDefinitionFileUpdate)
                 {
+                    if (Graph.Instance.UpdateBamAssemblyVersions)
+                    {
+                        var bamVersion = Graph.Instance.ProcessState.Version;
+                        var newAssemblyList = new Array<BamAssemblyDescription>();
+                        foreach (var asm in this.BamAssemblies)
+                        {
+                            newAssemblyList.Add(
+                                new BamAssemblyDescription(
+                                    asm.Name,
+                                    bamVersion.Major,
+                                    bamVersion.Minor,
+                                    bamVersion.Build
+                                )
+                           );
+                        }
+                        this.BamAssemblies = newAssemblyList;
+                    }
                     Log.DebugMessage("Forced writing of package definition file '{0}'", this.XMLFilename);
                     this.Write();
                 }

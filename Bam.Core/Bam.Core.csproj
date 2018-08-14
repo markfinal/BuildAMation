@@ -132,6 +132,7 @@
     <Compile Include="Options\PrintVersion.cs" />
     <Compile Include="Options\RecordStackTrace.cs" />
     <Compile Include="Options\ShowDefinitionFile.cs" />
+    <Compile Include="Options\UpdateBamAssemblyVersions.cs" />
     <Compile Include="Options\UseDebugSymbols.cs" />
     <Compile Include="Options\UseTests.cs" />
     <Compile Include="Options\VerbosityLevel.cs" />
