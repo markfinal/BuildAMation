@@ -410,7 +410,6 @@ namespace MakeFileBuilder
                         {
                             macro_command = macro_command.Replace(this.FirstPrerequisiteTarget.Path.ToString(), "$<");
                         }
-                        macro_command = commonMeta.UseMacrosInPath(macro_command);
                         // look for text like $ORIGIN, which needs a double $ prefix (and quotes) to avoid being interpreted as an environment variable by Make
                         var escapedCommand = System.Text.RegularExpressions.Regex.Replace(macro_command, @"\$([A-Za-z0-9]+)", @"'$$$$$1'");
                         // any parentheses that are not associated with MakeFile commands must be escaped
@@ -419,6 +418,8 @@ namespace MakeFileBuilder
                             EscapeCharacter(ref escapedCommand, '(');
                             EscapeCharacter(ref escapedCommand, ')');
                         }
+                        // perform macro replacement after regex, otherwise it may match $(var)
+                        escapedCommand = commonMeta.UseMacrosInPath(escapedCommand);
                         rules.AppendFormat("\t{0}", escapedCommand);
                         rules.AppendLine();
                     }
