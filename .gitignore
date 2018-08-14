@@ -21,3 +21,4 @@ PackageDebug
 NuGetPackages/
 .nuget/
 .vs/
+TestResult.xml

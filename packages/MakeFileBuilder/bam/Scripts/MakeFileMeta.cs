@@ -45,45 +45,6 @@ namespace MakeFileBuilder
             }
         }
 
-        public static void
-        MakeVariableNameUnique(
-            ref string variableName)
-        {
-            lock (allMeta)
-            {
-                for (;;)
-                {
-                    var uniqueName = true;
-                    foreach (var meta in allMeta)
-                    {
-                        foreach (var rule in meta.Rules)
-                        {
-                            if (rule.AnyTargetUsesVariableName((variableName)))
-                            {
-                                variableName += "_";
-                                uniqueName = false;
-                                break;
-                            }
-                        }
-                        if (!uniqueName)
-                        {
-                            break;
-                        }
-                    }
-                    if (uniqueName)
-                    {
-                        break;
-                    }
-                }
-                // spaces are invalid syntax
-                variableName = variableName.Replace(' ', '_');
-                // slashes are invalid syntax
-                variableName = variableName.Replace('/', '_');
-                // periods are invalid syntax
-                variableName = variableName.Replace('.', '_');
-            }
-        }
-
         // only for the BuildModeMetaData
         public MakeFileMeta()
         { }

@@ -12,6 +12,11 @@ environment:
   - configuration: Release
     platform: Any CPU
     project: BuildAMation.sln
+after_build:
+  - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bin\ %APPVEYOR_BUILD_FOLDER%\packages\ %APPVEYOR_BUILD_FOLDER%\tests\ %APPVEYOR_BUILD_FOLDER%\NuGetPackages\vswhere.2.4.1 %APPVEYOR_BUILD_FOLDER%\env.bat %APPVEYOR_BUILD_FOLDER%\Changelog.txt %APPVEYOR_BUILD_FOLDER%\License.md %APPVEYOR_BUILD_FOLDER%\MS-PL.md
+artifacts:
+  - path: bam.zip
+    name: Bam
 test_script:
   - "SET PATH=C:\\Python27-x64;%PATH%"
   - python codingtools\\test_bam.py
@@ -20,3 +25,8 @@ test_script:
   - python runtests.py -x Mingw --VisualC.version=12.0 -b Native -c debug -c profile -j0 -d
   - python runtests.py -x Mingw --VisualC.version=12.0 -b VSSolution -c debug -c profile -j0 -d
   - python runtests.py -x Mingw --VisualC.version=12.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
+  - cd ..
+on_finish:
+  - ps: |
+      $wc = New-Object 'System.Net.WebClient'
+      $wc.UploadFile("https://ci.appveyor.com/api/testresults/nunit3/$env:APPVEYOR_JOB_ID", (Resolve-Path .\TestResult.xml))

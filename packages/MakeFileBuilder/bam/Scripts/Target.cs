@@ -41,6 +41,18 @@ namespace MakeFileBuilder
             return Bam.Core.Graph.Instance.IsReferencedModule(module);
         }
 
+        private static void
+        SanitiseVariableName(
+            ref string variableName)
+        {
+            // spaces are invalid syntax
+            variableName = variableName.Replace(' ', '_');
+            // slashes are invalid syntax
+            variableName = variableName.Replace('/', '_');
+            // periods are invalid syntax
+            variableName = variableName.Replace('.', '_');
+        }
+
         public static string
         MakeUniqueVariableName(
             Bam.Core.Module module,
@@ -74,7 +86,7 @@ namespace MakeFileBuilder
                 }
             }
             var expanded_variable = varName.ToString();
-            MakeFileMeta.MakeVariableNameUnique(ref expanded_variable);
+            SanitiseVariableName(ref expanded_variable);
             return expanded_variable;
         }
 
