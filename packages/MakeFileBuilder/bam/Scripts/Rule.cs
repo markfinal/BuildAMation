@@ -398,10 +398,20 @@ namespace MakeFileBuilder
                 rules.AppendLine();
                 foreach (var command in this.ShellCommands)
                 {
+                    var macro_command = command.Replace(this.FirstTarget.Path.ToString(), "$@");
                     if (!MakeFileCommonMetaData.IsNMAKE)
                     {
+                        if (null != this.FirstPrerequisiteTarget)
+                        {
+                            macro_command = macro_command.Replace(this.FirstPrerequisiteTarget.Path.ToString(), "$<");
+                        }
+                        else if (null != this.FirstPrerequisitePath)
+                        {
+                            macro_command = macro_command.Replace(this.FirstPrerequisitePath.ToString(), "$<");
+                        }
+                        macro_command = commonMeta.UseMacrosInPath(macro_command);
                         // look for text like $ORIGIN, which needs a double $ prefix (and quotes) to avoid being interpreted as an environment variable by Make
-                        var escapedCommand = System.Text.RegularExpressions.Regex.Replace(command, @"\$([A-Za-z0-9]+)", @"'$$$$$1'");
+                        var escapedCommand = System.Text.RegularExpressions.Regex.Replace(macro_command, @"\$([A-Za-z0-9]+)", @"'$$$$$1'");
                         // any parentheses that are not associated with MakeFile commands must be escaped
                         if (!System.Text.RegularExpressions.Regex.IsMatch(escapedCommand, @"\$\(.*\)"))
                         {
@@ -413,7 +423,8 @@ namespace MakeFileBuilder
                     }
                     else
                     {
-                        rules.AppendFormat("\t{0}", command);
+                        macro_command = commonMeta.UseMacrosInPath(macro_command);
+                        rules.AppendFormat("\t{0}", macro_command);
                         rules.AppendLine();
                     }
                 }
@@ -428,6 +439,38 @@ namespace MakeFileBuilder
                 lock (this.Targets)
                 {
                     return this.Targets.FirstOrDefault();
+                }
+            }
+        }
+
+        private Target
+        FirstPrerequisiteTarget
+        {
+            get
+            {
+                lock (this.PrerequisiteTargets)
+                {
+                    return this.PrerequisiteTargets.FirstOrDefault();
+                }
+            }
+        }
+
+        private Bam.Core.TokenizedString
+        FirstPrerequisitePath
+        {
+            get
+            {
+                lock (this.Prequisities)
+                {
+                    var first = this.Prequisities.FirstOrDefault();
+                    if (first.Equals(default(System.Collections.Generic.KeyValuePair<Bam.Core.Module,string>)))
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        return first.Key.GeneratedPaths[first.Value];
+                    }
                 }
             }
         }
