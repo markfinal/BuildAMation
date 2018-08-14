@@ -401,13 +401,16 @@ namespace MakeFileBuilder
                     var macro_command = command.Replace(this.FirstTarget.Path.ToString(), "$@");
                     if (!MakeFileCommonMetaData.IsNMAKE)
                     {
-                        if (null != this.FirstPrerequisiteTarget)
-                        {
-                            macro_command = macro_command.Replace(this.FirstPrerequisiteTarget.Path.ToString(), "$<");
-                        }
-                        else if (null != this.FirstPrerequisitePath)
+                        // check paths first, as it's more likely to be a source file/object file etc
+                        if (null != this.FirstPrerequisitePath)
                         {
                             macro_command = macro_command.Replace(this.FirstPrerequisitePath.ToString(), "$<");
+                            Bam.Core.Log.MessageAll("-> {0}", macro_command);
+                        }
+                        else if (null != this.FirstPrerequisiteTarget)
+                        {
+                            macro_command = macro_command.Replace(this.FirstPrerequisiteTarget.Path.ToString(), "$<");
+                            Bam.Core.Log.MessageAll("-> {0}", macro_command);
                         }
                         macro_command = commonMeta.UseMacrosInPath(macro_command);
                         // look for text like $ORIGIN, which needs a double $ prefix (and quotes) to avoid being interpreted as an environment variable by Make
