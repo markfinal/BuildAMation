@@ -63,7 +63,7 @@ namespace CodeGenTest
             {
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    MakeFileSupport.GenerateSource(this);
+                    MakeFileBuilder.Support.Add(this);
                     break;
 #endif
 
