@@ -447,23 +447,6 @@ namespace MakeFileBuilder
             }
         }
 
-        public bool
-        AnyTargetUsesVariableName(
-            string variableName)
-        {
-            lock (this.Targets)
-            {
-                foreach (var target in this.Targets)
-                {
-                    if (target.VariableName == variableName)
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
-
         private int RuleIndex
         {
             get;
