@@ -316,7 +316,7 @@ namespace MakeFileBuilder
                     }
                     else
                     {
-                        rules.AppendFormat("{0}:", commonMeta.UseMacrosInPath(this.FirstTarget.Path.ToString()));
+                        rules.AppendFormat("{0}", commonMeta.UseMacrosInPath(this.FirstTarget.Path.ToString()));
                     }
                     rules.AppendLine();
                     continue;
