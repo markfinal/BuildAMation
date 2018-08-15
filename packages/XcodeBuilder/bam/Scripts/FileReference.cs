@@ -88,6 +88,9 @@ namespace XcodeBuilder
             case FileReference.EFileType.ZipArchive:
                 return "archive.zip";
 
+            case FileReference.EFileType.MetalShaderSource:
+                return "sourcecode.metal";
+
             default:
                 throw new Bam.Core.Exception("Unrecognized file type {0}", type.ToString());
             }
@@ -147,7 +150,8 @@ namespace XcodeBuilder
             TextBasedDylibDefinition,
             TextFile,
             Assembler,
-            ZipArchive
+            ZipArchive,
+            MetalShaderSource
         }
 
         public enum ESourceTree
