@@ -742,7 +742,7 @@ namespace CommandLineProcessor
                         message.AppendFormat("\t{0}[{1}]", input.Value.ToString(), input.Key);
                         if (input.Value.GeneratedPaths.ContainsKey(input.Key))
                         {
-                            message.AppendFormat("= '{0}'", input.Value.GeneratedPaths[input.Key].ToString());
+                            message.AppendFormat(" = '{0}'", input.Value.GeneratedPaths[input.Key].ToString());
                         }
                         message.AppendLine();
                     }
