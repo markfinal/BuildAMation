@@ -53,6 +53,13 @@ namespace VSSolutionBuilder
             Bam.Core.Module module,
             Bam.Core.StringArray shellCommandLines)
         {
+            if (null == module.Tool)
+            {
+                throw new Bam.Core.Exception(
+                    "Command line tool passed with module '{0}' is invalid",
+                    module.ToString()
+                );
+            }
             System.Diagnostics.Debug.Assert(module.Tool is Bam.Core.ICommandLineTool);
 
             var args = new Bam.Core.StringArray();

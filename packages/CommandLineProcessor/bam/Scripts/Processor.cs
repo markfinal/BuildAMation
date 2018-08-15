@@ -300,6 +300,13 @@ namespace CommandLineProcessor
             Bam.Core.StringArray commandLine,
             string workingDirectory = null)
         {
+            if (null == tool)
+            {
+                throw new Bam.Core.Exception(
+                    "Command line tool passed with module '{0}' is invalid",
+                    module.ToString()
+                );
+            }
             var commandLineArgs = new Bam.Core.StringArray();
             if (tool.InitialArguments != null)
             {
