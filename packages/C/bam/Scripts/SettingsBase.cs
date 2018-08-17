@@ -144,7 +144,14 @@ namespace C
             // (any interface not shared, must be cloned later)
             var typeSignature = "IDESharedSettings";
             var assemblyName = new System.Reflection.AssemblyName(typeSignature);
+#if DOTNETCORE
+            var assemblyBuilder = System.Reflection.Emit.AssemblyBuilder.DefineDynamicAssembly(
+                assemblyName,
+                System.Reflection.Emit.AssemblyBuilderAccess.Run
+            );
+#else
             var assemblyBuilder = System.AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, System.Reflection.Emit.AssemblyBuilderAccess.Run);
+#endif
             var moduleBuilder = assemblyBuilder.DefineDynamicModule("MainModule", true);
             var sharedSettingsTypeDefn = moduleBuilder.DefineType(typeSignature,
                 System.Reflection.TypeAttributes.Public |

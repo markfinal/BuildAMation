@@ -247,7 +247,7 @@ def find_bam_default_repository():
     for path in os.environ["PATH"].split(os.pathsep):
         candidate_path = os.path.join(path, "bam")
         if os.path.isfile(candidate_path) and os.access(candidate_path, os.X_OK):
-            return os.path.abspath(os.path.join(os.path.join(path, os.pardir), os.pardir))
+            return os.path.abspath(os.path.join(os.path.join(os.path.join(path, os.pardir), os.pardir), os.pardir))
     raise RuntimeError("Unable to locate bam on the PATH")
 
 # ----------

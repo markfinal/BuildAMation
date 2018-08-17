@@ -4,7 +4,7 @@ curPath=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 if [ "$OSTYPE" == "msys" ] || [ "$OSTYPE" == "cygwin" ]; then
 
-exec "$curPath"/bam.exe $@
+exec dotnet "$curPath"/bam.dll $@
 
 else
 

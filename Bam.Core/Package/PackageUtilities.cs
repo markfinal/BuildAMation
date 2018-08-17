@@ -760,6 +760,131 @@ namespace Bam.Core
                 Log.DebugMessage("Compiling assembly for Mono");
             }
 
+            string outputAssemblyPath;
+            if (Graph.Instance.CompileWithDebugSymbols)
+            {
+                outputAssemblyPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), Graph.Instance.MasterPackage.Name) + ".dll";
+            }
+            else
+            {
+                outputAssemblyPath = cachedAssemblyPathname;
+            }
+
+            // this will create the build root directory as necessary
+            IOWrapper.CreateDirectory(System.IO.Path.GetDirectoryName(outputAssemblyPath));
+
+#if DOTNETCORE
+            definitions.AddUnique("DOTNETCORE");
+            var parseOptions = new Microsoft.CodeAnalysis.CSharp.CSharpParseOptions(
+                languageVersion: Microsoft.CodeAnalysis.CSharp.LanguageVersion.Default,
+                preprocessorSymbols: definitions
+            );
+
+            var syntaxTrees = new System.Collections.Generic.List<Microsoft.CodeAnalysis.SyntaxTree>();
+            foreach (var sourceListing in sourceCode)
+            {
+                var syntaxTree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(
+                    sourceListing,
+                    options: parseOptions
+                );
+                syntaxTrees.Add(syntaxTree);
+            }
+
+            var trustedPlatformAssemblies = System.AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") as string;
+            var split = trustedPlatformAssemblies.Split(System.IO.Path.PathSeparator);
+
+            var references = new System.Collections.Generic.List<Microsoft.CodeAnalysis.MetadataReference>();
+            foreach (var s in split)
+            {
+                references.Add(Microsoft.CodeAnalysis.MetadataReference.CreateFromFile(s));
+            }
+
+            var compilationOptions = new Microsoft.CodeAnalysis.CSharp.CSharpCompilationOptions(
+                Microsoft.CodeAnalysis.OutputKind.DynamicallyLinkedLibrary
+            );
+            compilationOptions.WithAllowUnsafe(false);
+            compilationOptions.WithPlatform(Microsoft.CodeAnalysis.Platform.AnyCpu);
+            compilationOptions.WithWarningLevel(4);
+            compilationOptions.WithConcurrentBuild(true);
+            if (Graph.Instance.CompileWithDebugSymbols)
+            {
+                compilationOptions.WithOptimizationLevel(Microsoft.CodeAnalysis.OptimizationLevel.Debug);
+            }
+            else
+            {
+                compilationOptions.WithOptimizationLevel(Microsoft.CodeAnalysis.OptimizationLevel.Release);
+            }
+            var compilation = Microsoft.CodeAnalysis.CSharp.CSharpCompilation.Create(
+                System.IO.Path.GetFileName(outputAssemblyPath),
+                syntaxTrees: syntaxTrees.ToArray(),
+                references: references,
+                options: compilationOptions
+            );
+
+            using (var assemblyStream = System.IO.File.Create(outputAssemblyPath))
+            {
+                System.IO.FileStream pdbStream = null;
+                if (Graph.Instance.CompileWithDebugSymbols)
+                {
+                    var pdbPathname = System.IO.Path.ChangeExtension(outputAssemblyPath, ".pdb");
+                    pdbStream = System.IO.File.Create(pdbPathname);
+                }
+                var result = compilation.Emit(
+                    assemblyStream,
+                    pdbStream
+                );
+
+                if (!result.Success)
+                {
+                    var message = new System.Text.StringBuilder();
+                    var failures = result.Diagnostics.Where(diagnostic =>
+                        diagnostic.IsWarningAsError ||
+                        diagnostic.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error);
+                    message.AppendFormat(
+                        "Failed to compile package '{0}'. There are {1} errors.",
+                        Graph.Instance.MasterPackage.FullName,
+                        failures.Count()
+                    );
+                    message.AppendLine();
+                    foreach (var diagnostic in failures)
+                    {
+                        message.AppendFormat("\t{0}", diagnostic.ToString());
+                        message.AppendLine();
+                    }
+                    if (!Graph.Instance.CompileWithDebugSymbols)
+                    {
+                        message.AppendLine();
+                        ICommandLineArgument debugOption = new Options.UseDebugSymbols();
+                        message.AppendFormat("Use the {0}/{1} command line option with bam for more accurate error messages.", debugOption.LongName, debugOption.ShortName);
+                        message.AppendLine();
+                    }
+                    message.AppendLine();
+                    ICommandLineArgument createDebugProjectOption = new Options.CreateDebugProject();
+                    message.AppendFormat("Use the {0}/{1} command line option with bam to create an editable IDE project containing the build scripts.", createDebugProjectOption.LongName, createDebugProjectOption.ShortName);
+                    message.AppendLine();
+                    throw new Exception(message.ToString());
+                }
+            }
+
+            if (!Graph.Instance.CompileWithDebugSymbols)
+            {
+                if (cacheAssembly)
+                {
+                    using (var writer = new System.IO.StreamWriter(hashPathName))
+                    {
+                        writer.WriteLine(thisHashCode);
+                    }
+                }
+                else
+                {
+                    // will not throw if the file doesn't exist
+                    System.IO.File.Delete(hashPathName);
+                }
+            }
+
+            Log.DebugMessage("Written assembly to '{0}'", outputAssemblyPath);
+            Graph.Instance.ScriptAssemblyPathname = outputAssemblyPath;
+#else
             using (var provider = new Microsoft.CSharp.CSharpCodeProvider(providerOptions))
             {
                 var compilerParameters = new System.CodeDom.Compiler.CompilerParameters();
@@ -767,15 +892,7 @@ namespace Bam.Core
                 compilerParameters.WarningLevel = 4;
                 compilerParameters.GenerateExecutable = false;
                 compilerParameters.GenerateInMemory = false;
-
-                if (Graph.Instance.CompileWithDebugSymbols)
-                {
-                    compilerParameters.OutputAssembly = System.IO.Path.Combine(System.IO.Path.GetTempPath(), Graph.Instance.MasterPackage.Name) + ".dll";
-                }
-                else
-                {
-                    compilerParameters.OutputAssembly = cachedAssemblyPathname;
-                }
+                compilerParameters.OutputAssembly = outputAssemblyPath;
 
                 var compilerOptions = "/checked+ /unsafe-";
                 if (Graph.Instance.CompileWithDebugSymbols)
@@ -821,9 +938,6 @@ namespace Bam.Core
                 {
                     throw new Exception("C# compiler does not support Resources");
                 }
-
-                // this will create the build root directory as necessary
-                IOWrapper.CreateDirectory(System.IO.Path.GetDirectoryName(compilerParameters.OutputAssembly));
 
                 var results = Graph.Instance.CompileWithDebugSymbols ?
                     provider.CompileAssemblyFromFile(compilerParameters, sourceCode.ToArray()) :
@@ -872,6 +986,7 @@ namespace Bam.Core
                 Log.DebugMessage("Written assembly to '{0}'", compilerParameters.OutputAssembly);
                 Graph.Instance.ScriptAssemblyPathname = compilerParameters.OutputAssembly;
             }
+#endif
 
             assemblyCompileProfile.StopProfile();
         }

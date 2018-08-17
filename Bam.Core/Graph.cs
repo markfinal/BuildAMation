@@ -74,9 +74,22 @@ namespace Bam.Core
             this.PackageRepositories = new StringArray();
             try
             {
+#if DOTNETCORE
+                var primaryPackageRepo = System.IO.Path.Combine(
+                    System.IO.Directory.GetParent(System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName).FullName,
+                    "packages");
+#else
                 var primaryPackageRepo = System.IO.Path.Combine(
                     System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName,
                     "packages");
+#endif
+                if (!System.IO.Directory.Exists(primaryPackageRepo))
+                {
+                    throw new Exception(
+                        "Standard BAM package directory '{0}' does not exist",
+                        primaryPackageRepo
+                    );
+                }
                 this.PackageRepositories.AddUnique(primaryPackageRepo);
             }
             catch (System.ArgumentNullException)

@@ -115,8 +115,19 @@ namespace Bam.Core
         {
             try
             {
+#if DOTNETCORE
+                var rootDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.ExecutableDirectory)));
+#else
                 var rootDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.ExecutableDirectory));
+#endif
                 var nugetDir = System.IO.Path.Combine(rootDir, "NuGetPackages");
+                if (!System.IO.Directory.Exists(nugetDir))
+                {
+                    throw new Exception(
+                        "NuGet package directory for BAM does not exist at '{0}'",
+                        nugetDir
+                    );
+                }
                 return nugetDir;
             }
             catch (System.ArgumentNullException)
