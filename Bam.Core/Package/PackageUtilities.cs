@@ -638,6 +638,7 @@ namespace Bam.Core
 
             // gather source files
             var sourceCode = new StringArray();
+            var sourceCodeMapping = new System.Collections.Generic.Dictionary<string, string>();
             int packageIndex = 0;
             foreach (var package in Graph.Instance.Packages)
             {
@@ -654,6 +655,10 @@ namespace Bam.Core
 #endif
                     sourceCode.AddRange(scripts);
                     Log.DebugMessage(scripts.ToString("\n\t"));
+
+#if DOTNETCORE
+                    throw new System.NotSupportedException("Check what to do with Roslyn");
+#endif
                 }
                 else
                 {
@@ -665,7 +670,9 @@ namespace Bam.Core
                     {
                         using (var reader = new System.IO.StreamReader(scriptFile))
                         {
-                            sourceCode.Add(reader.ReadToEnd());
+                            var contents = reader.ReadToEnd();
+                            sourceCode.Add(contents);
+                            sourceCodeMapping.Add(scriptFile, contents);
                         }
                         Log.DebugMessage("\t'{0}'", scriptFile);
                     }
@@ -781,10 +788,11 @@ namespace Bam.Core
             );
 
             var syntaxTrees = new System.Collections.Generic.List<Microsoft.CodeAnalysis.SyntaxTree>();
-            foreach (var sourceListing in sourceCode)
+            foreach (var sourceListing in sourceCodeMapping)
             {
                 var syntaxTree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(
-                    sourceListing,
+                    sourceListing.Value,
+                    path: sourceListing.Key,
                     options: parseOptions
                 );
                 syntaxTrees.Add(syntaxTree);
