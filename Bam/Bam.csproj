@@ -26,6 +26,12 @@
     <OutputPath>..\bin\Release</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="vswhere" Version="2.4.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Bam.Core\Bam.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
