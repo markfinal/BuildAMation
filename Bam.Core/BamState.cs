@@ -110,16 +110,14 @@ namespace Bam.Core
             }
         }
 
+#if DOTNETCORE
+#else
         private string
         GetNuGetDirectory()
         {
             try
             {
-#if DOTNETCORE
-                var rootDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.ExecutableDirectory)));
-#else
                 var rootDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.ExecutableDirectory));
-#endif
                 var nugetDir = System.IO.Path.Combine(rootDir, "NuGetPackages");
                 if (!System.IO.Directory.Exists(nugetDir))
                 {
@@ -136,6 +134,7 @@ namespace Bam.Core
                 return null;
             }
         }
+#endif
 
         /// <summary>
         /// Create an instance of the class. Although there is only going to be one instance created,
@@ -151,7 +150,10 @@ namespace Bam.Core
             this.RunningMono = (System.Type.GetType("Mono.Runtime") != null);
             this.ExecutableDirectory = GetBamDirectory();
             this.WorkingDirectory = GetWorkingDirectory();
+#if DOTNETCORE
+#else
             this.NuGetDirectory = this.GetNuGetDirectory();
+#endif
 
             this.Version = assemblyVersion;
             this.VersionString = productVersion;
@@ -170,6 +172,8 @@ namespace Bam.Core
             private set;
         }
 
+#if DOTNETCORE
+#else
         /// <summary>
         /// Obtains the directory containing NuGet packages.
         /// </summary>
@@ -179,6 +183,7 @@ namespace Bam.Core
             get;
             private set;
         }
+#endif
 
         /// <summary>
         /// Obtains the version of Bam in use.
