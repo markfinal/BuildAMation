@@ -149,10 +149,11 @@ namespace C
                 assemblyName,
                 System.Reflection.Emit.AssemblyBuilderAccess.Run
             );
+            var moduleBuilder = assemblyBuilder.DefineDynamicModule("MainModule");
 #else
             var assemblyBuilder = System.AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, System.Reflection.Emit.AssemblyBuilderAccess.Run);
-#endif
             var moduleBuilder = assemblyBuilder.DefineDynamicModule("MainModule", true);
+#endif
             var sharedSettingsTypeDefn = moduleBuilder.DefineType(typeSignature,
                 System.Reflection.TypeAttributes.Public |
                 System.Reflection.TypeAttributes.Class |
