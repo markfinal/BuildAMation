@@ -39,6 +39,9 @@ namespace VisualCCommon
         private void
         findvswhere()
         {
+#if DOTNETCORE
+            throw new System.NotImplementedException();
+#else
             const string vswhere_version = "vswhere.2.4.1"; // match packages.config in the Bam project
 
             // find vswhere from the NuGet package download
@@ -55,6 +58,7 @@ namespace VisualCCommon
                 throw new Bam.Core.Exception("Unable to locate vswhere.exe from NuGet package at '{0}'", vswhere_exe_path);
             }
             this.vswherePath = vswhere_exe_path;
+#endif
         }
 
         private static string
