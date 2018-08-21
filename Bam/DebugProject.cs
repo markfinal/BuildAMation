@@ -36,6 +36,7 @@ namespace Bam
     /// </summary>
     public static class DebugProject
     {
+#if false
         private static readonly string MSBuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
 
         private static System.Xml.XmlDocument Document = new System.Xml.XmlDocument();
@@ -197,6 +198,7 @@ namespace Bam
 
             return allDefines.ToString(';');
         }
+#endif
 
         private static void
         WriteEntryPoint(
@@ -263,9 +265,6 @@ namespace Bam
             project.AddEntryPoint("main.cs", WriteEntryPoint);
             project.AddEmbeddedResource(Core.PackageListResourceFile.WriteResXFile);
             project.Write();
-
-            Core.Log.Info("Successfully created debug project for package '{0}'", masterPackage.FullName);
-            Core.Log.Info("\t{0}", projectPathname);
 #else
             var masterPackageName = masterPackage.Name;
             RootUri = new System.Uri(projectPathname);
@@ -389,10 +388,10 @@ namespace Bam
             {
                 Document.WriteTo(writer);
             }
+#endif
 
             Core.Log.Info("Successfully created debug project for package '{0}'", masterPackage.FullName);
             Core.Log.Info("\t{0}", projectPathname);
-#endif
         }
     }
 }
