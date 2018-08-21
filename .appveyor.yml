@@ -11,16 +11,16 @@ before_build:
   - cmd: dotnet --version
   #- nuget restore BuildAMation.sln
 build_script:
-  - dotnet build -c %CONFIGURATION%
+  - python codingtools\dotnetcore_make_release.py
 after_build:
-  - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bin\ %APPVEYOR_BUILD_FOLDER%\packages\ %APPVEYOR_BUILD_FOLDER%\tests\ %APPVEYOR_BUILD_FOLDER%\env.bat %APPVEYOR_BUILD_FOLDER%\Changelog.txt %APPVEYOR_BUILD_FOLDER%\License.md %APPVEYOR_BUILD_FOLDER%\MS-PL.md
+  - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish\bin\ %APPVEYOR_BUILD_FOLDER%\bam_publish\packages\ %APPVEYOR_BUILD_FOLDER%\bam_publish\tests\ %APPVEYOR_BUILD_FOLDER%\bam_publish\env.bat %APPVEYOR_BUILD_FOLDER%\bam_publish\Changelog.txt %APPVEYOR_BUILD_FOLDER%\bam_publish\License.md %APPVEYOR_BUILD_FOLDER%\bam_publish\MS-PL.md
 artifacts:
   - path: bam.zip
     name: Bam
 test_script:
   - "SET PATH=C:\\Python27-x64;%PATH%"
   #- python codingtools\\test_bam.py
-  - env.bat
+  #- env.bat
   #- cd tests
   #- python runtests.py -x Mingw --VisualC.version=12.0 -b Native -c debug -c profile -j0 -d
   #- python runtests.py -x Mingw --VisualC.version=12.0 -b VSSolution -c debug -c profile -j0 -d

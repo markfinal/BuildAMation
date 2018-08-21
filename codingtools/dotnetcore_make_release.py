@@ -27,6 +27,7 @@ def run_dotnet_publish(output_dir, configuration='Release', framework='netcoreap
     else:
         log('Deleting folder, %s' % output_dir)
         shutil.rmtree(output_dir)
+    output_dir = os.path.join(output_dir, 'bin', configuration, framework)
     cur_dir = os.getcwd()
     os.chdir(g_bam_dir)
     try:
@@ -53,6 +54,21 @@ def run_dotnet_publish(output_dir, configuration='Release', framework='netcoreap
         os.chdir(cur_dir)
 
 
+def copy_support_files(output_dir):
+    cur_dir = os.getcwd()
+    os.chdir(g_bam_dir)
+    try:
+        shutil.copytree('packages', os.path.join(output_dir, 'packages'))
+        shutil.copytree('tests', os.path.join(output_dir, 'tests'))
+        shutil.copy('env.sh', output_dir)
+        shutil.copy('env.bat', output_dir)
+        shutil.copy('Changelog.txt', output_dir)
+        shutil.copy('License.md', output_dir)
+        shutil.copy('MS-PL.md', output_dir)
+    finally:
+        os.chdir(cur_dir)
+
+
 def main(options):
     output_dir = os.path.join(g_bam_dir, 'bam_publish')
     run_dotnet_publish(
@@ -61,6 +77,7 @@ def main(options):
         framework='netcoreapp2.1',
         force=True
     )
+    copy_support_files(output_dir)
 
     if options.standalone:
         platforms = []
