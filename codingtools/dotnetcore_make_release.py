@@ -62,23 +62,25 @@ def main(options):
         force=True
     )
 
-    platforms = []
-    platforms.append('win-x64')
-    platforms.append('osx-x64')
-    platforms.append('linux-x64')
-    for platform in platforms:
-        platform_output_dir = output_dir + '_' + platform
-        run_dotnet_publish(
-            platform_output_dir,
-            configuration='Release',
-            framework='netcoreapp2.1',
-            force=True,
-            standalone_platform=platform
-        )
+    if options.standalone:
+        platforms = []
+        platforms.append('win-x64')
+        platforms.append('osx-x64')
+        platforms.append('linux-x64')
+        for platform in platforms:
+            platform_output_dir = output_dir + '_' + platform
+            run_dotnet_publish(
+                platform_output_dir,
+                configuration='Release',
+                framework='netcoreapp2.1',
+                force=True,
+                standalone_platform=platform
+            )
 
 
 if __name__ == '__main__':
     parser = OptionParser()
+    parser.add_option('-s', '--standalone', action='store_true', dest='standalone')
     (options, args) = parser.parse_args()
 
     try:
