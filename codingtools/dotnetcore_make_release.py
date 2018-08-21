@@ -34,7 +34,7 @@ def run_dotnet_publish(output_dir, configuration='Release', framework='netcoreap
         args = []
         args.append('dotnet')
         args.append('publish')
-        args.append('Bam/Bam.csproj') # specifically build this, so that the unit test dependencies don't get dragged in
+        args.append(os.path.join('Bam', 'Bam.csproj')) # specifically build this, so that the unit test dependencies don't get dragged in
         args.append('-c')
         args.append(configuration)
         args.append('-f')
