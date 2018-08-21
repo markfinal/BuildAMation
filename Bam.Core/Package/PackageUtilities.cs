@@ -781,6 +781,19 @@ namespace Bam.Core
             IOWrapper.CreateDirectory(System.IO.Path.GetDirectoryName(outputAssemblyPath));
 
 #if DOTNETCORE
+#if true
+            var projectPath = System.IO.Path.ChangeExtension(outputAssemblyPath, ".csproj");
+            var project = new ProjectFile(false, projectPath);
+            project.Write();
+
+            OSUtilities.RunExecutable(
+                "dotnet",
+                "build " + projectPath + " -c Release -o " + System.IO.Path.GetDirectoryName(outputAssemblyPath)
+            );
+
+            Log.DebugMessage("Written assembly to '{0}'", outputAssemblyPath);
+            Graph.Instance.ScriptAssemblyPathname = outputAssemblyPath;
+#else
             definitions.AddUnique("DOTNETCORE");
             var parseOptions = new Microsoft.CodeAnalysis.CSharp.CSharpParseOptions(
                 languageVersion: Microsoft.CodeAnalysis.CSharp.LanguageVersion.Default,
@@ -892,6 +905,7 @@ namespace Bam.Core
 
             Log.DebugMessage("Written assembly to '{0}'", outputAssemblyPath);
             Graph.Instance.ScriptAssemblyPathname = outputAssemblyPath;
+#endif
 #else
             using (var provider = new Microsoft.CSharp.CSharpCodeProvider(providerOptions))
             {

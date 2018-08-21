@@ -45,6 +45,7 @@ namespace Bam.Core
             // allow users to modify Module configurations
             featurePreprocessorDefines.Add("BAM_FEATURE_MODULE_CONFIGURATION");
             featurePreprocessorDefines.Add("BAM_V2");
+            featurePreprocessorDefines.Add("DOTNETCORE");
         }
 
         /// <summary>

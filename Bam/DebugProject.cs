@@ -257,8 +257,17 @@ namespace Bam
             Core.PackageUtilities.IdentifyAllPackages();
 
             var masterPackage = Core.Graph.Instance.MasterPackage;
-            var masterPackageName = masterPackage.Name;
             var projectPathname = masterPackage.GetDebugPackageProjectPathname();
+#if true
+            var project = new Core.ProjectFile(true, projectPathname);
+            project.AddEntryPoint("main.cs", WriteEntryPoint);
+            project.AddEmbeddedResource(Core.PackageListResourceFile.WriteResXFile);
+            project.Write();
+
+            Core.Log.Info("Successfully created debug project for package '{0}'", masterPackage.FullName);
+            Core.Log.Info("\t{0}", projectPathname);
+#else
+            var masterPackageName = masterPackage.Name;
             RootUri = new System.Uri(projectPathname);
 
             var projectDir = System.IO.Path.GetDirectoryName(projectPathname);
@@ -383,6 +392,7 @@ namespace Bam
 
             Core.Log.Info("Successfully created debug project for package '{0}'", masterPackage.FullName);
             Core.Log.Info("\t{0}", projectPathname);
+#endif
         }
     }
 }
