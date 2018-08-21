@@ -9,19 +9,20 @@ solution: BuildAMation.sln
 install:
   # GCC ObjectiveC, GNUStep and 32-bit GCC and G++, and 32-bit X11 development files for Test12
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install gobjc gnustep-devel gcc-multilib g++-multilib libx11-dev:i386 chrpath; fi
-  - nuget restore BuildAMation.sln
+  #- nuget restore BuildAMation.sln
 matrix:
   include:
   - os: linux
     dist: trusty
     mono: latest
     script:
-      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
+      #- msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
+      - dotnet build -c Release
       - source env.sh
-      - cd tests
-      - python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d
-      - python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -b MakeFile
-      - cd ..
+      #- cd tests
+      #- python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d
+      #- python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -b MakeFile
+      #- cd ..
   # git version is too old (2.4) to use with GitInfo (needs 2.5)
   #- os: osx
   #  osx_image: xcode6.4
@@ -59,7 +60,8 @@ matrix:
     osx_image: xcode9.4
     mono: latest
     script:
-      - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
+      #- msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
+      - dotnet build -c Release
       - source env.sh
       #- cd tests
       #- python runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
