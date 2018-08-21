@@ -3,9 +3,7 @@ notifications:
      on_success: always
      on_failure: always
 language: csharp
-mono: none
-dotnet: 2.1
-solution: BuildAMation.sln
+#solution: BuildAMation.sln
 install:
   # GCC ObjectiveC, GNUStep and 32-bit GCC and G++, and 32-bit X11 development files for Test12
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install gobjc gnustep-devel gcc-multilib g++-multilib libx11-dev:i386 chrpath; fi
@@ -14,7 +12,8 @@ matrix:
   include:
   - os: linux
     dist: trusty
-    #mono: latest
+    mono: none
+    dotnet: 2.1.401
     script:
       #- msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
       - dotnet build -c Release
@@ -58,7 +57,8 @@ matrix:
   #    - cd ..
   - os: osx
     osx_image: xcode9.4
-    #mono: latest
+    mono: none
+    dotnet: 2.1.401
     script:
       #- msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
       - dotnet build -c Release
