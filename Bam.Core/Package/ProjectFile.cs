@@ -129,12 +129,13 @@ namespace Bam.Core
         CreateReference(
             string include,
             System.Xml.XmlElement parent,
+            bool copyLocal,
             string hintpath = null,
             string targetframework = null)
         {
             var reference = this.CreateElement("Reference", parent: parent);
             this.CreateAttribute("Include", include, reference);
-            this.CreateElement("Private", value: "False", parent: reference); // !copylocal
+            this.CreateElement("Private", value: copyLocal ? "True" : "False", parent: reference);
             if (null != hintpath)
             {
                 this.CreateElement("HintPath", value: hintpath, parent: reference);
@@ -143,6 +144,17 @@ namespace Bam.Core
             {
                 this.CreateElement("RequiredTargetFramework", value: targetframework, parent: reference);
             }
+        }
+
+        private void
+        CreateNugetReference(
+            string package,
+            string version,
+            System.Xml.XmlElement parent)
+        {
+            var packageReference = this.CreateElement("PackageReference", parent: parent);
+            this.CreateAttribute("Include", package, packageReference);
+            this.CreateAttribute("Version", version, packageReference);
         }
 
         private void
@@ -226,7 +238,7 @@ namespace Bam.Core
             foreach (var assembly in masterPackage.BamAssemblies)
             {
                 var assemblyPath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assembly.Name) + ".dll";
-                this.CreateReference(assembly.Name, references, hintpath: assemblyPath);
+                this.CreateReference(assembly.Name, references, isExecutable, hintpath: assemblyPath);
             }
         }
 
