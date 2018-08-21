@@ -40,7 +40,24 @@ namespace VisualCCommon
         findvswhere()
         {
 #if DOTNETCORE
-            throw new System.NotImplementedException();
+            var nugetHomeDir = NuGet.Common.NuGetEnvironment.GetFolderPath(NuGet.Common.NuGetFolderPath.NuGetHome);
+            var nugetPackageDir = System.IO.Path.Combine(nugetHomeDir, "packages");
+            var repo = new NuGet.Repositories.NuGetv3LocalRepository(nugetPackageDir);
+            var vswhereInstalls = repo.FindPackagesById("vswhere");
+            if (!vswhereInstalls.Any())
+            {
+                // TODO: download?
+                throw new Bam.Core.Exception("Unable to locate any NuGet package for vswhere");
+            }
+            var latestVSWhereVersion = vswhereInstalls.Max(item => item.Version);
+            var latestVSWhere = vswhereInstalls.First(item => item.Version == latestVSWhereVersion);
+            var vswhere_tools_dir = System.IO.Path.Combine(latestVSWhere.ExpandedPath, "tools");
+            var vswhere_exe_path = System.IO.Path.Combine(vswhere_tools_dir, "vswhere.exe");
+            if (!System.IO.File.Exists(vswhere_exe_path))
+            {
+                throw new Bam.Core.Exception("Unable to locate vswhere.exe from NuGet package at '{0}'", vswhere_exe_path);
+            }
+            this.vswherePath = vswhere_exe_path;
 #else
             const string vswhere_version = "vswhere.2.4.1"; // match packages.config in the Bam project
 

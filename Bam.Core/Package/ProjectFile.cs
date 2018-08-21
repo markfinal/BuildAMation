@@ -240,6 +240,11 @@ namespace Bam.Core
                 var assemblyPath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assembly.Name) + ".dll";
                 this.CreateReference(assembly.Name, references, isExecutable, hintpath: assemblyPath);
             }
+
+            // TODO: temporarily hard coded
+            var nugetReferences = this.CreateItemGroup(parent: this.Root);
+            this.CreateNugetReference("NuGet.Client", "4.2.0", nugetReferences);
+            this.CreateNugetReference("vswhere", "2.5.2", nugetReferences);
         }
 
         public void
