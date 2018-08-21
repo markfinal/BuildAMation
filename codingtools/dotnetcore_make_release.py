@@ -44,7 +44,8 @@ def run_dotnet_publish(output_dir, configuration='Release', framework='netcoreap
         args.append('-o')
         args.append(output_dir)
         args.append('-v')
-        args.append('minimal')
+        #args.append('minimal')
+        args.append('normal')
         if standalone_platform:
             args.append('--self-contained')
             args.append('-r')
