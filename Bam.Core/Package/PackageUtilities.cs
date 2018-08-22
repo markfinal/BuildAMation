@@ -634,6 +634,7 @@ namespace Bam.Core
 
             BuildModeUtilities.ValidateBuildModePackage();
 
+#if false
             var definitions = new StringArray();
 
             // gather source files
@@ -766,7 +767,11 @@ namespace Bam.Core
             {
                 Log.DebugMessage("Compiling assembly for Mono");
             }
+#endif
 
+#if true
+            string outputAssemblyPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), Graph.Instance.MasterPackage.Name) + ".dll";
+#else
             string outputAssemblyPath;
             if (Graph.Instance.CompileWithDebugSymbols)
             {
@@ -776,6 +781,7 @@ namespace Bam.Core
             {
                 outputAssemblyPath = cachedAssemblyPathname;
             }
+#endif
 
             // this will create the build root directory as necessary
             IOWrapper.CreateDirectory(System.IO.Path.GetDirectoryName(outputAssemblyPath));
@@ -785,6 +791,11 @@ namespace Bam.Core
             var projectPath = System.IO.Path.ChangeExtension(outputAssemblyPath, ".csproj");
             var project = new ProjectFile(false, projectPath);
             project.Write();
+
+            gatherSourceProfile.StopProfile();
+
+            var assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
+            assemblyCompileProfile.StartProfile();
 
             OSUtilities.RunExecutable(
                 "dotnet",
