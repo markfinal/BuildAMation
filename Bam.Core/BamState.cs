@@ -28,6 +28,9 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
+#if DOTNETCORE
+using System.Reflection;
+#endif
 namespace Bam.Core
 {
     /// <summary>
