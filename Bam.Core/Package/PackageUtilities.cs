@@ -797,10 +797,21 @@ namespace Bam.Core
             var assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
             assemblyCompileProfile.StartProfile();
 
-            OSUtilities.RunExecutable(
-                "dotnet",
-                "build " + projectPath + " -c Release -o " + System.IO.Path.GetDirectoryName(outputAssemblyPath)
-            );
+            try
+            {
+                var dotNetResult = OSUtilities.RunExecutable(
+                    "dotnet",
+                    "build " + projectPath + " -c Release -o " + System.IO.Path.GetDirectoryName(outputAssemblyPath)
+                );
+                Log.Info(dotNetResult.StandardOutput);
+            }
+            catch (OSUtilities.RunExecutableException exception)
+            {
+                throw new Exception(
+                    exception,
+                    "Failed to build the packages"
+                );
+            }
 
             Log.DebugMessage("Written assembly to '{0}'", outputAssemblyPath);
             Graph.Instance.ScriptAssemblyPathname = outputAssemblyPath;

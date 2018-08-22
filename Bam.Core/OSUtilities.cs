@@ -348,6 +348,92 @@ namespace Bam.Core
             }
         }
 
+#if BAM_V2
+        public class RunExecutableException :
+            Exception
+        {
+            public RunExecutableException(
+                RunExecutableResult result,
+                string format,
+                params string[] args)
+                :
+                base(format, args)
+            {
+                this.Result = result;
+            }
+
+            public RunExecutableResult Result
+            {
+                get;
+                private set;
+            }
+        }
+
+        public class RunExecutableResult
+        {
+            public RunExecutableResult(
+                string stdout,
+                string stderr,
+                int exitCode)
+            {
+                this.StandardOutput = stdout;
+                this.StandardError = stderr;
+                this.ExitCode = exitCode;
+            }
+
+            public string StandardOutput
+            {
+                get;
+                private set;
+            }
+
+            public string StandardError
+            {
+                get;
+                private set;
+            }
+
+            public int ExitCode
+            {
+                get;
+                private set;
+            }
+        }
+
+        public static RunExecutableResult
+        RunExecutable(
+            string executable,
+            string arguments)
+        {
+            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
+            processStartInfo.FileName = executable;
+            processStartInfo.Arguments = arguments;
+            processStartInfo.RedirectStandardOutput = true;
+            processStartInfo.RedirectStandardError = true;
+            processStartInfo.RedirectStandardInput = true;
+            processStartInfo.UseShellExecute = false; // to redirect IO streams
+            System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
+            process.StandardInput.Close();
+            process.WaitForExit();
+
+            var result = new RunExecutableResult(
+                process.StandardOutput.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray()),
+                process.StandardError.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray()),
+                process.ExitCode
+            );
+            if (0 != process.ExitCode)
+            {
+                throw new RunExecutableException(
+                    result,
+                    "Failed while running '{0} {1}'",
+                    executable,
+                    arguments
+                );
+            }
+
+            return result;
+        }
+#else
         /// <summary>
         /// Runs an executable, and returns a string containing the standard output
         /// from that run.
@@ -374,6 +460,7 @@ namespace Bam.Core
             }
             return process.StandardOutput.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray());
         }
+#endif
 
         /// <summary>
         /// Gets the install location of an executable.
@@ -408,16 +495,46 @@ namespace Bam.Core
                     return InstallLocationCache[key];
                 }
                 string location;
+#if BAM_V2
+                try
+                {
+#endif
                 if (OSUtilities.IsWindowsHosting)
                 {
                     if (null != searchDirectory)
                     {
                         var args = new System.Text.StringBuilder();
                         args.AppendFormat("/R \"{0}\" {1}", searchDirectory, executable);
+#if BAM_V2
+                        location = RunExecutable("where", args.ToString()).StandardOutput;
+#else
                         location = RunExecutable("where", args.ToString());
+#endif
                     }
                     else
                     {
+#if BAM_V2
+                        try
+                        {
+                            location = RunExecutable("where", executable).StandardOutput;
+                        }
+                        catch (RunExecutableException)
+                        {
+                            var args = new System.Text.StringBuilder();
+                            args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesPath.ToString(), executable);
+                            try
+                            {
+                                location = RunExecutable("where", args.ToString()).StandardOutput;
+                            }
+                            catch (RunExecutableException)
+                            {
+                                args.Length = 0;
+                                args.Capacity = 0;
+                                args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesx86Path.ToString(), executable);
+                                location = RunExecutable("where", args.ToString()).StandardOutput;
+                            }
+                        }
+#else
                         location = RunExecutable("where", executable);
                         if (null == location)
                         {
@@ -432,6 +549,7 @@ namespace Bam.Core
                                 location = RunExecutable("where", args.ToString());
                             }
                         }
+#endif
                     }
                 }
                 else
@@ -440,8 +558,26 @@ namespace Bam.Core
                     {
                         Log.DebugMessage("Search path '{0}' is ignored on non-Windows platforms", searchDirectory);
                     }
+#if BAM_V2
+                    location = RunExecutable("which", executable).StandardOutput;
+#else
                     location = RunExecutable("which", executable);
+#endif
                 }
+#if BAM_V2
+                }
+                catch (RunExecutableException exception)
+                {
+                    if (throwOnFailure)
+                    {
+                        throw new Exception(exception, "Unable to locate '{0}' in the system.", executable);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+#else
                 if (null == location)
                 {
                     if (throwOnFailure)
@@ -453,6 +589,7 @@ namespace Bam.Core
                         return null;
                     }
                 }
+#endif
                 var results = new StringArray(
                     location.Split(
                         new[] { System.Environment.NewLine },
