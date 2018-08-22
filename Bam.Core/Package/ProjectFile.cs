@@ -201,7 +201,7 @@ namespace Bam.Core
             this.CreateAttribute("Sdk", "Microsoft.NET.Sdk", this.Root);
 
             var generalProperties = this.CreatePropertyGroup(parent: this.Root);
-            this.CreateElement("TargetFramework", parent: generalProperties, value: "netcoreapp2.1");
+            this.CreateElement("TargetFramework", parent: generalProperties, value: "netcoreapp2.1"); // cannot use netstandard2.0 here
             this.CreateElement("EnableDefaultItems", parent: generalProperties, value: "false");
             if (isExecutable)
             {
