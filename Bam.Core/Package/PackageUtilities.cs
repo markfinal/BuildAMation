@@ -799,9 +799,21 @@ namespace Bam.Core
 
             try
             {
+                var args = new System.Text.StringBuilder();
+                args.AppendFormat("publish {0} ", projectPath);
+                args.Append("--force ");
+                if (Graph.Instance.CompileWithDebugSymbols)
+                {
+                    args.Append("-c Debug ");
+                }
+                else
+                {
+                    args.Append("-c Release ");
+                }
+                args.AppendFormat("-o {0} ", System.IO.Path.GetDirectoryName(outputAssemblyPath));
                 var dotNetResult = OSUtilities.RunExecutable(
                     "dotnet",
-                    "publish " + projectPath + " --force -c Release -o " + System.IO.Path.GetDirectoryName(outputAssemblyPath)
+                    args.ToString()
                 );
                 Log.Info(dotNetResult.StandardOutput);
             }
