@@ -56,6 +56,9 @@ namespace Bam.Core
             {
                 productVersion = pv;
             }
+#if DOTNETCORE
+            targetFrameworkName = coreAssembly.GetCustomAttribute<System.Runtime.Versioning.TargetFrameworkAttribute>().FrameworkName;
+#else
             var targetFrameworkAttributes = coreAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false);
             if (targetFrameworkAttributes.Length > 0)
             {
@@ -65,6 +68,7 @@ namespace Bam.Core
             {
                 targetFrameworkName = null;
             }
+#endif
         }
 
         private static string
