@@ -801,7 +801,7 @@ namespace Bam.Core
             {
                 var dotNetResult = OSUtilities.RunExecutable(
                     "dotnet",
-                    "build " + projectPath + " --force -c Release -o " + System.IO.Path.GetDirectoryName(outputAssemblyPath)
+                    "publish " + projectPath + " --force -c Release -o " + System.IO.Path.GetDirectoryName(outputAssemblyPath)
                 );
                 Log.Info(dotNetResult.StandardOutput);
             }
