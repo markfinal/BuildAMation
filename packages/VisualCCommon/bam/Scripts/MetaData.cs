@@ -78,6 +78,8 @@ namespace VisualCCommon
 #endif
         }
 
+#if BAM_V2
+#else
         private static string
         RunExecutable(
             string executable,
@@ -97,10 +99,35 @@ namespace VisualCCommon
             }
             return process.StandardOutput.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray());
         }
+#endif
 
         protected string
         vswhere_getinstallpath()
         {
+#if BAM_V2
+            try
+            {
+                var args = new System.Text.StringBuilder();
+                if (this.major_version < 15)
+                {
+                    args.Append("-legacy ");
+                }
+                args.AppendFormat("-property installationPath -version {0}", this.major_version);
+                var installpath = Bam.Core.OSUtilities.RunExecutable(
+                    this.vswherePath,
+                    args.ToString()
+                ).StandardOutput;
+                Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", this.major_version, installpath);
+                return installpath;
+            }
+            catch (Bam.Core.OSUtilities.RunExecutableException)
+            {
+                throw new Bam.Core.Exception(
+                    "Unable to locate installation directory for Visual Studio major version {0}",
+                    this.major_version
+                );
+            }
+#else
             string installpath = System.String.Empty;
             if (this.major_version >= 15)
             {
@@ -120,6 +147,7 @@ namespace VisualCCommon
             }
             Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", this.major_version, installpath);
             return installpath;
+#endif
         }
 
         private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>
