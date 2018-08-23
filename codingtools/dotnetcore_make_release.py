@@ -55,19 +55,40 @@ def run_dotnet_publish(output_dir, configuration='Release', framework='netcoreap
         os.chdir(cur_dir)
 
 
+def copy_directory_to_directory(srcdir,destdir):
+    log('\tCopying directory ' + srcdir)
+    shutil.copytree(srcdir, destdir)
+
+
+def copy_file_to_directory(srcfile,destdir):
+    log('\tCopying file ' + srcfile)
+    shutil.copy(srcfile, destdir)
+
+
 def copy_support_files(output_dir):
     cur_dir = os.getcwd()
     os.chdir(g_bam_dir)
+    log('Copying support files...')
     try:
-        shutil.copytree('packages', os.path.join(output_dir, 'packages'))
-        shutil.copytree('tests', os.path.join(output_dir, 'tests'))
-        shutil.copy('env.sh', output_dir)
-        shutil.copy('env.bat', output_dir)
-        shutil.copy('Changelog.txt', output_dir)
-        shutil.copy('License.md', output_dir)
-        shutil.copy('MS-PL.md', output_dir)
+        copy_directory_to_directory('packages', os.path.join(output_dir, 'packages'))
+        copy_directory_to_directory('tests', os.path.join(output_dir, 'tests'))
+        copy_file_to_directory('env.sh', output_dir)
+        copy_file_to_directory('env.bat', output_dir)
+        copy_file_to_directory('Changelog.txt', output_dir)
+        copy_file_to_directory('License.md', output_dir)
+        copy_file_to_directory('MS-PL.md', output_dir)
     finally:
         os.chdir(cur_dir)
+
+
+def list_files(base_dir):
+    log('Listing files in ' + base_dir)
+    starting_depth = base_dir.count(os.sep)
+    for root, dirs, files in os.walk(base_dir):
+        depth = root.count(os.sep) - starting_depth
+        log(' ' * depth + os.path.basename(root))
+        for f in files:
+            log(' ' * (depth + 1) + f)
 
 
 def main(options):
@@ -79,6 +100,7 @@ def main(options):
         force=True
     )
     copy_support_files(output_dir)
+    list_files(output_dir)
 
     if options.standalone:
         platforms = []
@@ -94,6 +116,8 @@ def main(options):
                 force=True,
                 standalone_platform=platform
             )
+            copy_support_files(platform_output_dir)
+            list_files(platform_output_dir)
 
 
 if __name__ == '__main__':
