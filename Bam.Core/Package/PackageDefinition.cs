@@ -138,6 +138,7 @@ namespace Bam.Core
             this.Dependents = new Array<System.Tuple<string, string, bool?>>();
             this.BamAssemblies = new Array<BamAssemblyDescription>();
             this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
+            this.NuGetPackages = new Array<NuGetPackageDescription>();
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
             this.PackageRepositories = new StringArray(this.GetPackageRepository());
@@ -371,6 +372,19 @@ namespace Bam.Core
                     requiredDotNetAssemblies.AppendChild(assemblyElement);
                 }
                 packageDefinition.AppendChild(requiredDotNetAssemblies);
+            }
+
+            if (this.NuGetPackages.Any())
+            {
+                var requiredNuGetPackages = document.CreateElement("NuGetPackages", namespaceURI);
+                foreach (var desc in this.NuGetPackages)
+                {
+                    var nugetPackageElement = document.CreateElement("NuGetPackage", namespaceURI);
+                    nugetPackageElement.SetAttribute("id", desc.Identifier);
+                    nugetPackageElement.SetAttribute("version", desc.Version);
+                    requiredNuGetPackages.AppendChild(nugetPackageElement);
+                }
+                packageDefinition.AppendChild(requiredNuGetPackages);
             }
 
             // supported platforms
@@ -694,6 +708,41 @@ namespace Bam.Core
         }
 
         private bool
+        ReadNuGetPackages(
+            System.Xml.XmlReader xmlReader)
+        {
+            var rootEl = "NuGetPackages";
+            if (rootEl != xmlReader.Name)
+            {
+                return false;
+            }
+
+            var elName = "NuGetPackage";
+            while (xmlReader.Read())
+            {
+                if ((xmlReader.Name == rootEl) &&
+                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                {
+                    break;
+                }
+
+                if (elName != xmlReader.Name)
+                {
+                    throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootEl, xmlReader.Name, elName);
+                }
+
+                var nugetIdentifier = xmlReader.GetAttribute("id");
+                var nugetVersion = xmlReader.GetAttribute("version");
+
+                var desc = new NuGetPackageDescription(nugetIdentifier, nugetVersion);
+
+                this.NuGetPackages.AddUnique(desc);
+            }
+
+            return true;
+        }
+
+        private bool
         ReadSupportedPlatforms(
             System.Xml.XmlReader xmlReader)
         {
@@ -815,6 +864,10 @@ namespace Bam.Core
                         {
                             // all done
                         }
+                        else if (ReadNuGetPackages(xmlReader))
+                        {
+                            // all done
+                        }
                         else if (ReadSupportedPlatforms(xmlReader))
                         {
                             // all done
@@ -921,6 +974,16 @@ namespace Bam.Core
         /// </summary>
         /// <value>The dot net assemblies.</value>
         public Array<DotNetAssemblyDescription> DotNetAssemblies
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Array of NuGet packages required for this package.
+        /// </summary>
+        /// <value>The NuGet packages.</value>
+        public Array<NuGetPackageDescription> NuGetPackages
         {
             get;
             private set;

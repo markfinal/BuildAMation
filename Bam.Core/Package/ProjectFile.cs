@@ -222,6 +222,7 @@ namespace Bam.Core
             this.CreateElement("WarningsAsErrors", parent: releaseProperties);
             this.CreateElement("PlatformTarget", parent: releaseProperties, value: "AnyCPU");
 
+            var nugetReferences = this.CreateItemGroup(parent: this.Root);
             foreach (var package in Graph.Instance.Packages)
             {
                 var packageSource = this.CreateItemGroup(parent: this.Root);
@@ -230,6 +231,11 @@ namespace Bam.Core
                 foreach (var script in package.GetScriptFiles(allBuilders: true))
                 {
                     this.CreateCompilableSourceFile(script, package, packageSource);
+                }
+
+                foreach (var nuget in package.NuGetPackages)
+                {
+                    this.CreateNugetReference(nuget.Identifier, nuget.Version, nugetReferences);
                 }
             }
 
@@ -240,11 +246,6 @@ namespace Bam.Core
                 var assemblyPath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assembly.Name) + ".dll";
                 this.CreateReference(assembly.Name, references, isExecutable, hintpath: assemblyPath);
             }
-
-            // TODO: temporarily hard coded
-            var nugetReferences = this.CreateItemGroup(parent: this.Root);
-            this.CreateNugetReference("NuGet.Client", "4.2.0", nugetReferences);
-            this.CreateNugetReference("vswhere", "2.5.2", nugetReferences);
         }
 
         public void

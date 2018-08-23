@@ -13,6 +13,10 @@
     <DotNetAssembly name="System.Xml" requiredTargetFramework="4.0.30319" />
     <DotNetAssembly name="System.Core" requiredTargetFramework="4.0.30319" />
   </DotNetAssemblies>
+  <NuGetPackages>
+    <NuGetPackage id="vswhere" version="2.5.2" />
+    <NuGetPackage id="NuGet.Client" version="4.2.0" />
+  </NuGetPackages>
   <SupportedPlatforms>
     <Platform name="Windows" />
     <Platform name="Linux" />
