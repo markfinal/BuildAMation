@@ -17,6 +17,11 @@ matrix:
     script:
       #- msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
       - python codingtools/dotnetcore_make_release.py
+      - cd bam_publish
+      - source env.sh
+      - cd tests
+      - python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -t Test3
+      - cd ../..
       # - source env.sh
       #- cd tests
       #- python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d
