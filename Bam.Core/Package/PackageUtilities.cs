@@ -1058,6 +1058,33 @@ namespace Bam.Core
 
             System.Reflection.Assembly scriptAssembly = null;
 
+#if DOTNETCORE
+            var loadContext = new PackageAssemblyLoadContext();
+            scriptAssembly = loadContext.LoadFromAssemblyPath(Graph.Instance.ScriptAssemblyPathname);
+
+            // the DependencyContext knows where all of the runtime
+            // dependencies reside
+            loadContext.DependencyContext = Microsoft.Extensions.DependencyModel.DependencyContext.Load(scriptAssembly);
+
+            // pre-load all dependents (recursively) into the load context, so that failure are known now
+            // rather than mid-way through executing package scripts
+            var queue = new System.Collections.Generic.Queue<System.Reflection.Assembly>();
+            var processed = new System.Collections.Generic.List<System.Reflection.Assembly>();
+            queue.Enqueue(scriptAssembly);
+            while (queue.Count > 0)
+            {
+                var asm = queue.Dequeue();
+                processed.Add(asm);
+                foreach (var asmName in asm.GetReferencedAssemblies())
+                {
+                    var assembly = loadContext.LoadFromAssemblyName(asmName);
+                    if (!processed.Contains(assembly))
+                    {
+                        queue.Enqueue(assembly);
+                    }
+                }
+            }
+#else
             try
             {
                 // this code works from an untrusted location, and debugging IS available when
@@ -1089,10 +1116,68 @@ namespace Bam.Core
             {
                 throw exception;
             }
+#endif
 
             Graph.Instance.ScriptAssembly = scriptAssembly;
 
             assemblyLoadProfile.StopProfile();
         }
     }
+
+#if DOTNETCORE
+    class PackageAssemblyLoadContext :
+        System.Runtime.Loader.AssemblyLoadContext
+    {
+        // default location for NuGet packages
+        static string packagesDir = System.Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\.nuget\packages");
+
+        public Microsoft.Extensions.DependencyModel.DependencyContext DependencyContext
+        {
+            get;
+            set;
+        }
+
+        protected override System.Reflection.Assembly
+        Load(
+            System.Reflection.AssemblyName assemblyName)
+        {
+            try
+            {
+                // try the default loader
+                // most runtime libraries will come via here
+                return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyName(assemblyName);
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+                // failures could be custom NuGet packages that the BAM package depends upon
+                // need to load these manually
+                var runtimeLibrary = this.DependencyContext.RuntimeLibraries.FirstOrDefault(item => item.Name == assemblyName.Name);
+                if (null == runtimeLibrary)
+                {
+                    throw;
+                }
+                // TODO: what exactly do we return if there is more than one DLL in the dependency?
+                System.Diagnostics.Debug.Assert(1 == runtimeLibrary.RuntimeAssemblyGroups.Count);
+                System.Diagnostics.Debug.Assert(1 == runtimeLibrary.RuntimeAssemblyGroups.First().AssetPaths.Count);
+                foreach (var runtimeAssemblyGroup in runtimeLibrary.RuntimeAssemblyGroups)
+                {
+                    foreach (var assetPath in runtimeAssemblyGroup.AssetPaths)
+                    {
+                        var fullPath = System.String.Format(
+                            "{1}{0}{2}{0}{3}{0}{4}",
+                            System.IO.Path.DirectorySeparatorChar,
+                            packagesDir,
+                            runtimeLibrary.Name,
+                            runtimeLibrary.Version,
+                            assetPath
+                        );
+                        fullPath = System.IO.Path.GetFullPath(fullPath);
+                        return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(fullPath);
+                    }
+                }
+                throw;
+            }
+        }
+    }
+#endif
 }
