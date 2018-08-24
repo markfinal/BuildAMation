@@ -987,7 +987,14 @@ namespace Bam.Core
                 {
                     throw new Exception("The build root has already been set");
                 }
+#if DOTNETCORE
+                var absoluteBuildRootPath = RelativePathUtilities.ConvertRelativePathToAbsolute(
+                    Graph.Instance.ProcessState.WorkingDirectory,
+                    value
+                );
+#else
                 var absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
+#endif
                 this.TheBuildRoot = absoluteBuildRootPath;
                 this.Macros.AddVerbatim("buildroot", absoluteBuildRootPath);
             }

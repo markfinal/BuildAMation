@@ -123,7 +123,14 @@ namespace VSSolutionBuilder
             var configs = new Bam.Core.StringArray();
             foreach (var project in this.Projects)
             {
+#if DOTNETCORE
+                var relativeProjectPath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                    solutionPath,
+                    project.ProjectPath
+                );
+#else
                 var relativeProjectPath = Bam.Core.RelativePathUtilities.GetPath(project.ProjectPath, solutionPath);
+#endif
                 content.AppendFormat("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
                     ProjectTypeGuid.ToString("B").ToUpper(),
                     System.IO.Path.GetFileNameWithoutExtension(project.ProjectPath),

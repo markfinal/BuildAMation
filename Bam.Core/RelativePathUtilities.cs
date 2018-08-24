@@ -34,6 +34,63 @@ namespace Bam.Core
     /// </summary>
     public static class RelativePathUtilities
     {
+#if DOTNETCORE
+        /// <summary>
+        /// Is the specified path absolute?
+        /// </summary>
+        /// <returns><c>true</c> if is path absolute the specified path; otherwise, <c>false</c>.</returns>
+        /// <param name="path">Path.</param>
+        public static bool
+        IsPathAbsolute(
+            string path)
+        {
+            return System.IO.Path.IsPathRooted(path);
+        }
+
+        /// <summary>
+        /// Generate a relative path from the specified root.
+        /// </summary>
+        /// <param name="root">Root of the path</param>
+        /// <param name="absolutePath">Path that is rooted, but needs to be relative.</param>
+        /// <returns>The relative path, with root as its base.</returns>
+        public static string
+        GetRelativePathFromRoot(
+            string root,
+            string absolutePath)
+        {
+            if (!System.IO.Path.IsPathRooted(absolutePath))
+            {
+                throw new Exception(
+                    "The path '{0}' already is relative. Cannot convert.",
+                    absolutePath
+                );
+            }
+            return System.IO.Path.GetRelativePath(root, absolutePath);
+        }
+
+        /// <summary>
+        /// Convert a relative path to an absolute, using the specified root.
+        /// Will throw an exception if an absolute path is provided.
+        /// </summary>
+        /// <param name="root">Root to use to make the path absolute.</param>
+        /// <param name="relativePath">Current relative path to convert.</param>
+        /// <returns>The resulting absolute path.</returns>
+        public static string
+        ConvertRelativePathToAbsolute(
+            string root,
+            string relativePath)
+        {
+            if (System.IO.Path.IsPathRooted(relativePath))
+            {
+                throw new Exception(
+                    "The path '{0}' already is absolute. Cannot convert.",
+                    relativePath
+                );
+            }
+            var absolute = System.IO.Path.Combine(root, relativePath);
+            return absolute;
+        }
+#else
         /// <summary>
         /// Is the specified path absolute?
         /// </summary>
@@ -257,5 +314,6 @@ namespace Bam.Core
 
             return commonRoot;
         }
+#endif
     }
 }

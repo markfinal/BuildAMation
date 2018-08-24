@@ -790,7 +790,14 @@ namespace VSSolutionBuilder
                 System.Collections.Generic.KeyValuePair<string, string> candidate = default(System.Collections.Generic.KeyValuePair<string, string>);
                 foreach (var item in mapping)
                 {
+#if DOTNETCORE
+                    var relative_path = Bam.Core.RelativePathUtilities.ConvertRelativePathToAbsolute(
+                        item.Value,
+                        path
+                    );
+#else
                     var relative_path = Bam.Core.RelativePathUtilities.GetPath(path, item.Value);
+#endif
                     if (System.String.IsNullOrEmpty(relative_path))
                     {
                         continue;
