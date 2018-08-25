@@ -1128,8 +1128,25 @@ namespace Bam.Core
     class PackageAssemblyLoadContext :
         System.Runtime.Loader.AssemblyLoadContext
     {
+        private static string
+        GetHomeDir()
+        {
+            if (OSUtilities.IsWindowsHosting)
+            {
+                return System.Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
+            }
+            else
+            {
+                return System.Environment.GetEnvironmentVariable("HOME");
+            }
+        }
+
         // default location for NuGet packages
-        static string packagesDir = System.Environment.ExpandEnvironmentVariables(@"%USERPROFILE%\.nuget\packages");
+        static string packagesDir = System.String.Format(
+            "{0}{1}.nuget{1}packages",
+            GetHomeDir(),
+            System.IO.Path.DirectorySeparatorChar
+        );
 
         public Microsoft.Extensions.DependencyModel.DependencyContext DependencyContext
         {
