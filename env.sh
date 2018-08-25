@@ -9,11 +9,11 @@ ExecutablePath="$curPath/bin/$flavour/netcoreapp2.1"
 if [ ! -d "$ExecutablePath" ]; then
   echo "*** ERROR: BuildAMation directory '$ExecutablePath' does not exist ***"
 else
-  #export PATH="$ExecutablePath":$PATH
+  export PATH="$ExecutablePath":$PATH
   #fullPath="`cd "${ExecutablePath}";pwd`"
-  function bam()
-  {
-    dotnet $ExecutablePath/Bam.dll $@
-  }
+  #function bam()
+  #{
+  #  dotnet $ExecutablePath/Bam.dll $@
+  #}
   bam --version
 fi
