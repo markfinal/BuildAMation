@@ -30,7 +30,7 @@
 namespace Bam.Core.Options
 {
     /// <summary>
-    /// Command line option to enable printing statistics following a build.s
+    /// Command line option to enable printing statistics following a build.
     /// </summary>
     public sealed class PrintStatistics :
         IBooleanCommandLineArgument
