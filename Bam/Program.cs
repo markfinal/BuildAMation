@@ -82,6 +82,12 @@ namespace Bam
                     return;
                 }
 
+                if (Core.CommandLineProcessor.Evaluate(new Core.Options.PrintInstallDirectory()))
+                {
+                    CommandLineArgumentHelper.PrintInstallationDirectory();
+                    return;
+                }
+
                 if (Core.CommandLineProcessor.Evaluate(new Core.Options.CreateDebugProject()))
                 {
                     DebugProject.Create();
