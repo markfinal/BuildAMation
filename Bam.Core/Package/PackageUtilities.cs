@@ -1180,11 +1180,12 @@ namespace Bam.Core
                 {
                     foreach (var assetPath in runtimeAssemblyGroup.AssetPaths)
                     {
+                        // NuGet package names are forced to be lower-case in .NET cor
                         var fullPath = System.String.Format(
                             "{1}{0}{2}{0}{3}{0}{4}",
                             System.IO.Path.DirectorySeparatorChar,
                             packagesDir,
-                            runtimeLibrary.Name,
+                            runtimeLibrary.Name.ToLower(),
                             runtimeLibrary.Version,
                             assetPath
                         );
