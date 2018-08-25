@@ -83,7 +83,12 @@ namespace Bam.Core
                         if (SupportsCursorManagement)
                         {
                             System.Console.Write(messageValue);
+#if DOTNETCORE
+                            // there seems to be some issues (the cursor position not updating) in .NET core
+                            System.Console.SetCursorPosition(0, System.Console.CursorTop);
+#else
                             System.Console.SetCursorPosition(System.Console.CursorLeft - messageValue.Length, System.Console.CursorTop);
+#endif
                         }
                     }
                     else
