@@ -1150,6 +1150,31 @@ namespace Bam.Core
             System.IO.Path.DirectorySeparatorChar
         );
 
+        private static string
+        GetPortableRID()
+        {
+            var architecture = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString().ToLower();
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+            {
+                return "win-" + architecture;
+            }
+            else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
+            {
+                return "linux-" + architecture;
+            }
+            else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX))
+            {
+                return "osx-" + architecture;
+            }
+            throw new Exception(
+                "Running on an unsupported OS: {0}",
+                System.Runtime.InteropServices.RuntimeInformation.OSDescription
+            );
+        }
+
+        // runtime identifier used to resolve NuGet runtimes
+        private static readonly string PortableRID = GetPortableRID();
+
         public Microsoft.Extensions.DependencyModel.DependencyContext DependencyContext
         {
             get;
@@ -1176,13 +1201,23 @@ namespace Bam.Core
                 {
                     throw;
                 }
-                // TODO: what exactly do we return if there is more than one DLL in the dependency?
-                //System.Diagnostics.Debug.Assert(1 == runtimeLibrary.RuntimeAssemblyGroups.Count);
-                //System.Diagnostics.Debug.Assert(1 == runtimeLibrary.RuntimeAssemblyGroups.First().AssetPaths.Count);
+
+                Log.MessageAll("{0} type {1}", runtimeLibrary.Name, runtimeLibrary.Type);
+                Log.MessageAll("Runtime assembly groups '{0}'", runtimeLibrary.RuntimeAssemblyGroups.Count);
                 foreach (var runtimeAssemblyGroup in runtimeLibrary.RuntimeAssemblyGroups)
                 {
-                    foreach (var assetPath in runtimeAssemblyGroup.AssetPaths)
+                    Log.MessageAll("{0}", runtimeAssemblyGroup.Runtime);
+                }
+                foreach (var runtimeAssemblyGroup in runtimeLibrary.RuntimeAssemblyGroups)
+                {
+                    if (runtimeAssemblyGroup.Runtime != PortableRID)
                     {
+                        continue;
+                    }
+                    System.Diagnostics.Debug.Assert(1 == runtimeAssemblyGroup.RuntimeFiles.Count);
+                    foreach (var runtimeFile in runtimeAssemblyGroup.RuntimeFiles)
+                    {
+                        Log.MessageAll("{0} {1} {2}", runtimeFile.Path, runtimeFile.FileVersion, runtimeFile.AssemblyVersion);
                         // NuGet package names are forced to be lower-case in .NET cor
                         var fullPath = System.String.Format(
                             "{1}{0}{2}{0}{3}{0}{4}",
@@ -1190,11 +1225,12 @@ namespace Bam.Core
                             packagesDir,
                             runtimeLibrary.Name.ToLower(),
                             runtimeLibrary.Version,
-                            assetPath
+                            runtimeFile.Path
                         );
                         fullPath = System.IO.Path.GetFullPath(fullPath);
-                        Log.MessageAll("\t{0}", fullPath);
-                        return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(fullPath);
+                        var asm = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(fullPath);
+                        Log.MessageAll("\t{0} {1}", fullPath, asm);
+                        return asm;
                     }
                 }
                 throw;
