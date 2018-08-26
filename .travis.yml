@@ -20,7 +20,8 @@ matrix:
       - cd bam_publish
       - source env.sh
       - cd tests
-      - LD_DEBUG=libs LD_LIBRARY_PATH=/home/travis/.nuget/packages/mono.posix.netstandard/1.0.0/runtimes/linux-x64/native python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -t VersionScriptTest1
+      #- LD_DEBUG=libs LD_LIBRARY_PATH=/home/travis/.nuget/packages/mono.posix.netstandard/1.0.0/runtimes/linux-x64/native python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -t VersionScriptTest1
+      - LD_DEBUG=libs LD_LIBRARY_PATH=/home/travis/.nuget/packages/mono.posix.netstandard/1.0.0/runtimes/linux-x64/native python runtests.py --Gcc.version=4.8 -b Native -c debug -d -t VersionScriptTest1 --C.bitdepth=64
       - ldd /home/travis/.nuget/packages/mono.posix.netstandard/1.0.0/runtimes/linux-x64/native/libMonoPosixHelper.so
       #- python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -b MakeFile
       - cd ../..
