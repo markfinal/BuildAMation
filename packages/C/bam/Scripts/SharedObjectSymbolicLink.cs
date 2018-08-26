@@ -128,7 +128,7 @@ namespace C
         protected override void
         EvaluateInternal()
         {
-#if __MonoCS__
+#if __MonoCS__ || DOTNETCORE
             if (this.IsPrebuilt)
             {
                 return;
