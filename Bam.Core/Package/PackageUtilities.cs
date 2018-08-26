@@ -1086,6 +1086,22 @@ namespace Bam.Core
                     }
                 }
             }
+
+            var additionalPaths = System.String.Empty;
+            foreach (var path in loadContext.EnvironmentPaths)
+            {
+                Log.MessageAll("** {0}", path);
+                additionalPaths += path + System.IO.Path.PathSeparator;
+            }
+
+            if (OSUtilities.IsLinuxHosting)
+            {
+                var old_value = System.Environment.GetEnvironmentVariable("LD_LIBRARY_PATH");
+                Log.MessageAll("LD_LIBRARY_PATH = {0}", old_value);
+                var new_value = additionalPaths + old_value;
+                System.Environment.SetEnvironmentVariable("LD_LIBRARY_PATH", new_value);
+                Log.MessageAll("LD_LIBRARY_PATH = {0}", System.Environment.GetEnvironmentVariable("LD_LIBRARY_PATH"));
+            }
 #else
             try
             {
@@ -1181,6 +1197,30 @@ namespace Bam.Core
             set;
         }
 
+        private System.Collections.Generic.List<string> _EnvironmentPaths
+        {
+            get;
+            set;
+        }
+
+        public System.Collections.Generic.IEnumerable<string> EnvironmentPaths
+        {
+            get
+            {
+                if (null == this._EnvironmentPaths)
+                {
+                    yield return System.String.Empty;
+                }
+                else
+                {
+                    foreach (var path in this._EnvironmentPaths)
+                    {
+                        yield return path;
+                    }
+                }
+            }
+        }
+
         protected override System.Reflection.Assembly
         Load(
             System.Reflection.AssemblyName assemblyName)
@@ -1204,12 +1244,10 @@ namespace Bam.Core
 
                 Log.MessageAll("{0} type {1}", runtimeLibrary.Name, runtimeLibrary.Type);
                 Log.MessageAll("Runtime assembly groups '{0}'", runtimeLibrary.RuntimeAssemblyGroups.Count);
+                System.Reflection.Assembly loadedAssembly = null;
                 foreach (var runtimeAssemblyGroup in runtimeLibrary.RuntimeAssemblyGroups)
                 {
-                    Log.MessageAll("{0}", runtimeAssemblyGroup.Runtime);
-                }
-                foreach (var runtimeAssemblyGroup in runtimeLibrary.RuntimeAssemblyGroups)
-                {
+                    Log.MessageAll("\t{0}", runtimeAssemblyGroup.Runtime);
                     if (runtimeAssemblyGroup.Runtime != PortableRID)
                     {
                         continue;
@@ -1228,12 +1266,51 @@ namespace Bam.Core
                             runtimeFile.Path
                         );
                         fullPath = System.IO.Path.GetFullPath(fullPath);
-                        var asm = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(fullPath);
-                        Log.MessageAll("\t{0} {1}", fullPath, asm);
-                        return asm;
+                        if (null == loadedAssembly)
+                        {
+                            loadedAssembly = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(fullPath);
+                            Log.MessageAll("\t{0} {1}", fullPath, loadedAssembly);
+                        }
+                        else
+                        {
+                            Log.MessageAll("\t{0}", fullPath);
+                        }
+                    }
+                    foreach (var assetPath in runtimeAssemblyGroup.AssetPaths)
+                    {
+                        Log.MessageAll("\t{0}*", assetPath);
                     }
                 }
-                throw;
+                if (runtimeLibrary.NativeLibraryGroups.Any())
+                {
+                    this._EnvironmentPaths = new System.Collections.Generic.List<string>();
+                }
+                foreach (var native in runtimeLibrary.NativeLibraryGroups)
+                {
+                    if (native.Runtime != PortableRID)
+                    {
+                        continue;
+                    }
+                    foreach (var runtimeFile in native.RuntimeFiles)
+                    {
+                        var fullPath = System.String.Format(
+                            "{1}{0}{2}{0}{3}{0}{4}",
+                            System.IO.Path.DirectorySeparatorChar,
+                            packagesDir,
+                            runtimeLibrary.Name.ToLower(),
+                            runtimeLibrary.Version,
+                            runtimeFile.Path
+                        );
+                        fullPath = System.IO.Path.GetFullPath(fullPath);
+                        Log.MessageAll("{0} {1} {2}", fullPath, runtimeFile.FileVersion, runtimeFile.AssemblyVersion);
+                        var dir = System.IO.Path.GetDirectoryName(fullPath);
+                        if (!this._EnvironmentPaths.Contains(dir))
+                        {
+                            this._EnvironmentPaths.Add(dir);
+                        }
+                    }
+                }
+                return loadedAssembly;
             }
         }
     }
