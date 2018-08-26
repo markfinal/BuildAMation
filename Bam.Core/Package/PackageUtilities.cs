@@ -821,7 +821,9 @@ namespace Bam.Core
             {
                 throw new Exception(
                     exception,
-                    "Failed to build the packages"
+                    "Failed to build the packages:{0}{1}",
+                    System.Environment.NewLine,
+                    exception.Result.StandardOutput
                 );
             }
 
