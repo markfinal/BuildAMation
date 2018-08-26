@@ -20,7 +20,8 @@ matrix:
       - cd bam_publish
       - source env.sh
       - cd tests
-      - python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -t Test3
+      - python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d
+      - python runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -b MakeFile
       - cd ../..
       # - source env.sh
       #- cd tests
@@ -67,6 +68,13 @@ matrix:
     script:
       #- msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
       - python codingtools/dotnetcore_make_release.py
+      - cd bam_publish
+      - source env.sh
+      - cd tests
+      - python runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
+      - python runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b MakeFile
+      - python runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b Xcode
+      - cd ../..
       # - source env.sh
       #- cd tests
       #- python runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
