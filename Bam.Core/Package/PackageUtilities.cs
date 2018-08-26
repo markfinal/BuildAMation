@@ -1168,6 +1168,7 @@ namespace Bam.Core
             }
             catch (System.IO.FileNotFoundException)
             {
+                Log.MessageAll("Manually resolving assembly '{0}'", assemblyName.FullName);
                 // failures could be custom NuGet packages that the BAM package depends upon
                 // need to load these manually
                 var runtimeLibrary = this.DependencyContext.RuntimeLibraries.FirstOrDefault(item => item.Name == assemblyName.Name);
@@ -1176,8 +1177,8 @@ namespace Bam.Core
                     throw;
                 }
                 // TODO: what exactly do we return if there is more than one DLL in the dependency?
-                System.Diagnostics.Debug.Assert(1 == runtimeLibrary.RuntimeAssemblyGroups.Count);
-                System.Diagnostics.Debug.Assert(1 == runtimeLibrary.RuntimeAssemblyGroups.First().AssetPaths.Count);
+                //System.Diagnostics.Debug.Assert(1 == runtimeLibrary.RuntimeAssemblyGroups.Count);
+                //System.Diagnostics.Debug.Assert(1 == runtimeLibrary.RuntimeAssemblyGroups.First().AssetPaths.Count);
                 foreach (var runtimeAssemblyGroup in runtimeLibrary.RuntimeAssemblyGroups)
                 {
                     foreach (var assetPath in runtimeAssemblyGroup.AssetPaths)
@@ -1192,6 +1193,7 @@ namespace Bam.Core
                             assetPath
                         );
                         fullPath = System.IO.Path.GetFullPath(fullPath);
+                        Log.MessageAll("\t{0}", fullPath);
                         return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(fullPath);
                     }
                 }
