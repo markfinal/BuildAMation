@@ -17,6 +17,7 @@ matrix:
     script:
       #- msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
       - python codingtools/dotnetcore_make_release.py
+      - ldd /home/travis/.nuget/packages/mono.posix.netstandard/1.0.0/runtimes/linux-x64/native/libMonoPosixHelper.so
       - cd bam_publish
       - source env.sh
       - cd tests
