@@ -69,9 +69,9 @@ matrix:
       - python codingtools/dotnetcore_make_release.py
       - cd bam_publish
       - source env.sh
-      - python runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
-      - python runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b MakeFile
-      - python runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b Xcode
+      - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
+      - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b MakeFile
+      - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b Xcode
       - cd ..
       # - source env.sh
       #- cd tests
