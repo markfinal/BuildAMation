@@ -121,7 +121,91 @@ namespace Bam.Core
             return exists;
         }
 
+#if DOTNETCORE
+        public class RegKey :
+            System.IDisposable
+        {
+            private Microsoft.Win32.RegistryKey key;
+
+            public RegKey(
+                Microsoft.Win32.RegistryKey sourceKey)
+            {
+                this.key = sourceKey;
+            }
+
+            void System.IDisposable.Dispose()
+            {
+                this.key.Dispose();
+            }
+
+            public string Name
+            {
+                get
+                {
+                    return this.key.Name;
+                }
+            }
+
+            public string
+            GetStringValue(
+                string name)
+            {
+                var value = this.key.GetValue(name);
+                if (null == value)
+                {
+                    throw new Exception(
+                        "Value '{0}' does not exist for the key",
+                        name
+                    );
+                }
+                if (!(value is string))
+                {
+                    throw new Exception(
+                        "Registry key value is not a string"
+                    );
+                }
+                return value as string;
+            }
+
+            public string
+            FindStringValue(
+                string name)
+            {
+                var value = this.key.GetValue(name);
+                if (null == value)
+                {
+                    return null;
+                }
+                if (!(value is string))
+                {
+                    throw new Exception(
+                        "Registry key value is not a string"
+                    );
+                }
+                return value as string;
+            }
+
+            public System.Collections.Generic.IEnumerable<RegKey> SubKeys
+            {
+                get
+                {
+                    foreach (var name in this.key.GetSubKeyNames())
+                    {
+                        using (var subkey = this.key.OpenSubKey(name))
+                        {
+                            yield return new RegKey(subkey);
+                        }
+                    }
+                }
+            }
+        }
+#endif
+
+#if DOTNETCORE
+        private static RegKey
+#else
         private static Microsoft.Win32.RegistryKey
+#endif
         OpenSoftwareKey(
             string path,
             Microsoft.Win32.RegistryKey registryArea,
@@ -138,7 +222,11 @@ namespace Bam.Core
             {
                 Log.DebugMessage("Registry key '{0}' on {1} not found", keyPath, registryArea.Name);
             }
+#if DOTNETCORE
+            return new RegKey(key);
+#else
             return key;
+#endif
         }
 
         /// <summary>
@@ -146,7 +234,11 @@ namespace Bam.Core
         /// </summary>
         /// <returns>The bit LM software key.</returns>
         /// <param name="path">Path.</param>
+#if DOTNETCORE
+        public static RegKey
+#else
         public static Microsoft.Win32.RegistryKey
+#endif
         Open32BitLMSoftwareKey(
             string path)
         {
@@ -158,7 +250,11 @@ namespace Bam.Core
         /// </summary>
         /// <returns>The CU software key.</returns>
         /// <param name="path">Path.</param>
+#if DOTNETCORE
+        public static RegKey
+#else
         public static Microsoft.Win32.RegistryKey
+#endif
         OpenCUSoftwareKey(
             string path)
         {
@@ -183,7 +279,11 @@ namespace Bam.Core
         /// </summary>
         /// <returns>The LM software key.</returns>
         /// <param name="path">Path.</param>
+#if DOTNETCORE
+        public static RegKey
+#else
         public static Microsoft.Win32.RegistryKey
+#endif
         OpenLMSoftwareKey(
             string path)
         {
