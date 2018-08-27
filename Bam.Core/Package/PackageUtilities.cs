@@ -797,11 +797,34 @@ namespace Bam.Core
             var assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
             assemblyCompileProfile.StartProfile();
 
+            string portableRID = System.String.Empty;
+            var architecture = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString().ToLower();
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
+            {
+                portableRID = "win-" + architecture;
+            }
+            else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
+            {
+                portableRID = "linux-" + architecture;
+            }
+            else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX))
+            {
+                portableRID = "osx-" + architecture;
+            }
+            else
+            {
+                throw new Exception(
+                    "Running on an unsupported OS: {0}",
+                    System.Runtime.InteropServices.RuntimeInformation.OSDescription
+                );
+            }
+
             try
             {
                 var args = new System.Text.StringBuilder();
                 args.AppendFormat("publish {0} ", projectPath);
                 args.Append("--force ");
+                args.Append(System.String.Format("--runtime {0} ", portableRID));
                 if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     args.Append("-c Debug ");
