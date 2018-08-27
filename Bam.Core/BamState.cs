@@ -158,7 +158,10 @@ namespace Bam.Core
             string targetFrameworkName;
             GetAssemblyVersionData(out assemblyVersion, out productVersion, out targetFrameworkName);
 
+#if DOTNETCORE
+#else
             this.RunningMono = (System.Type.GetType("Mono.Runtime") != null);
+#endif
             this.ExecutableDirectory = GetBamDirectory();
             this.WorkingDirectory = GetWorkingDirectory();
 #if DOTNETCORE
@@ -216,6 +219,8 @@ namespace Bam.Core
             private set;
         }
 
+#if DOTNETCORE
+#else
         /// <summary>
         /// Determines whether Bam is running through Mono.
         /// </summary>
@@ -225,6 +230,7 @@ namespace Bam.Core
             get;
             private set;
         }
+#endif
 
         /// <summary>
         /// Obtains the working directory in which Bam is being executed.

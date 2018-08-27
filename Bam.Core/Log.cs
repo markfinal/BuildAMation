@@ -62,7 +62,11 @@ namespace Bam.Core
             bool isError,
             bool isProgressMeter = false)
         {
+#if DOTNETCORE
+            if (System.Diagnostics.Debugger.IsAttached)
+#else
             if (System.Diagnostics.Debugger.IsAttached && !Graph.Instance.ProcessState.RunningMono)
+#endif
             {
                 if (!isProgressMeter)
                 {
