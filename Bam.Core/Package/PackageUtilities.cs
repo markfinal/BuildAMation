@@ -1061,9 +1061,12 @@ namespace Bam.Core
             System.Reflection.Assembly scriptAssembly = null;
 
 #if DOTNETCORE
-            var loadContext = new PackageAssemblyLoadContext();
-            scriptAssembly = loadContext.LoadFromAssemblyPath(Graph.Instance.ScriptAssemblyPathname);
+            //var loadContext = new PackageAssemblyLoadContext();
+            var resolver = new AssemblyResolver(Graph.Instance.ScriptAssemblyPathname);
+            scriptAssembly = resolver.Assembly;
+            //scriptAssembly = loadContext.LoadFromAssemblyPath(Graph.Instance.ScriptAssemblyPathname);
 
+#if false
             // the DependencyContext knows where all of the runtime
             // dependencies reside
             loadContext.DependencyContext = Microsoft.Extensions.DependencyModel.DependencyContext.Load(scriptAssembly);
@@ -1102,6 +1105,7 @@ namespace Bam.Core
                 System.Environment.SetEnvironmentVariable("LD_LIBRARY_PATH", new_value);
                 Log.MessageAll("LD_LIBRARY_PATH = {0}", System.Environment.GetEnvironmentVariable("LD_LIBRARY_PATH"));
             }
+#endif
 #else
             try
             {
@@ -1143,6 +1147,75 @@ namespace Bam.Core
     }
 
 #if DOTNETCORE
+#if true
+    // https://samcragg.wordpress.com/2017/06/30/resolving-assemblies-in-net-core/
+    internal sealed class AssemblyResolver :
+        System.IDisposable
+    {
+        private readonly Microsoft.Extensions.DependencyModel.Resolution.ICompilationAssemblyResolver assemblyResolver;
+        private readonly Microsoft.Extensions.DependencyModel.DependencyContext dependencyContext;
+        private readonly System.Runtime.Loader.AssemblyLoadContext loadContext;
+
+        public AssemblyResolver(string path)
+        {
+            Log.MessageAll("Resolving: {0}", path);
+            this.Assembly = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
+            this.dependencyContext = Microsoft.Extensions.DependencyModel.DependencyContext.Load(this.Assembly);
+
+            this.assemblyResolver = new Microsoft.Extensions.DependencyModel.Resolution.CompositeCompilationAssemblyResolver
+                                    (new Microsoft.Extensions.DependencyModel.Resolution.ICompilationAssemblyResolver[]
+            {
+                new Microsoft.Extensions.DependencyModel.Resolution.AppBaseCompilationAssemblyResolver(System.IO.Path.GetDirectoryName(path)),
+                new Microsoft.Extensions.DependencyModel.Resolution.ReferenceAssemblyPathResolver(),
+                new Microsoft.Extensions.DependencyModel.Resolution.PackageCompilationAssemblyResolver()
+            });
+
+            this.loadContext = System.Runtime.Loader.AssemblyLoadContext.GetLoadContext(this.Assembly);
+            this.loadContext.Resolving += OnResolving;
+        }
+
+        public System.Reflection.Assembly Assembly { get; }
+
+        public void Dispose()
+        {
+            this.loadContext.Resolving -= this.OnResolving;
+        }
+
+        private System.Reflection.Assembly OnResolving(
+            System.Runtime.Loader.AssemblyLoadContext context,
+            System.Reflection.AssemblyName name)
+        {
+            Log.MessageAll("Resolving: {0}", name.FullName);
+            bool NamesMatch(Microsoft.Extensions.DependencyModel.RuntimeLibrary runtime)
+            {
+                return string.Equals(runtime.Name, name.Name, System.StringComparison.OrdinalIgnoreCase);
+            }
+
+            Microsoft.Extensions.DependencyModel.RuntimeLibrary library =
+                this.dependencyContext.RuntimeLibraries.FirstOrDefault(NamesMatch);
+            if (library != null)
+            {
+                var wrapper = new Microsoft.Extensions.DependencyModel.CompilationLibrary(
+                    library.Type,
+                    library.Name,
+                    library.Version,
+                    library.Hash,
+                    library.RuntimeAssemblyGroups.SelectMany(g => g.AssetPaths),
+                    library.Dependencies,
+                    library.Serviceable);
+
+                var assemblies = new System.Collections.Generic.List<string>();
+                this.assemblyResolver.TryResolveAssemblyPaths(wrapper, assemblies);
+                if (assemblies.Count > 0)
+                {
+                    return this.loadContext.LoadFromAssemblyPath(assemblies[0]);
+                }
+            }
+
+            return null;
+        }
+    }
+#else
     class PackageAssemblyLoadContext :
         System.Runtime.Loader.AssemblyLoadContext
     {
@@ -1314,5 +1387,6 @@ namespace Bam.Core
             }
         }
     }
+#endif
 #endif
 }
