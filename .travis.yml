@@ -19,10 +19,8 @@ matrix:
       - python codingtools/dotnetcore_make_release.py
       - cd bam_publish
       - source env.sh
-      - /bin/tar --version
-      - /bin/tar --usage | grep transform
-      - python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -t InstallerTest1
-      #- python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -b MakeFile
+      - python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d
+      - python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -b MakeFile
       - cd ..
       # - source env.sh
       #- cd tests
