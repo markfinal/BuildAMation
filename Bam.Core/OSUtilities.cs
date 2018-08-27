@@ -41,6 +41,9 @@ namespace Bam.Core
         {
             get
             {
+#if DOTNETCORE
+                return System.Environment.Is64BitOperatingSystem;
+#else
                 if (Graph.Instance.ProcessState.RunningMono)
                 {
                     // TODO: System.Environment.GetEnvironmentVariable("HOSTTYPE") returns null instead of something like "x86_64"
@@ -54,6 +57,7 @@ namespace Bam.Core
                     var is64Bit = (System.Environment.GetEnvironmentVariable("ProgramFiles(x86)") != null);
                     return is64Bit;
                 }
+#endif
             }
         }
 
