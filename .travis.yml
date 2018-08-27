@@ -71,7 +71,7 @@ matrix:
       - cd bam_publish
       - source env.sh
       - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
-      - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b MakeFile
+      #- python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b MakeFile
       - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b Xcode
       - cd ..
       # - source env.sh
