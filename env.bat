@@ -18,12 +18,12 @@ REM Export the PATH
 IF NOT EXIST !ExecutablePath! (
   ECHO *** ERROR: BuildAMation directory '!ExecutablePath!' does not exist ***
 ) ELSE (
-  REM SET NewPath=!ExecutablePath!;!NewPath!
-  REM SET PATH=!ExecutablePath!;!PATH!
-  DOSKEY bam=dotnet !ExecutablePath!\Bam.dll "$*"
+  SET NewPath=!ExecutablePath!;!NewPath!
+  SET PATH=!ExecutablePath!;!PATH!
+  REM DOSKEY bam=dotnet !ExecutablePath!\Bam.dll "$*"
   dotnet !ExecutablePath!\Bam.dll --version
 )
 
 REM Pass the local variable out to the global
-REM ENDLOCAL&SET PATH=%NewPath%
-ENDLOCAL
+ENDLOCAL&SET PATH=%NewPath%
+REM ENDLOCAL
