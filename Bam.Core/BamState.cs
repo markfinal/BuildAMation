@@ -77,7 +77,11 @@ namespace Bam.Core
         private static string
         GetBamDirectory()
         {
+#if DOTNETCORE
+            var bamAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+#else
             var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
+#endif
             try
             {
                 var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);

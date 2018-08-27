@@ -22,11 +22,10 @@ def run_process(args):
 
 
 def run_dotnet_publish(output_dir, configuration='Release', framework='netcoreapp2.1', force=True, standalone_platform=None):
-    if not os.path.isdir(output_dir):
-        os.makedirs(output_dir)
-    else:
+    if os.path.isdir(output_dir):
         log('Deleting folder, %s' % output_dir)
         shutil.rmtree(output_dir)
+    os.makedirs(output_dir)
     output_dir = os.path.join(output_dir, 'bin', configuration, framework)
     cur_dir = os.getcwd()
     os.chdir(g_bam_dir)
