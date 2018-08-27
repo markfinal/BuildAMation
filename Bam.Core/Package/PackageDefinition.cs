@@ -565,8 +565,8 @@ namespace Bam.Core
                 var absolutePackageRepoDir = RelativePathUtilities.ConvertRelativePathToAbsolute(bamDir, dir);
 #else
                 var absolutePackageRepoDir = RelativePathUtilities.MakeRelativePathAbsoluteTo(dir, bamDir);
-#endif
                 absolutePackageRepoDir = absolutePackageRepoDir.TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar });
+#endif
                 this.PackageRepositories.AddUnique(absolutePackageRepoDir);
             }
 

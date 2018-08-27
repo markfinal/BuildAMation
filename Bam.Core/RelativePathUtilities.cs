@@ -88,6 +88,11 @@ namespace Bam.Core
                 );
             }
             var absolute = System.IO.Path.Combine(root, relativePath);
+            if (OSUtilities.IsWindowsHosting)
+            {
+                absolute = absolute.Replace('/', '\\');
+            }
+            absolute = System.IO.Path.GetFullPath(absolute);
             return absolute;
         }
 #else
