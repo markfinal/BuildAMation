@@ -222,7 +222,7 @@ namespace XcodeBuilder
 
 #if DOTNETCORE
                 var relativeProjectDir = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
-                    workspaceDirectory,
+                    System.IO.Path.GetDirectoryName(workspaceDirectory),
                     projectDir.ToString()
                 );
 #else

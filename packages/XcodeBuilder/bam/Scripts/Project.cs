@@ -532,7 +532,7 @@ namespace XcodeBuilder
                 var pkgdir = this.Module.Macros["packagedir"].ToString() + "/";
 #if DOTNETCORE
                 var relativeSourcePath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
-                    this.ProjectDir.ToString(),
+                    System.IO.Path.GetDirectoryName(this.ProjectDir.ToString()),
                     pkgdir
                 );
 #else
@@ -874,7 +874,7 @@ namespace XcodeBuilder
         {
 #if DOTNETCORE
             var relPath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
-                this.ProjectDir.ToString(),
+                System.IO.Path.GetDirectoryName(this.ProjectDir.ToString()),
                 inputPath.ToString()
             );
 #else
