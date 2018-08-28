@@ -113,7 +113,8 @@ namespace VisualCCommon
                 {
                     args.Append("-legacy ");
                 }
-                args.AppendFormat("-property installationPath -version {0}", this.major_version);
+                // note the [] around the version to specify only that version
+                args.AppendFormat("-property installationPath -version [{0}]", this.major_version);
                 var installpath = Bam.Core.OSUtilities.RunExecutable(
                     this.vswherePath,
                     args.ToString()
