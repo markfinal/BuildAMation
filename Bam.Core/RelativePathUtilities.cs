@@ -51,43 +51,37 @@ namespace Bam.Core
         /// Generate a relative path from the specified root.
         /// </summary>
         /// <param name="root">Root of the path</param>
-        /// <param name="absolutePath">Path that is rooted, but needs to be relative.</param>
+        /// <param name="path">Path that, if rooted, needs to be relative.</param>
         /// <returns>The relative path, with root as its base.</returns>
         public static string
         GetRelativePathFromRoot(
             string root,
-            string absolutePath)
+            string path)
         {
-            if (!System.IO.Path.IsPathRooted(absolutePath))
+            if (!System.IO.Path.IsPathRooted(path))
             {
-                throw new Exception(
-                    "The path '{0}' already is relative. Cannot convert.",
-                    absolutePath
-                );
+                return path;
             }
-            return System.IO.Path.GetRelativePath(root, absolutePath);
+            return System.IO.Path.GetRelativePath(root, path);
         }
 
         /// <summary>
         /// Convert a relative path to an absolute, using the specified root.
-        /// Will throw an exception if an absolute path is provided.
+        /// If an absolute path is provided, it is returned.
         /// </summary>
         /// <param name="root">Root to use to make the path absolute.</param>
-        /// <param name="relativePath">Current relative path to convert.</param>
+        /// <param name="path">Current relative path to convert.</param>
         /// <returns>The resulting absolute path.</returns>
         public static string
         ConvertRelativePathToAbsolute(
             string root,
-            string relativePath)
+            string path)
         {
-            if (System.IO.Path.IsPathRooted(relativePath))
+            if (System.IO.Path.IsPathRooted(path))
             {
-                throw new Exception(
-                    "The path '{0}' already is absolute. Cannot convert.",
-                    relativePath
-                );
+                return path;
             }
-            var absolute = System.IO.Path.Combine(root, relativePath);
+            var absolute = System.IO.Path.Combine(root, path);
             if (OSUtilities.IsWindowsHosting)
             {
                 absolute = absolute.Replace('/', '\\');
