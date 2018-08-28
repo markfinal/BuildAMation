@@ -340,7 +340,7 @@ namespace VSSolutionBuilder
                         projectRefEl.SetAttribute(
                             "Include",
                             Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
-                                this.ProjectPath,
+                                System.IO.Path.GetDirectoryName(this.ProjectPath),
                                 project.ProjectPath
                             )
                         );
@@ -371,7 +371,7 @@ namespace VSSolutionBuilder
                         projectRefEl.SetAttribute(
                             "Include",
                             Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
-                                this.ProjectPath,
+                                System.IO.Path.GetDirectoryName(this.ProjectPath),
                                 project.ProjectPath
                             )
                         );

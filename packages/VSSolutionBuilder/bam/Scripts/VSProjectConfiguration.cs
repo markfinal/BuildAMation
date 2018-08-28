@@ -791,17 +791,17 @@ namespace VSSolutionBuilder
                 foreach (var item in mapping)
                 {
 #if DOTNETCORE
-                    var relative_path = Bam.Core.RelativePathUtilities.ConvertRelativePathToAbsolute(
-                        item.Value,
+                    var relative_path = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                        System.IO.Path.GetDirectoryName(item.Value),
                         path
                     );
 #else
                     var relative_path = Bam.Core.RelativePathUtilities.GetPath(path, item.Value);
-#endif
                     if (System.String.IsNullOrEmpty(relative_path))
                     {
                         continue;
                     }
+#endif
                     if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relative_path))
                     {
                         continue;

@@ -125,7 +125,7 @@ namespace VSSolutionBuilder
             {
 #if DOTNETCORE
                 var relativeProjectPath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
-                    solutionPath,
+                    System.IO.Path.GetDirectoryName(solutionPath),
                     project.ProjectPath
                 );
 #else
