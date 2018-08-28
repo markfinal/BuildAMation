@@ -77,11 +77,11 @@ namespace Bam.Core
         private static string
         GetBamDirectory()
         {
-#if DOTNETCORE
-            var bamAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-#else
+            // must check the entry assembly
+            // - in normal runs, this is bam!
+            // - in debug runs, this is the procedurally generated app
+            // - in unittest runs, this is the unit test assembly
             var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
-#endif
             try
             {
                 var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
@@ -91,12 +91,15 @@ namespace Bam.Core
             {
                 // TODO: would be nice to check in advance if any exist
                 // this assumes running an executable from the BAM! installation folder
-                return System.IO.Path.GetDirectoryName(bamAssembly.Location);
-            }
-            catch (System.NullReferenceException)
-            {
-                // may occur during unittesting
-                return null;
+                var basename = System.IO.Path.GetFileNameWithoutExtension(bamAssembly.Location);
+                if (basename.Contains("Bam"))
+                {
+                    return System.IO.Path.GetDirectoryName(bamAssembly.Location);
+                }
+                else
+                {
+                    return null; // probably the unittests
+                }
             }
         }
 
