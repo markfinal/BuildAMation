@@ -130,6 +130,12 @@ namespace Bam.Core
             public RegKey(
                 Microsoft.Win32.RegistryKey sourceKey)
             {
+                if (null == sourceKey)
+                {
+                    throw new Exception(
+                        "Registry key cannot be null"
+                    );
+                }
                 this.key = sourceKey;
             }
 
@@ -221,6 +227,9 @@ namespace Bam.Core
             if (null == key)
             {
                 Log.DebugMessage("Registry key '{0}' on {1} not found", keyPath, registryArea.Name);
+#if DOTNETCORE
+                return null;
+#endif
             }
 #if DOTNETCORE
             return new RegKey(key);
