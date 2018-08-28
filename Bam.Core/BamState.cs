@@ -77,7 +77,7 @@ namespace Bam.Core
         private static string
         GetBamDirectory()
         {
-            // must check the entry assembly
+            // must check the ENTRY assembly
             // - in normal runs, this is bam!
             // - in debug runs, this is the procedurally generated app
             // - in unittest runs, this is the unit test assembly
@@ -89,8 +89,6 @@ namespace Bam.Core
             }
             catch (System.Resources.MissingManifestResourceException)
             {
-                // TODO: would be nice to check in advance if any exist
-                // this assumes running an executable from the BAM! installation folder
                 var basename = System.IO.Path.GetFileNameWithoutExtension(bamAssembly.Location);
                 if (basename.Contains("Bam"))
                 {
@@ -106,6 +104,10 @@ namespace Bam.Core
         private static string
         GetWorkingDirectory()
         {
+            // must check the ENTRY assembly
+            // - in normal runs, this is bam!
+            // - in debug runs, this is the procedurally generated app
+            // - in unittest runs, this is the unit test assembly
             var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
             try
             {
@@ -114,13 +116,15 @@ namespace Bam.Core
             }
             catch (System.Resources.MissingManifestResourceException)
             {
-                // TODO: would be nice to check in advance if any exist
-                return System.IO.Directory.GetCurrentDirectory();
-            }
-            catch (System.NullReferenceException)
-            {
-                // may occur during unittesting
-                return null;
+                var basename = System.IO.Path.GetFileNameWithoutExtension(bamAssembly.Location);
+                if (basename.Contains("Bam"))
+                {
+                    return System.IO.Directory.GetCurrentDirectory();
+                }
+                else
+                {
+                    return null; // probably the unittests
+                }
             }
         }
 
