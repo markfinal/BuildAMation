@@ -568,6 +568,12 @@ namespace XcodeProjectProcessor
                         foreach (var path in (property_value as Bam.Core.TokenizedStringArray).ToEnumerableWithoutDuplicates())
                         {
                             var fullPath = path.ToString();
+                            if (fullPath.StartsWith('@'))
+                            {
+                                // e.g. @executable_path ...
+                                paths.Add(fullPath);
+                                continue;
+                            }
 #if DOTNETCORE
                             var relPath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
                                 configuration.Project.SourceRoot,
