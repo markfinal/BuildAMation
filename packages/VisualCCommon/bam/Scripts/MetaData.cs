@@ -46,12 +46,13 @@ namespace VisualCCommon
             var vswhereInstalls = repo.FindPackagesById("vswhere");
             if (!vswhereInstalls.Any())
             {
-                // TODO: download?
+                // this should not happen as package restoration should handle this
                 throw new Bam.Core.Exception("Unable to locate any NuGet package for vswhere");
             }
-            var latestVSWhereVersion = vswhereInstalls.Max(item => item.Version);
-            var latestVSWhere = vswhereInstalls.First(item => item.Version == latestVSWhereVersion);
-            var vswhere_tools_dir = System.IO.Path.Combine(latestVSWhere.ExpandedPath, "tools");
+            var visualCCommon = Bam.Core.Graph.Instance.Packages.First(item => item.Name == "VisualCCommon");
+            var requiredVSWhere = visualCCommon.NuGetPackages.First(item => item.Identifier == "vswhere");
+            var requestedVSWhere = vswhereInstalls.First(item => item.Version.ToNormalizedString() == requiredVSWhere.Version);
+            var vswhere_tools_dir = System.IO.Path.Combine(requestedVSWhere.ExpandedPath, "tools");
             var vswhere_exe_path = System.IO.Path.Combine(vswhere_tools_dir, "vswhere.exe");
             if (!System.IO.File.Exists(vswhere_exe_path))
             {
