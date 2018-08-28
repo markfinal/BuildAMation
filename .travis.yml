@@ -39,13 +39,20 @@ matrix:
   #    - python runtests.py --Clang.version=Xcode6 -b Native -c debug -c profile -j0 -d
   #    - python runtests.py --Clang.version=Xcode6 -b Native -c debug -c profile -j0 -d -b MakeFile
   #    - python runtests.py --Clang.version=Xcode6 -b Native -c debug -c profile -j0 -d -b Xcode
-  #- os: osx
-  #  osx_image: xcode7.3
-  #  mono: latest
-  #  script:
+  - os: osx
+    osx_image: xcode7.3
+    mono: none
+    dotnet: 2.1.401
+    script:
   #    - msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
-  #    - source env.sh
-  #    - cd tests
+      - python codingtools/dotnetcore_run_unittests.py
+      - python codingtools/dotnetcore_make_release.py
+      - cd bam_publish
+      - source env.sh
+      - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
+      #- python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b MakeFile
+      - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b Xcode
+      - cd ..
   #    - python runtests.py --Clang.version=Xcode7 -b Native -c debug -c profile -j0 -d
   #    - python runtests.py --Clang.version=Xcode7 -b Native -c debug -c profile -j0 -d -b MakeFile
   #    - python runtests.py --Clang.version=Xcode7 -b Native -c debug -c profile -j0 -d -b Xcode
@@ -61,31 +68,23 @@ matrix:
   #    - python runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d -b MakeFile
   #    - python runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d -b Xcode
   #    - cd ..
-  - os: osx
-    osx_image: xcode9.4
-    mono: none
-    dotnet: 2.1.401
-    script:
+  #- os: osx
+  #  osx_image: xcode9.4
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  script:
       #- msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
-      - python codingtools/dotnetcore_run_unittests.py
-      - python codingtools/dotnetcore_make_release.py
-      - cd bam_publish
-      - source env.sh
-      - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
+  #    - python codingtools/dotnetcore_run_unittests.py
+  #    - python codingtools/dotnetcore_make_release.py
+  #    - cd bam_publish
+  #    - source env.sh
+  #    - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
       #- python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b MakeFile
-      - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b Xcode
-      - cd ..
+  #    - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b Xcode
+  #    - cd ..
       # - source env.sh
       #- cd tests
       #- python runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
       #- python runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b MakeFile
       #- python runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b Xcode
       #- cd ..
-  # DotNetCore axis removed as the referenced assemblies in the .sln
-  # are incorrect for this
-  #- os: linux
-  #  mono: none
-  #  dotnet: 2.1.4
-  #  script:
-  #    - dotnet msbuild /p:Configuration=Release BuildAMation.sln
-  #    - python codingtools/test_bam.py
