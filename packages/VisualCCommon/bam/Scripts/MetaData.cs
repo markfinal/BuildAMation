@@ -528,6 +528,14 @@ namespace VisualCCommon
             if (!this.Meta.ContainsKey("InstallDir"))
             {
                 var install_dir = this.vswhere_getinstallpath();
+                if (install_dir.Contains(System.Environment.NewLine))
+                {
+                    throw new Bam.Core.Exception(
+                        "Multiple install directories were detected for VisualStudio:{0}{1}",
+                        System.Environment.NewLine,
+                        install_dir
+                    );
+                }
                 this.InstallDir = Bam.Core.TokenizedString.CreateVerbatim(install_dir);
             }
             var bitdepth = depth.Value;
