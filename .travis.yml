@@ -16,8 +16,8 @@ matrix:
     dotnet: 2.1.401
     script:
       #- msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
-      - python codingtools/dotnetcore_run_unittests.py
       - python codingtools/dotnetcore_make_release.py
+      - python codingtools/dotnetcore_run_unittests.py
       - cd bam_publish
       - source env.sh
       - python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d

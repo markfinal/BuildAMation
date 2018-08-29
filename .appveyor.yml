@@ -11,8 +11,8 @@ before_build:
   - cmd: dotnet --version
   #- nuget restore BuildAMation.sln
 build_script:
-  - python codingtools\dotnetcore_run_unittests.py
   - python codingtools\dotnetcore_make_release.py
+  - python codingtools\dotnetcore_run_unittests.py
 after_build:
   - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish\bin\ %APPVEYOR_BUILD_FOLDER%\bam_publish\packages\ %APPVEYOR_BUILD_FOLDER%\bam_publish\tests\ %APPVEYOR_BUILD_FOLDER%\bam_publish\env.bat %APPVEYOR_BUILD_FOLDER%\bam_publish\Changelog.txt %APPVEYOR_BUILD_FOLDER%\bam_publish\License.md %APPVEYOR_BUILD_FOLDER%\bam_publish\MS-PL.md
 artifacts:
