@@ -1,7 +1,7 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk" InitialTargets="SetInformationalVersionFromGit">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../Common/BuildAMation.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
@@ -21,6 +21,10 @@
     <OutputPath>..\bin\Release</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="GitInfo" Version="2.0.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.8.0" />
     <PackageReference Include="NUnit" Version="3.10.1" />
     <PackageReference Include="NUnit3TestAdapter" Version="3.10.0" />
@@ -28,4 +32,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Bam.Core\Bam.Core.csproj" />
   </ItemGroup>
+  <Target Name="SetInformationalVersionFromGit" BeforeTargets="Build;GetPackageVersion;_IntrospectProjectProperties" DependsOnTargets="GitInfo" Condition="'$(ExcludeRestorePackageImports)' != 'true'">
+    <PropertyGroup>
+      <InformationalVersion>$(AssemblyVersion) ($(GitTag)) [$(GitBranch)]</InformationalVersion>
+    </PropertyGroup>
+  </Target>
 </Project>
