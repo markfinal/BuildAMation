@@ -21,19 +21,15 @@ def run_process(args):
     subprocess.check_call(args)
 
 
-def run_dotnet_publish(output_dir, configuration='Release', framework='netcoreapp2.1', force=True, standalone_platform=None):
-    if os.path.isdir(output_dir):
-        log('Deleting folder, %s' % output_dir)
-        shutil.rmtree(output_dir)
-    os.makedirs(output_dir)
+def run_dotnet(target, project_path, output_dir, configuration='Release', framework='netcoreapp2.1', force=True, standalone_platform=None, verbosity='normal', extra_properties=None):
     output_dir = os.path.join(output_dir, 'bin', configuration, framework)
     cur_dir = os.getcwd()
     os.chdir(g_bam_dir)
     try:
         args = []
         args.append('dotnet')
-        args.append('publish')
-        args.append(os.path.join('Bam', 'Bam.csproj')) # specifically build this, so that the unit test dependencies don't get dragged in
+        args.append(target)
+        args.append(project_path)
         args.append('-c')
         args.append(configuration)
         args.append('-f')
@@ -43,15 +39,26 @@ def run_dotnet_publish(output_dir, configuration='Release', framework='netcoreap
         args.append('-o')
         args.append(output_dir)
         args.append('-v')
-        #args.append('minimal')
-        args.append('normal')
+        args.append(verbosity)
         if standalone_platform:
             args.append('--self-contained')
             args.append('-r')
             args.append(standalone_platform)
+        if extra_properties:
+            args.append(extra_properties)
         run_process(args)
     finally:
         os.chdir(cur_dir)
+
+
+def run_dotnet_publish(output_dir, configuration='Release', framework='netcoreapp2.1', force=True, standalone_platform=None, verbosity='normal'):
+    if os.path.isdir(output_dir):
+        log('Deleting folder, %s' % output_dir)
+        shutil.rmtree(output_dir)
+    os.makedirs(output_dir)
+    project = os.path.join('Bam', 'Bam.csproj') # specifically build the Bam executable, so that the unit test dependencies don't get dragged in
+    run_dotnet('clean', project, output_dir, configuration=configuration, framework=framework, force=False, standalone_platform=None, verbosity=verbosity)
+    run_dotnet('publish', project, output_dir, configuration=configuration, framework=framework, force=force, standalone_platform=standalone_platform, verbosity=verbosity, extra_properties='/p:DebugType=None')
 
 
 def copy_directory_to_directory(srcdir,destdir):
@@ -96,10 +103,11 @@ def main(options):
         output_dir,
         configuration='Release',
         framework='netcoreapp2.1',
-        force=True
+        force=True,
+        verbosity='Minimal'
     )
     copy_support_files(output_dir)
-    list_files(output_dir)
+    #list_files(output_dir)
 
     if options.standalone:
         platforms = []
@@ -116,7 +124,7 @@ def main(options):
                 standalone_platform=platform
             )
             copy_support_files(platform_output_dir)
-            list_files(platform_output_dir)
+            #list_files(platform_output_dir)
 
 
 if __name__ == '__main__':
