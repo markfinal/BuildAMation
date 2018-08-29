@@ -42,7 +42,7 @@ def run_dotnet_test(output_dir, configuration='Release', framework='netcoreapp2.
         args.append('-o')
         args.append(output_dir)
         args.append('-v')
-        args.append('normal')
+        args.append('Minimal')
         run_process(args)
     finally:
         os.chdir(cur_dir)
