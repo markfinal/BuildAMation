@@ -2,7 +2,7 @@
   <PropertyGroup>
     <AssemblyVersion>2.0.0</AssemblyVersion>
   </PropertyGroup>
-  <Target Name="SetInformationalVersionFromGit" BeforeTargets="Build;GetPackageVersion;_IntrospectProjectProperties" DependsOnTargets="GitInfo" Condition="'$(ExcludeRestorePackageImports)' != 'true'">
+  <Target Name="SetInformationalVersionFromGit" BeforeTargets="Build;GetPackageVersion;_IntrospectProjectProperties" AfterTargets="GitInfo" DependsOnTargets="Restore" Condition="'$(ExcludeRestorePackageImports)' != 'true'">
     <PropertyGroup>
       <InformationalVersion>$(AssemblyVersion) ($(GitTag)) [$(GitBranch)]</InformationalVersion>
     </PropertyGroup>
