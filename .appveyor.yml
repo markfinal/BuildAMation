@@ -1,7 +1,7 @@
 image: Visual Studio 2017
 clone_depth: 1
 configuration: Release
-platform: Any CPU
+platform: AnyCPU
 before_build:
   - cmd: dotnet --version
 build_script:
