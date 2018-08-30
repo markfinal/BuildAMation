@@ -109,12 +109,17 @@ namespace VisualCCommon
             try
             {
                 var args = new System.Text.StringBuilder();
-                if (this.major_version < 15)
+                var legacy = this.major_version < 15;
+                args.Append("-property installationPath -version ");
+                if (legacy)
                 {
-                    args.Append("-legacy ");
+                    // note the [] around the version to specify only that version
+                    args.AppendFormat("[{0}] -legacy", this.major_version);
                 }
-                // note the [] around the version to specify only that version
-                args.AppendFormat("-property installationPath -version [{0}]", this.major_version);
+                else
+                {
+                    args.Append(this.major_version);
+                }
                 var installpath = Bam.Core.OSUtilities.RunExecutable(
                     this.vswherePath,
                     args.ToString()
