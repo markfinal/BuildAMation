@@ -9,4 +9,8 @@
     <DefineConstants>TRACE;CUSTOM_DEFINE</DefineConstants>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;CUSTOM_DEFINE</DefineConstants>
+  </PropertyGroup>
+
 </Project>

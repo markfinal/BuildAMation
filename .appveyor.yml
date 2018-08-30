@@ -5,5 +5,5 @@ platform: Any CPU
 before_build:
   - cmd: dotnet --version
 build_script:
-  - dotnet clean BuildTest\BuildTest.csproj
-  - dotnet publish BuildTest\BuildTest.csproj -v Normal
+  - dotnet clean BuildTest\BuildTest.csproj -c Release
+  - dotnet publish BuildTest\BuildTest.csproj -c Release -v Normal
