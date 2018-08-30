@@ -6,4 +6,4 @@ before_build:
   - cmd: dotnet --version
 build_script:
   - dotnet clean BuildTest\BuildTest.csproj
-  - dotnet publish BuildTest\BuildTest.csproj
+  - dotnet publish BuildTest\BuildTest.csproj -v Normal
