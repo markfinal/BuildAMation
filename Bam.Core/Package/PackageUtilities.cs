@@ -565,28 +565,79 @@ namespace Bam.Core
         }
 
         private static string
-        GetPackageHash(
-            StringArray sourceCode,
-            StringArray definitions,
-            Array<BamAssemblyDescription> bamAssemblies)
+        GetPackageHash()
         {
-            int hashCode = 0;
-            foreach (var source in sourceCode)
+            var provider = System.Security.Cryptography.SHA1.Create();
+
+            var definitions = new StringArray();
+
+            // gather source files
+            foreach (var package in Graph.Instance.Packages)
             {
-                hashCode ^= source.GetHashCode();
+#if BAM_V2
+                foreach (var scriptFile in package.GetScriptFiles(true))
+#else
+                foreach (var scriptFile in package.GetScriptFiles())
+#endif
+                {
+                    using (var reader = new System.IO.StreamReader(scriptFile))
+                    {
+                        var contents = reader.ReadToEnd();
+                        var contentsAsBytes = System.Text.Encoding.UTF8.GetBytes(contents);
+                        provider.TransformBlock(
+                            contentsAsBytes,
+                            0,
+                            contentsAsBytes.Length,
+                            null,
+                            0
+                        );
+                    }
+                }
+
+                foreach (var define in package.Definitions)
+                {
+                    if (!definitions.Contains(define))
+                    {
+                        definitions.Add(define);
+                    }
+                }
             }
+
+            // add/remove other definitions
+            definitions.Add(VersionDefineForCompiler);
+            definitions.Add(HostPlatformDefineForCompiler);
+            definitions.AddRange(Features.PreprocessorDefines);
+            definitions.Sort();
             foreach (var define in definitions)
             {
-                hashCode ^= define.GetHashCode();
+                var defineAsBytes = System.Text.Encoding.UTF8.GetBytes(define);
+                provider.TransformBlock(
+                    defineAsBytes,
+                    0,
+                    defineAsBytes.Length,
+                    null,
+                    0
+                );
             }
-            foreach (var assembly in bamAssemblies)
+
+            // TODO: what if other packages need more assemblies?
+            foreach (var assembly in Graph.Instance.MasterPackage.BamAssemblies)
             {
                 var assemblyPath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assembly.Name) + ".dll";
                 var lastModifiedDate = System.IO.File.GetLastWriteTime(assemblyPath);
-                hashCode ^= lastModifiedDate.GetHashCode();
+                var lastModifiedDateAsBytes = System.Text.Encoding.UTF8.GetBytes(lastModifiedDate.ToString());
+                provider.TransformBlock(
+                    lastModifiedDateAsBytes,
+                    0,
+                    lastModifiedDateAsBytes.Length,
+                    null,
+                    0
+                );
             }
-            var hash = hashCode.ToString();
-            return hash;
+            provider.TransformFinalBlock(new byte[0], 0, 0);
+            var hash = provider.Hash;
+            var hashAsString = System.Convert.ToBase64String(hash);
+            return hashAsString;
         }
 
         /// <summary>
@@ -634,68 +685,6 @@ namespace Bam.Core
 
             BuildModeUtilities.ValidateBuildModePackage();
 
-#if false
-            var definitions = new StringArray();
-
-            // gather source files
-            var sourceCode = new StringArray();
-            var sourceCodeMapping = new System.Collections.Generic.Dictionary<string, string>();
-            int packageIndex = 0;
-            foreach (var package in Graph.Instance.Packages)
-            {
-                Log.DebugMessage("{0}: '{1}' @ '{2}'", packageIndex, package.Version, (package.PackageRepositories.Count > 0) ? package.PackageRepositories[0] : "Not in a repository");
-
-                // to compile with debug information, you must compile the files
-                // to compile without, we need to file contents to hash the source
-                if (Graph.Instance.CompileWithDebugSymbols)
-                {
-#if BAM_V2
-                    var scripts = package.GetScriptFiles(true);
-#else
-                    var scripts = package.GetScriptFiles();
-#endif
-                    sourceCode.AddRange(scripts);
-                    Log.DebugMessage(scripts.ToString("\n\t"));
-
-#if DOTNETCORE
-                    throw new System.NotSupportedException("Check what to do with Roslyn");
-#endif
-                }
-                else
-                {
-#if BAM_V2
-                    foreach (var scriptFile in package.GetScriptFiles(true))
-#else
-                    foreach (var scriptFile in package.GetScriptFiles())
-#endif
-                    {
-                        using (var reader = new System.IO.StreamReader(scriptFile))
-                        {
-                            var contents = reader.ReadToEnd();
-                            sourceCode.Add(contents);
-                            sourceCodeMapping.Add(scriptFile, contents);
-                        }
-                        Log.DebugMessage("\t'{0}'", scriptFile);
-                    }
-                }
-
-                foreach (var define in package.Definitions)
-                {
-                    if (!definitions.Contains(define))
-                    {
-                        definitions.Add(define);
-                    }
-                }
-
-                ++packageIndex;
-            }
-
-            // add/remove other definitions
-            definitions.Add(VersionDefineForCompiler);
-            definitions.Add(HostPlatformDefineForCompiler);
-            definitions.AddRange(Features.PreprocessorDefines);
-            definitions.Sort();
-
             gatherSourceProfile.StopProfile();
 
             var assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
@@ -717,7 +706,7 @@ namespace Bam.Core
             else
             {
                 // can an existing assembly be reused?
-                thisHashCode = GetPackageHash(sourceCode, definitions, Graph.Instance.MasterPackage.BamAssemblies);
+                thisHashCode = GetPackageHash();
                 if (cacheAssembly)
                 {
                     if (System.IO.File.Exists(hashPathName))
@@ -759,18 +748,8 @@ namespace Bam.Core
                 Graph.Instance.ProcessState.TargetFrameworkVersion != null ? (", targetting " + Graph.Instance.ProcessState.TargetFrameworkVersion) : string.Empty,
                 compileReason);
 
-            var providerOptions = new System.Collections.Generic.Dictionary<string, string>();
-            var compilerVersion = System.String.Format("v{0}.{1}", clrVersion.Major, clrVersion.Minor);
-            providerOptions.Add("CompilerVersion", compilerVersion);
-
-            if (Graph.Instance.ProcessState.RunningMono)
-            {
-                Log.DebugMessage("Compiling assembly for Mono");
-            }
-#endif
-
 #if true
-            string outputAssemblyPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), Graph.Instance.MasterPackage.Name) + ".dll";
+            string outputAssemblyPath = cachedAssemblyPathname;
 #else
             string outputAssemblyPath;
             if (Graph.Instance.CompileWithDebugSymbols)
@@ -791,11 +770,6 @@ namespace Bam.Core
             var projectPath = System.IO.Path.ChangeExtension(outputAssemblyPath, ".csproj");
             var project = new ProjectFile(false, projectPath);
             project.Write();
-
-            gatherSourceProfile.StopProfile();
-
-            var assemblyCompileProfile = new TimeProfile(ETimingProfiles.AssemblyCompilation);
-            assemblyCompileProfile.StartProfile();
 
             string portableRID = System.String.Empty;
             var architecture = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString().ToLower();
@@ -848,6 +822,19 @@ namespace Bam.Core
                     System.Environment.NewLine,
                     exception.Result.StandardOutput
                 );
+            }
+
+            if (cacheAssembly)
+            {
+                using (var writer = new System.IO.StreamWriter(hashPathName))
+                {
+                    writer.WriteLine(thisHashCode);
+                }
+            }
+            else
+            {
+                // will not throw if the file doesn't exist
+                System.IO.File.Delete(hashPathName);
             }
 
             Log.DebugMessage("Written assembly to '{0}'", outputAssemblyPath);
