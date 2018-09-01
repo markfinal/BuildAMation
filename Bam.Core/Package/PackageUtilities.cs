@@ -787,11 +787,12 @@ namespace Bam.Core
             try
             {
                 var args = new System.Text.StringBuilder();
-                args.AppendFormat("build {0} ", projectPath);
-#if false
-                args.Append("--force ");
+                // publish is currently required in order to copy dependencies beside the assembly
+                // don't use --force, because package may have already been restored
+                // specifying a runtime ensures that all non-managed dependencies for NuGet packages with
+                // platform specific runtimes are copied beside the assembly, and can be found by the assembly resolver
+                args.AppendFormat("publish {0} ", projectPath);
                 args.Append(System.String.Format("--runtime {0} ", portableRID));
-#endif
                 if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     args.Append("-c Debug ");
@@ -1193,13 +1194,19 @@ namespace Bam.Core
                     library.RuntimeAssemblyGroups.SelectMany(g => g.AssetPaths),
                     library.Dependencies,
                     library.Serviceable);
+                // note that for NuGet packages with multiple platform specific assemblies
+                // there will be more than one library.RuntimeAssemblyGroups
+                // if there are native dependencies on these, and the native dynamic libraries
+                // are not beside the managed assembly (they won't be if read from the NuGet cache, but will
+                // be if published and targeted for a runtime), then loading will fail
 
                 var assemblies = new System.Collections.Generic.List<string>();
-                this.assemblyResolver.TryResolveAssemblyPaths(wrapper, assemblies);
+                var result = this.assemblyResolver.TryResolveAssemblyPaths(wrapper, assemblies);
                 if (assemblies.Count > 0)
                 {
                     return this.loadContext.LoadFromAssemblyPath(assemblies[0]);
                 }
+                // note that this can silently fail
             }
 
             return null;
