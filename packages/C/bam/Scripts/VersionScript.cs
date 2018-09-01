@@ -74,8 +74,6 @@ namespace C
             );
         }
 
-        private delegate int GetHashFn(string inPath);
-
         protected override void
         EvaluateInternal()
         {
@@ -94,6 +92,26 @@ namespace C
 #endif
             }
             // have the contents changed since last time?
+#if DOTNETCORE
+            var hashFilePath = this.GeneratedPaths[HashFileKey].ToString();
+            var hashCompare = Bam.Core.Hash.CompareAndUpdateHashFile(
+                hashFilePath,
+                this.Contents
+            );
+            switch (hashCompare)
+            {
+                case Bam.Core.Hash.EHashCompareResult.HashesAreDifferent:
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                        this.GeneratedPaths[HeaderFileKey],
+                        this.GeneratedPaths[HashFileKey]
+                    );
+                    break;
+
+                case Bam.Core.Hash.EHashCompareResult.HashFileDoesNotExist:
+                case Bam.Core.Hash.EHashCompareResult.HashesAreIdentical:
+                    break;
+            }
+#else
             var writeHashFile = true;
             var currentContentsHash = this.Contents.GetHashCode();
             var hashFilePath = this.GeneratedPaths[HashFileKey].ToString();
@@ -136,6 +154,7 @@ namespace C
                     writeFile.Write(currentContentsHash);
                 }
             }
+#endif
         }
 
         protected override void

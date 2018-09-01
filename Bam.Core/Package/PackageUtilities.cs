@@ -564,82 +564,6 @@ namespace Bam.Core
             Graph.Instance.SetPackageDefinitions(packageDefinitions);
         }
 
-        private static string
-        GetPackageHash()
-        {
-            var provider = System.Security.Cryptography.SHA1.Create();
-
-            var definitions = new StringArray();
-
-            // gather source files
-            foreach (var package in Graph.Instance.Packages)
-            {
-#if BAM_V2
-                foreach (var scriptFile in package.GetScriptFiles(true))
-#else
-                foreach (var scriptFile in package.GetScriptFiles())
-#endif
-                {
-                    using (var reader = new System.IO.StreamReader(scriptFile))
-                    {
-                        var contents = reader.ReadToEnd();
-                        var contentsAsBytes = System.Text.Encoding.UTF8.GetBytes(contents);
-                        provider.TransformBlock(
-                            contentsAsBytes,
-                            0,
-                            contentsAsBytes.Length,
-                            null,
-                            0
-                        );
-                    }
-                }
-
-                foreach (var define in package.Definitions)
-                {
-                    if (!definitions.Contains(define))
-                    {
-                        definitions.Add(define);
-                    }
-                }
-            }
-
-            // add/remove other definitions
-            definitions.Add(VersionDefineForCompiler);
-            definitions.Add(HostPlatformDefineForCompiler);
-            definitions.AddRange(Features.PreprocessorDefines);
-            definitions.Sort();
-            foreach (var define in definitions)
-            {
-                var defineAsBytes = System.Text.Encoding.UTF8.GetBytes(define);
-                provider.TransformBlock(
-                    defineAsBytes,
-                    0,
-                    defineAsBytes.Length,
-                    null,
-                    0
-                );
-            }
-
-            // TODO: what if other packages need more assemblies?
-            foreach (var assembly in Graph.Instance.MasterPackage.BamAssemblies)
-            {
-                var assemblyPath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assembly.Name) + ".dll";
-                var lastModifiedDate = System.IO.File.GetLastWriteTime(assemblyPath);
-                var lastModifiedDateAsBytes = System.Text.Encoding.UTF8.GetBytes(lastModifiedDate.ToString());
-                provider.TransformBlock(
-                    lastModifiedDateAsBytes,
-                    0,
-                    lastModifiedDateAsBytes.Length,
-                    null,
-                    0
-                );
-            }
-            provider.TransformFinalBlock(new byte[0], 0, 0);
-            var hash = provider.Hash;
-            var hashAsString = System.Convert.ToBase64String(hash);
-            return hashAsString;
-        }
-
         /// <summary>
         /// Compile the package assembly, using all the source files from the dependent packages.
         /// Throws Bam.Core.Exceptions if package compilation fails.
@@ -694,7 +618,6 @@ namespace Bam.Core
             var cachedAssemblyPathname = System.IO.Path.Combine(Graph.Instance.BuildRoot, ".CachedPackageAssembly");
             cachedAssemblyPathname = System.IO.Path.Combine(cachedAssemblyPathname, Graph.Instance.MasterPackage.Name) + ".dll";
             var hashPathName = System.IO.Path.ChangeExtension(cachedAssemblyPathname, "hash");
-            string thisHashCode = null;
 
             var cacheAssembly = !CommandLineProcessor.Evaluate(new Options.DisableCacheAssembly());
 
@@ -705,6 +628,73 @@ namespace Bam.Core
             }
             else
             {
+#if true
+                if (cacheAssembly)
+                {
+                    // gather source files
+                    var filenames = new StringArray();
+                    var strings = new System.Collections.Generic.SortedDictionary<string, bool>();
+                    foreach (var package in Graph.Instance.Packages)
+                    {
+#if BAM_V2
+                        foreach (var scriptFile in package.GetScriptFiles(true))
+#else
+                        foreach (var scriptFile in package.GetScriptFiles())
+#endif
+                        {
+                            filenames.Add(scriptFile);
+                        }
+
+                        foreach (var define in package.Definitions)
+                        {
+                            strings.Add(define, true);
+                        }
+                    }
+
+                    // add/remove other definitions
+                    strings.Add(VersionDefineForCompiler, true);
+                    strings.Add(HostPlatformDefineForCompiler, true);
+                    foreach (var feature in Features.PreprocessorDefines)
+                    {
+                        strings.Add(feature, true);
+                    }
+
+                    // TODO: what if other packages need more assemblies?
+                    foreach (var assembly in Graph.Instance.MasterPackage.BamAssemblies)
+                    {
+                        var assemblyPath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assembly.Name) + ".dll";
+                        var lastModifiedDate = System.IO.File.GetLastWriteTime(assemblyPath);
+                        strings.Add(lastModifiedDate.ToString(), true);
+                    }
+
+                    var compareResult = Hash.CompareAndUpdateHashFile(
+                        hashPathName,
+                        filenames,
+                        strings.Keys
+                    );
+                    switch (compareResult)
+                    {
+                        case Hash.EHashCompareResult.HashFileDoesNotExist:
+                            compileReason = "no previously compiled package assembly exists";
+                            break;
+
+                        case Hash.EHashCompareResult.HashesAreDifferent:
+                            compileReason = "package source has changed since the last compile";
+                            break;
+
+                        case Hash.EHashCompareResult.HashesAreIdentical:
+                            Graph.Instance.ScriptAssemblyPathname = cachedAssemblyPathname;
+                            assemblyCompileProfile.StopProfile();
+                            return;
+                    }
+                }
+                else
+                {
+                    compileReason = "user has disabled package assembly caching";
+                    // will not throw if the file doesn't exist
+                    System.IO.File.Delete(hashPathName);
+                }
+#else
                 // can an existing assembly be reused?
                 thisHashCode = GetPackageHash();
                 if (cacheAssembly)
@@ -713,7 +703,7 @@ namespace Bam.Core
                     {
                         using (var reader = new System.IO.StreamReader(hashPathName))
                         {
-                            var diskHashCode = reader.ReadLine();
+                            var diskHashCode = reader.ReadToEnd().TrimEnd();
                             if (diskHashCode.Equals(thisHashCode))
                             {
                                 Log.DebugMessage("Cached assembly used '{0}', with hash {1}", cachedAssemblyPathname, diskHashCode);
@@ -738,6 +728,7 @@ namespace Bam.Core
                 {
                     compileReason = "user has disabled package assembly caching";
                 }
+#endif
             }
 
             // use the compiler in the current runtime version to build the assembly of packages
@@ -822,19 +813,6 @@ namespace Bam.Core
                     System.Environment.NewLine,
                     exception.Result.StandardOutput
                 );
-            }
-
-            if (cacheAssembly)
-            {
-                using (var writer = new System.IO.StreamWriter(hashPathName))
-                {
-                    writer.WriteLine(thisHashCode);
-                }
-            }
-            else
-            {
-                // will not throw if the file doesn't exist
-                System.IO.File.Delete(hashPathName);
             }
 
             Log.DebugMessage("Written assembly to '{0}'", outputAssemblyPath);
