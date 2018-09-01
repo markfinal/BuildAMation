@@ -787,9 +787,11 @@ namespace Bam.Core
             try
             {
                 var args = new System.Text.StringBuilder();
-                args.AppendFormat("publish {0} ", projectPath);
+                args.AppendFormat("build {0} ", projectPath);
+#if false
                 args.Append("--force ");
                 args.Append(System.String.Format("--runtime {0} ", portableRID));
+#endif
                 if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     args.Append("-c Debug ");
