@@ -633,7 +633,7 @@ namespace Bam.Core
                 {
                     // gather source files
                     var filenames = new StringArray();
-                    var strings = new System.Collections.Generic.SortedDictionary<string, bool>();
+                    var strings = new System.Collections.Generic.SortedSet<string>();
                     foreach (var package in Graph.Instance.Packages)
                     {
 #if BAM_V2
@@ -647,16 +647,16 @@ namespace Bam.Core
 
                         foreach (var define in package.Definitions)
                         {
-                            strings.Add(define, true);
+                            strings.Add(define);
                         }
                     }
 
                     // add/remove other definitions
-                    strings.Add(VersionDefineForCompiler, true);
-                    strings.Add(HostPlatformDefineForCompiler, true);
+                    strings.Add(VersionDefineForCompiler);
+                    strings.Add(HostPlatformDefineForCompiler);
                     foreach (var feature in Features.PreprocessorDefines)
                     {
-                        strings.Add(feature, true);
+                        strings.Add(feature);
                     }
 
                     // TODO: what if other packages need more assemblies?
@@ -664,13 +664,13 @@ namespace Bam.Core
                     {
                         var assemblyPath = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assembly.Name) + ".dll";
                         var lastModifiedDate = System.IO.File.GetLastWriteTime(assemblyPath);
-                        strings.Add(lastModifiedDate.ToString(), true);
+                        strings.Add(lastModifiedDate.ToString());
                     }
 
                     var compareResult = Hash.CompareAndUpdateHashFile(
                         hashPathName,
                         filenames,
-                        strings.Keys
+                        strings
                     );
                     switch (compareResult)
                     {
