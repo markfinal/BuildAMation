@@ -72,26 +72,27 @@ matrix:
       - python tests/runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d
       #- python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b MakeFile
       - python tests/runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d -b Xcode
+      - cd ..
   #    - source env.sh
   #    - cd tests
   #    - python runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d
   #    - python runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d -b MakeFile
   #    - python runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d -b Xcode
   #    - cd ..
-  #- os: osx
-  #  osx_image: xcode9.4
-  #  mono: none
-  #  dotnet: 2.1.401
-  #  script:
-      #- msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
-  #    - python codingtools/dotnetcore_run_unittests.py
-  #    - python codingtools/dotnetcore_make_release.py
-  #    - cd bam_publish
-  #    - source env.sh
-  #    - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
-      #- python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b MakeFile
-  #    - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b Xcode
-  #    - cd ..
+  - os: osx
+    osx_image: xcode9.4
+    mono: none
+    dotnet: 2.1.401
+    script:
+     #- msbuild /p:Configuration=Release BuildAMation.sln && python codingtools/test_bam.py
+      - python codingtools/dotnetcore_run_unittests.py
+      - python codingtools/dotnetcore_make_release.py
+      - cd bam_publish
+      - source env.sh
+      - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
+     #- python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b MakeFile
+      - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b Xcode
+      - cd ..
       # - source env.sh
       #- cd tests
       #- python runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
