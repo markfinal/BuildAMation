@@ -39,7 +39,7 @@ namespace VisualCCommon
         private void
         findvswhere()
         {
-#if DOTNETCORE
+#if D_NUGET_NUGET_CLIENT && D_NUGET_VSWHERE
             var nugetHomeDir = NuGet.Common.NuGetEnvironment.GetFolderPath(NuGet.Common.NuGetFolderPath.NuGetHome);
             var nugetPackageDir = System.IO.Path.Combine(nugetHomeDir, "packages");
             var repo = new NuGet.Repositories.NuGetv3LocalRepository(nugetPackageDir);

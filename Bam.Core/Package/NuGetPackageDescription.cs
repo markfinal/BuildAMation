@@ -36,17 +36,20 @@ namespace Bam.Core
     public class NuGetPackageDescription
     {
         /// <summary>
-        /// Construct a new instance, including an identifier and version.
+        /// Construct a new instance, including an identifier and version, and applicable platforms.
         /// </summary>
         /// <param name="id">Identifier.</param>
         /// <param name="version">Version.</param>
+        /// <param name="platforms">Applicable platforms.</param>
         public
         NuGetPackageDescription(
             string id,
-            string version)
+            string version,
+            EPlatform platforms)
         {
             this.Identifier = id;
             this.Version = version;
+            this.Platforms = platforms;
         }
 
         /// <summary>
@@ -64,6 +67,15 @@ namespace Bam.Core
         /// </summary>
         /// <value>The version.</value>
         public string Version
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Get the platform(s) applicable to this NuGet package.
+        /// </summary>
+        public EPlatform Platforms
         {
             get;
             private set;

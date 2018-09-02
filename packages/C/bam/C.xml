@@ -13,7 +13,9 @@
     <DotNetAssembly name="System.Core" requiredTargetFramework="4.0.30319" />
   </DotNetAssemblies>
   <NuGetPackages>
-    <NuGetPackage id="Mono.Posix.NETStandard" version="1.0.0" />
+    <NuGetPackage id="Mono.Posix.NETStandard" version="1.0.0">
+      <Platform name="Linux" />
+    </NuGetPackage>
   </NuGetPackages>
   <SupportedPlatforms>
     <Platform name="Windows" />

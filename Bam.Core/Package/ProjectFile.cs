@@ -175,10 +175,24 @@ namespace Bam.Core
             allDefines.Add(Core.PackageUtilities.VersionDefineForCompiler);
             allDefines.Add(Core.PackageUtilities.HostPlatformDefineForCompiler);
             allDefines.AddRange(Core.Features.PreprocessorDefines);
+            var nugetSet = new System.Collections.Generic.SortedSet<string>();
             // custom definitions from all the packages in the compilation
             foreach (var package in Core.Graph.Instance.Packages)
             {
                 allDefines.AddRange(package.Definitions);
+                foreach (var nuget in package.NuGetPackages)
+                {
+                    if (!nuget.Platforms.Includes(Bam.Core.OSUtilities.CurrentPlatform))
+                    {
+                        continue;
+                    }
+                    nugetSet.Add(nuget.Identifier);
+                }
+            }
+            // custom definitions for all the NuGet packages in the compilation
+            foreach (var nugetIdentifier in nugetSet)
+            {
+                allDefines.Add(System.String.Format("D_NUGET_{0}", nugetIdentifier.ToUpper().Replace('.', '_')));
             }
 #if DOTNETCORE
 #else
@@ -238,6 +252,10 @@ namespace Bam.Core
 
                 foreach (var nuget in package.NuGetPackages)
                 {
+                    if (!nuget.Platforms.Includes(Bam.Core.OSUtilities.CurrentPlatform))
+                    {
+                        continue;
+                    }
                     this.CreateNugetReference(nuget.Identifier, nuget.Version, nugetReferences);
                 }
             }

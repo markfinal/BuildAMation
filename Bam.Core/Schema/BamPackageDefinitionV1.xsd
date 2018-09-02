@@ -84,14 +84,21 @@
 </xs:complexType>
 
 <xs:complexType name="nuget-packages-type">
-    <xs:sequence>
-        <xs:element name="NuGetPackage" minOccurs="1" maxOccurs="unbounded">
+  <xs:sequence>
+    <xs:element name="NuGetPackage" minOccurs="1" maxOccurs="unbounded">
+      <xs:complexType>
+        <xs:sequence>
+          <xs:element name="Platform" minOccurs="1" maxOccurs="unbounded">
             <xs:complexType>
-                <xs:attribute name="id" type="xs:string" use="required" />
-                <xs:attribute name="version" type="xs:string" use="required" />
+              <xs:attribute name="name" type="platform-type" use="required" />
             </xs:complexType>
-        </xs:element>
-    </xs:sequence>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attribute name="version" type="xs:string" use="required" />
+      </xs:complexType>
+    </xs:element>
+  </xs:sequence>
 </xs:complexType>
 
 <!-- root node -->

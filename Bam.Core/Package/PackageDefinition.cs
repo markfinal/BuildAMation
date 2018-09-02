@@ -741,8 +741,9 @@ namespace Bam.Core
 
                 var nugetIdentifier = xmlReader.GetAttribute("id");
                 var nugetVersion = xmlReader.GetAttribute("version");
+                var platforms = this.TranslatePlatformElements(xmlReader, elName);
 
-                var desc = new NuGetPackageDescription(nugetIdentifier, nugetVersion);
+                var desc = new NuGetPackageDescription(nugetIdentifier, nugetVersion, platforms);
 
                 this.NuGetPackages.AddUnique(desc);
             }
@@ -750,17 +751,12 @@ namespace Bam.Core
             return true;
         }
 
-        private bool
-        ReadSupportedPlatforms(
-            System.Xml.XmlReader xmlReader)
+        private EPlatform
+        TranslatePlatformElements(
+            System.Xml.XmlReader xmlReader,
+            string rootName)
         {
-            var rootName = "SupportedPlatforms";
-            if (rootName != xmlReader.Name)
-            {
-                return false;
-            }
-
-            this.SupportedPlatforms = EPlatform.Invalid;
+            EPlatform platforms = EPlatform.Invalid;
             var elName = "Platform";
             while (xmlReader.Read())
             {
@@ -779,21 +775,36 @@ namespace Bam.Core
                 switch (name)
                 {
                     case "Windows":
-                        this.SupportedPlatforms |= EPlatform.Windows;
+                        platforms |= EPlatform.Windows;
                         break;
 
                     case "Linux":
-                        this.SupportedPlatforms |= EPlatform.Linux;
+                        platforms |= EPlatform.Linux;
                         break;
 
                     case "OSX":
-                        this.SupportedPlatforms |= EPlatform.OSX;
+                        platforms |= EPlatform.OSX;
                         break;
 
                     default:
                         throw new Exception("Unexpected platform '{0}'", name);
                 }
             }
+
+            return platforms;
+        }
+
+        private bool
+        ReadSupportedPlatforms(
+            System.Xml.XmlReader xmlReader)
+        {
+            var rootName = "SupportedPlatforms";
+            if (rootName != xmlReader.Name)
+            {
+                return false;
+            }
+
+            this.SupportedPlatforms = this.TranslatePlatformElements(xmlReader, rootName);
 
             return true;
         }
