@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Utility class to handle hashing of files and or general strings.
+    /// </summary>
     public static class Hash
     {
         private static string
@@ -87,13 +90,34 @@ namespace Bam.Core
             return GenerateHash(null, singleEnumerator());
         }
 
+        /// <summary>
+        /// Result of hash comparisons.
+        /// </summary>
         public enum EHashCompareResult
         {
+            /// <summary>
+            /// File containing the hash of the data does not exist. Hash file will be generated.
+            /// </summary>
             HashFileDoesNotExist,
+
+            /// <summary>
+            /// Current and saved hash are different. Data has changed. Hash file will be written.
+            /// </summary>
             HashesAreDifferent,
+
+            /// <summary>
+            /// Current and saved hash are identical. Data has not changed.
+            /// </summary>
             HashesAreIdentical
         }
 
+        /// <summary>
+        /// Generate a hash from a single string, and compare with the hash stored in the specified file.
+        /// If the hash file needs refreshing, it will be.
+        /// </summary>
+        /// <param name="hashFile">Path to the file containing the previous hash.</param>
+        /// <param name="str">Single string to generate a hash for.</param>
+        /// <returns>Result of the comparison.</returns>
         public static EHashCompareResult
         CompareAndUpdateHashFile(
             string hashFile,
@@ -110,6 +134,14 @@ namespace Bam.Core
             );
         }
 
+        /// <summary>
+        /// Generate a hash from a list of filenames and strings, and compare with the hash stored in the specified file.
+        /// If the hash file needs refreshing, it will be.
+        /// </summary>
+        /// <param name="hashFile">Path to the file containing the previous hash.</param>
+        /// <param name="filenames">List of filenames. Can be null.</param>
+        /// <param name="strings">List of strings.</param>
+        /// <returns></returns>
         public static EHashCompareResult
         CompareAndUpdateHashFile(
             string hashFile,

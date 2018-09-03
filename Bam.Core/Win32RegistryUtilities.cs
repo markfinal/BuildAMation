@@ -121,11 +121,19 @@ namespace Bam.Core
             return exists;
         }
 
+        /// <summary>
+        /// Wrapper around Microsoft.Win32.RegistryKey to avoid a public dependency on a NuGet package.
+        /// </summary>
         public class RegKey :
             System.IDisposable
         {
             private Microsoft.Win32.RegistryKey key;
 
+            /// <summary>
+            /// Create an instance wrapping the specified RegistryKey.
+            /// An exception is thrown if the source key is null.
+            /// </summary>
+            /// <param name="sourceKey">Source registry key.</param>
             public RegKey(
                 Microsoft.Win32.RegistryKey sourceKey)
             {
@@ -143,6 +151,9 @@ namespace Bam.Core
                 this.key.Dispose();
             }
 
+            /// <summary>
+            /// Name of the registry key represented.
+            /// </summary>
             public string Name
             {
                 get
@@ -151,6 +162,13 @@ namespace Bam.Core
                 }
             }
 
+            /// <summary>
+            /// Get the string behind the named value on the registry key.
+            /// Exceptions can be thrown if the name is not valid, or the
+            /// value that name represents is not a string.
+            /// </summary>
+            /// <param name="name">Name of the value to get as a string.</param>
+            /// <returns>String value</returns>
             public string
             GetStringValue(
                 string name)
@@ -172,6 +190,11 @@ namespace Bam.Core
                 return value as string;
             }
 
+            /// <summary>
+            /// Similar to GetStringValue, but will not throw an exception if the name is invalid.
+            /// </summary>
+            /// <param name="name">Name of the value to get as a string.</param>
+            /// <returns>String value, or null if the name is invalid.</returns>
             public string
             FindStringValue(
                 string name)
@@ -190,6 +213,9 @@ namespace Bam.Core
                 return value as string;
             }
 
+            /// <summary>
+            /// Enumerate across all subkeys of the wrapped key.
+            /// </summary>
             public System.Collections.Generic.IEnumerable<RegKey> SubKeys
             {
                 get

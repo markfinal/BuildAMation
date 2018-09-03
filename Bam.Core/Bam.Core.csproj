@@ -20,6 +20,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <OutputPath>..\bin\Release</OutputPath>
+    <DocumentationFile>..\docs\Bam.Core.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GitInfo" Version="2.0.15">

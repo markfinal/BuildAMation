@@ -337,9 +337,19 @@ namespace Bam.Core
         }
 
 #if BAM_V2
+        /// <summary>
+        /// Exception class if the RunExecutable function fails.
+        /// </summary>
         public class RunExecutableException :
             Exception
         {
+            /// <summary>
+            /// Create an exception instance, based on the result of running an executable,
+            /// and an arbitrary message.
+            /// </summary>
+            /// <param name="result">Result of running an executable.</param>
+            /// <param name="format">Format of the string message.</param>
+            /// <param name="args">Arguments to use in the format.</param>
             public RunExecutableException(
                 RunExecutableResult result,
                 string format,
@@ -350,6 +360,9 @@ namespace Bam.Core
                 this.Result = result;
             }
 
+            /// <summary>
+            /// Access the result of running the executable that failed.
+            /// </summary>
             public RunExecutableResult Result
             {
                 get;
@@ -357,8 +370,17 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Result of running and executable, successfully or not.
+        /// </summary>
         public class RunExecutableResult
         {
+            /// <summary>
+            /// Create an instance of the result of running an executable.
+            /// </summary>
+            /// <param name="stdout">Standard output from the executable.</param>
+            /// <param name="stderr">Standard error from the executable.</param>
+            /// <param name="exitCode">Exit code from the executable.</param>
             public RunExecutableResult(
                 string stdout,
                 string stderr,
@@ -369,18 +391,27 @@ namespace Bam.Core
                 this.ExitCode = exitCode;
             }
 
+            /// <summary>
+            /// Get the standard output from the executable.
+            /// </summary>
             public string StandardOutput
             {
                 get;
                 private set;
             }
 
+            /// <summary>
+            /// Get the standard error from the executable.
+            /// </summary>
             public string StandardError
             {
                 get;
                 private set;
             }
 
+            /// <summary>
+            /// Get the exit code from the executable.
+            /// </summary>
             public int ExitCode
             {
                 get;
@@ -388,6 +419,14 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Run an executable with a specified set of arguments.
+        /// Will return a result, containing standard output, error and exit code.
+        /// Will throw an exception if the exit code fro the executable is not zero.
+        /// </summary>
+        /// <param name="executable">Executable path to run.</param>
+        /// <param name="arguments">Arguments to pass to the executable.</param>
+        /// <returns>Result of running the executable.</returns>
         public static RunExecutableResult
         RunExecutable(
             string executable,

@@ -24,6 +24,7 @@
     <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>..\bin\Release</OutputPath>
+    <DocumentationFile>..\docs\Bam.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GitInfo" Version="2.0.15">

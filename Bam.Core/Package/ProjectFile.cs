@@ -29,6 +29,9 @@
 #endregion // License
 namespace Bam.Core
 {
+    /// <summary>
+    /// Generate a .csproj file (new style) for a script assembly.
+    /// </summary>
     public sealed class ProjectFile
     {
         private System.Xml.XmlDocument Document = new System.Xml.XmlDocument();
@@ -200,6 +203,11 @@ namespace Bam.Core
             return allDefines.ToString(';');
         }
 
+        /// <summary>
+        /// Generate an instance of a project file.
+        /// </summary>
+        /// <param name="isExecutable">true if the output is an executable, rather than a dynamic library assembly.</param>
+        /// <param name="csprojPath">Path of the .csproj to write.</param>
         public ProjectFile(
             bool isExecutable,
             string csprojPath)
@@ -263,6 +271,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Write the .csproj to disk.
+        /// </summary>
         public void
         Write()
         {
@@ -279,6 +290,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Specify the entry point used by the assembly.
+        /// </summary>
+        /// <param name="filename">Path of the .cs file to write for the entry point.</param>
+        /// <param name="writer">Action that writes the .csproj to disk.</param>
         public void
         AddEntryPoint(
             string filename,
@@ -294,6 +310,10 @@ namespace Bam.Core
             CreateCompilableSourceFile(filename, null, mainSource);
         }
 
+        /// <summary>
+        /// Add an embedded resource to the project file.
+        /// </summary>
+        /// <param name="writer">Action that writes the resource to disk.</param>
         public void
         AddEmbeddedResource(
             System.Func<string,string> writer)
