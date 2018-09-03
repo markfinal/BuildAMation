@@ -628,7 +628,6 @@ namespace Bam.Core
             }
             else
             {
-#if true
                 if (cacheAssembly)
                 {
                     // gather source files
@@ -694,41 +693,6 @@ namespace Bam.Core
                     // will not throw if the file doesn't exist
                     System.IO.File.Delete(hashPathName);
                 }
-#else
-                // can an existing assembly be reused?
-                thisHashCode = GetPackageHash();
-                if (cacheAssembly)
-                {
-                    if (System.IO.File.Exists(hashPathName))
-                    {
-                        using (var reader = new System.IO.StreamReader(hashPathName))
-                        {
-                            var diskHashCode = reader.ReadToEnd().TrimEnd();
-                            if (diskHashCode.Equals(thisHashCode))
-                            {
-                                Log.DebugMessage("Cached assembly used '{0}', with hash {1}", cachedAssemblyPathname, diskHashCode);
-                                Log.Detail("Re-using existing package assembly");
-                                Graph.Instance.ScriptAssemblyPathname = cachedAssemblyPathname;
-
-                                assemblyCompileProfile.StopProfile();
-                                return;
-                            }
-                            else
-                            {
-                                compileReason = "package source has changed since the last compile";
-                            }
-                        }
-                    }
-                    else
-                    {
-                        compileReason = "no previously compiled package assembly exists";
-                    }
-                }
-                else
-                {
-                    compileReason = "user has disabled package assembly caching";
-                }
-#endif
             }
 
             // use the compiler in the current runtime version to build the assembly of packages
@@ -739,25 +703,11 @@ namespace Bam.Core
                 Graph.Instance.ProcessState.TargetFrameworkVersion != null ? (", targetting " + Graph.Instance.ProcessState.TargetFrameworkVersion) : string.Empty,
                 compileReason);
 
-#if true
-            string outputAssemblyPath = cachedAssemblyPathname;
-#else
-            string outputAssemblyPath;
-            if (Graph.Instance.CompileWithDebugSymbols)
-            {
-                outputAssemblyPath = System.IO.Path.Combine(System.IO.Path.GetTempPath(), Graph.Instance.MasterPackage.Name) + ".dll";
-            }
-            else
-            {
-                outputAssemblyPath = cachedAssemblyPathname;
-            }
-#endif
+            var outputAssemblyPath = cachedAssemblyPathname;
 
             // this will create the build root directory as necessary
             IOWrapper.CreateDirectory(System.IO.Path.GetDirectoryName(outputAssemblyPath));
 
-#if DOTNETCORE
-#if true
             var projectPath = System.IO.Path.ChangeExtension(outputAssemblyPath, ".csproj");
             var project = new ProjectFile(false, projectPath);
             project.Write();
@@ -820,222 +770,6 @@ namespace Bam.Core
 
             Log.DebugMessage("Written assembly to '{0}'", outputAssemblyPath);
             Graph.Instance.ScriptAssemblyPathname = outputAssemblyPath;
-#else
-            definitions.AddUnique("DOTNETCORE");
-            var parseOptions = new Microsoft.CodeAnalysis.CSharp.CSharpParseOptions(
-                languageVersion: Microsoft.CodeAnalysis.CSharp.LanguageVersion.Default,
-                preprocessorSymbols: definitions
-            );
-
-            var syntaxTrees = new System.Collections.Generic.List<Microsoft.CodeAnalysis.SyntaxTree>();
-            foreach (var sourceListing in sourceCodeMapping)
-            {
-                var syntaxTree = Microsoft.CodeAnalysis.CSharp.CSharpSyntaxTree.ParseText(
-                    sourceListing.Value,
-                    path: sourceListing.Key,
-                    options: parseOptions
-                );
-                syntaxTrees.Add(syntaxTree);
-            }
-
-            var trustedPlatformAssemblies = System.AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") as string;
-            var split = trustedPlatformAssemblies.Split(System.IO.Path.PathSeparator);
-
-            var references = new System.Collections.Generic.List<Microsoft.CodeAnalysis.MetadataReference>();
-            foreach (var s in split)
-            {
-                references.Add(Microsoft.CodeAnalysis.MetadataReference.CreateFromFile(s));
-            }
-
-            var compilationOptions = new Microsoft.CodeAnalysis.CSharp.CSharpCompilationOptions(
-                Microsoft.CodeAnalysis.OutputKind.DynamicallyLinkedLibrary
-            );
-            compilationOptions.WithAllowUnsafe(false);
-            compilationOptions.WithPlatform(Microsoft.CodeAnalysis.Platform.AnyCpu);
-            compilationOptions.WithWarningLevel(4);
-            compilationOptions.WithConcurrentBuild(true);
-            if (Graph.Instance.CompileWithDebugSymbols)
-            {
-                compilationOptions.WithOptimizationLevel(Microsoft.CodeAnalysis.OptimizationLevel.Debug);
-            }
-            else
-            {
-                compilationOptions.WithOptimizationLevel(Microsoft.CodeAnalysis.OptimizationLevel.Release);
-            }
-            var compilation = Microsoft.CodeAnalysis.CSharp.CSharpCompilation.Create(
-                System.IO.Path.GetFileName(outputAssemblyPath),
-                syntaxTrees: syntaxTrees.ToArray(),
-                references: references,
-                options: compilationOptions
-            );
-
-            using (var assemblyStream = System.IO.File.Create(outputAssemblyPath))
-            {
-                System.IO.FileStream pdbStream = null;
-                if (Graph.Instance.CompileWithDebugSymbols)
-                {
-                    var pdbPathname = System.IO.Path.ChangeExtension(outputAssemblyPath, ".pdb");
-                    pdbStream = System.IO.File.Create(pdbPathname);
-                }
-                var result = compilation.Emit(
-                    assemblyStream,
-                    pdbStream
-                );
-
-                if (!result.Success)
-                {
-                    var message = new System.Text.StringBuilder();
-                    var failures = result.Diagnostics.Where(diagnostic =>
-                        diagnostic.IsWarningAsError ||
-                        diagnostic.Severity == Microsoft.CodeAnalysis.DiagnosticSeverity.Error);
-                    message.AppendFormat(
-                        "Failed to compile package '{0}'. There are {1} errors.",
-                        Graph.Instance.MasterPackage.FullName,
-                        failures.Count()
-                    );
-                    message.AppendLine();
-                    foreach (var diagnostic in failures)
-                    {
-                        message.AppendFormat("\t{0}", diagnostic.ToString());
-                        message.AppendLine();
-                    }
-                    if (!Graph.Instance.CompileWithDebugSymbols)
-                    {
-                        message.AppendLine();
-                        ICommandLineArgument debugOption = new Options.UseDebugSymbols();
-                        message.AppendFormat("Use the {0}/{1} command line option with bam for more accurate error messages.", debugOption.LongName, debugOption.ShortName);
-                        message.AppendLine();
-                    }
-                    message.AppendLine();
-                    ICommandLineArgument createDebugProjectOption = new Options.CreateDebugProject();
-                    message.AppendFormat("Use the {0}/{1} command line option with bam to create an editable IDE project containing the build scripts.", createDebugProjectOption.LongName, createDebugProjectOption.ShortName);
-                    message.AppendLine();
-                    throw new Exception(message.ToString());
-                }
-            }
-
-            if (!Graph.Instance.CompileWithDebugSymbols)
-            {
-                if (cacheAssembly)
-                {
-                    using (var writer = new System.IO.StreamWriter(hashPathName))
-                    {
-                        writer.WriteLine(thisHashCode);
-                    }
-                }
-                else
-                {
-                    // will not throw if the file doesn't exist
-                    System.IO.File.Delete(hashPathName);
-                }
-            }
-
-            Log.DebugMessage("Written assembly to '{0}'", outputAssemblyPath);
-            Graph.Instance.ScriptAssemblyPathname = outputAssemblyPath;
-#endif
-#else
-            using (var provider = new Microsoft.CSharp.CSharpCodeProvider(providerOptions))
-            {
-                var compilerParameters = new System.CodeDom.Compiler.CompilerParameters();
-                compilerParameters.TreatWarningsAsErrors = true;
-                compilerParameters.WarningLevel = 4;
-                compilerParameters.GenerateExecutable = false;
-                compilerParameters.GenerateInMemory = false;
-                compilerParameters.OutputAssembly = outputAssemblyPath;
-
-                var compilerOptions = "/checked+ /unsafe-";
-                if (Graph.Instance.CompileWithDebugSymbols)
-                {
-                    compilerParameters.IncludeDebugInformation = true;
-                    compilerOptions += " /optimize-";
-                }
-                else
-                {
-                    compilerOptions += " /optimize+";
-                }
-                compilerOptions += " /platform:anycpu";
-
-                // define strings
-                compilerOptions += " /define:" + definitions.ToString(';');
-
-                compilerParameters.CompilerOptions = compilerOptions;
-
-                if (provider.Supports(System.CodeDom.Compiler.GeneratorSupport.Resources))
-                {
-                    // Bam assembly
-                    // TODO: Q: why is it only for the master package? Why not all of them, which may have additional dependencies?
-                    foreach (var assembly in Graph.Instance.MasterPackage.BamAssemblies)
-                    {
-                        var assemblyFileName = System.String.Format("{0}.dll", assembly.Name);
-                        var assemblyPathName = System.IO.Path.Combine(Graph.Instance.ProcessState.ExecutableDirectory, assemblyFileName);
-                        compilerParameters.ReferencedAssemblies.Add(assemblyPathName);
-                    }
-
-                    // DotNet assembly
-                    foreach (var desc in Graph.Instance.MasterPackage.DotNetAssemblies)
-                    {
-                        var assemblyFileName = System.String.Format("{0}.dll", desc.Name);
-                        compilerParameters.ReferencedAssemblies.Add(assemblyFileName);
-                    }
-
-                    if (Graph.Instance.ProcessState.RunningMono)
-                    {
-                        compilerParameters.ReferencedAssemblies.Add("Mono.Posix.dll");
-                    }
-                }
-                else
-                {
-                    throw new Exception("C# compiler does not support Resources");
-                }
-
-                var results = Graph.Instance.CompileWithDebugSymbols ?
-                    provider.CompileAssemblyFromFile(compilerParameters, sourceCode.ToArray()) :
-                    provider.CompileAssemblyFromSource(compilerParameters, sourceCode.ToArray());
-
-                if (results.Errors.HasErrors || results.Errors.HasWarnings)
-                {
-                    var message = new System.Text.StringBuilder();
-                    message.AppendFormat("Failed to compile package '{0}'. There are {1} errors.", Graph.Instance.MasterPackage.FullName, results.Errors.Count);
-                    message.AppendLine();
-                    foreach (System.CodeDom.Compiler.CompilerError error in results.Errors)
-                    {
-                        message.AppendFormat("\t{0}({1}): {2} {3}", error.FileName, error.Line, error.ErrorNumber, error.ErrorText);
-                        message.AppendLine();
-                    }
-                    if (!Graph.Instance.CompileWithDebugSymbols)
-                    {
-                        message.AppendLine();
-                        ICommandLineArgument debugOption = new Options.UseDebugSymbols();
-                        message.AppendFormat("Use the {0}/{1} command line option with bam for more accurate error messages.", debugOption.LongName, debugOption.ShortName);
-                        message.AppendLine();
-                    }
-                    message.AppendLine();
-                    ICommandLineArgument createDebugProjectOption = new Options.CreateDebugProject();
-                    message.AppendFormat("Use the {0}/{1} command line option with bam to create an editable IDE project containing the build scripts.", createDebugProjectOption.LongName, createDebugProjectOption.ShortName);
-                    message.AppendLine();
-                    throw new Exception(message.ToString());
-                }
-
-                if (!Graph.Instance.CompileWithDebugSymbols)
-                {
-                    if (cacheAssembly)
-                    {
-                        using (var writer = new System.IO.StreamWriter(hashPathName))
-                        {
-                            writer.WriteLine(thisHashCode);
-                        }
-                    }
-                    else
-                    {
-                        // will not throw if the file doesn't exist
-                        System.IO.File.Delete(hashPathName);
-                    }
-                }
-
-                Log.DebugMessage("Written assembly to '{0}'", compilerParameters.OutputAssembly);
-                Graph.Instance.ScriptAssemblyPathname = compilerParameters.OutputAssembly;
-            }
-#endif
 
             assemblyCompileProfile.StopProfile();
         }
@@ -1051,94 +785,15 @@ namespace Bam.Core
 
             System.Reflection.Assembly scriptAssembly = null;
 
-#if DOTNETCORE
-            //var loadContext = new PackageAssemblyLoadContext();
+            // don't scope the resolver with using, or resolving will fail!
             var resolver = new AssemblyResolver(Graph.Instance.ScriptAssemblyPathname);
             scriptAssembly = resolver.Assembly;
-            //scriptAssembly = loadContext.LoadFromAssemblyPath(Graph.Instance.ScriptAssemblyPathname);
-
-#if false
-            // the DependencyContext knows where all of the runtime
-            // dependencies reside
-            loadContext.DependencyContext = Microsoft.Extensions.DependencyModel.DependencyContext.Load(scriptAssembly);
-
-            // pre-load all dependents (recursively) into the load context, so that failure are known now
-            // rather than mid-way through executing package scripts
-            var queue = new System.Collections.Generic.Queue<System.Reflection.Assembly>();
-            var processed = new System.Collections.Generic.List<System.Reflection.Assembly>();
-            queue.Enqueue(scriptAssembly);
-            while (queue.Count > 0)
-            {
-                var asm = queue.Dequeue();
-                processed.Add(asm);
-                foreach (var asmName in asm.GetReferencedAssemblies())
-                {
-                    var assembly = loadContext.LoadFromAssemblyName(asmName);
-                    if (!processed.Contains(assembly))
-                    {
-                        queue.Enqueue(assembly);
-                    }
-                }
-            }
-
-            var additionalPaths = System.String.Empty;
-            foreach (var path in loadContext.EnvironmentPaths)
-            {
-                Log.MessageAll("** {0}", path);
-                additionalPaths += path + System.IO.Path.PathSeparator;
-            }
-
-            if (OSUtilities.IsLinuxHosting)
-            {
-                var old_value = System.Environment.GetEnvironmentVariable("LD_LIBRARY_PATH");
-                Log.MessageAll("LD_LIBRARY_PATH = {0}", old_value);
-                var new_value = additionalPaths + old_value;
-                System.Environment.SetEnvironmentVariable("LD_LIBRARY_PATH", new_value);
-                Log.MessageAll("LD_LIBRARY_PATH = {0}", System.Environment.GetEnvironmentVariable("LD_LIBRARY_PATH"));
-            }
-#endif
-#else
-            try
-            {
-                // this code works from an untrusted location, and debugging IS available when
-                // the pdb (.NET)/mdb (Mono) resides beside the assembly
-                byte[] asmBytes = System.IO.File.ReadAllBytes(Graph.Instance.ScriptAssemblyPathname);
-                if (Graph.Instance.CompileWithDebugSymbols)
-                {
-                    var debugInfoFilename = Graph.Instance.ProcessState.RunningMono ?
-                        Graph.Instance.ScriptAssemblyPathname + ".mdb" :
-                        System.IO.Path.ChangeExtension(Graph.Instance.ScriptAssemblyPathname, ".pdb");
-                    if (System.IO.File.Exists(debugInfoFilename))
-                    {
-                        byte[] pdbBytes = System.IO.File.ReadAllBytes(debugInfoFilename);
-                        scriptAssembly = System.Reflection.Assembly.Load(asmBytes, pdbBytes);
-                    }
-                }
-
-                if (null == scriptAssembly)
-                {
-                    scriptAssembly = System.Reflection.Assembly.Load(asmBytes);
-                }
-            }
-            catch (System.IO.FileNotFoundException exception)
-            {
-                Log.ErrorMessage("Could not find assembly '{0}'", Graph.Instance.ScriptAssemblyPathname);
-                throw exception;
-            }
-            catch (System.Exception exception)
-            {
-                throw exception;
-            }
-#endif
-
             Graph.Instance.ScriptAssembly = scriptAssembly;
 
             assemblyLoadProfile.StopProfile();
         }
     }
 
-#if DOTNETCORE
-#if true
     // https://samcragg.wordpress.com/2017/06/30/resolving-assemblies-in-net-core/
     internal sealed class AssemblyResolver :
         System.IDisposable
@@ -1149,7 +804,6 @@ namespace Bam.Core
 
         public AssemblyResolver(string path)
         {
-            Log.MessageAll("Resolving: {0}", path);
             this.Assembly = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(path);
             this.dependencyContext = Microsoft.Extensions.DependencyModel.DependencyContext.Load(this.Assembly);
 
@@ -1176,7 +830,7 @@ namespace Bam.Core
             System.Runtime.Loader.AssemblyLoadContext context,
             System.Reflection.AssemblyName name)
         {
-            Log.MessageAll("Resolving: {0}", name.FullName);
+            Log.DebugMessage("Resolving: {0}", name.FullName);
             bool NamesMatch(Microsoft.Extensions.DependencyModel.RuntimeLibrary runtime)
             {
                 return string.Equals(runtime.Name, name.Name, System.StringComparison.OrdinalIgnoreCase);
@@ -1212,178 +866,4 @@ namespace Bam.Core
             return null;
         }
     }
-#else
-    class PackageAssemblyLoadContext :
-        System.Runtime.Loader.AssemblyLoadContext
-    {
-        private static string
-        GetHomeDir()
-        {
-            if (OSUtilities.IsWindowsHosting)
-            {
-                return System.Environment.ExpandEnvironmentVariables("%HOMEDRIVE%%HOMEPATH%");
-            }
-            else
-            {
-                return System.Environment.GetEnvironmentVariable("HOME");
-            }
-        }
-
-        // default location for NuGet packages
-        static string packagesDir = System.String.Format(
-            "{0}{1}.nuget{1}packages",
-            GetHomeDir(),
-            System.IO.Path.DirectorySeparatorChar
-        );
-
-        private static string
-        GetPortableRID()
-        {
-            var architecture = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString().ToLower();
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
-            {
-                return "win-" + architecture;
-            }
-            else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
-            {
-                return "linux-" + architecture;
-            }
-            else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX))
-            {
-                return "osx-" + architecture;
-            }
-            throw new Exception(
-                "Running on an unsupported OS: {0}",
-                System.Runtime.InteropServices.RuntimeInformation.OSDescription
-            );
-        }
-
-        // runtime identifier used to resolve NuGet runtimes
-        private static readonly string PortableRID = GetPortableRID();
-
-        public Microsoft.Extensions.DependencyModel.DependencyContext DependencyContext
-        {
-            get;
-            set;
-        }
-
-        private System.Collections.Generic.List<string> _EnvironmentPaths
-        {
-            get;
-            set;
-        }
-
-        public System.Collections.Generic.IEnumerable<string> EnvironmentPaths
-        {
-            get
-            {
-                if (null == this._EnvironmentPaths)
-                {
-                    yield return System.String.Empty;
-                }
-                else
-                {
-                    foreach (var path in this._EnvironmentPaths)
-                    {
-                        yield return path;
-                    }
-                }
-            }
-        }
-
-        protected override System.Reflection.Assembly
-        Load(
-            System.Reflection.AssemblyName assemblyName)
-        {
-            try
-            {
-                // try the default loader
-                // most runtime libraries will come via here
-                return System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyName(assemblyName);
-            }
-            catch (System.IO.FileNotFoundException)
-            {
-                Log.MessageAll("Manually resolving assembly '{0}'", assemblyName.FullName);
-                // failures could be custom NuGet packages that the BAM package depends upon
-                // need to load these manually
-                var runtimeLibrary = this.DependencyContext.RuntimeLibraries.FirstOrDefault(item => item.Name == assemblyName.Name);
-                if (null == runtimeLibrary)
-                {
-                    throw;
-                }
-
-                Log.MessageAll("{0} type {1}", runtimeLibrary.Name, runtimeLibrary.Type);
-                Log.MessageAll("Runtime assembly groups '{0}'", runtimeLibrary.RuntimeAssemblyGroups.Count);
-                System.Reflection.Assembly loadedAssembly = null;
-                foreach (var runtimeAssemblyGroup in runtimeLibrary.RuntimeAssemblyGroups)
-                {
-                    Log.MessageAll("\t{0}", runtimeAssemblyGroup.Runtime);
-                    if (runtimeAssemblyGroup.Runtime != PortableRID)
-                    {
-                        continue;
-                    }
-                    System.Diagnostics.Debug.Assert(1 == runtimeAssemblyGroup.RuntimeFiles.Count);
-                    foreach (var runtimeFile in runtimeAssemblyGroup.RuntimeFiles)
-                    {
-                        Log.MessageAll("{0} {1} {2}", runtimeFile.Path, runtimeFile.FileVersion, runtimeFile.AssemblyVersion);
-                        // NuGet package names are forced to be lower-case in .NET cor
-                        var fullPath = System.String.Format(
-                            "{1}{0}{2}{0}{3}{0}{4}",
-                            System.IO.Path.DirectorySeparatorChar,
-                            packagesDir,
-                            runtimeLibrary.Name.ToLower(),
-                            runtimeLibrary.Version,
-                            runtimeFile.Path
-                        );
-                        fullPath = System.IO.Path.GetFullPath(fullPath);
-                        if (null == loadedAssembly)
-                        {
-                            loadedAssembly = System.Runtime.Loader.AssemblyLoadContext.Default.LoadFromAssemblyPath(fullPath);
-                            Log.MessageAll("\t{0} {1}", fullPath, loadedAssembly);
-                        }
-                        else
-                        {
-                            Log.MessageAll("\t{0}", fullPath);
-                        }
-                    }
-                    foreach (var assetPath in runtimeAssemblyGroup.AssetPaths)
-                    {
-                        Log.MessageAll("\t{0}*", assetPath);
-                    }
-                }
-                if (runtimeLibrary.NativeLibraryGroups.Any())
-                {
-                    this._EnvironmentPaths = new System.Collections.Generic.List<string>();
-                }
-                foreach (var native in runtimeLibrary.NativeLibraryGroups)
-                {
-                    if (native.Runtime != PortableRID)
-                    {
-                        continue;
-                    }
-                    foreach (var runtimeFile in native.RuntimeFiles)
-                    {
-                        var fullPath = System.String.Format(
-                            "{1}{0}{2}{0}{3}{0}{4}",
-                            System.IO.Path.DirectorySeparatorChar,
-                            packagesDir,
-                            runtimeLibrary.Name.ToLower(),
-                            runtimeLibrary.Version,
-                            runtimeFile.Path
-                        );
-                        fullPath = System.IO.Path.GetFullPath(fullPath);
-                        Log.MessageAll("{0} {1} {2}", fullPath, runtimeFile.FileVersion, runtimeFile.AssemblyVersion);
-                        var dir = System.IO.Path.GetDirectoryName(fullPath);
-                        if (!this._EnvironmentPaths.Contains(dir))
-                        {
-                            this._EnvironmentPaths.Add(dir);
-                        }
-                    }
-                }
-                return loadedAssembly;
-            }
-        }
-    }
-#endif
-#endif
 }

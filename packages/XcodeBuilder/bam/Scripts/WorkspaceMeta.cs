@@ -220,14 +220,10 @@ namespace XcodeBuilder
                     projectSchemeCache.Serialize();
                 }
 
-#if DOTNETCORE
                 var relativeProjectDir = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
                     System.IO.Path.GetDirectoryName(workspaceDirectory),
                     projectDir.ToString()
                 );
-#else
-                var relativeProjectDir = Bam.Core.RelativePathUtilities.GetPath(projectDir.ToString(), workspaceDirectory);
-#endif
                 var workspaceFileRef = workspaceDoc.CreateElement("FileRef");
                 workspaceFileRef.SetAttribute("location", System.String.Format("group:{0}", relativeProjectDir));
                 workspaceEl.AppendChild(workspaceFileRef);

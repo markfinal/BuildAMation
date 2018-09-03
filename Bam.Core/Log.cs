@@ -62,11 +62,7 @@ namespace Bam.Core
             bool isError,
             bool isProgressMeter = false)
         {
-#if DOTNETCORE
             if (System.Diagnostics.Debugger.IsAttached)
-#else
-            if (System.Diagnostics.Debugger.IsAttached && !Graph.Instance.ProcessState.RunningMono)
-#endif
             {
                 if (!isProgressMeter)
                 {
@@ -87,12 +83,8 @@ namespace Bam.Core
                         if (SupportsCursorManagement)
                         {
                             System.Console.Write(messageValue);
-#if DOTNETCORE
                             // there seems to be some issues (the cursor position not updating) in .NET core
                             System.Console.SetCursorPosition(0, System.Console.CursorTop);
-#else
-                            System.Console.SetCursorPosition(System.Console.CursorLeft - messageValue.Length, System.Console.CursorTop);
-#endif
                         }
                     }
                     else

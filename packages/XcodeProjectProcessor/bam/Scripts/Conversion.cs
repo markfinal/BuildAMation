@@ -574,14 +574,10 @@ namespace XcodeProjectProcessor
                                 paths.Add(fullPath);
                                 continue;
                             }
-#if DOTNETCORE
                             var relPath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
                                 configuration.Project.SourceRoot,
                                 fullPath
                             );
-#else
-                            var relPath = Bam.Core.RelativePathUtilities.GetPath(fullPath, configuration.Project.SourceRoot);
-#endif
                             // spaces need to be double escaped
                             if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
                             {

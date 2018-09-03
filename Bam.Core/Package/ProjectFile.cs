@@ -194,14 +194,7 @@ namespace Bam.Core
             {
                 allDefines.Add(System.String.Format("D_NUGET_{0}", nugetIdentifier.ToUpper().Replace('.', '_')));
             }
-#if DOTNETCORE
-#else
-            // so that debug projects compile the same code as dynamically compiled package assemblies
-            if (Core.Graph.Instance.ProcessState.RunningMono)
-            {
-                allDefines.Add("__MonoCS__");
-            }
-#endif
+
             allDefines.Sort();
 
             return allDefines.ToString(';');

@@ -530,26 +530,18 @@ namespace XcodeBuilder
 
                 // reset SRCROOT, or it is taken to be where the workspace is
                 var pkgdir = this.Module.Macros["packagedir"].ToString() + "/";
-#if DOTNETCORE
                 var relativeSourcePath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
                     System.IO.Path.GetDirectoryName(this.ProjectDir.ToString()),
                     pkgdir
                 );
-#else
-                var relativeSourcePath = Bam.Core.RelativePathUtilities.GetPath(pkgdir, this.ProjectDir.ToString());
-#endif
                 projectConfig["SRCROOT"] = new UniqueConfigurationValue(relativeSourcePath);
 
                 // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
                 // needed so that built products are no longer 'red' in the IDE
-#if DOTNETCORE
                 var relativeSymRoot = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
                     this.SourceRoot,
                     this.BuiltProductsDir
                 );
-#else
-                var relativeSymRoot = Bam.Core.RelativePathUtilities.GetPath(this.BuiltProductsDir, this.SourceRoot);
-#endif
                 projectConfig["SYMROOT"] = new UniqueConfigurationValue("$(SRCROOT)/" + relativeSymRoot.TrimEnd('/'));
 
                 // all intermediate files generated are relative to this
@@ -872,14 +864,10 @@ namespace XcodeBuilder
         GetRelativePathToProject(
             Bam.Core.TokenizedString inputPath)
         {
-#if DOTNETCORE
             var relPath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
                 System.IO.Path.GetDirectoryName(this.ProjectDir.ToString()),
                 inputPath.ToString()
             );
-#else
-            var relPath = Bam.Core.RelativePathUtilities.GetPath(inputPath.ToString(), this.ProjectDir.ToString());
-#endif
             if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
             {
                 return null;

@@ -139,7 +139,6 @@ namespace C
 #endif
             }
             // have the contents changed since last time?
-#if DOTNETCORE
             var hashFilePath = this.GeneratedPaths[HashFileKey].ToString();
             var hashCompare = Bam.Core.Hash.CompareAndUpdateHashFile(
                 hashFilePath,
@@ -158,51 +157,6 @@ namespace C
                 case Bam.Core.Hash.EHashCompareResult.HashesAreIdentical:
                     break;
             }
-#else
-            var writeHashFile = true;
-            var currentContentsHash = this.Contents.GetHashCode();
-            this.GeneratedPaths[HashFileKey].ToString();
-            var hashFilePath = this.GeneratedPaths[HashFileKey].ToString();
-            if (System.IO.File.Exists(hashFilePath))
-            {
-                GetHashFn getHash = inPath =>
-                {
-                    int hash = 0;
-                    using (System.IO.TextReader readFile = new System.IO.StreamReader(inPath))
-                    {
-                        var contents = readFile.ReadToEnd();
-                        hash = System.Convert.ToInt32(contents);
-                    }
-                    return hash;
-                };
-                var oldHash = getHash(hashFilePath);
-                if (oldHash == currentContentsHash)
-                {
-                    writeHashFile = false;
-                }
-                else
-                {
-                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-#if BAM_V2
-                        this.GeneratedPaths[HeaderFileKey],
-#else
-                        this.GeneratedPaths[Key],
-#endif
-                        this.GeneratedPaths[HashFileKey]
-                    );
-                }
-            }
-            if (writeHashFile)
-            {
-                var destDir = System.IO.Path.GetDirectoryName(hashFilePath);
-                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
-                using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(hashFilePath))
-                {
-                    writeFile.NewLine = "\n";
-                    writeFile.Write(currentContentsHash);
-                }
-            }
-#endif
         }
 
         protected override void

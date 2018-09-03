@@ -41,23 +41,7 @@ namespace Bam.Core
         {
             get
             {
-#if DOTNETCORE
                 return System.Environment.Is64BitOperatingSystem;
-#else
-                if (Graph.Instance.ProcessState.RunningMono)
-                {
-                    // TODO: System.Environment.GetEnvironmentVariable("HOSTTYPE") returns null instead of something like "x86_64"
-                    // TODO: this is a hack and a big assumption that you're not running a 32-bit OS on a 64-bit processor
-                    var is64Bit = (8 == System.IntPtr.Size);
-                    return is64Bit;
-                }
-                else
-                {
-                    // cannot do a check for the Wow6432Node as it does exist on some 32-bit Windows OS (Vista for example)
-                    var is64Bit = (System.Environment.GetEnvironmentVariable("ProgramFiles(x86)") != null);
-                    return is64Bit;
-                }
-#endif
             }
         }
 

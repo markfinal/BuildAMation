@@ -74,15 +74,10 @@ namespace Bam.Core
             this.PackageRepositories = new StringArray();
             try
             {
-#if DOTNETCORE
                 var primaryPackageRepo = System.IO.Path.Combine(
                     System.IO.Directory.GetParent(System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName).FullName,
-                    "packages");
-#else
-                var primaryPackageRepo = System.IO.Path.Combine(
-                    System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName,
-                    "packages");
-#endif
+                    "packages"
+                );
                 if (!System.IO.Directory.Exists(primaryPackageRepo))
                 {
                     throw new Exception(
@@ -987,14 +982,10 @@ namespace Bam.Core
                 {
                     throw new Exception("The build root has already been set");
                 }
-#if DOTNETCORE
                 var absoluteBuildRootPath = RelativePathUtilities.ConvertRelativePathToAbsolute(
                     Graph.Instance.ProcessState.WorkingDirectory,
                     value
                 );
-#else
-                var absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
-#endif
                 this.TheBuildRoot = absoluteBuildRootPath;
                 this.Macros.AddVerbatim("buildroot", absoluteBuildRootPath);
             }

@@ -28,9 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
-#if DOTNETCORE
 using System.Reflection;
-#endif
 namespace Bam.Core
 {
     /// <summary>
@@ -59,19 +57,7 @@ namespace Bam.Core
             {
                 productVersion = pv;
             }
-#if DOTNETCORE
             targetFrameworkName = coreAssembly.GetCustomAttribute<System.Runtime.Versioning.TargetFrameworkAttribute>().FrameworkName;
-#else
-            var targetFrameworkAttributes = coreAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false);
-            if (targetFrameworkAttributes.Length > 0)
-            {
-                targetFrameworkName = (targetFrameworkAttributes[0] as System.Runtime.Versioning.TargetFrameworkAttribute).FrameworkDisplayName;
-            }
-            else
-            {
-                targetFrameworkName = null;
-            }
-#endif
         }
 
         private static string
@@ -128,32 +114,6 @@ namespace Bam.Core
             }
         }
 
-#if DOTNETCORE
-#else
-        private string
-        GetNuGetDirectory()
-        {
-            try
-            {
-                var rootDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.ExecutableDirectory));
-                var nugetDir = System.IO.Path.Combine(rootDir, "NuGetPackages");
-                if (!System.IO.Directory.Exists(nugetDir))
-                {
-                    throw new Exception(
-                        "NuGet package directory for BAM does not exist at '{0}'",
-                        nugetDir
-                    );
-                }
-                return nugetDir;
-            }
-            catch (System.ArgumentNullException)
-            {
-                // may occur during unittests
-                return null;
-            }
-        }
-#endif
-
         /// <summary>
         /// Create an instance of the class. Although there is only going to be one instance created,
         /// this is not a singleton, as BamState is attached to the Graph.
@@ -165,16 +125,8 @@ namespace Bam.Core
             string targetFrameworkName;
             GetAssemblyVersionData(out assemblyVersion, out productVersion, out targetFrameworkName);
 
-#if DOTNETCORE
-#else
-            this.RunningMono = (System.Type.GetType("Mono.Runtime") != null);
-#endif
             this.ExecutableDirectory = GetBamDirectory();
             this.WorkingDirectory = GetWorkingDirectory();
-#if DOTNETCORE
-#else
-            this.NuGetDirectory = this.GetNuGetDirectory();
-#endif
 
             this.Version = assemblyVersion;
             this.VersionString = productVersion;
@@ -192,19 +144,6 @@ namespace Bam.Core
             get;
             private set;
         }
-
-#if DOTNETCORE
-#else
-        /// <summary>
-        /// Obtains the directory containing NuGet packages.
-        /// </summary>
-        /// <value>NuGet package directory path</value>
-        public string NuGetDirectory
-        {
-            get;
-            private set;
-        }
-#endif
 
         /// <summary>
         /// Obtains the version of Bam in use.
@@ -225,19 +164,6 @@ namespace Bam.Core
             get;
             private set;
         }
-
-#if DOTNETCORE
-#else
-        /// <summary>
-        /// Determines whether Bam is running through Mono.
-        /// </summary>
-        /// <value><c>true</c> if running mono; otherwise, <c>false</c>.</value>
-        public bool RunningMono
-        {
-            get;
-            private set;
-        }
-#endif
 
         /// <summary>
         /// Obtains the working directory in which Bam is being executed.

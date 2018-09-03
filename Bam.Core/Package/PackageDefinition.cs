@@ -274,11 +274,7 @@ namespace Bam.Core
                 var bamDir = this.GetBamDirectory() + System.IO.Path.DirectorySeparatorChar; // slash added to make it look like a directory
                 foreach (string repo in packageRepos)
                 {
-#if DOTNETCORE
                     var relativePackageRepo = RelativePathUtilities.GetRelativePathFromRoot(bamDir, repo);
-#else
-                    var relativePackageRepo = RelativePathUtilities.GetPath(repo, bamDir);
-#endif
                     if (OSUtilities.IsWindowsHosting)
                     {
                         // standardize on non-Windows directory separators
@@ -579,12 +575,7 @@ namespace Bam.Core
 
                 var dir = xmlReader.GetAttribute("dir");
                 var bamDir = this.GetBamDirectory();
-#if DOTNETCORE
                 var absolutePackageRepoDir = RelativePathUtilities.ConvertRelativePathToAbsolute(bamDir, dir);
-#else
-                var absolutePackageRepoDir = RelativePathUtilities.MakeRelativePathAbsoluteTo(dir, bamDir);
-                absolutePackageRepoDir = absolutePackageRepoDir.TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar });
-#endif
                 this.PackageRepositories.AddUnique(absolutePackageRepoDir);
             }
 
@@ -1363,14 +1354,10 @@ namespace Bam.Core
                 Log.MessageAll("\nPackage repositories to search:");
                 foreach (var repo in this.PackageRepositories)
                 {
-#if DOTNETCORE
                     var absoluteRepo = RelativePathUtilities.ConvertRelativePathToAbsolute(
                         Graph.Instance.ProcessState.WorkingDirectory,
                         repo
                     );
-#else
-                    var absoluteRepo = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(repo);
-#endif
 
                     Log.MessageAll("\t'{0}'\t(absolute path '{1}')", repo, absoluteRepo);
                 }

@@ -121,7 +121,6 @@ namespace Bam.Core
             return exists;
         }
 
-#if DOTNETCORE
         public class RegKey :
             System.IDisposable
         {
@@ -205,13 +204,8 @@ namespace Bam.Core
                 }
             }
         }
-#endif
 
-#if DOTNETCORE
         private static RegKey
-#else
-        private static Microsoft.Win32.RegistryKey
-#endif
         OpenSoftwareKey(
             string path,
             Microsoft.Win32.RegistryKey registryArea,
@@ -227,15 +221,9 @@ namespace Bam.Core
             if (null == key)
             {
                 Log.DebugMessage("Registry key '{0}' on {1} not found", keyPath, registryArea.Name);
-#if DOTNETCORE
                 return null;
-#endif
             }
-#if DOTNETCORE
             return new RegKey(key);
-#else
-            return key;
-#endif
         }
 
         /// <summary>
@@ -243,11 +231,7 @@ namespace Bam.Core
         /// </summary>
         /// <returns>The bit LM software key.</returns>
         /// <param name="path">Path.</param>
-#if DOTNETCORE
         public static RegKey
-#else
-        public static Microsoft.Win32.RegistryKey
-#endif
         Open32BitLMSoftwareKey(
             string path)
         {
@@ -259,11 +243,7 @@ namespace Bam.Core
         /// </summary>
         /// <returns>The CU software key.</returns>
         /// <param name="path">Path.</param>
-#if DOTNETCORE
         public static RegKey
-#else
-        public static Microsoft.Win32.RegistryKey
-#endif
         OpenCUSoftwareKey(
             string path)
         {
@@ -288,11 +268,7 @@ namespace Bam.Core
         /// </summary>
         /// <returns>The LM software key.</returns>
         /// <param name="path">Path.</param>
-#if DOTNETCORE
         public static RegKey
-#else
-        public static Microsoft.Win32.RegistryKey
-#endif
         OpenLMSoftwareKey(
             string path)
         {

@@ -155,14 +155,10 @@ namespace ClangCommon
         GetDefaultSDK(
             string sdkType)
         {
-#if DOTNETCORE
             var defaultSDK = Bam.Core.OSUtilities.RunExecutable(
                 xcrunPath,
                 System.String.Format("--sdk {0} --show-sdk-version", sdkType)
             ).StandardOutput;
-#else
-            var defaultSDK = Bam.Core.OSUtilities.RunExecutable(xcrunPath, System.String.Format("--sdk {0} --show-sdk-version", sdkType));
-#endif
             return System.String.Format("{0}{1}", sdkType, defaultSDK);
         }
 
