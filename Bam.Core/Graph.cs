@@ -75,8 +75,16 @@ namespace Bam.Core
             try
             {
                 var primaryPackageRepo = System.IO.Path.Combine(
-                    System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName,
-                    "packages");
+                    System.IO.Directory.GetParent(System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName).FullName,
+                    "packages"
+                );
+                if (!System.IO.Directory.Exists(primaryPackageRepo))
+                {
+                    throw new Exception(
+                        "Standard BAM package directory '{0}' does not exist",
+                        primaryPackageRepo
+                    );
+                }
                 this.PackageRepositories.AddUnique(primaryPackageRepo);
             }
             catch (System.ArgumentNullException)
@@ -974,7 +982,10 @@ namespace Bam.Core
                 {
                     throw new Exception("The build root has already been set");
                 }
-                var absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
+                var absoluteBuildRootPath = RelativePathUtilities.ConvertRelativePathToAbsolute(
+                    Graph.Instance.ProcessState.WorkingDirectory,
+                    value
+                );
                 this.TheBuildRoot = absoluteBuildRootPath;
                 this.Macros.AddVerbatim("buildroot", absoluteBuildRootPath);
             }

@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
+using System.Reflection;
 namespace Bam.Core
 {
     /// <summary>
@@ -56,20 +57,16 @@ namespace Bam.Core
             {
                 productVersion = pv;
             }
-            var targetFrameworkAttributes = coreAssembly.GetCustomAttributes(typeof(System.Runtime.Versioning.TargetFrameworkAttribute), false);
-            if (targetFrameworkAttributes.Length > 0)
-            {
-                targetFrameworkName = (targetFrameworkAttributes[0] as System.Runtime.Versioning.TargetFrameworkAttribute).FrameworkDisplayName;
-            }
-            else
-            {
-                targetFrameworkName = null;
-            }
+            targetFrameworkName = coreAssembly.GetCustomAttribute<System.Runtime.Versioning.TargetFrameworkAttribute>().FrameworkName;
         }
 
         private static string
         GetBamDirectory()
         {
+            // must check the ENTRY assembly
+            // - in normal runs, this is bam!
+            // - in debug runs, this is the procedurally generated app
+            // - in unittest runs, this is the unit test assembly
             var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
             try
             {
@@ -78,20 +75,25 @@ namespace Bam.Core
             }
             catch (System.Resources.MissingManifestResourceException)
             {
-                // TODO: would be nice to check in advance if any exist
-                // this assumes running an executable from the BAM! installation folder
-                return System.IO.Path.GetDirectoryName(bamAssembly.Location);
-            }
-            catch (System.NullReferenceException)
-            {
-                // may occur during unittesting
-                return null;
+                var basename = System.IO.Path.GetFileNameWithoutExtension(bamAssembly.Location);
+                if (basename.Contains("Bam"))
+                {
+                    return System.IO.Path.GetDirectoryName(bamAssembly.Location);
+                }
+                else
+                {
+                    return null; // probably the unittests
+                }
             }
         }
 
         private static string
         GetWorkingDirectory()
         {
+            // must check the ENTRY assembly
+            // - in normal runs, this is bam!
+            // - in debug runs, this is the procedurally generated app
+            // - in unittest runs, this is the unit test assembly
             var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
             try
             {
@@ -100,29 +102,15 @@ namespace Bam.Core
             }
             catch (System.Resources.MissingManifestResourceException)
             {
-                // TODO: would be nice to check in advance if any exist
-                return System.IO.Directory.GetCurrentDirectory();
-            }
-            catch (System.NullReferenceException)
-            {
-                // may occur during unittesting
-                return null;
-            }
-        }
-
-        private string
-        GetNuGetDirectory()
-        {
-            try
-            {
-                var rootDir = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.ExecutableDirectory));
-                var nugetDir = System.IO.Path.Combine(rootDir, "NuGetPackages");
-                return nugetDir;
-            }
-            catch (System.ArgumentNullException)
-            {
-                // may occur during unittests
-                return null;
+                var basename = System.IO.Path.GetFileNameWithoutExtension(bamAssembly.Location);
+                if (basename.Contains("Bam"))
+                {
+                    return System.IO.Directory.GetCurrentDirectory();
+                }
+                else
+                {
+                    return null; // probably the unittests
+                }
             }
         }
 
@@ -137,10 +125,8 @@ namespace Bam.Core
             string targetFrameworkName;
             GetAssemblyVersionData(out assemblyVersion, out productVersion, out targetFrameworkName);
 
-            this.RunningMono = (System.Type.GetType("Mono.Runtime") != null);
             this.ExecutableDirectory = GetBamDirectory();
             this.WorkingDirectory = GetWorkingDirectory();
-            this.NuGetDirectory = this.GetNuGetDirectory();
 
             this.Version = assemblyVersion;
             this.VersionString = productVersion;
@@ -154,16 +140,6 @@ namespace Bam.Core
         /// </summary>
         /// <value>Bam assembly directory path</value>
         public string ExecutableDirectory
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Obtains the directory containing NuGet packages.
-        /// </summary>
-        /// <value>NuGet package directory path</value>
-        public string NuGetDirectory
         {
             get;
             private set;
@@ -184,16 +160,6 @@ namespace Bam.Core
         /// </summary>
         /// <value>The version string.</value>
         public string VersionString
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Determines whether Bam is running through Mono.
-        /// </summary>
-        /// <value><c>true</c> if running mono; otherwise, <c>false</c>.</value>
-        public bool RunningMono
         {
             get;
             private set;

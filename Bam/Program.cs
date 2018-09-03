@@ -82,6 +82,12 @@ namespace Bam
                     return;
                 }
 
+                if (Core.CommandLineProcessor.Evaluate(new Core.Options.PrintInstallDirectory()))
+                {
+                    CommandLineArgumentHelper.PrintInstallationDirectory();
+                    return;
+                }
+
                 if (Core.CommandLineProcessor.Evaluate(new Core.Options.CreateDebugProject()))
                 {
                     DebugProject.Create();
@@ -145,11 +151,7 @@ namespace Bam
             }
             catch (System.Exception exception)
             {
-                var message = new System.Text.StringBuilder();
-                message.AppendFormat("{0} not handled: {1}", exception.GetType().ToString(), exception.Message);
-                message.AppendLine();
-                message.AppendLine(exception.StackTrace);
-                Core.Log.ErrorMessage(message.ToString());
+                Core.Exception.DisplayException(exception);
                 System.Environment.ExitCode = -2;
             }
             finally

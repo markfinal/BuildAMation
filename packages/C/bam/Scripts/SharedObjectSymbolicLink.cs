@@ -128,7 +128,7 @@ namespace C
         protected override void
         EvaluateInternal()
         {
-#if __MonoCS__
+#if __MonoCS__ || D_NUGET_MONO_POSIX_NETSTANDARD
             if (this.IsPrebuilt)
             {
                 return;

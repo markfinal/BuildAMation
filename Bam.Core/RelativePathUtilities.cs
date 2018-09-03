@@ -43,219 +43,50 @@ namespace Bam.Core
         IsPathAbsolute(
             string path)
         {
-            var pathUri = new System.Uri(path, System.UriKind.RelativeOrAbsolute);
-            var isAbsolute = pathUri.IsAbsoluteUri;
-            return isAbsolute;
+            return System.IO.Path.IsPathRooted(path);
         }
 
         /// <summary>
-        /// Get a relative path between two URIs.
+        /// Generate a relative path from the specified root.
         /// </summary>
-        /// <returns>The path.</returns>
-        /// <param name="pathUri">Path URI.</param>
-        /// <param name="relativeToUri">Relative to URI.</param>
+        /// <param name="root">Root of the path</param>
+        /// <param name="path">Path that, if rooted, needs to be relative.</param>
+        /// <returns>The relative path, with root as its base.</returns>
         public static string
-        GetPath(
-            System.Uri pathUri,
-            System.Uri relativeToUri)
+        GetRelativePathFromRoot(
+            string root,
+            string path)
         {
-            return GetPath(pathUri, relativeToUri, null);
-        }
-
-        /// <summary>
-        /// Get a relative path between two URIs.
-        /// </summary>
-        /// <returns>The path.</returns>
-        /// <param name="pathUri">Path URI.</param>
-        /// <param name="relativeToUri">Relative to URI.</param>
-        /// <param name="relativePrefix">Relative prefix.</param>
-        public static string
-        GetPath(
-            System.Uri pathUri,
-            System.Uri relativeToUri,
-            string relativePrefix)
-        {
-            var relativePathUri = pathUri.IsAbsoluteUri ? relativeToUri.MakeRelativeUri(pathUri) : pathUri;
-            if (relativePathUri.IsAbsoluteUri || System.IO.Path.IsPathRooted(relativePathUri.ToString()))
-            {
-                // should return the path that pathUri was constructed with
-                return pathUri.LocalPath;
-            }
-            else
-            {
-                var relativePath = relativePathUri.ToString();
-                relativePath = System.Uri.UnescapeDataString(relativePath);
-                if (null != relativePrefix)
-                {
-                    relativePath = System.IO.Path.Combine(relativePrefix, relativePath);
-                }
-                if (OSUtilities.IsWindowsHosting)
-                {
-                    relativePath = relativePath.Replace('/', '\\');
-                }
-                return relativePath;
-            }
-        }
-
-        /// <summary>
-        /// Get a relative path between a string and a URI.
-        /// </summary>
-        /// <returns>The path.</returns>
-        /// <param name="path">Path.</param>
-        /// <param name="relativeToUri">Relative to URI.</param>
-        /// <param name="relativePrefix">Relative prefix.</param>
-        public static string
-        GetPath(
-            string path,
-            System.Uri relativeToUri,
-            string relativePrefix)
-        {
-            if (null == path)
-            {
-                Log.DebugMessage("Null relative path requested");
-                return path;
-            }
-
-            // special cases
-            if ("." == path || ".." == path)
+            if (!System.IO.Path.IsPathRooted(path))
             {
                 return path;
             }
-
-            var pathUri = new System.Uri(path, System.UriKind.RelativeOrAbsolute);
-            return GetPath(pathUri, relativeToUri, relativePrefix);
+            return System.IO.Path.GetRelativePath(root, path);
         }
 
         /// <summary>
-        /// Get a relative path.
+        /// Convert a relative path to an absolute, using the specified root.
+        /// If an absolute path is provided, it is returned.
         /// </summary>
-        /// <returns>The path.</returns>
-        /// <param name="path">Path.</param>
-        /// <param name="relativeToUri">Relative to URI.</param>
+        /// <param name="root">Root to use to make the path absolute.</param>
+        /// <param name="path">Current relative path to convert.</param>
+        /// <returns>The resulting absolute path.</returns>
         public static string
-        GetPath(
-            string path,
-            System.Uri relativeToUri)
+        ConvertRelativePathToAbsolute(
+            string root,
+            string path)
         {
-            return GetPath(path, relativeToUri, null);
-        }
-
-        /// <summary>
-        /// Get a relative path between two strings.
-        /// </summary>
-        /// <returns>The path.</returns>
-        /// <param name="path">Path.</param>
-        /// <param name="relativeToString">Relative to string.</param>
-        /// <param name="relativePrefix">Relative prefix.</param>
-        public static string
-        GetPath(
-            string path,
-            string relativeToString,
-            string relativePrefix)
-        {
-            var relativeToUri = new System.Uri(relativeToString, System.UriKind.RelativeOrAbsolute);
-            var relativePath = GetPath(path, relativeToUri, relativePrefix);
-            return relativePath;
-        }
-
-        /// <summary>
-        /// Get a relative path between two strings.
-        /// </summary>
-        /// <returns>The path.</returns>
-        /// <param name="path">Path.</param>
-        /// <param name="relativeToString">Relative to string.</param>
-        public static string
-        GetPath(
-            string path,
-            string relativeToString)
-        {
-            var relativeToUri = new System.Uri(relativeToString, System.UriKind.RelativeOrAbsolute);
-            var relativePath = GetPath(path, relativeToUri);
-            return relativePath;
-        }
-
-        /// <summary>
-        /// Get a path relative to the working directory.
-        /// </summary>
-        /// <returns>The relative path absolute to working dir.</returns>
-        /// <param name="relativePath">Relative path.</param>
-        public static string
-        MakeRelativePathAbsoluteToWorkingDir(
-            string relativePath)
-        {
-            return MakeRelativePathAbsoluteTo(relativePath, Graph.Instance.ProcessState.WorkingDirectory);
-        }
-
-        /// <summary>
-        /// Get a relative path.
-        /// </summary>
-        /// <returns>The relative path absolute to.</returns>
-        /// <param name="relativePath">Relative path.</param>
-        /// <param name="basePath">Base path.</param>
-        public static string
-        MakeRelativePathAbsoluteTo(
-            string relativePath,
-            string basePath)
-        {
-            var relativePathUri = new System.Uri(relativePath, System.UriKind.RelativeOrAbsolute);
-            if (!relativePathUri.IsAbsoluteUri)
+            if (System.IO.Path.IsPathRooted(path))
             {
-                relativePathUri = new System.Uri(System.IO.Path.Combine(basePath, relativePath));
+                return path;
             }
-
-            var absolutePath = relativePathUri.AbsolutePath;
-            absolutePath = System.IO.Path.GetFullPath(absolutePath);
-            absolutePath = System.Uri.UnescapeDataString(absolutePath);
+            var absolute = System.IO.Path.Combine(root, path);
             if (OSUtilities.IsWindowsHosting)
             {
-                absolutePath = absolutePath.Replace('/', '\\');
+                absolute = absolute.Replace('/', '\\');
             }
-
-            return absolutePath;
-        }
-
-        /// <summary>
-        /// Find the common root path between two paths.
-        /// </summary>
-        /// <returns>The common root.</returns>
-        /// <param name="path1">Path1.</param>
-        /// <param name="path2">Path2.</param>
-        public static string
-        GetCommonRoot(
-            string path1,
-            string path2)
-        {
-            var path1Parts = path1.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
-            var path2Parts = path2.Split(new char[] { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar });
-
-            string commonRoot = null;
-            for (int i = 0; i < path1Parts.Length; ++i)
-            {
-                if (i >= path2Parts.Length)
-                {
-                    break;
-                }
-
-                if (!path1Parts[i].Equals(path2Parts[i]))
-                {
-                    break;
-                }
-
-                if (null != commonRoot)
-                {
-                    commonRoot = System.IO.Path.Combine(commonRoot, path1Parts[i]);
-                }
-                else
-                {
-                    commonRoot = path1Parts[i];
-                    if (commonRoot.EndsWith(System.IO.Path.VolumeSeparatorChar.ToString()))
-                    {
-                        commonRoot += System.IO.Path.DirectorySeparatorChar;
-                    }
-                }
-            }
-
-            return commonRoot;
+            absolute = System.IO.Path.GetFullPath(absolute);
+            return absolute;
         }
     }
 }

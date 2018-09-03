@@ -42,8 +42,6 @@ namespace C
         private static Bam.Core.PathKey HashFileKey = Bam.Core.PathKey.Generate("Hash of version resource contents");
 #endif
 
-        private delegate int GetHashFn(string inPath);
-
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -228,47 +226,23 @@ namespace C
 #endif
             }
             // have the contents changed since last time?
-            var writeHashFile = true;
-            var currentContentsHash = this.Contents.GetHashCode();
             var hashFilePath = this.GeneratedPaths[HashFileKey].ToString();
-            if (System.IO.File.Exists(hashFilePath))
+            var hashCompare = Bam.Core.Hash.CompareAndUpdateHashFile(
+                hashFilePath,
+                this.Contents
+            );
+            switch (hashCompare)
             {
-                GetHashFn getHash = inPath =>
-                {
-                    int hash = 0;
-                    using (System.IO.TextReader readFile = new System.IO.StreamReader(inPath))
-                    {
-                        var contents = readFile.ReadToEnd();
-                        hash = System.Convert.ToInt32(contents);
-                    }
-                    return hash;
-                };
-                var oldHash = getHash(hashFilePath);
-                if (oldHash == currentContentsHash)
-                {
-                    writeHashFile = false;
-                }
-                else
-                {
+                case Bam.Core.Hash.EHashCompareResult.HashesAreDifferent:
                     this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-#if BAM_V2
                         this.GeneratedPaths[SourceFileKey],
-#else
-                        this.GeneratedPaths[Key],
-#endif
                         this.GeneratedPaths[HashFileKey]
                     );
-                }
-            }
-            if (writeHashFile)
-            {
-                var destDir = System.IO.Path.GetDirectoryName(hashFilePath);
-                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
-                using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(hashFilePath))
-                {
-                    writeFile.NewLine = "\n";
-                    writeFile.Write(currentContentsHash);
-                }
+                    break;
+
+                case Bam.Core.Hash.EHashCompareResult.HashFileDoesNotExist:
+                case Bam.Core.Hash.EHashCompareResult.HashesAreIdentical:
+                    break;
             }
         }
     }

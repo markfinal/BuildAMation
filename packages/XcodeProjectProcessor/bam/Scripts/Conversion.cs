@@ -568,7 +568,16 @@ namespace XcodeProjectProcessor
                         foreach (var path in (property_value as Bam.Core.TokenizedStringArray).ToEnumerableWithoutDuplicates())
                         {
                             var fullPath = path.ToString();
-                            var relPath = Bam.Core.RelativePathUtilities.GetPath(fullPath, configuration.Project.SourceRoot);
+                            if (fullPath.StartsWith('@'))
+                            {
+                                // e.g. @executable_path ...
+                                paths.Add(fullPath);
+                                continue;
+                            }
+                            var relPath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                                configuration.Project.SourceRoot,
+                                fullPath
+                            );
                             // spaces need to be double escaped
                             if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
                             {

@@ -124,5 +124,14 @@ namespace Bam
                 targetFrameworkVersion,
                 Core.Graph.Instance.ProcessState.ExecutableDirectory);
         }
+
+        /// <summary>
+        /// Display the installation directory of Bam!
+        /// </summary>
+        public static void
+        PrintInstallationDirectory()
+        {
+            Core.Log.Info(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
+        }
     }
 }

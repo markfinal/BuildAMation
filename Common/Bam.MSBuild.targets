@@ -1,0 +1,10 @@
+﻿<Project>
+  <PropertyGroup>
+    <AssemblyVersion>2.0.0</AssemblyVersion>
+  </PropertyGroup>
+  <Target Name="SetInformationalVersionFromGit" BeforeTargets="CoreCompile">
+    <PropertyGroup>
+      <InformationalVersion>$(AssemblyVersion) ($(GitTag)) [$(GitBranch)]</InformationalVersion>
+    </PropertyGroup>
+  </Target>
+</Project>

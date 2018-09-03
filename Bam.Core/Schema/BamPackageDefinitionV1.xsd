@@ -83,6 +83,24 @@
   </xs:sequence>
 </xs:complexType>
 
+<xs:complexType name="nuget-packages-type">
+  <xs:sequence>
+    <xs:element name="NuGetPackage" minOccurs="1" maxOccurs="unbounded">
+      <xs:complexType>
+        <xs:sequence>
+          <xs:element name="Platform" minOccurs="1" maxOccurs="unbounded">
+            <xs:complexType>
+              <xs:attribute name="name" type="platform-type" use="required" />
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="id" type="xs:string" use="required" />
+        <xs:attribute name="version" type="xs:string" use="required" />
+      </xs:complexType>
+    </xs:element>
+  </xs:sequence>
+</xs:complexType>
+
 <!-- root node -->
 <xs:element name="PackageDefinition">
     <xs:complexType>
@@ -94,6 +112,7 @@
             <xs:element name="DotNetAssemblies" type="dotnet-assemblies-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="SupportedPlatforms" type="supported-platforms-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="Definitions" type="definitions-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="NuGetPackages" type="nuget-packages-type" minOccurs="0" maxOccurs="1" />
         </xs:all>
         <xs:attribute name="name" type="xs:string" use="required" />
         <xs:attribute name="version" type="xs:string" use="optional" />

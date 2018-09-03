@@ -1,140 +1,47 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ProjectGuid>{261CF4FA-E83C-4FED-A6B6-BFAC814DEB57}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Bam</RootNamespace>
-    <AssemblyName>bam</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <SignAssembly>true</SignAssembly>
-    <DelaySign>False</DelaySign>
-    <AssemblyOriginatorKeyMode>File</AssemblyOriginatorKeyMode>
-    <AssemblyOriginatorKeyFile>..\Common\BuildAMation.snk</AssemblyOriginatorKeyFile>
-    <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
-    <NoStdLib>False</NoStdLib>
-    <WarningLevel>4</WarningLevel>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <TargetFrameworkProfile />
-    <ProductVersion>9.0.30729</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
+    <AssemblyOriginatorKeyFile>../Common/BuildAMation.snk</AssemblyOriginatorKeyFile>
+    <DelaySign>false</DelaySign>
+    <StartupObject></StartupObject>
+    <ApplicationIcon />
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <OutputPath>..\bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;BAM_V2</DefineConstants>
+    <NoWarn />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <FileAlignment>4096</FileAlignment>
-    <DebugType>full</DebugType>
+    <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <WarningLevel>4</WarningLevel>
-    <Optimize>false</Optimize>
-    <NoWarn>1607</NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>docbuild\Debug\bam.XML</DocumentationFile>
+    <OutputPath>..\bin\Debug</OutputPath>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>TRACE;BAM_V2</DefineConstants>
+    <NoWarn />
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <FileAlignment>4096</FileAlignment>
-    <DebugType>none</DebugType>
+    <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <WarningLevel>4</WarningLevel>
-    <NoWarn>
-    </NoWarn>
-    <Prefer32Bit>false</Prefer32Bit>
-    <DocumentationFile>docbuild\Release\bam.XML</DocumentationFile>
+    <OutputPath>..\bin\Release</OutputPath>
+    <DocumentationFile>..\docs\Bam.xml</DocumentationFile>
   </PropertyGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <Compile Include="..\Common\CommonAssemblyInfo.cs">
-      <Link>Properties\CommonAssemblyInfo.cs</Link>
-    </Compile>
-    <Compile Include="CommandLineArgumentHelper.cs" />
-    <Compile Include="DebugProject.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="bam">
+    <PackageReference Include="GitInfo" Version="2.0.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Bam.Core\Bam.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="bam">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\Common\BuildAMation.snk">
-      <Link>BuildAMation.snk</Link>
+    <None Update="bam.bat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Bam.Core\Bam.Core.csproj">
-      <Project>{273159D1-E0F0-48E5-8B45-B8BC6B5617F0}</Project>
-      <Name>Bam.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.2.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 2.0 %28x86%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.0">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.0 %28x86%29</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <Import Project="..\NuGetPackages\GitInfo.2.0.11\build\GitInfo.targets" Condition="Exists('..\NuGetPackages\GitInfo.2.0.11\build\GitInfo.targets')" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\NuGetPackages\GitInfo.2.0.11\build\GitInfo.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\NuGetPackages\GitInfo.2.0.11\build\GitInfo.targets'))" />
-  </Target>
+  <Import Project="../Common/Bam.MSBuild.targets" />
 </Project>
