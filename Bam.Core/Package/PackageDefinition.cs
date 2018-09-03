@@ -386,6 +386,24 @@ namespace Bam.Core
                     var nugetPackageElement = document.CreateElement("NuGetPackage", namespaceURI);
                     nugetPackageElement.SetAttribute("id", desc.Identifier);
                     nugetPackageElement.SetAttribute("version", desc.Version);
+                    if (desc.Platforms.Includes(Bam.Core.EPlatform.Windows))
+                    {
+                        var platformEl = document.CreateElement("Platform", namespaceURI);
+                        platformEl.SetAttribute("name", "Windows");
+                        nugetPackageElement.AppendChild(platformEl);
+                    }
+                    if (desc.Platforms.Includes(Bam.Core.EPlatform.Linux))
+                    {
+                        var platformEl = document.CreateElement("Platform", namespaceURI);
+                        platformEl.SetAttribute("name", "Linux");
+                        nugetPackageElement.AppendChild(platformEl);
+                    }
+                    if (desc.Platforms.Includes(Bam.Core.EPlatform.OSX))
+                    {
+                        var platformEl = document.CreateElement("Platform", namespaceURI);
+                        platformEl.SetAttribute("name", "OSX");
+                        nugetPackageElement.AppendChild(platformEl);
+                    }
                     requiredNuGetPackages.AppendChild(nugetPackageElement);
                 }
                 packageDefinition.AppendChild(requiredNuGetPackages);
