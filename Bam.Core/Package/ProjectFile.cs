@@ -217,6 +217,7 @@ namespace Bam.Core
             {
                 this.CreateElement("OutputType", parent: generalProperties, value: "Exe");
             }
+            this.CreateElement("LangVersion", parent: generalProperties, value: "latest");
 
             var debugProperties = this.CreatePropertyGroup(condition: @"'$(Configuration)|$(Platform)'=='Debug|AnyCPU'", parent: this.Root);
             this.CreateElement("DefineConstants", parent: debugProperties, value: GetPreprocessorDefines());

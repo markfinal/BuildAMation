@@ -4,6 +4,7 @@
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../Common/BuildAMation.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;BAM_V2</DefineConstants>
@@ -34,5 +35,5 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Import Project="../Common/Bam.MSBuild.targets"/>
+  <Import Project="../Common/Bam.MSBuild.targets" />
 </Project>
