@@ -13,6 +13,7 @@
     <WarningsAsErrors />
     <PlatformTarget>AnyCPU</PlatformTarget>
     <OutputPath>..\bin\Debug</OutputPath>
+    <DocumentationFile>obj\Debug\docs\Bam.Core.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE;BAM_V2</DefineConstants>
@@ -20,7 +21,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <OutputPath>..\bin\Release</OutputPath>
-    <DocumentationFile>..\docs\Bam.Core.xml</DocumentationFile>
+    <DocumentationFile>obj\Release\docs\Bam.Core.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GitInfo" Version="2.0.15">

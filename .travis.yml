@@ -6,8 +6,8 @@ notifications:
      on_failure: always
 language: csharp
 install:
-  # GCC ObjectiveC, GNUStep and 32-bit GCC and G++, and 32-bit X11 development files for Test12; chrpath for ChrpathTest1
-  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install gobjc gnustep-devel gcc-multilib g++-multilib libx11-dev:i386 chrpath; fi
+  # GCC ObjectiveC, GNUStep and 32-bit GCC and G++, and 32-bit X11 development files for Test12; chrpath for ChrpathTest1; doxygen for doc generation
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install gobjc gnustep-devel gcc-multilib g++-multilib libx11-dev:i386 chrpath doxygen; fi
 matrix:
   include:
   - os: linux
@@ -16,7 +16,7 @@ matrix:
     dotnet: 2.1.401
     script:
       - python codingtools/dotnetcore_run_unittests.py
-      - python codingtools/dotnetcore_make_release.py
+      - python codingtools/dotnetcore_make_release.py -d doxygen
       - cd bam_publish
       - source env.sh
       - python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d

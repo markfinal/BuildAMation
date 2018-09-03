@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from generate_docs import build_documentation
 from optparse import OptionParser
 import os
 import shutil
@@ -98,6 +99,9 @@ def list_files(base_dir):
 
 
 def main(options):
+    if options.doxygen:
+        build_documentation(g_bam_dir, options.doxygen)
+
     output_dir = os.path.join(g_bam_dir, 'bam_publish')
     run_dotnet_publish(
         output_dir,
@@ -130,6 +134,7 @@ def main(options):
 if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option('-s', '--standalone', action='store_true', dest='standalone')
+    parser.add_option('-d', '--doxygen', dest='doxygen', default=None)
     (options, args) = parser.parse_args()
 
     try:
