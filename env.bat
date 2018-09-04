@@ -20,7 +20,6 @@ IF NOT EXIST !ExecutablePath! (
 ) ELSE (
   SET NewPath=!ExecutablePath!;!NewPath!
   SET PATH=!ExecutablePath!;!PATH!
-  REM DOSKEY bam=dotnet !ExecutablePath!\Bam.dll "$*"
   dotnet !ExecutablePath!\Bam.dll --version
 )
 
