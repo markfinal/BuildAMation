@@ -232,7 +232,7 @@ if __name__ == '__main__':
         root_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s" % options.gittag)
         clone_repo(root_dir, options.gittag)
     elif options.local:
-        root_dir = os.path.join(g_bam_dir, 'bam_pubish')
+        root_dir = os.path.join(g_bam_dir, 'bam_publish')
     else:
         branch = get_branch_name()
         hash = get_hash()
