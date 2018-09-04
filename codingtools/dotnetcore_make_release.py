@@ -3,10 +3,14 @@
 from generate_docs import build_documentation
 from optparse import OptionParser
 import os
+import platform
 import shutil
+import stat
 import subprocess
 import sys
+import tarfile
 import tempfile
+import zipfile
 
 
 g_script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -99,9 +103,49 @@ def list_files(base_dir):
             log(' ' * (depth + 1) + f)
 
 
+def zip_dir(zip_path, dir):
+    log('Zipping directory %s to %s' % (dir, zip_path))
+    base_dir, leaf = os.path.split(dir)
+    cwd = os.getcwd()
+    try:
+        os.chdir(base_dir)
+        with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as zip_object:
+            for root, dirs, files in os.walk(leaf):
+                for file_path in files:
+                    zip_object.write(os.path.join(root, file_path))
+    finally:
+        os.chdir(cwd)
+
+
+def tar_dir(tar_path, dir):
+    def windows_executable_filter(tarinfo):
+        if platform.system() != "Windows":
+            return tarinfo
+        # attempt to fix up the permissions that are lost during tarring on Windows
+        if tarinfo.name.endswith(".exe") or\
+           tarinfo.name.endswith(".dll") or\
+           tarinfo.name.endswith(".py") or\
+           tarinfo.name.endswith(".sh") or\
+           tarinfo.name.endswith("bam"):
+            tarinfo.mode = stat.S_IRUSR | stat.S_IXUSR | stat.S_IRGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IXOTH
+        return tarinfo
+    log('Tarring directory %s to %s' % (dir, tar_path))
+    base_dir, leaf = os.path.split(dir)
+    cwd = os.getcwd()
+    try:
+        os.chdir(base_dir)
+        with tarfile.open(tar_path, "w:gz") as tar:
+            tar.add(leaf, filter=windows_executable_filter)
+    finally:
+        os.chdir(cwd)
+
+
 def main(options, root_dir):
     if options.doxygen:
         build_documentation(root_dir, options.doxygen)
+        if options.make_distribution:
+            zip_dir(os.path.join(g_bam_dir, 'BuildAMation-docs') + '.zip', os.path.join(root_dir, 'docs'))
+            tar_dir(os.path.join(g_bam_dir, 'BuildAMation-docs') + '.tgz', os.path.join(root_dir, 'docs'))
 
     output_dir = os.path.join(root_dir, 'bam_publish')
     run_dotnet_publish(
@@ -113,6 +157,9 @@ def main(options, root_dir):
     )
     copy_support_files(output_dir)
     #list_files(output_dir)
+    if options.make_distribution:
+        zip_dir(os.path.join(g_bam_dir, 'BuildAMation-AnyCPU') + '.zip', output_dir)
+        tar_dir(os.path.join(g_bam_dir, 'BuildAMation-AnyCPU') + '.tgz', output_dir)
 
     if options.standalone:
         platforms = []
@@ -156,6 +203,7 @@ if __name__ == '__main__':
     parser.add_option('-s', '--standalone', action='store_true', dest='standalone')
     parser.add_option('-d', '--doxygen', dest='doxygen', default=None)
     parser.add_option('-t', '--tag', dest='gittag', default=None)
+    parser.add_option('-x', '--distribution', action='store_true', dest='make_distribution')
     (options, args) = parser.parse_args()
 
     root_dir = g_bam_dir
