@@ -27,6 +27,23 @@ def run_process(args):
     subprocess.check_call(args)
 
 
+def _run_git(arguments):
+    args = []
+    args.append('git')
+    args.extend(arguments)
+    log('Running: %s' % ' '.join(args))
+    result = subprocess.check_output(args)
+    return result.rstrip()
+
+
+def get_branch_name():
+    return _run_git(['rev-parse', '--abbrev-ref', 'HEAD'])
+
+
+def get_hash():
+    return _run_git(['rev-parse', '--short', 'HEAD'])
+
+
 def run_dotnet(target, project_path, output_dir, configuration='Release', framework='netcoreapp2.1', force=True, standalone_platform=None, verbosity='normal', extra_properties=None):
     output_dir = os.path.join(output_dir, 'bin', configuration, framework)
     cur_dir = os.getcwd()
@@ -57,10 +74,14 @@ def run_dotnet(target, project_path, output_dir, configuration='Release', framew
         os.chdir(cur_dir)
 
 
+def delete_directory(dir):
+    if os.path.isdir(dir):
+        log('Deleting folder, %s' % dir)
+        shutil.rmtree(dir)
+
+
 def run_dotnet_publish(output_dir, configuration='Release', framework='netcoreapp2.1', force=True, standalone_platform=None, verbosity='normal'):
-    if os.path.isdir(output_dir):
-        log('Deleting folder, %s' % output_dir)
-        shutil.rmtree(output_dir)
+    delete_directory(output_dir)
     os.makedirs(output_dir)
     project = os.path.join('Bam', 'Bam.csproj') # specifically build the Bam executable, so that the unit test dependencies don't get dragged in
     run_dotnet('clean', project, output_dir, configuration=configuration, framework=framework, force=False, standalone_platform=None, verbosity=verbosity)
@@ -141,25 +162,27 @@ def tar_dir(tar_path, dir):
 
 
 def main(options, root_dir):
-    if options.doxygen:
-        build_documentation(root_dir, options.doxygen)
-        if options.make_distribution:
-            zip_dir(os.path.join(g_bam_dir, 'BuildAMation-docs') + '.zip', os.path.join(root_dir, 'docs'))
-            tar_dir(os.path.join(g_bam_dir, 'BuildAMation-docs') + '.tgz', os.path.join(root_dir, 'docs'))
+    _,bam_version_dir = os.path.split(root_dir)
 
-    output_dir = os.path.join(root_dir, 'bam_publish')
+    if options.doxygen:
+        build_documentation(g_bam_dir, options.doxygen)
+        if options.make_distribution:
+            generated_docs_dir = os.path.join(g_bam_dir, 'docs')
+            zip_dir(os.path.join(g_bam_dir, '%s-docs' % bam_version_dir) + '.zip', generated_docs_dir)
+            tar_dir(os.path.join(g_bam_dir, '%s-docs' % bam_version_dir) + '.tgz', generated_docs_dir)
+
     run_dotnet_publish(
-        output_dir,
+        root_dir,
         configuration='Release',
         framework='netcoreapp2.1',
         force=True,
         verbosity='Minimal'
     )
-    copy_support_files(output_dir)
-    #list_files(output_dir)
+    copy_support_files(root_dir)
+    #list_files(root_dir)
     if options.make_distribution:
-        zip_dir(os.path.join(g_bam_dir, 'BuildAMation-AnyCPU') + '.zip', output_dir)
-        tar_dir(os.path.join(g_bam_dir, 'BuildAMation-AnyCPU') + '.tgz', output_dir)
+        zip_dir(os.path.join(g_bam_dir, '%s-AnyCPU' % bam_version_dir) + '.zip', root_dir)
+        tar_dir(os.path.join(g_bam_dir, '%s-AnyCPU' % bam_version_dir) + '.tgz', root_dir)
 
     if options.standalone:
         platforms = []
@@ -167,7 +190,7 @@ def main(options, root_dir):
         platforms.append('osx-x64')
         platforms.append('linux-x64')
         for platform in platforms:
-            platform_output_dir = output_dir + '_' + platform
+            platform_output_dir = root_dir + '-' + platform
             run_dotnet_publish(
                 platform_output_dir,
                 configuration='Release',
@@ -179,9 +202,7 @@ def main(options, root_dir):
             #list_files(platform_output_dir)
 
 
-def clone_repo(gittag):
-    checkout_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s" % gittag)
-    os.makedirs(checkout_dir)
+def clone_repo(checkout_dir, gittag):
     args = [
         "git",
         "clone",
@@ -195,7 +216,6 @@ def clone_repo(gittag):
     log('Running: %s' % ' '.join(args))
     subprocess.check_call(args)
     log('Cloning complete')
-    return checkout_dir
 
 
 if __name__ == '__main__':
@@ -206,9 +226,13 @@ if __name__ == '__main__':
     parser.add_option('-x', '--distribution', action='store_true', dest='make_distribution')
     (options, args) = parser.parse_args()
 
-    root_dir = g_bam_dir
     if options.gittag:
-        root_dir = clone_repo(options.gittag)
+        root_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s" % options.gittag)
+        clone_repo(root_dir, options.gittag)
+    else:
+        branch = get_branch_name()
+        hash = get_hash()
+        root_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s-%s" % (hash,branch))
     try:
         main(options, root_dir)
     except Exception, e:
