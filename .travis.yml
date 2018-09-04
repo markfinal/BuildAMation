@@ -16,7 +16,7 @@ matrix:
     dotnet: 2.1.401
     script:
       - python codingtools/dotnetcore_run_unittests.py
-      - python codingtools/dotnetcore_make_release.py -d doxygen
+      - python codingtools/dotnetcore_make_release.py --local --doxygen doxygen
       - cd bam_publish
       - source env.sh
       - python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d
@@ -28,7 +28,7 @@ matrix:
     dotnet: 2.1.401
     script:
       - python codingtools/dotnetcore_run_unittests.py
-      - python codingtools/dotnetcore_make_release.py
+      - python codingtools/dotnetcore_make_release.py --local
       - cd bam_publish
       - source env.sh
       - python tests/runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d
@@ -41,7 +41,7 @@ matrix:
     dotnet: 2.1.401
     script:
       - python codingtools/dotnetcore_run_unittests.py
-      - python codingtools/dotnetcore_make_release.py
+      - python codingtools/dotnetcore_make_release.py --local
       - cd bam_publish
       - source env.sh
       - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d

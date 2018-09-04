@@ -225,11 +225,14 @@ if __name__ == '__main__':
     parser.add_option('-d', '--doxygen', dest='doxygen', default=None)
     parser.add_option('-t', '--tag', dest='gittag', default=None)
     parser.add_option('-x', '--distribution', action='store_true', dest='make_distribution')
+    parser.add_option('-l', '--local', action='store_true', dest='local')
     (options, args) = parser.parse_args()
 
     if options.gittag:
         root_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s" % options.gittag)
         clone_repo(root_dir, options.gittag)
+    elif options.local:
+        root_dir = os.path.join(g_bam_dir, 'bam_pubish')
     else:
         branch = get_branch_name()
         hash = get_hash()
