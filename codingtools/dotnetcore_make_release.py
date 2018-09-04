@@ -6,6 +6,7 @@ import os
 import shutil
 import subprocess
 import sys
+import tempfile
 
 
 g_script_dir = os.path.dirname(os.path.realpath(__file__))
@@ -98,11 +99,11 @@ def list_files(base_dir):
             log(' ' * (depth + 1) + f)
 
 
-def main(options):
+def main(options, root_dir):
     if options.doxygen:
-        build_documentation(g_bam_dir, options.doxygen)
+        build_documentation(root_dir, options.doxygen)
 
-    output_dir = os.path.join(g_bam_dir, 'bam_publish')
+    output_dir = os.path.join(root_dir, 'bam_publish')
     run_dotnet_publish(
         output_dir,
         configuration='Release',
@@ -131,14 +132,37 @@ def main(options):
             #list_files(platform_output_dir)
 
 
+def clone_repo(gittag):
+    checkout_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s" % gittag)
+    os.makedirs(checkout_dir)
+    args = [
+        "git",
+        "clone",
+        "--depth",
+        "1",
+        "--branch",
+        gittag,
+        "https://github.com/markfinal/BuildAMation",
+        checkout_dir
+    ]
+    log('Running: %s' % ' '.join(args))
+    subprocess.check_call(args)
+    log('Cloning complete')
+    return checkout_dir
+
+
 if __name__ == '__main__':
     parser = OptionParser()
     parser.add_option('-s', '--standalone', action='store_true', dest='standalone')
     parser.add_option('-d', '--doxygen', dest='doxygen', default=None)
+    parser.add_option('-t', '--tag', dest='gittag', default=None)
     (options, args) = parser.parse_args()
 
+    root_dir = g_bam_dir
+    if options.gittag:
+        root_dir = clone_repo(options.gittag)
     try:
-        main(options)
+        main(options, root_dir)
     except Exception, e:
         log('*** Failure reason: %s' % str(e))
     finally:
