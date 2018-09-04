@@ -165,9 +165,10 @@ def main(options, root_dir):
     _,bam_version_dir = os.path.split(root_dir)
 
     if options.doxygen:
+        generated_docs_dir = os.path.join(g_bam_dir, 'docs')
+        delete_directory(generated_docs_dir)
         build_documentation(g_bam_dir, options.doxygen)
         if options.make_distribution:
-            generated_docs_dir = os.path.join(g_bam_dir, 'docs')
             zip_dir(os.path.join(g_bam_dir, '%s-docs' % bam_version_dir) + '.zip', generated_docs_dir)
             tar_dir(os.path.join(g_bam_dir, '%s-docs' % bam_version_dir) + '.tgz', generated_docs_dir)
 
