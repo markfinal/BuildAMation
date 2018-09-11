@@ -48,6 +48,15 @@ namespace Bam.Core
                 // TravisCI reports System.ArgumentOutOfRangeException for the 'left' parameter
                 SupportsCursorManagement = false;
             }
+            if (OSUtilities.IsLinuxHosting)
+            {
+                if (!System.String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("DISPLAY")))
+                {
+                    // Linux, .NET core 2.1, X windows - SetCursorPosition is _really_ slow
+                    // https://github.com/dotnet/corefx/issues/32174
+                    SupportsCursorManagement = false;
+                }
+            }
         }
 
         /// <summary>
