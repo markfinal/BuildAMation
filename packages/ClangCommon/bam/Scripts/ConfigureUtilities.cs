@@ -114,7 +114,7 @@ namespace ClangCommon
             {
                 installedSDKOutput = Bam.Core.OSUtilities.RunExecutable("xcodebuild", "-showsdks").StandardOutput;
             }
-            catch (Bam.Core.OSUtilities.RunExecutableException exception)
+            catch (Bam.Core.RunExecutableException exception)
             {
                 throw new Bam.Core.Exception(
                     exception,
@@ -189,7 +189,7 @@ namespace ClangCommon
                 var split = versionOutput.Split(new[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries);
                 return split[0];
             }
-            catch (Bam.Core.OSUtilities.RunExecutableException)
+            catch (Bam.Core.RunExecutableException)
             {
                 return "Unknown Clang Version";
             }

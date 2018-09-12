@@ -111,7 +111,7 @@ namespace VisualCCommon
                 Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", this.major_version, installpath);
                 return installpath;
             }
-            catch (Bam.Core.OSUtilities.RunExecutableException)
+            catch (Bam.Core.RunExecutableException)
             {
                 throw new Bam.Core.Exception(
                     "Unable to locate installation directory for Visual Studio major version {0}",

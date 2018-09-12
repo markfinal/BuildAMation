@@ -758,7 +758,7 @@ namespace Bam.Core
                 );
                 Log.Info(dotNetResult.StandardOutput);
             }
-            catch (OSUtilities.RunExecutableException exception)
+            catch (RunExecutableException exception)
             {
                 throw new Exception(
                     exception,
