@@ -779,8 +779,7 @@ namespace VisualStudioProcessor
             }
         }
     }
-#endif
-
+#else
     public static class Conversion
     {
         public static void
@@ -817,4 +816,5 @@ namespace VisualStudioProcessor
             }
         }
     }
+#endif
 }

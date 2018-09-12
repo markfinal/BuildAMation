@@ -740,8 +740,7 @@ namespace XcodeProjectProcessor
             }
         }
     }
-#endif
-
+#else
     public static class Conversion
     {
         public static void
@@ -775,4 +774,5 @@ namespace XcodeProjectProcessor
             }
         }
     }
+#endif
 }

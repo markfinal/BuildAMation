@@ -955,8 +955,7 @@ namespace CommandLineProcessor
             }
         }
     }
-#endif
-
+#else
     public static class Conversion
     {
         public static void
@@ -989,4 +988,5 @@ namespace CommandLineProcessor
             }
         }
     }
+#endif
 }
