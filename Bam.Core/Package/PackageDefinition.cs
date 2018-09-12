@@ -138,6 +138,7 @@ namespace Bam.Core
             this.Dependents = new Array<System.Tuple<string, string, bool?>>();
             this.BamAssemblies = new Array<BamAssemblyDescription>();
             this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
+            this.NuGetPackages = new Array<NuGetPackageDescription>();
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
             this.PackageRepositories = new StringArray(this.GetPackageRepository());
@@ -273,7 +274,7 @@ namespace Bam.Core
                 var bamDir = this.GetBamDirectory() + System.IO.Path.DirectorySeparatorChar; // slash added to make it look like a directory
                 foreach (string repo in packageRepos)
                 {
-                    var relativePackageRepo = RelativePathUtilities.GetPath(repo, bamDir);
+                    var relativePackageRepo = RelativePathUtilities.GetRelativePathFromRoot(bamDir, repo);
                     if (OSUtilities.IsWindowsHosting)
                     {
                         // standardize on non-Windows directory separators
@@ -371,6 +372,37 @@ namespace Bam.Core
                     requiredDotNetAssemblies.AppendChild(assemblyElement);
                 }
                 packageDefinition.AppendChild(requiredDotNetAssemblies);
+            }
+
+            if (this.NuGetPackages.Any())
+            {
+                var requiredNuGetPackages = document.CreateElement("NuGetPackages", namespaceURI);
+                foreach (var desc in this.NuGetPackages)
+                {
+                    var nugetPackageElement = document.CreateElement("NuGetPackage", namespaceURI);
+                    nugetPackageElement.SetAttribute("id", desc.Identifier);
+                    nugetPackageElement.SetAttribute("version", desc.Version);
+                    if (desc.Platforms.Includes(Bam.Core.EPlatform.Windows))
+                    {
+                        var platformEl = document.CreateElement("Platform", namespaceURI);
+                        platformEl.SetAttribute("name", "Windows");
+                        nugetPackageElement.AppendChild(platformEl);
+                    }
+                    if (desc.Platforms.Includes(Bam.Core.EPlatform.Linux))
+                    {
+                        var platformEl = document.CreateElement("Platform", namespaceURI);
+                        platformEl.SetAttribute("name", "Linux");
+                        nugetPackageElement.AppendChild(platformEl);
+                    }
+                    if (desc.Platforms.Includes(Bam.Core.EPlatform.OSX))
+                    {
+                        var platformEl = document.CreateElement("Platform", namespaceURI);
+                        platformEl.SetAttribute("name", "OSX");
+                        nugetPackageElement.AppendChild(platformEl);
+                    }
+                    requiredNuGetPackages.AppendChild(nugetPackageElement);
+                }
+                packageDefinition.AppendChild(requiredNuGetPackages);
             }
 
             // supported platforms
@@ -543,8 +575,7 @@ namespace Bam.Core
 
                 var dir = xmlReader.GetAttribute("dir");
                 var bamDir = this.GetBamDirectory();
-                var absolutePackageRepoDir = RelativePathUtilities.MakeRelativePathAbsoluteTo(dir, bamDir);
-                absolutePackageRepoDir = absolutePackageRepoDir.TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar });
+                var absolutePackageRepoDir = RelativePathUtilities.ConvertRelativePathToAbsolute(bamDir, dir);
                 this.PackageRepositories.AddUnique(absolutePackageRepoDir);
             }
 
@@ -694,16 +725,47 @@ namespace Bam.Core
         }
 
         private bool
-        ReadSupportedPlatforms(
+        ReadNuGetPackages(
             System.Xml.XmlReader xmlReader)
         {
-            var rootName = "SupportedPlatforms";
-            if (rootName != xmlReader.Name)
+            var rootEl = "NuGetPackages";
+            if (rootEl != xmlReader.Name)
             {
                 return false;
             }
 
-            this.SupportedPlatforms = EPlatform.Invalid;
+            var elName = "NuGetPackage";
+            while (xmlReader.Read())
+            {
+                if ((xmlReader.Name == rootEl) &&
+                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                {
+                    break;
+                }
+
+                if (elName != xmlReader.Name)
+                {
+                    throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootEl, xmlReader.Name, elName);
+                }
+
+                var nugetIdentifier = xmlReader.GetAttribute("id");
+                var nugetVersion = xmlReader.GetAttribute("version");
+                var platforms = this.TranslatePlatformElements(xmlReader, elName);
+
+                var desc = new NuGetPackageDescription(nugetIdentifier, nugetVersion, platforms);
+
+                this.NuGetPackages.AddUnique(desc);
+            }
+
+            return true;
+        }
+
+        private EPlatform
+        TranslatePlatformElements(
+            System.Xml.XmlReader xmlReader,
+            string rootName)
+        {
+            EPlatform platforms = EPlatform.Invalid;
             var elName = "Platform";
             while (xmlReader.Read())
             {
@@ -722,21 +784,36 @@ namespace Bam.Core
                 switch (name)
                 {
                     case "Windows":
-                        this.SupportedPlatforms |= EPlatform.Windows;
+                        platforms |= EPlatform.Windows;
                         break;
 
                     case "Linux":
-                        this.SupportedPlatforms |= EPlatform.Linux;
+                        platforms |= EPlatform.Linux;
                         break;
 
                     case "OSX":
-                        this.SupportedPlatforms |= EPlatform.OSX;
+                        platforms |= EPlatform.OSX;
                         break;
 
                     default:
                         throw new Exception("Unexpected platform '{0}'", name);
                 }
             }
+
+            return platforms;
+        }
+
+        private bool
+        ReadSupportedPlatforms(
+            System.Xml.XmlReader xmlReader)
+        {
+            var rootName = "SupportedPlatforms";
+            if (rootName != xmlReader.Name)
+            {
+                return false;
+            }
+
+            this.SupportedPlatforms = this.TranslatePlatformElements(xmlReader, rootName);
 
             return true;
         }
@@ -812,6 +889,10 @@ namespace Bam.Core
                             // all done
                         }
                         else if (ReadDotNetAssemblies(xmlReader))
+                        {
+                            // all done
+                        }
+                        else if (ReadNuGetPackages(xmlReader))
                         {
                             // all done
                         }
@@ -921,6 +1002,16 @@ namespace Bam.Core
         /// </summary>
         /// <value>The dot net assemblies.</value>
         public Array<DotNetAssemblyDescription> DotNetAssemblies
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Array of NuGet packages required for this package.
+        /// </summary>
+        /// <value>The NuGet packages.</value>
+        public Array<NuGetPackageDescription> NuGetPackages
         {
             get;
             private set;
@@ -1263,7 +1354,10 @@ namespace Bam.Core
                 Log.MessageAll("\nPackage repositories to search:");
                 foreach (var repo in this.PackageRepositories)
                 {
-                    var absoluteRepo = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(repo);
+                    var absoluteRepo = RelativePathUtilities.ConvertRelativePathToAbsolute(
+                        Graph.Instance.ProcessState.WorkingDirectory,
+                        repo
+                    );
 
                     Log.MessageAll("\t'{0}'\t(absolute path '{1}')", repo, absoluteRepo);
                 }

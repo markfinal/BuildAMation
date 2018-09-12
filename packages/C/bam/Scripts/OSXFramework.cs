@@ -65,12 +65,21 @@ namespace C
             {
                 frameworkPath.Parse();
             }
+#if BAM_V2
+            var idName = Bam.Core.OSUtilities.RunExecutable(
+                Bam.Core.OSUtilities.GetInstallLocation("xcrun").First(),
+                System.String.Format("--sdk {0} otool -DX {1}",
+                clangMeta["SDK"], // should use clangMeta.SDK, but this avoids a compile time dependency
+                frameworkPath.ToString())
+            ).StandardOutput;
+#else
             var idName = Bam.Core.OSUtilities.RunExecutable(
                 Bam.Core.OSUtilities.GetInstallLocation("xcrun").First(),
                 System.String.Format("--sdk {0} otool -DX {1}",
                 clangMeta["SDK"], // should use clangMeta.SDK, but this avoids a compile time dependency
                 frameworkPath.ToString())
             );
+#endif
             this.Macros["IDName"] = Bam.Core.TokenizedString.CreateVerbatim(idName);
         }
 

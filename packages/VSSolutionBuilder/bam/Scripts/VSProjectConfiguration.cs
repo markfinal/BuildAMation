@@ -790,11 +790,10 @@ namespace VSSolutionBuilder
                 System.Collections.Generic.KeyValuePair<string, string> candidate = default(System.Collections.Generic.KeyValuePair<string, string>);
                 foreach (var item in mapping)
                 {
-                    var relative_path = Bam.Core.RelativePathUtilities.GetPath(path, item.Value);
-                    if (System.String.IsNullOrEmpty(relative_path))
-                    {
-                        continue;
-                    }
+                    var relative_path = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                        System.IO.Path.GetDirectoryName(item.Value),
+                        path
+                    );
                     if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relative_path))
                     {
                         continue;

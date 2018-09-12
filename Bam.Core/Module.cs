@@ -1109,12 +1109,13 @@ namespace Bam.Core
         static public void
         CompleteModules()
         {
-            var scale = 100.0f / (3 * AllModules.Count);
-            var count = 2 * AllModules.Count;
+            var totalProgress = 3 * Module.Count;
+            var scale = 100.0f / totalProgress;
+            var progress = 2 * Module.Count;
             foreach (var module in AllModules.Reverse<Module>())
             {
                 module.Complete();
-                Log.DetailProgress("{0,3}%", (int)(++count * scale));
+                Log.DetailProgress("{0,3}%", (int)((++progress) * scale));
             }
         }
 

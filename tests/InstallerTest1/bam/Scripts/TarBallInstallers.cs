@@ -54,7 +54,7 @@ namespace InstallerTest1
                     tarSettings.CompressionType = Installer.ETarCompressionType.gzip;
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                     {
-                        tarSettings.TransformRegEx = "'s,^.,toplevelfolder,'";
+                        tarSettings.TransformRegEx = "s,^.,toplevelfolder,";
                     }
                 });
         }
@@ -84,7 +84,7 @@ namespace InstallerTest1
                 tarSettings.CompressionType = Installer.ETarCompressionType.gzip;
                 if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                 {
-                    tarSettings.TransformRegEx = "'s,^.,toplevelfolder,'";
+                    tarSettings.TransformRegEx = "s,^.,toplevelfolder,";
                 }
             });
         }

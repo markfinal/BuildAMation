@@ -27,9 +27,36 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
+namespace Bam.Core.Options
+{
+    /// <summary>
+    /// Command line option to display the installation directory of Bam and then exit.
+    /// </summary>
+    public sealed class PrintInstallDirectory :
+        IBooleanCommandLineArgument
+    {
+        string ICommandLineArgument.ShortName
+        {
+            get
+            {
+                return null;
+            }
+        }
 
-[assembly: AssemblyTitle("Bam.Core")]
-[assembly: AssemblyDescription("BuildAMation Core support")]
+        string ICommandLineArgument.LongName
+        {
+            get
+            {
+                return "--installdir";
+            }
+        }
+
+        string ICommandLineArgument.ContextHelp
+        {
+            get
+            {
+                return "Print the installation directory of Bam!";
+            }
+        }
+    }
+}

@@ -27,9 +27,58 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
+namespace Bam.Core
+{
+    /// <summary>
+    /// Information concerned each NuGet package, including id and
+    /// version.
+    /// </summary>
+    public class NuGetPackageDescription
+    {
+        /// <summary>
+        /// Construct a new instance, including an identifier and version, and applicable platforms.
+        /// </summary>
+        /// <param name="id">Identifier.</param>
+        /// <param name="version">Version.</param>
+        /// <param name="platforms">Applicable platforms.</param>
+        public
+        NuGetPackageDescription(
+            string id,
+            string version,
+            EPlatform platforms)
+        {
+            this.Identifier = id;
+            this.Version = version;
+            this.Platforms = platforms;
+        }
 
-[assembly: AssemblyTitle("bam")]
-[assembly: AssemblyDescription("BuildAMation Command Line Tool")]
+        /// <summary>
+        /// Get the identifier of the NuGet package
+        /// </summary>
+        /// <value>The identifier.</value>
+        public string Identifier
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Get the version of the NuGet package
+        /// </summary>
+        /// <value>The version.</value>
+        public string Version
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Get the platform(s) applicable to this NuGet package.
+        /// </summary>
+        public EPlatform Platforms
+        {
+            get;
+            private set;
+        }
+    }
+}

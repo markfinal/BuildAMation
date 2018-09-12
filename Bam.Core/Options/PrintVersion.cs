@@ -30,7 +30,7 @@
 namespace Bam.Core.Options
 {
     /// <summary>
-    /// Command line option to display the version of Bam and then exit.s
+    /// Command line option to display the version of Bam and then exit.
     /// </summary>
     public sealed class PrintVersion :
         IBooleanCommandLineArgument

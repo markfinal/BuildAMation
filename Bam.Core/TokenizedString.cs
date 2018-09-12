@@ -878,7 +878,7 @@ namespace Bam.Core
                         }
                         var path = split[0];
                         var root = split[1] + System.IO.Path.DirectorySeparatorChar;
-                        var relative = RelativePathUtilities.GetPath(path, root);
+                        var relative = System.IO.Path.GetRelativePath(root, path);
                         return relative;
                     }
 

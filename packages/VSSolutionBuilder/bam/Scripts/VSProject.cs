@@ -336,7 +336,13 @@ namespace VSSolutionBuilder
                         }
 
                         var projectRefEl = document.CreateVSElement("ProjectReference", parentEl: itemGroupEl);
-                        projectRefEl.SetAttribute("Include", Bam.Core.RelativePathUtilities.GetPath(project.ProjectPath, this.ProjectPath));
+                        projectRefEl.SetAttribute(
+                            "Include",
+                            Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                                System.IO.Path.GetDirectoryName(this.ProjectPath),
+                                project.ProjectPath
+                            )
+                        );
                         projectRefEl.SetAttribute("Condition", config.Value.ConditionText);
 
                         document.CreateVSElement("Project", value: project.Guid.ToString("B"), parentEl: projectRefEl);
@@ -357,7 +363,13 @@ namespace VSSolutionBuilder
                         }
 
                         var projectRefEl = document.CreateVSElement("ProjectReference", parentEl: itemGroupEl);
-                        projectRefEl.SetAttribute("Include", Bam.Core.RelativePathUtilities.GetPath(project.ProjectPath, this.ProjectPath));
+                        projectRefEl.SetAttribute(
+                            "Include",
+                            Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                                System.IO.Path.GetDirectoryName(this.ProjectPath),
+                                project.ProjectPath
+                            )
+                        );
                         projectRefEl.SetAttribute("Condition", config.Value.ConditionText);
 
                         document.CreateVSElement("Project", value: project.Guid.ToString("B"), parentEl: projectRefEl);
