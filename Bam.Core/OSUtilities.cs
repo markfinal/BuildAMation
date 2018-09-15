@@ -336,7 +336,6 @@ namespace Bam.Core
             }
         }
 
-#if BAM_V2
         /// <summary>
         /// Run an executable with a specified set of arguments.
         /// Will return a result, containing standard output, error and exit code.
@@ -378,34 +377,6 @@ namespace Bam.Core
 
             return result;
         }
-#else
-        /// <summary>
-        /// Runs an executable, and returns a string containing the standard output
-        /// from that run.
-        /// </summary>
-        /// <returns>Standard output from executable, or null in the case of failure.</returns>
-        /// <param name="executable">Absolute path to executable to run.</param>
-        /// <param name="arguments">All arguments to be passed to the executable.</param>
-        public static string
-        RunExecutable(
-            string executable,
-            string arguments)
-        {
-            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = executable;
-            processStartInfo.Arguments = arguments;
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.RedirectStandardError = true; // swallow
-            processStartInfo.UseShellExecute = false;
-            System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
-            process.WaitForExit();
-            if (process.ExitCode != 0)
-            {
-                return null;
-            }
-            return process.StandardOutput.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray());
-        }
-#endif
 
         /// <summary>
         /// Gets the install location of an executable.
@@ -440,76 +411,48 @@ namespace Bam.Core
                     return InstallLocationCache[key];
                 }
                 string location;
-#if BAM_V2
                 try
                 {
-#endif
-                if (OSUtilities.IsWindowsHosting)
-                {
-                    if (null != searchDirectory)
+                    if (OSUtilities.IsWindowsHosting)
                     {
-                        var args = new System.Text.StringBuilder();
-                        args.AppendFormat("/R \"{0}\" {1}", searchDirectory, executable);
-#if BAM_V2
-                        location = RunExecutable("where", args.ToString()).StandardOutput;
-#else
-                        location = RunExecutable("where", args.ToString());
-#endif
-                    }
-                    else
-                    {
-#if BAM_V2
-                        try
-                        {
-                            location = RunExecutable("where", executable).StandardOutput;
-                        }
-                        catch (RunExecutableException)
+                        if (null != searchDirectory)
                         {
                             var args = new System.Text.StringBuilder();
-                            args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesPath.ToString(), executable);
+                            args.AppendFormat("/R \"{0}\" {1}", searchDirectory, executable);
+                            location = RunExecutable("where", args.ToString()).StandardOutput;
+                        }
+                        else
+                        {
                             try
                             {
-                                location = RunExecutable("where", args.ToString()).StandardOutput;
+                                location = RunExecutable("where", executable).StandardOutput;
                             }
                             catch (RunExecutableException)
                             {
-                                args.Length = 0;
-                                args.Capacity = 0;
-                                args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesx86Path.ToString(), executable);
-                                location = RunExecutable("where", args.ToString()).StandardOutput;
+                                var args = new System.Text.StringBuilder();
+                                args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesPath.ToString(), executable);
+                                try
+                                {
+                                    location = RunExecutable("where", args.ToString()).StandardOutput;
+                                }
+                                catch (RunExecutableException)
+                                {
+                                    args.Length = 0;
+                                    args.Capacity = 0;
+                                    args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesx86Path.ToString(), executable);
+                                    location = RunExecutable("where", args.ToString()).StandardOutput;
+                                }
                             }
                         }
-#else
-                        location = RunExecutable("where", executable);
-                        if (null == location)
-                        {
-                            var args = new System.Text.StringBuilder();
-                            args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesPath.ToString(), executable);
-                            location = RunExecutable("where", args.ToString());
-                            if (null == location)
-                            {
-                                args.Length = 0;
-                                args.Capacity = 0;
-                                args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesx86Path.ToString(), executable);
-                                location = RunExecutable("where", args.ToString());
-                            }
-                        }
-#endif
                     }
-                }
-                else
-                {
-                    if (null != searchDirectory)
+                    else
                     {
-                        Log.DebugMessage("Search path '{0}' is ignored on non-Windows platforms", searchDirectory);
+                        if (null != searchDirectory)
+                        {
+                            Log.DebugMessage("Search path '{0}' is ignored on non-Windows platforms", searchDirectory);
+                        }
+                        location = RunExecutable("which", executable).StandardOutput;
                     }
-#if BAM_V2
-                    location = RunExecutable("which", executable).StandardOutput;
-#else
-                    location = RunExecutable("which", executable);
-#endif
-                }
-#if BAM_V2
                 }
                 catch (RunExecutableException exception)
                 {
@@ -522,19 +465,6 @@ namespace Bam.Core
                         return null;
                     }
                 }
-#else
-                if (null == location)
-                {
-                    if (throwOnFailure)
-                    {
-                        throw new Exception("Unable to locate '{0}' in the system.", executable);
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
-#endif
                 var results = new StringArray(
                     location.Split(
                         new[] { System.Environment.NewLine },

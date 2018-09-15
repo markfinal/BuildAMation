@@ -53,14 +53,6 @@ namespace Bam.Core.Test
         {
             throw new System.NotImplementedException();
         }
-
-#if BAM_V2
-#else
-        protected override void GetExecutionPolicy(string mode)
-        {
-            // do nothing
-        }
-#endif
     }
 
     [NUnit.Framework.TestFixture(Author="Mark Final")]

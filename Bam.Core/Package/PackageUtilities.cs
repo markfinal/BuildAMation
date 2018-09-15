@@ -635,11 +635,7 @@ namespace Bam.Core
                     var strings = new System.Collections.Generic.SortedSet<string>();
                     foreach (var package in Graph.Instance.Packages)
                     {
-#if BAM_V2
                         foreach (var scriptFile in package.GetScriptFiles(true))
-#else
-                        foreach (var scriptFile in package.GetScriptFiles())
-#endif
                         {
                             filenames.Add(scriptFile);
                         }

@@ -27,10 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-
 namespace Bam.Core
 {
-#if BAM_V2
     /// <summary>
     /// Result of running and executable, successfully or not.
     /// </summary>
@@ -79,5 +77,4 @@ namespace Bam.Core
             private set;
         }
     }
-#endif
 }

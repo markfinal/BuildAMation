@@ -81,11 +81,7 @@ namespace Bam.Core
             this.TokenizedStringCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
             this.Macros = new MacroList(this.GetType().FullName);
             // TODO: Can this be generalized to be a collection of files?
-#if BAM_V2
             this._GeneratedPaths = new System.Collections.Generic.Dictionary<string, TokenizedString>();
-#else
-            this._GeneratedPaths = new System.Collections.Generic.Dictionary<PathKey, TokenizedString>();
-#endif
 
             // capture the details of the encapsulating module
             this.EncapsulatingModule = null;
@@ -279,10 +275,6 @@ namespace Bam.Core
                 {
                     postInitCallback(module);
                 }
-#if BAM_V2
-#else
-                module.GetExecutionPolicy(Graph.Instance.Mode);
-#endif
                 AllModules.Add(module);
                 stopwatch.Stop();
                 module.CreationTime = new System.TimeSpan(stopwatch.ElapsedTicks);
@@ -347,11 +339,7 @@ namespace Bam.Core
         /// <param name="path">Path.</param>
         protected void
         RegisterGeneratedFile(
-#if BAM_V2
             string key,
-#else
-            PathKey key,
-#endif
             TokenizedString path)
         {
             if (this._GeneratedPaths.ContainsKey(key))
@@ -389,11 +377,7 @@ namespace Bam.Core
         /// <param name="key">Key.</param>
         private void
         RegisterGeneratedFile(
-#if BAM_V2
             string key)
-#else
-            PathKey key)
-#endif
         {
             this.RegisterGeneratedFile(key, null);
         }
@@ -683,21 +667,12 @@ namespace Bam.Core
         private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> PrivateInheritedPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
         private PrivatePatchDelegate TheClosingPatch = null;
 
-#if BAM_V2
         private System.Collections.Generic.Dictionary<string, TokenizedString> _GeneratedPaths
-#else
-        /// <summary>
-        /// Get the dictionary of keys and strings for all registered generated paths with the module.
-        /// </summary>
-        /// <value>The generated paths.</value>
-        public System.Collections.Generic.Dictionary<PathKey, TokenizedString> _GeneratedPaths
-#endif
         {
             get;
             set;
         }
 
-#if BAM_V2
         /// <summary>
         /// Get the dictionary of keys and strings for all registered generated paths with the module.
         /// </summary>
@@ -709,7 +684,6 @@ namespace Bam.Core
                 return this._GeneratedPaths;
             }
         }
-#endif
 
         private System.Collections.Generic.Dictionary<string, TokenizedString> OutputDirs = new System.Collections.Generic.Dictionary<string, TokenizedString>();
 
@@ -811,17 +785,6 @@ namespace Bam.Core
             get;
             set;
         }
-
-#if BAM_V2
-#else
-        /// <summary>
-        /// For the given build mode, perform the necessary actions to generate an execution policy.
-        /// </summary>
-        /// <param name="mode">Mode.</param>
-        protected abstract void
-        GetExecutionPolicy(
-            string mode);
-#endif
 
         private Module TheTool;
         /// <summary>
@@ -1265,7 +1228,6 @@ namespace Bam.Core
             private set;
         }
 
-#if BAM_V2
         /// <summary>
         /// Enumerable of Modules that are considered inputs to this Module, as in, they need
         /// to be operated on in order to generate the output(s) of this Module.
@@ -1312,6 +1274,5 @@ namespace Bam.Core
                 return null;
             }
         }
-#endif
     }
 }
