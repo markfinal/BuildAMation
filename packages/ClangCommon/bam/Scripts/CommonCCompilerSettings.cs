@@ -46,7 +46,6 @@ namespace ClangCommon
             base(module, useDefaults)
         {}
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.ELanguageStandard.NotSet, "")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.C89, "-std=c89")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.GNU89, "-std=gnu89")]
@@ -57,7 +56,6 @@ namespace ClangCommon
         [XcodeProjectProcessor.UniqueEnum(C.ELanguageStandard.GNU89, "GCC_C_LANGUAGE_STANDARD", "gnu89")]
         [XcodeProjectProcessor.UniqueEnum(C.ELanguageStandard.C99, "GCC_C_LANGUAGE_STANDARD", "c99")]
         [XcodeProjectProcessor.UniqueEnum(C.ELanguageStandard.GNU99, "GCC_C_LANGUAGE_STANDARD", "gnu99")]
-#endif
         C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
         {
             get;

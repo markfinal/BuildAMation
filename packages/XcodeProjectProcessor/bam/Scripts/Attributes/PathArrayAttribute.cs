@@ -29,7 +29,6 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PathArrayAttribute :
         BaseAttribute
@@ -51,5 +50,4 @@ namespace XcodeProjectProcessor
             private set;
         }
     }
-#endif
 }

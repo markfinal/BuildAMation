@@ -30,7 +30,6 @@
 using Bam.Core;
 namespace C
 {
-#if BAM_V2
     public static partial class XcodeSupport
     {
         public static void
@@ -61,33 +60,4 @@ namespace C
             module.MetaData = toolTarget;
         }
     }
-#else
-    public sealed class XcodeProceduralHeaderFromToolOutput :
-        IProceduralHeaderFromToolOutputPolicy
-    {
-        void
-        IProceduralHeaderFromToolOutputPolicy.HeaderFromToolOutput(
-            ProceduralHeaderFileFromToolOutput sender,
-            ExecutionContext context,
-            TokenizedString outputPath,
-            ICommandLineTool tool)
-        {
-            var toolTarget = (tool as Bam.Core.Module).MetaData as XcodeBuilder.Target;
-            var toolConfiguration = toolTarget.GetConfiguration(tool as Bam.Core.Module);
-
-            var output = outputPath.ToString();
-            var output_parentdir = System.IO.Path.GetDirectoryName(output);
-            output_parentdir = Bam.Core.IOWrapper.EscapeSpacesInPath(output_parentdir);
-            output = Bam.Core.IOWrapper.EscapeSpacesInPath(output);
-
-            var commands = new Bam.Core.StringArray();
-            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", output_parentdir));
-            commands.Add(System.String.Format("{0} > {1}", CommandLineProcessor.Processor.StringifyTool(tool), output));
-            toolTarget.AddPostBuildCommands(commands, toolConfiguration);
-
-            // alias the tool's target so that inter-target dependencies can be set up
-            sender.MetaData = toolTarget;
-        }
-    }
-#endif
 }

@@ -29,7 +29,6 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public abstract class BoolAttribute :
         BaseAttribute
@@ -60,5 +59,4 @@ namespace XcodeProjectProcessor
             private set;
         }
     }
-#endif
 }

@@ -34,10 +34,6 @@ namespace Publisher
     [CommandLineProcessor.InputPaths(CollatedObject.CopiedFrameworkKey, "")]
     public sealed class RsyncSettings :
         Bam.Core.Settings,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
         IRsyncSettings
     {
         public RsyncSettings()
@@ -48,16 +44,6 @@ namespace Publisher
         {
             this.InitializeAllInterfaces(module, false, true);
         }
-
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
 
         [CommandLineProcessor.Bool("-v", "")]
         bool IRsyncSettings.Verbose

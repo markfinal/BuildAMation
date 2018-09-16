@@ -38,11 +38,7 @@ namespace C
         Bam.Core.IInputPath,
         IRequiresSourceModule
     {
-#if BAM_V2
         public const string ObjectFileKey = "Compiled/assembled object file";
-#else
-        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Compiled/assembled Object File");
-#endif
 
         private Bam.Core.Module Parent = null;
         protected SourceFile SourceModule;
@@ -79,7 +75,6 @@ namespace C
                 }
                 this.SourceModule = value;
                 this.DependsOn(value);
-#if BAM_V2
                 this.RegisterGeneratedFile(
                     ObjectFileKey,
                     this.CreateTokenizedString(
@@ -87,12 +82,6 @@ namespace C
                         value.GeneratedPaths[SourceFile.SourceFileKey]
                     )
                 );
-#else
-                this.GeneratedPaths[Key] = this.CreateTokenizedString(
-                    "$(packagebuilddir)/$(moduleoutputdir)/@changeextension(@trimstart(@relativeto($(0),$(packagedir)),../),$(objext))",
-                    value.GeneratedPaths[SourceFile.Key]
-                );
-#endif
             }
         }
 
@@ -151,7 +140,6 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -193,23 +181,7 @@ namespace C
                 default:
                     throw new System.NotImplementedException();
             }
-#else
-            var sourceFile = this.SourceModule;
-            var objectFile = this.GeneratedPaths[Key];
-            this.Policy.Compile(this, context, objectFile, sourceFile);
-#endif
         }
-
-#if BAM_V2
-#else
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            var className = "C." + mode + "Compilation";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<ICompilationPolicy>.Create(className);
-    }
-#endif
 
         protected override void
         EvaluateInternal()
@@ -240,18 +212,10 @@ namespace C
             }
 
             // does the object file exist?
-#if BAM_V2
             var objectFilePath = this.GeneratedPaths[ObjectFileKey].ToString();
-#else
-            var objectFilePath = this.GeneratedPaths[Key].ToString();
-#endif
             if (!System.IO.File.Exists(objectFilePath))
             {
-#if BAM_V2
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[ObjectFileKey]);
-#else
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
-#endif
                 return;
             }
             var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
@@ -260,11 +224,7 @@ namespace C
             if ((this as IRequiresSourceModule).Source.ReasonToExecute != null)
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-#if BAM_V2
                     this.GeneratedPaths[ObjectFileKey],
-#else
-                    this.GeneratedPaths[Key],
-#endif
                     this.InputPath
                 );
                 return;
@@ -276,11 +236,7 @@ namespace C
             if (sourceWriteTime > objectFileWriteTime)
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-#if BAM_V2
                     this.GeneratedPaths[ObjectFileKey],
-#else
-                    this.GeneratedPaths[Key],
-#endif
                     this.InputPath
                 );
                 return;
@@ -363,11 +319,7 @@ namespace C
                             if (headerWriteTime > objectFileWriteTime)
                             {
                                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-#if BAM_V2
                                     this.GeneratedPaths[ObjectFileKey],
-#else
-                                    this.GeneratedPaths[Key],
-#endif
                                     Bam.Core.TokenizedString.CreateVerbatim(potentialPath)
                                 );
                                 return;
@@ -377,11 +329,7 @@ namespace C
                             if (explicitHeadersUpdated.Contains(potentialPath))
                             {
                                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-#if BAM_V2
                                     this.GeneratedPaths[ObjectFileKey],
-#else
-                                    this.GeneratedPaths[Key],
-#endif
                                     Bam.Core.TokenizedString.CreateVerbatim(potentialPath)
                                 );
                                 return;

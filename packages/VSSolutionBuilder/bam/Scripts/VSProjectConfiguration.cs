@@ -168,15 +168,6 @@ namespace VSSolutionBuilder
             set;
         }
 
-#if BAM_V2
-#else
-        private C.ECharacterSet CharacterSet
-        {
-            get;
-            set;
-        }
-#endif
-
         private bool WholeProgramOptimization
         {
             get;
@@ -194,21 +185,6 @@ namespace VSSolutionBuilder
             get;
             set;
         }
-
-#if BAM_V2
-#else
-        private string TargetName
-        {
-            get;
-            set;
-        }
-
-        private string TargetExt
-        {
-            get;
-            set;
-        }
-#endif
 
         private Bam.Core.Array<VSSettingsGroup> SettingGroups
         {
@@ -280,13 +256,11 @@ namespace VSSolutionBuilder
             this.Type = type;
         }
 
-#if BAM_V2
         public C.ECharacterSet CharacterSet
         {
             get;
             set;
         }
-#else
         public void
         SetCharacterSet(
             C.ECharacterSet charSet)
@@ -417,7 +391,6 @@ namespace VSSolutionBuilder
             var settings = module.MetaData as VSSettingsGroup;
             if (null != patchSettings)
             {
-#if BAM_V2
                 VisualStudioProcessor.VSSolutionConversion.Convert(
                     patchSettings,
                     module.Settings.GetType(),
@@ -426,9 +399,6 @@ namespace VSSolutionBuilder
                     this,
                     condition: this.ConditionText
                 );
-#else
-                (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(module, settings, condition: this.ConditionText);
-#endif
             }
             this.Sources.AddUnique(settings);
             this.Project.AddSource(settings, this);
@@ -466,7 +436,6 @@ namespace VSSolutionBuilder
             var settings = resource.MetaData as VSSettingsGroup;
             if (null != patchSettings)
             {
-#if BAM_V2
                 VisualStudioProcessor.VSSolutionConversion.Convert(
                     patchSettings,
                     resource.Settings.GetType(),
@@ -475,9 +444,6 @@ namespace VSSolutionBuilder
                     this,
                     condition: this.ConditionText
                 );
-#else
-                (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(resource, settings, condition: this.ConditionText);
-#endif
             }
             var resourceGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.Resource, resource.InputPath);
             this.ResourceFiles.AddUnique(resourceGroup);
@@ -492,7 +458,6 @@ namespace VSSolutionBuilder
             var settings = assembler.MetaData as VSSettingsGroup;
             if (null != patchSettings)
             {
-#if BAM_V2
                 VisualStudioProcessor.VSSolutionConversion.Convert(
                     patchSettings,
                     assembler.Settings.GetType(),
@@ -501,9 +466,6 @@ namespace VSSolutionBuilder
                     this,
                     condition: this.ConditionText
                 );
-#else
-                (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(assembler, settings, condition: this.ConditionText);
-#endif
             }
             var assemblyGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, assembler.InputPath);
             this.AssemblyFiles.AddUnique(assemblyGroup);
@@ -640,7 +602,6 @@ namespace VSSolutionBuilder
             System.Xml.XmlElement parentEl)
         {
             var propGroup = document.CreateVSPropertyGroup(condition: this.ConditionText, parentEl: parentEl);
-#if BAM_V2
             if (null != this.OutputFile)
             {
                 document.CreateVSElement(
@@ -663,20 +624,6 @@ namespace VSSolutionBuilder
                     document.CreateVSElement("TargetExt", value: ext, parentEl: propGroup);
                 }
             }
-#else
-            if (null != this.OutputDirectory)
-            {
-                document.CreateVSElement("OutDir", value: this.OutputDirectory, parentEl: propGroup);
-            }
-            if (null != this.TargetName)
-            {
-                document.CreateVSElement("TargetName", value: this.TargetName, parentEl: propGroup);
-            }
-            if (null != this.TargetExt)
-            {
-                document.CreateVSElement("TargetExt", value: this.TargetExt, parentEl: propGroup);
-            }
-#endif
             if (null != this.IntermediateDirectory)
             {
                 document.CreateVSElement(

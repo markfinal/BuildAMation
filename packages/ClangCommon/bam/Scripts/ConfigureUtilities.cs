@@ -86,14 +86,10 @@ namespace ClangCommon
         GetSDKPath(
             string sdkVersion)
         {
-#if BAM_V2
             return Bam.Core.OSUtilities.RunExecutable(
                 xcrunPath,
                 System.String.Format("--sdk {0} -show-sdk-path", sdkVersion)
             ).StandardOutput;
-#else
-            return Bam.Core.OSUtilities.RunExecutable(xcrunPath, System.String.Format("--sdk {0} -show-sdk-path", sdkVersion));
-#endif
         }
 
         private static bool
@@ -108,7 +104,6 @@ namespace ClangCommon
         GetValidSDKs(
             Bam.Core.StringArray expectedSDKs)
         {
-#if BAM_V2
             string installedSDKOutput;
             try
             {
@@ -121,13 +116,6 @@ namespace ClangCommon
                     "Unable to locate developer SDKs. Is Xcode installed?"
                 );
             }
-#else
-            var installedSDKOutput = Bam.Core.OSUtilities.RunExecutable("xcodebuild", "-showsdks");
-            if (null == installedSDKOutput)
-            {
-                throw new Bam.Core.Exception("Unable to locate developer SDKs. Is Xcode installed?");
-            }
-#endif
 
             var availableSDKs = new Bam.Core.StringArray();
             foreach (var line in installedSDKOutput.Split('\n'))
@@ -179,7 +167,6 @@ namespace ClangCommon
         GetClangVersion(
             string sdkType)
         {
-#if BAM_V2
             try
             {
                 var versionOutput = Bam.Core.OSUtilities.RunExecutable(
@@ -193,21 +180,6 @@ namespace ClangCommon
             {
                 return "Unknown Clang Version";
             }
-#else
-            try
-            {
-                var versionOutput = Bam.Core.OSUtilities.RunExecutable(
-                    xcrunPath,
-                    System.String.Format("--sdk {0} clang --version", sdkType)
-                );
-                var split = versionOutput.Split(new[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries);
-                return split[0];
-            }
-            catch (System.NullReferenceException)
-            {
-                return "Unknown Clang Version";
-            }
-#endif
         }
     }
 }

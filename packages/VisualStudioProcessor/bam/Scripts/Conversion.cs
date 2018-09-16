@@ -27,12 +27,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-#if BAM_V2
 using System.Linq;
-#endif
 namespace VisualStudioProcessor
 {
-#if BAM_V2
     public static class VSSolutionConversion
     {
         public static void
@@ -478,42 +475,4 @@ namespace VisualStudioProcessor
             }
         }
     }
-#else
-    public static class Conversion
-    {
-        public static void
-        Convert(
-            System.Type conversionClass,
-            Bam.Core.Settings settings,
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
-            string condition)
-        {
-            var moduleType = typeof(Bam.Core.Module);
-            var vsSettingsGroupType = typeof(VSSolutionBuilder.VSSettingsGroup);
-            var stringType = typeof(string);
-            foreach (var i in settings.Interfaces())
-            {
-                var method = conversionClass.GetMethod("Convert", new[] { i, moduleType, vsSettingsGroupType, stringType });
-                if (null == method)
-                {
-                    throw new Bam.Core.Exception("Unable to locate method {0}.Convert({1}, {2}, {3})",
-                        conversionClass.ToString(),
-                        i.ToString(),
-                        moduleType,
-                        vsSettingsGroupType,
-                        stringType);
-                }
-                try
-                {
-                    method.Invoke(null, new object[] { settings, module, vsSettingsGroup, condition });
-                }
-                catch (System.Reflection.TargetInvocationException exception)
-                {
-                    throw new Bam.Core.Exception(exception.InnerException, "VisualStudio conversion error:");
-                }
-            }
-        }
-    }
-#endif
 }

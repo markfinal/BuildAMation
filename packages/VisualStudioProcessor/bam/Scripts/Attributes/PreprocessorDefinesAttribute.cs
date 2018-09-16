@@ -29,7 +29,6 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PreprocessorDefinesAttribute :
         BaseAttribute
@@ -41,5 +40,4 @@ namespace VisualStudioProcessor
             base(command_switch, inheritExisting, TargetGroup.Settings)
         { }
     }
-#endif
 }

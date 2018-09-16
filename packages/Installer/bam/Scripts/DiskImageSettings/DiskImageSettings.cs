@@ -34,10 +34,6 @@ namespace Installer
     [CommandLineProcessor.InputPaths(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey, "-srcfolder ")]
     public sealed class DiskImageSettings :
         Bam.Core.Settings,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
         IDiskImageSettings
     {
         public DiskImageSettings()
@@ -48,16 +44,6 @@ namespace Installer
         {
             this.InitializeAllInterfaces(module, false, true);
         }
-
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
 
         [CommandLineProcessor.Enum(EDiskImageFormat.UDRW, "-format UDRW")]
         [CommandLineProcessor.Enum(EDiskImageFormat.UDRO, "-format UDRO")]

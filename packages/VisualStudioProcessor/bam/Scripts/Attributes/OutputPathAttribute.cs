@@ -29,7 +29,6 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = true)] // because there may be multiple outputs
     public class OutputPathAttribute :
         BaseAttribute
@@ -67,5 +66,4 @@ namespace VisualStudioProcessor
             set;
         }
     }
-#endif
 }

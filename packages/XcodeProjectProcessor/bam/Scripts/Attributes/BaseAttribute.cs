@@ -29,7 +29,6 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
-#if BAM_V2
     public abstract class BaseAttribute :
         System.Attribute
     {
@@ -67,5 +66,4 @@ namespace XcodeProjectProcessor
             private set;
         }
     }
-#endif
 }

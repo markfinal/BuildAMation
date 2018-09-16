@@ -29,7 +29,6 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PathAttribute :
         BaseAttribute
@@ -59,5 +58,4 @@ namespace VisualStudioProcessor
             private set;
         }
     }
-#endif
 }

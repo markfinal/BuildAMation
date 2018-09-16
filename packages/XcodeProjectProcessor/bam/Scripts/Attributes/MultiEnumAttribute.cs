@@ -29,7 +29,6 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
-#if BAM_V2
     public sealed class MultiEnumAttribute :
         EnumAttribute
     {
@@ -43,5 +42,4 @@ namespace XcodeProjectProcessor
             base(key, property, value, ValueType.MultiValued, ignore: ignore)
         { }
     }
-#endif
 }

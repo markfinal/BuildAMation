@@ -30,7 +30,6 @@
 using System.Linq;
 namespace C
 {
-#if BAM_V2
     public static partial class VSSolutionSupport
     {
         public static void
@@ -55,33 +54,4 @@ namespace C
             }
         }
     }
-#else
-    public sealed class VSSolutionHeaderLibrary :
-        IHeaderLibraryPolicy
-    {
-        void
-        IHeaderLibraryPolicy.HeadersOnly(
-            HeaderLibrary sender,
-            Bam.Core.ExecutionContext context,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
-        {
-            if (0 == headers.Count)
-            {
-                return;
-            }
-
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-            var project = solution.EnsureProjectExists(sender);
-            var config = project.GetConfiguration(sender);
-
-            config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
-            config.EnableIntermediatePath();
-
-            foreach (var header in headers)
-            {
-                config.AddHeaderFile(header as HeaderFile);
-            }
-        }
-    }
-#endif
 }

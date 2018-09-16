@@ -46,7 +46,6 @@ namespace VisualCCommon
             base(module, useDefaults)
         {}
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Disabled, "")]
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Asynchronous, "-EHa")]
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Synchronous, "-EHsc")]
@@ -55,24 +54,20 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(C.Cxx.EExceptionHandler.Asynchronous, "ExceptionHandling", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "Async")]
         [VisualStudioProcessor.Enum(C.Cxx.EExceptionHandler.Synchronous, "ExceptionHandling", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "Sync")]
         [VisualStudioProcessor.Enum(C.Cxx.EExceptionHandler.Synchronous, "SyncWithCExternFunctions", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "SyncCThrow")]
-#endif
         C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-GR", "-GR-")]
         [VisualStudioProcessor.Bool("RuntimeTypeInfo")]
-#endif
         bool? C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.NotSet, "")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.Cxx98, "")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx98, "")]
@@ -91,21 +86,18 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx11, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.Cxx.ELanguageStandard.Cxx14, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx14, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
-#endif
         C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.NotSet, "")]
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libstdcxx, "")]
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libcxx, "")]
         [VisualStudioProcessor.Enum(C.Cxx.EStandardLibrary.NotSet, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.Cxx.EStandardLibrary.libstdcxx, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.Cxx.EStandardLibrary.libcxx, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
-#endif
         C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
         {
             get;

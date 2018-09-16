@@ -39,11 +39,6 @@ namespace VisualCCommon
     [VisualStudioProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "", handledByMetaData: true)]
     public abstract class CommonLinkerSettings :
         C.SettingsBase,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-        VisualStudioProcessor.IConvertToProject,
-#endif
         C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings,
@@ -55,137 +50,96 @@ namespace VisualCCommon
             this.InitializeAllInterfaces(module, false, true);
         }
 
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
-            string condition)
-        {
-            VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-#endif
-
-#if BAM_V2
         [CommandLineProcessor.Enum(C.ESubsystem.NotSet, "")]
         [CommandLineProcessor.Enum(C.ESubsystem.Console, "-SUBSYSTEM:CONSOLE")]
         [CommandLineProcessor.Enum(C.ESubsystem.Windows, "-SUBSYSTEM:WINDOWS")]
         [VisualStudioProcessor.Enum(C.ESubsystem.NotSet, "SubSystem", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.ESubsystem.Console, "SubSystem", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
         [VisualStudioProcessor.Enum(C.ESubsystem.Windows, "SubSystem", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
-#endif
         C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Path("-DEF:")]
         [VisualStudioProcessor.Path("ModuleDefinitionFile")]
-#endif
         Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-MACHINE:X86")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-MACHINE:X64")]
         [VisualStudioProcessor.Enum(C.EBit.ThirtyTwo, "TargetMachine", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "MachineX86")]
         [VisualStudioProcessor.Enum(C.EBit.SixtyFour, "TargetMachine", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "MachineX64")]
-#endif
         C.EBit C.ICommonLinkerSettings.Bits
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.ELinkerOutput.Executable, "")]
         [CommandLineProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "-DLL")]
         [VisualStudioProcessor.Enum(C.ELinkerOutput.Executable, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
-#endif
         C.ELinkerOutput C.ICommonLinkerSettings.OutputType
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PathArray("-LIBPATH:")]
         [VisualStudioProcessor.PathArray("AdditionalLibraryDirectories")]
-#endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
         [VisualStudioProcessor.StringArray("AdditionalDependencies")]
-#endif
         Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-DEBUG", "")]
         [VisualStudioProcessor.Bool("GenerateDebugInformation")]
-#endif
         bool C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
         [VisualStudioProcessor.StringArray("AdditionalOptions")]
-#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-NOLOGO", "")]
         [VisualStudioProcessor.Bool("SuppressStartupBanner")]
-#endif
         bool ICommonLinkerSettings.NoLogo
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-MANIFEST", "-MANIFEST:NO")]
         [VisualStudioProcessor.Bool("EnableManifest", target: VisualStudioProcessor.BaseAttribute.TargetGroup.Configuration)]
-#endif
         bool ICommonLinkerSettings.GenerateManifest
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-SAFESEH", "-SAFESEH:NO")]
         [VisualStudioProcessor.Bool("ImageHasSafeExceptionHandlers")]
-#endif
         bool ICommonLinkerSettings.SafeExceptionHandlers
         {
             get;

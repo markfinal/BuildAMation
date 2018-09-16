@@ -35,11 +35,6 @@ namespace C
     public class AssembledObjectFile :
         ObjectFileBase
     {
-#if BAM_V2
-#else
-        private IAssemblerPolicy Policy = null;
-#endif
-
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -59,62 +54,6 @@ namespace C
                 this.Tool = value;
             }
         }
-
-#if BAM_V2
-#else
-        protected override void
-        ExecuteInternal(
-            Bam.Core.ExecutionContext context)
-        {
-            var sourceFile = this.SourceModule;
-            var objectFile = this.GeneratedPaths[Key];
-            this.Policy.Assemble(this, context, objectFile, sourceFile);
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            var className = "C." + mode + "Assembly";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IAssemblerPolicy>.Create(className);
-        }
-
-        protected override void
-        EvaluateInternal()
-        {
-            this.ReasonToExecute = null;
-            if (!this.PerformCompilation)
-            {
-                return;
-            }
-            // does the object file exist?
-            var objectFilePath = this.GeneratedPaths[Key].ToString();
-            if (!System.IO.File.Exists(objectFilePath))
-            {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
-                return;
-            }
-            var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
-
-            // has the source file been evaluated to be rebuilt?
-            if ((this as IRequiresSourceModule).Source.ReasonToExecute != null)
-            {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.InputPath);
-                return;
-            }
-
-            // is the source file newer than the object file?
-            var sourcePath = this.InputPath.ToString();
-            var sourceWriteTime = System.IO.File.GetLastWriteTime(sourcePath);
-            if (sourceWriteTime > objectFileWriteTime)
-            {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.InputPath);
-                return;
-            }
-
-            // no header files, so simpler
-        }
-#endif
 
         protected override bool RequiresHeaderEvaluation
         {

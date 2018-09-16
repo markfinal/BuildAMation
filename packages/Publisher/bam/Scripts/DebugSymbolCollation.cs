@@ -43,13 +43,7 @@ namespace Publisher
     public abstract class DebugSymbolCollation :
         Bam.Core.Module
     {
-#if BAM_V2
         public const string DebugSymbolsDirectoryKey = "Debug Symbol Collation Root";
-#else
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Debug Symbol Collation Root");
-
-        private IDebugSymbolCollationPolicy Policy = null;
-#endif
 
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
@@ -62,22 +56,14 @@ namespace Publisher
             base.Init(parent);
 
             this.RegisterGeneratedFile(
-#if BAM_V2
                 DebugSymbolsDirectoryKey,
-#else
-                Key,
-#endif
                 this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)")
             );
 
             // one value, as debug symbols are not generated in IDE projects
             this.Macros.Add(
                 "publishroot",
-#if BAM_V2
                 this.GeneratedPaths[DebugSymbolsDirectoryKey]
-#else
-                this.GeneratedPaths[Key]
-#endif
             );
         }
 
@@ -91,7 +77,6 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -107,32 +92,7 @@ namespace Publisher
                     // does not need to do anything
                     break;
             }
-#else
-            if (null == this.Policy)
-            {
-                return;
-            }
-            this.Policy.CollateDebugSymbols(this, context);
-#endif
         }
-
-#if BAM_V2
-#else
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
-                case "MakeFile":
-                    {
-                        var className = "Publisher." + mode + "DebugSymbolCollation";
-                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IDebugSymbolCollationPolicy>.Create(className);
-                    }
-                    break;
-            }
-        }
-#endif
 
         private void
         CreatedSYMBundle(
@@ -158,11 +118,7 @@ namespace Publisher
         CopyDebugSymbols(
             ICollatedObject collatedFile)
         {
-#if BAM_V2
             var createDebugSymbols = Bam.Core.Module.Create<MakeDebugSymbolFile>(preInitCallback: module =>
-#else
-            var createDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
-#endif
                 {
                     module.SourceModule = collatedFile.SourceModule;
                     module.SourcePathKey = collatedFile.SourcePathKey;
@@ -175,11 +131,7 @@ namespace Publisher
             createDebugSymbols.PrivatePatch(settings =>
                 {
                     var objCopySettings = settings as IObjCopyToolSettings;
-#if BAM_V2
                     objCopySettings.OnlyKeepDebug = true;
-#else
-                    objCopySettings.Mode = EObjCopyToolMode.OnlyKeepDebug;
-#endif
                 });
 
             this.collatedObjects.Add(createDebugSymbols);

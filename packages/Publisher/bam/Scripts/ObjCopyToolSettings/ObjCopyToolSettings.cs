@@ -29,7 +29,6 @@
 #endregion // License
 namespace Publisher
 {
-#if BAM_V2
     [CommandLineProcessor.OutputPath(MakeDebugSymbolFile.DebugSymbolFileKey, "")]
     [CommandLineProcessor.InputPaths(StripModule.StripBinaryKey, "", max_file_count: 1)]
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
@@ -100,64 +99,4 @@ namespace Publisher
             this.FileLayout = ELayout.Cmds_Inputs_Outputs;
         }
     }
-#else
-    [CommandLineProcessor.OutputPath(ObjCopyModule.ObjCopyKey, "")]
-    [CommandLineProcessor.InputPaths(StripModule.StripBinaryKey, "", max_file_count: 1)]
-    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
-    public sealed class ObjCopyToolSettings :
-        Bam.Core.Settings,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
-        IObjCopyToolSettings
-    {
-        public ObjCopyToolSettings()
-        {}
-
-        public ObjCopyToolSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-#if BAM_V2
-        [CommandLineProcessor.Bool("--only-keep-debug", "")]
-        bool IObjCopyToolSettings.OnlyKeepDebug
-        {
-            get;
-            set;
-        }
-#else
-        [CommandLineProcessor.Enum(EObjCopyToolMode.OnlyKeepDebug, "--only-keep-debug")]
-        EObjCopyToolMode IObjCopyToolSettings.Mode
-        {
-            get;
-            set;
-        }
-#endif
-
-        [CommandLineProcessor.Bool("-v", "")]
-        bool IObjCopyToolSettings.Verbose
-        {
-            get;
-            set;
-        }
-
-        public override void AssignFileLayout ()
-        {
-            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
-        }
-    }
-#endif
 }

@@ -29,7 +29,6 @@
 #endregion // License
 namespace CommandLineProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class StringArrayAttribute :
         BaseAttribute
@@ -40,5 +39,4 @@ namespace CommandLineProcessor
             base(command_switch)
         { }
     }
-#endif
 }

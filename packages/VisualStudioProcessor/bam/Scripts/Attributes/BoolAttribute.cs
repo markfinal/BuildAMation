@@ -29,7 +29,6 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class BoolAttribute :
         BaseAttribute
@@ -77,5 +76,4 @@ namespace VisualStudioProcessor
             private set;
         }
     }
-#endif
 }

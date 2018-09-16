@@ -36,11 +36,7 @@ namespace C
     public class WinVersionResource :
         SourceFile
     {
-#if BAM_V2
         public const string HashFileKey = "Hash of version resource contents";
-#else
-        private static Bam.Core.PathKey HashFileKey = Bam.Core.PathKey.Generate("Hash of version resource contents");
-#endif
 
         protected override void
         Init(
@@ -156,11 +152,7 @@ namespace C
                 contents.AppendLine();
                 contents.AppendFormat("\t\t\tVALUE \"InternalName\", \"{0}\"", binaryModule.Macros["modulename"].ToString());
                 contents.AppendLine();
-#if BAM_V2
                 contents.AppendFormat("\t\t\tVALUE \"OriginalFilename\", \"{0}\"", System.IO.Path.GetFileName(binaryModule.GeneratedPaths[ConsoleApplication.ExecutableKey].ToString()));
-#else
-                contents.AppendFormat("\t\t\tVALUE \"OriginalFilename\", \"{0}\"", System.IO.Path.GetFileName(binaryModule.GeneratedPaths[ConsoleApplication.Key].ToString()));
-#endif
                 contents.AppendLine();
                 if (null != productDefinition)
                 {
@@ -212,18 +204,10 @@ namespace C
         EvaluateInternal()
         {
             this.ReasonToExecute = null;
-#if BAM_V2
             var outputPath = this.GeneratedPaths[SourceFileKey].ToString();
-#else
-            var outputPath = this.GeneratedPaths[Key].ToString();
-#endif
             if (!System.IO.File.Exists(outputPath))
             {
-#if BAM_V2
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[SourceFileKey]);
-#else
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
-#endif
             }
             // have the contents changed since last time?
             var hashFilePath = this.GeneratedPaths[HashFileKey].ToString();

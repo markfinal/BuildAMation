@@ -38,11 +38,7 @@ namespace C
     public abstract class VersionScript :
         C.HeaderFile
     {
-#if BAM_V2
         public const string HashFileKey = "Hash of version script contents";
-#else
-        private static Bam.Core.PathKey HashFileKey = Bam.Core.PathKey.Generate("Hash of version script contents");
-#endif
 
         /// <summary>
         /// Override this function to specify the path of the version script to be written to.
@@ -78,18 +74,10 @@ namespace C
         EvaluateInternal()
         {
             this.ReasonToExecute = null;
-#if BAM_V2
             var outputPath = this.GeneratedPaths[HeaderFileKey].ToString();
-#else
-            var outputPath = this.GeneratedPaths[Key].ToString();
-#endif
             if (!System.IO.File.Exists(outputPath))
             {
-#if BAM_V2
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[HeaderFileKey]);
-#else
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
-#endif
             }
             // have the contents changed since last time?
             var hashFilePath = this.GeneratedPaths[HashFileKey].ToString();
@@ -116,11 +104,7 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             var destPath = this.GeneratedPaths[HeaderFileKey].ToString();
-#else
-            var destPath = this.GeneratedPaths[Key].ToString();
-#endif
             var destDir = System.IO.Path.GetDirectoryName(destPath);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
             using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(destPath))

@@ -29,7 +29,6 @@
 #endregion // License
 namespace CommandLineProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = true)] // there may be different types of input files
     public class InputPathsAttribute :
         BaseAttribute
@@ -65,5 +64,4 @@ namespace CommandLineProcessor
             private set;
         }
     }
-#endif
 }

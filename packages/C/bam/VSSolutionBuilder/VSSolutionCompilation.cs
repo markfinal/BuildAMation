@@ -29,7 +29,6 @@
 #endregion // License
 namespace C
 {
-#if BAM_V2
     public static partial class VSSolutionSupport
     {
         public static void
@@ -112,58 +111,4 @@ namespace C
             }
         }
     }
-#else
-    public sealed class VSSolutionCompilation :
-        ICompilationPolicy
-    {
-        void
-        ICompilationPolicy.Compile(
-            ObjectFile sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString objectFilePath,
-            Bam.Core.Module source)
-        {
-            var encapsulating = sender.GetEncapsulatingReferencedModule();
-
-            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-            var project = solution.EnsureProjectExists(encapsulating);
-            var config = project.GetConfiguration(encapsulating);
-
-            var group = (sender is WinResource) ?
-                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Resource :
-                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler;
-
-            var settingsGroup = config.GetSettingsGroup(
-                group,
-                include: source.GeneratedPaths[C.SourceFile.Key],
-                uniqueToProject: true);
-            var intDir = sender.CreateTokenizedString("@trimstart(@relativeto($(0),$(packagebuilddir)/$(moduleoutputdir)),../)", objectFilePath);
-            intDir.Parse();
-            settingsGroup.AddSetting("ObjectFileName", "$(IntDir)" + intDir.ToString());
-            if (!sender.PerformCompilation)
-            {
-                settingsGroup.AddSetting("ExcludedFromBuild", true);
-            }
-            sender.MetaData = settingsGroup;
-
-            // any non-C module projects should be order-only dependencies
-            foreach (var dependent in sender.Dependents)
-            {
-                if (null == dependent.MetaData)
-                {
-                    continue;
-                }
-                if (dependent is C.CModule)
-                {
-                    continue;
-                }
-                var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
-                if (null != dependentProject)
-                {
-                    config.RequiresProject(dependentProject);
-                }
-            }
-        }
-    }
-#endif
-        }
+}

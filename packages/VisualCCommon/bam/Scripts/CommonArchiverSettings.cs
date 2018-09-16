@@ -35,11 +35,6 @@ namespace VisualCCommon
     [VisualStudioProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "", handledByMetaData: true)]
     public abstract class CommonArchiverSettings :
         C.SettingsBase,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-        VisualStudioProcessor.IConvertToProject,
-#endif
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
@@ -49,39 +44,16 @@ namespace VisualCCommon
             this.InitializeAllInterfaces(module, false, true);
         }
 
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
-            string condition)
-        {
-            VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-#endif
-
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
         [VisualStudioProcessor.StringArray("AdditionalOptions")]
-#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-NOLOGO", "")]
         [VisualStudioProcessor.Bool("SuppressStartupBanner")]
-#endif
         bool ICommonArchiverSettings.NoLogo
         {
             get;

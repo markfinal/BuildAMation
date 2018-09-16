@@ -29,7 +29,6 @@
 #endregion // License
 namespace CommandLineProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class BoolAttribute :
         BaseAttribute
@@ -57,5 +56,4 @@ namespace CommandLineProcessor
             private set;
         }
     }
-#endif
 }

@@ -29,7 +29,6 @@
 #endregion // License
 namespace CommandLineProcessor
 {
-#if BAM_V2
     public abstract class BaseAttribute :
         System.Attribute
     {
@@ -45,5 +44,4 @@ namespace CommandLineProcessor
             private set;
         }
     }
-#endif
 }

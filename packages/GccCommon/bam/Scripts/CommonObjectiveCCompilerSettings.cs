@@ -47,9 +47,7 @@ namespace GccCommon
             base(module, useDefaults)
         {}
 
-#if BAM_V2
         [CommandLineProcessor.String("-fconstant-string-class=")]
-#endif
         string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
         {
             get;

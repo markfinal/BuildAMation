@@ -27,12 +27,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-#if BAM_V2
 using System.Linq;
-#endif
 namespace XcodeProjectProcessor
 {
-#if BAM_V2
     public static class XcodeConversion
     {
         private static void
@@ -446,39 +443,4 @@ namespace XcodeProjectProcessor
             }
         }
     }
-#else
-    public static class Conversion
-    {
-        public static void
-        Convert(
-            System.Type conversionClass,
-            Bam.Core.Settings toolSettings,
-            Bam.Core.Module module,
-            XcodeBuilder.Configuration configuration)
-        {
-            var moduleType = typeof(Bam.Core.Module);
-            var xcodeConfigurationType = typeof(XcodeBuilder.Configuration);
-            foreach (var i in toolSettings.Interfaces())
-            {
-                var method = conversionClass.GetMethod("Convert", new[] { i, moduleType, xcodeConfigurationType });
-                if (null == method)
-                {
-                    throw new Bam.Core.Exception("Unable to locate method {0}.Convert({1}, {2}, {3})",
-                        conversionClass.ToString(),
-                        i.ToString(),
-                        moduleType,
-                        xcodeConfigurationType);
-                }
-                try
-                {
-                    method.Invoke(null, new object[] { toolSettings, module, configuration });
-                }
-                catch (System.Reflection.TargetInvocationException exception)
-                {
-                    throw new Bam.Core.Exception(exception.InnerException, "Xcode conversion error:");
-                }
-            }
-        }
-    }
-#endif
 }

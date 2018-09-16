@@ -120,25 +120,12 @@ namespace C
                 }));
         }
 
-#if BAM_V2
         public static SettingsBase
         SharedSettings(
             System.Collections.Generic.IEnumerable<Bam.Core.Module> objectFiles)
-#else
-        public static SettingsBase
-        SharedSettings(
-            System.Collections.Generic.IEnumerable<Bam.Core.Module> objectFiles,
-            System.Type convertExtensionClassType,
-            System.Type conversionInterfaceType,
-            Bam.Core.TypeArray convertParameterTypes)
-#endif
         {
             var sharedInterfaces = SharedInterfaces(objectFiles);
             var implementedInterfaces = new Bam.Core.TypeArray(sharedInterfaces);
-#if BAM_V2
-#else
-            implementedInterfaces.Add(conversionInterfaceType);
-#endif
 
             // define a new type, that contains just the shared interfaces between all object files
             // (any interface not shared, must be cloned later)
@@ -171,21 +158,12 @@ namespace C
                 var properties = i.GetProperties();
                 foreach (var prop in properties)
                 {
-#if BAM_V2
                     var dynamicProperty = sharedSettingsTypeDefn.DefineProperty(
                         System.String.Join(".", new[] { i.FullName, prop.Name }),
                         System.Reflection.PropertyAttributes.None,
                         prop.PropertyType,
                         System.Type.EmptyTypes
                     );
-#else
-                    var dynamicProperty = sharedSettingsTypeDefn.DefineProperty(
-                        prop.Name,
-                        System.Reflection.PropertyAttributes.None,
-                        prop.PropertyType,
-                        System.Type.EmptyTypes
-                    );
-#endif
                     var field = sharedSettingsTypeDefn.DefineField("m" + prop.Name,
                         prop.PropertyType,
                         System.Reflection.FieldAttributes.Private);
@@ -217,41 +195,6 @@ namespace C
                     dynamicProperty.SetSetMethod(setter);
                 }
             }
-
-#if BAM_V2
-#else
-            var projectSettingsConvertMethod = sharedSettingsTypeDefn.DefineMethod("Convert",
-                System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.Final | System.Reflection.MethodAttributes.HideBySig | System.Reflection.MethodAttributes.NewSlot | System.Reflection.MethodAttributes.Virtual,
-                null,
-                convertParameterTypes.ToArray());
-            var convertIL = projectSettingsConvertMethod.GetILGenerator();
-            foreach (var i in sharedInterfaces)
-            {
-                var extConvertParameterTypes = new Bam.Core.TypeArray(i);
-                extConvertParameterTypes.AddRange(convertParameterTypes);
-                var methInfo = convertExtensionClassType.GetMethod("Convert", extConvertParameterTypes.ToArray());
-                if (null == methInfo)
-                {
-                    throw new Bam.Core.Exception("Unable to locate the function {0}.{1}(this {2})", convertExtensionClassType.FullName, "Convert", i.Name);
-                }
-                // TODO: can this be simplified, using the ldarg opcode? a simple loop would suffice
-                convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_0);
-                if (extConvertParameterTypes.Count > 1)
-                {
-                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_1);
-                }
-                if (extConvertParameterTypes.Count > 2)
-                {
-                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_2);
-                }
-                if (extConvertParameterTypes.Count > 3)
-                {
-                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_3);
-                }
-                convertIL.Emit(System.Reflection.Emit.OpCodes.Call, methInfo);
-            }
-            convertIL.Emit(System.Reflection.Emit.OpCodes.Ret);
-#endif
 
             var sharedSettingsType = sharedSettingsTypeDefn.CreateType();
             var attributeType = typeof(Bam.Core.SettingsExtensionsAttribute);

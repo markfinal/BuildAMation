@@ -34,10 +34,6 @@ namespace MingwCommon
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonLinkerSettings :
         C.SettingsBase,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
         C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings
@@ -48,86 +44,60 @@ namespace MingwCommon
             this.InitializeAllInterfaces(module, false, true);
         }
 
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-#if BAM_V2
         [CommandLineProcessor.Enum(C.ESubsystem.NotSet, "")]
         [CommandLineProcessor.Enum(C.ESubsystem.Console, "-Wl,-subsystem,console")]
         [CommandLineProcessor.Enum(C.ESubsystem.Windows, "-Wl,-subsystem,windows")]
-#endif
         C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Path("")] // just add it to the command line
-#endif
         Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
-#endif
         C.EBit C.ICommonLinkerSettings.Bits
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.ELinkerOutput.Executable, "")]
         [CommandLineProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "-shared")]
-#endif
         C.ELinkerOutput C.ICommonLinkerSettings.OutputType
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PathArray("-L")]
-#endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
-#endif
         Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-g", "")]
-#endif
         bool C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
-#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;

@@ -34,11 +34,6 @@ namespace C
     public abstract class ProceduralHeaderFileFromToolOutput :
         C.HeaderFile
     {
-#if BAM_V2
-#else
-        private IProceduralHeaderFromToolOutputPolicy Policy = null;
-#endif
-
         /// <summary>
         /// Override this function to specify the path of the header to be written to.
         /// </summary>
@@ -100,27 +95,13 @@ namespace C
         {
             // TODO
             // always build
-#if BAM_V2
             this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[HeaderFileKey]);
-#else
-            this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
-#endif
         }
-
-#if BAM_V2
-#else
-        protected override void GetExecutionPolicy(string mode)
-        {
-            var className = "C." + mode + "ProceduralHeaderFromToolOutput";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IProceduralHeaderFromToolOutputPolicy>.Create(className);
-        }
-#endif
 
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -160,9 +141,6 @@ namespace C
                 default:
                     throw new System.NotImplementedException();
             }
-#else
-            this.Policy.HeaderFromToolOutput(this, context, this.GeneratedPaths[C.HeaderFile.Key], this.Tool as Bam.Core.ICommandLineTool);
-#endif
         }
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules

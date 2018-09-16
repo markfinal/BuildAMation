@@ -29,7 +29,6 @@
 #endregion // License
 namespace CommandLineProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)] // only ever one wildcard for files
     public class AnyInputFileAttribute :
         InputPathsAttribute
@@ -49,5 +48,4 @@ namespace CommandLineProcessor
             private set;
         }
     }
-#endif
 }

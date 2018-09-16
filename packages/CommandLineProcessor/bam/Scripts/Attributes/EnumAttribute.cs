@@ -29,7 +29,6 @@
 #endregion // License
 namespace CommandLineProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
     public class EnumAttribute :
         BaseAttribute
@@ -49,5 +48,4 @@ namespace CommandLineProcessor
             private set;
         }
     }
-#endif
 }

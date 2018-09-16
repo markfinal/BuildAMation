@@ -50,10 +50,8 @@ namespace ClangCommon
             (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
         }
 
-#if BAM_V2
         [CommandLineProcessor.String("-fconstant-string-class=")]
         [XcodeProjectProcessor.String("", ignore: true)] // TODO
-#endif
         string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
         {
             get;

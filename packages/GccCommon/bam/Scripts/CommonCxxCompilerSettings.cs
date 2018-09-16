@@ -46,28 +46,23 @@ namespace GccCommon
             base(module, useDefaults)
         {}
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Disabled, "-fno-exceptions")]
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Asynchronous, "-fexceptions")]
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Synchronous, "-fexceptions")]
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.SyncWithCExternFunctions, "-fexceptions")]
-#endif
         C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-frtti", "-fno-rtti")]
-#endif
         bool? C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.NotSet, "")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.Cxx98, "-std=c++98")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx98, "-std=gnu++98")]
@@ -77,18 +72,15 @@ namespace GccCommon
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx11, "-std=gnu++11")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.Cxx14, "-std=c++14")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx14, "-std=gnu++14")]
-#endif
         C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.NotSet, "")]
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libstdcxx, "")]
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libcxx, "")]
-#endif
         C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
         {
             get;

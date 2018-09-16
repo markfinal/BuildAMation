@@ -44,13 +44,7 @@ namespace Publisher
     public abstract class StrippedBinaryCollation :
         Bam.Core.Module
     {
-#if BAM_V2
         public const string StripBinaryDirectoryKey = "Stripped Collation Root Directory";
-#else
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Collation Root");
-
-        private IStrippedBinaryCollationPolicy Policy = null;
-#endif
 
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
@@ -63,23 +57,15 @@ namespace Publisher
             base.Init(parent);
 
             this.RegisterGeneratedFile(
-#if BAM_V2
                 StripBinaryDirectoryKey,
-#else
-                Key,
-#endif
                 this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)")
             );
 
             // one value, as stripped binaries are not generated in IDE projects
-#if BAM_V2
             this.Macros.Add(
                 "publishroot",
                 this.GeneratedPaths[StripBinaryDirectoryKey]
             );
-#else
-            this.Macros.Add("publishroot", this.GeneratedPaths[Key]);
-#endif
         }
 
         protected sealed override void
@@ -92,7 +78,6 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -108,32 +93,7 @@ namespace Publisher
                     // does not need to do anything
                     break;
             }
-#else
-            if (null == this.Policy)
-            {
-                return;
-            }
-            this.Policy.CollateStrippedBinaries(this, context);
-#endif
         }
-
-#if BAM_V2
-#else
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
-                case "MakeFile":
-                    {
-                        var className = "Publisher." + mode + "StrippedBinaryCollation";
-                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IStrippedBinaryCollationPolicy>.Create(className);
-                    }
-                    break;
-            }
-        }
-#endif
 
         private StripModule
         StripBinary(
@@ -142,12 +102,8 @@ namespace Publisher
             var stripBinary = Bam.Core.Module.Create<StripModule>(preInitCallback: module =>
                 {
                     module.SourceModule = collatedFile as Bam.Core.Module;
-#if BAM_V2
                     System.Diagnostics.Debug.Assert(1 == (collatedFile as Bam.Core.Module).GeneratedPaths.Count());
                     module.SourcePathKey = (collatedFile as Bam.Core.Module).GeneratedPaths.First().Key;
-#else
-                    module.SourcePathKey = CollatedObject.Key;
-#endif
                     module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
                 });
 
@@ -175,12 +131,8 @@ namespace Publisher
                     // no need to take RenameLeaf macro into account, as the rename occurred
                     // in the original collation, so this is a straight copy
                     module.SourceModule = collatedObject as Bam.Core.Module;
-#if BAM_V2
                     System.Diagnostics.Debug.Assert(1 == (collatedObject as Bam.Core.Module).GeneratedPaths.Count());
                     module.SourcePathKey = (collatedObject as Bam.Core.Module).GeneratedPaths.First().Key;
-#else
-                    module.SourcePathKey = CollatedObject.Key;
-#endif
                     module.SetPublishingDirectory("$(0)", collatedObject.PublishingDirectory.Clone(module));
                 });
             this.Requires(clonedFile);
@@ -276,11 +228,7 @@ namespace Publisher
                 else
                 {
                     var debugSymbolsCollation = customData as DebugSymbolCollation;
-#if BAM_V2
                     var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as MakeDebugSymbolFile;
-#else
-                    var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as ObjCopyModule;
-#endif
                     if (null != debugSymbols)
                     {
                         var stripped = this.StripBinary(collatedObj);
@@ -292,11 +240,7 @@ namespace Publisher
             else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var debugSymbolsCollation = customData as DebugSymbolCollation;
-#if BAM_V2
                 var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as MakeDebugSymbolFile;
-#else
-                var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as ObjCopyModule;
-#endif
                 if (null != debugSymbols)
                 {
                     var stripped = this.StripBinary(collatedObj);
@@ -387,11 +331,7 @@ namespace Publisher
         /// <returns>A reference to the stripped collated file.</returns>
         public ICollatedObject
         Include<DependentModule>(
-#if BAM_V2
             string key,
-#else
-            Bam.Core.PathKey key,
-#endif
             Collation collator,
             CollatedObject anchor) where DependentModule : Bam.Core.Module, new()
         {

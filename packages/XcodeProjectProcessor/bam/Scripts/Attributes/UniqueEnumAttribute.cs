@@ -29,7 +29,6 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
-#if BAM_V2
     public sealed class UniqueEnumAttribute :
         EnumAttribute
     {
@@ -69,5 +68,4 @@ namespace XcodeProjectProcessor
             private set;
         }
     }
-#endif
 }

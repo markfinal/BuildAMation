@@ -35,11 +35,6 @@ namespace C
     public class ObjectFile :
         ObjectFileBase
     {
-#if BAM_V2
-#else
-        private ICompilationPolicy Policy = null;
-#endif
-
         protected override void
         Init(
             Bam.Core.Module parent)

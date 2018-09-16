@@ -33,10 +33,6 @@ namespace MingwCommon
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ", max_file_count: 1)]
     public abstract class CommonAssemblerSettings :
         C.SettingsBase,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
@@ -47,65 +43,43 @@ namespace MingwCommon
             this.InitializeAllInterfaces(module, false, true);
         }
 
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-#if BAM_V2
         [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.EnumAttribute(C.EBit.SixtyFour, "-m64")]
-#endif
         C.EBit? C.ICommonAssemblerSettings.Bits
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-g", "")]
-#endif
         bool C.ICommonAssemblerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-Werror", "-Wno-error")]
-#endif
         bool C.ICommonAssemblerSettings.WarningsAsErrors
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PathArray("-I")]
-#endif
         Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PreprocessorDefines("-D")]
-#endif
         C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
-#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;

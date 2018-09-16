@@ -33,13 +33,7 @@ namespace Publisher
     public class ZipModule :
         Bam.Core.Module
     {
-#if BAM_V2
         public const string ZipKey = "Zip Files or Directories";
-#else
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Zip files or directories");
-
-        private IZipToolPolicy Policy;
-#endif
         private Bam.Core.TokenizedString InputPath;
 
         protected override void
@@ -57,11 +51,7 @@ namespace Publisher
                 this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ZipPosix>();
             }
             this.RegisterGeneratedFile(
-#if BAM_V2
                 ZipKey,
-#else
-                Key,
-#endif
                 this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(zipoutputbasename).zip")
             );
 
@@ -73,7 +63,7 @@ namespace Publisher
         {
             // always update, so that zip can figure out what needs updating
             /*
-            this.ReasonToExecute = null; 
+            this.ReasonToExecute = null;
             var zipFilePath = this.GeneratedPaths[Key].ToString();
             if (!System.IO.File.Exists(zipFilePath))
             {
@@ -89,7 +79,6 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -138,21 +127,8 @@ namespace Publisher
                 default:
                     throw new System.NotSupportedException();
             }
-#else
-            if (null == this.Policy)
-            {
-                return;
-            }
-            this.Policy.Zip(
-                this,
-                context,
-                this.GeneratedPaths[Key],
-                this.InputPath
-            );
-#endif
         }
 
-#if BAM_V2
         public override Bam.Core.TokenizedString WorkingDirectory
         {
             get
@@ -160,14 +136,5 @@ namespace Publisher
                 return this.InputPath;
             }
         }
-#else
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            var className = "Publisher." + mode + "Zip";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IZipToolPolicy>.Create(className);
-        }
-#endif
     }
 }

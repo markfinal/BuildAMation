@@ -33,10 +33,6 @@ namespace MingwCommon
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     public abstract class CommonWinResourceCompilerSettings :
         C.SettingsBase,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
         C.ICommonWinResourceCompilerSettings,
         C.IAdditionalSettings,
         ICommonWinResourceCompilerSettings
@@ -47,55 +43,35 @@ namespace MingwCommon
             this.InitializeAllInterfaces(module, false, true);
         }
 
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-#if BAM_V2
         [CommandLineProcessor.Bool("-v", "")]
-#endif
         bool? C.ICommonWinResourceCompilerSettings.Verbose
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PathArray("--include-dir=")]
-#endif
         Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PreprocessorDefines("-D")]
-#endif
         C.PreprocessorDefinitions C.ICommonWinResourceCompilerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
-#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("--use-temp-file", "")]
-#endif
         bool? ICommonWinResourceCompilerSettings.UseTempFile
         {
             get;

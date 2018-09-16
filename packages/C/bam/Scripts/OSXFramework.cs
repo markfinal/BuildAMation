@@ -36,11 +36,7 @@ namespace C
     public abstract class OSXFramework :
         CModule
     {
-#if BAM_V2
         public const string FrameworkKey = "macOS Framework";
-#else
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("macOS Framework");
-#endif
 
         private void
         GetIDName()
@@ -50,11 +46,7 @@ namespace C
             var frameworkPath = this.CreateTokenizedString("$(0)/$(FrameworkLibraryPath)", this.FrameworkPath);
 
             this.RegisterGeneratedFile(
-#if BAM_V2
                 FrameworkKey,
-#else
-                Key,
-#endif
                 this.CreateTokenizedString(
                     "$(0)/$(1)",
                     new [] { this.FrameworkPath, this.FrameworkBundleName }
@@ -65,21 +57,12 @@ namespace C
             {
                 frameworkPath.Parse();
             }
-#if BAM_V2
             var idName = Bam.Core.OSUtilities.RunExecutable(
                 Bam.Core.OSUtilities.GetInstallLocation("xcrun").First(),
                 System.String.Format("--sdk {0} otool -DX {1}",
                 clangMeta["SDK"], // should use clangMeta.SDK, but this avoids a compile time dependency
                 frameworkPath.ToString())
             ).StandardOutput;
-#else
-            var idName = Bam.Core.OSUtilities.RunExecutable(
-                Bam.Core.OSUtilities.GetInstallLocation("xcrun").First(),
-                System.String.Format("--sdk {0} otool -DX {1}",
-                clangMeta["SDK"], // should use clangMeta.SDK, but this avoids a compile time dependency
-                frameworkPath.ToString())
-            );
-#endif
             this.Macros["IDName"] = Bam.Core.TokenizedString.CreateVerbatim(idName);
         }
 

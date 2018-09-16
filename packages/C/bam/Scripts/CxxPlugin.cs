@@ -41,13 +41,9 @@ namespace C.Cxx
             Bam.Core.Module parent)
         {
             base.Init(parent);
-#if BAM_V2
             this.RegisterGeneratedFile(
                 ExecutableKey,
                 this.CreateTokenizedString(
-#else
-                this.GeneratedPaths[Key] = this.CreateTokenizedString(
-#endif
                     "$(packagebuilddir)/$(moduleoutputdir)/$(pluginprefix)$(OutputName)$(pluginext)"
                 )
             );

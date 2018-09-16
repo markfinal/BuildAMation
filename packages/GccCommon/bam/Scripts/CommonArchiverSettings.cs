@@ -33,10 +33,6 @@ namespace GccCommon
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonArchiverSettings :
         C.SettingsBase,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
@@ -46,46 +42,28 @@ namespace GccCommon
             this.InitializeAllInterfaces(module, false, true);
         }
 
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-#if BAM_V2
         [CommandLineProcessor.Bool("-s", "")]
-#endif
         bool ICommonArchiverSettings.Ranlib
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-c", "")]
-#endif
         bool ICommonArchiverSettings.DoNotWarnIfLibraryCreated
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
-#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(EArchiverCommand.Replace, "-r")]
-#endif
         EArchiverCommand ICommonArchiverSettings.Command
         {
             get;

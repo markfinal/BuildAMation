@@ -32,10 +32,6 @@ namespace Publisher
     [CommandLineProcessor.OutputPath(ZipModule.ZipKey, "")]
     public sealed class SevenZipSettings :
         Bam.Core.Settings,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
         IZipSettings
     {
         public SevenZipSettings(
@@ -43,16 +39,6 @@ namespace Publisher
         {
             this.InitializeAllInterfaces(module, false, true);
         }
-
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
 
         [CommandLineProcessor.Bool("-bb3", "")]
         bool IZipSettings.Verbose
@@ -85,10 +71,6 @@ namespace Publisher
     [CommandLineProcessor.OutputPath(ZipModule.ZipKey, "")]
     public sealed class ZipSettings :
         Bam.Core.Settings,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
         IZipSettings
     {
         public ZipSettings()
@@ -99,16 +81,6 @@ namespace Publisher
         {
             this.InitializeAllInterfaces(module, false, true);
         }
-
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
 
         [CommandLineProcessor.Bool("-v", "")]
         bool IZipSettings.Verbose

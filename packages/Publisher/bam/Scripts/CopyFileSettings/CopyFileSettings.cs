@@ -35,10 +35,6 @@ namespace Publisher
     [CommandLineProcessor.AnyInputFile("", path_modifier_if_directory: "$(0)/.")]
     public sealed class PosixCopyFileSettings :
         Bam.Core.Settings,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
         ICopyFileSettings
     {
         public PosixCopyFileSettings()
@@ -50,46 +46,28 @@ namespace Publisher
             this.InitializeAllInterfaces(module, false, true);
         }
 
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-#if BAM_V2
         [CommandLineProcessor.Bool("-f", "")]
-#endif
         bool ICopyFileSettings.Force
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-v", "")]
-#endif
         bool ICopyFileSettings.Verbose
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-R", "")]
-#endif
         bool ICopyFileSettings.Recursive
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-a", "")]
-#endif
         bool ICopyFileSettings.PreserveAllAttributes
         {
             get;
@@ -108,10 +86,6 @@ namespace Publisher
     [CommandLineProcessor.AnyInputFile("")]
     public sealed class WinCopyFileSettings :
         Bam.Core.Settings,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
         ICopyFileSettings
     {
         public WinCopyFileSettings()
@@ -123,46 +97,28 @@ namespace Publisher
             this.InitializeAllInterfaces(module, false, true);
         }
 
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-#if BAM_V2
         [CommandLineProcessor.Bool("/Y /R", "")]
-#endif
         bool ICopyFileSettings.Force
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("/F", "")]
-#endif
         bool ICopyFileSettings.Verbose
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("/S", "")]
-#endif
         bool ICopyFileSettings.Recursive
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("/K /B", "")]
-#endif
         bool ICopyFileSettings.PreserveAllAttributes
         {
             get;

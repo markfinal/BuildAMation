@@ -35,11 +35,6 @@ namespace C
     public class ExternalSourceGenerator :
         Bam.Core.Module
     {
-#if BAM_V2
-#else
-        private IExternalSourceGeneratorPolicy policy = null;
-#endif
-
         public ExternalSourceGenerator()
         {
             this.Arguments = new Bam.Core.TokenizedStringArray();
@@ -203,7 +198,6 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -280,48 +274,6 @@ namespace C
                 default:
                     throw new System.NotImplementedException();
             }
-#else
-            if (null == this.policy)
-            {
-                throw new Bam.Core.Exception(
-                    "No execution policy for {0} for build mode {1}",
-                    this.ToString(),
-                    Bam.Core.Graph.Instance.Mode
-                );
-            }
-            if (null == this.Executable)
-            {
-                throw new Bam.Core.Exception("No executable was specified for {0}", this.ToString());
-            }
-            this.policy.GenerateSource(
-                this,
-                context,
-                this.Executable,
-                this.Arguments,
-                this.OutputDirectory,
-                this.InternalExpectedOutputFileDictionary,
-                this.InternalInputFiles
-            );
-#endif
         }
-
-#if BAM_V2
-#else
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
-                case "Native":
-                case "VSSolution":
-                case "Xcode":
-                case "MakeFile":
-                    var className = "C." + mode + "ExternalSourceGenerator";
-                    this.policy = Bam.Core.ExecutionPolicyUtilities<IExternalSourceGeneratorPolicy>.Create(className);
-                    break;
-            }
-        }
-#endif
     }
 }

@@ -63,33 +63,9 @@ namespace VisualCCommon
 #endif
         }
 
-#if BAM_V2
-#else
-        private static string
-        RunExecutable(
-            string executable,
-            string arguments)
-        {
-            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = executable;
-            processStartInfo.Arguments = arguments;
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.RedirectStandardError = true; // swallow
-            processStartInfo.UseShellExecute = false;
-            System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
-            process.WaitForExit();
-            if (process.ExitCode != 0)
-            {
-                return null;
-            }
-            return process.StandardOutput.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray());
-        }
-#endif
-
         protected string
         vswhere_getinstallpath()
         {
-#if BAM_V2
             try
             {
                 var args = new System.Text.StringBuilder();
@@ -118,27 +94,6 @@ namespace VisualCCommon
                     this.major_version
                 );
             }
-#else
-            string installpath = System.String.Empty;
-            if (this.major_version >= 15)
-            {
-                installpath = RunExecutable(this.vswherePath, System.String.Format("-property installationPath -version {0}", this.major_version));
-                if (System.String.IsNullOrEmpty(installpath))
-                {
-                    throw new Bam.Core.Exception("Unable to locate installation directory for Visual Studio major version {0}", this.major_version);
-                }
-            }
-            else
-            {
-                installpath = RunExecutable(this.vswherePath, System.String.Format("-legacy -property installationPath -version [{0}]", this.major_version));
-                if (System.String.IsNullOrEmpty(installpath))
-                {
-                    throw new Bam.Core.Exception("Unable to locate installation directory for Visual Studio major version {0}", this.major_version);
-                }
-            }
-            Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", this.major_version, installpath);
-            return installpath;
-#endif
         }
 
         private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>

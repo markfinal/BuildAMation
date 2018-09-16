@@ -31,7 +31,7 @@ using Bam.Core;
 using System.Linq;
 namespace Publisher
 {
-#if BAM_V2
+    // TODO: move these to another source file
     abstract class PreExistingObject :
         Bam.Core.Module
     {
@@ -104,7 +104,6 @@ namespace Publisher
             this.RegisterGeneratedFile(ExistingDirectoryKey, this.Macros["ExistingDirectory"]);
         }
     }
-#endif
 
     /// <summary>
     /// Derive from this module to collate files and directories into a runnable distribution.
@@ -125,28 +124,6 @@ namespace Publisher
     public abstract class Collation :
         Bam.Core.Module
     {
-#if BAM_V2
-#else
-        static Collation()
-        {
-            // TODO: is this needed?
-            Bam.Core.TokenizedString.registerPostUnaryFunction("readlink", argument =>
-                {
-#if __MonoCS__
-                    var symlink = new Mono.Unix.UnixSymbolicLinkInfo(argument);
-                    return symlink.ContentsPath;
-#else
-                    throw new System.NotSupportedException("Unable to get symbolic link target on Windows");
-#endif
-                });
-        }
-#endif
-
-#if BAM_V2
-#else
-        private ICollationPolicy Policy = null;
-#endif
-
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -169,7 +146,6 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -182,32 +158,7 @@ namespace Publisher
                     // does not need to do anything
                     break;
             }
-#else
-            if (null == this.Policy)
-            {
-                return;
-            }
-            this.Policy.Collate(this, context);
-#endif
         }
-
-#if BAM_V2
-#else
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
-                case "MakeFile":
-                    {
-                        var className = "Publisher." + mode + "Collation";
-                        this.Policy = Bam.Core.ExecutionPolicyUtilities<ICollationPolicy>.Create(className);
-                    }
-                    break;
-            }
-    }
-#endif
 
         /// <summary>
         /// The type of application being published.
@@ -236,11 +187,7 @@ namespace Publisher
 
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
-#if BAM_V2
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, string>, ICollatedObject>();
-#else
-        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
-#endif
         private System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>> preExistingCollatedObjects = new System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>>();
 
         private Bam.Core.TokenizedString PublishRoot
@@ -486,7 +433,6 @@ namespace Publisher
             }
 
             // order matters here, for any sub-classes of module types
-#if BAM_V2
             this.Mapping.Register(typeof(C.Cxx.Plugin), C.Cxx.Plugin.ExecutableKey, this.PluginDir, true);
             this.Mapping.Register(typeof(C.Plugin), C.Plugin.ExecutableKey, this.PluginDir, true);
             this.Mapping.Register(typeof(C.Cxx.DynamicLibrary), C.Cxx.DynamicLibrary.ExecutableKey, this.DynamicLibraryDir, true);
@@ -507,28 +453,6 @@ namespace Publisher
             {
                 this.Mapping.Register(typeof(C.OSXFramework), C.OSXFramework.FrameworkKey, this.Macros["macOSAppBundleFrameworksDir"], true);
             }
-#else
-            this.Mapping.Register(typeof(C.Cxx.Plugin), C.Cxx.Plugin.Key, this.PluginDir, true);
-            this.Mapping.Register(typeof(C.Plugin), C.Plugin.Key, this.PluginDir, true);
-            this.Mapping.Register(typeof(C.Cxx.DynamicLibrary), C.Cxx.DynamicLibrary.Key, this.DynamicLibraryDir, true);
-            if (Bam.Core.OSUtilities.IsWindowsHosting)
-            {
-                this.Mapping.Register(typeof(C.Cxx.DynamicLibrary), C.Cxx.DynamicLibrary.ImportLibraryKey, this.ImportLibraryDir, false);
-            }
-            this.Mapping.Register(typeof(C.DynamicLibrary), C.DynamicLibrary.Key, this.DynamicLibraryDir, true);
-            if (Bam.Core.OSUtilities.IsWindowsHosting)
-            {
-                this.Mapping.Register(typeof(C.DynamicLibrary), C.DynamicLibrary.ImportLibraryKey, this.ImportLibraryDir, false);
-            }
-            this.Mapping.Register(typeof(C.SharedObjectSymbolicLink), C.SharedObjectSymbolicLink.Key, this.DynamicLibraryDir, true);
-            this.Mapping.Register(typeof(C.Cxx.ConsoleApplication), C.Cxx.ConsoleApplication.Key, this.ExecutableDir, true);
-            this.Mapping.Register(typeof(C.ConsoleApplication), C.ConsoleApplication.Key, this.ExecutableDir, true);
-            this.Mapping.Register(typeof(C.StaticLibrary), C.StaticLibrary.Key, this.StaticLibraryDir, false);
-            if (Bam.Core.OSUtilities.IsOSXHosting && EPublishingType.WindowedApplication == type)
-            {
-                this.Mapping.Register(typeof(C.OSXFramework), C.OSXFramework.Key, this.Macros["macOSAppBundleFrameworksDir"], true);
-            }
-#endif
         }
 
         /// <summary>
@@ -545,20 +469,12 @@ namespace Publisher
         public void
         IncludeAllModulesInNamespace(
             string nameSpace,
-#if BAM_V2
             string key,
-#else
-            Bam.Core.PathKey key,
-#endif
             Bam.Core.TokenizedString anchorPublishRoot = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
             var genericFindReference = typeof(Bam.Core.Graph).GetMethod("FindReferencedModule", System.Type.EmptyTypes);
-#if BAM_V2
             var genericInclude = this.GetType().GetMethod("Include", new[] { typeof(string), typeof(Bam.Core.TokenizedString) });
-#else
-            var genericInclude = this.GetType().GetMethod("Include", new[] { typeof(Bam.Core.PathKey), typeof(Bam.Core.TokenizedString) });
-#endif
             var moduleTypes = global::System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(
                 item => item.Namespace == nameSpace &&
                 item.IsSubclassOf(typeof(Bam.Core.Module)));
@@ -623,13 +539,8 @@ namespace Publisher
         private void
         EncodeDependentModuleAndPathKey(
             Bam.Core.Module dependent,
-#if BAM_V2
             System.Collections.Generic.Dictionary<Bam.Core.Module, string> allDependents,
             System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, string>> toDealWith)
-#else
-            System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> allDependents,
-            System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>> toDealWith)
-#endif
         {
             var runtimePathKey = this.Mapping.GetRuntimePathKey(dependent);
             if (null == runtimePathKey)
@@ -648,13 +559,8 @@ namespace Publisher
         private void
         FindPublishableDependents(
             Bam.Core.Module module,
-#if BAM_V2
             System.Collections.Generic.Dictionary<Bam.Core.Module, string> allDependents,
             System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, string>> toDealWith)
-#else
-            System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> allDependents,
-            System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>> toDealWith)
-#endif
         {
             // now look at all the dependencies and accumulate a list of child dependencies
             // TODO: need a configurable list of types, not just C.DynamicLibrary, that the user can specify to find
@@ -671,21 +577,12 @@ namespace Publisher
         private void
         gatherAllDependencies(
             Bam.Core.Module initialModule,
-#if BAM_V2
             string key,
-#else
-            Bam.Core.PathKey key,
-#endif
             ICollatedObject anchor,
             Bam.Core.TokenizedString anchorPublishRoot)
         {
-#if BAM_V2
             var allDependents = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
             var toDealWith = new System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, string>>();
-#else
-            var allDependents = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
-            var toDealWith = new System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>>();
-#endif
             toDealWith.Enqueue(System.Tuple.Create(initialModule, key));
             // iterate over each dependent, stepping into each of their dependencies
             while (toDealWith.Count > 0)
@@ -696,19 +593,11 @@ namespace Publisher
                 {
                     continue;
                 }
-#if BAM_V2
                 if (next.Item2 == default(string))
                 {
                     Bam.Core.Log.DebugMessage("Ignoring '{0}' for collation, with no string path key", next.Item1.ToString());
                     continue;
                 }
-#else
-                if (next.Item2 == default(Bam.Core.PathKey))
-                {
-                    Bam.Core.Log.DebugMessage("Ignoring '{0}' for collation, with no path key", next.Item1.ToString());
-                    continue;
-                }
-#endif
                 var moduleShouldBePublished = true;
                 moduleShouldBePublished &= !allDependents.ContainsKey(next.Item1);
                 moduleShouldBePublished &= !this.collatedObjects.ContainsKey(next);
@@ -736,21 +625,13 @@ namespace Publisher
         struct ModuleOutputDefaultPublishingPath
         {
             public System.Type type;
-#if BAM_V2
             public string pathKey;
-#else
-            public Bam.Core.PathKey pathKey;
-#endif
             public Bam.Core.TokenizedString defaultPublishPath;
             public bool runtimeDependency;
 
             public ModuleOutputDefaultPublishingPath(
                 System.Type moduleType,
-#if BAM_V2
                 string modulePathKey,
-#else
-                Bam.Core.PathKey modulePathKey,
-#endif
                 Bam.Core.TokenizedString defaultPublishPath,
                 bool isRuntimeDependency)
             {
@@ -778,11 +659,7 @@ namespace Publisher
             public void
             Register(
                 System.Type moduleType,
-#if BAM_V2
                 string modulePathKey,
-#else
-                Bam.Core.PathKey modulePathKey,
-#endif
                 Bam.Core.TokenizedString defaultPublishPath,
                 bool isRuntimeDependency)
             {
@@ -798,11 +675,7 @@ namespace Publisher
             public Bam.Core.TokenizedString
             FindPublishDirectory(
                 Bam.Core.Module module,
-#if BAM_V2
                 string modulePathKey)
-#else
-                Bam.Core.PathKey modulePathKey)
-#endif
             {
                 foreach (var mod in this.mapping)
                 {
@@ -827,11 +700,7 @@ namespace Publisher
             /// </summary>
             /// <param name="module">Module of interest</param>
             /// <returns>String Key registered with the module, or null if there is not one registered.</returns>
-#if BAM_V2
             public string
-#else
-            public Bam.Core.PathKey
-#endif
             GetRuntimePathKey(
                 Bam.Core.Module module)
             {
@@ -861,7 +730,6 @@ namespace Publisher
             private set;
         }
 
-#if BAM_V2
         private void
         recordCollatedObject(
             ICollatedObject collatedFile,
@@ -901,16 +769,11 @@ namespace Publisher
                 throw new Bam.Core.Exception(message.ToString());
             }
         }
-#endif
 
         private ICollatedObject
         IncludeNoGather(
             Bam.Core.Module dependent,
-#if BAM_V2
             string key,
-#else
-            Bam.Core.PathKey key,
-#endif
             Bam.Core.TokenizedString modulePublishDir,
             ICollatedObject anchor,
             Bam.Core.TokenizedString anchorPublishRoot)
@@ -946,57 +809,19 @@ namespace Publisher
                     anchorPublishRoot
                 );
             }
-#if BAM_V2
             this.recordCollatedObject(
                 collatedFile,
                 dependent,
                 key,
                 anchor
             );
-#else
-            var tuple = System.Tuple.Create(dependent, key);
-            try
-            {
-                if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
-                {
-                    // a dependency may be copied for each anchor that references it in order
-                    // to make that anchor fully resolved and debuggable
-                    if (null != anchor)
-                    {
-                        var anchorAsCollatedObject = anchor as CollatedObject;
-                        anchorAsCollatedObject.DependentCollations.Add(tuple, collatedFile);
-                    }
-                    else
-                    {
-                        this.collatedObjects.Add(tuple, collatedFile);
-                    }
-                }
-                else
-                {
-                    // as everything goes to a single publishdir, remember each instance of a module
-                    this.collatedObjects.Add(tuple, collatedFile);
-                }
-            }
-            catch (System.ArgumentException)
-            {
-                var message = new System.Text.StringBuilder();
-                message.AppendFormat("Module {0} with path key {1} has already been added for collation", dependent.ToString(), key.ToString());
-                message.AppendLine();
-                message.AppendLine("Please use Collation.Find<ModuleType>() in order to modify any of it's traits.");
-                throw new Bam.Core.Exception(message.ToString());
-            }
-#endif
             return collatedFile;
         }
 
         private ICollatedObject
         Include(
             Bam.Core.Module dependent,
-#if BAM_V2
             string key,
-#else
-            Bam.Core.PathKey key,
-#endif
             Bam.Core.TokenizedString anchorPublishRoot)
         {
             var modulePublishDir = this.Mapping.FindPublishDirectory(dependent, key);
@@ -1015,11 +840,7 @@ namespace Publisher
         /// <returns></returns>
         public ICollatedObject
         Include<DependentModule>(
-#if BAM_V2
             string key,
-#else
-            Bam.Core.PathKey key,
-#endif
             Bam.Core.TokenizedString anchorPublishRoot = null) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
@@ -1230,33 +1051,12 @@ namespace Publisher
             return this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, anchor, filter, renameLeaf);
         }
 
-#if BAM_V2
-#else
-        /// <summary>
-        /// For a collated ELF file, update it's RPATH.
-        /// </summary>
-        /// <param name="source">Source.</param>
-        /// <param name="newRPath">New Rpath.</param>
-        public ChangeRPathModule
-        ChangeRPath(
-            ICollatedObject source,
-            string newRPath)
-        {
-            var change = Bam.Core.Module.Create<ChangeRPathModule>();
-            change.Source = source as CollatedFile;
-            change.NewRPath = newRPath;
-            this.Requires(change);
-            return change;
-        }
-#endif
-
         private ICollatedObject
         CreateCollatedPreExistingFile(
             string sourcePath,
             Bam.Core.TokenizedString destinationDir,
             ICollatedObject anchor)
         {
-#if BAM_V2
             var preexisting = Bam.Core.Module.Create<PreExistingFile>(
                 preInitCallback: module =>
                 {
@@ -1285,61 +1085,6 @@ namespace Publisher
                 );
             }
             return collatedFile;
-#else
-            var anchorObj = anchor as CollatedObject;
-            if (null != anchor)
-            {
-                if (!anchorObj.IsAnchor)
-                {
-                    throw new Bam.Core.Exception("Collation object should be an anchor but isn't");
-                }
-            }
-            var collatedFile = Bam.Core.Module.Create<CollatedPreExistingFile>(preInitCallback: module =>
-                {
-                    module.PreExistingSourcePath = sourcePath;
-                    module.SetPublishingDirectory("$(0)", new[] { destinationDir });
-                });
-
-            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
-            {
-                if (null != anchor)
-                {
-                    // this file is associated with a module-based anchor, so publish next to it
-                    collatedFile.Anchor = anchor;
-                    collatedFile.Macros.Add("publishroot", collatedFile.CreateTokenizedString("@dir($(0))", new[] { anchorObj.SourcePath }));
-                }
-                else
-                {
-                    // if is no module-based anchor, this is likely to be collating
-                    // public headers for a library
-                    // these do not need to go beside the executable
-                    collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
-                }
-            }
-            else
-            {
-                // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
-                collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
-            }
-
-            collatedFile.Macros.Add("publishdir", collatedFile.CreateTokenizedString("$(publishroot)"));
-
-            this.Requires(collatedFile);
-
-            if (this.preExistingCollatedObjects.Any(item => item.Item1.SourcePath == collatedFile.SourcePath && item.Item2 == destinationDir))
-            {
-                throw new Bam.Core.Exception("Pre-existing file already collated, with path '{0}'", sourcePath);
-            }
-            this.preExistingCollatedObjects.Add(System.Tuple.Create(collatedFile as CollatedObject, destinationDir));
-
-            if (null != anchor)
-            {
-                // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
-                (collatedFile as CollatedObject).Macros.Add("AnchorOutputName", anchorObj.Macros["AnchorOutputName"]);
-            }
-
-            return collatedFile;
-#endif
         }
 
         private ICollatedObject
@@ -1349,7 +1094,6 @@ namespace Publisher
             ICollatedObject anchor,
             string renameLeaf)
         {
-#if BAM_V2
             var preexisting = Bam.Core.Module.Create<PreExistingDirectory>(
                 preInitCallback: module =>
                 {
@@ -1379,72 +1123,12 @@ namespace Publisher
                 );
             }
             return collatedDir;
-#else
-            var anchorObj = anchor as CollatedObject;
-            if (null != anchor)
-            {
-                if (!anchorObj.IsAnchor)
-                {
-                    throw new Bam.Core.Exception("Collation object should be an anchor but isn't");
-                }
-            }
-            var collatedDir = Bam.Core.Module.Create<CollatedDirectory>(preInitCallback: module =>
-                {
-                    if (null != renameLeaf)
-                    {
-                        module.Macros.AddVerbatim("RenameLeaf", renameLeaf);
-                    }
-                    module.PreExistingSourcePath = sourcePath;
-                    module.SetPublishingDirectory("$(0)", new[] { destinationDir });
-                });
-
-            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
-            {
-                if (null != anchor)
-                {
-                    // this directory is associated with a module-based anchor, so publish next to it
-                    collatedDir.Anchor = anchor;
-                    collatedDir.Macros.Add("publishroot", collatedDir.CreateTokenizedString("@dir($(0))", new[] { anchorObj.SourcePath }));
-                }
-                else
-                {
-                    collatedDir.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
-                }
-            }
-            else
-            {
-                // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
-                collatedDir.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
-            }
-
-            collatedDir.Macros.Add("publishdir", collatedDir.CreateTokenizedString("$(publishroot)"));
-
-            this.Requires(collatedDir);
-
-            if (this.preExistingCollatedObjects.Any(item => item.Item1.SourcePath == collatedDir.SourcePath && item.Item2 == destinationDir))
-            {
-                throw new Bam.Core.Exception("Pre-existing directory already collated, with path '{0}'", sourcePath);
-            }
-            this.preExistingCollatedObjects.Add(System.Tuple.Create(collatedDir as CollatedObject, destinationDir));
-
-            if (null != anchor)
-            {
-                // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
-                (collatedDir as CollatedObject).Macros.Add("AnchorOutputName", anchorObj.Macros["AnchorOutputName"]);
-            }
-
-            return collatedDir;
-#endif
         }
 
         private CollatedObject
         CreateCollatedModuleGeneratedFile<CollationType>(
             Bam.Core.Module dependent,
-#if BAM_V2
             string key,
-#else
-            Bam.Core.PathKey key,
-#endif
             Bam.Core.TokenizedString modulePublishDir,
             ICollatedObject anchor,
             Bam.Core.TokenizedString anchorPublishRoot,
@@ -1499,11 +1183,7 @@ namespace Publisher
         private ICollatedObject
         CreateCollatedModuleGeneratedOSXFramework(
             Bam.Core.Module dependent,
-#if BAM_V2
             string key,
-#else
-            Bam.Core.PathKey key,
-#endif
             Bam.Core.TokenizedString modulePublishDir,
             ICollatedObject anchor,
             Bam.Core.TokenizedString anchorPublishRoot)

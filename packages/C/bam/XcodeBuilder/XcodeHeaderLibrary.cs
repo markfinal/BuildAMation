@@ -30,7 +30,6 @@
 using System.Linq;
 namespace C
 {
-#if BAM_V2
     public static partial class XcodeSupport
     {
         public static void
@@ -54,32 +53,4 @@ namespace C
             }
         }
     }
-#else
-    public sealed class XcodeHeaderLibrary :
-        IHeaderLibraryPolicy
-    {
-        void
-        IHeaderLibraryPolicy.HeadersOnly(
-            HeaderLibrary sender,
-            Bam.Core.ExecutionContext context,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
-        {
-            if (0 == headers.Count)
-            {
-                return;
-            }
-
-            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            var target = workspace.EnsureTargetExists(sender);
-            target.SetType(XcodeBuilder.Target.EProductType.Utility);
-            var configuration = target.GetConfiguration(sender);
-            configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
-
-            foreach (var header in headers)
-            {
-                target.EnsureHeaderFileExists((header as HeaderFile).InputPath);
-            }
-        }
-    }
-#endif
 }

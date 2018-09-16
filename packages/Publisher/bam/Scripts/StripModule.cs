@@ -34,23 +34,11 @@ namespace Publisher
         Bam.Core.Module,
         ICollatedObject
     {
-#if BAM_V2
         public const string StripBinaryKey = "Stripped Binary Destination";
 
         private Bam.Core.Module sourceModule;
         private string sourcePathKey;
-#else
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Stripped Binary Destination");
-
-        private Bam.Core.Module sourceModule;
-        private Bam.Core.PathKey sourcePathKey;
-#endif
         private ICollatedObject anchor = null;
-
-#if BAM_V2
-#else
-        private IStripToolPolicy Policy;
-#endif
 
         protected override void
         Init(
@@ -60,11 +48,7 @@ namespace Publisher
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<StripTool>();
             this.RegisterGeneratedFile(
-#if BAM_V2
                 StripBinaryKey,
-#else
-                Key,
-#endif
                 this.CreateTokenizedString(
                     "$(0)/@filename($(1))",
                     new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
@@ -85,7 +69,6 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -109,33 +92,7 @@ namespace Publisher
                 default:
                     throw new System.NotSupportedException();
             }
-#else
-            if (null == this.Policy)
-            {
-                return;
-            }
-            this.Policy.Strip(this, context, this.sourceModule.GeneratedPaths[this.sourcePathKey], this.GeneratedPaths[Key]);
-#endif
         }
-
-#if BAM_V2
-#else
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
-                case "Native":
-                case "MakeFile":
-                    {
-                        var className = "Publisher." + mode + "Strip";
-                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IStripToolPolicy>.Create(className);
-                    }
-                    break;
-            }
-        }
-#endif
 
         Bam.Core.Module ICollatedObject.SourceModule
         {
@@ -152,7 +109,6 @@ namespace Publisher
             }
         }
 
-#if BAM_V2
         string ICollatedObject.SourcePathKey
         {
             get
@@ -167,22 +123,6 @@ namespace Publisher
                 this.sourcePathKey = value;
             }
         }
-#else
-        Bam.Core.PathKey ICollatedObject.SourcePathKey
-        {
-            get
-            {
-                return this.sourcePathKey;
-            }
-        }
-        public Bam.Core.PathKey SourcePathKey
-        {
-            set
-            {
-                this.sourcePathKey = value;
-            }
-        }
-#endif
 
         Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
         {

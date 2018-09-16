@@ -32,11 +32,6 @@ namespace CodeGenTest
     public class GeneratedSourceModule :
         C.SourceFile
     {
-#if BAM_V2
-#else
-        private IGeneratedSourcePolicy Policy;
-#endif
-
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -58,7 +53,6 @@ namespace CodeGenTest
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -102,25 +96,6 @@ namespace CodeGenTest
                 default:
                     throw new System.NotImplementedException();
             }
-#else
-            if (null == this.Policy)
-            {
-                return;
-            }
-
-            this.Policy.GenerateSource(this, context, this.Compiler, this.GeneratedPaths[Key]);
-#endif
         }
-
-#if BAM_V2
-#else
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            var className = "CodeGenTest." + mode + "GenerateSource";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
-        }
-#endif
     }
 }

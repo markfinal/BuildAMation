@@ -106,19 +106,11 @@ namespace GccCommon
         {
             if (library is C.StaticLibrary)
             {
-#if BAM_V2
                 return library.GeneratedPaths[C.StaticLibrary.LibraryKey];
-#else
-                return library.GeneratedPaths[C.StaticLibrary.Key];
-#endif
             }
             else if (library is C.IDynamicLibrary)
             {
-#if BAM_V2
                 return library.GeneratedPaths[C.DynamicLibrary.ExecutableKey];
-#else
-                return library.GeneratedPaths[C.DynamicLibrary.Key];
-#endif
             }
             else if ((library is C.CSDKModule) ||
                      (library is C.HeaderLibrary) ||
@@ -138,11 +130,7 @@ namespace GccCommon
             if (library is C.StaticLibrary)
             {
                 // TODO: @filenamenoext
-#if BAM_V2
                 var libraryPath = library.GeneratedPaths[C.StaticLibrary.LibraryKey].ToString();
-#else
-                var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].ToString();
-#endif
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 var libraryName = GetLPrefixLibraryName(libraryPath);
                 if (linker.Libraries.Contains(libraryName))
@@ -159,20 +147,12 @@ namespace GccCommon
             else if (library is C.IDynamicLibrary)
             {
                 // TODO: @filenamenoext
-#if BAM_V2
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.ExecutableKey].ToString();
-#else
-                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].ToString();
-#endif
                 var linkerNameSymLink = (library as C.IDynamicLibrary).LinkerNameSymbolicLink;
                 // TODO: I think there's a problem when there's no linkerName symlink - i.e. taking the full shared object path
                 var libraryName = (linkerNameSymLink != null) ?
                     GetLPrefixLibraryName(
-#if BAM_V2
                         linkerNameSymLink.GeneratedPaths[C.SharedObjectSymbolicLink.SOSymLinkKey].ToString()
-#else
-                        linkerNameSymLink.GeneratedPaths[C.SharedObjectSymbolicLink.Key].ToString()
-#endif
                     ) :
                     GetLPrefixLibraryName(
                         libraryPath

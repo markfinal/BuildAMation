@@ -36,7 +36,6 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -66,23 +65,6 @@ namespace Publisher
                     break;
 #endif
             }
-#else
-            var framework = (this.CopiedFileModule as ICollatedObject).SourceModule as C.OSXFramework;
-            if (null == framework)
-            {
-                throw new Bam.Core.Exception("Updating the ID name only works on an external framework");
-            }
-
-            // TODO: although this is standard for an application bundle, should the '../Frameworks' be actually taken
-            // from the subdirectory of the copied framework?
-            this.CopiedFileModule.Macros["IDName"] = this.CopiedFileModule.CreateTokenizedString("@executable_path/../Frameworks/$(0)", framework.Macros["FrameworkLibraryPath"]);
-
-            this.Policy.InstallName(
-                this,
-                context,
-                null,
-                this.CopiedFileModule.Macros["IDName"]);
-#endif
         }
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules

@@ -128,11 +128,7 @@ namespace VersionScriptTest1
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
-#if BAM_V2
             this.Include<Application>(C.ConsoleApplication.ExecutableKey);
-#else
-            this.Include<Application>(C.ConsoleApplication.Key);
-#endif
         }
     }
 }

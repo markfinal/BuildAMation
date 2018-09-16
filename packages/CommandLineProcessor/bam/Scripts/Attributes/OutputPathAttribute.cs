@@ -29,7 +29,6 @@
 #endregion // License
 namespace CommandLineProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = true)] // because there may be multiple outputs
     public class OutputPathAttribute :
         BaseAttribute
@@ -65,5 +64,4 @@ namespace CommandLineProcessor
             private set;
         }
     }
-#endif
 }

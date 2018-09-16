@@ -91,11 +91,7 @@ namespace PluginTest
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
-#if BAM_V2
             this.Include<Application>(C.ConsoleApplication.ExecutableKey);
-#else
-            this.Include<Application>(C.ConsoleApplication.Key);
-#endif
             (this.Find<Plugin>().First() as Publisher.CollatedObject).SetPublishingDirectory("$(0)/subdir", new[] { this.ExecutableDir });
         }
     }

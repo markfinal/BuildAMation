@@ -33,11 +33,6 @@ namespace ClangCommon
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ", max_file_count: 1)]
     public abstract class CommonAssemblerSettings :
         C.SettingsBase,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-        XcodeProjectProcessor.IConvertToProject,
-#endif
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
@@ -48,80 +43,50 @@ namespace ClangCommon
             this.InitializeAllInterfaces(module, false, true);
         }
 
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineAssemblerImplementation), this, commandLine);
-        }
-
-        void
-        XcodeProjectProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            XcodeBuilder.Configuration configuration)
-        {
-            XcodeProjectProcessor.Conversion.Convert(typeof(XcodeAssemblerImplementation), this, module, configuration);
-        }
-#endif
-
-#if BAM_V2
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-arch i386")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-arch x86_64")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.ThirtyTwo, "VALID_ARCHS", "i386", "ARCHS", "$(ARCHS_STANDARD_32_BIT)")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.SixtyFour, "VALID_ARCHS", "x86_64", "ARCHS", "$(ARCHS_STANDARD_64_BIT)")]
-#endif
         C.EBit? C.ICommonAssemblerSettings.Bits
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-g", "")]
         [XcodeProjectProcessor.UniqueBool("GCC_GENERATE_DEBUGGING_SYMBOLS", "YES", "NO")]
-#endif
         bool C.ICommonAssemblerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-Werror", "-Wno-error")]
         [XcodeProjectProcessor.UniqueBool("GCC_TREAT_WARNINGS_AS_ERRORS", "YES", "NO")]
-#endif
         bool C.ICommonAssemblerSettings.WarningsAsErrors
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PathArray("-I")]
         [XcodeProjectProcessor.PathArray("USER_HEADER_SEARCH_PATHS")]
-#endif
         Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PreprocessorDefines("-D")]
         [XcodeProjectProcessor.PreprocessorDefines("GCC_PREPROCESSOR_DEFINITIONS")]
-#endif
         C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
         [XcodeProjectProcessor.StringArray("OTHER_CFLAGS", spacesSeparate: true)]
-#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;

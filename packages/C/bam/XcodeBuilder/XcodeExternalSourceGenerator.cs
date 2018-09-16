@@ -30,7 +30,6 @@
 using System.Linq;
 namespace C
 {
-#if BAM_V2
     public static partial class XcodeSupport
     {
         public static void
@@ -64,72 +63,4 @@ namespace C
             );
         }
     }
-#else
-    public sealed class XcodeExternalSourceGenerator :
-        IExternalSourceGeneratorPolicy
-    {
-        void
-        IExternalSourceGeneratorPolicy.GenerateSource(
-            ExternalSourceGenerator sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString executable,
-            Bam.Core.TokenizedStringArray arguments,
-            Bam.Core.TokenizedString output_directory,
-            System.Collections.Generic.IReadOnlyDictionary<string, Bam.Core.TokenizedString> expected_output_files,
-            System.Collections.Generic.IReadOnlyDictionary<string, Bam.Core.TokenizedString> input_files
-        )
-        {
-            var encapsulating = sender.GetEncapsulatingReferencedModule();
-
-            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            var target = workspace.EnsureTargetExists(encapsulating);
-            if (encapsulating == sender)
-            {
-                target.SetType(XcodeBuilder.Target.EProductType.Utility);
-            }
-            var configuration = target.GetConfiguration(encapsulating);
-            if (encapsulating == sender)
-            {
-                configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
-            }
-
-            var commands = new Bam.Core.StringArray();
-
-            commands.Add(
-                System.String.Format(
-                    "[[ ! -d {0} ]] && mkdir -p {0}",
-                    Bam.Core.IOWrapper.EscapeSpacesInPath(output_directory.ToString())
-                )
-            );
-
-            var condition_text = new System.Text.StringBuilder();
-            condition_text.Append("if [[ ");
-            var last_output = expected_output_files.Values.Last();
-            foreach (var output in expected_output_files.Values)
-            {
-                var output_path = Bam.Core.IOWrapper.EscapeSpacesInPath(output.ToString());
-                condition_text.AppendFormat("! -e {0} ", output_path);
-                foreach (var input in input_files.Values)
-                {
-                    var input_path = Bam.Core.IOWrapper.EscapeSpacesInPath(input.ToString());
-                    condition_text.AppendFormat("|| {1} -nt {0} ", output_path, input_path);
-                }
-                if (output != last_output)
-                {
-                    condition_text.AppendFormat("|| ");
-                }
-            }
-            condition_text.AppendLine("]]");
-            condition_text.AppendLine("then");
-
-            var cmd_line = System.String.Format("{0} {1}", executable.ToStringQuoteIfNecessary(), arguments.ToString(' '));
-            condition_text.AppendLine(System.String.Format("\techo {0}", cmd_line));
-            condition_text.AppendLine(System.String.Format("\t{0}", cmd_line));
-            condition_text.AppendLine("fi");
-            commands.Add(condition_text.ToString());
-
-            target.AddPreBuildCommands(commands, configuration);
-        }
-    }
-#endif
 }

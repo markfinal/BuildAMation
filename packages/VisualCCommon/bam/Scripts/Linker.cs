@@ -114,7 +114,6 @@ namespace VisualCCommon
         GetLibraryPath(
             C.CModule library)
         {
-#if BAM_V2
             if (library is C.StaticLibrary)
             {
                 return library.GeneratedPaths[C.StaticLibrary.LibraryKey];
@@ -123,16 +122,6 @@ namespace VisualCCommon
             {
                 return library.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey];
             }
-#else
-            if (library is C.StaticLibrary)
-            {
-                return library.GeneratedPaths[C.StaticLibrary.Key];
-            }
-            else if (library is C.IDynamicLibrary)
-            {
-                return library.GeneratedPaths[C.DynamicLibrary.ImportLibraryKey];
-            }
-#endif
             else if ((library is C.CSDKModule) ||
                      (library is C.HeaderLibrary) ||
                      (library is C.OSXFramework))

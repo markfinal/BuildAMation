@@ -35,11 +35,6 @@ namespace VisualCCommon
     [VisualStudioProcessor.InputPaths(C.SourceFile.SourceFileKey, "", handledByMetaData: true)]
     public abstract class CommonAssemblerSettings :
         C.SettingsBase,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-        VisualStudioProcessor.IConvertToProject,
-#endif
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
@@ -50,99 +45,65 @@ namespace VisualCCommon
             this.InitializeAllInterfaces(module, false, true);
         }
 
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
-            string condition)
-        {
-            VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-#endif
-
-#if BAM_V2
         // defined in the executable used
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "")]
         [VisualStudioProcessor.Enum(C.EBit.ThirtyTwo, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.EBit.SixtyFour, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
-#endif
         C.EBit? C.ICommonAssemblerSettings.Bits
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-Zi", "")]
         [VisualStudioProcessor.Bool("GenerateDebugInformation")]
-#endif
         bool C.ICommonAssemblerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-WX", "-WX-")]
         [VisualStudioProcessor.Bool("TreatWarningsAsErrors")]
-#endif
         bool C.ICommonAssemblerSettings.WarningsAsErrors
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PathArray("-I")]
         [VisualStudioProcessor.PathArray("IncludePaths", inheritExisting: true)]
-#endif
         Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PreprocessorDefines("-D")]
         [VisualStudioProcessor.PreprocessorDefines("PreprocessorDefinitions", inheritExisting: true)]
-#endif
         C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
         [VisualStudioProcessor.StringArray("AdditionalOptions")]
-#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-nologo", "")]
         [VisualStudioProcessor.Bool("NoLogo")]
-#endif
         bool ICommonAssemblerSettings.NoLogo
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(EAssemblerWarningLevel.Level0, "-W0")]
         [CommandLineProcessor.Enum(EAssemblerWarningLevel.Level1, "-W1")]
         [CommandLineProcessor.Enum(EAssemblerWarningLevel.Level2, "-W2")]
@@ -151,17 +112,14 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level1, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
         [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level2, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
         [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level3, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
-#endif
         EAssemblerWarningLevel ICommonAssemblerSettings.WarningLevel
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-safeseh", "")]
         [VisualStudioProcessor.Bool("UseSafeExceptionHandlers")]
-#endif
         bool ICommonAssemblerSettings.SafeExceptionHandlers
         {
             get;

@@ -49,7 +49,6 @@ namespace C.Cxx
             base.Init(parent);
             this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
 
-#if BAM_V2
             this.RegisterGeneratedFile(
                 ExecutableKey,
                 this.CreateTokenizedString(
@@ -57,12 +56,6 @@ namespace C.Cxx
                 )
             );
             this.Macros.Add("LinkOutput", this.GeneratedPaths[ExecutableKey]);
-#else
-            this.GeneratedPaths[Key] = this.CreateTokenizedString(
-                "$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)"
-            );
-            this.Macros.Add("LinkOutput", this.GeneratedPaths[Key]);
-#endif
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
@@ -269,21 +262,6 @@ namespace C.Cxx
             }
             base.ExecuteInternal(context);
         }
-
-#if BAM_V2
-#else
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            if (this.IsPrebuilt &&
-                !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
-            {
-                return;
-            }
-            base.GetExecutionPolicy(mode);
-        }
-#endif
 
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
         {

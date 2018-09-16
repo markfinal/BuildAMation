@@ -37,10 +37,6 @@ namespace C
         IForwardedLibraries
     {
         private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
-#if BAM_V2
-#else
-        private IHeaderLibraryPolicy Policy;
-#endif
 
         protected override void
         EvaluateInternal()
@@ -52,7 +48,6 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -82,35 +77,7 @@ namespace C
                 default:
                     throw new System.NotImplementedException();
             }
-#else
-            if (null == this.Policy)
-            {
-                return;
-            }
-
-            var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
-            this.Policy.HeadersOnly(this, context, headers);
-#endif
         }
-
-#if BAM_V2
-#else
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
-            case "VSSolution":
-            case "Xcode":
-                {
-                    var className = "C." + mode + "HeaderLibrary";
-                    this.Policy = Bam.Core.ExecutionPolicyUtilities<IHeaderLibraryPolicy>.Create(className);
-                }
-                break;
-            }
-        }
-#endif
 
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
         {

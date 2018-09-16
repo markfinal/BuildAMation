@@ -35,31 +35,17 @@ namespace Publisher
         Bam.Core.Module,
         ICollatedObject
     {
-#if BAM_V2
         public const string CopiedFileKey = "Copied file";
         public const string CopiedDirectoryKey = "Copied directory";
         public const string CopiedRenamedDirectoryKey = "Copied renamed directory";
         public const string CopiedFrameworkKey = "Copied framework";
-#else
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Copied Object");
-
-        private ICollatedObjectPolicy policy = null;
-#endif
 
         private Bam.Core.Module sourceModule;
-#if BAM_V2
         private string sourcePathKey;
-#else
-        private Bam.Core.PathKey sourcePathKey;
-#endif
         private Bam.Core.TokenizedString publishingDirectory;
         private ICollatedObject anchor = null;
 
-#if BAM_V2
         private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject>();
-#else
-        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
-#endif
 
         Bam.Core.Module ICollatedObject.SourceModule
         {
@@ -76,22 +62,14 @@ namespace Publisher
             }
         }
 
-#if BAM_V2
         string ICollatedObject.SourcePathKey
-#else
-        Bam.Core.PathKey ICollatedObject.SourcePathKey
-#endif
         {
             get
             {
                 return this.sourcePathKey;
             }
         }
-#if BAM_V2
         public string SourcePathKey
-#else
-        public Bam.Core.PathKey SourcePathKey
-#endif
         {
             set
             {
@@ -190,11 +168,7 @@ namespace Publisher
         }
 
         // TODO: add accessors, rather than direct to the field
-#if BAM_V2
         public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> DependentCollations
-#else
-        public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> DependentCollations
-#endif
         {
             get
             {
@@ -202,32 +176,12 @@ namespace Publisher
             }
         }
 
-#if BAM_V2
-#else
-        public string PreExistingSourcePath
-        {
-            get;
-            set;
-        }
-#endif
-
         public Bam.Core.TokenizedString
         SourcePath
         {
             get
             {
-#if BAM_V2
                 return this.sourceModule.GeneratedPaths[this.sourcePathKey];
-#else
-                if (null == this.PreExistingSourcePath)
-                {
-                    return this.sourceModule.GeneratedPaths[this.sourcePathKey];
-                }
-                else
-                {
-                    return Bam.Core.TokenizedString.CreateVerbatim(this.PreExistingSourcePath);
-                }
-#endif
             }
         }
 
@@ -268,7 +222,6 @@ namespace Publisher
                         this.sourceModule.ToString());
                 }
             }
-#if BAM_V2
             if (this is CollatedFile)
             {
                 this.RegisterGeneratedFile(
@@ -328,20 +281,8 @@ namespace Publisher
                 );
             }
             else
-#endif
             {
-#if BAM_V2
                 throw new System.NotSupportedException();
-#else
-                this.RegisterGeneratedFile(
-                    Key,
-                    // this must be full copied path, in order for clones to work
-                    this.CreateTokenizedString(
-                        "$(0)/#valid($(RenameLeaf),@filename($(1)))",
-                        new[] { this.publishingDirectory, this.SourcePath }
-                    )
-                );
-#endif
             }
             this.Ignore = false;
         }
@@ -350,7 +291,6 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -386,21 +326,7 @@ namespace Publisher
                 default:
                     throw new System.NotImplementedException();
             }
-#else
-            this.policy.Collate(this, context);
-#endif
         }
-
-#if BAM_V2
-#else
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            var className = "Publisher." + mode + "CollatedObject";
-            this.policy = Bam.Core.ExecutionPolicyUtilities<ICollatedObjectPolicy>.Create(className);
-    }
-#endif
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {

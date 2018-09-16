@@ -88,11 +88,7 @@ namespace ClangCommon
             if (library is C.StaticLibrary)
             {
                 // TODO: @filenamenoext
-#if BAM_V2
                 var libraryPath = library.GeneratedPaths[C.StaticLibrary.LibraryKey].ToString();
-#else
-                var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].ToString();
-#endif
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
                 foreach (var dir in library.OutputDirectories)
@@ -103,11 +99,7 @@ namespace ClangCommon
             else if (library is C.IDynamicLibrary)
             {
                 // TODO: @filenamenoext
-#if BAM_V2
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.ExecutableKey].ToString();
-#else
-                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].ToString();
-#endif
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
                 foreach (var dir in library.OutputDirectories)

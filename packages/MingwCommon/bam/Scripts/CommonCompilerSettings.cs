@@ -33,10 +33,6 @@ namespace MingwCommon
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     public abstract class CommonCompilerSettings :
         C.SettingsBase,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-#endif
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
         C.IAdditionalSettings,
@@ -55,213 +51,161 @@ namespace MingwCommon
             this.InitializeAllInterfaces(module, true, useDefaults);
         }
 
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-#endif
-
-#if BAM_V2
         [CommandLineProcessor.Enum(C.ECharacterSet.NotSet, "")]
         [CommandLineProcessor.Enum(C.ECharacterSet.Unicode, "-D_UNICODE")]
         [CommandLineProcessor.Enum(C.ECharacterSet.MultiByte, "-D_MBCS")]
-#endif
         C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
-#endif
         C.EBit? C.ICommonCompilerSettings.Bits
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PreprocessorDefines("-D")]
-#endif
         C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PathArray("-I")]
-#endif
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PathArray("-I")]
-#endif
         Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-g", "")]
-#endif
         bool? C.ICommonCompilerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-Werror", "-Wno-error")]
-#endif
         bool? C.ICommonCompilerSettings.WarningsAsErrors
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.EOptimization.Off, "-O0")]
         [CommandLineProcessor.Enum(C.EOptimization.Size, "-O1")]
         [CommandLineProcessor.Enum(C.EOptimization.Speed, "-O2")]
         [CommandLineProcessor.Enum(C.EOptimization.Custom, "")] // use Mingw specific settings
-#endif
         C.EOptimization? C.ICommonCompilerSettings.Optimization
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.ETargetLanguage.Default, "")]
         [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-x c")]
         [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-x c++")]
         [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveC, "-x objective-c")]
         [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveCxx, "-x objective-c++")]
-#endif
         C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-fomit-frame-pointer", "-fno-omit-frame-pointer")]
-#endif
         bool? C.ICommonCompilerSettings.OmitFramePointer
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("-Wno-")]
-#endif
         Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("-U")]
-#endif
         Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("-include ")]
-#endif
         Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-E", "-c")]
-#endif
         bool? C.ICommonCompilerSettings.PreprocessOnly
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
-#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-Wall", "-Wno-all")]
-#endif
         bool? ICommonCompilerSettings.AllWarnings
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-Wextra", "-Wno-extra")]
-#endif
         bool? ICommonCompilerSettings.ExtraWarnings
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-Wpedantic", "-Wno-pedantic")]
-#endif
         bool? ICommonCompilerSettings.Pedantic
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(EVisibility.Default, "-fvisibility=default")]
         [CommandLineProcessor.Enum(EVisibility.Hidden, "-fvisibility=hidden")]
         [CommandLineProcessor.Enum(EVisibility.Internal, "-fvisibility=internal")]
         [CommandLineProcessor.Enum(EVisibility.Protected, "-fvisibility=protected")]
-#endif
         EVisibility? ICommonCompilerSettings.Visibility
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-fstrict-aliasing", "-fno-strict-aliasing")]
-#endif
         bool? ICommonCompilerSettings.StrictAliasing
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(EOptimization.O3, "-O3")]
         [CommandLineProcessor.Enum(EOptimization.Ofast, "-Ofast")]
-#endif
         EOptimization? ICommonCompilerSettings.Optimization
         {
             get;

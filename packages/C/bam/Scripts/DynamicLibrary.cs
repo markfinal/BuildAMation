@@ -47,7 +47,6 @@ namespace C
             Bam.Core.Module parent)
         {
             base.Init(parent);
-#if BAM_V2
             this.RegisterGeneratedFile(
                 ExecutableKey,
                 this.CreateTokenizedString(
@@ -55,12 +54,6 @@ namespace C
                 )
             );
             this.Macros.Add("LinkOutput", this.GeneratedPaths[ExecutableKey]);
-#else
-            this.GeneratedPaths[Key] = this.CreateTokenizedString(
-                "$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)"
-            );
-            this.Macros.Add("LinkOutput", this.GeneratedPaths[Key]);
-#endif
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
@@ -256,21 +249,6 @@ namespace C
             }
             base.ExecuteInternal(context);
         }
-
-#if BAM_V2
-#else
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            if (this.IsPrebuilt &&
-                !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
-            {
-                return;
-            }
-            base.GetExecutionPolicy(mode);
-        }
-#endif
 
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
         {

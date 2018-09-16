@@ -39,16 +39,8 @@ namespace MakeFileBuilder
             this.RuleIndex = count;
             this.Module = module;
             this.Targets = new Bam.Core.Array<Target>();
-#if BAM_V2
             this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
-#else
-            this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
-#endif
             this.PrerequisiteTargets = new Bam.Core.Array<Target>();
-#if BAM_V2
-#else
-            this.PrerequisitePaths = new Bam.Core.TokenizedStringArray();
-#endif
             this.ShellCommands = new Bam.Core.StringArray();
             this.OrderOnlyDependencies = new Bam.Core.Array<Target>();
             this.AddOrderOnlyDependency(MakeFileCommonMetaData.DIRSTarget);
@@ -89,27 +81,13 @@ namespace MakeFileBuilder
         public void
         AddPrerequisite(
             Bam.Core.Module module,
-#if BAM_V2
             string key)
-#else
-            Bam.Core.PathKey key)
-#endif
         {
             if (!this.Prequisities.ContainsKey(module))
             {
                 this.Prequisities.Add(module, key);
             }
         }
-
-#if BAM_V2
-#else
-        public void
-        AddPrerequisite(
-            Bam.Core.TokenizedString path)
-        {
-            this.PrerequisitePaths.Add(path);
-        }
-#endif
 
         public void
         AddPrerequisite(
@@ -329,23 +307,6 @@ namespace MakeFileBuilder
                         commonMeta.UseMacrosInPath(pre.Key.GeneratedPaths[pre.Value].ToStringQuoteIfNecessary())
                     );
                 }
-#if BAM_V2
-#else
-                foreach (var pre in this.PrerequisitePaths)
-                {
-                    lock (pre)
-                    {
-                        if (!pre.IsParsed)
-                        {
-                            pre.Parse();
-                        }
-                    }
-                    rules.AppendFormat(
-                        "{0} ",
-                        commonMeta.UseMacrosInPath(pre.ToStringQuoteIfNecessary())
-                    );
-                }
-#endif
                 foreach (var pre in this.PrerequisiteTargets)
                 {
                     var preName = pre.VariableName;
@@ -510,11 +471,7 @@ namespace MakeFileBuilder
             set;
         }
 
-#if BAM_V2
         private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Prequisities
-#else
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Prequisities
-#endif
         {
             get;
             set;
@@ -525,15 +482,6 @@ namespace MakeFileBuilder
             get;
             set;
         }
-
-#if BAM_V2
-#else
-        private Bam.Core.TokenizedStringArray PrerequisitePaths
-        {
-            get;
-            set;
-        }
-#endif
 
         private Bam.Core.StringArray ShellCommands
         {

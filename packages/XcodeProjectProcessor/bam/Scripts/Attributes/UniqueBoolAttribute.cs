@@ -29,7 +29,6 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
-#if BAM_V2
     public sealed class UniqueBoolAttribute :
         BoolAttribute
     {
@@ -43,5 +42,4 @@ namespace XcodeProjectProcessor
             base(property, truth_value, false_value, ValueType.Unique, ignore: ignore)
         {}
     }
-#endif
 }

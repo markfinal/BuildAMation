@@ -30,7 +30,6 @@
 using System.Linq;
 namespace C
 {
-#if BAM_V2
     public static partial class XcodeSupport
     {
         public static void
@@ -330,5 +329,4 @@ namespace C
             }
         }
     }
-#endif
-                }
+}

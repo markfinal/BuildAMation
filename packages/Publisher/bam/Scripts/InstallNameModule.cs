@@ -34,10 +34,6 @@ namespace Publisher
         Bam.Core.Module
     {
         protected Bam.Core.Module CopiedFileModule = null;
-#if BAM_V2
-#else
-        protected IInstallNameToolPolicy Policy = null;
-#endif
 
         protected override void
         Init(
@@ -46,17 +42,6 @@ namespace Publisher
             base.Init(parent);
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<InstallNameTool>();
         }
-
-#if BAM_V2
-#else
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            var className = "Publisher." + mode + this.GetType().Name;
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IInstallNameToolPolicy>.Create(className);
-        }
-#endif
 
         protected override void
         EvaluateInternal()

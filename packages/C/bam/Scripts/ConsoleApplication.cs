@@ -41,31 +41,19 @@ namespace C
     {
         protected Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
         private Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
-#if BAM_V2
         public const string ExecutableKey = "Executable File";
         public const string ImportLibraryKey = "Windows Import Library File";
         public const string PDBKey = "Windows Program DataBase File";
-#else
-        private ILinkingPolicy Policy = null;
-
-        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("ExecutableFile");
-        static public Bam.Core.PathKey ImportLibraryKey = Bam.Core.PathKey.Generate("Windows Import Library File");
-        static public Bam.Core.PathKey PDBKey = Bam.Core.PathKey.Generate("Windows Program DataBase File");
-#endif
 
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-#if BAM_V2
             this.RegisterGeneratedFile(
                 ExecutableKey,
                 this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)")
             );
-#else
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)"));
-#endif
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 Bam.Core.Graph.Instance.Mode != "Xcode")
@@ -76,11 +64,7 @@ namespace C
                         PDBKey,
                         this.IsPrebuilt ?
                             null :
-#if BAM_V2
                             this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[ExecutableKey])
-#else
-                            this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[Key])
-#endif
                         );
                 }
 
@@ -495,7 +479,6 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -557,37 +540,7 @@ namespace C
                 default:
                     throw new System.NotImplementedException();
             }
-#else
-            if (this.IsPrebuilt &&
-                !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
-            {
-                return;
-            }
-            var source = FlattenHierarchicalFileList(this.sourceModules).ToReadOnlyCollection();
-            var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
-            // some linkers require a specific order of libraries in order to resolve symbols
-            // so that if an existing library is later referenced, it needs to be moved later
-            var linked = OrderLibrariesWithDecreasingDependencies(this.linkedModules);
-            var executable = this.GeneratedPaths[Key];
-            this.Policy.Link(this, context, executable, source, headers, linked);
-#endif
         }
-
-#if BAM_V2
-#else
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            if (this.IsPrebuilt &&
-                !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
-            {
-                return;
-            }
-            var className = "C." + mode + "Linker";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkingPolicy>.Create(className);
-        }
-#endif
 
         protected override void
         EvaluateInternal()
@@ -597,19 +550,11 @@ namespace C
             {
                 return;
             }
-#if BAM_V2
             var binaryPath = this.GeneratedPaths[ExecutableKey].ToString();
-#else
-            var binaryPath = this.GeneratedPaths[Key].ToString();
-#endif
             var exists = System.IO.File.Exists(binaryPath);
             if (!exists)
             {
-#if BAM_V2
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[ExecutableKey]);
-#else
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
-#endif
                 return;
             }
             var binaryWriteTime = System.IO.File.GetLastWriteTime(binaryPath);
@@ -626,11 +571,7 @@ namespace C
                         case ExecuteReasoning.EReason.FileDoesNotExist:
                         case ExecuteReasoning.EReason.InputFileIsNewer:
                             this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-#if BAM_V2
                                 this.GeneratedPaths[ExecutableKey],
-#else
-                                this.GeneratedPaths[Key],
-#endif
                                 source.ReasonToExecute.OutputFilePath
                             );
                             return;
@@ -657,11 +598,7 @@ namespace C
                         case ExecuteReasoning.EReason.FileDoesNotExist:
                         case ExecuteReasoning.EReason.InputFileIsNewer:
                             this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-#if BAM_V2
                                 this.GeneratedPaths[ExecutableKey],
-#else
-                                this.GeneratedPaths[Key],
-#endif
                                 source.ReasonToExecute.OutputFilePath
                             );
                             return;
@@ -677,52 +614,29 @@ namespace C
                     {
                         foreach (var objectFile in source.Children)
                         {
-#if BAM_V2
                             var objectFilePath = objectFile.GeneratedPaths[ObjectFile.ObjectFileKey].ToString();
-#else
-                            var objectFilePath = objectFile.GeneratedPaths[ObjectFile.Key].ToString();
-#endif
                             var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
                             if (objectFileWriteTime > binaryWriteTime)
                             {
-#if BAM_V2
                                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
                                     this.GeneratedPaths[ExecutableKey],
                                     objectFile.GeneratedPaths[ObjectFile.ObjectFileKey]
                                 );
-#else
-                                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-                                    this.GeneratedPaths[Key],
-                                    objectFile.GeneratedPaths[ObjectFile.Key]
-                                );
-#endif
                                 return;
                             }
                         }
                     }
                     else
                     {
-#if BAM_V2
                         source.GeneratedPaths[ObjectFile.ObjectFileKey].Parse();
                         var objectFilePath = source.GeneratedPaths[ObjectFile.ObjectFileKey].ToString();
-#else
-                        source.GeneratedPaths[ObjectFile.Key].Parse();
-                        var objectFilePath = source.GeneratedPaths[ObjectFile.Key].ToString();
-#endif
                         var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
                         if (objectFileWriteTime > binaryWriteTime)
                         {
-#if BAM_V2
                             this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
                                 this.GeneratedPaths[ExecutableKey],
                                 source.GeneratedPaths[ObjectFile.ObjectFileKey]
                             );
-#else
-                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-                                this.GeneratedPaths[Key],
-                                source.GeneratedPaths[ObjectFile.Key]
-                            );
-#endif
                             return;
                         }
                     }

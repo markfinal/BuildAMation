@@ -218,11 +218,7 @@ namespace EmbedStaticIntoDynamicLibrary
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
-#if BAM_V2
             this.Include<CApp>(C.ConsoleApplication.ExecutableKey);
-#else
-            this.Include<CApp>(C.ConsoleApplication.Key);
-#endif
         }
     }
 
@@ -236,11 +232,7 @@ namespace EmbedStaticIntoDynamicLibrary
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
-#if BAM_V2
             this.Include<CxxApp>(C.Cxx.ConsoleApplication.ExecutableKey);
-#else
-            this.Include<CxxApp>(C.Cxx.ConsoleApplication.Key);
-#endif
         }
     }
 }

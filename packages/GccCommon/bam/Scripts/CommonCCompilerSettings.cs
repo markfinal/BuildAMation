@@ -46,13 +46,11 @@ namespace GccCommon
             base(module, useDefaults)
         {}
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.ELanguageStandard.NotSet, "")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.C89, "-std=c89")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.GNU89, "-std=gnu89")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.C99, "-std=c99")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.GNU99, "-std=gnu99")]
-#endif
         C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
         {
             get;

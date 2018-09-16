@@ -39,13 +39,7 @@ namespace C
     {
         private Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
         private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
-#if BAM_V2
         public const string LibraryKey = "Static Library File";
-#else
-        private IArchivingPolicy Policy = null;
-
-        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Static Library File");
-#endif
 
         protected override void
         Init(
@@ -53,14 +47,10 @@ namespace C
         {
             base.Init(parent);
             this.Librarian = DefaultToolchain.Librarian(this.BitDepth);
-#if BAM_V2
             this.RegisterGeneratedFile(
                 LibraryKey,
                 this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)")
             );
-#else
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)"));
-#endif
         }
 
         public override string CustomOutputSubDirectory
@@ -263,7 +253,6 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -299,24 +288,7 @@ namespace C
                 default:
                     throw new System.NotImplementedException();
             }
-#else
-            var source = FlattenHierarchicalFileList(this.sourceModules).ToReadOnlyCollection();
-            var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
-            var libraryFile = this.GeneratedPaths[Key];
-            this.Policy.Archive(this, context, libraryFile, source, headers);
-#endif
         }
-
-#if BAM_V2
-#else
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            var className = "C." + mode + "Librarian";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IArchivingPolicy>.Create(className);
-        }
-#endif
 
         protected sealed override void
         EvaluateInternal()
@@ -326,19 +298,11 @@ namespace C
             {
                 return;
             }
-#if BAM_V2
             var libraryPath = this.GeneratedPaths[LibraryKey].ToString();
-#else
-            var libraryPath = this.GeneratedPaths[Key].ToString();
-#endif
             var exists = System.IO.File.Exists(libraryPath);
             if (!exists)
             {
-#if BAM_V2
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[LibraryKey]);
-#else
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
-#endif
                 return;
             }
             var libraryWriteTime = System.IO.File.GetLastWriteTime(libraryPath);
@@ -355,11 +319,7 @@ namespace C
                         case Bam.Core.ExecuteReasoning.EReason.FileDoesNotExist:
                         case Bam.Core.ExecuteReasoning.EReason.InputFileIsNewer:
                             this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-#if BAM_V2
                                 this.GeneratedPaths[LibraryKey],
-#else
-                                this.GeneratedPaths[Key],
-#endif
                                 source.ReasonToExecute.OutputFilePath
                             );
                             return;
@@ -375,22 +335,13 @@ namespace C
                     {
                         foreach (var objectFile in source.Children)
                         {
-#if BAM_V2
                             var objectFilePath = objectFile.GeneratedPaths[ObjectFile.ObjectFileKey].ToString();
-#else
-                            var objectFilePath = objectFile.GeneratedPaths[ObjectFile.Key].ToString();
-#endif
                             var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
                             if (objectFileWriteTime > libraryWriteTime)
                             {
                                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-#if BAM_V2
                                     this.GeneratedPaths[LibraryKey],
                                     objectFile.GeneratedPaths[ObjectFile.ObjectFileKey]
-#else
-                                    this.GeneratedPaths[Key],
-                                    objectFile.GeneratedPaths[ObjectFile.Key]
-#endif
                                 );
                                 return;
                             }
@@ -398,22 +349,13 @@ namespace C
                     }
                     else
                     {
-#if BAM_V2
                         var objectFilePath = source.GeneratedPaths[ObjectFile.ObjectFileKey].ToString();
-#else
-                        var objectFilePath = source.GeneratedPaths[ObjectFile.Key].ToString();
-#endif
                         var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
                         if (objectFileWriteTime > libraryWriteTime)
                         {
                             this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-#if BAM_V2
                                 this.GeneratedPaths[LibraryKey],
                                 source.GeneratedPaths[ObjectFile.ObjectFileKey]
-#else
-                                this.GeneratedPaths[Key],
-                                source.GeneratedPaths[ObjectFile.Key]
-#endif
                             );
                             return;
                         }

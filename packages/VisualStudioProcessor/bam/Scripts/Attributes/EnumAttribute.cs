@@ -29,7 +29,6 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
-#if BAM_V2
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
     public class EnumAttribute :
         BaseAttribute
@@ -86,5 +85,4 @@ namespace VisualStudioProcessor
             private set;
         }
     }
-#endif
 }

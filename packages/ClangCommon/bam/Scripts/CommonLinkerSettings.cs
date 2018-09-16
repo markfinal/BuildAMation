@@ -33,11 +33,6 @@ namespace ClangCommon
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonLinkerSettings :
         C.SettingsBase,
-#if BAM_V2
-#else
-        CommandLineProcessor.IConvertToCommandLine,
-        XcodeProjectProcessor.IConvertToProject,
-#endif
         C.ICommonLinkerSettings,
         C.ICommonLinkerSettingsOSX,
         C.IAdditionalSettings,
@@ -53,152 +48,108 @@ namespace ClangCommon
                 Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MacOSXMinimumVersionSupported;
         }
 
-#if BAM_V2
-#else
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineLinkerImplementation), this, commandLine);
-        }
-
-        void
-        XcodeProjectProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            XcodeBuilder.Configuration configuration)
-        {
-            XcodeProjectProcessor.Conversion.Convert(typeof(XcodeLinkerImplementation), this, module, configuration);
-        }
-#endif
-
-#if BAM_V2
         [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-arch i386")]
         [CommandLineProcessor.EnumAttribute(C.EBit.SixtyFour, "-arch x86_64")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.ThirtyTwo, "VALID_ARCHS", "i386", "ARCHS", "$(ARCHS_STANDARD_32_BIT)")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.SixtyFour, "VALID_ARCHS", "x86_64", "ARCHS", "$(ARCHS_STANDARD_64_BIT)")]
-#endif
         C.EBit C.ICommonLinkerSettings.Bits
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Enum(C.ELinkerOutput.Executable, "")]
         [CommandLineProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "-dynamiclib")]
         [XcodeProjectProcessor.UniqueEnum(C.ELinkerOutput.Executable, "", "", ignore: true)] // EXECUTABLE_PREFIX and EXECUTABLE_EXTENSION handled in metadata
         [XcodeProjectProcessor.UniqueEnum(C.ELinkerOutput.DynamicLibrary, "", "", ignore: true)]
-#endif
         C.ELinkerOutput C.ICommonLinkerSettings.OutputType
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PathArray("-L")]
         [XcodeProjectProcessor.PathArray("LIBRARY_SEARCH_PATHS")]
-#endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
         [XcodeProjectProcessor.LibraryArray()]
-#endif
         Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Bool("-g", "")]
         [XcodeProjectProcessor.MultiBool("OTHER_LDFLAGS", "-g", "")]
-#endif
         bool C.ICommonLinkerSettings.DebugSymbols
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.FrameworkArray("-framework ")]
         [XcodeProjectProcessor.FrameworkArray()]
-#endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.Frameworks
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PathArray("-F ")]
         [XcodeProjectProcessor.PathArray("FRAMEWORK_SEARCH_PATHS")]
-#endif
         Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.FrameworkSearchPaths
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Path("-Wl,-dylib_install_name,")]
         [XcodeProjectProcessor.Path("LD_DYLIB_INSTALL_NAME")]
-#endif
         Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.InstallName
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.String("-mmacosx-version-min=")]
         [XcodeProjectProcessor.String("", ignore: true)] // dealt with separately
-#endif
         string C.ICommonLinkerSettingsOSX.MacOSMinimumVersionSupported
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Path("-current_version ")]
         [XcodeProjectProcessor.Path("DYLIB_CURRENT_VERSION")]
-#endif
         Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.CurrentVersion
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.Path("-compatibility_version ")]
         [XcodeProjectProcessor.Path("DYLIB_COMPATIBILITY_VERSION")]
-#endif
         Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.CompatibilityVersion
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.StringArray("")]
         [XcodeProjectProcessor.StringArray("OTHER_LDFLAGS", spacesSeparate: true)]
-#endif
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
         {
             get;
             set;
         }
 
-#if BAM_V2
         [CommandLineProcessor.PathArray("-Wl,-rpath,")]
         [XcodeProjectProcessor.PathArray("LD_RUNPATH_SEARCH_PATHS", prefixWithSrcRoot: false)]
-#endif
         Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPath
         {
             get;

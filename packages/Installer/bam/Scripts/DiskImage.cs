@@ -56,19 +56,10 @@ namespace Installer
     public abstract class DiskImage :
         Bam.Core.Module
     {
-#if BAM_V2
         public const string DMGKey = "Disk Image Installer";
-#else
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Installer");
-#endif
 
-#if BAM_V2
         private Bam.Core.Module SourceModule;
         private string SourcePathKey;
-#else
-        private Bam.Core.TokenizedString SourceFolderPath;
-        private IDiskImagePolicy Policy;
-#endif
 
         protected override void
         Init(
@@ -77,11 +68,7 @@ namespace Installer
             base.Init(parent);
 
             this.RegisterGeneratedFile(
-#if BAM_V2
                 DMGKey,
-#else
-                Key,
-#endif
                 this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).dmg")
             );
 
@@ -96,11 +83,7 @@ namespace Installer
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         SourceFolder<DependentModule>(
-#if BAM_V2
             string key
-#else
-            Bam.Core.PathKey key
-#endif
         ) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
@@ -109,12 +92,8 @@ namespace Installer
                 return;
             }
             this.DependsOn(dependent);
-#if BAM_V2
             this.SourceModule = dependent;
             this.SourcePathKey = key;
-#else
-            this.SourceFolderPath = dependent.GeneratedPaths[key];
-#endif
         }
 
         protected sealed override void
@@ -127,7 +106,6 @@ namespace Installer
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -160,27 +138,7 @@ namespace Installer
                 default:
                     throw new System.NotSupportedException();
             }
-#else
-            if (null != this.Policy)
-            {
-                this.Policy.CreateDMG(this, context, this.Tool as DiskImageCompiler, this.SourceFolderPath, this.GeneratedPaths[Key]);
-            }
-#endif
         }
-
-#if BAM_V2
-#else
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            if (mode == "Native")
-            {
-                var className = "Installer." + mode + "DMG";
-                this.Policy = Bam.Core.ExecutionPolicyUtilities<IDiskImagePolicy>.Create(className);
-            }
-        }
-#endif
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {

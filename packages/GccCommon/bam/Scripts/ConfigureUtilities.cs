@@ -38,11 +38,7 @@ namespace GccCommon
             string executable,
             string arguments)
         {
-#if BAM_V2
             return Bam.Core.OSUtilities.RunExecutable(executable, arguments).StandardOutput;
-#else
-            return Bam.Core.OSUtilities.RunExecutable(executable, arguments);
-#endif
         }
 
         [System.Obsolete("Please use Bam.Core.OSUtilities.GetInstallLocation instead")]

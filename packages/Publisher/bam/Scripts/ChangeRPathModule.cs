@@ -33,10 +33,6 @@ namespace Publisher
         Bam.Core.Module
     {
         private C.ConsoleApplication TheSource;
-#if BAM_V2
-#else
-        private IChangeRPathPolicy Policy;
-#endif
 
         protected override void
         Init(
@@ -45,17 +41,6 @@ namespace Publisher
             base.Init(parent);
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ChangeRPathTool>();
         }
-
-#if BAM_V2
-#else
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            var className = "Publisher." + mode + "ChangeRPath";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IChangeRPathPolicy>.Create(className);
-    }
-#endif
 
         protected override void
         EvaluateInternal()
@@ -67,7 +52,6 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -85,9 +69,6 @@ namespace Publisher
             default:
                 throw new System.NotImplementedException();
             }
-#else
-            this.Policy.Change(this, context, this.Source, this.NewRPath);
-#endif
         }
 
         public C.ConsoleApplication Source
@@ -103,15 +84,6 @@ namespace Publisher
                 this.DependsOn(value);
             }
         }
-
-#if BAM_V2
-#else
-        public string NewRPath
-        {
-            get;
-            set;
-        }
-#endif
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {

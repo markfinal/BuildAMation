@@ -29,7 +29,6 @@
 #endregion // License
 namespace C
 {
-#if BAM_V2
     public static partial class XcodeSupport
     {
         public static void
@@ -106,73 +105,4 @@ namespace C
             }
         }
     }
-#else
-    public sealed class XcodeCompilation :
-        ICompilationPolicy
-    {
-        void
-        ICompilationPolicy.Compile(
-            ObjectFile sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString objectFilePath,
-            Bam.Core.Module source)
-        {
-            var encapsulating = sender.GetEncapsulatingReferencedModule();
-
-            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            var target = workspace.EnsureTargetExists(encapsulating);
-
-            XcodeBuilder.FileReference.EFileType fileType;
-            if (sender is C.ObjectFile)
-            {
-                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeC;
-            }
-            else if (sender is C.Cxx.ObjectFile)
-            {
-                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeCxx;
-            }
-            else if (sender is C.ObjC.ObjectFile)
-            {
-                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeObjC;
-            }
-            else if (sender is C.ObjCxx.ObjectFile)
-            {
-                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeObjCxx;
-            }
-            else
-            {
-                throw new Bam.Core.Exception("Unknown object file type, {0}", sender.GetType().ToString());
-            }
-
-            sender.MetaData = target.EnsureSourceBuildFileExists(source.GeneratedPaths[C.SourceFile.Key], fileType);
-
-            // this is for stand-alone object files
-            if (encapsulating == sender || encapsulating == (sender as Bam.Core.IChildModule).Parent)
-            {
-                target.SetType(XcodeBuilder.Target.EProductType.ObjFile);
-                var configuration = target.GetConfiguration(sender);
-                configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
-                (sender.Settings as XcodeProjectProcessor.IConvertToProject).Convert(sender, configuration);
-            }
-
-            // any non-C module targets should be order-only dependencies
-            foreach (var dependent in sender.Dependents)
-            {
-                if (null == dependent.MetaData)
-                {
-                    continue;
-                }
-                if (dependent is C.CModule)
-                {
-                    continue;
-                }
-                var dependentTarget = dependent.MetaData as XcodeBuilder.Target;
-                if (null != dependentTarget)
-                {
-                    target.Requires(dependentTarget);
-                }
-            }
-        }
-    }
-#endif
 }

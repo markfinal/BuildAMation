@@ -33,14 +33,7 @@ namespace C
     public class SharedObjectSymbolicLink :
         Bam.Core.Module
     {
-#if BAM_V2
         public const string SOSymLinkKey = "Shared object symbolic link";
-#else
-        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("SharedObjectSymbolicLink");
-
-        private ISharedObjectSymbolicLinkPolicy SymlinkPolicy;
-        private SharedObjectSymbolicLinkTool SymlinkTool;
-#endif
         private ConsoleApplication sharedObject;
 
         /// <summary>
@@ -61,17 +54,10 @@ namespace C
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
             this.IsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);
 
-#if BAM_V2
             this.RegisterGeneratedFile(SOSymLinkKey,
                                        this.CreateTokenizedString("@dir($(0))/$(1)",
                                                                   this.SharedObject.GeneratedPaths[ConsoleApplication.ExecutableKey],
                                                                   this.Macros["SymlinkFilename"]));
-#else
-            this.RegisterGeneratedFile(Key,
-                                       this.CreateTokenizedString("@dir($(0))/$(1)",
-                                                                  this.SharedObject.GeneratedPaths[ConsoleApplication.Key],
-                                                                  this.SharedObject.Macros[this.Macros["SymlinkUsage"].ToString()]));
-#endif
         }
 
         public ConsoleApplication
@@ -99,7 +85,6 @@ namespace C
             {
                 return;
             }
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_NATIVEBUILDER
@@ -120,9 +105,6 @@ namespace C
                 default:
                     throw new System.NotImplementedException();
             }
-#else
-            this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.SharedObject);
-#endif
         }
 
         protected override void
@@ -154,22 +136,6 @@ namespace C
             throw new System.NotSupportedException("Symbolic links not supported for shared objects on this platform");
 #endif
         }
-
-#if BAM_V2
-#else
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            if (this.IsPrebuilt)
-            {
-                return;
-            }
-            var className = "C." + mode + "SharedObjectSymbolicLink";
-            this.SymlinkPolicy = Bam.Core.ExecutionPolicyUtilities<ISharedObjectSymbolicLinkPolicy>.Create(className);
-            this.SymlinkTool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
-    }
-#endif
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {

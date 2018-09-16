@@ -82,13 +82,8 @@ namespace PublishingTest3
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
-#if BAM_V2
             this.Include<SimpleExe1>(C.ConsoleApplication.ExecutableKey);
             this.Include<SimpleExe2>(C.ConsoleApplication.ExecutableKey);
-#else
-            this.Include<SimpleExe1>(C.ConsoleApplication.Key);
-            this.Include<SimpleExe2>(C.ConsoleApplication.Key);
-#endif
         }
     }
 

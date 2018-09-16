@@ -37,7 +37,6 @@ namespace Publisher
         ExecuteInternal(
             ExecutionContext context)
         {
-#if BAM_V2
             switch (Bam.Core.Graph.Instance.Mode)
             {
 #if D_PACKAGE_MAKEFILEBUILDER
@@ -67,16 +66,6 @@ namespace Publisher
                     break;
 #endif
             }
-#else
-            foreach (var framework in this.Frameworks)
-            {
-                this.Policy.InstallName(
-                    this,
-                    context,
-                    (framework as ICollatedObject).SourceModule.Macros["IDName"],
-                    framework.Macros["IDName"]);
-            }
-#endif
         }
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
