@@ -33,7 +33,6 @@ namespace Publisher
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
     public sealed class DSymUtilToolSettings :
         Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
         IDSymUtilToolSettings
     {
         public DSymUtilToolSettings()
@@ -43,13 +42,6 @@ namespace Publisher
             Bam.Core.Module module)
         {
             this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
         }
 
         public override void
