@@ -261,42 +261,6 @@ namespace VSSolutionBuilder
             get;
             set;
         }
-        public void
-        SetCharacterSet(
-            C.ECharacterSet charSet)
-        {
-            this.CharacterSet = charSet;
-        }
-
-        public void
-        SetOutputPath(
-            Bam.Core.TokenizedString path)
-        {
-            var macros = new Bam.Core.MacroList();
-            // TODO: ideally, $(ProjectDir) should replace the following directory separator as well,
-            // but it does not seem to be a show stopper if it doesn't
-            macros.Add("packagebuilddir", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectDir)"));
-            macros.Add("modulename", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectName)"));
-
-            var outDir = path.UncachedParse(new Bam.Core.Array<Bam.Core.MacroList>(macros));
-            outDir = System.IO.Path.GetDirectoryName(outDir);
-            outDir += "\\";
-            this.OutputDirectory = outDir;
-
-            var targetNameTS = this.Module.CreateTokenizedString("@basename($(0))", path);
-            targetNameTS.Parse();
-            var targetName = targetNameTS.ToString();
-            if (!string.IsNullOrEmpty(targetName))
-            {
-                var filenameTS = this.Module.CreateTokenizedString("@filename($(0))", path);
-                filenameTS.Parse();
-                var filename = filenameTS.ToString();
-                var ext = filename.Replace(targetName, string.Empty);
-                this.TargetName = targetName;
-                this.TargetExt = ext;
-            }
-        }
-#endif
 
         public void
         EnableIntermediatePath()
