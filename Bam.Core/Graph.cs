@@ -1029,7 +1029,7 @@ namespace Bam.Core
         /// to the current version of BAM running.
         /// Requires forced updates to definition files to be enabled.
         /// </summary>
-        /// <value><c>true</c> to update bam assembler versions; otherwise, <c>false</c>.</value>
+        /// <value><c>true</c> to update bam assembly versions; otherwise, <c>false</c>.</value>
         public bool UpdateBamAssemblyVersions
         {
             get;
