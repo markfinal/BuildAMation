@@ -12,6 +12,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bam.Core", "Bam.Core\Bam.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bam.Core.Test", "Bam.Core.Test\Bam.Core.Test.csproj", "{691B4CC1-2BAD-403F-BEC0-CFC835018783}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{19BB17E2-FF91-48B6-BB59-F1AAD5A3DC31}"
+	ProjectSection(SolutionItems) = preProject
+		Common\RuleSet1.ruleset = Common\RuleSet1.ruleset
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

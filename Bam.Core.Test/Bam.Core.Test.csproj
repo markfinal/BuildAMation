@@ -5,6 +5,7 @@
     <AssemblyOriginatorKeyFile>../Common/BuildAMation.snk</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <LangVersion>latest</LangVersion>
+    <CodeAnalysisRuleSet>../Common/RuleSet1.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>DEBUG;TRACE</DefineConstants>
@@ -12,6 +13,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <OutputPath>..\bin\Debug</OutputPath>
+    <CodeAnalysisRuleSet />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineConstants>TRACE</DefineConstants>
@@ -19,9 +21,14 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <WarningsAsErrors />
     <OutputPath>..\bin\Release</OutputPath>
+    <CodeAnalysisRuleSet />
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GitInfo" Version="2.0.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.6.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
