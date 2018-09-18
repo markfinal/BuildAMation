@@ -1,3 +1,19 @@
+18-Sep-2018 Fixes #475. BREAKING CHANGE. Introducing an Attribute based mechanism for translating Settings interface properties into what the specified build mode requires. This significantly reduces the amount of boilerplate code required to add new tools with custom settings. As a good example, see any of the 'Common' toolchain packages for the Settings class for each tool defined. Associated changes
+- Bam.Core.PathKey has been removed, and constant strings are used in their place, so that they can be used as arguments to Attributes.
+
+18-Sep-2018 Fixes #314. BREAKING CHANGE. BuildAMation is now built upon .NET Core 2.1 SDK. The following changes have occurred:
+- Bam, Bam.Core and Bam.Core.Test now use new-style .csproj project files.
+- VisualStudio 2017 is now required to build BAM on Windows. Latest VS for Mac and Monodevelop are required for MacOSX and Linux, respectively.
+- Bam internally generates new-style .csproj project files for both package builds and debug projects.
+- The latest minor version of the latest major version of the C# language is now used (at the time of writing, 7.3).
+- BAM packages may now specify NuGet packages to import external functionality. These may be specified per-platform.
+- Linux progress logging in Bam.Core.dll is disabled due to a performance bug (https://github.com/dotnet/corefx/issues/32174).
+- Bam.Core.Win32RegistryUtilities no longer uses Microsoft.Win32.RegistryKey in its public API, since this functionality is now in a NuGet package.
+- Bam.Core.OSUtilities.RunExecutable will now throw an exception (RunExecutableException) in failure, or return an instance of RunExecutableResults in success, in order to have full access to stdout, stderr and process exit codes.
+- A custom NuGet package repository can longer be project local, so the NuGetPackages directory in the distribution no longer exists.
+- Bam.Core.BamState.IsRunningMono has been removed.
+- Bam.Core.BamState.GetNuGetPackageDirectory has been removed.
+
 27-Jul-2018 ======== Version 1.2.0 Release ========
 
 11-Jul-2018 Fixes #476. -bigobj is no longer unconditionally set in generated .vcxprojs.
