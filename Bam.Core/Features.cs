@@ -42,7 +42,7 @@ namespace Bam.Core
 
         static Features()
         {
-            featurePreprocessorDefines.Add("BAM_V2");
+            // add features here
         }
 
         /// <summary>
