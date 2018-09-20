@@ -57,22 +57,6 @@ namespace C
     }
 
     /// <summary>
-    /// Define the output of the compiler
-    /// </summary>
-    public enum ECompilerOutput
-    {
-        /// <summary>
-        /// Compiler generates object code
-        /// </summary>
-        CompileOnly = 0,
-
-        /// <summary>
-        /// Compiler stops after the preprocessor
-        /// </summary>
-        Preprocess = 1
-    }
-
-    /// <summary>
     /// Which language should the compiler target
     /// </summary>
     public enum ETargetLanguage

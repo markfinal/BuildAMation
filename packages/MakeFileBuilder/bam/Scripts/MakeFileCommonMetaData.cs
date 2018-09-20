@@ -35,10 +35,25 @@ namespace MakeFileBuilder
     // A recipe is a collection of commands
     public sealed class MakeFileCommonMetaData
     {
+        // experimental
+        public static bool IsNMAKE = ("NMAKE" == Bam.Core.CommandLineProcessor.Evaluate(new Options.ChooseFormat()));
+
+        // a fake Target for order only dependencies
+        public static Target DIRSTarget = new Target(
+            Bam.Core.TokenizedString.CreateVerbatim("$(DIRS)"),
+            false,
+            null,
+            null,
+            0,
+            string.Empty,
+            false
+        );
+
         public MakeFileCommonMetaData()
         {
             this.Directories = new Bam.Core.StringArray();
             this.Environment = new System.Collections.Generic.Dictionary<string, Bam.Core.StringArray>();
+            this.PackageVariables = new System.Collections.Generic.Dictionary<string, string>();
             if (Bam.Core.OSUtilities.IsLinuxHosting)
             {
                 // for system utilities, e.g. mkdir, cp, echo
@@ -60,6 +75,12 @@ namespace MakeFileBuilder
             set;
         }
 
+        private System.Collections.Generic.Dictionary<string, string> PackageVariables
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Add key-value pairs (using strings and TokenizedStringArrays) which represent
         /// an environment variable name, and its value (usually multiple paths), to be used
@@ -71,6 +92,10 @@ namespace MakeFileBuilder
         ExtendEnvironmentVariables(
             System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> import)
         {
+            if (null == import)
+            {
+                return;
+            }
             lock (this.Environment)
             {
                 foreach (var env in import)
@@ -111,24 +136,53 @@ namespace MakeFileBuilder
         ExportEnvironment(
             System.Text.StringBuilder output)
         {
+            System.Diagnostics.Debug.Assert(!MakeFileCommonMetaData.IsNMAKE);
             foreach (var env in this.Environment)
             {
-                output.AppendFormat("{0}:={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator));
+                output.AppendFormat(
+                    "{0}:={1}",
+                    env.Key,
+                    this.UseMacrosInPath(env.Value.ToString(System.IO.Path.PathSeparator))
+                );
                 output.AppendLine();
             }
+        }
+
+        /// <summary>
+        /// Write a phony target that sets the environment variables.
+        /// Required for NMAKE since macros are not exported as environment variables.
+        /// </summary>
+        /// <param name="output"></param>
+        public void
+        ExportEnvironmentAsPhonyTarget(
+            System.Text.StringBuilder output)
+        {
+            System.Diagnostics.Debug.Assert(MakeFileCommonMetaData.IsNMAKE);
+            output.AppendLine(".PHONY: nmakesetenv");
+            output.AppendLine("nmakesetenv:");
+            foreach (var env in this.Environment)
+            {
+                // trim the end of 'continuation" characters
+                output.AppendFormat("\t@set {0}={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator).TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar }));
+                output.AppendLine();
+            }
+            output.AppendLine();
         }
 
         /// <summary>
         /// Write the directories to be created when running the MakeFile.
         /// </summary>
         /// <param name="output">Where to write the directories to.</param>
-        public void
+        /// <param name="explicitlyCreateHierarchy">Optional bool indicating that the entire directory hierarchy needs to be make. Defaults to false.</param>
+        /// <returns>True if directories were exported, false if none were.</returns>
+        public bool
         ExportDirectories(
-            System.Text.StringBuilder output)
+            System.Text.StringBuilder output,
+            bool explicitlyCreateHierarchy = false)
         {
             if (!this.Directories.Any())
             {
-                return;
+                return false;
             }
             if (this.Directories.Any(item => item.Contains(" ")))
             {
@@ -136,12 +190,131 @@ namespace MakeFileBuilder
                 // https://stackoverflow.com/questions/9838384/can-gnu-make-handle-filenames-with-spaces
                 Bam.Core.Log.ErrorMessage("WARNING: MakeFiles do not support spaces in pathnames.");
             }
-            output.Append("DIRS:=");
+            if (explicitlyCreateHierarchy)
+            {
+                var extraDirs = new Bam.Core.StringArray();
+                foreach (var dir in this.Directories)
+                {
+                    var current_dir = dir;
+                    for (;;)
+                    {
+                        var parent = System.IO.Path.GetDirectoryName(current_dir);
+                        if (null == parent)
+                        {
+                            break;
+                        }
+                        if (!System.IO.Directory.Exists(parent) && !this.Directories.Contains(parent))
+                        {
+                            extraDirs.AddUnique(parent);
+                            current_dir = parent;
+                            continue;
+                        }
+                        break;
+                    }
+                }
+                this.Directories.AddRange(extraDirs);
+                this.Directories = new Bam.Core.StringArray(this.Directories.OrderBy(item => item.Length));
+            }
+            if (IsNMAKE)
+            {
+                output.Append("DIRS = ");
+            }
+            else
+            {
+                output.Append("DIRS:=");
+            }
             foreach (var dir in this.Directories)
             {
-                output.AppendFormat("{0} ", dir);
+                output.AppendFormat(
+                    "{0} ",
+                    this.UseMacrosInPath(dir)
+                );
             }
             output.AppendLine();
+            if (IsNMAKE)
+            {
+                output.AppendLine();
+            }
+            return true;
+        }
+
+        public static string
+        VariableForPackageDir(
+            string packageName)
+        {
+            return packageName + "_DIR";
+        }
+
+        private void
+        AppendVariable(
+            System.Text.StringBuilder output,
+            string path,
+            string variableName)
+        {
+            if (this.PackageVariables.ContainsKey(path))
+            {
+                if (this.PackageVariables[path] == variableName)
+                {
+                    return;
+                }
+                if (variableName.EndsWith(".tests_DIR"))
+                {
+                    // this is a package test namespace
+                    return;
+                }
+                throw new Bam.Core.Exception(
+                    "Path '{0}' is already registered with macro '{1}'. Cannot re-register it with macro '{2}'",
+                    path,
+                    this.PackageVariables[path],
+                    variableName
+                );
+            }
+            if (IsNMAKE)
+            {
+                output.AppendFormat(
+                    "{0} = {1}",
+                    variableName,
+                    path
+                );
+            }
+            else
+            {
+                output.AppendFormat(
+                    "{0} := {1}",
+                    variableName,
+                    path
+                );
+            }
+            output.AppendLine();
+            this.PackageVariables.Add(path, System.String.Format("$({0})", variableName));
+        }
+
+        public void
+        ExportPackageDirectories(
+            System.Text.StringBuilder output,
+            System.Collections.Generic.Dictionary<string, string> packageMap)
+        {
+            this.AppendVariable(output, Bam.Core.Graph.Instance.Macros["buildroot"].ToString(), "BUILDROOT");
+            foreach (var pkg in packageMap)
+            {
+                var packageVar = VariableForPackageDir(pkg.Key);
+                this.AppendVariable(output, pkg.Value, packageVar);
+            }
+        }
+
+        public string
+        UseMacrosInPath(
+            string path)
+        {
+            foreach (var pkg in this.PackageVariables)
+            {
+                if (!path.Contains(pkg.Key))
+                {
+                    continue;
+                }
+                path = path.Replace(pkg.Key, pkg.Value);
+            }
+            return path;
         }
     }
 }

@@ -35,11 +35,6 @@ namespace VisualC
     {
         public MetaData()
         {
-            if (!Bam.Core.OSUtilities.IsWindowsHosting)
-            {
-                return;
-            }
-
             this.SolutionFormatVersion = "12.00";
             this.PlatformToolset = "v120";
             this.VCXProjToolsVersion = "12.0";

@@ -39,66 +39,61 @@ namespace VisualCCommon
         private void
         findvswhere()
         {
-            const string vswhere_version = "vswhere.2.4.1"; // match packages.config in the Bam project
-
-            // find vswhere from the NuGet package download
-            var nugetDir = Bam.Core.Graph.Instance.ProcessState.NuGetDirectory;
-            var vswhere_dir = System.IO.Path.Combine(nugetDir, vswhere_version);
-            if (!System.IO.Directory.Exists(vswhere_dir))
+#if D_NUGET_NUGET_CLIENT && D_NUGET_VSWHERE
+            var nugetHomeDir = NuGet.Common.NuGetEnvironment.GetFolderPath(NuGet.Common.NuGetFolderPath.NuGetHome);
+            var nugetPackageDir = System.IO.Path.Combine(nugetHomeDir, "packages");
+            var repo = new NuGet.Repositories.NuGetv3LocalRepository(nugetPackageDir);
+            var vswhereInstalls = repo.FindPackagesById("vswhere");
+            if (!vswhereInstalls.Any())
             {
-                throw new Bam.Core.Exception("Unable to locate NuGet package for {0} at {1}", vswhere_version, vswhere_dir);
+                // this should not happen as package restoration should handle this
+                throw new Bam.Core.Exception("Unable to locate any NuGet package for vswhere");
             }
-            var vswhere_tools_dir = System.IO.Path.Combine(vswhere_dir, "tools");
+            var visualCCommon = Bam.Core.Graph.Instance.Packages.First(item => item.Name == "VisualCCommon");
+            var requiredVSWhere = visualCCommon.NuGetPackages.First(item => item.Identifier == "vswhere");
+            var requestedVSWhere = vswhereInstalls.First(item => item.Version.ToNormalizedString() == requiredVSWhere.Version);
+            var vswhere_tools_dir = System.IO.Path.Combine(requestedVSWhere.ExpandedPath, "tools");
             var vswhere_exe_path = System.IO.Path.Combine(vswhere_tools_dir, "vswhere.exe");
             if (!System.IO.File.Exists(vswhere_exe_path))
             {
                 throw new Bam.Core.Exception("Unable to locate vswhere.exe from NuGet package at '{0}'", vswhere_exe_path);
             }
             this.vswherePath = vswhere_exe_path;
-        }
-
-        private static string
-        RunExecutable(
-            string executable,
-            string arguments)
-        {
-            var processStartInfo = new System.Diagnostics.ProcessStartInfo();
-            processStartInfo.FileName = executable;
-            processStartInfo.Arguments = arguments;
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.RedirectStandardError = true; // swallow
-            processStartInfo.UseShellExecute = false;
-            System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
-            process.WaitForExit();
-            if (process.ExitCode != 0)
-            {
-                return null;
-            }
-            return process.StandardOutput.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray());
+#else
+#endif
         }
 
         protected string
         vswhere_getinstallpath()
         {
-            string installpath = System.String.Empty;
-            if (this.major_version >= 15)
+            try
             {
-                installpath = RunExecutable(this.vswherePath, System.String.Format("-property installationPath -version {0}", this.major_version));
-                if (System.String.IsNullOrEmpty(installpath))
+                var args = new System.Text.StringBuilder();
+                var legacy = this.major_version < 15;
+                args.Append("-property installationPath -version ");
+                if (legacy)
                 {
-                    throw new Bam.Core.Exception("Unable to locate installation directory for Visual Studio major version {0}", this.major_version);
+                    // note the [] around the version to specify only that version
+                    args.AppendFormat("[{0}] -legacy", this.major_version);
                 }
+                else
+                {
+                    args.Append(this.major_version);
+                }
+                var installpath = Bam.Core.OSUtilities.RunExecutable(
+                    this.vswherePath,
+                    args.ToString()
+                ).StandardOutput;
+                Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", this.major_version, installpath);
+                return installpath;
             }
-            else
+            catch (Bam.Core.RunExecutableException)
             {
-                installpath = RunExecutable(this.vswherePath, System.String.Format("-legacy -property installationPath -version [{0}]", this.major_version));
-                if (System.String.IsNullOrEmpty(installpath))
-                {
-                    throw new Bam.Core.Exception("Unable to locate installation directory for Visual Studio major version {0}", this.major_version);
-                }
+                throw new Bam.Core.Exception(
+                    "Unable to locate installation directory for Visual Studio major version {0}",
+                    this.major_version
+                );
             }
-            Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", this.major_version, installpath);
-            return installpath;
         }
 
         private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>
@@ -376,7 +371,12 @@ namespace VisualCCommon
         Environment(
             C.EBit depth)
         {
-            return this.Meta[EnvironmentKey(depth)] as System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>; 
+            var environmentKey = EnvironmentKey(depth);
+            if (!this.Meta.ContainsKey(environmentKey))
+            {
+                return new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>();
+            }
+            return this.Meta[environmentKey] as System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>;
         }
 
         private string vswherePath
@@ -474,6 +474,14 @@ namespace VisualCCommon
             if (!this.Meta.ContainsKey("InstallDir"))
             {
                 var install_dir = this.vswhere_getinstallpath();
+                if (install_dir.Contains(System.Environment.NewLine))
+                {
+                    throw new Bam.Core.Exception(
+                        "Multiple install directories were detected for VisualStudio:{0}{1}",
+                        System.Environment.NewLine,
+                        install_dir
+                    );
+                }
                 this.InstallDir = Bam.Core.TokenizedString.CreateVerbatim(install_dir);
             }
             var bitdepth = depth.Value;

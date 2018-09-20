@@ -29,13 +29,13 @@
 #endregion // License
 namespace Publisher
 {
+    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "")]
     public sealed class InstallNameToolSettings :
         Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
         IInstallNameToolSettings
     {
         public InstallNameToolSettings()
-        {}
+        { }
 
         public InstallNameToolSettings(
             Bam.Core.Module module)
@@ -43,17 +43,67 @@ namespace Publisher
             this.InitializeAllInterfaces(module, false, true);
         }
 
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-
+        [CommandLineProcessor.Enum(EInstallNameToolMode.UpdateIDName, "-id")]
+        [CommandLineProcessor.Enum(EInstallNameToolMode.ChangeIDName, "-change")]
         EInstallNameToolMode IInstallNameToolSettings.Mode
         {
             get;
             set;
+        }
+
+        [CommandLineProcessor.String("")]
+        string IInstallNameToolSettings.OldName
+        {
+            get;
+            set;
+        }
+
+        [CommandLineProcessor.String("")]
+        string IInstallNameToolSettings.NewName
+        {
+            get;
+            set;
+        }
+
+        public override void AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
+        }
+
+        public override void
+        Validate()
+        {
+            base.Validate();
+
+            var install_name_tool = this as IInstallNameToolSettings;
+            switch (install_name_tool.Mode)
+            {
+                case EInstallNameToolMode.UpdateIDName:
+                    {
+                        if (null != install_name_tool.OldName)
+                        {
+                            throw new Bam.Core.Exception("Must not specify an old name for Id mode");
+                        }
+                        if (null == install_name_tool.NewName)
+                        {
+                            throw new Bam.Core.Exception("Must specify a new name for Id mode");
+                        }
+                    }
+                    break;
+
+                case EInstallNameToolMode.ChangeIDName:
+                    {
+                        if (null == install_name_tool.OldName)
+                        {
+                            throw new Bam.Core.Exception("Must specify an old name for Change mode");
+                        }
+                        if (null == install_name_tool.NewName)
+                        {
+                            throw new Bam.Core.Exception("Must specify an old name for Change mode");
+                        }
+                    }
+                    break;
+            }
         }
     }
 }

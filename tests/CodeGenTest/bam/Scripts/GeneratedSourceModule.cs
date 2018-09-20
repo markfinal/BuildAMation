@@ -32,17 +32,15 @@ namespace CodeGenTest
     public class GeneratedSourceModule :
         C.SourceFile
     {
-        private Bam.Core.ICommandLineTool Compiler;
-        private IGeneratedSourcePolicy Policy;
-
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
-            this.Requires(this.Compiler as Bam.Core.Module);
-            this.InputPath = this.CreateTokenizedString("$(buildroot)/Generated.c");
+            this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<BuildCodeGenTool>();
+            this.Requires(this.Tool as Bam.Core.Module);
+            this.Macros.AddVerbatim("GenerateBasename", "Generated");
+            this.InputPath = this.CreateTokenizedString("$(buildroot)/$(GenerateBasename).c");
         }
 
         protected override void
@@ -55,20 +53,49 @@ namespace CodeGenTest
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (null == this.Policy)
+            switch (Bam.Core.Graph.Instance.Mode)
             {
-                return;
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileBuilder.Support.Add(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeBuilder.Support.RunCommandLineTool(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    VSSolutionBuilder.Support.AddPreBuildSteps(
+                        this,
+                        addOrderOnlyDependencyOnTool: true // dependent upon the 'generator' being up to date before running
+                    );
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    {
+                        XcodeBuilder.Target target;
+                        XcodeBuilder.Configuration configuration;
+                        XcodeBuilder.Support.AddPreBuildStepForCommandLineTool(
+                            this,
+                            out target,
+                            out configuration,
+                            true,
+                            false,
+                            addOrderOnlyDependencyOnTool: true
+                        );
+                    }
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
             }
-
-            this.Policy.GenerateSource(this, context, this.Compiler, this.GeneratedPaths[Key]);
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            var className = "CodeGenTest." + mode + "GenerateSource";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IGeneratedSourcePolicy>.Create(className);
         }
     }
 }

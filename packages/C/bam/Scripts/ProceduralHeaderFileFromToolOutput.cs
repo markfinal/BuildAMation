@@ -34,8 +34,6 @@ namespace C
     public abstract class ProceduralHeaderFileFromToolOutput :
         C.HeaderFile
     {
-        private IProceduralHeaderFromToolOutputPolicy Policy = null;
-
         /// <summary>
         /// Override this function to specify the path of the header to be written to.
         /// </summary>
@@ -97,20 +95,60 @@ namespace C
         {
             // TODO
             // always build
-            this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
-        }
-
-        protected override void GetExecutionPolicy(string mode)
-        {
-            var className = "C." + mode + "ProceduralHeaderFromToolOutput";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IProceduralHeaderFromToolOutputPolicy>.Create(className);
+            this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[HeaderFileKey]);
         }
 
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            this.Policy.HeaderFromToolOutput(this, context, this.GeneratedPaths[C.HeaderFile.Key], this.Tool as Bam.Core.ICommandLineTool);
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileBuilder.Support.Add(
+                        this,
+                        redirectOutputToFile: this.GeneratedPaths[HeaderFileKey]
+                    );
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    {
+                        NativeBuilder.Support.RunCommandLineTool(this, context);
+                        NativeBuilder.Support.SendCapturedOutputToFile(
+                            this,
+                            context,
+                            ProceduralHeaderFileFromToolOutput.HeaderFileKey
+                        );
+                    }
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    VSSolutionSupport.GenerateHeader(this);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    XcodeSupport.GenerateHeader(this);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
+            }
+        }
+
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        {
+            get
+            {
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.ConsoleApplication.ExecutableKey, this.Tool as Bam.Core.Module);
+            }
         }
     }
 }

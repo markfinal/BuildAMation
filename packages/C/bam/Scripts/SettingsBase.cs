@@ -122,21 +122,20 @@ namespace C
 
         public static SettingsBase
         SharedSettings(
-            System.Collections.Generic.IEnumerable<Bam.Core.Module> objectFiles,
-            System.Type convertExtensionClassType,
-            System.Type conversionInterfaceType,
-            Bam.Core.TypeArray convertParameterTypes)
+            System.Collections.Generic.IEnumerable<Bam.Core.Module> objectFiles)
         {
             var sharedInterfaces = SharedInterfaces(objectFiles);
             var implementedInterfaces = new Bam.Core.TypeArray(sharedInterfaces);
-            implementedInterfaces.Add(conversionInterfaceType);
 
             // define a new type, that contains just the shared interfaces between all object files
             // (any interface not shared, must be cloned later)
             var typeSignature = "IDESharedSettings";
             var assemblyName = new System.Reflection.AssemblyName(typeSignature);
-            var assemblyBuilder = System.AppDomain.CurrentDomain.DefineDynamicAssembly(assemblyName, System.Reflection.Emit.AssemblyBuilderAccess.Run);
-            var moduleBuilder = assemblyBuilder.DefineDynamicModule("MainModule", true);
+            var assemblyBuilder = System.Reflection.Emit.AssemblyBuilder.DefineDynamicAssembly(
+                assemblyName,
+                System.Reflection.Emit.AssemblyBuilderAccess.Run
+            );
+            var moduleBuilder = assemblyBuilder.DefineDynamicModule("MainModule");
             var sharedSettingsTypeDefn = moduleBuilder.DefineType(typeSignature,
                 System.Reflection.TypeAttributes.Public |
                 System.Reflection.TypeAttributes.Class |
@@ -159,10 +158,12 @@ namespace C
                 var properties = i.GetProperties();
                 foreach (var prop in properties)
                 {
-                    var dynamicProperty = sharedSettingsTypeDefn.DefineProperty(prop.Name,
+                    var dynamicProperty = sharedSettingsTypeDefn.DefineProperty(
+                        System.String.Join(".", new[] { i.FullName, prop.Name }),
                         System.Reflection.PropertyAttributes.None,
                         prop.PropertyType,
-                        System.Type.EmptyTypes);
+                        System.Type.EmptyTypes
+                    );
                     var field = sharedSettingsTypeDefn.DefineField("m" + prop.Name,
                         prop.PropertyType,
                         System.Reflection.FieldAttributes.Private);
@@ -194,38 +195,6 @@ namespace C
                     dynamicProperty.SetSetMethod(setter);
                 }
             }
-
-            var projectSettingsConvertMethod = sharedSettingsTypeDefn.DefineMethod("Convert",
-                System.Reflection.MethodAttributes.Public | System.Reflection.MethodAttributes.Final | System.Reflection.MethodAttributes.HideBySig | System.Reflection.MethodAttributes.NewSlot | System.Reflection.MethodAttributes.Virtual,
-                null,
-                convertParameterTypes.ToArray());
-            var convertIL = projectSettingsConvertMethod.GetILGenerator();
-            foreach (var i in sharedInterfaces)
-            {
-                var extConvertParameterTypes = new Bam.Core.TypeArray(i);
-                extConvertParameterTypes.AddRange(convertParameterTypes);
-                var methInfo = convertExtensionClassType.GetMethod("Convert", extConvertParameterTypes.ToArray());
-                if (null == methInfo)
-                {
-                    throw new Bam.Core.Exception("Unable to locate the function {0}.{1}(this {2})", convertExtensionClassType.FullName, "Convert", i.Name);
-                }
-                // TODO: can this be simplified, using the ldarg opcode? a simple loop would suffice
-                convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_0);
-                if (extConvertParameterTypes.Count > 1)
-                {
-                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_1);
-                }
-                if (extConvertParameterTypes.Count > 2)
-                {
-                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_2);
-                }
-                if (extConvertParameterTypes.Count > 3)
-                {
-                    convertIL.Emit(System.Reflection.Emit.OpCodes.Ldarg_3);
-                }
-                convertIL.Emit(System.Reflection.Emit.OpCodes.Call, methInfo);
-            }
-            convertIL.Emit(System.Reflection.Emit.OpCodes.Ret);
 
             var sharedSettingsType = sharedSettingsTypeDefn.CreateType();
             var attributeType = typeof(Bam.Core.SettingsExtensionsAttribute);

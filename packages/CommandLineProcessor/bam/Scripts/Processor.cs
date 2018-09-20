@@ -67,6 +67,22 @@ namespace CommandLineProcessor
         Execute(
             Bam.Core.ExecutionContext context,
             string executablePath,
+            Bam.Core.Array<int> successfulExitCodes,
+            Bam.Core.TokenizedStringArray commandLineArguments)
+        {
+            var arguments = new Bam.Core.StringArray();
+            foreach (var arg in commandLineArguments)
+            {
+                arguments.Add(arg.ToString());
+            }
+            Execute(context, executablePath, successfulExitCodes, commandLineArguments: arguments);
+        }
+
+        public static void
+        Execute(
+            Bam.Core.ExecutionContext context,
+            string executablePath,
+            Bam.Core.Array<int> successfulExitCodes,
             Bam.Core.StringArray commandLineArguments = null,
             string workingDirectory = null,
             Bam.Core.StringArray inheritedEnvironmentVariables = null,
@@ -222,7 +238,7 @@ namespace CommandLineProcessor
                 System.IO.File.Delete(responseFilePath);
             }
 
-            if (exitCode != 0)
+            if (!successfulExitCodes.Contains(exitCode))
             {
                 var message = new System.Text.StringBuilder();
                 message.AppendFormat("Command failed: {0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
@@ -238,6 +254,8 @@ namespace CommandLineProcessor
             }
         }
 
+#if false
+        // TODO: deprecate this one, as you can't get the module override WorkingDirectory
         public static void
         Execute(
             Bam.Core.ExecutionContext context,
@@ -265,11 +283,57 @@ namespace CommandLineProcessor
             Execute(
                 context,
                 tool.Executable.ToString(),
+                tool.SuccessfulExitCodes,
                 commandLineArgs,
                 workingDirectory: workingDirectory,
                 inheritedEnvironmentVariables: tool.InheritedEnvironmentVariables,
                 addedEnvironmentVariables: tool.EnvironmentVariables,
                 useResponseFileOption: tool.UseResponseFileOption);
         }
+#endif
+
+        public static void
+        Execute(
+            Bam.Core.Module module,
+            Bam.Core.ExecutionContext context,
+            Bam.Core.ICommandLineTool tool,
+            Bam.Core.StringArray commandLine,
+            string workingDirectory = null)
+        {
+            if (null == tool)
+            {
+                throw new Bam.Core.Exception(
+                    "Command line tool passed with module '{0}' is invalid",
+                    module.ToString()
+                );
+            }
+            var commandLineArgs = new Bam.Core.StringArray();
+            if (tool.InitialArguments != null)
+            {
+                foreach (var arg in tool.InitialArguments)
+                {
+                    commandLineArgs.Add(arg.ToString());
+                }
+            }
+            commandLineArgs.AddRange(commandLine);
+            if (null != tool.TerminatingArguments)
+            {
+                foreach (var arg in tool.TerminatingArguments)
+                {
+                    commandLineArgs.Add(arg.ToString());
+                }
+            }
+
+            Execute(
+                context,
+                tool.Executable.ToString(),
+                tool.SuccessfulExitCodes,
+                commandLineArgs,
+                workingDirectory: (module.WorkingDirectory != null) ? module.WorkingDirectory.ToString() : null,
+                inheritedEnvironmentVariables: tool.InheritedEnvironmentVariables,
+                addedEnvironmentVariables: tool.EnvironmentVariables,
+                useResponseFileOption: tool.UseResponseFileOption);
+        }
+
     }
 }

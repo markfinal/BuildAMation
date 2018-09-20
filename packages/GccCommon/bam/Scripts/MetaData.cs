@@ -179,7 +179,7 @@ namespace GccCommon
             {
                 var location = gccLocations.First();
                 this.Meta.Add("GccPath", location);
-                var gccVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion");
+                var gccVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion").StandardOutput;
                 var gccVersionSplit = gccVersion.Split(new [] { '.' });
                 this.Meta.Add("GccVersion", gccVersionSplit);
                 Bam.Core.Log.Info("Using GCC version {0} installed at {1}", gccVersion, location);
@@ -190,7 +190,7 @@ namespace GccCommon
             {
                 var location = gxxLocations.First();
                 this.Meta.Add("G++Path", location);
-                var gxxVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion").Split(new [] { '.' });
+                var gxxVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion").StandardOutput.Split(new[] { '.' });
                 this.Meta.Add("G++Version", gxxVersion);
             }
 

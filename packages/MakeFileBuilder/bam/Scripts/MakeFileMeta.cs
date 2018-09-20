@@ -45,39 +45,6 @@ namespace MakeFileBuilder
             }
         }
 
-        public static void
-        MakeVariableNameUnique(
-            ref string variableName)
-        {
-            lock (allMeta)
-            {
-                for (;;)
-                {
-                    var uniqueName = true;
-                    foreach (var meta in allMeta)
-                    {
-                        foreach (var rule in meta.Rules)
-                        {
-                            if (rule.AnyTargetUsesVariableName((variableName)))
-                            {
-                                variableName += "_";
-                                uniqueName = false;
-                                break;
-                            }
-                        }
-                        if (!uniqueName)
-                        {
-                            break;
-                        }
-                    }
-                    if (uniqueName)
-                    {
-                        break;
-                    }
-                }
-            }
-        }
-
         // only for the BuildModeMetaData
         public MakeFileMeta()
         { }
@@ -136,8 +103,41 @@ namespace MakeFileBuilder
             // delete suffix rules
             makeEnvironment.AppendLine(".SUFFIXES:");
 
-            commonMeta.ExportEnvironment(makeEnvironment);
-            commonMeta.ExportDirectories(makeVariables);
+            // variables for package directories
+            var packageMap = new System.Collections.Generic.Dictionary<string, string>();
+            foreach (var metadata in allMeta)
+            {
+                var module = metadata.Module;
+                if (!Bam.Core.Graph.Instance.IsReferencedModule(module))
+                {
+                    continue;
+                }
+
+                var package = module.GetType().Namespace;
+                if (packageMap.ContainsKey(package))
+                {
+                    continue;
+                }
+                var packageDir = module.Macros["packagedir"].ToString();
+                packageMap.Add(package, packageDir);
+            }
+            commonMeta.ExportPackageDirectories(
+                makeVariables,
+                packageMap
+            );
+
+            if (MakeFileCommonMetaData.IsNMAKE)
+            {
+                // macros in NMAKE do not export as environment variables to commands
+            }
+            else
+            {
+                commonMeta.ExportEnvironment(makeEnvironment);
+            }
+            var has_dirs = commonMeta.ExportDirectories(
+                makeVariables,
+                explicitlyCreateHierarchy: MakeFileCommonMetaData.IsNMAKE
+            );
 
             // all rule
             var prerequisitesOfTargetAll = new Bam.Core.StringArray();
@@ -151,29 +151,50 @@ namespace MakeFileBuilder
                 }
             }
             makeRules.Append("all:");
+            if (MakeFileCommonMetaData.IsNMAKE)
+            {
+                if (has_dirs)
+                {
+                    // as NMAKE does not support order only dependencies
+                    makeRules.Append(" $(DIRS) ");
+                }
+                // as NMAKE does not support defining macros to be exposed as environment variables for commands
+                makeRules.Append("nmakesetenv ");
+            }
             makeRules.AppendLine(prerequisitesOfTargetAll.ToString(' '));
 
-            // directory direction rule
-            makeRules.AppendLine("$(DIRS):");
-            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            if (MakeFileCommonMetaData.IsNMAKE)
             {
-                makeRules.AppendLine("\tmkdir $@");
+                commonMeta.ExportEnvironmentAsPhonyTarget(makeRules);
             }
-            else
+
+            if (has_dirs)
             {
-                makeRules.AppendLine("\tmkdir -pv $@");
+                // directory direction rule
+                makeRules.AppendLine("$(DIRS):");
+                if (Bam.Core.OSUtilities.IsWindowsHosting)
+                {
+                    makeRules.AppendLine("\tmkdir $@");
+                }
+                else
+                {
+                    makeRules.AppendLine("\tmkdir -pv $@");
+                }
             }
 
             // clean rule
             makeRules.AppendLine(".PHONY: clean");
             makeRules.AppendLine("clean:");
-            if (Bam.Core.OSUtilities.IsWindowsHosting)
+            if (has_dirs)
             {
-                makeRules.AppendLine("\t-cmd.exe /C RMDIR /S /Q $(DIRS)");
-            }
-            else
-            {
-                makeRules.AppendLine("\t@rm -frv $(DIRS)");
+                if (Bam.Core.OSUtilities.IsWindowsHosting)
+                {
+                    makeRules.AppendLine("\t-cmd.exe /C RMDIR /S /Q $(DIRS)");
+                }
+                else
+                {
+                    makeRules.AppendLine("\t@rm -frv $(DIRS)");
+                }
             }
 
             // write all variables and rules
@@ -181,8 +202,8 @@ namespace MakeFileBuilder
             {
                 foreach (var rule in metadata.Rules)
                 {
-                    rule.WriteVariables(makeVariables);
-                    rule.WriteRules(makeRules);
+                    rule.WriteVariables(makeVariables, commonMeta);
+                    rule.WriteRules(makeRules, commonMeta);
                 }
             }
 

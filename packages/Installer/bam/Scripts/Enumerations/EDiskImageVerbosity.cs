@@ -29,6 +29,25 @@
 #endregion // License
 namespace Installer
 {
+    public enum EDiskImageFormat
+    {
+        UDRW, // UDIF read/write image
+        UDRO, // UDIF read-only image
+        UDCO, // UDIF ADC-compressed image
+        UDZO, // UDIF zlib-compressed image
+        ULFO, // UDIF lzfse-compressed image (OS X 10.11+ only)
+        UDBZ, // UDIF bzip2-compressed image (Mac OS X 10.4+ only)
+        UDTO, // DVD/CD-R master for export
+        UDSP, // SPARSE (grows with content)
+        UDSB, // SPARSEBUNDLE (grows with content; bundle-backed)
+        UFBI  // UDIF entire image with MD5 checksum
+    }
+
+    public enum EDiskImageVerb
+    {
+        Create
+    }
+
     public enum EDiskImageVerbosity
     {
         Default,

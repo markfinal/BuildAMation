@@ -44,6 +44,8 @@ namespace Publisher.DefaultSettings
             {
                 settings.Mode = EInstallNameToolMode.ChangeIDName;
             }
+            settings.OldName = null;
+            settings.NewName = null;
         }
     }
 }

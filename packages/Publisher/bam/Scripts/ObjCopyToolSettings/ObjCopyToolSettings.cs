@@ -29,37 +29,74 @@
 #endregion // License
 namespace Publisher
 {
-    public sealed class ObjCopyToolSettings :
+    [CommandLineProcessor.OutputPath(MakeDebugSymbolFile.DebugSymbolFileKey, "")]
+    [CommandLineProcessor.InputPaths(StripModule.StripBinaryKey, "", max_file_count: 1)]
+    [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
+    public sealed class MakeDebugSymbolFileSettings :
         Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
         IObjCopyToolSettings
     {
-        public ObjCopyToolSettings()
+        public MakeDebugSymbolFileSettings()
         {}
 
-        public ObjCopyToolSettings(
+        public MakeDebugSymbolFileSettings(
             Bam.Core.Module module)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
 
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-
-        EObjCopyToolMode IObjCopyToolSettings.Mode
+        [CommandLineProcessor.Bool("--only-keep-debug", "")]
+        bool IObjCopyToolSettings.OnlyKeepDebug
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.Bool("-v", "")]
         bool IObjCopyToolSettings.Verbose
         {
             get;
             set;
+        }
+
+        public override void AssignFileLayout ()
+        {
+            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
+        }
+    }
+
+    [CommandLineProcessor.OutputPath(LinkBackDebugSymbolFile.UpdateOriginalExecutable, "")]
+    [CommandLineProcessor.InputPaths(MakeDebugSymbolFile.DebugSymbolFileKey, "--add-gnu-debuglink=", max_file_count: 1)]
+    public sealed class LinkBackDebugSymbolFileSettings :
+        Bam.Core.Settings,
+        IObjCopyToolSettings
+    {
+        public LinkBackDebugSymbolFileSettings()
+        {}
+
+        public LinkBackDebugSymbolFileSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        [CommandLineProcessor.Bool("--only-keep-debug", "")]
+        bool IObjCopyToolSettings.OnlyKeepDebug
+        {
+            get;
+            set;
+        }
+
+        [CommandLineProcessor.Bool("-v", "")]
+        bool IObjCopyToolSettings.Verbose
+        {
+            get;
+            set;
+        }
+
+        public override void AssignFileLayout ()
+        {
+            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
         }
     }
 }

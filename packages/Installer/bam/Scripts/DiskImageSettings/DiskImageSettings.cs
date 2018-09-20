@@ -30,13 +30,14 @@
 using Bam.Core;
 namespace Installer
 {
+    [CommandLineProcessor.OutputPath(DiskImage.DMGKey, "-o ")]
+    [CommandLineProcessor.InputPaths(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey, "-srcfolder ")]
     public sealed class DiskImageSettings :
         Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
         IDiskImageSettings
     {
         public DiskImageSettings()
-        {}
+        { }
 
         public DiskImageSettings(
             Bam.Core.Module module)
@@ -44,23 +45,50 @@ namespace Installer
             this.InitializeAllInterfaces(module, false, true);
         }
 
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
+        [CommandLineProcessor.Enum(EDiskImageFormat.UDRW, "-format UDRW")]
+        [CommandLineProcessor.Enum(EDiskImageFormat.UDRO, "-format UDRO")]
+        [CommandLineProcessor.Enum(EDiskImageFormat.UDCO, "-format UDCO")]
+        [CommandLineProcessor.Enum(EDiskImageFormat.UDZO, "-format UDZO")]
+        [CommandLineProcessor.Enum(EDiskImageFormat.ULFO, "-format ULFO")]
+        [CommandLineProcessor.Enum(EDiskImageFormat.UDBZ, "-format UDBZ")]
+        [CommandLineProcessor.Enum(EDiskImageFormat.UDTO, "-format UDTO")]
+        [CommandLineProcessor.Enum(EDiskImageFormat.UDSP, "-format UDSP")]
+        [CommandLineProcessor.Enum(EDiskImageFormat.UDSB, "-format UDSB")]
+        [CommandLineProcessor.Enum(EDiskImageFormat.UFBI, "-format UFBI")]
+        EDiskImageFormat IDiskImageSettings.Format
         {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
+            get;
+            set;
         }
 
+        [CommandLineProcessor.Enum(EDiskImageVerb.Create, "create")]
+        EDiskImageVerb IDiskImageSettings.Verb
+        {
+            get;
+            set;
+        }
+
+        [CommandLineProcessor.Enum(EDiskImageVerbosity.Default, "")]
+        [CommandLineProcessor.Enum(EDiskImageVerbosity.Quiet, "-quiet")]
+        [CommandLineProcessor.Enum(EDiskImageVerbosity.Verbose, "-verbose")]
+        [CommandLineProcessor.Enum(EDiskImageVerbosity.Debug, "-debugs")]
         EDiskImageVerbosity IDiskImageSettings.Verbosity
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.String("-size ")]
         string IDiskImageSettings.ImageSize
         {
             get;
             set;
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
         }
     }
 }

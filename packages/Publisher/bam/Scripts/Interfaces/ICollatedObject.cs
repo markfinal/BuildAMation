@@ -37,7 +37,7 @@ namespace Publisher
             get;
         }
 
-        Bam.Core.PathKey SourcePathKey
+        string SourcePathKey
         {
             get;
         }

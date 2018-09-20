@@ -29,49 +29,105 @@
 #endregion // License
 namespace Publisher
 {
-    public sealed class CopyFileSettings :
+    [CommandLineProcessor.OutputPath(CollatedObject.CopiedFileKey, "")]
+    [CommandLineProcessor.OutputPath(CollatedObject.CopiedDirectoryKey, "")]
+    [CommandLineProcessor.OutputPath(CollatedObject.CopiedRenamedDirectoryKey, "")]
+    [CommandLineProcessor.AnyInputFile("", path_modifier_if_directory: "$(0)/.")]
+    public sealed class PosixCopyFileSettings :
         Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
         ICopyFileSettings
     {
-        public CopyFileSettings()
+        public PosixCopyFileSettings()
         {}
 
-        public CopyFileSettings(
+        public PosixCopyFileSettings(
             Bam.Core.Module module)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
 
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-
+        [CommandLineProcessor.Bool("-f", "")]
         bool ICopyFileSettings.Force
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.Bool("-v", "")]
         bool ICopyFileSettings.Verbose
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.Bool("-R", "")]
         bool ICopyFileSettings.Recursive
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.Bool("-a", "")]
         bool ICopyFileSettings.PreserveAllAttributes
         {
             get;
             set;
+        }
+
+        public override void AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
+        }
+    }
+
+    [CommandLineProcessor.OutputPath(CollatedObject.CopiedFileKey, "", path_modifier: "@dir($(0))/")]
+    [CommandLineProcessor.OutputPath(CollatedObject.CopiedDirectoryKey, "", path_modifier: "$(0)/")]
+    [CommandLineProcessor.OutputPath(CollatedObject.CopiedRenamedDirectoryKey, "", path_modifier: "$(0)/")]
+    [CommandLineProcessor.AnyInputFile("")]
+    public sealed class WinCopyFileSettings :
+        Bam.Core.Settings,
+        ICopyFileSettings
+    {
+        public WinCopyFileSettings()
+        { }
+
+        public WinCopyFileSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        [CommandLineProcessor.Bool("/Y /R", "")]
+        bool ICopyFileSettings.Force
+        {
+            get;
+            set;
+        }
+
+        [CommandLineProcessor.Bool("/F", "")]
+        bool ICopyFileSettings.Verbose
+        {
+            get;
+            set;
+        }
+
+        [CommandLineProcessor.Bool("/S", "")]
+        bool ICopyFileSettings.Recursive
+        {
+            get;
+            set;
+        }
+
+        [CommandLineProcessor.Bool("/K /B", "")]
+        bool ICopyFileSettings.PreserveAllAttributes
+        {
+            get;
+            set;
+        }
+
+        public override void AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Inputs_Outputs_Cmds;
         }
     }
 }

@@ -33,9 +33,7 @@ namespace Publisher
     public class ZipModule :
         Bam.Core.Module
     {
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Zip files or directories");
-
-        private IZipToolPolicy Policy;
+        public const string ZipKey = "Zip Files or Directories";
         private Bam.Core.TokenizedString InputPath;
 
         protected override void
@@ -53,7 +51,7 @@ namespace Publisher
                 this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ZipPosix>();
             }
             this.RegisterGeneratedFile(
-                Key,
+                ZipKey,
                 this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(zipoutputbasename).zip")
             );
 
@@ -65,7 +63,7 @@ namespace Publisher
         {
             // always update, so that zip can figure out what needs updating
             /*
-            this.ReasonToExecute = null; 
+            this.ReasonToExecute = null;
             var zipFilePath = this.GeneratedPaths[Key].ToString();
             if (!System.IO.File.Exists(zipFilePath))
             {
@@ -81,24 +79,62 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (null == this.Policy)
+            switch (Bam.Core.Graph.Instance.Mode)
             {
-                return;
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileBuilder.Support.Add(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeBuilder.Support.RunCommandLineTool(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    VSSolutionBuilder.Support.AddPreBuildSteps(
+                        this
+                    );
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    {
+                        XcodeBuilder.Target target;
+                        XcodeBuilder.Configuration configuration;
+                        XcodeBuilder.Support.AddPreBuildStepForCommandLineTool(
+                            this,
+                            out target,
+                            out configuration,
+                            false,
+                            true // because zip returns 12 (nothing to do) upon success for incrementals
+                        );
+
+                        target.EnsureOutputFileReferenceExists(
+                            this.GeneratedPaths[ZipModule.ZipKey],
+                            XcodeBuilder.FileReference.EFileType.ZipArchive,
+                            XcodeBuilder.Target.EProductType.Utility);
+
+                        configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("DirectoryZip"));
+                    }
+                    break;
+#endif
+
+                default:
+                    throw new System.NotSupportedException();
             }
-            this.Policy.Zip(
-                this,
-                context,
-                this.GeneratedPaths[Key],
-                this.InputPath
-            );
         }
 
-        protected override void
-        GetExecutionPolicy(
-            string mode)
+        public override Bam.Core.TokenizedString WorkingDirectory
         {
-            var className = "Publisher." + mode + "Zip";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IZipToolPolicy>.Create(className);
+            get
+            {
+                return this.InputPath;
+            }
         }
     }
 }

@@ -27,34 +27,35 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace C
 {
-    public sealed class VSSolutionProceduralHeaderFromToolOutput :
-        IProceduralHeaderFromToolOutputPolicy
+    public static partial class VSSolutionSupport
     {
-        void
-        IProceduralHeaderFromToolOutputPolicy.HeaderFromToolOutput(
-            ProceduralHeaderFileFromToolOutput sender,
-            ExecutionContext context,
-            TokenizedString outputPath,
-            ICommandLineTool tool)
+        public static void
+        GenerateHeader(
+            ProceduralHeaderFileFromToolOutput module)
         {
+            var tool = module.Tool as Bam.Core.ICommandLineTool;
             var toolProject = (tool as Bam.Core.Module).MetaData as VSSolutionBuilder.VSProject;
             var toolConfig = toolProject.GetConfiguration(tool as Bam.Core.Module);
 
-            var output = outputPath.ToString();
-            var output_parentdir = System.IO.Path.GetDirectoryName(output);
-            output_parentdir = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(output_parentdir);
-            output = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(output);
-
             var commands = new Bam.Core.StringArray();
-            commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", output_parentdir));
-            commands.Add(System.String.Format("{0} > {1}", CommandLineProcessor.Processor.StringifyTool(tool), output));
-            toolConfig.AddPostBuildCommands(commands);
+            commands.Add(
+                System.String.Format(
+                    "{0} > {1}",
+                    CommandLineProcessor.Processor.StringifyTool(tool),
+                    module.GeneratedPaths[ProceduralHeaderFileFromToolOutput.HeaderFileKey].ToString()
+                )
+            );
+
+            VSSolutionBuilder.Support.AddCustomPostBuildStep(
+                toolConfig,
+                module,
+                commands
+            );
 
             // alias the tool's project so that inter-project dependencies can be set up
-            sender.MetaData = toolProject;
+            module.MetaData = toolProject;
         }
     }
 }

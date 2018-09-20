@@ -38,7 +38,7 @@ namespace C
     public abstract class VersionScript :
         C.HeaderFile
     {
-        private static Bam.Core.PathKey HashFileKey = Bam.Core.PathKey.Generate("Hash of version script contents");
+        public const string HashFileKey = "Hash of version script contents";
 
         /// <summary>
         /// Override this function to specify the path of the version script to be written to.
@@ -64,55 +64,39 @@ namespace C
         {
             base.Init(parent);
             this.InputPath = this.OutputPath;
-            this.GeneratedPaths.Add(HashFileKey, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@filename($(0)).hash", this.OutputPath));
+            this.RegisterGeneratedFile(
+                HashFileKey,
+                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@filename($(0)).hash", this.OutputPath)
+            );
         }
-
-        private delegate int GetHashFn(string inPath);
 
         protected override void
         EvaluateInternal()
         {
             this.ReasonToExecute = null;
-            var outputPath = this.GeneratedPaths[Key].ToString();
+            var outputPath = this.GeneratedPaths[HeaderFileKey].ToString();
             if (!System.IO.File.Exists(outputPath))
             {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[HeaderFileKey]);
             }
             // have the contents changed since last time?
-            var writeHashFile = true;
-            var currentContentsHash = this.Contents.GetHashCode();
             var hashFilePath = this.GeneratedPaths[HashFileKey].ToString();
-            if (System.IO.File.Exists(hashFilePath))
+            var hashCompare = Bam.Core.Hash.CompareAndUpdateHashFile(
+                hashFilePath,
+                this.Contents
+            );
+            switch (hashCompare)
             {
-                GetHashFn getHash = inPath =>
-                {
-                    int hash = 0;
-                    using (System.IO.TextReader readFile = new System.IO.StreamReader(inPath))
-                    {
-                        var contents = readFile.ReadToEnd();
-                        hash = System.Convert.ToInt32(contents);
-                    }
-                    return hash;
-                };
-                var oldHash = getHash(hashFilePath);
-                if (oldHash == currentContentsHash)
-                {
-                    writeHashFile = false;
-                }
-                else
-                {
-                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.GeneratedPaths[HashFileKey]);
-                }
-            }
-            if (writeHashFile)
-            {
-                var destDir = System.IO.Path.GetDirectoryName(hashFilePath);
-                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
-                using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(hashFilePath))
-                {
-                    writeFile.NewLine = "\n";
-                    writeFile.Write(currentContentsHash);
-                }
+                case Bam.Core.Hash.EHashCompareResult.HashesAreDifferent:
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                        this.GeneratedPaths[HeaderFileKey],
+                        this.GeneratedPaths[HashFileKey]
+                    );
+                    break;
+
+                case Bam.Core.Hash.EHashCompareResult.HashFileDoesNotExist:
+                case Bam.Core.Hash.EHashCompareResult.HashesAreIdentical:
+                    break;
             }
         }
 
@@ -120,7 +104,7 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            var destPath = this.GeneratedPaths[Key].ToString();
+            var destPath = this.GeneratedPaths[HeaderFileKey].ToString();
             var destDir = System.IO.Path.GetDirectoryName(destPath);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
             using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(destPath))

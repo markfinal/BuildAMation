@@ -38,7 +38,7 @@ namespace C
         CreateDefaultSettings<T>(
             T module)
         {
-            return null;
+            return new SharedObjectSymbolicLinkSettings(module);
         }
 
         public override TokenizedString Executable

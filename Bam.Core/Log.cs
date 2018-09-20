@@ -48,6 +48,15 @@ namespace Bam.Core
                 // TravisCI reports System.ArgumentOutOfRangeException for the 'left' parameter
                 SupportsCursorManagement = false;
             }
+            if (OSUtilities.IsLinuxHosting)
+            {
+                if (!System.String.IsNullOrEmpty(System.Environment.GetEnvironmentVariable("DISPLAY")))
+                {
+                    // Linux, .NET core 2.1, X windows - SetCursorPosition is _really_ slow
+                    // https://github.com/dotnet/corefx/issues/32174
+                    SupportsCursorManagement = false;
+                }
+            }
         }
 
         /// <summary>
@@ -62,7 +71,7 @@ namespace Bam.Core
             bool isError,
             bool isProgressMeter = false)
         {
-            if (System.Diagnostics.Debugger.IsAttached && !Graph.Instance.ProcessState.RunningMono)
+            if (System.Diagnostics.Debugger.IsAttached)
             {
                 if (!isProgressMeter)
                 {
@@ -83,7 +92,8 @@ namespace Bam.Core
                         if (SupportsCursorManagement)
                         {
                             System.Console.Write(messageValue);
-                            System.Console.SetCursorPosition(System.Console.CursorLeft - messageValue.Length, System.Console.CursorTop);
+                            // there seems to be some issues (the cursor position not updating) in .NET core
+                            System.Console.SetCursorPosition(0, System.Console.CursorTop);
                         }
                     }
                     else

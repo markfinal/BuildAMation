@@ -29,64 +29,13 @@
 #endregion // License
 namespace WindowsSDK
 {
-    public class WinResourceCompilerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        VisualStudioProcessor.IConvertToProject,
-        C.ICommonWinResourceCompilerSettings,
-        C.IAdditionalSettings,
-        ICommonWinResourceCompilerSettings
+    public sealed class WinResourceCompilerSettings :
+        WindowsSDKCommon.CommonWinResourceCompilerSettings
     {
         public WinResourceCompilerSettings(
             Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
-            string condition)
-        {
-            VisualStudioProcessor.Conversion.Convert(typeof(VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-
-        bool? C.ICommonWinResourceCompilerSettings.Verbose
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-        C.PreprocessorDefinitions C.ICommonWinResourceCompilerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool? ICommonWinResourceCompilerSettings.NoLogo
-        {
-            get;
-            set;
-        }
+            :
+            base(module)
+        { }
     }
 }

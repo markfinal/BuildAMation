@@ -27,20 +27,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
     public class DSymUtilModule :
         Bam.Core.Module,
         ICollatedObject
     {
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("dSYM bundle");
+        public const string DSymBundleKey = "dSYM bundle";
 
         private Bam.Core.Module sourceModule;
-        private Bam.Core.PathKey sourcePathKey;
+        private string sourcePathKey;
         private ICollatedObject anchor = null;
-
-        private IDSymUtilToolPolicy Policy;
 
         protected override void
         Init(
@@ -49,9 +46,13 @@ namespace Publisher
             base.Init(parent);
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<DSymUtilTool>();
-            this.RegisterGeneratedFile(Key,
-                this.CreateTokenizedString("$(0)/@filename($(1)).dsym",
-                                           new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
+            this.RegisterGeneratedFile(
+                DSymBundleKey,
+                this.CreateTokenizedString(
+                    "$(0)/@filename($(1)).dsym",
+                    new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
+                )
+            );
         }
 
         protected override void
@@ -64,26 +65,28 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (null == this.Policy)
+            switch (Bam.Core.Graph.Instance.Mode)
             {
-                return;
-            }
-            this.Policy.CreateBundle(this, context, this.sourceModule.GeneratedPaths[this.sourcePathKey], this.GeneratedPaths[Key]);
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
-                case "Native":
+#if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    {
-                        var className = "Publisher." + mode + "DSymUtil";
-                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IDSymUtilToolPolicy>.Create(className);
-                    }
+                    MakeFileBuilder.Support.Add(this);
                     break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeBuilder.Support.RunCommandLineTool(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    Bam.Core.Log.DebugMessage("DSym not supported on Xcode builds");
+                    break;
+#endif
+
+                default:
+                    throw new System.NotSupportedException();
             }
         }
 
@@ -102,14 +105,14 @@ namespace Publisher
             }
         }
 
-        Bam.Core.PathKey ICollatedObject.SourcePathKey
+        string ICollatedObject.SourcePathKey
         {
             get
             {
                 return this.sourcePathKey;
             }
         }
-        public Bam.Core.PathKey SourcePathKey
+        public string SourcePathKey
         {
             set
             {
@@ -137,6 +140,14 @@ namespace Publisher
             set
             {
                 this.anchor = value;
+            }
+        }
+
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        {
+            get
+            {
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.sourcePathKey, this.sourceModule);
             }
         }
     }

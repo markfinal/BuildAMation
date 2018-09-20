@@ -37,7 +37,6 @@ namespace C
         IForwardedLibraries
     {
         private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
-        private IHeaderLibraryPolicy Policy;
 
         protected override void
         EvaluateInternal()
@@ -49,28 +48,34 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (null == this.Policy)
+            switch (Bam.Core.Graph.Instance.Mode)
             {
-                return;
-            }
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    // do nothing
+                    break;
+#endif
 
-            var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
-            this.Policy.HeadersOnly(this, context, headers);
-        }
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    // do nothing
+                    break;
+#endif
 
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
-            case "VSSolution":
-            case "Xcode":
-                {
-                    var className = "C." + mode + "HeaderLibrary";
-                    this.Policy = Bam.Core.ExecutionPolicyUtilities<IHeaderLibraryPolicy>.Create(className);
-                }
-                break;
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    VSSolutionSupport.HeadersOnly(this);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    XcodeSupport.HeadersOnly(this);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
             }
         }
 
@@ -103,6 +108,22 @@ namespace C
             // this delays the dependency until a link
             // (and recursively checks the dependent for more forwarded dependencies)
             this.forwardedDeps.AddUnique(dependent);
+        }
+
+        /// <summary>
+        /// Access the headers forming this library.
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        HeaderFiles
+        {
+            get
+            {
+                var module_list = FlattenHierarchicalFileList(this.headerModules);
+                foreach (var module in module_list)
+                {
+                    yield return module;
+                }
+            }
         }
     }
 }

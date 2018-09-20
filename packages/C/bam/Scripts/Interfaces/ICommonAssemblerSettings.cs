@@ -58,16 +58,6 @@ namespace C
         }
 
         /// <summary>
-        /// Define what output the assembler generates.
-        /// </summary>
-        /// <value>The type of the output.</value>
-        C.ECompilerOutput OutputType
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Assemble with all warnings as errors.
         /// </summary>
         /// <value>The warnings as errors.</value>

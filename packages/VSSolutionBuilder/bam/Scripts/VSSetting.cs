@@ -35,11 +35,13 @@ namespace VSSolutionBuilder
         public VSSetting(
             string name,
             string value,
+            bool isPath,
             string condition = null)
         {
             this.Name = name;
             this.Value = value;
             this.Condition = condition;
+            this.IsPath = isPath;
         }
 
         public string Name
@@ -55,6 +57,12 @@ namespace VSSolutionBuilder
         }
 
         public string Condition
+        {
+            get;
+            private set;
+        }
+
+        public bool IsPath
         {
             get;
             private set;

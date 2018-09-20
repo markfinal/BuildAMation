@@ -38,5 +38,17 @@ namespace Publisher
             get;
             set;
         }
+
+        string OldName
+        {
+            get;
+            set;
+        }
+
+        string NewName
+        {
+            get;
+            set;
+        }
     }
 }

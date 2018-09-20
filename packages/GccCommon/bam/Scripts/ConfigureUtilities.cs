@@ -38,7 +38,7 @@ namespace GccCommon
             string executable,
             string arguments)
         {
-            return Bam.Core.OSUtilities.RunExecutable(executable, arguments);
+            return Bam.Core.OSUtilities.RunExecutable(executable, arguments).StandardOutput;
         }
 
         [System.Obsolete("Please use Bam.Core.OSUtilities.GetInstallLocation instead")]

@@ -36,6 +36,8 @@ namespace Installer.DefaultSettings
             this IDiskImageSettings settings,
             Bam.Core.Module module)
         {
+            settings.Verb = EDiskImageVerb.Create;
+            settings.Format = EDiskImageFormat.UDZO;
             settings.Verbosity = EDiskImageVerbosity.Default;
             settings.ImageSize = "32m";
         }

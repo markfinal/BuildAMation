@@ -39,21 +39,38 @@ namespace MakeFileBuilder
             this.RuleIndex = count;
             this.Module = module;
             this.Targets = new Bam.Core.Array<Target>();
-            this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
+            this.Prequisities = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
             this.PrerequisiteTargets = new Bam.Core.Array<Target>();
-            this.PrerequisitePaths = new Bam.Core.TokenizedStringArray();
             this.ShellCommands = new Bam.Core.StringArray();
-            this.OrderOnlyDependencies = new Bam.Core.StringArray();
-            this.OrderOnlyDependencies.Add("$(DIRS)");
+            this.OrderOnlyDependencies = new Bam.Core.Array<Target>();
+            this.AddOrderOnlyDependency(MakeFileCommonMetaData.DIRSTarget);
         }
 
         public Target
         AddTarget(
             Bam.Core.TokenizedString targetNameOrOutput,
             bool isPhony = false,
-            string variableName = null)
+            string variableName = null,
+            string keyName = null,
+            bool isDependencyOfAll = false)
         {
-            var target = new Target(targetNameOrOutput, isPhony, variableName, this.Module, this.RuleIndex);
+            if (!Target.IsPrerequisiteOfAll(this.Module) && isDependencyOfAll)
+            {
+                System.Diagnostics.Debug.Assert(null == variableName);
+                variableName = Target.MakeUniqueVariableName(
+                    this.Module,
+                    keyName
+                );
+            }
+            var target = new Target(
+                targetNameOrOutput,
+                isPhony,
+                variableName,
+                this.Module,
+                this.RuleIndex,
+                keyName,
+                isDependencyOfAll
+            );
             lock (this.Targets)
             {
                 this.Targets.Add(target);
@@ -64,19 +81,12 @@ namespace MakeFileBuilder
         public void
         AddPrerequisite(
             Bam.Core.Module module,
-            Bam.Core.PathKey key)
+            string key)
         {
             if (!this.Prequisities.ContainsKey(module))
             {
                 this.Prequisities.Add(module, key);
             }
-        }
-
-        public void
-        AddPrerequisite(
-            Bam.Core.TokenizedString path)
-        {
-            this.PrerequisitePaths.Add(path);
         }
 
         public void
@@ -128,40 +138,97 @@ namespace MakeFileBuilder
 
         public void
         AddOrderOnlyDependency(
-            string ooDep)
+            Target target)
         {
-            this.OrderOnlyDependencies.AddUnique(ooDep);
+            lock (this.OrderOnlyDependencies)
+            {
+                this.OrderOnlyDependencies.AddUnique(target);
+            }
         }
 
         public void
         WriteVariables(
-            System.Text.StringBuilder variables)
+            System.Text.StringBuilder variables,
+            MakeFileCommonMetaData commonMeta)
         {
-            foreach (var target in this.Targets)
+            bool hasShellCommands = this.ShellCommands.Any();
+            if (hasShellCommands)
             {
-                var name = target.VariableName;
-                if (null == name)
+                foreach (var target in this.Targets)
                 {
-                    continue;
-                }
-
-                if (target.IsPhony)
-                {
-                    variables.AppendFormat(".PHONY: {0}", name);
-                    variables.AppendLine();
-                }
-
-                // simply expanded variable
-                lock (target.Path)
-                {
-                    if (!target.Path.IsParsed)
+                    var name = target.VariableName;
+                    if (null == name)
                     {
-                        // some sources may be generated after the string parsing phase
-                        target.Path.Parse();
+                        continue;
+                    }
+
+                    if (target.IsPhony)
+                    {
+                        variables.AppendFormat(".PHONY: {0}", name);
+                        variables.AppendLine();
+                    }
+
+                    // simply expanded variable
+                    lock (target.Path)
+                    {
+                        if (!target.Path.IsParsed)
+                        {
+                            // some sources may be generated after the string parsing phase
+                            target.Path.Parse();
+                        }
+                    }
+                    if (MakeFileCommonMetaData.IsNMAKE)
+                    {
+                        variables.AppendFormat(
+                            "{0} = {1}",
+                            name,
+                            commonMeta.UseMacrosInPath(target.Path.ToString())
+                        );
+                        variables.AppendLine();
+                        variables.AppendLine();
+                    }
+                    else
+                    {
+                        variables.AppendFormat(
+                            "{0}:={1}",
+                            name,
+                            commonMeta.UseMacrosInPath(target.Path.ToString())
+                        );
+                        variables.AppendLine();
                     }
                 }
-                variables.AppendFormat("{0}:={1}", name, target.Path.ToString());
-                variables.AppendLine();
+            }
+            else
+            {
+                foreach (var target in this.Targets)
+                {
+                    var name = target.VariableName;
+                    if (null == name)
+                    {
+                        name = target.Path.ToString();
+                    }
+
+                    variables.AppendFormat("{0}=", name);
+                    foreach (var pre in this.PrerequisiteTargets)
+                    {
+                        var preName = pre.VariableName;
+                        if (null == preName)
+                        {
+                            variables.AppendFormat(
+                                "{0} ",
+                                commonMeta.UseMacrosInPath(pre.Path.ToString())
+                            );
+                        }
+                        else
+                        {
+                            variables.AppendFormat(
+                                "$({0}) ",
+                                commonMeta.UseMacrosInPath(preName)
+                            );
+                        }
+                    }
+                    variables.AppendLine();
+                }
             }
         }
 
@@ -171,7 +238,7 @@ namespace MakeFileBuilder
             char toReplace)
         {
             var offset = 0;
-            for (;;)
+            for (; ; )
             {
                 var index = input.IndexOf(toReplace, offset);
                 if (-1 == index)
@@ -191,8 +258,14 @@ namespace MakeFileBuilder
 
         public void
         WriteRules(
-            System.Text.StringBuilder rules)
+            System.Text.StringBuilder rules,
+            MakeFileCommonMetaData commonMeta)
         {
+            bool hasShellCommands = this.ShellCommands.Any();
+            if (!hasShellCommands)
+            {
+                return;
+            }
             foreach (var target in this.Targets)
             {
                 var name = target.VariableName;
@@ -207,52 +280,116 @@ namespace MakeFileBuilder
                         rules.AppendFormat(".PHONY: {0}", target.Path);
                         rules.AppendLine();
                     }
-                    rules.AppendFormat("{0}:", target.Path);
+                    rules.AppendFormat("{0}:", commonMeta.UseMacrosInPath(target.Path.ToString()));
                 }
+
+                // non-first targets just require the first target to exist
+                // see https://stackoverflow.com/questions/2973445/gnu-makefile-rule-generating-a-few-targets-from-a-single-source-file
+                if (target != this.FirstTarget)
+                {
+                    var firstTargetname = this.FirstTarget.VariableName;
+                    if (null != firstTargetname)
+                    {
+                        rules.AppendFormat("$({0})", firstTargetname);
+                    }
+                    else
+                    {
+                        rules.AppendFormat("{0}", commonMeta.UseMacrosInPath(this.FirstTarget.Path.ToString()));
+                    }
+                    rules.AppendLine();
+                    continue;
+                }
+
                 foreach (var pre in this.Prequisities)
                 {
-                    rules.AppendFormat("{0} ", pre.Key.GeneratedPaths[pre.Value]);
-                }
-                foreach (var pre in this.PrerequisitePaths)
-                {
-                    lock (pre)
-                    {
-                        if (!pre.IsParsed)
-                        {
-                            pre.Parse();
-                        }
-                    }
-                    rules.AppendFormat("{0} ", pre.ToStringQuoteIfNecessary());
+                    rules.AppendFormat(
+                        "{0} ",
+                        commonMeta.UseMacrosInPath(pre.Key.GeneratedPaths[pre.Value].ToStringQuoteIfNecessary())
+                    );
                 }
                 foreach (var pre in this.PrerequisiteTargets)
                 {
                     var preName = pre.VariableName;
                     if (null == preName)
                     {
-                        rules.AppendFormat("{0} ", pre.Path.ToString());
+                        rules.AppendFormat(
+                            "{0} ",
+                            commonMeta.UseMacrosInPath(pre.Path.ToString())
+                        );
                     }
                     else
                     {
-                        rules.AppendFormat("$({0}) ", preName);
+                        rules.AppendFormat(
+                            "$({0}) ",
+                            commonMeta.UseMacrosInPath(preName)
+                        );
                     }
                 }
-                if (this.OrderOnlyDependencies.Count > 0)
+                if (MakeFileCommonMetaData.IsNMAKE)
                 {
-                    rules.AppendFormat("| {0}", this.OrderOnlyDependencies.ToString(' '));
+                    // NMake offers no support for order only dependents
+                }
+                else
+                {
+                    if (this.OrderOnlyDependencies.Any())
+                    {
+                        rules.AppendFormat(
+                            "| "
+                        );
+                    }
+                    foreach (var ood in this.OrderOnlyDependencies)
+                    {
+                        var oodName = ood.VariableName;
+                        if (null == oodName)
+                        {
+                            rules.AppendFormat(
+                                "{0} ",
+                                commonMeta.UseMacrosInPath(ood.Path.ToString())
+                            );
+                        }
+                        else
+                        {
+                            rules.AppendFormat(
+                                "$({0}) ",
+                                commonMeta.UseMacrosInPath(oodName)
+                            );
+                        }
+                    }
                 }
                 rules.AppendLine();
                 foreach (var command in this.ShellCommands)
                 {
-                    // look for text like $ORIGIN, which needs a double $ prefix (and quotes) to avoid being interpreted as an environment variable by Make
-                    var escapedCommand = System.Text.RegularExpressions.Regex.Replace(command, @"\$([A-Za-z0-9]+)", @"'$$$$$1'");
-                    // any parentheses that are not associated with MakeFile commands must be escaped
-                    if (!System.Text.RegularExpressions.Regex.IsMatch(escapedCommand, @"\$\(.*\)"))
+                    var macro_command = command.Replace(this.FirstTarget.Path.ToString(), "$@");
+                    if (!MakeFileCommonMetaData.IsNMAKE)
                     {
-                        EscapeCharacter(ref escapedCommand, '(');
-                        EscapeCharacter(ref escapedCommand, ')');
+                        // check paths first, as it's more likely to be a source file/object file etc
+                        if (null != this.FirstPrerequisitePath)
+                        {
+                            macro_command = macro_command.Replace(this.FirstPrerequisitePath.ToString(), "$<");
+                        }
+                        else if (null != this.FirstPrerequisiteTarget)
+                        {
+                            macro_command = macro_command.Replace(this.FirstPrerequisiteTarget.Path.ToString(), "$<");
+                        }
+                        // look for text like $ORIGIN, which needs a double $ prefix (and quotes) to avoid being interpreted as an environment variable by Make
+                        var escapedCommand = System.Text.RegularExpressions.Regex.Replace(macro_command, @"\$([A-Za-z0-9]+)", @"'$$$$$1'");
+                        // any parentheses that are not associated with MakeFile commands must be escaped
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(escapedCommand, @"\$\(.*\)"))
+                        {
+                            EscapeCharacter(ref escapedCommand, '(');
+                            EscapeCharacter(ref escapedCommand, ')');
+                        }
+                        // perform macro replacement after regex, otherwise it may match $(var)
+                        escapedCommand = commonMeta.UseMacrosInPath(escapedCommand);
+                        rules.AppendFormat("\t{0}", escapedCommand);
+                        rules.AppendLine();
                     }
-                    rules.AppendFormat("\t{0}", escapedCommand);
-                    rules.AppendLine();
+                    else
+                    {
+                        macro_command = commonMeta.UseMacrosInPath(macro_command);
+                        rules.AppendFormat("\t{0}", macro_command);
+                        rules.AppendLine();
+                    }
                 }
             }
         }
@@ -269,6 +406,38 @@ namespace MakeFileBuilder
             }
         }
 
+        private Target
+        FirstPrerequisiteTarget
+        {
+            get
+            {
+                lock (this.PrerequisiteTargets)
+                {
+                    return this.PrerequisiteTargets.FirstOrDefault();
+                }
+            }
+        }
+
+        private Bam.Core.TokenizedString
+        FirstPrerequisitePath
+        {
+            get
+            {
+                lock (this.Prequisities)
+                {
+                    var first = this.Prequisities.FirstOrDefault();
+                    if (first.Equals(default(System.Collections.Generic.KeyValuePair<Bam.Core.Module,string>)))
+                    {
+                        return null;
+                    }
+                    else
+                    {
+                        return first.Key.GeneratedPaths[first.Value];
+                    }
+                }
+            }
+        }
+
         public delegate void eachTargetDelegate(Target target);
 
         public void
@@ -281,23 +450,6 @@ namespace MakeFileBuilder
                 {
                     dlg(target);
                 }
-            }
-        }
-
-        public bool
-        AnyTargetUsesVariableName(
-            string variableName)
-        {
-            lock (this.Targets)
-            {
-                foreach (var target in this.Targets)
-                {
-                    if (target.VariableName == variableName)
-                    {
-                        return true;
-                    }
-                }
-                return false;
             }
         }
 
@@ -319,7 +471,7 @@ namespace MakeFileBuilder
             set;
         }
 
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Prequisities
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Prequisities
         {
             get;
             set;
@@ -331,19 +483,13 @@ namespace MakeFileBuilder
             set;
         }
 
-        private Bam.Core.TokenizedStringArray PrerequisitePaths
-        {
-            get;
-            set;
-        }
-
         private Bam.Core.StringArray ShellCommands
         {
             get;
             set;
         }
 
-        private Bam.Core.StringArray OrderOnlyDependencies
+        private Bam.Core.Array<Target> OrderOnlyDependencies
         {
             get;
             set;

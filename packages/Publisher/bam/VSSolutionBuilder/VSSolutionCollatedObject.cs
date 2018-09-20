@@ -29,114 +29,75 @@
 #endregion // License
 namespace Publisher
 {
-    public sealed class VSSolutionCollatedObject :
-        ICollatedObjectPolicy
+    public static partial class VSSolutionSupport
     {
-        void
-        ICollatedObjectPolicy.Collate(
-            CollatedObject sender,
-            Bam.Core.ExecutionContext context)
+        public static void
+        CollateObject(
+            CollatedObject module)
         {
-            if (sender.Ignore)
+            if (module.Ignore)
             {
                 return;
             }
 
-            var collatedInterface = sender as ICollatedObject;
-            if (sender.IsAnchor && null != collatedInterface.SourceModule)
+            var collatedInterface = module as ICollatedObject;
+            System.Diagnostics.Debug.Assert(null != collatedInterface.SourceModule);
+            if (module.IsAnchor && !(collatedInterface.SourceModule is PreExistingObject))
             {
                 // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
+                // a no-op also applies to stripped executable copies
                 return;
             }
 
-            var copyFileTool = sender.Tool as CopyFileTool;
-            string copySourcePath;
-            string destinationDir;
-            copyFileTool.convertPaths(
-                sender,
-                sender.SourcePath,
-                collatedInterface.PublishingDirectory,
-                out copySourcePath,
-                out destinationDir);
-
-            if (null == sender.PreExistingSourcePath)
-            {
-                Bam.Core.Log.DebugMessage("** {0}[{1}]:\t'{2}' -> '{3}'",
-                    collatedInterface.SourceModule.ToString(),
-                    collatedInterface.SourcePathKey.ToString(),
-                    copyFileTool.escapePath(copySourcePath),
-                    copyFileTool.escapePath(destinationDir));
-            }
-            else
-            {
-                Bam.Core.Log.DebugMessage("** {0}: '{1}' -> '{2}'",
-                    sender,
-                    copyFileTool.escapePath(copySourcePath),
-                    copyFileTool.escapePath(destinationDir));
-            }
-
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
-
-            var commands = new Bam.Core.StringArray();
-            commands.Add(System.String.Format("IF NOT EXIST {0} MKDIR {0}", copyFileTool.escapePath(destinationDir)));
-
+            var projectModule = collatedInterface.SourceModule;
             var arePostBuildCommands = true;
-            Bam.Core.Module sourceModule;
-            if (null != collatedInterface.SourceModule)
-            {
-                sourceModule = collatedInterface.SourceModule;
-
-                // check for runtime dependencies that won't have projects, use their anchor
-                if (null == sourceModule.MetaData)
-                {
-                    sourceModule = collatedInterface.Anchor.SourceModule;
-                }
-            }
-            else
+            // check for runtime dependencies that won't have projects, use their anchor
+            if (null == projectModule.MetaData)
             {
                 if (null != collatedInterface.Anchor)
                 {
-                    // usually preexisting files that are published as part of an executable's distribution
-                    // in which case, their anchor is the executable (or a similar binary)
-                    sourceModule = collatedInterface.Anchor.SourceModule;
+                    projectModule = collatedInterface.Anchor.SourceModule;
                 }
                 else
                 {
-                    if (sender is CollatedPreExistingFile)
+                    if (collatedInterface.SourceModule is PreExistingObject)
                     {
-                        sourceModule = (sender as CollatedPreExistingFile).ParentOfCollationModule;
+                        projectModule = (collatedInterface.SourceModule as PreExistingObject).ParentOfCollationModule;
 
                         // ensure a project exists, as this collation may be visited prior to
                         // the source which invoked it
                         var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-                        solution.EnsureProjectExists(sourceModule);
+                        solution.EnsureProjectExists(projectModule);
 
                         arePostBuildCommands = false;
                     }
                     else
                     {
-                        throw new Bam.Core.Exception("No anchor set on '{0}' with source path '{1}'", sender.GetType().ToString(), sender.SourcePath);
+                        throw new Bam.Core.Exception(
+                            "No anchor set on '{0}' with source path '{1}'",
+                            module.GetType().ToString(),
+                            module.SourcePath
+                        );
                     }
                 }
             }
 
-            var project = sourceModule.MetaData as VSSolutionBuilder.VSProject;
-            var config = project.GetConfiguration(sourceModule);
+            var project = projectModule.MetaData as VSSolutionBuilder.VSProject;
+            var config = project.GetConfiguration(projectModule);
 
-            commands.Add(System.String.Format(@"{0} {1} {2} {3} {4}",
-                CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                commandLine.ToString(' '),
-                copyFileTool.escapePath(copySourcePath),
-                copyFileTool.escapePath(destinationDir),
-                CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
             if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility && arePostBuildCommands)
             {
-                config.AddPostBuildCommands(commands);
+                VSSolutionBuilder.Support.AddPostBuildSteps(
+                    module,
+                    config: config
+                );
             }
             else
             {
-                config.AddPreBuildCommands(commands);
+                VSSolutionBuilder.Support.AddPreBuildSteps(
+                    module,
+                    config: config
+                );
             }
         }
     }

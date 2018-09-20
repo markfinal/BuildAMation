@@ -34,7 +34,7 @@ namespace C
         Bam.Core.IInputPath,
         Bam.Core.IChildModule
     {
-        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Header File");
+        public const string HeaderFileKey = "Header File";
 
         protected override void
         EvaluateInternal()
@@ -50,22 +50,18 @@ namespace C
             // TODO: exception to this is generated source, but there ought to be an override for that
         }
 
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // there is no execution policy
-        }
-
         public Bam.Core.TokenizedString InputPath
         {
             get
             {
-                return this.GeneratedPaths[Key];
+                return this.GeneratedPaths[HeaderFileKey];
             }
             set
             {
-                this.GeneratedPaths[Key] = value;
+                this.RegisterGeneratedFile(
+                    HeaderFileKey,
+                    value
+                );
             }
         }
 

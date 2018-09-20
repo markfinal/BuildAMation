@@ -48,7 +48,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_DiskImageInstaller");
 
-            this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+            this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }
     }
 
@@ -70,7 +70,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_DiskImageInstaller");
 
-            this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+            this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }
     }
 }

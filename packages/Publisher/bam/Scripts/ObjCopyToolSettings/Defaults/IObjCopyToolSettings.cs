@@ -36,7 +36,7 @@ namespace Publisher.DefaultSettings
             this IObjCopyToolSettings settings,
             Bam.Core.Module module)
         {
-            settings.Mode = EObjCopyToolMode.NA;
+            settings.OnlyKeepDebug = true;
             settings.Verbose = true;
         }
     }

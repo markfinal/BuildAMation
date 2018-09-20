@@ -30,7 +30,6 @@
 using Bam.Core;
 namespace ConfigurationTest1
 {
-#if BAM_FEATURE_MODULE_CONFIGURATION
     sealed class UserConfiguration :
         Bam.Core.IOverrideModuleConfiguration
     {
@@ -46,7 +45,6 @@ namespace ConfigurationTest1
             }
         }
     }
-#endif
 
     sealed class TestApp :
         C.ConsoleApplication

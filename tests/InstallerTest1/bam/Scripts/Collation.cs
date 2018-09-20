@@ -41,7 +41,7 @@ namespace InstallerTest1
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
-            var appAnchor = this.Include<CExecutable>(C.GUIApplication.Key);
+            var appAnchor = this.Include<CExecutable>(C.GUIApplication.ExecutableKey);
 
             // copy the required runtime library next to the binary
             if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&
@@ -64,7 +64,7 @@ namespace InstallerTest1
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
-            var appAnchor = this.Include<CxxExecutable>(C.Cxx.GUIApplication.Key);
+            var appAnchor = this.Include<CxxExecutable>(C.Cxx.GUIApplication.ExecutableKey);
 
             // copy the required runtime library next to the binary
             if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&

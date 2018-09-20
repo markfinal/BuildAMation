@@ -75,8 +75,16 @@ namespace Bam.Core
             try
             {
                 var primaryPackageRepo = System.IO.Path.Combine(
-                    System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName,
-                    "packages");
+                    System.IO.Directory.GetParent(System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName).FullName,
+                    "packages"
+                );
+                if (!System.IO.Directory.Exists(primaryPackageRepo))
+                {
+                    throw new Exception(
+                        "Standard BAM package directory '{0}' does not exist",
+                        primaryPackageRepo
+                    );
+                }
                 this.PackageRepositories.AddUnique(primaryPackageRepo);
             }
             catch (System.ArgumentNullException)
@@ -85,6 +93,7 @@ namespace Bam.Core
             }
 
             this.ForceDefinitionFileUpdate = CommandLineProcessor.Evaluate(new Options.ForceDefinitionFileUpdate());
+            this.UpdateBamAssemblyVersions = CommandLineProcessor.Evaluate(new Options.UpdateBamAssemblyVersion());
             this.CompileWithDebugSymbols = CommandLineProcessor.Evaluate(new Options.UseDebugSymbols());
         }
 
@@ -540,13 +549,23 @@ namespace Bam.Core
                         // children inherit the settings from their parents
                         module.UsePublicPatches(module.Tool);
                     }
+
                     try
                     {
-                        module.Settings = (module.Tool as ITool).CreateDefaultSettings(module);
+                        module.Settings = module.MakeSettings();
                     }
                     catch (System.TypeInitializationException ex)
                     {
                         throw ex.InnerException;
+                    }
+                    catch (System.Reflection.TargetInvocationException ex)
+                    {
+                        var realException = ex.InnerException;
+                        if (null == realException)
+                        {
+                            realException = ex;
+                        }
+                        throw new Exception(realException, "Settings creation:");
                     }
                 }
             }
@@ -604,14 +623,17 @@ namespace Bam.Core
             Log.Detail("Analysing module dependencies...");
             var moduleRanks = new System.Collections.Generic.Dictionary<Module, int>();
             var modulesToProcess = new System.Collections.Generic.Queue<Module>();
-            var scale = 100.0f / (3 * Module.Count);
+            var totalProgress = 3 * Module.Count; // all modules are iterated over three times (twice in here, and once in CompleteModules)
+            var scale = 100.0f / totalProgress;
             // initialize the map with top-level modules
             // and populate the to-process list
+            var progress = 0;
+            Log.DetailProgress("{0,3}%", (int)(progress * scale));
             foreach (var module in this.TopLevelModules)
             {
                 SetModuleRank(moduleRanks, module, 0);
                 ProcessModule(moduleRanks, modulesToProcess, module, 0);
-                Log.DetailProgress("{0,3}%", (int)((Module.Count - modulesToProcess.Count) * scale));
+                Log.DetailProgress("{0,3}%", (int)((++progress) * scale));
             }
             // process all modules by initializing them to a best-guess rank
             // but then potentially moving them to a higher rank if they re-appear as dependencies
@@ -619,13 +641,12 @@ namespace Bam.Core
             {
                 var module = modulesToProcess.Dequeue();
                 ProcessModule(moduleRanks, modulesToProcess, module, moduleRanks[module]);
-                Log.DetailProgress("{0,3}%", (int)((Module.Count - modulesToProcess.Count) * scale));
+                Log.DetailProgress("{0,3}%", (int)((++progress) * scale));
             }
             // moduleRanks[*].Value is now sparse - there may be gaps between successive ranks with modules
             // this needs to be collapsed so that the rank indices are contiguous (the order is correct, the indices are just wrong)
 
             // assign modules, for each rank index, into collections
-            var count = Module.Count;
             var contiguousRankIndex = 0;
             var lastRankIndex = 0;
             foreach (var nextModule in moduleRanks.OrderBy(item => item.Value))
@@ -637,7 +658,7 @@ namespace Bam.Core
                 }
                 var rank = this.DependencyGraph[contiguousRankIndex];
                 rank.Add(nextModule.Key);
-                Log.DetailProgress("{0,3}%", (int)(count++ * scale));
+                Log.DetailProgress("{0,3}%", (int)((++progress) * scale));
             }
             Module.CompleteModules();
         }
@@ -963,7 +984,10 @@ namespace Bam.Core
                 {
                     throw new Exception("The build root has already been set");
                 }
-                var absoluteBuildRootPath = RelativePathUtilities.MakeRelativePathAbsoluteToWorkingDir(value);
+                var absoluteBuildRootPath = RelativePathUtilities.ConvertRelativePathToAbsolute(
+                    Graph.Instance.ProcessState.WorkingDirectory,
+                    value
+                );
                 this.TheBuildRoot = absoluteBuildRootPath;
                 this.Macros.AddVerbatim("buildroot", absoluteBuildRootPath);
             }
@@ -995,6 +1019,18 @@ namespace Bam.Core
         /// </summary>
         /// <value><c>true</c> if force definition file update; otherwise, <c>false</c>.</value>
         public bool ForceDefinitionFileUpdate
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Determine whether package definition files read have their BAM assembly versions updated
+        /// to the current version of BAM running.
+        /// Requires forced updates to definition files to be enabled.
+        /// </summary>
+        /// <value><c>true</c> to update bam assembly versions; otherwise, <c>false</c>.</value>
+        public bool UpdateBamAssemblyVersions
         {
             get;
             private set;

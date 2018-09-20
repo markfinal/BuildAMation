@@ -35,6 +35,15 @@ namespace Bam.Core
     /// </summary>
     public abstract class Settings
     {
+        /// <summary>
+        /// Default constructor.
+        /// </summary>
+        protected Settings()
+        {
+            this.FileLayout = ELayout.Unassigned;
+            this.AssignFileLayout();
+        }
+
         private class InterfaceData
         {
             public System.Type InterfaceType;
@@ -49,6 +58,8 @@ namespace Bam.Core
 
         // TODO: Could this be System.Collections.Concurrent.ConcurrentDictionary to avoid the explicit lock below?
         private static System.Collections.Generic.Dictionary<System.Type, SettingsInterfaces> Cache = new System.Collections.Generic.Dictionary<System.Type, SettingsInterfaces>();
+
+        private Array<System.Reflection.PropertyInfo> _Properties;
 
         private static SettingsInterfaces
         GetSettingsInterfaces(
@@ -117,6 +128,35 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// Utility function to gather all the properties on a Settings
+        /// class hierarchy.
+        /// </summary>
+        /// <param name="settingsType">Concrete Settings type to start from.</param>
+        /// <returns>Array of PropertyInfo.</returns>
+        public static Array<System.Reflection.PropertyInfo>
+        FindProperties(
+            System.Type settingsType)
+        {
+            // TODO: this does seem to find more properties than it needs to
+
+            // since flattening the hierachy doesn't expose private property
+            // implementations on base classes, recurse
+            var properties = settingsType.GetProperties(
+                System.Reflection.BindingFlags.Instance |
+                System.Reflection.BindingFlags.Public |
+                System.Reflection.BindingFlags.NonPublic
+            );
+            var props = new Bam.Core.Array<System.Reflection.PropertyInfo>(properties);
+            var baseType = settingsType.BaseType;
+            if (null == baseType)
+            {
+                return props;
+            }
+            props.AddRangeUnique(FindProperties(baseType));
+            return props;
+        }
+
+        /// <summary>
         /// For all settings interfaces, optionally calling Empty method and Default method
         /// in the extensions class defined by SettingsExtensionsAttribute on each interface.
         /// </summary>
@@ -152,6 +192,20 @@ namespace Bam.Core
             {
                 LocalPolicy.DefineLocalSettings(this, module);
             }
+            this._Properties = FindProperties(this.GetType());
+        }
+
+        /// <summary>
+        /// Read only access to the flattened list of properties for all interfaces
+        /// on this Settings type, in the order of the interface priorities.
+        /// </summary>
+        public System.Collections.Generic.IReadOnlyList<System.Reflection.PropertyInfo>
+        Properties
+        {
+            get
+            {
+                return this._Properties.ToReadOnlyCollection();
+            }
         }
 
         /// <summary>
@@ -163,6 +217,67 @@ namespace Bam.Core
             get;
             private set;
         }
+
+        /// <summary>
+        /// Perform validation on this Settings instance, after all patches have been
+        /// applied.
+        /// Allows any derived class to ensure it is self consistent.
+        /// There is no default validation.
+        /// </summary>
+        public virtual void
+        Validate()
+        { }
+
+        /// <summary>
+        /// If settings are linearised to a command line, layout of where files are placed.
+        /// </summary>
+        public enum ELayout
+        {
+            /// <summary>
+            /// File layout is unassigned - this is invalid.
+            /// </summary>
+            Unassigned,
+
+            /// <summary>
+            /// Command lines appear as:
+            /// [non-path switches] [output paths] [input paths]
+            /// </summary>
+            Cmds_Outputs_Inputs,
+
+            /// <summary>
+            /// Command lines appear as:
+            /// [non-path switches] [input paths] [output paths]
+            /// </summary>
+            Cmds_Inputs_Outputs,
+
+            /// <summary>
+            /// Command lines appear as:
+            /// [input paths] [non-path switches] [output paths]
+            /// </summary>
+            Inputs_Cmds_Outputs,
+
+            /// <summary>
+            /// Command lines appear as:
+            /// [input paths] [output paths] [non-path switches]
+            /// </summary>
+            Inputs_Outputs_Cmds
+        }
+
+        /// <summary>
+        /// Access to the specified layout.
+        /// </summary>
+        public ELayout FileLayout
+        {
+            get;
+            protected set;
+        }
+
+        /// <summary>
+        /// Abstract function to assign the layout of the linearised settings.
+        /// </summary>
+        public /*abstract*/virtual void
+        AssignFileLayout()
+        {}
 
         /// <summary>
         /// Defines the local policy to use for all settings

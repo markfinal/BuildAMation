@@ -34,8 +34,17 @@ namespace Installer
     class TarInputFiles :
         Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
+
+        // TODO: this could be improved
+        public System.Collections.Generic.KeyValuePair<string, Bam.Core.Module> ModulePathKeyPair
+        {
+            get
+            {
+                return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.Paths.First().Value, this.Paths.First().Key);
+            }
+        }
 
         protected override void
         Init(
@@ -54,7 +63,7 @@ namespace Installer
         public void
         AddFile(
             Bam.Core.Module module,
-            Bam.Core.PathKey key)
+            string key)
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
@@ -63,7 +72,7 @@ namespace Installer
         public void
         AddPath(
             Bam.Core.Module module,
-            Bam.Core.PathKey key)
+            string key)
         {
             this.DependsOn(module);
             this.Paths.Add(module, key);
@@ -116,13 +125,6 @@ namespace Installer
                 }
             }
         }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // do nothing
-        }
     }
 
     public sealed class TarCompiler :
@@ -151,10 +153,9 @@ namespace Installer
     public abstract class TarBall :
         Bam.Core.Module
     {
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Installer");
+        public const string TarBallKey = "TarBall Installer";
 
         private TarInputFiles InputFiles;
-        private ITarPolicy Policy;
 
         protected override void
         Init(
@@ -162,7 +163,10 @@ namespace Installer
         {
             base.Init(parent);
 
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName)$(tarext)"));
+            this.RegisterGeneratedFile(
+                TarBallKey,
+                this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName)$(tarext)")
+            );
 
             this.InputFiles = Bam.Core.Module.Create<TarInputFiles>();
             this.DependsOn(this.InputFiles);
@@ -178,7 +182,8 @@ namespace Installer
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         Include<DependentModule>(
-            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
+            string key
+        ) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -195,7 +200,8 @@ namespace Installer
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
+            string key
+        ) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -215,20 +221,36 @@ namespace Installer
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (null != this.Policy)
+            switch (Bam.Core.Graph.Instance.Mode)
             {
-                this.Policy.CreateTarBall(this, context, this.Tool as Bam.Core.ICommandLineTool, this.InputFiles.ScriptPath, this.GeneratedPaths[Key]);
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileBuilder.Support.Add(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeBuilder.Support.RunCommandLineTool(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    Bam.Core.Log.DebugMessage("Tar not supported on Xcode builds");
+                    break;
+#endif
+
+                default:
+                    throw new System.NotSupportedException();
             }
         }
 
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
-            if (mode == "Native")
+            get
             {
-                var className = "Installer." + mode + "TarBall";
-                this.Policy = Bam.Core.ExecutionPolicyUtilities<ITarPolicy>.Create(className);
+                yield return this.InputFiles.ModulePathKeyPair;
             }
         }
     }

@@ -258,19 +258,28 @@ namespace XcodeBuilder
         private BuildFile
         EnsureBuildFileExists(
             Bam.Core.TokenizedString path,
-            FileReference.EFileType type)
+            FileReference.EFileType type,
+            FileReference.ESourceTree? requestedSourceTree = null)
         {
             lock (this.Project)
             {
                 var relativePath = this.Project.GetRelativePathToProject(path);
-                var sourceTree = FileReference.ESourceTree.NA;
-                if (null == relativePath)
+                FileReference.ESourceTree sourceTree;
+                if (requestedSourceTree.HasValue)
                 {
-                    sourceTree = FileReference.ESourceTree.Absolute;
+                    sourceTree = requestedSourceTree.Value;
                 }
                 else
                 {
-                    sourceTree = FileReference.ESourceTree.SourceRoot;
+                    // guess
+                    if (null == relativePath)
+                    {
+                        sourceTree = FileReference.ESourceTree.Absolute;
+                    }
+                    else
+                    {
+                        sourceTree = FileReference.ESourceTree.SourceRoot;
+                    }
                 }
                 var fileRef = this.Project.EnsureFileReferenceExists(
                     path,
@@ -365,12 +374,14 @@ namespace XcodeBuilder
         public BuildFile
         EnsureFrameworksBuildFileExists(
             Bam.Core.TokenizedString path,
-            FileReference.EFileType type)
+            FileReference.EFileType type,
+            FileReference.ESourceTree sourceTree)
         {
             lock (this.FrameworksBuildPhase)
             {
-                var buildFile = this.EnsureBuildFileExists(path, type);
+                var buildFile = this.EnsureBuildFileExists(path, type, requestedSourceTree: sourceTree);
                 this.FrameworksBuildPhase.Value.AddBuildFile(buildFile);
+                this.Project.Frameworks.AddChild(buildFile.FileRef);
                 return buildFile;
             }
         }
@@ -702,25 +713,39 @@ namespace XcodeBuilder
                 project.appendAllConfigurations(newConfig);
                 configList.AddConfiguration(newConfig);
 
-                var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
 
-                // set which SDK to build against
-                newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
-
-                // set the minimum version of OSX/iPhone to run against
-                var minVersionRegEx = new System.Text.RegularExpressions.Regex("^(?<Type>[a-z]+)(?<Version>[0-9.]+)$");
-                var match = minVersionRegEx.Match(clangMeta.MinimumVersionSupported);
-                if (!match.Groups["Type"].Success)
+                try
                 {
-                    throw new Bam.Core.Exception("Unable to extract SDK type from: '{0}'", clangMeta.MinimumVersionSupported);
-                }
-                if (!match.Groups["Version"].Success)
-                {
-                    throw new Bam.Core.Exception("Unable to extract SDK version from: '{0}'", clangMeta.MinimumVersionSupported);
-                }
+                    var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
 
-                var optionName = System.String.Format("{0}_DEPLOYMENT_TARGET", match.Groups["Type"].Value.ToUpper());
-                newConfig[optionName] = new UniqueConfigurationValue(match.Groups["Version"].Value);
+                    // set which SDK to build against
+                    newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
+
+                    // set the minimum version of macOS/iOS to run against
+                    newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(clangMeta.MacOSXMinimumVersionSupported);
+                }
+                catch (System.Collections.Generic.KeyNotFoundException)
+                {
+                    if (Bam.Core.OSUtilities.IsOSXHosting)
+                    {
+                        // try a forced discovery, since it doesn't appear to have happened prior to now
+                        // which suggests a project with no source files
+                        var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+                        (clangMeta as C.IToolchainDiscovery).discover(C.EBit.SixtyFour); // arbitrary
+
+                        // set which SDK to build against
+                        newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);
+                        // set the minimum version of macOS/iOS to run against
+                        newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(clangMeta.MacOSXMinimumVersionSupported);
+                    }
+                    else
+                    {
+                        // arbitrary choice as we're not on macOS to look for valid SDK versions
+                        var sdk_version = "10.13";
+                        newConfig["SDKROOT"] = new UniqueConfigurationValue("macosx" + sdk_version);
+                        newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(sdk_version);
+                    }
+                }
 
                 return newConfig;
             }

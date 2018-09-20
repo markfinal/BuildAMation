@@ -121,7 +121,117 @@ namespace Bam.Core
             return exists;
         }
 
-        private static Microsoft.Win32.RegistryKey
+        /// <summary>
+        /// Wrapper around Microsoft.Win32.RegistryKey to avoid a public dependency on a NuGet package.
+        /// </summary>
+        public class RegKey :
+            System.IDisposable
+        {
+            private Microsoft.Win32.RegistryKey key;
+
+            /// <summary>
+            /// Create an instance wrapping the specified RegistryKey.
+            /// An exception is thrown if the source key is null.
+            /// </summary>
+            /// <param name="sourceKey">Source registry key.</param>
+            public RegKey(
+                Microsoft.Win32.RegistryKey sourceKey)
+            {
+                if (null == sourceKey)
+                {
+                    throw new Exception(
+                        "Registry key cannot be null"
+                    );
+                }
+                this.key = sourceKey;
+            }
+
+            void System.IDisposable.Dispose()
+            {
+                this.key.Dispose();
+            }
+
+            /// <summary>
+            /// Name of the registry key represented.
+            /// </summary>
+            public string Name
+            {
+                get
+                {
+                    return this.key.Name;
+                }
+            }
+
+            /// <summary>
+            /// Get the string behind the named value on the registry key.
+            /// Exceptions can be thrown if the name is not valid, or the
+            /// value that name represents is not a string.
+            /// </summary>
+            /// <param name="name">Name of the value to get as a string.</param>
+            /// <returns>String value</returns>
+            public string
+            GetStringValue(
+                string name)
+            {
+                var value = this.key.GetValue(name);
+                if (null == value)
+                {
+                    throw new Exception(
+                        "Value '{0}' does not exist for the key",
+                        name
+                    );
+                }
+                if (!(value is string))
+                {
+                    throw new Exception(
+                        "Registry key value is not a string"
+                    );
+                }
+                return value as string;
+            }
+
+            /// <summary>
+            /// Similar to GetStringValue, but will not throw an exception if the name is invalid.
+            /// </summary>
+            /// <param name="name">Name of the value to get as a string.</param>
+            /// <returns>String value, or null if the name is invalid.</returns>
+            public string
+            FindStringValue(
+                string name)
+            {
+                var value = this.key.GetValue(name);
+                if (null == value)
+                {
+                    return null;
+                }
+                if (!(value is string))
+                {
+                    throw new Exception(
+                        "Registry key value is not a string"
+                    );
+                }
+                return value as string;
+            }
+
+            /// <summary>
+            /// Enumerate across all subkeys of the wrapped key.
+            /// </summary>
+            public System.Collections.Generic.IEnumerable<RegKey> SubKeys
+            {
+                get
+                {
+                    foreach (var name in this.key.GetSubKeyNames())
+                    {
+                        using (var subkey = this.key.OpenSubKey(name))
+                        {
+                            yield return new RegKey(subkey);
+                        }
+                    }
+                }
+            }
+        }
+
+        private static RegKey
         OpenSoftwareKey(
             string path,
             Microsoft.Win32.RegistryKey registryArea,
@@ -137,8 +247,9 @@ namespace Bam.Core
             if (null == key)
             {
                 Log.DebugMessage("Registry key '{0}' on {1} not found", keyPath, registryArea.Name);
+                return null;
             }
-            return key;
+            return new RegKey(key);
         }
 
         /// <summary>
@@ -146,7 +257,7 @@ namespace Bam.Core
         /// </summary>
         /// <returns>The bit LM software key.</returns>
         /// <param name="path">Path.</param>
-        public static Microsoft.Win32.RegistryKey
+        public static RegKey
         Open32BitLMSoftwareKey(
             string path)
         {
@@ -158,7 +269,7 @@ namespace Bam.Core
         /// </summary>
         /// <returns>The CU software key.</returns>
         /// <param name="path">Path.</param>
-        public static Microsoft.Win32.RegistryKey
+        public static RegKey
         OpenCUSoftwareKey(
             string path)
         {
@@ -183,7 +294,7 @@ namespace Bam.Core
         /// </summary>
         /// <returns>The LM software key.</returns>
         /// <param name="path">Path.</param>
-        public static Microsoft.Win32.RegistryKey
+        public static RegKey
         OpenLMSoftwareKey(
             string path)
         {

@@ -67,10 +67,30 @@ namespace C
         }
 
         /// <summary>
-        /// Minimum version of OSX supported for the binary.
+        /// Minimum version of macOS supported for the binary.
         /// </summary>
         /// <value>The minimum version supported.</value>
-        string MinimumVersionSupported
+        string MacOSMinimumVersionSupported
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Specifies the current version of the dylib, or null
+        /// if not defined.
+        /// </summary>
+        Bam.Core.TokenizedString CurrentVersion
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Specifies the compatibility version of the dylib, or null
+        /// if not defined.
+        /// </summary>
+        Bam.Core.TokenizedString CompatibilityVersion
         {
             get;
             set;

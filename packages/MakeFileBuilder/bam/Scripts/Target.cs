@@ -31,16 +31,80 @@ namespace MakeFileBuilder
 {
     public sealed class Target
     {
+        private static object UniqueCounterGuard = new object();
+        private static int UniqueCounter = 0; // TODO: this is probably not the best way of creating a unique name for all unreferenced modules
+
+        public static bool
+        IsPrerequisiteOfAll(
+            Bam.Core.Module module)
+        {
+            return Bam.Core.Graph.Instance.IsReferencedModule(module);
+        }
+
+        private static void
+        SanitiseVariableName(
+            ref string variableName)
+        {
+            // spaces are invalid syntax
+            variableName = variableName.Replace(' ', '_');
+            // slashes are invalid syntax
+            variableName = variableName.Replace('/', '_');
+            // periods are invalid syntax
+            variableName = variableName.Replace('.', '_');
+        }
+
+        public static string
+        MakeUniqueVariableName(
+            Bam.Core.Module module,
+            string keyName)
+        {
+            var varName = new System.Text.StringBuilder();
+            var isReferenced = Bam.Core.Graph.Instance.IsReferencedModule(module);
+            if (isReferenced)
+            {
+                varName.Append(module.ToString());
+            }
+            else
+            {
+                var encapsulating = module.GetEncapsulatingReferencedModule();
+                varName.AppendFormat(
+                    "{0}_{1}",
+                    encapsulating.ToString(),
+                    module.ToString()
+                );
+            }
+            if (null != keyName)
+            {
+                varName.AppendFormat("_{0}", keyName);
+            }
+            varName.AppendFormat("_{0}", module.BuildEnvironment.Configuration.ToString());
+            if (!isReferenced)
+            {
+                lock (UniqueCounterGuard)
+                {
+                    varName.AppendFormat("_{0}", UniqueCounter++);
+                }
+            }
+            var expanded_variable = varName.ToString();
+            SanitiseVariableName(ref expanded_variable);
+            return expanded_variable;
+        }
+
         public Target(
             Bam.Core.TokenizedString nameOrOutput,
             bool isPhony,
             string variableName,
             Bam.Core.Module module,
-            int ruleIndex)
+            int ruleIndex,
+            string keyName,
+            bool isDependencyOfAll)
         {
             this.Path = nameOrOutput;
             this.IsPhony = isPhony;
-            this.IsPrerequisiteofAll = Bam.Core.Graph.Instance.IsReferencedModule(module) || !System.String.IsNullOrEmpty(variableName);
+            this.IsPrerequisiteofAll =
+                isDependencyOfAll ||
+                (module != null && Bam.Core.Graph.Instance.IsReferencedModule(module)) ||
+                !System.String.IsNullOrEmpty(variableName);
             if (isPhony)
             {
                 return;
@@ -49,20 +113,11 @@ namespace MakeFileBuilder
             {
                 return;
             }
-            if (this.IsPrerequisiteofAll)
+            if (!this.IsPrerequisiteofAll)
             {
-                // make the target names unique across configurations
-                if (System.String.IsNullOrEmpty(variableName))
-                {
-                    this.VariableName = System.String.Format("{0}_{1}", module.GetType().Name, module.BuildEnvironment.Configuration.ToString());
-                }
-                else
-                {
-                    variableName = System.String.Format("{0}_{1}", variableName, module.BuildEnvironment.Configuration.ToString());
-                    MakeFileMeta.MakeVariableNameUnique(ref variableName);
-                    this.VariableName = variableName;
-                }
+                return;
             }
+            this.VariableName = MakeUniqueVariableName(module, keyName);
         }
 
         public bool

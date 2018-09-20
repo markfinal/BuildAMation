@@ -38,7 +38,20 @@ namespace C.DefaultSettings
         {
             settings.Frameworks = new Bam.Core.TokenizedStringArray();
             settings.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray();
-            // N.B. this default is set in the specific Clang version
+            if (module is C.IDynamicLibrary)
+            {
+                settings.InstallName = module.CreateTokenizedString("@rpath/@filename($(LinkOutput))");
+                var fullVersionNumber = module.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))");
+                settings.CurrentVersion = fullVersionNumber;
+                settings.CompatibilityVersion = fullVersionNumber;
+            }
+            else
+            {
+                settings.InstallName = null;
+                settings.CurrentVersion = null;
+                settings.CompatibilityVersion = null;
+            }
+            // N.B. the MacOSMinimumVersionSupported default is set in the specific Clang version
             // as it's set on both compiler and linker
         }
     }

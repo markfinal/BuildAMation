@@ -106,11 +106,11 @@ namespace GccCommon
         {
             if (library is C.StaticLibrary)
             {
-                return library.GeneratedPaths[C.StaticLibrary.Key];
+                return library.GeneratedPaths[C.StaticLibrary.LibraryKey];
             }
             else if (library is C.IDynamicLibrary)
             {
-                return library.GeneratedPaths[C.DynamicLibrary.Key];
+                return library.GeneratedPaths[C.DynamicLibrary.ExecutableKey];
             }
             else if ((library is C.CSDKModule) ||
                      (library is C.HeaderLibrary) ||
@@ -130,7 +130,7 @@ namespace GccCommon
             if (library is C.StaticLibrary)
             {
                 // TODO: @filenamenoext
-                var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].ToString();
+                var libraryPath = library.GeneratedPaths[C.StaticLibrary.LibraryKey].ToString();
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 var libraryName = GetLPrefixLibraryName(libraryPath);
                 if (linker.Libraries.Contains(libraryName))
@@ -139,25 +139,24 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
-                var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
-                lock (libDir)
+                foreach (var dir in library.OutputDirectories)
                 {
-                    if (!libDir.IsParsed)
-                    {
-                        libDir.Parse();
-                    }
+                    linker.LibraryPaths.AddUnique(dir);
                 }
-                linker.LibraryPaths.AddUnique(libDir);
             }
             else if (library is C.IDynamicLibrary)
             {
                 // TODO: @filenamenoext
-                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].ToString();
+                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.ExecutableKey].ToString();
                 var linkerNameSymLink = (library as C.IDynamicLibrary).LinkerNameSymbolicLink;
                 // TODO: I think there's a problem when there's no linkerName symlink - i.e. taking the full shared object path
                 var libraryName = (linkerNameSymLink != null) ?
-                    GetLPrefixLibraryName(linkerNameSymLink.GeneratedPaths[C.SharedObjectSymbolicLink.Key].ToString()) :
-                    GetLPrefixLibraryName(libraryPath);
+                    GetLPrefixLibraryName(
+                        linkerNameSymLink.GeneratedPaths[C.SharedObjectSymbolicLink.SOSymLinkKey].ToString()
+                    ) :
+                    GetLPrefixLibraryName(
+                        libraryPath
+                    );
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 if (linker.Libraries.Contains(libraryName))
                 {
@@ -165,39 +164,28 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
-                var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
-                lock (libDir)
-                {
-                    if (!libDir.IsParsed)
-                    {
-                        libDir.Parse();
-                    }
-                }
-                linker.LibraryPaths.AddUnique(libDir);
                 var gccLinker = executable.Settings as GccCommon.ICommonLinkerSettings;
-
-                // if an explicit link occurs in this executable/shared object, the library path
-                // does not need to be on the rpath-link
-                if (gccLinker.RPathLink.Contains(libDir))
+                foreach (var dir in library.OutputDirectories)
                 {
-                    gccLinker.RPathLink.Remove(libDir);
+                    linker.LibraryPaths.AddUnique(dir);
+                    // if an explicit link occurs in this executable/shared object, the library path
+                    // does not need to be on the rpath-link
+                    if (gccLinker.RPathLink.Contains(dir))
+                    {
+                        gccLinker.RPathLink.Remove(dir);
+                    }
                 }
 
                 var allDynamicDependents = FindAllDynamicDependents(library as C.IDynamicLibrary);
                 foreach (var dep in allDynamicDependents)
                 {
-                    var rpathLinkDir = dep.CreateTokenizedString("@dir($(0))", dep.GeneratedPaths[C.DynamicLibrary.Key]);
-                    // only need to add to rpath-link, if there's been no explicit link to the library already
-                    if (!linker.LibraryPaths.Contains(rpathLinkDir))
+                    foreach (var dir in dep.OutputDirectories)
                     {
-                        lock (rpathLinkDir)
+                        // only need to add to rpath-link, if there's been no explicit link to the library already
+                        if (!linker.LibraryPaths.Contains(dir))
                         {
-                            if (!rpathLinkDir.IsParsed)
-                            {
-                                rpathLinkDir.Parse();
-                            }
+                            gccLinker.RPathLink.AddUnique(dir);
                         }
-                        gccLinker.RPathLink.AddUnique(rpathLinkDir);
                     }
                 }
             }

@@ -63,22 +63,6 @@ namespace C
             return (lhs != rhs) ? lhs : null;
         }
 
-        public static ECompilerOutput?
-        Intersect(
-            this ECompilerOutput? lhs,
-            ECompilerOutput? rhs)
-        {
-            return (lhs == rhs) ? lhs : null;
-        }
-
-        public static ECompilerOutput?
-        Complement(
-            this ECompilerOutput? lhs,
-            ECompilerOutput? rhs)
-        {
-            return (lhs != rhs) ? lhs : null;
-        }
-
         public static EOptimization?
         Intersect(
             this EOptimization? lhs,

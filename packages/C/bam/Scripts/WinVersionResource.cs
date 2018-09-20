@@ -36,16 +36,17 @@ namespace C
     public class WinVersionResource :
         SourceFile
     {
-        private static Bam.Core.PathKey HashFileKey = Bam.Core.PathKey.Generate("Hash of version resource contents");
-
-        private delegate int GetHashFn(string inPath);
+        public const string HashFileKey = "Hash of version resource contents";
 
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.GeneratedPaths.Add(HashFileKey, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@filename($(0)).hash", this.InputPath));
+            this.RegisterGeneratedFile(
+                HashFileKey,
+                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@filename($(0)).hash", this.InputPath)
+            );
         }
 
         public ConsoleApplication BinaryModule
@@ -151,7 +152,7 @@ namespace C
                 contents.AppendLine();
                 contents.AppendFormat("\t\t\tVALUE \"InternalName\", \"{0}\"", binaryModule.Macros["modulename"].ToString());
                 contents.AppendLine();
-                contents.AppendFormat("\t\t\tVALUE \"OriginalFilename\", \"{0}\"", System.IO.Path.GetFileName(binaryModule.GeneratedPaths[ConsoleApplication.Key].ToString()));
+                contents.AppendFormat("\t\t\tVALUE \"OriginalFilename\", \"{0}\"", System.IO.Path.GetFileName(binaryModule.GeneratedPaths[ConsoleApplication.ExecutableKey].ToString()));
                 contents.AppendLine();
                 if (null != productDefinition)
                 {
@@ -203,46 +204,29 @@ namespace C
         EvaluateInternal()
         {
             this.ReasonToExecute = null;
-            var outputPath = this.GeneratedPaths[Key].ToString();
+            var outputPath = this.GeneratedPaths[SourceFileKey].ToString();
             if (!System.IO.File.Exists(outputPath))
             {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[SourceFileKey]);
             }
             // have the contents changed since last time?
-            var writeHashFile = true;
-            var currentContentsHash = this.Contents.GetHashCode();
             var hashFilePath = this.GeneratedPaths[HashFileKey].ToString();
-            if (System.IO.File.Exists(hashFilePath))
+            var hashCompare = Bam.Core.Hash.CompareAndUpdateHashFile(
+                hashFilePath,
+                this.Contents
+            );
+            switch (hashCompare)
             {
-                GetHashFn getHash = inPath =>
-                {
-                    int hash = 0;
-                    using (System.IO.TextReader readFile = new System.IO.StreamReader(inPath))
-                    {
-                        var contents = readFile.ReadToEnd();
-                        hash = System.Convert.ToInt32(contents);
-                    }
-                    return hash;
-                };
-                var oldHash = getHash(hashFilePath);
-                if (oldHash == currentContentsHash)
-                {
-                    writeHashFile = false;
-                }
-                else
-                {
-                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.GeneratedPaths[HashFileKey]);
-                }
-            }
-            if (writeHashFile)
-            {
-                var destDir = System.IO.Path.GetDirectoryName(hashFilePath);
-                Bam.Core.IOWrapper.CreateDirectoryIfNotExists(destDir);
-                using (System.IO.TextWriter writeFile = new System.IO.StreamWriter(hashFilePath))
-                {
-                    writeFile.NewLine = "\n";
-                    writeFile.Write(currentContentsHash);
-                }
+                case Bam.Core.Hash.EHashCompareResult.HashesAreDifferent:
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                        this.GeneratedPaths[SourceFileKey],
+                        this.GeneratedPaths[HashFileKey]
+                    );
+                    break;
+
+                case Bam.Core.Hash.EHashCompareResult.HashFileDoesNotExist:
+                case Bam.Core.Hash.EHashCompareResult.HashesAreIdentical:
+                    break;
             }
         }
     }

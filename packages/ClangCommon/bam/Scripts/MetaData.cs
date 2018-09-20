@@ -34,24 +34,14 @@ namespace ClangCommon
         C.IToolchainDiscovery
     {
         protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
+        private Bam.Core.StringArray expectedSDKs;
 
         protected MetaData(
             string lastUpgradeCheck,
             Bam.Core.StringArray expectedSDKs)
         {
-            if (!Bam.Core.OSUtilities.IsOSXHosting)
-            {
-                return;
-            }
-
             this.Meta.Add("LastUpgradeCheck", lastUpgradeCheck);
-
-            this.SDK = ClangCommon.ConfigureUtilities.SetSDK(expectedSDKs, this.Contains("SDK") ? this.SDK : null);
-            if (!this.Contains("MinVersion"))
-            {
-                // 10.7 is the minimum version required for libc++ currently
-                this.MinimumVersionSupported = "macosx10.7";
-            }
+            this.expectedSDKs = expectedSDKs;
         }
 
         public override object this[string index]
@@ -82,16 +72,16 @@ namespace ClangCommon
             }
         }
 
-        public string MinimumVersionSupported
+        public string MacOSXMinimumVersionSupported
         {
             get
             {
-                return this.Meta["MinVersion"] as string;
+                return this.Meta["MacOSXMinVersion"] as string;
             }
 
             set
             {
-                this.Meta["MinVersion"] = value;
+                this.Meta["MacOSXMinVersion"] = value;
             }
         }
 
@@ -130,12 +120,49 @@ namespace ClangCommon
             {
                 return;
             }
-            this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
-            Bam.Core.Log.Info("Using {0} and {1} SDK installed at {2}",
-                ClangCommon.ConfigureUtilities.GetClangVersion(this.SDK),
-                this.SDK,
-                this.SDKPath
-            );
+
+            try
+            {
+
+                try
+                {
+                    this.SDK = ClangCommon.ConfigureUtilities.SetSDK(
+                        this.expectedSDKs,
+                        this.Contains("SDK") ? this.SDK : null
+                    );
+                    if (!this.Contains("MacOSXMinVersion"))
+                    {
+                        // 10.7 is the minimum version required for libc++ currently
+                        this.MacOSXMinimumVersionSupported = "10.7";
+                    }
+                }
+                catch (System.ComponentModel.Win32Exception)
+                {
+                    if (Bam.Core.OSUtilities.IsOSXHosting)
+                    {
+                        throw;
+                    }
+                    // arbitrary choice for non-macOS platforms
+                    this.SDK = "macos10.13";
+                    this.MacOSXMinimumVersionSupported = "10.13";
+                }
+
+                this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
+                Bam.Core.Log.Info("Using {0} and {1} SDK installed at {2}",
+                    ClangCommon.ConfigureUtilities.GetClangVersion(this.SDK),
+                    this.SDK,
+                    this.SDKPath
+                );
+            }
+            catch (System.InvalidOperationException)
+            {
+                if (Bam.Core.OSUtilities.IsOSXHosting)
+                {
+                    throw;
+                }
+
+                this.SDKPath = "";
+            }
         }
     }
 }

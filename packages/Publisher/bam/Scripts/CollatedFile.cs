@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
     public class CollatedFile :
@@ -37,11 +36,11 @@ namespace Publisher
         EvaluateInternal()
         {
             this.ReasonToExecute = null;
-            var copiedPath = this.GeneratedPaths[Key].ToString();
+            var copiedPath = this.GeneratedPaths[CopiedFileKey].ToString();
             var exists = System.IO.File.Exists(copiedPath);
             if (!exists)
             {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[CopiedFileKey]);
                 return;
             }
             var sourceModule = (this as ICollatedObject).SourceModule;
@@ -55,7 +54,10 @@ namespace Publisher
                 {
                     if (sourceModule.ReasonToExecute.OutputFilePath.ToString().Equals(this.SourcePath.ToString()))
                     {
-                        this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourcePath);
+                        this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                            this.GeneratedPaths[CopiedFileKey],
+                            this.SourcePath
+                        );
                         return;
                     }
                     else
@@ -65,7 +67,10 @@ namespace Publisher
                         var sourceLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.ToString());
                         if (sourceLastWriteTime > destinationLastWriteTime)
                         {
-                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourcePath);
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                                this.GeneratedPaths[CopiedFileKey],
+                                this.SourcePath
+                            );
                             return;
                         }
                     }
@@ -76,7 +81,10 @@ namespace Publisher
             var srcLastWriteTime = System.IO.File.GetLastWriteTime(this.SourcePath.ToString());
             if (srcLastWriteTime > destLastWriteTime)
             {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SourcePath);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                    this.GeneratedPaths[CopiedFileKey],
+                    this.SourcePath
+                );
                 return;
             }
         }

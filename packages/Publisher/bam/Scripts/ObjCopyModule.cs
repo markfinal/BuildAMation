@@ -30,49 +30,21 @@
 using Bam.Core;
 namespace Publisher
 {
-    public class ObjCopyModule :
+    public abstract class ObjCopyModule :
         Bam.Core.Module,
         ICollatedObject
     {
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("ObjCopy Destination");
-
-        private Bam.Core.Module sourceModule;
-        private Bam.Core.PathKey sourcePathKey;
-        private ICollatedObject anchor = null;
-
-        private IObjCopyToolPolicy Policy;
+        protected Bam.Core.Module sourceModule;
+        protected string sourcePathKey;
+        protected ICollatedObject anchor = null;
 
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ObjCopyTool>();
-
-            var trueSourceModule = this.sourceModule;
-            // stripping works on the initial collated file
-            while (trueSourceModule is ICollatedObject)
-            {
-                // necessary on Linux, as the real source module needs checking against
-                // C.IDynamicLibrary to identify paths as lib<name>.so.X.Y
-                trueSourceModule = (trueSourceModule as ICollatedObject).SourceModule;
-            }
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) &&
-                trueSourceModule is C.IDynamicLibrary)
-            {
-                this.RegisterGeneratedFile(Key,
-                    this.CreateTokenizedString("$(0)/@filename($(1)).debug",
-                                               new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
-            }
-            else
-            {
-                this.RegisterGeneratedFile(Key,
-                    this.CreateTokenizedString("$(0)/@basename($(1)).debug",
-                                               new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }));
-            }
-
-            this.Requires(this.sourceModule);
+            this.Requires(sourceModule);
         }
 
         protected override void
@@ -86,26 +58,28 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (null == this.Policy)
+            switch (Bam.Core.Graph.Instance.Mode)
             {
-                return;
-            }
-            this.Policy.ObjCopy(this, context, this.sourceModule.GeneratedPaths[this.sourcePathKey], this.GeneratedPaths[Key]);
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
-                case "Native":
+#if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    {
-                        var className = "Publisher." + mode + "ObjCopy";
-                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IObjCopyToolPolicy>.Create(className);
-                    }
+                    MakeFileBuilder.Support.Add(this);
                     break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeBuilder.Support.RunCommandLineTool(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    Bam.Core.Log.DebugMessage("ObjCopy not supported on Xcode builds");
+                    break;
+#endif
+
+                default:
+                    throw new System.NotSupportedException();
             }
         }
 
@@ -124,14 +98,14 @@ namespace Publisher
             }
         }
 
-        Bam.Core.PathKey ICollatedObject.SourcePathKey
+        string ICollatedObject.SourcePathKey
         {
             get
             {
                 return this.sourcePathKey;
             }
         }
-        public Bam.Core.PathKey SourcePathKey
+        public string SourcePathKey
         {
             set
             {
@@ -161,15 +135,74 @@ namespace Publisher
                 this.anchor = value;
             }
         }
+    }
 
-        public ObjCopyModule
+    public sealed class MakeDebugSymbolFile :
+        ObjCopyModule
+    {
+        public const string DebugSymbolFileKey = "GNU Debug Symbol File";
+
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            var trueSourceModule = this.sourceModule;
+            // stripping works on the initial collated file
+            while (trueSourceModule is ICollatedObject)
+            {
+                // necessary on Linux, as the real source module needs checking against
+                // C.IDynamicLibrary to identify paths as lib<name>.so.X.Y
+                trueSourceModule = (trueSourceModule as ICollatedObject).SourceModule;
+            }
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) &&
+                trueSourceModule is C.IDynamicLibrary)
+            {
+                // on Linux with a dynamic library, need to include the full versioning
+                this.RegisterGeneratedFile(
+                    DebugSymbolFileKey,
+                    this.CreateTokenizedString(
+                        "$(0)/@filename($(1)).debug",
+                        new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
+                    )
+                );
+            }
+            else
+            {
+                this.RegisterGeneratedFile(
+                    DebugSymbolFileKey,
+                    this.CreateTokenizedString(
+                        "$(0)/@basename($(1)).debug",
+                        new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
+                    )
+                );
+            }
+        }
+
+        public override Settings
+        MakeSettings()
+        {
+            return new MakeDebugSymbolFileSettings(this);
+        }
+
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        {
+            get
+            {
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.sourcePathKey, this.sourceModule);
+            }
+        }
+
+        public LinkBackDebugSymbolFile
         LinkBackToDebugSymbols(
             StripModule strippedCollatedObject)
         {
-            var linkDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
+            var linkDebugSymbols = Bam.Core.Module.Create<LinkBackDebugSymbolFile>(preInitCallback: module =>
                 {
+                    module.DebugSymbolModule = this;
                     module.SourceModule = strippedCollatedObject;
-                    module.SourcePathKey = StripModule.Key;
+                    module.SourcePathKey = StripModule.StripBinaryKey;
                     module.Macros.Add("publishingdir", strippedCollatedObject.Macros["publishingdir"].Clone(module));
                 });
             linkDebugSymbols.DependsOn(strippedCollatedObject);
@@ -179,10 +212,67 @@ namespace Publisher
             linkDebugSymbols.PrivatePatch(settings =>
                 {
                     var objCopySettings = settings as IObjCopyToolSettings;
-                    objCopySettings.Mode = EObjCopyToolMode.AddGNUDebugLink;
+                    objCopySettings.OnlyKeepDebug = false;
                 });
 
             return linkDebugSymbols;
+        }
+    }
+
+    public sealed class LinkBackDebugSymbolFile :
+        ObjCopyModule
+    {
+        public const string UpdateOriginalExecutable = "Updating original executable with debug linkback";
+
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+            base.Init(parent);
+
+            this.RegisterGeneratedFile(
+                UpdateOriginalExecutable,
+                this.sourceModule.GeneratedPaths[this.sourcePathKey]
+            );
+        }
+
+        public MakeDebugSymbolFile DebugSymbolModule
+        {
+            get;
+            set;
+        }
+
+        public override Settings
+        MakeSettings()
+        {
+            return new LinkBackDebugSymbolFileSettings(this);
+        }
+
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        {
+            get
+            {
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(MakeDebugSymbolFile.DebugSymbolFileKey, this.DebugSymbolModule);
+            }
+        }
+
+        protected override void
+        ExecuteInternal(
+            Bam.Core.ExecutionContext context)
+        {
+#if D_PACKAGE_MAKEFILEBUILDER
+            if ("MakeFile" == Bam.Core.Graph.Instance.Mode)
+            {
+                // append to the strip rule
+                System.Diagnostics.Debug.Assert((this as ICollatedObject).SourceModule is StripModule);
+                MakeFileBuilder.Support.Add(
+                    this,
+                    moduleToAppendTo: (this as ICollatedObject).SourceModule
+                );
+                return;
+            }
+#endif
+            base.ExecuteInternal(context);
         }
     }
 }

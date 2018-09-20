@@ -30,28 +30,31 @@
 using Bam.Core;
 namespace Installer
 {
+    [CommandLineProcessor.OutputPath(TarBall.TarBallKey, "-f ")]
+    [CommandLineProcessor.InputPaths(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey, "")]
+    [CommandLineProcessor.InputPaths(Publisher.DebugSymbolCollation.DebugSymbolsDirectoryKey, "")]
     public sealed class TarBallSettings :
         Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
         ITarBallSettings
     {
-        public TarBallSettings()
-        {}
-
         public TarBallSettings(
             Bam.Core.Module module)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
 
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
+        [CommandLineProcessor.Enum(ETarOperation.Create, "-c")]
+        ETarOperation ITarBallSettings.Operation
         {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
+            get;
+            set;
         }
 
         private ETarCompressionType _compression;
+        [CommandLineProcessor.Enum(ETarCompressionType.None, "")]
+        [CommandLineProcessor.Enum(ETarCompressionType.gzip, "-z")]
+        [CommandLineProcessor.Enum(ETarCompressionType.bzip, "-j")]
+        [CommandLineProcessor.Enum(ETarCompressionType.lzma, "--lzma")]
         ETarCompressionType ITarBallSettings.CompressionType
         {
             get
@@ -85,10 +88,24 @@ namespace Installer
             }
         }
 
+        [CommandLineProcessor.String("--transform=")]
         string ITarBallSettings.TransformRegEx
         {
             get;
             set;
+        }
+
+
+        [CommandLineProcessor.Bool("-v", "")]
+        bool ITarBallSettings.Verbose
+        {
+            get;
+            set;
+        }
+
+        public override void AssignFileLayout ()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

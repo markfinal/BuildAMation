@@ -56,5 +56,11 @@ namespace GccCommon
             get;
             set;
         }
+
+        Bam.Core.TokenizedString SharedObjectName
+        {
+            get;
+            set;
+        }
     }
 }

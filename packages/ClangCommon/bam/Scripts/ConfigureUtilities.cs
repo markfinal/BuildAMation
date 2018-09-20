@@ -34,7 +34,21 @@ namespace ClangCommon
     {
         static ConfigureUtilities()
         {
-            xcrunPath = Bam.Core.OSUtilities.GetInstallLocation("xcrun").First();
+            try
+            {
+                xcrunPath = Bam.Core.OSUtilities.GetInstallLocation("xcrun").First();
+            }
+            catch (Bam.Core.Exception)
+            {
+                if (Bam.Core.OSUtilities.IsOSXHosting)
+                {
+                    throw;
+                }
+
+                // this needs to be an executable that exists, and will return immediately
+                // as it's checked for in the PrebuiltTool code
+                xcrunPath = Bam.Core.OSUtilities.GetInstallLocation("dir").First();
+            }
         }
 
         public static string
@@ -72,7 +86,10 @@ namespace ClangCommon
         GetSDKPath(
             string sdkVersion)
         {
-            return Bam.Core.OSUtilities.RunExecutable(xcrunPath, System.String.Format("--sdk {0} -show-sdk-path", sdkVersion));
+            return Bam.Core.OSUtilities.RunExecutable(
+                xcrunPath,
+                System.String.Format("--sdk {0} -show-sdk-path", sdkVersion)
+            ).StandardOutput;
         }
 
         private static bool
@@ -87,10 +104,17 @@ namespace ClangCommon
         GetValidSDKs(
             Bam.Core.StringArray expectedSDKs)
         {
-            var installedSDKOutput = Bam.Core.OSUtilities.RunExecutable("xcodebuild", "-showsdks");
-            if (null == installedSDKOutput)
+            string installedSDKOutput;
+            try
             {
-                throw new Bam.Core.Exception("Unable to locate developer SDKs. Is Xcode installed?");
+                installedSDKOutput = Bam.Core.OSUtilities.RunExecutable("xcodebuild", "-showsdks").StandardOutput;
+            }
+            catch (Bam.Core.RunExecutableException exception)
+            {
+                throw new Bam.Core.Exception(
+                    exception,
+                    "Unable to locate developer SDKs. Is Xcode installed?"
+                );
             }
 
             var availableSDKs = new Bam.Core.StringArray();
@@ -119,7 +143,10 @@ namespace ClangCommon
         GetDefaultSDK(
             string sdkType)
         {
-            var defaultSDK = Bam.Core.OSUtilities.RunExecutable(xcrunPath, System.String.Format("--sdk {0} --show-sdk-version", sdkType));
+            var defaultSDK = Bam.Core.OSUtilities.RunExecutable(
+                xcrunPath,
+                System.String.Format("--sdk {0} --show-sdk-version", sdkType)
+            ).StandardOutput;
             return System.String.Format("{0}{1}", sdkType, defaultSDK);
         }
 
@@ -140,12 +167,19 @@ namespace ClangCommon
         GetClangVersion(
             string sdkType)
         {
-            var versionOutput = Bam.Core.OSUtilities.RunExecutable(
-                xcrunPath,
-                System.String.Format("--sdk {0} clang --version", sdkType)
-            );
-            var split = versionOutput.Split(new[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries);
-            return split[0];
+            try
+            {
+                var versionOutput = Bam.Core.OSUtilities.RunExecutable(
+                    xcrunPath,
+                    System.String.Format("--sdk {0} clang --version", sdkType)
+                ).StandardOutput;
+                var split = versionOutput.Split(new[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries);
+                return split[0];
+            }
+            catch (Bam.Core.RunExecutableException)
+            {
+                return "Unknown Clang Version";
+            }
         }
     }
 }

@@ -67,7 +67,7 @@ namespace Test5
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
 
-            var appAnchor = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.Key);
+            var appAnchor = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.ExecutableKey);
 
             // copy the required runtime library next to the binary
             if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&
@@ -91,7 +91,7 @@ namespace Test5
 
             this.SetDefaultMacrosAndMappings(EPublishingType.Library);
 
-            var dynamicLibAnchor = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.Key);
+            var dynamicLibAnchor = this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ExecutableKey);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 this.Include<Test4.MyDynamicLib>(C.DynamicLibrary.ImportLibraryKey);

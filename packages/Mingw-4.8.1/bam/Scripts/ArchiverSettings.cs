@@ -29,54 +29,13 @@
 #endregion // License
 namespace Mingw
 {
-    public class ArchiverSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonArchiverSettings,
-        C.IAdditionalSettings,
-        MingwCommon.ICommonArchiverSettings
+    public sealed class ArchiverSettings :
+        MingwCommon.CommonArchiverSettings
     {
         public ArchiverSettings(
             Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(MingwCommon.CommandLineImplementation), this, commandLine);
-        }
-
-        C.EArchiverOutput C.ICommonArchiverSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool MingwCommon.ICommonArchiverSettings.Ranlib
-        {
-            get;
-            set;
-        }
-
-        bool MingwCommon.ICommonArchiverSettings.DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        MingwCommon.EArchiverCommand MingwCommon.ICommonArchiverSettings.Command
-        {
-            get;
-            set;
-        }
+            :
+            base(module)
+        {}
     }
 }

@@ -15,6 +15,11 @@ import xml.etree.ElementTree as ET
 
 # ----------
 
+if sys.platform.startswith("win"):
+    bam_shell = 'bam.bat'
+else:
+    bam_shell = 'bam'
+
 
 def print_message(message):
     print >>sys.stdout, message
@@ -91,14 +96,17 @@ def find_all_packages_to_test(root, options):
     return tests
 
 
+def _init_builder(builder, options):
+    builder.init(options)
+
+
 def _pre_execute(builder):
-    if builder.pre_action:
-        builder.pre_action()
+    builder.pre_action()
 
 
 def _run_buildamation(options, package, extra_args, output_messages, error_messages):
     arg_list = [
-        "bam",
+        bam_shell,
         "-o=%s" % options.buildRoot,
         "-b=%s" % options.buildmode
     ]
@@ -131,10 +139,9 @@ def _run_buildamation(options, package, extra_args, output_messages, error_messa
 
 
 def _post_execute(builder, options, flavour, package, output_messages, error_messages):
-    if builder.post_action:
-        exit_code = builder.post_action(package, options, flavour, output_messages, error_messages)
-        return exit_code
-    return 0
+    exit_code = builder.post_action(package, options, flavour, output_messages, error_messages)
+    return exit_code
+
 
 class Stats(object):
     def __init__(self):
@@ -143,7 +150,7 @@ class Stats(object):
         self._fail = []
         self._ignore = []
 
-def execute_tests(package, configuration, options, output_buffer, stats):
+def execute_tests(package, configuration, options, output_buffer, stats, the_builder):
     print_message("Package           : %s" % package.get_id())
     if options.verbose:
         print_message("Description          : %s" % package.get_description())
@@ -168,7 +175,6 @@ def execute_tests(package, configuration, options, output_buffer, stats):
         if options.excludedVariations:
             print_message(" (excluding %s)" % options.excludedVariations)
     non_kwargs = []
-    the_builder = get_builder_details(options.buildmode)
     exit_code = 0
     for variation in variation_args:
         stats._total += 1
@@ -243,11 +249,9 @@ def clean_up(options):
 
 
 def find_bam_default_repository():
-    for path in os.environ["PATH"].split(os.pathsep):
-        candidate_path = os.path.join(path, "bam")
-        if os.path.isfile(candidate_path) and os.access(candidate_path, os.X_OK):
-            return os.path.abspath(os.path.join(os.path.join(path, os.pardir), os.pardir))
-    raise RuntimeError("Unable to locate bam on the PATH")
+    bam_install_dir = subprocess.check_output([bam_shell, '--installdir']).rstrip()
+    repo_dir = os.path.realpath(os.path.join(bam_install_dir, os.pardir, os.pardir, os.pardir))
+    return repo_dir
 
 # ----------
 
@@ -320,6 +324,10 @@ if __name__ == "__main__":
                     raise RuntimeError("Unrecognized package '%s'" % test)
             tests = filteredTests
 
+        # builder gets constructed once, for all packages
+        the_builder = get_builder_details(options.buildmode)
+        _init_builder(the_builder, options)
+
         stats = Stats()
         output_buffer = StringIO.StringIO()
         for package in tests:
@@ -329,7 +337,7 @@ if __name__ == "__main__":
                 if options.verbose:
                     print_message("No configuration for package: '%s'" % str(e))
                 continue
-            exit_code += execute_tests(package, config, options, output_buffer, stats)
+            exit_code += execute_tests(package, config, options, output_buffer, stats, the_builder)
 
         if not options.keepFiles:
             # TODO: consider keeping track of all directories created instead

@@ -90,8 +90,8 @@ namespace PluginTest
         {
             base.Init(parent);
 
-            this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
-            this.Include<Application>(C.ConsoleApplication.Key);
+            this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
+            this.Include<Application>(C.ConsoleApplication.ExecutableKey);
             (this.Find<Plugin>().First() as Publisher.CollatedObject).SetPublishingDirectory("$(0)/subdir", new[] { this.ExecutableDir });
         }
     }

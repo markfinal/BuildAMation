@@ -35,12 +35,10 @@ namespace C
     public class ExternalSourceGenerator :
         Bam.Core.Module
     {
-        private IExternalSourceGeneratorPolicy policy = null;
-
         public ExternalSourceGenerator()
         {
             this.Arguments = new Bam.Core.TokenizedStringArray();
-            this.InputFiles = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
+            this.InternalInputFiles = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
             this.InternalExpectedOutputFileDictionary = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
         }
 
@@ -65,10 +63,21 @@ namespace C
         }
 
         private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>
-        InputFiles
+        InternalInputFiles
         {
             get;
             set;
+        }
+
+        public System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> InputFiles
+        {
+            get
+            {
+                foreach (var input in this.InternalInputFiles)
+                {
+                    yield return input.Value;
+                }
+            }
         }
 
         public void
@@ -76,11 +85,11 @@ namespace C
             string name,
             Bam.Core.TokenizedString path)
         {
-            if (this.InputFiles.ContainsKey(name))
+            if (this.InternalInputFiles.ContainsKey(name))
             {
                 throw new Bam.Core.Exception("Input file '{0}' has already been added", name);
             }
-            this.InputFiles.Add(name, path);
+            this.InternalInputFiles.Add(name, path);
             this.Macros.Add(name, path);
         }
 
@@ -148,7 +157,7 @@ namespace C
                 throw new Bam.Core.Exception("Expected output file with key '{0}' has already been registered", name);
             }
             this.InternalExpectedOutputFileDictionary.Add(name, path);
-            this.Macros.Add(name, path);
+            this.RegisterGeneratedFile(name, path);
         }
 
         protected override void EvaluateInternal()
@@ -173,7 +182,7 @@ namespace C
                 }
             }
 
-            foreach (var input in this.InputFiles)
+            foreach (var input in this.InternalInputFiles)
             {
                 var path = input.Value.ToString();
                 var writeTime = System.IO.File.GetLastWriteTime(path);
@@ -189,42 +198,81 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (null == this.policy)
+            switch (Bam.Core.Graph.Instance.Mode)
             {
-                throw new Bam.Core.Exception(
-                    "No execution policy for {0} for build mode {1}",
-                    this.ToString(),
-                    Bam.Core.Graph.Instance.Mode
-                );
-            }
-            if (null == this.Executable)
-            {
-                throw new Bam.Core.Exception("No executable was specified for {0}", this.ToString());
-            }
-            this.policy.GenerateSource(
-                this,
-                context,
-                this.Executable,
-                this.Arguments,
-                this.OutputDirectory,
-                this.InternalExpectedOutputFileDictionary,
-                this.InputFiles
-            );
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
-                case "Native":
-                case "VSSolution":
-                case "Xcode":
+#if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    var className = "C." + mode + "ExternalSourceGenerator";
-                    this.policy = Bam.Core.ExecutionPolicyUtilities<IExternalSourceGeneratorPolicy>.Create(className);
+                    {
+                        if (this.Tool is Bam.Core.ICommandLineTool)
+                        {
+                            MakeFileBuilder.Support.Add(this);
+                        }
+                        else
+                        {
+                            MakeFileBuilder.Support.AddArbitraryTool(
+                                this,
+                                this.Executable,
+                                this.Arguments
+                            );
+                        }
+                    }
                     break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    {
+                        if (this.Tool is Bam.Core.ICommandLineTool)
+                        {
+                            NativeBuilder.Support.RunCommandLineTool(this, context);
+                        }
+                        else
+                        {
+                            NativeBuilder.Support.RunArbitraryCommandLineTool(
+                                this,
+                                context,
+                                this.Executable,
+                                new Bam.Core.Array<int> { 0 },
+                                this.Arguments
+                            );
+                        }
+                    }
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    {
+                        var args = new Bam.Core.StringArray();
+                        args.Add(
+                            System.String.Format(
+                                "{0} {1}",
+                                this.Executable.ToStringQuoteIfNecessary(),
+                                this.Arguments.ToString(' ')
+                            )
+                        );
+
+                        VSSolutionBuilder.Support.AddCustomBuildStep(
+                            this,
+                            this.InputFiles,
+                            this.ExpectedOutputFiles.Values,
+                            System.String.Format("Running '{0}'", args.ToString(' ')),
+                            args,
+                            true,
+                            true
+                        );
+                    }
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    XcodeSupport.GenerateSource(this);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
             }
         }
     }

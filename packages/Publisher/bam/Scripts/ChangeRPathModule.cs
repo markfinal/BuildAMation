@@ -27,14 +27,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
     public class ChangeRPathModule :
         Bam.Core.Module
     {
-        private CollatedFile TheSource;
-        private IChangeRPathPolicy Policy;
+        private C.ConsoleApplication TheSource;
 
         protected override void
         Init(
@@ -45,14 +43,6 @@ namespace Publisher
         }
 
         protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            var className = "Publisher." + mode + "ChangeRPath";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IChangeRPathPolicy>.Create(className);
-        }
-
-        protected override void
         EvaluateInternal()
         {
             // do nothing
@@ -60,12 +50,28 @@ namespace Publisher
 
         protected override void
         ExecuteInternal(
-            ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
-            this.Policy.Change(this, context, this.Source, this.NewRPath);
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+            case "MakeFile":
+                MakeFileBuilder.Support.Add(this);
+                break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+            case "Native":
+                NativeBuilder.Support.RunCommandLineTool(this, context);
+                break;
+#endif
+
+            default:
+                throw new System.NotImplementedException();
+            }
         }
 
-        public CollatedFile Source
+        public C.ConsoleApplication Source
         {
             get
             {
@@ -79,10 +85,15 @@ namespace Publisher
             }
         }
 
-        public string NewRPath
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
-            get;
-            set;
+            get
+            {
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(
+                    C.ConsoleApplication.ExecutableKey,
+                    this.Source
+                );
+            }
         }
     }
 }

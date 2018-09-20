@@ -30,7 +30,6 @@
 using Bam.Core;
 namespace ConfigurationTest1
 {
-#if BAM_FEATURE_MODULE_CONFIGURATION
     // this interface is intentionally read only
     // it is used to query what the current configuration for the module is
     interface IConfigureLibrary :
@@ -61,15 +60,11 @@ namespace ConfigurationTest1
             set;
         }
     }
-#endif
 
     class ConfigurableLibrary :
-        C.StaticLibrary
-#if BAM_FEATURE_MODULE_CONFIGURATION
-        ,Bam.Core.IHasModuleConfiguration
-#endif
+        C.StaticLibrary,
+        Bam.Core.IHasModuleConfiguration
     {
-#if BAM_FEATURE_MODULE_CONFIGURATION
         System.Type IHasModuleConfiguration.ReadOnlyInterfaceType
         {
             get
@@ -85,7 +80,6 @@ namespace ConfigurationTest1
                 return typeof(ConfigureLibrary);
             }
         }
-#endif
 
         protected override void
         Init(
@@ -105,7 +99,6 @@ namespace ConfigurationTest1
                     }
                 });
 
-#if BAM_FEATURE_MODULE_CONFIGURATION
             var config = this.Configuration as IConfigureLibrary;
             if (null != config)
             {
@@ -120,6 +113,5 @@ namespace ConfigurationTest1
                 }
             }
         }
-#endif
     }
 }

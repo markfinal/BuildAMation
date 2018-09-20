@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
+using System.Linq;
 namespace C
 {
     /// <summary>
@@ -40,24 +41,31 @@ namespace C
     {
         protected Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
         private Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
-        private ILinkingPolicy Policy = null;
-
-        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("ExecutableFile");
-        static public Bam.Core.PathKey ImportLibraryKey = Bam.Core.PathKey.Generate("Windows Import Library File");
-        static public Bam.Core.PathKey PDBKey = Bam.Core.PathKey.Generate("Windows Program DataBase File");
+        public const string ExecutableKey = "Executable File";
+        public const string ImportLibraryKey = "Windows Import Library File";
+        public const string PDBKey = "Windows Program DataBase File";
 
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)"));
+            this.RegisterGeneratedFile(
+                ExecutableKey,
+                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)")
+            );
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
+                Bam.Core.Graph.Instance.Mode != "Xcode")
             {
                 if (this.Linker.Macros.Contains("pdbext"))
                 {
-                    this.RegisterGeneratedFile(PDBKey, this.IsPrebuilt ? null : this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[Key]));
+                    this.RegisterGeneratedFile(
+                        PDBKey,
+                        this.IsPrebuilt ?
+                            null :
+                            this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[ExecutableKey])
+                        );
                 }
 
                 if (!this.IsPrebuilt)
@@ -92,6 +100,67 @@ namespace C
             get
             {
                 return "bin";
+            }
+        }
+
+        /// <summary>
+        /// Access the headers files associated with this executable.
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        HeaderFiles
+        {
+            get
+            {
+                var module_list = FlattenHierarchicalFileList(this.headerModules);
+                foreach (var module in module_list)
+                {
+                    yield return module;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Access the object files required to create this executable.
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        ObjectFiles
+        {
+            get
+            {
+                var module_list = FlattenHierarchicalFileList(this.sourceModules);
+                foreach (var module in module_list)
+                {
+                    yield return module;
+                }
+            }
+        }
+
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        {
+            get
+            {
+                foreach (var obj in this.ObjectFiles.Where(item => (item as ObjectFileBase).PerformCompilation))
+                {
+                    yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.ObjectFileBase.ObjectFileKey, obj);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Access the built libraries required to create this executable.
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        Libraries
+        {
+            get
+            {
+                // some linkers require a specific order of libraries in order to resolve symbols
+                // so that if an existing library is later referenced, it needs to be moved later
+                var module_list = OrderLibrariesWithDecreasingDependencies(this.linkedModules);
+                foreach (var module in module_list)
+                {
+                    yield return module;
+                }
             }
         }
 
@@ -410,31 +479,67 @@ namespace C
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (this.IsPrebuilt &&
-                !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
+            switch (Bam.Core.Graph.Instance.Mode)
             {
-                return;
-            }
-            var source = FlattenHierarchicalFileList(this.sourceModules).ToReadOnlyCollection();
-            var headers = FlattenHierarchicalFileList(this.headerModules).ToReadOnlyCollection();
-            // some linkers require a specific order of libraries in order to resolve symbols
-            // so that if an existing library is later referenced, it needs to be moved later
-            var linked = OrderLibrariesWithDecreasingDependencies(this.linkedModules);
-            var executable = this.GeneratedPaths[Key];
-            this.Policy.Link(this, context, executable, source, headers, linked);
-        }
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    {
+                        if (this.IsPrebuilt)
+                        {
+                            return;
+                        }
+                        // any libraries added prior to here, need to be moved to the end
+                        // they are external dependencies, and thus all built modules (to be added now) may have
+                        // a dependency on them (and not vice versa)
+                        var linker = this.Settings as C.ICommonLinkerSettings;
+                        var externalLibs = linker.Libraries;
+                        linker.Libraries = new Bam.Core.StringArray();
+                        foreach (var library in this.Libraries)
+                        {
+                            (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, library as CModule);
+                        }
+                        linker.Libraries.AddRange(externalLibs);
 
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            if (this.IsPrebuilt &&
-                !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
-            {
-                return;
+                        MakeFileBuilder.Support.Add(this);
+                    }
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    {
+                        // any libraries added prior to here, need to be moved to the end
+                        // they are external dependencies, and thus all built modules (to be added now) may have
+                        // a dependency on them (and not vice versa)
+                        var linker = this.Settings as C.ICommonLinkerSettings;
+                        var externalLibs = linker.Libraries;
+                        linker.Libraries = new Bam.Core.StringArray();
+                        foreach (var library in this.Libraries)
+                        {
+                            (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, library as CModule);
+                        }
+                        linker.Libraries.AddRange(externalLibs);
+
+                        NativeBuilder.Support.RunCommandLineTool(this, context);
+                    }
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    VSSolutionSupport.Link(this);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    XcodeSupport.Link(this);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
             }
-            var className = "C." + mode + "Linker";
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<ILinkingPolicy>.Create(className);
         }
 
         protected override void
@@ -445,11 +550,11 @@ namespace C
             {
                 return;
             }
-            var binaryPath = this.GeneratedPaths[Key].ToString();
+            var binaryPath = this.GeneratedPaths[ExecutableKey].ToString();
             var exists = System.IO.File.Exists(binaryPath);
             if (!exists)
             {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[ExecutableKey]);
                 return;
             }
             var binaryWriteTime = System.IO.File.GetLastWriteTime(binaryPath);
@@ -465,7 +570,10 @@ namespace C
                     {
                         case ExecuteReasoning.EReason.FileDoesNotExist:
                         case ExecuteReasoning.EReason.InputFileIsNewer:
-                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                                this.GeneratedPaths[ExecutableKey],
+                                source.ReasonToExecute.OutputFilePath
+                            );
                             return;
 
                         default:
@@ -489,7 +597,10 @@ namespace C
                     {
                         case ExecuteReasoning.EReason.FileDoesNotExist:
                         case ExecuteReasoning.EReason.InputFileIsNewer:
-                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.ReasonToExecute.OutputFilePath);
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                                this.GeneratedPaths[ExecutableKey],
+                                source.ReasonToExecute.OutputFilePath
+                            );
                             return;
 
                         default:
@@ -503,37 +614,34 @@ namespace C
                     {
                         foreach (var objectFile in source.Children)
                         {
-                            var objectFilePath = objectFile.GeneratedPaths[ObjectFile.Key].ToString();
+                            var objectFilePath = objectFile.GeneratedPaths[ObjectFile.ObjectFileKey].ToString();
                             var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
                             if (objectFileWriteTime > binaryWriteTime)
                             {
-                                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], objectFile.GeneratedPaths[ObjectFile.Key]);
+                                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                                    this.GeneratedPaths[ExecutableKey],
+                                    objectFile.GeneratedPaths[ObjectFile.ObjectFileKey]
+                                );
                                 return;
                             }
                         }
                     }
                     else
                     {
-                        source.GeneratedPaths[ObjectFile.Key].Parse();
-                        var objectFilePath = source.GeneratedPaths[ObjectFile.Key].ToString();
+                        source.GeneratedPaths[ObjectFile.ObjectFileKey].Parse();
+                        var objectFilePath = source.GeneratedPaths[ObjectFile.ObjectFileKey].ToString();
                         var objectFileWriteTime = System.IO.File.GetLastWriteTime(objectFilePath);
                         if (objectFileWriteTime > binaryWriteTime)
                         {
-                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], source.GeneratedPaths[ObjectFile.Key]);
+                            this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                                this.GeneratedPaths[ExecutableKey],
+                                source.GeneratedPaths[ObjectFile.ObjectFileKey]
+                            );
                             return;
                         }
                     }
                 }
             }
-        }
-
-        /// <summary>
-        /// Define the working directory to use in IDE projects for debugging (if supported).
-        /// </summary>
-        virtual public Bam.Core.TokenizedString WorkingDirectory
-        {
-            get;
-            set;
         }
 
         /// <summary>

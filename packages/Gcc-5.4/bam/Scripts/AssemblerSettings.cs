@@ -29,66 +29,13 @@
 #endregion // License
 namespace Gcc
 {
-    public class AssemblerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        C.ICommonAssemblerSettings,
-        C.IAdditionalSettings,
-        GccCommon.ICommonAssemblerSettings
+    public sealed class AssemblerSettings :
+        GccCommon.CommonAssemblerSettings
     {
         public AssemblerSettings(
             Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(GccCommon.CommandLineAssemblerImplementation), this, commandLine);
-        }
-
-        C.EBit? C.ICommonAssemblerSettings.Bits
-        {
-            get;
-            set;
-        }
-
-        bool C.ICommonAssemblerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        C.ECompilerOutput C.ICommonAssemblerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        bool C.ICommonAssemblerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
-
-        C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+            :
+            base(module)
+        { }
     }
 }

@@ -29,9 +29,11 @@
 #endregion // License
 namespace Publisher
 {
+    [CommandLineProcessor.OutputPath(CollatedObject.CopiedFrameworkKey, "", path_modifier: "@dir($(0))")]
+    [CommandLineProcessor.InputPaths(C.OSXFramework.FrameworkKey, "")]
+    [CommandLineProcessor.InputPaths(CollatedObject.CopiedFrameworkKey, "")]
     public sealed class RsyncSettings :
         Bam.Core.Settings,
-        CommandLineProcessor.IConvertToCommandLine,
         IRsyncSettings
     {
         public RsyncSettings()
@@ -43,41 +45,45 @@ namespace Publisher
             this.InitializeAllInterfaces(module, false, true);
         }
 
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(CommandLineImplementation), this, commandLine);
-        }
-
+        [CommandLineProcessor.Bool("-v", "")]
         bool IRsyncSettings.Verbose
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.Bool("-r", "")]
         bool IRsyncSettings.Recursive
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.Bool("-a", "")]
         bool IRsyncSettings.PreserveAllAttributes
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.Bool("-c", "")]
         bool IRsyncSettings.UseChecksums
         {
             get;
             set;
         }
 
+        [CommandLineProcessor.PathArray("--exclude ")]
         Bam.Core.TokenizedStringArray IRsyncSettings.Exclusions
         {
             get;
             set;
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
         }
     }
 }

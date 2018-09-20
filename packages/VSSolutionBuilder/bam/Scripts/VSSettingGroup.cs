@@ -106,6 +106,14 @@ namespace VSSolutionBuilder
             set;
         }
 
+        private VSProjectConfiguration Configuration
+        {
+            get
+            {
+                return this.Project.GetConfiguration(this.Module);
+            }
+        }
+
         public void
         AddSetting(
             string name,
@@ -120,7 +128,14 @@ namespace VSSolutionBuilder
                     throw new Bam.Core.Exception("Cannot change the value of existing boolean option {0} to {1}", name, value);
                 }
 
-                this.Settings.AddUnique(new VSSetting(name, stringValue, condition));
+                this.Settings.AddUnique(
+                    new VSSetting(
+                        name,
+                        stringValue,
+                        false,
+                        condition: condition
+                    )
+                );
             }
         }
 
@@ -137,31 +152,15 @@ namespace VSSolutionBuilder
                     throw new Bam.Core.Exception("Cannot change the value of existing string option {0} to {1}", name, value);
                 }
 
-                this.Settings.AddUnique(new VSSetting(name, value, condition));
+                this.Settings.AddUnique(
+                    new VSSetting(
+                        name,
+                        value,
+                        false,
+                        condition: condition
+                    )
+                );
             }
-        }
-
-        private string
-        toRelativePath(
-            Bam.Core.TokenizedString path)
-        {
-            var programFiles = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
-            var programFilesX86 = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
-
-            var pathString = path.ToString();
-            if (pathString.StartsWith(programFiles) || pathString.StartsWith(programFilesX86))
-            {
-                return pathString;
-            }
-
-            var contatenated = new System.Text.StringBuilder();
-            var relative = Bam.Core.RelativePathUtilities.GetPath(pathString, this.Project.ProjectPath);
-            if (!Bam.Core.RelativePathUtilities.IsPathAbsolute(relative))
-            {
-                contatenated.Append("$(ProjectDir)");
-            }
-            contatenated.AppendFormat("{0}", relative);
-            return contatenated.ToString();
         }
 
         public void
@@ -174,47 +173,21 @@ namespace VSSolutionBuilder
         {
             lock (this.Settings)
             {
-                var stringValue = isPath ? toRelativePath(path) : path.ToString();
+                var stringValue = path.ToString();
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition && item.Value != stringValue))
                 {
                     throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, path.ToString());
                 }
 
-                this.Settings.AddUnique(new VSSetting(name, stringValue, condition));
+                this.Settings.AddUnique(
+                    new VSSetting(
+                        name,
+                        stringValue,
+                        isPath: isPath,
+                        condition: condition
+                    )
+                );
             }
-        }
-
-        private string
-        toRelativePaths(
-            Bam.Core.TokenizedStringArray paths)
-        {
-            return toRelativePaths(paths.ToEnumerableWithoutDuplicates());
-        }
-
-        private string
-        toRelativePaths(
-            System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> paths)
-        {
-            var programFiles = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
-            var programFilesX86 = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
-
-            var contatenated = new System.Text.StringBuilder();
-            foreach (var path in paths.Distinct())
-            {
-                var pathString = path.ToString();
-                if (pathString.StartsWith(programFiles) || pathString.StartsWith(programFilesX86))
-                {
-                    contatenated.AppendFormat("{0};", pathString);
-                    continue;
-                }
-                var relative = Bam.Core.RelativePathUtilities.GetPath(pathString, this.Project.ProjectPath);
-                if (!Bam.Core.RelativePathUtilities.IsPathAbsolute(relative))
-                {
-                    contatenated.Append("$(ProjectDir)");
-                }
-                contatenated.AppendFormat("{0};", relative);
-            }
-            return contatenated.ToString();
         }
 
         public void
@@ -248,7 +221,7 @@ namespace VSSolutionBuilder
                 {
                     return;
                 }
-                var linearized = arePaths ? this.toRelativePaths(value) : new Bam.Core.TokenizedStringArray(value.Distinct()).ToString(';');
+                var linearized = new Bam.Core.TokenizedStringArray(value.Distinct()).ToString(';');
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
                 {
                     var settingOption = this.Settings.First(item => item.Name == name && item.Condition == condition);
@@ -263,7 +236,14 @@ namespace VSSolutionBuilder
                         linearized);
                 }
 
-                this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized, condition));
+                this.Settings.AddUnique(
+                    new VSSetting(
+                        name,
+                        inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized,
+                        arePaths,
+                        condition
+                    )
+                );
             }
         }
 
@@ -295,7 +275,14 @@ namespace VSSolutionBuilder
                         linearized);
                 }
 
-                this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized, condition));
+                this.Settings.AddUnique(
+                    new VSSetting(
+                        name,
+                        inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized,
+                        false,
+                        condition
+                    )
+                );
             }
         }
 
@@ -306,6 +293,10 @@ namespace VSSolutionBuilder
             string condition = null,
             bool inheritExisting = false)
         {
+            if (!definitions.Any())
+            {
+                return;
+            }
             lock (this.Settings)
             {
                 if (this.Settings.Any(item => item.Name == name && item.Condition == condition))
@@ -314,7 +305,14 @@ namespace VSSolutionBuilder
                 }
 
                 var defString = definitions.ToString();
-                this.Settings.AddUnique(new VSSetting(name, inheritExisting ? System.String.Format("{0}%({1})", defString, name) : defString, condition));
+                this.Settings.AddUnique(
+                    new VSSetting(
+                        name,
+                        inheritExisting ? System.String.Format("{0}%({1})", defString, name) : defString,
+                        false,
+                        condition
+                    )
+                );
             }
         }
 
@@ -367,20 +365,29 @@ namespace VSSolutionBuilder
             var group = document.CreateVSElement(this.GetGroupName(), parentEl: parentEl);
             if (null != this.Include)
             {
-                var path = this.Include.ToString();
-                var relPath = Bam.Core.RelativePathUtilities.GetPath(path, this.Project.ProjectPath);
-                if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
-                {
-                    group.SetAttribute("Include", relPath);
-                }
-                else
-                {
-                    group.SetAttribute("Include", System.String.Format("$(ProjectDir){0}", relPath));
-                }
+                var rel_path = this.Configuration.ToRelativePath(this.Include);
+                group.SetAttribute("Include", rel_path);
             }
             foreach (var setting in this.Settings.OrderBy(pair => pair.Name))
             {
-                document.CreateVSElement(setting.Name, value: setting.Value, condition: setting.Condition, parentEl: group);
+                if (setting.IsPath)
+                {
+                    document.CreateVSElement(
+                        setting.Name,
+                        value: this.Configuration.ToRelativePath(setting.Value),
+                        condition: setting.Condition,
+                        parentEl: group
+                    );
+                }
+                else
+                {
+                    document.CreateVSElement(
+                        setting.Name,
+                        value: setting.Value,
+                        condition: setting.Condition,
+                        parentEl: group
+                    );
+                }
             }
         }
     }

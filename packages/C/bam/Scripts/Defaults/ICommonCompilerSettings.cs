@@ -41,7 +41,6 @@ namespace C.DefaultSettings
             settings.DebugSymbols = (0 != (module.BuildEnvironment.Configuration & (Bam.Core.EConfiguration.Debug | Bam.Core.EConfiguration.Profile)));
             settings.Optimization = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug)) ? EOptimization.Speed : EOptimization.Off;
             settings.OmitFramePointer = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug));
-            settings.OutputType = ECompilerOutput.CompileOnly;
             settings.PreprocessorDefines.Add(System.String.Format("D_BAM_CONFIGURATION_{0}", module.BuildEnvironment.Configuration.ToString().ToUpper()));
             if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
@@ -77,6 +76,7 @@ namespace C.DefaultSettings
             }
             settings.TargetLanguage = ETargetLanguage.C;
             settings.WarningsAsErrors = true;
+            settings.PreprocessOnly = false;
         }
 
         public static void
@@ -100,7 +100,6 @@ namespace C.DefaultSettings
             shared.PreprocessorDefines = shared.PreprocessorDefines.Intersect(other.PreprocessorDefines);
             shared.IncludePaths = shared.IncludePaths.Intersect(other.IncludePaths);
             shared.SystemIncludePaths = shared.SystemIncludePaths.Intersect(other.SystemIncludePaths);
-            shared.OutputType = shared.OutputType.Intersect(other.OutputType);
             shared.DebugSymbols = shared.DebugSymbols.Intersect(other.DebugSymbols);
             shared.WarningsAsErrors = shared.WarningsAsErrors.Intersect(other.WarningsAsErrors);
             shared.Optimization = shared.Optimization.Intersect(other.Optimization);
@@ -109,6 +108,7 @@ namespace C.DefaultSettings
             shared.DisableWarnings = shared.DisableWarnings.Intersect(other.DisableWarnings);
             shared.PreprocessorUndefines = shared.PreprocessorUndefines.Intersect(other.PreprocessorUndefines);
             shared.NamedHeaders = shared.NamedHeaders.Intersect(other.NamedHeaders);
+            shared.PreprocessOnly = shared.PreprocessOnly.Intersect(other.PreprocessOnly);
         }
 
         public static void
@@ -121,7 +121,6 @@ namespace C.DefaultSettings
             delta.PreprocessorDefines = lhs.PreprocessorDefines.Complement(rhs.PreprocessorDefines);
             delta.IncludePaths = lhs.IncludePaths.Complement(rhs.IncludePaths);
             delta.SystemIncludePaths = lhs.SystemIncludePaths.Complement(rhs.SystemIncludePaths);
-            delta.OutputType = lhs.OutputType.Complement(rhs.OutputType);
             delta.DebugSymbols = lhs.DebugSymbols.Complement(rhs.DebugSymbols);
             delta.WarningsAsErrors = lhs.WarningsAsErrors.Complement(rhs.WarningsAsErrors);
             delta.Optimization = lhs.Optimization.Complement(rhs.Optimization);
@@ -130,6 +129,7 @@ namespace C.DefaultSettings
             delta.DisableWarnings = lhs.DisableWarnings.Complement(rhs.DisableWarnings);
             delta.PreprocessorUndefines = lhs.PreprocessorUndefines.Complement(rhs.PreprocessorUndefines);
             delta.NamedHeaders = lhs.NamedHeaders.Complement(rhs.NamedHeaders);
+            delta.PreprocessOnly = lhs.PreprocessOnly.Complement(rhs.PreprocessOnly);
         }
 
         public static void
@@ -150,7 +150,6 @@ namespace C.DefaultSettings
             {
                 settings.SystemIncludePaths.AddUnique(path);
             }
-            settings.OutputType = other.OutputType;
             settings.DebugSymbols = other.DebugSymbols;
             settings.WarningsAsErrors = other.WarningsAsErrors;
             settings.Optimization = other.Optimization;
@@ -168,6 +167,7 @@ namespace C.DefaultSettings
             {
                 settings.NamedHeaders.AddUnique(header);
             }
+            settings.PreprocessOnly = other.PreprocessOnly;
         }
     }
 }

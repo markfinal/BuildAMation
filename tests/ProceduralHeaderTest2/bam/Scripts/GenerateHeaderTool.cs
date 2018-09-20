@@ -66,7 +66,7 @@ namespace ProceduralHeaderTest2
         {
             get
             {
-                return this.GeneratedPaths[C.ConsoleApplication.Key];
+                return this.GeneratedPaths[C.ConsoleApplication.ExecutableKey];
             }
         }
 
@@ -91,6 +91,14 @@ namespace ProceduralHeaderTest2
             get
             {
                 return null;
+            }
+        }
+
+        Bam.Core.Array<int> Bam.Core.ICommandLineTool.SuccessfulExitCodes
+        {
+            get
+            {
+                return new Bam.Core.Array<int>(0);
             }
         }
     }

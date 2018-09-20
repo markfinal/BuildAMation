@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Collections.Generic;
 using Bam.Core;
 namespace Publisher
 {
@@ -34,16 +35,17 @@ namespace Publisher
         Bam.Core.Module,
         ICollatedObject
     {
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Copied Object");
-
-        private ICollatedObjectPolicy policy = null;
+        public const string CopiedFileKey = "Copied file";
+        public const string CopiedDirectoryKey = "Copied directory";
+        public const string CopiedRenamedDirectoryKey = "Copied renamed directory";
+        public const string CopiedFrameworkKey = "Copied framework";
 
         private Bam.Core.Module sourceModule;
-        private Bam.Core.PathKey sourcePathKey;
+        private string sourcePathKey;
         private Bam.Core.TokenizedString publishingDirectory;
         private ICollatedObject anchor = null;
 
-        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Module, PathKey>, CollatedObject>();
+        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject>();
 
         Bam.Core.Module ICollatedObject.SourceModule
         {
@@ -60,14 +62,14 @@ namespace Publisher
             }
         }
 
-        Bam.Core.PathKey ICollatedObject.SourcePathKey
+        string ICollatedObject.SourcePathKey
         {
             get
             {
                 return this.sourcePathKey;
             }
         }
-        public Bam.Core.PathKey SourcePathKey
+        public string SourcePathKey
         {
             set
             {
@@ -166,7 +168,7 @@ namespace Publisher
         }
 
         // TODO: add accessors, rather than direct to the field
-        public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, Bam.Core.PathKey>, CollatedObject> DependentCollations
+        public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> DependentCollations
         {
             get
             {
@@ -174,25 +176,12 @@ namespace Publisher
             }
         }
 
-        public string PreExistingSourcePath
-        {
-            get;
-            set;
-        }
-
         public Bam.Core.TokenizedString
         SourcePath
         {
             get
             {
-                if (null == this.PreExistingSourcePath)
-                {
-                    return this.sourceModule.GeneratedPaths[this.sourcePathKey];
-                }
-                else
-                {
-                    return Bam.Core.TokenizedString.CreateVerbatim(this.PreExistingSourcePath);
-                }
+                return this.sourceModule.GeneratedPaths[this.sourcePathKey];
             }
         }
 
@@ -233,9 +222,68 @@ namespace Publisher
                         this.sourceModule.ToString());
                 }
             }
-            this.RegisterGeneratedFile(Key,
-                                       this.CreateTokenizedString("$(0)/#valid($(RenameLeaf),@filename($(1)))",
-                                                                  new[] { this.publishingDirectory, this.SourcePath }));
+            if (this is CollatedFile)
+            {
+                this.RegisterGeneratedFile(
+                    CopiedFileKey,
+                    this.CreateTokenizedString(
+                        "$(0)/@filename($(1))",
+                        new[]
+                        {
+                            this.publishingDirectory,
+                            this.SourcePath
+                        }
+                    )
+                );
+            }
+            else if (this is CollatedDirectory)
+            {
+                if (this.Macros.Contains("RenameLeaf"))
+                {
+                    this.RegisterGeneratedFile(
+                        CopiedRenamedDirectoryKey,
+                        this.CreateTokenizedString(
+                            "$(0)/$(RenameLeaf)",
+                            new[]
+                            {
+                                this.publishingDirectory
+                            }
+                        )
+                    );
+                }
+                else
+                {
+                    this.RegisterGeneratedFile(
+                        CopiedDirectoryKey,
+                        this.CreateTokenizedString(
+                            "$(0)/@filename($(1))",
+                            new[]
+                            {
+                                this.publishingDirectory,
+                                this.SourcePath
+                            }
+                        )
+                    );
+                }
+            }
+            else if (this is CollatedOSXFramework)
+            {
+                this.RegisterGeneratedFile(
+                    CopiedFrameworkKey,
+                    this.CreateTokenizedString(
+                        "$(0)/@filename($(1))",
+                        new[]
+                        {
+                            this.publishingDirectory,
+                            this.SourcePath
+                        }
+                    )
+                );
+            }
+            else
+            {
+                throw new System.NotSupportedException();
+            }
             this.Ignore = false;
         }
 
@@ -243,15 +291,49 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            this.policy.Collate(this, context);
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileBuilder.Support.Add(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    {
+                        if (this.Ignore)
+                        {
+                            return;
+                        }
+                        NativeBuilder.Support.RunCommandLineTool(this, context);
+                    }
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    VSSolutionSupport.CollateObject(this);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    XcodeSupport.CollateObject(this);
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
+            }
         }
 
-        protected override void
-        GetExecutionPolicy(
-            string mode)
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
-            var className = "Publisher." + mode + "CollatedObject";
-            this.policy = Bam.Core.ExecutionPolicyUtilities<ICollatedObjectPolicy>.Create(className);
+            get
+            {
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.sourcePathKey, this.sourceModule);
+            }
         }
     }
 }

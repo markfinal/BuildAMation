@@ -70,7 +70,28 @@ namespace Bam.Core
                 var fKey = FormattedKey(key);
                 if (!this.Dict.ContainsKey(fKey))
                 {
-                    throw new Exception("{0}'s macros do not include one called '{1}'", this.Owner != null ? this.Owner : "unknown", fKey);
+                    var message = new System.Text.StringBuilder();
+                    message.AppendFormat(
+                        "Module '{0}', does not include a macro with the key '{1}'. Available macros are (*=not yet parsed):",
+                        this.Owner != null ? this.Owner : "unknown",
+                        fKey
+                    );
+                    message.AppendLine();
+                    foreach (var macro in this.Dict)
+                    {
+                        if (macro.Value.IsParsed)
+                        {
+                            message.AppendFormat("\t{0} -> '{1}'", macro.Key, macro.Value.ToString());
+                        }
+                        else
+                        {
+                            message.AppendFormat("\t{0} *", macro.Key);
+                        }
+                        message.AppendLine();
+                    }
+                    throw new Exception(
+                        message.ToString()
+                    );
                 }
                 return this.Dict[fKey];
             }

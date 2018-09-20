@@ -27,30 +27,28 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
-    public sealed class VSSolutionHeaderLibrary :
-        IHeaderLibraryPolicy
+    public static partial class VSSolutionSupport
     {
-        void
-        IHeaderLibraryPolicy.HeadersOnly(
-            HeaderLibrary sender,
-            Bam.Core.ExecutionContext context,
-            System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> headers)
+        public static void
+        HeadersOnly(
+            HeaderLibrary module)
         {
-            if (0 == headers.Count)
+            if (!module.HeaderFiles.Any())
             {
                 return;
             }
 
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-            var project = solution.EnsureProjectExists(sender);
-            var config = project.GetConfiguration(sender);
+            var project = solution.EnsureProjectExists(module);
+            var config = project.GetConfiguration(module);
 
             config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
             config.EnableIntermediatePath();
 
-            foreach (var header in headers)
+            foreach (var header in module.HeaderFiles)
             {
                 config.AddHeaderFile(header as HeaderFile);
             }

@@ -42,7 +42,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_TarBallInstaller");
 
-            this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+            this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
 
             this.PrivatePatch(settings =>
                 {
@@ -50,7 +50,7 @@ namespace InstallerTest1
                     tarSettings.CompressionType = Installer.ETarCompressionType.gzip;
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                     {
-                        tarSettings.TransformRegEx = "'s,^.,toplevelfolder,'";
+                        tarSettings.TransformRegEx = "s,^.,toplevelfolder,";
                     }
                 });
         }
@@ -68,12 +68,16 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_TarBallInstaller");
 
-            this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.Key);
+            this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
 
             this.PrivatePatch(settings =>
             {
                 var tarSettings = settings as Installer.ITarBallSettings;
                 tarSettings.CompressionType = Installer.ETarCompressionType.gzip;
+                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+                {
+                    tarSettings.TransformRegEx = "s,^.,toplevelfolder,";
+                }
             });
         }
     }
@@ -92,7 +96,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_SymbolsTarBall");
 
-            this.SourceFolder<CExecutableDebugSymbols>(Publisher.DebugSymbolCollation.Key);
+            this.SourceFolder<CExecutableDebugSymbols>(Publisher.DebugSymbolCollation.DebugSymbolsDirectoryKey);
 
             this.PrivatePatch(settings =>
                 {
@@ -114,7 +118,7 @@ namespace InstallerTest1
 
             this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_SymbolsTarBall");
 
-            this.SourceFolder<CxxExecutableDebugSymbols>(Publisher.DebugSymbolCollation.Key);
+            this.SourceFolder<CxxExecutableDebugSymbols>(Publisher.DebugSymbolCollation.DebugSymbolsDirectoryKey);
 
             this.PrivatePatch(settings =>
             {

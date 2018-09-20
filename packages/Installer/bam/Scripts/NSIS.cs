@@ -32,27 +32,26 @@ namespace Installer
     class NSISScript :
         Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, Bam.Core.PathKey>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
+
+        public const string ScriptKey = "NSIS script";
 
         protected override void
         Init(
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)/$(config)/script.nsi");
-        }
-
-        public Bam.Core.TokenizedString ScriptPath
-        {
-            get;
-            private set;
+            this.RegisterGeneratedFile(
+                ScriptKey,
+                this.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)/$(config)/script.nsi")
+            );
         }
 
         public void
         AddFile(
             Bam.Core.Module module,
-            Bam.Core.PathKey key)
+            string key)
         {
             this.DependsOn(module);
             this.Files.Add(module, key);
@@ -61,7 +60,7 @@ namespace Installer
         public void
         AddPath(
             Bam.Core.Module module,
-            Bam.Core.PathKey key)
+            string key)
         {
             this.DependsOn(module);
             this.Paths.Add(module, key);
@@ -77,7 +76,7 @@ namespace Installer
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            var path = this.ScriptPath.ToString();
+            var path = this.GeneratedPaths[ScriptKey].ToString();
             var dir = System.IO.Path.GetDirectoryName(path);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir);
             var outputName = this.GetEncapsulatingReferencedModule().Macros["OutputName"];
@@ -104,18 +103,23 @@ namespace Installer
                 scriptWriter.WriteLine("SectionEnd");
             }
         }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // do nothing
-        }
     }
 
+    [CommandLineProcessor.InputPaths(NSISScript.ScriptKey, "")]
     public sealed class NSISCompilerSettings :
         Bam.Core.Settings
     {
+        public NSISCompilerSettings(
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Inputs_Outputs_Cmds;
+        }
     }
 
     public sealed class NSISCompiler :
@@ -135,7 +139,7 @@ namespace Installer
         CreateDefaultSettings<T>(
             T module)
         {
-            return new NSISCompilerSettings();
+            return new NSISCompilerSettings(module);
         }
 
         public override Bam.Core.TokenizedString Executable
@@ -155,8 +159,6 @@ namespace Installer
         Bam.Core.Module
     {
         private NSISScript ScriptModule;
-        private Bam.Core.PreBuiltTool Compiler;
-        private INSISPolicy Policy;
 
         protected override void
         Init(
@@ -167,8 +169,8 @@ namespace Installer
             this.ScriptModule = Bam.Core.Module.Create<NSISScript>();
             this.DependsOn(this.ScriptModule);
 
-            this.Compiler = Bam.Core.Graph.Instance.FindReferencedModule<NSISCompiler>();
-            this.Requires(this.Compiler);
+            this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<NSISCompiler>();
+            this.Requires(this.Tool);
         }
 
         /// <summary>
@@ -178,7 +180,8 @@ namespace Installer
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         Include<DependentModule>(
-            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
+            string key
+        ) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -195,7 +198,8 @@ namespace Installer
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
+            string key
+        ) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -215,20 +219,36 @@ namespace Installer
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (null != this.Policy)
+            switch (Bam.Core.Graph.Instance.Mode)
             {
-                this.Policy.CreateInstaller(this, context, this.Compiler, this.ScriptModule.ScriptPath);
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileBuilder.Support.Add(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeBuilder.Support.RunCommandLineTool(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    Bam.Core.Log.DebugMessage("NSIS not supported on VisualStudio builds");
+                    break;
+#endif
+
+                default:
+                    throw new System.NotSupportedException();
             }
         }
 
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
-            if (mode == "Native")
+            get
             {
-                var className = "Installer." + mode + "NSIS";
-                this.Policy = Bam.Core.ExecutionPolicyUtilities<INSISPolicy>.Create(className);
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(NSISScript.ScriptKey, this.ScriptModule);
             }
         }
     }

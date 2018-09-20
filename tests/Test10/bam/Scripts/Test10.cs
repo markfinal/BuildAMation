@@ -111,8 +111,8 @@ namespace Test10
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
 
             // two separate anchors
-            this.Include<MyStandaloneApp>(C.ConsoleApplication.Key, this.CreateTokenizedString("$(publishroot)/Standalone"));
-            this.Include<DllDependentApp>(C.ConsoleApplication.Key, this.CreateTokenizedString("$(publishroot)/Dynamic"));
+            this.Include<MyStandaloneApp>(C.ConsoleApplication.ExecutableKey, this.CreateTokenizedString("$(publishroot)/Standalone"));
+            this.Include<DllDependentApp>(C.ConsoleApplication.ExecutableKey, this.CreateTokenizedString("$(publishroot)/Dynamic"));
         }
     }
 }

@@ -64,11 +64,11 @@ namespace ClangCommon
         {
             if (library is C.StaticLibrary)
             {
-                return library.GeneratedPaths[C.StaticLibrary.Key];
+                return library.GeneratedPaths[C.StaticLibrary.LibraryKey];
             }
             else if (library is C.IDynamicLibrary)
             {
-                return library.GeneratedPaths[C.DynamicLibrary.Key];
+                return library.GeneratedPaths[C.DynamicLibrary.ExecutableKey];
             }
             else if ((library is C.CSDKModule) ||
                      (library is C.HeaderLibrary) ||
@@ -88,36 +88,24 @@ namespace ClangCommon
             if (library is C.StaticLibrary)
             {
                 // TODO: @filenamenoext
-                var libraryPath = library.GeneratedPaths[C.StaticLibrary.Key].ToString();
+                var libraryPath = library.GeneratedPaths[C.StaticLibrary.LibraryKey].ToString();
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
-                var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.StaticLibrary.Key]);
-                lock (libDir)
+                foreach (var dir in library.OutputDirectories)
                 {
-                    if (!libDir.IsParsed)
-                    {
-                        libDir.Parse();
-                    }
+                    linker.LibraryPaths.AddUnique(dir);
                 }
-
-                linker.LibraryPaths.AddUnique(libDir);
             }
             else if (library is C.IDynamicLibrary)
             {
                 // TODO: @filenamenoext
-                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.Key].ToString();
+                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.ExecutableKey].ToString();
                 linker.Libraries.AddUnique(GetLPrefixLibraryName(libraryPath));
 
-                var libDir = library.CreateTokenizedString("@dir($(0))", library.GeneratedPaths[C.DynamicLibrary.Key]);
-                lock (libDir)
+                foreach (var dir in library.OutputDirectories)
                 {
-                    if (!libDir.IsParsed)
-                    {
-                        libDir.Parse();
-                    }
+                    linker.LibraryPaths.AddUnique(dir);
                 }
-
-                linker.LibraryPaths.AddUnique(libDir);
             }
         }
 
@@ -152,7 +140,7 @@ namespace ClangCommon
         CreateDefaultSettings<T>(
             T module)
         {
-            var settings = new Clang.LinkerSettings(module);
+            var settings = new Clang.CLinkerSettings(module);
             return settings;
         }
     }

@@ -78,16 +78,6 @@ namespace C
         }
 
         /// <summary>
-        /// Define what output the compiler generates.
-        /// </summary>
-        /// <value>The type of the output.</value>
-        C.ECompilerOutput? OutputType
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
         /// Compile with debug symbols.
         /// </summary>
         /// <value>The debug symbols.</value>
@@ -162,6 +152,15 @@ namespace C
         /// </summary>
         /// <value>Header filenames to process.</value>
         Bam.Core.StringArray NamedHeaders
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Stop after preprocessing the source file. Do not compile.
+        /// </summary>
+        bool? PreprocessOnly
         {
             get;
             set;

@@ -38,21 +38,20 @@ namespace Publisher
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.Macros.Add("toolPath", Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("chrpath").First()));
         }
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module)
         {
-            return null;
+            return new ChangeRPathSettings(module);
         }
 
         public override Bam.Core.TokenizedString Executable
         {
             get
             {
-                return this.Macros["toolPath"];
+                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("chrpath").First());
             }
         }
 

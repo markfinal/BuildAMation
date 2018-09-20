@@ -128,7 +128,7 @@ namespace VersionScriptTest1
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
-            this.Include<Application>(C.ConsoleApplication.Key);
+            this.Include<Application>(C.ConsoleApplication.ExecutableKey);
         }
     }
 }

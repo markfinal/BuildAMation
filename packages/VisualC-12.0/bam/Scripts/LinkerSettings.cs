@@ -29,101 +29,13 @@
 #endregion // License
 namespace VisualC
 {
-    public class LinkerSettings :
-        C.SettingsBase,
-        CommandLineProcessor.IConvertToCommandLine,
-        VisualStudioProcessor.IConvertToProject,
-        C.ICommonLinkerSettingsWin,
-        C.ICommonLinkerSettings,
-        C.IAdditionalSettings,
-        VisualCCommon.ICommonLinkerSettings
+    public sealed class LinkerSettings :
+        VisualCCommon.CommonLinkerSettings
     {
         public LinkerSettings(
             Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
-
-        void
-        CommandLineProcessor.IConvertToCommandLine.Convert(
-            Bam.Core.StringArray commandLine)
-        {
-            CommandLineProcessor.Conversion.Convert(typeof(VisualCCommon.CommandLineImplementation), this, commandLine);
-        }
-
-        void
-        VisualStudioProcessor.IConvertToProject.Convert(
-            Bam.Core.Module module,
-            VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
-            string condition)
-        {
-            VisualStudioProcessor.Conversion.Convert(typeof(VisualCCommon.VSSolutionImplementation), this, module, vsSettingsGroup, condition);
-        }
-
-        C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile
-        {
-            get;
-            set;
-        }
-
-        C.EBit C.ICommonLinkerSettings.Bits
-        {
-            get;
-            set;
-        }
-
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
-
-        bool C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
-
-        bool VisualCCommon.ICommonLinkerSettings.NoLogo
-        {
-            get;
-            set;
-        }
-
-        bool VisualCCommon.ICommonLinkerSettings.GenerateManifest
-        {
-            get;
-            set;
-        }
-
-        bool VisualCCommon.ICommonLinkerSettings.SafeExceptionHandlers
-        {
-            get;
-            set;
-        }
+            :
+            base(module)
+        { }
     }
 }

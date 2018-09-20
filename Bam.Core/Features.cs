@@ -42,8 +42,7 @@ namespace Bam.Core
 
         static Features()
         {
-            // allow users to modify Module configurations
-            featurePreprocessorDefines.Add("BAM_FEATURE_MODULE_CONFIGURATION");
+            // add features here
         }
 
         /// <summary>

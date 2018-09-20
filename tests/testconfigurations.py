@@ -117,6 +117,7 @@ class VisualCCommon(ConfigOptions):
             raise RuntimeError("Unrecognized arch: %s" % arch)
         ConfigOptions.register_option("Windows", ("VisualC.version", "Set the VisualC version"))
         ConfigOptions.register_option("Windows", ("WindowsSDK.version", "Set the WindowsSDK version"))
+        ConfigOptions.register_option("Windows", ("MakeFile.format", "Choose the format of MakeFiles generated"))
 
 
 class VisualC64(VisualCCommon):

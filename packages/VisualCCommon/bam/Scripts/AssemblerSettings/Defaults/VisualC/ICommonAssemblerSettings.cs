@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using C;
 namespace VisualCCommon.DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
@@ -39,7 +38,7 @@ namespace VisualCCommon.DefaultSettings
         {
             settings.NoLogo = true;
             settings.WarningLevel = EAssemblerWarningLevel.Level3;
-            settings.SafeExceptionHandlers = true;
+            settings.SafeExceptionHandlers = ((module as C.CModule).BitDepth == C.EBit.ThirtyTwo);
         }
     }
 }

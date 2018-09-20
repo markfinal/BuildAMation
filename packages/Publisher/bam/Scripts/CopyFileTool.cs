@@ -59,7 +59,7 @@ namespace Publisher
         CreateDefaultSettings<T>(
             T module)
         {
-            return new CopyFileSettings(module);
+            return new PosixCopyFileSettings(module);
         }
 
         public override Bam.Core.TokenizedString Executable
@@ -141,7 +141,7 @@ namespace Publisher
         CreateDefaultSettings<T>(
             T module)
         {
-            return new CopyFileSettings(module);
+            return new WinCopyFileSettings(module);
         }
 
         public override Bam.Core.TokenizedString Executable

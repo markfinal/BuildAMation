@@ -29,41 +29,71 @@
 #endregion // License
 namespace C
 {
-    public sealed class VSSolutionCompilation :
-        ICompilationPolicy
+    public static partial class VSSolutionSupport
     {
-        void
-        ICompilationPolicy.Compile(
-            ObjectFile sender,
-            Bam.Core.ExecutionContext context,
-            Bam.Core.TokenizedString objectFilePath,
-            Bam.Core.Module source)
+        public static void
+        Compile(
+            ObjectFileBase module)
         {
-            var encapsulating = sender.GetEncapsulatingReferencedModule();
+            var encapsulating = module.GetEncapsulatingReferencedModule();
 
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
             var project = solution.EnsureProjectExists(encapsulating);
             var config = project.GetConfiguration(encapsulating);
 
-            var group = (sender is WinResource) ?
-                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Resource :
-                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler;
+            VSSolutionBuilder.VSSettingsGroup.ESettingsGroup group;
+            if (module is C.WinResource)
+            {
+                group = VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Resource;
+            }
+            else if (module is C.AssembledObjectFile)
+            {
+                group = VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Assembler;
+            }
+            else if (module is C.ObjectFile)
+            {
+                group = VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler;
+            }
+            else
+            {
+                throw new Bam.Core.Exception("Unknown settings group for module {0}", module.ToString());
+            }
 
             var settingsGroup = config.GetSettingsGroup(
                 group,
-                include: source.GeneratedPaths[C.SourceFile.Key],
-                uniqueToProject: true);
-            var intDir = sender.CreateTokenizedString("@trimstart(@relativeto($(0),$(packagebuilddir)/$(moduleoutputdir)),../)", objectFilePath);
-            intDir.Parse();
-            settingsGroup.AddSetting("ObjectFileName", "$(IntDir)" + intDir.ToString());
-            if (!sender.PerformCompilation)
+                include: (module as C.IRequiresSourceModule).Source.GeneratedPaths[C.SourceFile.SourceFileKey],
+                uniqueToProject: true
+            );
+
+#if false
+            // must specify an ObjectFileName, in case two source files have the same leafname
+            // which would then map to the same output file without intervention
+            // note that this doesn't seem to work for assembly files - results in weird errors
+            if (!(module is AssembledObjectFile))
             {
-                settingsGroup.AddSetting("ExcludedFromBuild", true);
+                var intDir = module.CreateTokenizedString(
+                    "@trimstart(@relativeto($(0),$(packagebuilddir)/$(moduleoutputdir)),../)",
+                    module.GeneratedPaths[C.ObjectFileBase.Key]
+                );
+                intDir.Parse();
+                settingsGroup.AddSetting(
+                    "ObjectFileName",
+                    "$(IntDir)" + intDir.ToString()
+                );
             }
-            sender.MetaData = settingsGroup;
+#endif
+
+            if (!module.PerformCompilation)
+            {
+                settingsGroup.AddSetting(
+                    "ExcludedFromBuild",
+                    true
+                );
+            }
+            module.MetaData = settingsGroup;
 
             // any non-C module projects should be order-only dependencies
-            foreach (var dependent in sender.Dependents)
+            foreach (var dependent in module.Dependents)
             {
                 if (null == dependent.MetaData)
                 {

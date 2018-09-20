@@ -33,8 +33,7 @@ namespace Publisher
     public abstract class InstallNameModule :
         Bam.Core.Module
     {
-        protected CollatedFile CopiedFileModule = null;
-        protected IInstallNameToolPolicy Policy = null;
+        protected Bam.Core.Module CopiedFileModule = null;
 
         protected override void
         Init(
@@ -45,20 +44,12 @@ namespace Publisher
         }
 
         protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            var className = "Publisher." + mode + this.GetType().Name;
-            this.Policy = Bam.Core.ExecutionPolicyUtilities<IInstallNameToolPolicy>.Create(className);
-        }
-
-        protected override void
         EvaluateInternal()
         {
             // do nothing
         }
 
-        public CollatedFile Source
+        public Bam.Core.Module Source
         {
             get
             {

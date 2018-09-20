@@ -157,6 +157,18 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// Prebuilt tool generally has a successful exit code of 0.
+        /// </summary>
+        /// <value>The successful exit codes.</value>
+        public virtual Array<int> SuccessfulExitCodes
+        {
+            get
+            {
+                return new Array<int> { 0 };
+            }
+        }
+
+        /// <summary>
         /// No execution needed to update the prebuilt tool.
         /// </summary>
         /// <param name="context">Context.</param>
@@ -165,17 +177,6 @@ namespace Bam.Core
             ExecutionContext context)
         {
             // by default, a PreBuiltTool's execution does nothing as it's on disk
-        }
-
-        /// <summary>
-        /// No execution policy required for a prebuilt tool.
-        /// </summary>
-        /// <param name="mode">Mode.</param>
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // by default, the execution policy of a PreBuiltTool is to do nothing as it's on disk
         }
 
         /// <summary>

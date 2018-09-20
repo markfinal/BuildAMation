@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace VSSolutionBuilder
 {
     // abstraction of a project configuration, consisting of platform and configuration
@@ -167,37 +168,19 @@ namespace VSSolutionBuilder
             set;
         }
 
-        private C.ECharacterSet CharacterSet
-        {
-            get;
-            set;
-        }
-
         private bool WholeProgramOptimization
         {
             get;
             set;
         }
 
-        private string OutputDirectory
+        private Bam.Core.TokenizedString OutputDirectory
         {
             get;
             set;
         }
 
-        private string IntermediateDirectory
-        {
-            get;
-            set;
-        }
-
-        private string TargetName
-        {
-            get;
-            set;
-        }
-
-        private string TargetExt
+        private Bam.Core.TokenizedString IntermediateDirectory
         {
             get;
             set;
@@ -273,52 +256,46 @@ namespace VSSolutionBuilder
             this.Type = type;
         }
 
-        public void
-        SetCharacterSet(
-            C.ECharacterSet charSet)
+        public C.ECharacterSet CharacterSet
         {
-            this.CharacterSet = charSet;
-        }
-
-        public void
-        SetOutputPath(
-            Bam.Core.TokenizedString path)
-        {
-            var macros = new Bam.Core.MacroList();
-            // TODO: ideally, $(ProjectDir) should replace the following directory separator as well,
-            // but it does not seem to be a show stopper if it doesn't
-            macros.Add("packagebuilddir", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectDir)"));
-            macros.Add("modulename", Bam.Core.TokenizedString.CreateVerbatim("$(ProjectName)"));
-
-            var outDir = path.UncachedParse(new Bam.Core.Array<Bam.Core.MacroList>(macros));
-            outDir = System.IO.Path.GetDirectoryName(outDir);
-            outDir += "\\";
-            this.OutputDirectory = outDir;
-
-            var targetNameTS = this.Module.CreateTokenizedString("@basename($(0))", path);
-            targetNameTS.Parse();
-            var targetName = targetNameTS.ToString();
-            if (!string.IsNullOrEmpty(targetName))
-            {
-                var filenameTS = this.Module.CreateTokenizedString("@filename($(0))", path);
-                filenameTS.Parse();
-                var filename = filenameTS.ToString();
-                var ext = filename.Replace(targetName, string.Empty);
-                this.TargetName = targetName;
-                this.TargetExt = ext;
-            }
+            get;
+            set;
         }
 
         public void
         EnableIntermediatePath()
         {
-            this.IntermediateDirectory = @"$(ProjectDir)\$(ProjectName)\$(Configuration)\";
+            this.IntermediateDirectory = Bam.Core.TokenizedString.Create(
+                "$(packagebuilddir)/$(encapsulatingmodulename)/$(config)/",
+                this.Module
+            );
+            this.IntermediateDirectory.Parse();
         }
 
         public bool EnableManifest
         {
             get;
             set;
+        }
+
+        private Bam.Core.TokenizedString _OutputFile;
+        public Bam.Core.TokenizedString OutputFile
+        {
+            get
+            {
+                return this._OutputFile;
+            }
+            set
+            {
+                this._OutputFile = value;
+                // Note: MSB8004 requires the OutDir to have a trailing slash
+                this.OutputDirectory = Bam.Core.TokenizedString.Create(
+                    "@dir($(0))\\",
+                    null,
+                    new Bam.Core.TokenizedStringArray { value }
+                );
+                this.OutputDirectory.Parse();
+            }
         }
 
         public VSSettingsGroup
@@ -361,9 +338,13 @@ namespace VSSolutionBuilder
         AddHeaderFile(
             C.HeaderFile header)
         {
-            var headerGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.Header, header.InputPath);
+            var headerGroup = this.Project.GetUniqueSettingsGroup(
+                this.Module,
+                VSSettingsGroup.ESettingsGroup.Header,
+                header.InputPath
+            );
             this.Headers.AddUnique(headerGroup);
-            this.Project.AddHeader(headerGroup);
+            this.Project.AddHeader(headerGroup, this);
         }
 
         public void
@@ -374,26 +355,41 @@ namespace VSSolutionBuilder
             var settings = module.MetaData as VSSettingsGroup;
             if (null != patchSettings)
             {
-                (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(module, settings, condition: this.ConditionText);
+                VisualStudioProcessor.VSSolutionConversion.Convert(
+                    patchSettings,
+                    module.Settings.GetType(),
+                    module,
+                    settings,
+                    this,
+                    condition: this.ConditionText
+                );
             }
             this.Sources.AddUnique(settings);
-            this.Project.AddSource(settings);
+            this.Project.AddSource(settings, this);
         }
 
         public void
         AddOtherFile(
             Bam.Core.IInputPath other)
         {
-            var otherGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, other.InputPath);
-            this.Project.AddOtherFile(otherGroup);
+            var otherGroup = this.Project.GetUniqueSettingsGroup(
+                this.Module,
+                VSSettingsGroup.ESettingsGroup.CustomBuild,
+                other.InputPath
+            );
+            this.Project.AddOtherFile(otherGroup, this);
         }
 
         public void
         AddOtherFile(
             Bam.Core.TokenizedString other_path)
         {
-            var otherGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, other_path);
-            this.Project.AddOtherFile(otherGroup);
+            var otherGroup = this.Project.GetUniqueSettingsGroup(
+                this.Module,
+                VSSettingsGroup.ESettingsGroup.CustomBuild,
+                other_path
+            );
+            this.Project.AddOtherFile(otherGroup, this);
         }
 
         public void
@@ -404,11 +400,18 @@ namespace VSSolutionBuilder
             var settings = resource.MetaData as VSSettingsGroup;
             if (null != patchSettings)
             {
-                (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(resource, settings, condition: this.ConditionText);
+                VisualStudioProcessor.VSSolutionConversion.Convert(
+                    patchSettings,
+                    resource.Settings.GetType(),
+                    resource,
+                    settings,
+                    this,
+                    condition: this.ConditionText
+                );
             }
             var resourceGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.Resource, resource.InputPath);
             this.ResourceFiles.AddUnique(resourceGroup);
-            this.Project.AddResourceFile(resourceGroup);
+            this.Project.AddResourceFile(resourceGroup, this);
         }
 
         public void
@@ -419,11 +422,18 @@ namespace VSSolutionBuilder
             var settings = assembler.MetaData as VSSettingsGroup;
             if (null != patchSettings)
             {
-                (patchSettings as VisualStudioProcessor.IConvertToProject).Convert(assembler, settings, condition: this.ConditionText);
+                VisualStudioProcessor.VSSolutionConversion.Convert(
+                    patchSettings,
+                    assembler.Settings.GetType(),
+                    assembler,
+                    settings,
+                    this,
+                    condition: this.ConditionText
+                );
             }
             var assemblyGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, assembler.InputPath);
             this.AssemblyFiles.AddUnique(assemblyGroup);
-            this.Project.AddAssemblyFile(assemblyGroup);
+            this.Project.AddAssemblyFile(assemblyGroup, this);
         }
 
         public void
@@ -556,21 +566,34 @@ namespace VSSolutionBuilder
             System.Xml.XmlElement parentEl)
         {
             var propGroup = document.CreateVSPropertyGroup(condition: this.ConditionText, parentEl: parentEl);
-            if (null != this.OutputDirectory)
+            if (null != this.OutputFile)
             {
-                document.CreateVSElement("OutDir", value: this.OutputDirectory, parentEl: propGroup);
+                document.CreateVSElement(
+                    "OutDir",
+                    value: this.ToRelativePath(this.OutputDirectory, isOutputDir: true),
+                    parentEl: propGroup
+                );
+
+                var targetNameTS = this.Module.CreateTokenizedString("@basename($(0))", this.OutputFile);
+                targetNameTS.Parse();
+                var targetName = targetNameTS.ToString();
+                if (!string.IsNullOrEmpty(targetName))
+                {
+                    var filenameTS = this.Module.CreateTokenizedString("@filename($(0))", this.OutputFile);
+                    filenameTS.Parse();
+                    var filename = filenameTS.ToString();
+                    var ext = filename.Replace(targetName, string.Empty);
+
+                    document.CreateVSElement("TargetName", value: targetName, parentEl: propGroup);
+                    document.CreateVSElement("TargetExt", value: ext, parentEl: propGroup);
+                }
             }
             if (null != this.IntermediateDirectory)
             {
-                document.CreateVSElement("IntDir", value: this.IntermediateDirectory, parentEl: propGroup);
-            }
-            if (null != this.TargetName)
-            {
-                document.CreateVSElement("TargetName", value: this.TargetName, parentEl: propGroup);
-            }
-            if (null != this.TargetExt)
-            {
-                document.CreateVSElement("TargetExt", value: this.TargetExt, parentEl: propGroup);
+                document.CreateVSElement(
+                    "IntDir",
+                    value: @"$(ProjectDir)$(ProjectName)\$(Configuration)\",
+                    parentEl: propGroup);
             }
             document.CreateVSElement("GenerateManifest", value: this.EnableManifest.ToString().ToLower(), parentEl: propGroup);
         }
@@ -593,15 +616,130 @@ namespace VSSolutionBuilder
             if (this.PreBuildCommands.Count > 0)
             {
                 var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PreBuild);
-                preBuildGroup.AddSetting("Command", this.PreBuildCommands.ToString(System.Environment.NewLine));
+                preBuildGroup.AddSetting(
+                    "Command",
+                    this.PreBuildCommands.ToString(System.Environment.NewLine)
+                );
                 preBuildGroup.Serialize(document, itemDefnGroup);
             }
             if (this.PostBuildCommands.Count > 0)
             {
                 var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PostBuild);
-                preBuildGroup.AddSetting("Command", this.PostBuildCommands.ToString(System.Environment.NewLine));
+                preBuildGroup.AddSetting(
+                    "Command",
+                    this.PostBuildCommands.ToString(System.Environment.NewLine)
+                );
                 preBuildGroup.Serialize(document, itemDefnGroup);
             }
+        }
+
+        public string
+        ToRelativePath(
+            string joinedPaths)
+        {
+            var paths = joinedPaths.Split(new[] { ';' });
+            var relative_paths = this.ToRelativePaths(paths);
+            return System.String.Join(";", relative_paths);
+        }
+
+        public string
+        ToRelativePath(
+            Bam.Core.TokenizedString path,
+            bool isOutputDir = false)
+        {
+            // TODO: in C#7 use a local function to yield return an IEnumerable with the single value
+            return this.ToRelativePaths(
+                new[] { path.ToString() },
+                isOutputDir: isOutputDir
+            );
+        }
+
+        public string
+        ToRelativePaths(
+            Bam.Core.TokenizedStringArray paths)
+        {
+            return ToRelativePaths(paths.ToEnumerableWithoutDuplicates().Select(item => item.ToString()));
+        }
+
+        public string
+        ToRelativePaths(
+            System.Collections.Generic.IEnumerable<string> paths,
+            bool isOutputDir = false)
+        {
+            var programFiles = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
+            var programFilesX86 = System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86);
+
+            var distinct_source_paths = paths.Distinct();
+            var output_paths = new Bam.Core.StringArray();
+            var invalid_chars = System.IO.Path.GetInvalidPathChars();
+            foreach (var path in distinct_source_paths)
+            {
+                if (path.IndexOfAny(invalid_chars) >= 0 || // speaks for itself
+                    path.StartsWith("%(") ||               // VS environment variable
+                    path.StartsWith(programFiles) ||       // special folders
+                    path.StartsWith(programFilesX86))
+                {
+                    output_paths.Add(path);
+                    continue;
+                }
+
+                // get relative paths to interesting macros
+                // KEY=macro, VALUE=original path
+                // projects without output, e.g. headerlibrary projects, will not have a valid OutputDirectory property
+                var mapping = new System.Collections.Generic.Dictionary<string, string>();
+                mapping.Add("$(ProjectDir)", this.Project.ProjectPath);
+                if (null != this.OutputDirectory && !isOutputDir)
+                {
+                    mapping.Add("$(OutDir)", this.OutputDirectory.ToString());
+                }
+                // cannot generate the OutDir in terms of the IntDir
+                if (null != this.IntermediateDirectory && !isOutputDir)
+                {
+                    mapping.Add("$(IntDir)", this.IntermediateDirectory.ToString());
+                }
+
+                System.Collections.Generic.KeyValuePair<string, string> candidate = default(System.Collections.Generic.KeyValuePair<string, string>);
+                foreach (var item in mapping)
+                {
+                    var relative_path = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                        System.IO.Path.GetDirectoryName(item.Value),
+                        path
+                    );
+                    if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relative_path))
+                    {
+                        continue;
+                    }
+                    if (null == candidate.Key)
+                    {
+                        candidate = new System.Collections.Generic.KeyValuePair<string, string>(item.Key, relative_path);
+                    }
+                    else
+                    {
+                        // already a candidate, use the shorter of that and the current option
+                        if (relative_path.Length <= candidate.Value.Length)
+                        {
+                            candidate = new System.Collections.Generic.KeyValuePair<string, string>(item.Key, relative_path);
+                        }
+                    }
+                }
+                if (null == candidate.Key)
+                {
+                    // no candidate, use original path
+                    output_paths.Add(path);
+                }
+                else
+                {
+                    // prefix the relative path with the VS macro
+                    output_paths.Add(
+                        System.String.Format(
+                            "{0}{1}",
+                            candidate.Key,
+                            candidate.Value
+                        )
+                    );
+                }
+            }
+            return output_paths.ToString(';');
         }
     }
 }

@@ -27,31 +27,52 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
-    public sealed class IdNameOSX :
+    public class IdNameOSX :
         InstallNameModule
     {
         protected override void
         ExecuteInternal(
-            ExecutionContext context)
+            Bam.Core.ExecutionContext context)
         {
-            var framework = (this.CopiedFileModule as ICollatedObject).SourceModule as C.OSXFramework;
-            if (null == framework)
+            switch (Bam.Core.Graph.Instance.Mode)
             {
-                throw new Bam.Core.Exception("Updating the ID name only works on an external framework");
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileBuilder.Support.Add(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeBuilder.Support.RunCommandLineTool(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    {
+                        XcodeBuilder.Target target;
+                        XcodeBuilder.Configuration configuration;
+                        XcodeBuilder.Support.AddPostBuildStepForCommandLineTool(
+                            this,
+                            this.Source, // add it to the source module's target
+                            out target,
+                            out configuration
+                        );
+                    }
+                    break;
+#endif
             }
+        }
 
-            // TODO: although this is standard for an application bundle, should the '../Frameworks' be actually taken
-            // from the subdirectory of the copied framework?
-            this.CopiedFileModule.Macros["IDName"] = this.CopiedFileModule.CreateTokenizedString("@executable_path/../Frameworks/$(0)", framework.Macros["FrameworkLibraryPath"]);
-
-            this.Policy.InstallName(
-                this,
-                context,
-                null,
-                this.CopiedFileModule.Macros["IDName"]);
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        {
+            get
+            {
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.ConsoleApplication.ExecutableKey, this.CopiedFileModule);
+            }
         }
     }
 }

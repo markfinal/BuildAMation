@@ -56,10 +56,10 @@ namespace Installer
     public abstract class DiskImage :
         Bam.Core.Module
     {
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Installer");
+        public const string DMGKey = "Disk Image Installer";
 
-        private Bam.Core.TokenizedString SourceFolderPath;
-        private IDiskImagePolicy Policy;
+        private Bam.Core.Module SourceModule;
+        private string SourcePathKey;
 
         protected override void
         Init(
@@ -67,7 +67,10 @@ namespace Installer
         {
             base.Init(parent);
 
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).dmg"));
+            this.RegisterGeneratedFile(
+                DMGKey,
+                this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).dmg")
+            );
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<DiskImageCompiler>();
         }
@@ -80,7 +83,8 @@ namespace Installer
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         SourceFolder<DependentModule>(
-            Bam.Core.PathKey key) where DependentModule : Bam.Core.Module, new()
+            string key
+        ) where DependentModule : Bam.Core.Module, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -88,7 +92,8 @@ namespace Installer
                 return;
             }
             this.DependsOn(dependent);
-            this.SourceFolderPath = dependent.GeneratedPaths[key];
+            this.SourceModule = dependent;
+            this.SourcePathKey = key;
         }
 
         protected sealed override void
@@ -101,20 +106,45 @@ namespace Installer
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (null != this.Policy)
+            switch (Bam.Core.Graph.Instance.Mode)
             {
-                this.Policy.CreateDMG(this, context, this.Tool as DiskImageCompiler, this.SourceFolderPath, this.GeneratedPaths[Key]);
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileBuilder.Support.Add(this);
+                    break;
+#endif
+
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    {
+                        // hdiutil will fail on an incremental build if the DMG exists
+                        // 'hdiutil: create failed - File exists'
+                        var dmg_path = this.GeneratedPaths[DiskImage.DMGKey].ToString();
+                        if (System.IO.File.Exists(dmg_path))
+                        {
+                            System.IO.File.Delete(dmg_path);
+                        }
+                        NativeBuilder.Support.RunCommandLineTool(this, context);
+                    }
+                    break;
+#endif
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    Bam.Core.Log.DebugMessage("DiskImage not supported on Xcode builds");
+                    break;
+#endif
+
+                default:
+                    throw new System.NotSupportedException();
             }
         }
 
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
-            if (mode == "Native")
+            get
             {
-                var className = "Installer." + mode + "DMG";
-                this.Policy = Bam.Core.ExecutionPolicyUtilities<IDiskImagePolicy>.Create(className);
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.SourcePathKey, this.SourceModule);
             }
         }
     }

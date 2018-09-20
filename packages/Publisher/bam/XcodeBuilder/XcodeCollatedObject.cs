@@ -27,65 +27,58 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Publisher
 {
-    public sealed class XcodeCollatedObject :
-        ICollatedObjectPolicy
+    public static partial class XcodeSupport
     {
-        void
-        ICollatedObjectPolicy.Collate(
-            CollatedObject sender,
-            Bam.Core.ExecutionContext context)
+        public static void
+        CollateObject(
+            CollatedObject module)
         {
-            if (sender.Ignore)
+            if (module.Ignore)
             {
                 return;
             }
 
-            var collatedInterface = sender as ICollatedObject;
-
+            var collatedInterface = module as ICollatedObject;
+            var targetModule = collatedInterface.SourceModule;
             var arePostBuildCommands = true;
-            Bam.Core.Module sourceModule;
-            if (null != collatedInterface.SourceModule)
-            {
-                sourceModule = collatedInterface.SourceModule;
-                if (null == sourceModule.MetaData)
-                {
-                    // this can happen for prebuilt frameworks
-                    sourceModule = collatedInterface.Anchor.SourceModule;
-                }
-            }
-            else
+            if (null == targetModule.MetaData)
             {
                 if (null != collatedInterface.Anchor)
                 {
-                    // usually preexisting files that are published as part of an executable's distribution
-                    // in which case, their anchor is the executable (or a similar binary)
-                    sourceModule = collatedInterface.Anchor.SourceModule;
+                    // this can happen for prebuilt frameworks
+                    targetModule = collatedInterface.Anchor.SourceModule;
                 }
                 else
                 {
-                    if (sender is CollatedPreExistingFile)
+                    if (collatedInterface.SourceModule is PreExistingObject)
                     {
-                        sourceModule = (sender as CollatedPreExistingFile).ParentOfCollationModule;
+                        targetModule = (collatedInterface.SourceModule as PreExistingObject).ParentOfCollationModule;
 
                         var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-                        workspace.EnsureTargetExists(sourceModule);
+                        workspace.EnsureTargetExists(targetModule);
 
                         arePostBuildCommands = false;
                     }
                     else
                     {
-                        throw new Bam.Core.Exception("No anchor set on '{0}' with source path '{1}'", sender.GetType().ToString(), sender.SourcePath);
+                        throw new Bam.Core.Exception(
+                            "No anchor set on '{0}' with source path '{1}'",
+                            module.GetType().ToString(),
+                            module.SourcePath
+                        );
                     }
                 }
             }
 
-            var target = sourceModule.MetaData as XcodeBuilder.Target;
+            var target = targetModule.MetaData as XcodeBuilder.Target;
 
-            if (sender.IsAnchor && (null != collatedInterface.SourceModule))
+            System.Diagnostics.Debug.Assert(null != collatedInterface.SourceModule);
+            if (module.IsAnchor && !(collatedInterface.SourceModule is PreExistingObject))
             {
-                if (sender.IsAnchorAnApplicationBundle)
+                if (module.IsAnchorAnApplicationBundle)
                 {
                     // application bundles are a different output type in Xcode
                     target.MakeApplicationBundle();
@@ -95,54 +88,42 @@ namespace Publisher
                 return;
             }
 
-            if (sender.IsInAnchorPackage &&
-                (null != collatedInterface.SourceModule) &&
-                !(collatedInterface.Anchor as CollatedObject).IsAnchorAnApplicationBundle)
+            if (module.IsInAnchorPackage)
             {
-                // additionally, any module-based dependents in the same package as the anchor do not need copying as they
+                // additionally, any built module-based dependents in the same package as the anchor do not need copying as they
                 // are built into the right directory (since Xcode module build dirs do not include the module name)
-                return;
+                System.Diagnostics.Debug.Assert(1 == module.OutputDirectories.Count());
+                var output_dir = module.OutputDirectories.First().ToString();
+                var input_dir = System.IO.Path.GetDirectoryName(module.SourcePath.ToString());
+                if (output_dir == input_dir)
+                {
+                    return;
+                }
             }
 
-            var copyFileTool = sender.Tool as CopyFileTool;
-            string copySourcePath;
-            string destinationDir;
-            copyFileTool.convertPaths(
-                sender,
-                sender.SourcePath,
-                collatedInterface.PublishingDirectory,
-                out copySourcePath,
-                out destinationDir);
-
-            if (null == sender.PreExistingSourcePath)
-            {
-                Bam.Core.Log.DebugMessage("** {0}[{1}]:\t'{2}' -> '{3}'",
-                    collatedInterface.SourceModule.ToString(),
-                    collatedInterface.SourcePathKey.ToString(),
-                    copyFileTool.escapePath(copySourcePath),
-                    copyFileTool.escapePath(destinationDir));
-            }
-            else
-            {
-                Bam.Core.Log.DebugMessage("** {0}: '{1}' -> '{2}'",
-                    sender,
-                    copyFileTool.escapePath(copySourcePath),
-                    copyFileTool.escapePath(destinationDir));
-            }
-
-            var commandLine = new Bam.Core.StringArray();
-            (sender.Settings as CommandLineProcessor.IConvertToCommandLine).Convert(commandLine);
+            var copyFileTool = module.Tool as CopyFileTool;
 
             var commands = new Bam.Core.StringArray();
-            commands.Add(System.String.Format("[[ ! -d {0} ]] && mkdir -p {0}", copyFileTool.escapePath(destinationDir)));
+            foreach (var dir in module.OutputDirectories)
+            {
+                commands.Add(
+                    System.String.Format(
+                        "[[ ! -d {0} ]] && mkdir -p {0}",
+                        copyFileTool.escapePath(dir.ToString())
+                    )
+                );
+            }
+            commands.Add(
+                System.String.Format("{0} {1} {2}",
+                CommandLineProcessor.Processor.StringifyTool(copyFileTool as Bam.Core.ICommandLineTool),
+                CommandLineProcessor.NativeConversion.Convert(
+                    module.Settings,
+                    module
+                ).ToString(' '),
+                CommandLineProcessor.Processor.TerminatingArgs(copyFileTool as Bam.Core.ICommandLineTool))
+            );
 
-            var configuration = target.GetConfiguration(sourceModule);
-            commands.Add(System.String.Format("{0} {1} {2} {3} {4}",
-                CommandLineProcessor.Processor.StringifyTool(sender.Tool as Bam.Core.ICommandLineTool),
-                commandLine.ToString(' '),
-                copyFileTool.escapePath(copySourcePath),
-                copyFileTool.escapePath(destinationDir),
-                CommandLineProcessor.Processor.TerminatingArgs(sender.Tool as Bam.Core.ICommandLineTool)));
+            var configuration = target.GetConfiguration(targetModule);
             if (!target.isUtilityType && arePostBuildCommands)
             {
                 target.AddPostBuildCommands(commands, configuration);

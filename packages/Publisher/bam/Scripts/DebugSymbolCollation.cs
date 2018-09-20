@@ -43,9 +43,7 @@ namespace Publisher
     public abstract class DebugSymbolCollation :
         Bam.Core.Module
     {
-        public static Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Debug Symbol Collation Root");
-
-        private IDebugSymbolCollationPolicy Policy = null;
+        public const string DebugSymbolsDirectoryKey = "Debug Symbol Collation Root";
 
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
@@ -57,10 +55,16 @@ namespace Publisher
         {
             base.Init(parent);
 
-            this.RegisterGeneratedFile(Key, this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+            this.RegisterGeneratedFile(
+                DebugSymbolsDirectoryKey,
+                this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)")
+            );
 
             // one value, as debug symbols are not generated in IDE projects
-            this.Macros.Add("publishroot", this.GeneratedPaths[Key]);
+            this.Macros.Add(
+                "publishroot",
+                this.GeneratedPaths[DebugSymbolsDirectoryKey]
+            );
         }
 
         protected sealed override void
@@ -73,24 +77,19 @@ namespace Publisher
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
         {
-            if (null == this.Policy)
+            switch (Bam.Core.Graph.Instance.Mode)
             {
-                return;
-            }
-            this.Policy.CollateDebugSymbols(this, context);
-        }
-
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            switch (mode)
-            {
+#if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
-                    {
-                        var className = "Publisher." + mode + "DebugSymbolCollation";
-                        this.Policy = Bam.Core.ExecutionPolicyUtilities<IDebugSymbolCollationPolicy>.Create(className);
-                    }
+                    MakeFileBuilder.Support.AddCheckpoint(
+                        this,
+                        excludingGeneratedPath: DebugSymbolsDirectoryKey
+                    );
+                    break;
+#endif
+
+                default:
+                    // does not need to do anything
                     break;
             }
         }
@@ -105,7 +104,7 @@ namespace Publisher
                     module.SourcePathKey = collatedFile.SourcePathKey;
                     module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
                 });
-            this.DependsOn(createDebugSymbols);
+            this.Requires(createDebugSymbols);
 
             createDebugSymbols.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
@@ -119,20 +118,20 @@ namespace Publisher
         CopyDebugSymbols(
             ICollatedObject collatedFile)
         {
-            var createDebugSymbols = Bam.Core.Module.Create<ObjCopyModule>(preInitCallback: module =>
+            var createDebugSymbols = Bam.Core.Module.Create<MakeDebugSymbolFile>(preInitCallback: module =>
                 {
                     module.SourceModule = collatedFile.SourceModule;
                     module.SourcePathKey = collatedFile.SourcePathKey;
                     module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
                 });
-            this.DependsOn(createDebugSymbols);
+            this.Requires(createDebugSymbols);
 
             createDebugSymbols.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
             createDebugSymbols.PrivatePatch(settings =>
                 {
                     var objCopySettings = settings as IObjCopyToolSettings;
-                    objCopySettings.Mode = EObjCopyToolMode.OnlyKeepDebug;
+                    objCopySettings.OnlyKeepDebug = true;
                 });
 
             this.collatedObjects.Add(createDebugSymbols);
@@ -149,13 +148,11 @@ namespace Publisher
                     module.SourcePathKey = C.ConsoleApplication.PDBKey;
                     module.SetPublishingDirectory("$(0)", collatedFile.PublishingDirectory.Clone(module));
                 });
-            this.DependsOn(copyPDBModule);
+            this.Requires(copyPDBModule);
 
             copyPDBModule.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
-            // since PDBs aren't guaranteed to exist as it depends on build settings, allow missing files to go through
-            // TODO
-            //copyPDBModule.FailWhenSourceDoesNotExist = false;
+            // TODO: since PDBs aren't guaranteed to exist as it depends on build settings, allow missing files to go through
             this.collatedObjects.Add(copyPDBModule);
         }
 

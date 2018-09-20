@@ -27,15 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
     public class SharedObjectSymbolicLink :
         Bam.Core.Module
     {
-        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("SharedObjectSymbolicLink");
-
-        private ISharedObjectSymbolicLinkPolicy SymlinkPolicy;
-        private SharedObjectSymbolicLinkTool SymlinkTool;
+        public const string SOSymLinkKey = "Shared object symbolic link";
         private ConsoleApplication sharedObject;
 
         /// <summary>
@@ -53,12 +51,13 @@ namespace C
         {
             base.Init(parent);
 
+            this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
             this.IsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);
 
-            this.RegisterGeneratedFile(Key,
+            this.RegisterGeneratedFile(SOSymLinkKey,
                                        this.CreateTokenizedString("@dir($(0))/$(1)",
-                                                                  this.SharedObject.GeneratedPaths[ConsoleApplication.Key],
-                                                                  this.SharedObject.Macros[this.Macros["SymlinkUsage"].ToString()]));
+                                                                  this.SharedObject.GeneratedPaths[ConsoleApplication.ExecutableKey],
+                                                                  this.Macros["SymlinkFilename"]));
         }
 
         public ConsoleApplication
@@ -71,8 +70,10 @@ namespace C
             set
             {
                 this.sharedObject = value;
-                this.Macros["OutputName"] = value.Macros["OutputName"];
                 this.DependsOn(value);
+
+                // ensure that the symlink is called the same as what it is linking to
+                this.Macros["OutputName"] = value.Macros["OutputName"];
             }
         }
 
@@ -84,29 +85,51 @@ namespace C
             {
                 return;
             }
-            this.SymlinkPolicy.Symlink(this, context, this.SymlinkTool, this.SharedObject);
+            switch (Bam.Core.Graph.Instance.Mode)
+            {
+#if D_PACKAGE_NATIVEBUILDER
+                case "Native":
+                    NativeBuilder.Support.RunCommandLineTool(this, context);
+                    break;
+#endif
+
+#if D_PACKAGE_MAKEFILEBUILDER
+                case "MakeFile":
+                    MakeFileBuilder.Support.Add(
+                        this,
+                        isDependencyOfAll: true
+                    );
+                    break;
+#endif
+
+                default:
+                    throw new System.NotImplementedException();
+            }
         }
 
         protected override void
         EvaluateInternal()
         {
-#if __MonoCS__
+#if D_NUGET_MONO_POSIX_NETSTANDARD
             if (this.IsPrebuilt)
             {
                 return;
             }
             this.ReasonToExecute = null;
-            var symlinkPath = this.GeneratedPaths[Key].ToString();
+            var symlinkPath = this.GeneratedPaths[SOSymLinkKey].ToString();
             var symlinkInfo = new Mono.Unix.UnixSymbolicLinkInfo(symlinkPath);
             if (!symlinkInfo.Exists)
             {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[Key]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[SOSymLinkKey]);
                 return;
             }
             var targetPath = symlinkInfo.ContentsPath;
-            if (targetPath != System.IO.Path.GetFileName(this.SharedObject.GeneratedPaths[ConsoleApplication.Key].ToString()))
+            if (targetPath != System.IO.Path.GetFileName(this.SharedObject.GeneratedPaths[ConsoleApplication.ExecutableKey].ToString()))
             {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(this.GeneratedPaths[Key], this.SharedObject.Macros[this.Macros["SymlinkUsage"].ToString()]);
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                    this.GeneratedPaths[SOSymLinkKey],
+                    this.SharedObject.Macros[this.GeneratedPaths["SymlinkUsage"].ToString()]
+                );
                 return;
             }
 #else
@@ -114,17 +137,21 @@ namespace C
 #endif
         }
 
-        protected override void
-        GetExecutionPolicy(
-            string mode)
+        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
-            if (this.IsPrebuilt)
+            get
             {
-                return;
+                System.Diagnostics.Debug.Assert(1 == this.Dependents.Count);
+                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.DynamicLibrary.ExecutableKey, this.Dependents[0]);
             }
-            var className = "C." + mode + "SharedObjectSymbolicLink";
-            this.SymlinkPolicy = Bam.Core.ExecutionPolicyUtilities<ISharedObjectSymbolicLinkPolicy>.Create(className);
-            this.SymlinkTool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
+        }
+
+        public override Bam.Core.TokenizedString WorkingDirectory
+        {
+            get
+            {
+                return this.OutputDirectories.First();
+            }
         }
     }
 }

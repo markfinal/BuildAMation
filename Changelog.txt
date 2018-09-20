@@ -1,3 +1,51 @@
+20-Sep-2018 Fixes #475. BREAKING CHANGE. Introducing an Attribute based mechanism for translating Settings interface properties into what the specified build mode requires. This significantly reduces the amount of boilerplate code required to add new tools with custom settings. As a good example, see any of the 'Common' toolchain packages for the Settings class for each tool defined.
+Associated changes
+- Bam.Core.PathKey has been removed, and constant strings are used in their place, so that they can be used as arguments to Attributes. Some of the existing keys have changed their names, in case literals had been used elsewhere.
+- Bam.Core.Module.GetExecutionPolicy has been removed. All policy interfaces for tools have also been removed.
+- Bam.Core.ICommandLineTool.SuccessfulExitCodes is now exposed, for tools that may return a number of 'successful' exit codes.
+- Bam.Core.Module.RegisterGeneratedFile() may be called multiple times to replace the TokenizedString registered, unless a previous path has been parsed already, in which case an exception is thrown.
+- Bam.Core.Module.InputModules property is now exposed, to iterate over all input modules.
+- Bam.Core.Module.MakeSettings() is now the way to create a Settings class for a Module, but the default implementation may now be overridden.
+- Bam.Core.Module.WorkingDirectory is now exposed, as a mechanism for different modules of the same type to be run from different directories.
+- Bam.Core.Settings.Validate() may now be overridden to ensure a Settings instance is consistent and valid.
+- Bam.Core.Settings.ELayout defines the different ways in which a command line translation of a module build can be written.
+- Added C.CModule.OrderOnlyDependents to enumerate the non-build dependencies, recursively.
+- Added C.ConsoleApplication.HeaderFiles, ObjectFiles, Libraries enumerators.
+- Removed C.ConsoleApplication.WorkingDirectory (used in IDE project generation) since it was conflicting with the new Bam.Core.Module.WorkingDirectory property.
+- It is possible to build an Xcode project on non-macOS operating systems, although YMMV, and requires --C.discoveralltoolchains and --C.toolchain=Clang command line options.
+- C.ICommonCompilerSettingsOSX.MinimumVersionSupported has been replaced with MacOSXMinimumVersionSupported.
+- C.ICommonLinkerSettingsOSX now has CurrentVersion and CompatibilityVersion properties.
+- Removed C.ECompilerOutput enum. See the new C.ICommonCompilerSettings.PreprocessOnly property.
+- Added C.HeaderLibrary.HeaderFiles enumerator.
+- C.ISharedObjectSymbolicLinkSettings no longer has an OutputType property. But does have Force and SoftLink properties.
+- C.SettingsBase.SharedSettings() is significantly simplified, and no need to emit Convert functions for the interfaces used.
+- Toolchain 'common' packages now implement the majority of settings property interfaces now, and individually versioned toolchain packages inherit, and implement specific version interfaces. This reduces a lot of boilerplate code. Additionally, attributes on the settings properties now indicate the translations required, rather than separate convertion functions.
+- Added tests:
+ - ZipTest1
+ - InstallNameToolIdTest1
+ - InstallNameToolChangeTest1
+ - ChrpathTest1
+- MakeFile build mode defaults to GNU MakeFiles, but can now generate NMAKE makefiles using the --MakeFile.format=NMAKE command line argument.
+- Python test harness can now generate and run NMAKE for the MakeFile build mode.
+
+20-Sep-2018 Fixes #314. BREAKING CHANGE. BuildAMation is now built upon .NET Core 2.1 SDK. The following changes have occurred:
+- Bam, Bam.Core and Bam.Core.Test now use new-style .csproj project files.
+- VisualStudio 2017 is now required to build BAM on Windows. Latest VS for Mac and Monodevelop are required for MacOSX and Linux, respectively.
+- Bam internally generates new-style .csproj project files for both package builds and debug projects.
+- The latest minor version of the latest major version of the C# language is now used (at the time of writing, 7.3).
+- BAM packages may now specify NuGet packages to import external functionality. These may be specified per-platform in the package definition file.
+- Linux progress logging in Bam.Core.dll is disabled due to a performance bug (https://github.com/dotnet/corefx/issues/32174).
+- Bam.Core.Win32RegistryUtilities no longer uses Microsoft.Win32.RegistryKey in its public API, since this functionality is now in a NuGet package.
+- Bam.Core.OSUtilities.RunExecutable will now throw an exception (RunExecutableException) in failure, or return an instance of RunExecutableResults in success, in order to have full access to stdout, stderr and process exit codes.
+- A custom NuGet package repository can longer be project local, so the NuGetPackages directory in the distribution no longer exists.
+- Property Bam.Core.BamState.RunningMono has been removed.
+- Property Bam.Core.BamState.NuGetDirectory has been removed.
+- BAM_FEATURE_MODULE_CONFIGURATION has been incorporated into core functionality. No feature #define is needed now.
+- Added Bam.Core.Hash static utility class to handle all persistent hashing, since GetHashCode() is definitely no longer deterministic across application runs in .NET Core.
+- Bam.Core.RelativePathUtilities has been written to no longer use System.Uri.
+- bam --installdir will now display the installation directory.
+- bam --updatebamassemblyversions will update all package definition files read to the current BAM assembly version.
+
 27-Jul-2018 ======== Version 1.2.0 Release ========
 
 11-Jul-2018 Fixes #476. -bigobj is no longer unconditionally set in generated .vcxprojs.

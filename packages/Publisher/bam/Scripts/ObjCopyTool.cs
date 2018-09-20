@@ -59,7 +59,7 @@ namespace Publisher
         CreateDefaultSettings<T>(
             T module)
         {
-            return new ObjCopyToolSettings(module);
+            return null; // expected that Modules using this will specify their own Settings classes
         }
 
         public override Bam.Core.TokenizedString Executable

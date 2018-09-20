@@ -47,8 +47,13 @@ namespace C
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.GeneratedPaths[Key] = this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)");
-            this.Macros.Add("LinkOutput", this.GeneratedPaths[Key]);
+            this.RegisterGeneratedFile(
+                ExecutableKey,
+                this.CreateTokenizedString(
+                    "$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)"
+                )
+            );
+            this.Macros.Add("LinkOutput", this.GeneratedPaths[ExecutableKey]);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
@@ -59,23 +64,27 @@ namespace C
             {
                 if (!(this is Plugin) && !this.IsPrebuilt)
                 {
-                    // TODO: I wonder if these macros can be removed? (requires a change to GccCommon.ICommonLinkerSettings)
-                    this.Macros.Add("SOName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
-                    this.Macros.Add("LinkerName", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)"));
-
                     var linkerName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
                         {
-                            module.Macros.AddVerbatim("SymlinkUsage", "LinkerName");
+                            module.Macros.Add("SymlinkFilename", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)"));
                             module.SharedObject = this;
                         });
                     this.LinkerNameSymbolicLink = linkerName;
 
                     var SOName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
                         {
-                            module.Macros.AddVerbatim("SymlinkUsage", "SOName");
+                            module.Macros.Add("SymlinkFilename", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
                             module.SharedObject = this;
                         });
                     this.SONameSymbolicLink = SOName;
+
+#if D_PACKAGE_GCCCOMMON
+                    this.PrivatePatch(settings =>
+                        {
+                            var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+                            gccLinker.SharedObjectName = SOName.Macros["SymlinkFilename"];
+                        });
+#endif
                 }
             }
 
@@ -85,12 +94,6 @@ namespace C
                 if (null != linker)
                 {
                     linker.OutputType = ELinkerOutput.DynamicLibrary;
-                }
-
-                var osxLinker = settings as C.ICommonLinkerSettingsOSX;
-                if (null != osxLinker)
-                {
-                    osxLinker.InstallName = this.CreateTokenizedString("@rpath/@filename($(LinkOutput))");
                 }
             });
         }
@@ -247,31 +250,11 @@ namespace C
             base.ExecuteInternal(context);
         }
 
-        protected sealed override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            if (this.IsPrebuilt &&
-                !((this.headerModules.Count > 0) && Bam.Core.Graph.Instance.BuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles))
-            {
-                return;
-            }
-            base.GetExecutionPolicy(mode);
-        }
-
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
         {
             get
             {
                 return this.forwardedDeps.ToReadOnlyCollection();
-            }
-        }
-
-        public override TokenizedString WorkingDirectory
-        {
-            set
-            {
-                throw new System.NotSupportedException("Cannot set a working directory on a DLL");
             }
         }
 

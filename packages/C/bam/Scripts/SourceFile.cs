@@ -33,7 +33,7 @@ namespace C
         Bam.Core.Module,
         Bam.Core.IInputPath
     {
-        static public Bam.Core.PathKey Key = Bam.Core.PathKey.Generate("Source File");
+        public const string SourceFileKey = "Source File";
 
         protected override void
         EvaluateInternal()
@@ -49,26 +49,19 @@ namespace C
             // TODO: exception to this is generated source, but there ought to be an override for that
         }
 
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // there is no execution policy
-        }
-
         public virtual Bam.Core.TokenizedString InputPath
         {
             get
             {
-                return this.GeneratedPaths[Key];
+                return this.GeneratedPaths[SourceFileKey];
             }
             set
             {
-                if (this.GeneratedPaths.ContainsKey(Key))
+                if (this.GeneratedPaths.ContainsKey(SourceFileKey))
                 {
                     throw new Bam.Core.Exception("Source path has already been set");
                 }
-                this.RegisterGeneratedFile(Key, value);
+                this.RegisterGeneratedFile(SourceFileKey, value);
             }
         }
     }

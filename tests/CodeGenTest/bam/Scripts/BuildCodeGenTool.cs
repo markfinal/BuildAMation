@@ -47,7 +47,7 @@ namespace CodeGenTest
         CreateDefaultSettings<T>(
             T module) where T : Bam.Core.Module
         {
-            return new GeneratedSourceSettings();
+            return new GeneratedSourceSettings(module);
         }
 
         public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> EnvironmentVariables
@@ -66,7 +66,7 @@ namespace CodeGenTest
         {
             get
             {
-                return this.GeneratedPaths[C.ConsoleApplication.Key];
+                return this.GeneratedPaths[C.ConsoleApplication.ExecutableKey];
             }
         }
 
@@ -91,6 +91,14 @@ namespace CodeGenTest
             get
             {
                 return null;
+            }
+        }
+
+        Bam.Core.Array<int> Bam.Core.ICommandLineTool.SuccessfulExitCodes
+        {
+            get
+            {
+                return new Bam.Core.Array<int>(0);
             }
         }
     }

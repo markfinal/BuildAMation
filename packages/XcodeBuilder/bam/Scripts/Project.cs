@@ -73,7 +73,9 @@ namespace XcodeBuilder
 
             this.appendGroup(new Group(this, null)); // main group
             this.appendGroup(new Group(this, "Products")); // product ref group
+            this.appendGroup(new Group(this, "Frameworks")); // all frameworks
             this.MainGroup.AddChild(this.ProductRefGroup);
+            this.MainGroup.AddChild(this.Frameworks);
 
             // add the project's configuration list first
             this.appendConfigurationList(new ConfigurationList(this));
@@ -451,6 +453,15 @@ namespace XcodeBuilder
             }
         }
 
+        public Group Frameworks
+        {
+            get
+            {
+                // order is assumed - added in the constructor
+                return this.Groups[2];
+            }
+        }
+
         public FileReference
         EnsureFileReferenceExists(
             Bam.Core.TokenizedString path,
@@ -519,12 +530,18 @@ namespace XcodeBuilder
 
                 // reset SRCROOT, or it is taken to be where the workspace is
                 var pkgdir = this.Module.Macros["packagedir"].ToString() + "/";
-                var relativeSourcePath = Bam.Core.RelativePathUtilities.GetPath(pkgdir, this.ProjectDir.ToString());
+                var relativeSourcePath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                    System.IO.Path.GetDirectoryName(this.ProjectDir.ToString()),
+                    pkgdir
+                );
                 projectConfig["SRCROOT"] = new UniqueConfigurationValue(relativeSourcePath);
 
                 // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
                 // needed so that built products are no longer 'red' in the IDE
-                var relativeSymRoot = Bam.Core.RelativePathUtilities.GetPath(this.BuiltProductsDir, this.SourceRoot);
+                var relativeSymRoot = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                    this.SourceRoot,
+                    this.BuiltProductsDir
+                );
                 projectConfig["SYMROOT"] = new UniqueConfigurationValue("$(SRCROOT)/" + relativeSymRoot.TrimEnd('/'));
 
                 // all intermediate files generated are relative to this
@@ -616,10 +633,21 @@ namespace XcodeBuilder
             text.AppendFormat("{0}attributes = {{", indent2);
             text.AppendLine();
 
-            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+            try
+            {
+                var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+                text.AppendFormat("{0}LastUpgradeCheck = {1};", indent3, clangMeta.LastUpgradeCheck);
+                text.AppendLine();
+            }
+            catch (System.Collections.Generic.KeyNotFoundException)
+            {
+                if (Bam.Core.OSUtilities.IsOSXHosting)
+                {
+                    throw;
+                }
 
-            text.AppendFormat("{0}LastUpgradeCheck = {1};", indent3, clangMeta.LastUpgradeCheck);
-            text.AppendLine();
+                // otherwise, silently ignore
+            }
             text.AppendFormat("{0}}};", indent2);
             text.AppendLine();
             // project configuration list is always the first
@@ -836,7 +864,10 @@ namespace XcodeBuilder
         GetRelativePathToProject(
             Bam.Core.TokenizedString inputPath)
         {
-            var relPath = Bam.Core.RelativePathUtilities.GetPath(inputPath.ToString(), this.ProjectDir.ToString());
+            var relPath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                System.IO.Path.GetDirectoryName(this.ProjectDir.ToString()),
+                inputPath.ToString()
+            );
             if (Bam.Core.RelativePathUtilities.IsPathAbsolute(relPath))
             {
                 return null;

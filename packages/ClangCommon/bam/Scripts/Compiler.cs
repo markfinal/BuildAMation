@@ -76,7 +76,7 @@ namespace ClangCommon
         CreateDefaultSettings<T>(
             T module)
         {
-            var settings = new Clang.CompilerSettings(module);
+            var settings = new Clang.CCompilerSettings(module);
             return settings;
         }
     }

@@ -87,7 +87,7 @@ namespace Test8
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
-            this.Include<ApplicationTest>(C.ConsoleApplication.Key);
+            this.Include<ApplicationTest>(C.ConsoleApplication.ExecutableKey);
         }
     }
 }

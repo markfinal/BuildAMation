@@ -78,7 +78,7 @@ namespace PublishingTest1
             base.Init(parent);
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
-            var appAnchor = this.Include<SimpleExe>(C.ConsoleApplication.Key);
+            var appAnchor = this.Include<SimpleExe>(C.ConsoleApplication.ExecutableKey);
 
             // copy a single data file, next to the executable
             this.IncludeFiles<Runtime>("$(packagedir)/data/testfile1.txt", this.ExecutableDir, appAnchor);

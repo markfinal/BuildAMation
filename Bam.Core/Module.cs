@@ -81,7 +81,7 @@ namespace Bam.Core
             this.TokenizedStringCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
             this.Macros = new MacroList(this.GetType().FullName);
             // TODO: Can this be generalized to be a collection of files?
-            this.GeneratedPaths = new System.Collections.Generic.Dictionary<PathKey, TokenizedString>();
+            this._GeneratedPaths = new System.Collections.Generic.Dictionary<string, TokenizedString>();
 
             // capture the details of the encapsulating module
             this.EncapsulatingModule = null;
@@ -275,7 +275,6 @@ namespace Bam.Core
                 {
                     postInitCallback(module);
                 }
-                module.GetExecutionPolicy(Graph.Instance.Mode);
                 AllModules.Add(module);
                 stopwatch.Stop();
                 module.CreationTime = new System.TimeSpan(stopwatch.ElapsedTicks);
@@ -333,20 +332,43 @@ namespace Bam.Core
 
         /// <summary>
         /// Register a path against a particular key for the module. Useful for output paths that are referenced in dependents.
+        /// Will throw an exception if the key has already been registered and parsed, otherwise it can be replaced, for example
+        /// in Module subclasses that share a path key.
         /// </summary>
         /// <param name="key">Key.</param>
         /// <param name="path">Path.</param>
         protected void
         RegisterGeneratedFile(
-            PathKey key,
+            string key,
             TokenizedString path)
         {
-            if (this.GeneratedPaths.ContainsKey(key))
+            if (this._GeneratedPaths.ContainsKey(key))
             {
-                Log.DebugMessage("Key '{0}' already exists", key);
-                return;
+                if (this._GeneratedPaths[key].IsParsed)
+                {
+                    throw new Exception(
+                        "Key '{0}' has already been registered as a generated file for module {1}",
+                        key,
+                        this.ToString()
+                    );
+                }
+                if (this.OutputDirs.ContainsKey(key))
+                {
+                    this.OutputDirs.Remove(key);
+                }
+                this._GeneratedPaths[key] = path;
             }
-            this.GeneratedPaths.Add(key, path);
+            else
+            {
+                this._GeneratedPaths.Add(key, path);
+            }
+            if (null != path)
+            {
+                this.OutputDirs.Add(
+                    key,
+                    this.CreateTokenizedString("@dir($(0))", path)
+                );
+            }
         }
 
         /// <summary>
@@ -355,7 +377,7 @@ namespace Bam.Core
         /// <param name="key">Key.</param>
         private void
         RegisterGeneratedFile(
-            PathKey key)
+            string key)
         {
             this.RegisterGeneratedFile(key, null);
         }
@@ -645,14 +667,38 @@ namespace Bam.Core
         private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> PrivateInheritedPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
         private PrivatePatchDelegate TheClosingPatch = null;
 
+        private System.Collections.Generic.Dictionary<string, TokenizedString> _GeneratedPaths
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         /// Get the dictionary of keys and strings for all registered generated paths with the module.
         /// </summary>
         /// <value>The generated paths.</value>
-        public System.Collections.Generic.Dictionary<PathKey, TokenizedString> GeneratedPaths
+        public System.Collections.Generic.IReadOnlyDictionary<string, TokenizedString> GeneratedPaths
         {
-            get;
-            private set;
+            get
+            {
+                return this._GeneratedPaths;
+            }
+        }
+
+        private System.Collections.Generic.Dictionary<string, TokenizedString> OutputDirs = new System.Collections.Generic.Dictionary<string, TokenizedString>();
+
+        /// <summary>
+        /// Return output directories required to exist for this module.
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<TokenizedString> OutputDirectories
+        {
+            get
+            {
+                foreach (var dir in this.OutputDirs.Values.Where(item => !System.String.IsNullOrEmpty(item.ToString())))
+                {
+                    yield return dir;
+                }
+            }
         }
 
         /// <summary>
@@ -739,14 +785,6 @@ namespace Bam.Core
             get;
             set;
         }
-
-        /// <summary>
-        /// For the given build mode, perform the necessary actions to generate an execution policy.
-        /// </summary>
-        /// <param name="mode">Mode.</param>
-        protected abstract void
-        GetExecutionPolicy(
-            string mode);
 
         private Module TheTool;
         /// <summary>
@@ -879,6 +917,16 @@ namespace Bam.Core
             if (null != parentModule && null != parentModule.TheClosingPatch)
             {
                 parentModule.TheClosingPatch(settings);
+            }
+
+            // now validate the Settings properties
+            try
+            {
+                this.Settings.Validate();
+            }
+            catch (Bam.Core.Exception ex)
+            {
+                throw new Bam.Core.Exception(ex, "Settings validation failed for module {0} because:", this.ToString());
             }
         }
 
@@ -1024,12 +1072,13 @@ namespace Bam.Core
         static public void
         CompleteModules()
         {
-            var scale = 100.0f / (3 * AllModules.Count);
-            var count = 2 * AllModules.Count;
+            var totalProgress = 3 * Module.Count;
+            var scale = 100.0f / totalProgress;
+            var progress = 2 * Module.Count;
             foreach (var module in AllModules.Reverse<Module>())
             {
                 module.Complete();
-                Log.DetailProgress("{0,3}%", (int)(++count * scale));
+                Log.DetailProgress("{0,3}%", (int)((++progress) * scale));
             }
         }
 
@@ -1177,6 +1226,53 @@ namespace Bam.Core
         {
             get;
             private set;
+        }
+
+        /// <summary>
+        /// Enumerable of Modules that are considered inputs to this Module, as in, they need
+        /// to be operated on in order to generate the output(s) of this Module.
+        /// By default, this is the list of Dependents (not Required), although subclasses can
+        /// override this property to give a more precise meaning.
+        /// This default implementation is not aware of path keys of derived Module types
+        /// so if a caller requires knowledge of that, it is expected the Module types of interest
+        /// will override this property to provide the necessary path keys.
+        /// </summary>
+        public virtual System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string,Module>> InputModules
+        {
+            get
+            {
+                foreach (var module in this.DependentsList)
+                {
+                    yield return new System.Collections.Generic.KeyValuePair<string, Module>("unspecified path key", module);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Create an instance of the Settings class used for the Module.
+        /// By default, this will come from the Tool (if defined).
+        /// Overriding this function allows Modules to use different Settings classes,
+        /// although they must implement the appropriate interfaces.
+        /// </summary>
+        /// <returns>Instance of the Settings class for this Module.</returns>
+        public virtual Settings
+        MakeSettings()
+        {
+            System.Diagnostics.Debug.Assert(null != this.Tool);
+            return (this.Tool as ITool).CreateDefaultSettings(this);
+        }
+
+        /// <summary>
+        /// Allow a Module to specify the working directory in which its Tool is executed.
+        /// By default, this is null, meaning that either no working directory is needed
+        /// or the call site for Tool execution can specify it.
+        /// </summary>
+        public virtual TokenizedString WorkingDirectory
+        {
+            get
+            {
+                return null;
+            }
         }
     }
 }

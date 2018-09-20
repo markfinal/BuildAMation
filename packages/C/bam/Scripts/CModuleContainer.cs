@@ -302,14 +302,6 @@ namespace C
         }
 
         protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-            // do nothing
-            // TODO: might have to get the policy, for the sharing settings
-        }
-
-        protected override void
         EvaluateInternal()
         {
             this.ReasonToExecute = null;
