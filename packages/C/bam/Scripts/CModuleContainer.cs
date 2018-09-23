@@ -80,6 +80,7 @@ namespace C
 
         /// <summary>
         /// Add a single object file, given the source path, to the container. Path must resolve to a single file.
+        /// If the path contains a wildcard (*) character, an exception is thrown.
         /// </summary>
         /// <returns>The object file module, in order to manage patches.</returns>
         /// <param name="path">Path.</param>
@@ -91,6 +92,13 @@ namespace C
             Bam.Core.Module macroModuleOverride = null,
             bool verbatim = false)
         {
+            if (path.Contains('*'))
+            {
+                throw new Bam.Core.Exception(
+                    "Single path '{0}' cannot contain a wildcard character. Use AddFiles instead of AddFile",
+                    path
+                );
+            }
             // TODO: how can I distinguish between creating a child module that inherits it's parents settings
             // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
             var child = Bam.Core.Module.Create<ChildModuleType>(this);
