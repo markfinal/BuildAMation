@@ -66,6 +66,10 @@ namespace XcodeBuilder
                 condition_text.AppendFormat("! -e {0} ", output_path);
                 foreach (var input in module.InputModules)
                 {
+                    if (!input.Value.GeneratedPaths.Any())
+                    {
+                        continue;
+                    }
                     var input_path = Bam.Core.IOWrapper.EscapeSpacesInPath(input.Value.GeneratedPaths[input.Key].ToString());
                     condition_text.AppendFormat("|| {1} -nt {0} ", output_path, input_path);
                 }
