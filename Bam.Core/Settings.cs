@@ -159,6 +159,9 @@ namespace Bam.Core
         /// <summary>
         /// For all settings interfaces, optionally calling Empty method and Default method
         /// in the extensions class defined by SettingsExtensionsAttribute on each interface.
+        /// If defaults are allowed, also call this Settings class' ModifyDefaults() function
+        /// which can be overridden in subclasses.
+        /// If defaults are allowed, then call the LocalPolicy if it's been defined.
         /// </summary>
         /// <param name="module">Module.</param>
         /// <param name="emptyFirst">If set to <c>true</c> empty first.</param>
@@ -188,9 +191,13 @@ namespace Bam.Core
                     }
                 }
             }
-            if (useDefaults && (null != LocalPolicy))
+            if (useDefaults)
             {
-                LocalPolicy.DefineLocalSettings(this, module);
+                ModifyDefaults();
+                if (null != LocalPolicy)
+                {
+                    LocalPolicy.DefineLocalSettings(this, module);
+                }
             }
             this._Properties = FindProperties(this.GetType());
         }
@@ -288,5 +295,14 @@ namespace Bam.Core
             get;
             set;
         }
+
+        /// <summary>
+        /// Hook into the Settings initialisation system to allow specific
+        /// Settings-derived classes to change their defaults.
+        /// This is executed after all of the Interfaces, but before the LocalPolicy.
+        /// </summary>
+        protected virtual void
+        ModifyDefaults()
+        {}
     }
 }
