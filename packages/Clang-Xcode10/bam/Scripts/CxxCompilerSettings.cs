@@ -44,5 +44,13 @@ namespace Clang
             :
             base(module, useDefaults)
         { }
+
+        protected override void
+        ModifyDefaults()
+        {
+            base.ModifyDefaults();
+            // libstdc++ removed in Xcode10
+            (this as C.ICxxOnlyCompilerSettings).StandardLibrary = C.Cxx.EStandardLibrary.libcxx;
+        }
     }
 }
