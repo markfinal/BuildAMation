@@ -37,5 +37,17 @@ namespace Clang
             :
             base(module)
         { }
+
+        public override void
+        Validate()
+        {
+            base.Validate();
+            if ((this as C.ICommonAssemblerSettings).Bits == C.EBit.ThirtyTwo)
+            {
+                throw new Bam.Core.Exception(
+                    "32-bit support has been removed starting in Xcode 10"
+                );
+            }
+        }
     }
 }
