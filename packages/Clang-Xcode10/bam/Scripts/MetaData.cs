@@ -34,7 +34,7 @@ namespace Clang
     {
         public MetaData()
             :
-            base("1000", new Bam.Core.StringArray("macosx10.14"))
+            base("1000", new Bam.Core.StringArray("macosx10.14"), pbxprojObjectVersion: 50)
         {}
 
         public override int CompilerMajorVersion

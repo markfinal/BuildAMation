@@ -38,9 +38,11 @@ namespace ClangCommon
 
         protected MetaData(
             string lastUpgradeCheck,
-            Bam.Core.StringArray expectedSDKs)
+            Bam.Core.StringArray expectedSDKs,
+            int pbxprojObjectVersion = 46)
         {
-            this.Meta.Add("LastUpgradeCheck", lastUpgradeCheck);
+            this.LastUpgradeCheck = lastUpgradeCheck;
+            this.PbxprojObjectVersion = pbxprojObjectVersion;
             this.expectedSDKs = expectedSDKs;
         }
 
@@ -90,6 +92,24 @@ namespace ClangCommon
             get
             {
                 return this.Meta["LastUpgradeCheck"] as string;
+            }
+
+            private set
+            {
+                this.Meta["LastUpgradeCheck"] = value;
+            }
+        }
+
+        public int PbxprojObjectVersion
+        {
+            get
+            {
+                return (int)this.Meta["PbxprojObjectVersion"];
+            }
+
+            private set
+            {
+                this.Meta["PbxprojObjectVersion"] = value;
             }
         }
 

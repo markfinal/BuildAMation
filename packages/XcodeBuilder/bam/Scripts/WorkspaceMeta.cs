@@ -198,8 +198,23 @@ namespace XcodeBuilder
                 text.AppendLine();
                 text.AppendFormat("{0}}};", indent);
                 text.AppendLine();
-                text.AppendFormat("{0}objectVersion = 46;", indent);
-                text.AppendLine();
+
+                try
+                {
+                    var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+                    text.AppendFormat("{0}objectVersion = {1};", indent, clangMeta.PbxprojObjectVersion);
+                    text.AppendLine();
+                }
+                catch (System.Collections.Generic.KeyNotFoundException)
+                {
+                    if (Bam.Core.OSUtilities.IsOSXHosting)
+                    {
+                        throw;
+                    }
+
+                    // otherwise, silently ignore
+                }
+
                 text.AppendFormat("{0}objects = {{", indent);
                 text.AppendLine();
                 project.Serialize(text, indentLevel + 1);

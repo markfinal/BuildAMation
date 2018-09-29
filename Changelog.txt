@@ -1,3 +1,5 @@
+29-Sep-2018 Fixes #487. Xcode 9 and 10 now use objectVersion=50 in their pbxproject files.
+
 29-Sep-2018 Fixes #489. Added Bam.Core.Settings.ModifyDefaults(), an empty virtual function, which is called after all settings interfaces defaults are called, but before the LocalPolicy. This allows, for example, specific compiler versions to override defaults since their own specifications have changed from previous versions.
 
 29-Sep-2018 Fixes #486. Added initial support for Xcode 10. Use --Clang.version=Xcode10 to switch. Reminders from the Apple release notes; building 32-bit applications and using libstdc++ are no longer support.
