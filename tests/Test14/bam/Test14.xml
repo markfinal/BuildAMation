@@ -3,6 +3,7 @@
   <Description>Create a static library (first step in testing forwarded link dependencies)</Description>
   <Dependents>
     <Package name="C" />
+    <Package name="Clang" version="Xcode10" />
     <Package name="Clang" version="Xcode4" />
     <Package name="Clang" version="Xcode5" />
     <Package name="Clang" version="Xcode6" />

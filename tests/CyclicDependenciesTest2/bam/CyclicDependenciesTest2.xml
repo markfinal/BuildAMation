@@ -3,6 +3,7 @@
   <Description>A test for cyclic dependencies in C static libraries.</Description>
   <Dependents>
     <Package name="C" />
+    <Package name="Clang" version="Xcode10" />
     <Package name="Clang" version="Xcode4" />
     <Package name="Clang" version="Xcode5" />
     <Package name="Clang" version="Xcode6" />

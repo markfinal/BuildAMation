@@ -3,6 +3,7 @@
   <Description>Exercising source generation from external programs</Description>
   <Dependents>
     <Package name="C" />
+    <Package name="Clang" version="Xcode10" />
     <Package name="Clang" version="Xcode4" />
     <Package name="Clang" version="Xcode5" />
     <Package name="Clang" version="Xcode6" />

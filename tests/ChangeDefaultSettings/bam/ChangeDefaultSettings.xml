@@ -3,6 +3,7 @@
   <Description>Exercising Bam.Core.ISitePolicy to change the default settings.</Description>
   <Dependents>
     <Package name="C" />
+    <Package name="Clang" version="Xcode10" />
     <Package name="Clang" version="Xcode4" />
     <Package name="Clang" version="Xcode5" />
     <Package name="Clang" version="Xcode6" />

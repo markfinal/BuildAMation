@@ -3,6 +3,7 @@
   <Description>Build code that is outside of the package directory</Description>
   <Dependents>
     <Package name="C" />
+    <Package name="Clang" version="Xcode10" />
     <Package name="Clang" version="Xcode4" />
     <Package name="Clang" version="Xcode5" />
     <Package name="Clang" version="Xcode6" />

@@ -27,58 +27,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace XcodeBuilder
+namespace Clang
 {
-    public abstract class WorkspaceSettings
+    public sealed class MetaData :
+        ClangCommon.MetaData
     {
-        protected void
-        CreateKeyValuePair(
-            System.Xml.XmlDocument doc,
-            System.Xml.XmlElement parent,
-            string key,
-            string value)
+        public MetaData()
+            :
+            base("1000", new Bam.Core.StringArray("macosx10.14"))
+        {}
+
+        public override int CompilerMajorVersion
         {
-            var keyEl = doc.CreateElement("key");
-            keyEl.InnerText = key;
-            var valueEl = doc.CreateElement("string");
-            valueEl.InnerText = value;
-            parent.AppendChild(keyEl);
-            parent.AppendChild(valueEl);
-        }
-
-        protected abstract void
-        CreatePlist();
-
-        protected string Path
-        {
-            get;
-            set;
-        }
-
-        protected System.Xml.XmlDocument Document
-        {
-            get;
-            set;
-        }
-
-        public void
-        Serialize()
-        {
-            // do not write a Byte-Ordering-Mark (BOM)
-            var encoding = new System.Text.UTF8Encoding(false);
-
-            Bam.Core.IOWrapper.CreateDirectory(System.IO.Path.GetDirectoryName(this.Path));
-            using (var writer = new System.IO.StreamWriter(this.Path, false, encoding))
+            get
             {
-                var settings = new System.Xml.XmlWriterSettings();
-                settings.OmitXmlDeclaration = false;
-                settings.NewLineChars = "\n";
-                settings.Indent = true;
-                using (var xmlWriter = System.Xml.XmlWriter.Create(writer, settings))
-                {
-                    this.Document.WriteTo(xmlWriter);
-                    xmlWriter.WriteWhitespace(settings.NewLineChars);
-                }
+                return 1000;
             }
         }
     }

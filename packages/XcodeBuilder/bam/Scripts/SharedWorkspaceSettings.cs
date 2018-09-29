@@ -29,57 +29,50 @@
 #endregion // License
 namespace XcodeBuilder
 {
-    public abstract class WorkspaceSettings
+    public class SharedWorkspaceSettings :
+        WorkspaceSettings
     {
-        protected void
-        CreateKeyValuePair(
-            System.Xml.XmlDocument doc,
-            System.Xml.XmlElement parent,
-            string key,
-            string value)
+        public
+        SharedWorkspaceSettings(
+            string workspaceDir)
         {
-            var keyEl = doc.CreateElement("key");
-            keyEl.InnerText = key;
-            var valueEl = doc.CreateElement("string");
-            valueEl.InnerText = value;
-            parent.AppendChild(keyEl);
-            parent.AppendChild(valueEl);
+            this.Path = workspaceDir;
+            this.Path = System.IO.Path.Combine(this.Path, "xcshareddata");
+            this.Path = System.IO.Path.Combine(this.Path, "WorkspaceSettings.xcsettings");
+            this.CreatePlist();
         }
 
-        protected abstract void
-        CreatePlist();
-
-        protected string Path
+        protected override void
+        CreatePlist()
         {
-            get;
-            set;
-        }
+            var doc = new System.Xml.XmlDocument();
+            // don't resolve any URLs, or if there is no internet, the process will pause for some time
+            doc.XmlResolver = null;
 
-        protected System.Xml.XmlDocument Document
-        {
-            get;
-            set;
-        }
-
-        public void
-        Serialize()
-        {
-            // do not write a Byte-Ordering-Mark (BOM)
-            var encoding = new System.Text.UTF8Encoding(false);
-
-            Bam.Core.IOWrapper.CreateDirectory(System.IO.Path.GetDirectoryName(this.Path));
-            using (var writer = new System.IO.StreamWriter(this.Path, false, encoding))
             {
-                var settings = new System.Xml.XmlWriterSettings();
-                settings.OmitXmlDeclaration = false;
-                settings.NewLineChars = "\n";
-                settings.Indent = true;
-                using (var xmlWriter = System.Xml.XmlWriter.Create(writer, settings))
-                {
-                    this.Document.WriteTo(xmlWriter);
-                    xmlWriter.WriteWhitespace(settings.NewLineChars);
-                }
+                var type = doc.CreateDocumentType(
+                    "plist",
+                    "-//Apple Computer//DTD PLIST 1.0//EN",
+                    "http://www.apple.com/DTDs/PropertyList-1.0.dtd",
+                    null
+                );
+                doc.AppendChild(type);
             }
+            var plistEl = doc.CreateElement("plist");
+            {
+                var versionAttr = doc.CreateAttribute("version");
+                versionAttr.Value = "1.0";
+                plistEl.Attributes.Append(versionAttr);
+            }
+
+            var dictEl = doc.CreateElement("dict");
+            plistEl.AppendChild(dictEl);
+            doc.AppendChild(plistEl);
+
+            // TODO: revisit for the Xcode 10 'new build system'
+            CreateKeyValuePair(doc, dictEl, "BuildSystemType", "Original");
+
+            this.Document = doc;
         }
     }
 }

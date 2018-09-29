@@ -1,3 +1,5 @@
+29-Sep-2018 Fixes #486. Added initial support for Xcode 10. Use --Clang.version=Xcode10 to switch. Reminders from the Apple release notes; building 32-bit applications and using libstdc++ are no longer support.
+
 20-Sep-2018 Fixes #475. BREAKING CHANGE. Introducing an Attribute based mechanism for translating Settings interface properties into what the specified build mode requires. This significantly reduces the amount of boilerplate code required to add new tools with custom settings. As a good example, see any of the 'Common' toolchain packages for the Settings class for each tool defined.
 Associated changes
 - Bam.Core.PathKey has been removed, and constant strings are used in their place, so that they can be used as arguments to Attributes. Some of the existing keys have changed their names, in case literals had been used elsewhere.

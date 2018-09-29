@@ -3,6 +3,7 @@
   <Description>Test package exercising a module that is unable to build as a dependency for a variety of other modules</Description>
   <Dependents>
     <Package name="C" />
+    <Package name="Clang" version="Xcode10" />
     <Package name="Clang" version="Xcode4" />
     <Package name="Clang" version="Xcode5" />
     <Package name="Clang" version="Xcode6" />

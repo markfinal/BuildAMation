@@ -48,10 +48,17 @@ namespace XcodeBuilder
 
             var workspaceMeta = Bam.Core.Graph.Instance.MetaData as WorkspaceMeta;
             var workspaceDir = workspaceMeta.Serialize();
-            var workspaceSettings = new WorkspaceSettings(workspaceDir);
-            workspaceSettings.Serialize();
+            var userWorkspaceSettings = new UserWorkspaceSettings(workspaceDir);
+            userWorkspaceSettings.Serialize();
 
-            Bam.Core.Log.Info("Successfully created Xcode workspace for package '{0}'\n\t{1}", Bam.Core.Graph.Instance.MasterPackage.Name, workspaceDir);
+            var sharedWorkspaceSettings = new SharedWorkspaceSettings(workspaceDir);
+            sharedWorkspaceSettings.Serialize();
+
+            Bam.Core.Log.Info(
+                "Successfully created Xcode workspace for package '{0}'\n\t{1}",
+                Bam.Core.Graph.Instance.MasterPackage.Name,
+                workspaceDir
+            );
         }
 
         Bam.Core.TokenizedString

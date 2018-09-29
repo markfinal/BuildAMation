@@ -3,6 +3,7 @@
   <Description>Create a program that depends on a dynamic library that also depends on a dynamic library</Description>
   <Dependents>
     <Package name="C" />
+    <Package name="Clang" version="Xcode10" />
     <Package name="Clang" version="Xcode4" />
     <Package name="Clang" version="Xcode5" />
     <Package name="Clang" version="Xcode6" />

@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="PublishingTest2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
-  <Description>Publishing test, collating files that are prebuilt</Description>
+<PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="Clang" version="Xcode10" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <Description>Clang support for Xcode10, SDK 10.14</Description>
   <Dependents>
-    <Package name="C" />
-    <Package name="Clang" version="Xcode10" />
-    <Package name="MakeFileBuilder" />
-    <Package name="NativeBuilder" />
-    <Package name="Publisher" />
+    <Package name="ClangCommon" />
+    <Package name="XcodeBuilder" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="2" minor="0" patch="0" />
