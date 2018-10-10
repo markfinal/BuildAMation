@@ -5,6 +5,17 @@ image:
 clone_depth: 1
 configuration: Release
 platform: AnyCPU
+for:
+  - matrix:
+      only:
+        - image: Ubuntu
+    environment:
+	  GCC_VERSION: 5.4
+  - matrix:
+      only:
+        - image: Ubuntu1804
+    environment:
+	  GCC_VERSION: 7
 install:
   - cmd: powershell choco install doxygen.portable
   - sh: ./codingtools/install_ubuntu_dependencies.sh
@@ -29,7 +40,7 @@ test_script:
   - cmd: env.bat
   - sh: source env.sh
   - cmd: python tests\runtests.py -x Mingw --VisualC.version=15.0 -b Native -c debug -c profile -j0 -d -t InstallerTest1
-  - sh: python tests/runtests.py --Gcc.version=5.4 -b Native -c debug -c profile -j0 -d -t InstallerTest1
+  - sh: python tests/runtests.py --Gcc.version=$GCC_VERSION -b Native -c debug -c profile -j0 -d -t InstallerTest1
   ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b VSSolution -c debug -c profile -j0 -d
   ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
   - cd ..
