@@ -5,30 +5,31 @@ image:
 clone_depth: 1
 configuration: Release
 platform: AnyCPU
-##install:
-##  - ps: choco install doxygen.portable
+install:
+  - ps: choco install doxygen.portable
 before_build:
   - cmd: dotnet --version
   - sh: dotnet --version
 build_script:
   - cmd: python codingtools\dotnetcore_run_unittests.py
-  - cmd: python codingtools\dotnetcore_make_release.py --local ##--doxygen doxygen.exe
+  - cmd: python codingtools\dotnetcore_make_release.py --local --doxygen doxygen.exe
   - sh: python codingtools/dotnetcore_run_unittests.py
-  - sh: python codingtools/dotnetcore_make_release.py --local ##--doxygen doxygen.exe
+  - sh: python codingtools/dotnetcore_make_release.py --local
 after_build:
   - cmd: 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish
-  ##- 7z a bam_docs.zip %APPVEYOR_BUILD_FOLDER%\docs
+  - cmd: 7z a bam_docs.zip %APPVEYOR_BUILD_FOLDER%\docs
 artifacts:
   - path: bam.zip
     name: Bam
-  ##- path: bam_docs.zip
-  ##  name: Bam Documentation
+  - path: bam_docs.zip
+    name: Bam Documentation
 test_script:
   - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
   - cd bam_publish
   - cmd: env.bat
   - sh: ./env.sh
-  ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b Native -c debug -c profile -j0 -d
+  - cmd: python tests\runtests.py -x Mingw --VisualC.version=15.0 -b Native -c debug -c profile -j0 -d -t InstallerTest1
+  - sh: python tests/runtests.py --Gcc.version=5.4 -b Native -c debug -c profile -j0 -d -t InstallerTest1
   ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b VSSolution -c debug -c profile -j0 -d
   ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
   - cd ..
