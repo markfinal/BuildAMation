@@ -77,7 +77,11 @@ namespace AssemblerTest2
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var gccMeta = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-                if (gccMeta.CompilerMajorVersion < 5)
+				if (gccMeta.CompilerMajorVersion < 6)
+                {
+                    asmSource.AddFiles("$(packagedir)/source/gcc/5/*.S");
+                }
+                else if (gccMeta.CompilerMajorVersion < 5)
                 {
                     asmSource.AddFiles("$(packagedir)/source/gcc/4/*.S");
                 }
