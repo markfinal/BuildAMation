@@ -34,6 +34,4 @@ test_script:
   ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
   - cd ..
 on_finish:
-  - cmd: powershell |
-      $wc = New-Object 'System.Net.WebClient'
-      $wc.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$env:APPVEYOR_JOB_ID", (Resolve-Path .\bam_unittests\bin\Release\netcoreapp2.1\TestResults.trx))
+  - cmd: powershell $wc = New-Object 'System.Net.WebClient'; $wc.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$env:APPVEYOR_JOB_ID", (Resolve-Path .\bam_unittests\bin\Release\netcoreapp2.1\TestResults.trx))
