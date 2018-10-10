@@ -38,16 +38,7 @@ namespace Gcc
         {
             get
             {
-                return 4;
-            }
-        }
-
-        public override int?
-        CompilerMinorVersion
-        {
-            get
-            {
-                return 8;
+                return 7;
             }
         }
     }

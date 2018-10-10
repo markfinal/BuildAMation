@@ -27,28 +27,22 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace Gcc
 {
-    public sealed class MetaData :
-        GccCommon.MetaData
+    public class CxxCompilerSettings :
+        GccCommon.CommonCxxCompilerSettings
     {
-        public override int
-        CompilerMajorVersion
-        {
-            get
-            {
-                return 4;
-            }
-        }
+        public CxxCompilerSettings(
+            Bam.Core.Module module)
+            :
+            base(module)
+        { }
 
-        public override int?
-        CompilerMinorVersion
-        {
-            get
-            {
-                return 8;
-            }
-        }
+        public CxxCompilerSettings(
+            Bam.Core.Module module,
+            bool useDefaults)
+            :
+            base(module, useDefaults)
+        { }
     }
 }

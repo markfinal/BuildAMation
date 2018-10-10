@@ -75,9 +75,12 @@ namespace GccCommon
             {
                 throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gccLocation, System.String.Join(".", gccVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
             }
-            if (System.Convert.ToInt32(gccVersion[1]) != (int)this.Meta["ExpectedMinorVersion"])
+            if (null != this.Meta["ExpectedMinorVersion"])
             {
-                throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gccLocation, System.String.Join(".", gccVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
+                if (System.Convert.ToInt32(gccVersion[1]) != (int)this.Meta["ExpectedMinorVersion"])
+                {
+                    throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gccLocation, System.String.Join(".", gccVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
+                }
             }
         }
 
@@ -160,10 +163,13 @@ namespace GccCommon
             get;
         }
 
-        public abstract int
+        public virtual int?
         CompilerMinorVersion
         {
-            get;
+            get
+            {
+                return null; // defaults to no minor version number
+            }
         }
 
         void
@@ -180,6 +186,8 @@ namespace GccCommon
                 var location = gccLocations.First();
                 this.Meta.Add("GccPath", location);
                 var gccVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion").StandardOutput;
+                // older versions of the GCC compiler display a major.minor version number
+                // newer versions just display a major version number
                 var gccVersionSplit = gccVersion.Split(new [] { '.' });
                 this.Meta.Add("GccVersion", gccVersionSplit);
                 Bam.Core.Log.Info("Using GCC version {0} installed at {1}", gccVersion, location);

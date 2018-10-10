@@ -42,7 +42,7 @@ namespace Gcc
             }
         }
 
-        public override int
+        public override int?
         CompilerMinorVersion
         {
             get
