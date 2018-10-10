@@ -1,5 +1,6 @@
 #!/bin/bash
 
+sudo apt-get update
 # GCC ObjectiveC
 # GNUStep
 # 32-bit GCC and G++
