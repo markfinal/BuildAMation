@@ -9,12 +9,12 @@ platform: AnyCPU
 ##  - ps: choco install doxygen.portable
 before_build:
   - cmd: dotnet --version
+  - sh: dotnet --version
 build_script:
-  matrix:
-    - cmd: python codingtools\dotnetcore_run_unittests.py
-    - cmd: python codingtools\dotnetcore_make_release.py --local ##--doxygen doxygen.exe
-    - sh: python codingtools/dotnetcore_run_unittests.py
-    - sh: python codingtools/dotnetcore_make_release.py --local ##--doxygen doxygen.exe
+  - cmd: python codingtools\dotnetcore_run_unittests.py
+  - cmd: python codingtools\dotnetcore_make_release.py --local ##--doxygen doxygen.exe
+  - sh: python codingtools/dotnetcore_run_unittests.py
+  - sh: python codingtools/dotnetcore_make_release.py --local ##--doxygen doxygen.exe
 after_build:
   - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish
   ##- 7z a bam_docs.zip %APPVEYOR_BUILD_FOLDER%\docs
