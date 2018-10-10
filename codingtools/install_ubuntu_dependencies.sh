@@ -6,4 +6,4 @@
 # 32 and 64-bit X11 development files for Test12
 # chrpath for ChrpathTest1
 # doxygen for doc generation
-sudo apt-get -y install gobjc gnustep-devel gcc-multilib g++-multilib libx11-dev libx11-dev:i386 chrpath doxygen
+sudo apt-get -y --no-install-recommends install gobjc gnustep-devel gcc-multilib g++-multilib libx11-dev libx11-dev:i386 chrpath doxygen
