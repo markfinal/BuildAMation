@@ -44,6 +44,7 @@ namespace Bam.Core
             string configurationName)
         {
             var configuration = EConfiguration.Invalid;
+            Log.MessageAll("Compare '{0}' against 'Debug', 'Optimized', Profile'", configurationName);
             if (0 == System.String.Compare(configurationName, "Debug", true))
             {
                 configuration = EConfiguration.Debug;
