@@ -6,7 +6,8 @@ notifications:
      on_failure: always
 language: csharp
 install:
-  - if [ $TRAVIS_OS_NAME = linux ]; then ./codingtools/install_ubuntu_dependencies.sh; fi
+  # GCC ObjectiveC, GNUStep and 32-bit GCC and G++, and 32-bit X11 development files for Test12; chrpath for ChrpathTest1; doxygen for doc generation
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get install gobjc gnustep-devel gcc-multilib g++-multilib libx11-dev:i386 chrpath doxygen; fi
 matrix:
   include:
   - os: linux
@@ -15,11 +16,11 @@ matrix:
     dotnet: 2.1.401
     script:
       - python codingtools/dotnetcore_run_unittests.py
-      - python codingtools/dotnetcore_make_release.py --local --doxygen doxygen
+      - python codingtools/dotnetcore_make_release.py --local ##--doxygen doxygen
       - cd bam_publish
       - source env.sh
-      - python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d
-      - python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -b MakeFile
+      ##- python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d
+      ##- python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -b MakeFile
       - cd ..
   - os: osx
     osx_image: xcode8.3
@@ -30,9 +31,9 @@ matrix:
       - python codingtools/dotnetcore_make_release.py --local
       - cd bam_publish
       - source env.sh
-      - python tests/runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d
+      ##- python tests/runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d
       #- python tests/runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d -b MakeFile
-      - python tests/runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d -b Xcode
+      ##- python tests/runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d -b Xcode
       - cd ..
   - os: osx
     osx_image: xcode9.4
@@ -43,7 +44,7 @@ matrix:
       - python codingtools/dotnetcore_make_release.py --local
       - cd bam_publish
       - source env.sh
-      - python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
+      ##- python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d
       #- python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b MakeFile
       #- python tests/runtests.py --Clang.version=Xcode9 -b Native -c debug -c profile -j0 -d -b Xcode
       - cd ..
@@ -56,7 +57,7 @@ matrix:
       - python codingtools/dotnetcore_make_release.py --local
       - cd bam_publish
       - source env.sh
-      - python tests/runtests.py --Clang.version=Xcode10 -b Native -c debug -c profile -j0 -d --C.bitdepth=64
+      ##- python tests/runtests.py --Clang.version=Xcode10 -b Native -c debug -c profile -j0 -d --C.bitdepth=64
       #- python tests/runtests.py --Clang.version=Xcode10 -b Native -c debug -c profile -j0 -d --C.bitdepth=64 -b MakeFile
       #- python tests/runtests.py --Clang.version=Xcode10 -b Native -c debug -c profile -j0 -d --C.bitdepth=64 -b Xcode
       - cd ..

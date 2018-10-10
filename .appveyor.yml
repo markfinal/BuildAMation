@@ -2,28 +2,28 @@ image: Visual Studio 2017
 clone_depth: 1
 configuration: Release
 platform: AnyCPU
-install:
-  - ps: choco install doxygen.portable
+##install:
+##  - ps: choco install doxygen.portable
 before_build:
   - cmd: dotnet --version
 build_script:
   - python codingtools\dotnetcore_run_unittests.py
-  - python codingtools\dotnetcore_make_release.py --local --doxygen doxygen.exe
+  - python codingtools\dotnetcore_make_release.py --local ##--doxygen doxygen.exe
 after_build:
   - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish
-  - 7z a bam_docs.zip %APPVEYOR_BUILD_FOLDER%\docs
+  ##- 7z a bam_docs.zip %APPVEYOR_BUILD_FOLDER%\docs
 artifacts:
   - path: bam.zip
     name: Bam
-  - path: bam_docs.zip
-    name: Bam Documentation
+  ##- path: bam_docs.zip
+  ##  name: Bam Documentation
 test_script:
   - "SET PATH=C:\\Python27-x64;%PATH%"
   - cd bam_publish
   - env.bat
-  - python tests\runtests.py -x Mingw --VisualC.version=15.0 -b Native -c debug -c profile -j0 -d
-  - python tests\runtests.py -x Mingw --VisualC.version=15.0 -b VSSolution -c debug -c profile -j0 -d
-  - python tests\runtests.py -x Mingw --VisualC.version=15.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
+  ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b Native -c debug -c profile -j0 -d
+  ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b VSSolution -c debug -c profile -j0 -d
+  ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
   - cd ..
 on_finish:
   - ps: |
