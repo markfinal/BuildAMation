@@ -27,7 +27,7 @@ test_script:
   - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
   - cd bam_publish
   - cmd: env.bat
-  - sh: ./env.sh
+  - sh: source env.sh
   - cmd: python tests\runtests.py -x Mingw --VisualC.version=15.0 -b Native -c debug -c profile -j0 -d -t InstallerTest1
   - sh: python tests/runtests.py --Gcc.version=5.4 -b Native -c debug -c profile -j0 -d -t InstallerTest1
   ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b VSSolution -c debug -c profile -j0 -d
