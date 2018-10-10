@@ -48,6 +48,8 @@ namespace Bam
             System.Console.CancelKeyPress += new System.ConsoleCancelEventHandler(HandleCancellation);
 #endif
 
+            Core.Log.MessageAll("Current culture is '{0}', '{1}'", System.StringComparer.CurrentCulture.ToString(), System.Globalization.CultureInfo.CurrentCulture.ToString());
+
             try
             {
                 var totalTimeProfile = new Core.TimeProfile(Core.ETimingProfiles.TimedTotal);
