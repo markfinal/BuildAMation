@@ -74,11 +74,15 @@ namespace AssemblerTest1
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var gccMeta = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-				if (gccMeta.CompilerMajorVersion < 6)
+                if (gccMeta.CompilerMajorVersion < 8)
+                {
+                    source.AddFiles("$(packagedir)/source/gcc/7/*.S");
+                }
+                else if (gccMeta.CompilerMajorVersion < 6)
                 {
                     source.AddFiles("$(packagedir)/source/gcc/5/*.S");
                 }
-				else if (gccMeta.CompilerMajorVersion < 5)
+                else if (gccMeta.CompilerMajorVersion < 5)
                 {
                     source.AddFiles("$(packagedir)/source/gcc/4/*.S");
                 }
@@ -154,7 +158,11 @@ namespace AssemblerTest1
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var gccMeta = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-				if (gccMeta.CompilerMajorVersion < 6)
+                if (gccMeta.CompilerMajorVersion < 8)
+                {
+                    source.AddFiles("$(packagedir)/source/gcc/7/*.S");
+                }
+                else if (gccMeta.CompilerMajorVersion < 6)
                 {
                     source.AddFiles("$(packagedir)/source/gcc/5/*.S");
                 }
