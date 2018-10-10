@@ -16,7 +16,7 @@ build_script:
   - sh: python codingtools/dotnetcore_run_unittests.py
   - sh: python codingtools/dotnetcore_make_release.py --local ##--doxygen doxygen.exe
 after_build:
-  - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish
+  - cmd: 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish
   ##- 7z a bam_docs.zip %APPVEYOR_BUILD_FOLDER%\docs
 artifacts:
   - path: bam.zip
@@ -24,9 +24,10 @@ artifacts:
   ##- path: bam_docs.zip
   ##  name: Bam Documentation
 test_script:
-  - "SET PATH=C:\\Python27-x64;%PATH%"
+  - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
   - cd bam_publish
-  - env.bat
+  - cmd: env.bat
+  - sh: env.sh
   ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b Native -c debug -c profile -j0 -d
   ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b VSSolution -c debug -c profile -j0 -d
   ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
