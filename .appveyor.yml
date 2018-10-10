@@ -7,9 +7,9 @@ configuration: Release
 platform: AnyCPU
 install:
   - cmd: powershell choco install doxygen.portable
+  - sh: ./codingtools/install_ubuntu_dependencies.sh
 before_build:
-  - cmd: dotnet --version
-  - sh: dotnet --version
+  - dotnet --version
 build_script:
   - cmd: python codingtools\dotnetcore_run_unittests.py
   - cmd: python codingtools\dotnetcore_make_release.py --local --doxygen doxygen.exe
