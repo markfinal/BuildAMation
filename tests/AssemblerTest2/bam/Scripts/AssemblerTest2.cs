@@ -76,7 +76,15 @@ namespace AssemblerTest2
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
-                asmSource.AddFiles("$(packagedir)/source/gcc/*.S");
+                var gccMeta = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
+                if (gccMeta.CompilerMajorVersion < 5)
+                {
+                    asmSource.AddFiles("$(packagedir)/source/gcc/4/*.S");
+                }
+                else
+                {
+                    throw new Bam.Core.Exception("No assembly code found for GCC version {0}", gccMeta.CompilerMajorVersion);
+                }
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
                     asmSource["helloworld64.S"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
