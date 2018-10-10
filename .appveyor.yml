@@ -5,12 +5,9 @@ image:
 clone_depth: 1
 configuration: Release
 platform: AnyCPU
+environment:
+  GCC_VERSION: 5.4
 for:
-  - matrix:
-      only:
-        - image: Ubuntu
-    environment:
-	  GCC_VERSION: 5.4
   - matrix:
       only:
         - image: Ubuntu1804
