@@ -260,7 +260,7 @@ if __name__ == "__main__":
 
     optParser = OptionParser(description="BuildAMation unittests")
     # optParser.add_option("--platform", "-p", dest="platforms", action="append", default=None, help="Platforms to test")
-    optParser.add_option("--configuration", "-c", dest="configurations", type="choice", choices=["Debug","profile","optimized"], action="append", default=None, help="Configurations to test")
+    optParser.add_option("--configuration", "-c", dest="configurations", type="choice", choices=["debug","profile","optimized"], action="append", default=None, help="Configurations to test")
     optParser.add_option("--test", "-t", dest="tests", action="append", default=None, help="Tests to run")
     optParser.add_option("--buildroot", "-o", dest="buildRoot", action="store", default="build", help="BuildAMation build root")
     optParser.add_option("--buildmode", "-b", dest="buildmode", type="choice", choices=["Native", "VSSolution", "MakeFile", "Xcode"], action="store", default="Native", help="BuildAMation build mode to test")
