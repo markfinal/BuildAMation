@@ -42,8 +42,6 @@ test_script:
   - cd bam_publish
   - cmd: env.bat
   - sh: source env.sh
-  - sh: ls .
-  - sh: ls tests
   - cmd: python tests\runtests.py -x Mingw --VisualC.version=15.0 -b Native -c debug -c profile -j0 -d -t InstallerTest1
   - sh: python tests/runtests.py --Gcc.version=$GCC_VERSION -b Native -c debug -c profile -j0 -d -t InstallerTest1
   ##- python tests\runtests.py -x Mingw --VisualC.version=15.0 -b VSSolution -c debug -c profile -j0 -d
