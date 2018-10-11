@@ -21,7 +21,7 @@ matrix:
       - python codingtools/dotnetcore_make_release.py --local ##--doxygen doxygen
       - cd bam_publish
       - source env.sh
-      ##- python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d
+      - python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -t InstallerTest1
       ##- python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d -b MakeFile
       - cd ..
   - os: osx
@@ -59,7 +59,7 @@ matrix:
       - python codingtools/dotnetcore_make_release.py --local
       - cd bam_publish
       - source env.sh
-      ##- python tests/runtests.py --Clang.version=Xcode10 -b Native -c debug -c profile -j0 -d --C.bitdepth=64
+      - python tests/runtests.py --Clang.version=Xcode10 -b Native -c debug -c profile -j0 -d --C.bitdepth=64 -t InstallerTest1
       #- python tests/runtests.py --Clang.version=Xcode10 -b Native -c debug -c profile -j0 -d --C.bitdepth=64 -b MakeFile
       #- python tests/runtests.py --Clang.version=Xcode10 -b Native -c debug -c profile -j0 -d --C.bitdepth=64 -b Xcode
       - cd ..
