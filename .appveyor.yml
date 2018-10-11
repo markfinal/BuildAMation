@@ -21,6 +21,7 @@ install:
   - sh: ./codingtools/install_ubuntu_dependencies.sh
 before_build:
   - dotnet --version
+  - sh: locale
 build_script:
   - cmd: python codingtools\dotnetcore_run_unittests.py
   - cmd: python codingtools\dotnetcore_make_release.py --local --doxygen doxygen.exe
