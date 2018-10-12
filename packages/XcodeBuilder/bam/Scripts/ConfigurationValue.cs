@@ -61,7 +61,7 @@ namespace XcodeBuilder
             ConfigurationValue value)
         {
             var newValue = (value as UniqueConfigurationValue).Value;
-            if (this.Value == newValue)
+            if (this.Value.Equals(newValue, System.StringComparison.Ordinal))
             {
                 return;
             }

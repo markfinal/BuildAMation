@@ -49,9 +49,9 @@ namespace VisualCCommon
                 // this should not happen as package restoration should handle this
                 throw new Bam.Core.Exception("Unable to locate any NuGet package for vswhere");
             }
-            var visualCCommon = Bam.Core.Graph.Instance.Packages.First(item => item.Name == "VisualCCommon");
-            var requiredVSWhere = visualCCommon.NuGetPackages.First(item => item.Identifier == "vswhere");
-            var requestedVSWhere = vswhereInstalls.First(item => item.Version.ToNormalizedString() == requiredVSWhere.Version);
+            var visualCCommon = Bam.Core.Graph.Instance.Packages.First(item => item.Name.Equals("VisualCCommon", System.StringComparison.Ordinal));
+            var requiredVSWhere = visualCCommon.NuGetPackages.First(item => item.Identifier.Equals("vswhere", System.StringComparison.Ordinal));
+            var requestedVSWhere = vswhereInstalls.First(item => item.Version.ToNormalizedString().Equals(requiredVSWhere.Version, System.StringComparison.Ordinal));
             var vswhere_tools_dir = System.IO.Path.Combine(requestedVSWhere.ExpandedPath, "tools");
             var vswhere_exe_path = System.IO.Path.Combine(vswhere_tools_dir, "vswhere.exe");
             if (!System.IO.File.Exists(vswhere_exe_path))
@@ -174,9 +174,9 @@ namespace VisualCCommon
                 }
                 // VisualC packages define their 'default' WindowsSDK package to function with
                 // if this is different to what is being used, append the version fo the vcvarsall.bat command
-                var visualC = Bam.Core.Graph.Instance.Packages.First(item => item.Name == "VisualC");
-                var defaultWindowsSDKVersion = visualC.Dependents.First(item => item.Item1 == "WindowsSDK").Item2;
-                var windowsSDK = Bam.Core.Graph.Instance.Packages.FirstOrDefault(item => item.Name == "WindowsSDK");
+                var visualC = Bam.Core.Graph.Instance.Packages.First(item => item.Name.Equals("VisualC", System.StringComparison.Ordinal));
+                var defaultWindowsSDKVersion = visualC.Dependents.First(item => item.Item1.Equals("WindowsSDK", System.StringComparison.Ordinal)).Item2;
+                var windowsSDK = Bam.Core.Graph.Instance.Packages.FirstOrDefault(item => item.Name.Equals("WindowsSDK", System.StringComparison.Ordinal));
                 if (null != windowsSDK)
                 {
                     if (windowsSDK.Version != defaultWindowsSDKVersion)

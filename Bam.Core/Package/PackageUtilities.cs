@@ -104,7 +104,7 @@ namespace Bam.Core
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
 
             var masterPackage = GetMasterPackage();
-            if (null != masterPackage.Dependents.FirstOrDefault(item => item.Item1 == packageName && item.Item2 == packageVersion))
+            if (null != masterPackage.Dependents.FirstOrDefault(item => item.Item1.Equals(packageName, System.StringComparison.Ordinal) && item.Item2.Equals(packageVersion, System.StringComparison.Ordinal)))
             {
                 if (null != packageVersion)
                 {
@@ -256,9 +256,9 @@ namespace Bam.Core
 
                 foreach (var dupPackage in duplicates)
                 {
-                    if (specifier[1] == dupPackage.Version)
+                    if (specifier[1].Equals(dupPackage.Version, System.StringComparison.Ordinal))
                     {
-                        toRemove.AddRange(packageDefinitions.Where(item => (item.Name == dupName) && (item != dupPackage)));
+                        toRemove.AddRange(packageDefinitions.Where(item => (item.Name.Equals(dupName, System.StringComparison.Ordinal)) && (item != dupPackage)));
                         Log.DebugMessage("Duplicate of {0} resolved to {1} by command line", dupName, dupPackage.ToString());
                         return dupPackage;
                     }
@@ -276,11 +276,11 @@ namespace Bam.Core
             }
 
             // now look at the master dependency file, for any 'default' specifications
-            var masterDependency = masterDefinitionFile.Dependents.FirstOrDefault(item => item.Item1 == dupName && item.Item3.HasValue && item.Item3.Value);
+            var masterDependency = masterDefinitionFile.Dependents.FirstOrDefault(item => item.Item1.Equals(dupName, System.StringComparison.Ordinal) && item.Item3.HasValue && item.Item3.Value);
             if (null != masterDependency)
             {
-                toRemove.AddRange(packageDefinitions.Where(item => (item.Name == dupName) && (item.Version != masterDependency.Item2)));
-                var found = packageDefinitions.First(item => (item.Name == dupName) && (item.Version == masterDependency.Item2));
+                toRemove.AddRange(packageDefinitions.Where(item => item.Name.Equals(dupName, System.StringComparison.Ordinal) && !item.Version.Equals(masterDependency.Item2, System.StringComparison.Ordinal)));
+                var found = packageDefinitions.First(item => item.Name.Equals(dupName, System.StringComparison.Ordinal) && item.Version.Equals(masterDependency.Item2, System.StringComparison.Ordinal));
                 Log.DebugMessage("Duplicate of {0} resolved to {1} by master definition file", dupName, found.ToString());
                 return found;
             }
@@ -338,7 +338,7 @@ namespace Bam.Core
                 }
             }
             // already planned to visit? ignore
-            if (reposToVisit.Any(item => item.Item1 == repoPath))
+            if (reposToVisit.Any(item => item.Item1.Equals(repoPath, System.StringComparison.Ordinal)))
             {
                 return;
             }
@@ -429,7 +429,7 @@ namespace Bam.Core
                     var packageDefinitionPath = GetPackageDefinitionPathname(packageDir);
 
                     // ignore any duplicates (can be found due to nested repositories)
-                    if (null != candidatePackageDefinitions.FirstOrDefault(item => item.XMLFilename == packageDefinitionPath))
+                    if (null != candidatePackageDefinitions.FirstOrDefault(item => item.XMLFilename.Equals(packageDefinitionPath, System.StringComparison.Ordinal)))
                     {
                         continue;
                     }
@@ -472,7 +472,7 @@ namespace Bam.Core
                 foreach (var dupName in duplicatePackageNames)
                 {
                     Log.DebugMessage("Duplicate '{0}'; total packages {1}", dupName, packageDefinitions.Count);
-                    var duplicates = packageDefinitions.Where(item => item.Name == dupName);
+                    var duplicates = packageDefinitions.Where(item => item.Name.Equals(dupName, System.StringComparison.Ordinal));
                     var toRemove = new Array<PackageDefinition>();
                     var resolvedDuplicate = TryToResolveDuplicate(masterDefinitionFile, dupName, duplicates, packageDefinitions, packageVersionSpecifiers, toRemove);
 
@@ -538,7 +538,7 @@ namespace Bam.Core
                         continue;
                     }
 
-                    var versionFromDefinition = packageDefinitions.First(item => item.Name == uniquePkgName).Version;
+                    var versionFromDefinition = packageDefinitions.First(item => item.Name.Equals(uniquePkgName, System.StringComparison.Ordinal)).Version;
                     if (versionSpecifier[1] != versionFromDefinition)
                     {
                         var noMatchMessage = new System.Text.StringBuilder();
@@ -829,7 +829,7 @@ namespace Bam.Core
             Log.DebugMessage("Resolving: {0}", name.FullName);
             bool NamesMatch(Microsoft.Extensions.DependencyModel.RuntimeLibrary runtime)
             {
-                return string.Equals(runtime.Name, name.Name, System.StringComparison.OrdinalIgnoreCase);
+                return runtime.Name.Equals(name.Name, System.StringComparison.OrdinalIgnoreCase);
             }
 
             Microsoft.Extensions.DependencyModel.RuntimeLibrary library =

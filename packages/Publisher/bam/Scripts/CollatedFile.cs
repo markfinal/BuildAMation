@@ -52,7 +52,7 @@ namespace Publisher
                 }
                 if (null != sourceModule.ReasonToExecute && null != sourceModule.ReasonToExecute.OutputFilePath)
                 {
-                    if (sourceModule.ReasonToExecute.OutputFilePath.ToString().Equals(this.SourcePath.ToString()))
+                    if (sourceModule.ReasonToExecute.OutputFilePath.ToString().Equals(this.SourcePath.ToString(), System.StringComparison.Ordinal))
                     {
                         this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
                             this.GeneratedPaths[CopiedFileKey],

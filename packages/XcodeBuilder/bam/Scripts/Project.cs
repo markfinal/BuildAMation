@@ -235,7 +235,7 @@ namespace XcodeBuilder
         getGroupForPath(
             Bam.Core.TokenizedString path)
         {
-            var match = this.GroupMap.FirstOrDefault(item => item.Key == path.ToString());
+            var match = this.GroupMap.FirstOrDefault(item => item.Key.Equals(path.ToString(), System.StringComparison.Ordinal));
             if (match.Equals(default(System.Collections.Generic.KeyValuePair<string, Group>)))
             {
                 return null;
@@ -413,7 +413,7 @@ namespace XcodeBuilder
             string name,
             ContainerItemProxy proxy)
         {
-            return this.TargetDependencies.FirstOrDefault(item => item.Dependency == null && item.Name == name && item.Proxy == proxy);
+            return this.TargetDependencies.FirstOrDefault(item => item.Dependency == null && item.Name.Equals(name, System.StringComparison.Ordinal) && item.Proxy == proxy);
         }
 
         private System.Collections.Generic.Dictionary<Group, FileReference> ProjectReferences

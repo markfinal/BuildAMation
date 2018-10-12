@@ -476,7 +476,7 @@ namespace Publisher
             var genericFindReference = typeof(Bam.Core.Graph).GetMethod("FindReferencedModule", System.Type.EmptyTypes);
             var genericInclude = this.GetType().GetMethod("Include", new[] { typeof(string), typeof(Bam.Core.TokenizedString) });
             var moduleTypes = global::System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(
-                item => item.Namespace == nameSpace &&
+                item => item.Namespace.Equals(nameSpace, System.StringComparison.Ordinal) &&
                 item.IsSubclassOf(typeof(Bam.Core.Module)));
             if (null != filter)
             {
@@ -593,7 +593,7 @@ namespace Publisher
                 {
                     continue;
                 }
-                if (next.Item2 == default(string))
+                if (next.Item2.Equals(default(string), System.StringComparison.Ordinal))
                 {
                     Bam.Core.Log.DebugMessage("Ignoring '{0}' for collation, with no string path key", next.Item1.ToString());
                     continue;
@@ -687,7 +687,7 @@ namespace Publisher
                     {
                         return mod.defaultPublishPath;
                     }
-                    if (modulePathKey == mod.pathKey)
+                    if (modulePathKey.Equals(mod.pathKey, System.StringComparison.Ordinal))
                     {
                         return mod.defaultPublishPath;
                     }

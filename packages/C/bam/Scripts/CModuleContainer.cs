@@ -292,7 +292,7 @@ namespace C
                     });
                 if (!validSources.Any())
                 {
-                    if (!filename.Equals(truePath))
+                    if (!filename.Equals(truePath, System.StringComparison.Ordinal))
                     {
                         throw new Bam.Core.Exception("No source files found matching '{0}' (actually checking '{1}' after directory slash replacement) in module {2}", filename, truePath, Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString());
                     }

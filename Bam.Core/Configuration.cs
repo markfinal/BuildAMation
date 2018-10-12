@@ -44,15 +44,15 @@ namespace Bam.Core
             string configurationName)
         {
             var configuration = EConfiguration.Invalid;
-            if (0 == System.String.Compare(configurationName, "Debug", true))
+            if (configurationName.Equals("Debug", System.StringComparison.OrdinalIgnoreCase))
             {
                 configuration = EConfiguration.Debug;
             }
-            else if (0 == System.String.Compare(configurationName, "Optimized", true))
+            else if (configurationName.Equals("Optimized", System.StringComparison.OrdinalIgnoreCase))
             {
                 configuration = EConfiguration.Optimized;
             }
-            else if (0 == System.String.Compare(configurationName, "Profile", true))
+            else if (configurationName.Equals("Profile", System.StringComparison.OrdinalIgnoreCase))
             {
                 configuration = EConfiguration.Profile;
             }

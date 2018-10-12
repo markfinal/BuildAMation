@@ -314,7 +314,7 @@ namespace CommandLineProcessor
                     var defineValue = define.Value.ToString();
                     if (defineValue.Contains("\""))
                     {
-                        if (Bam.Core.Graph.Instance.Mode == "Xcode")
+                        if (Bam.Core.Graph.Instance.Mode.Equals("Xcode", System.StringComparison.Ordinal))
                         {
                             // note the number of back slashes here
                             // required to get \\\" for each " in the original value
@@ -361,7 +361,7 @@ namespace CommandLineProcessor
                     // this is to allow for the same property leafname to appear in multiple interfaces
                     var full_property_interface_name = System.String.Join(".", new[] { interface_property.DeclaringType.FullName, interface_property.Name });
                     var settings_property = settings.Properties.First(
-                        item => full_property_interface_name == item.Name
+                        item => full_property_interface_name.Equals(item.Name, System.StringComparison.Ordinal)
                     );
                     //Bam.Core.Log.MessageAll("\t{0}", settings_property.ToString());
                     var attributeArray = settings_property.GetCustomAttributes(typeof(BaseAttribute), false);
@@ -595,7 +595,7 @@ namespace CommandLineProcessor
             foreach (var input_module_and_pathkey in module.InputModules)
             {
                 var matching_input_attr = input_files_attributes.FirstOrDefault(
-                    item => item.PathKey == input_module_and_pathkey.Key
+                    item => item.PathKey.Equals(input_module_and_pathkey.Key, System.StringComparison.Ordinal)
                 );
                 if (null == matching_input_attr)
                 {
@@ -687,7 +687,7 @@ namespace CommandLineProcessor
                     continue;
                 }
                 var outputKey = generatedPath.Key;
-                var matching_attr = output_file_attributes.FirstOrDefault(item => item.PathKey == outputKey);
+                var matching_attr = output_file_attributes.FirstOrDefault(item => item.PathKey.Equals(outputKey, System.StringComparison.Ordinal));
                 if (null == matching_attr)
                 {
                     throw new Bam.Core.Exception(

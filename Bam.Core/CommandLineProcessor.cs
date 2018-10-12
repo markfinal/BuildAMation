@@ -47,8 +47,8 @@ namespace Bam.Core
             ICommandLineArgument arg,
             string[] splitArgs)
         {
-            var uses = ((splitArgs[0].StartsWith("--") && splitArgs[0].EndsWith(arg.LongName)) ||
-                ((arg.ShortName != null) && (splitArgs[0].StartsWith("-") && splitArgs[0].EndsWith(arg.ShortName))));
+            var uses = ((splitArgs[0].StartsWith("--", System.StringComparison.Ordinal) && splitArgs[0].EndsWith(arg.LongName, System.StringComparison.Ordinal)) ||
+                        ((arg.ShortName != null) && (splitArgs[0].StartsWith("-", System.StringComparison.Ordinal) && splitArgs[0].EndsWith(arg.ShortName, System.StringComparison.Ordinal))));
             return uses;
         }
 
@@ -160,7 +160,7 @@ namespace Bam.Core
                 var thisResult = new StringArray();
                 foreach (var group in matches.Groups)
                 {
-                    if (group.ToString() == arg)
+                    if (group.ToString().Equals(arg, System.StringComparison.Ordinal))
                     {
                         continue;
                     }

@@ -319,7 +319,7 @@ namespace VSSolutionBuilder
                     {
                         // ignore group, as files can mutate between them during the buildprocess (e.g. headers into custom builds)
                         // TODO: can this be a TokenizedString hash compare?
-                        if ((null != include) && (settings.Include.ToString() == include.ToString()))
+                        if ((null != include) && (settings.Include.ToString().Equals(include.ToString(), System.StringComparison.Ordinal)))
                         {
                             return settings;
                         }

@@ -131,7 +131,7 @@ namespace VSSolutionBuilder
                     {
                         // ignore group, as files can mutate between them during the buildprocess (e.g. headers into custom builds)
                         // TODO: can this be a TokenizedString hash compare?
-                        if (settings.Include.ToString() == include.ToString())
+                        if (settings.Include.ToString().Equals(include.ToString(), System.StringComparison.Ordinal))
                         {
                             return settings;
                         }

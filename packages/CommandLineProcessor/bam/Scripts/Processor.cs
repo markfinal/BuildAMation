@@ -103,7 +103,7 @@ namespace CommandLineProcessor
             {
                 int envVarCount;
                 if (inheritedEnvironmentVariables.Count == 1 &&
-                    inheritedEnvironmentVariables[0] == "*")
+                    inheritedEnvironmentVariables[0].Equals("*", System.StringComparison.Ordinal))
                 {
                     foreach (System.Collections.DictionaryEntry envVar in processStartInfo.EnvironmentVariables)
                     {

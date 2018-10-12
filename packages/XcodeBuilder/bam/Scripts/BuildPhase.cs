@@ -50,7 +50,7 @@ namespace XcodeBuilder
         {
             lock (this.BuildFiles)
             {
-                var existingBuildFile = this.BuildFiles.FirstOrDefault(item => item.GUID == other.GUID);
+                var existingBuildFile = this.BuildFiles.FirstOrDefault(item => item.GUID.Equals(other.GUID, System.StringComparison.Ordinal));
                 if (null == existingBuildFile)
                 {
                     this.BuildFiles.Add(other);

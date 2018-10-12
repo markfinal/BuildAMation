@@ -95,7 +95,7 @@ namespace Bam.Core
                     if (uname(buf) == 0)
                     {
                         var os = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(buf);
-                        if ("Darwin" == os)
+                        if ("Darwin".Equals(os, System.StringComparison.Ordinal))
                         {
                             return true;
                         }

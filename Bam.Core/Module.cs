@@ -91,14 +91,14 @@ namespace Bam.Core
             try
             {
                 var packageNameSpace = this.EncapsulatingType.Namespace;
-                var packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
+                var packageDefinition = graph.Packages.FirstOrDefault(item => item.Name.Equals(packageNameSpace, System.StringComparison.Ordinal));
                 if (null == packageDefinition)
                 {
                     var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
-                    if (includeTests && packageNameSpace.EndsWith(".tests"))
+                    if (includeTests && packageNameSpace.EndsWith(".tests", System.StringComparison.Ordinal))
                     {
                         packageNameSpace = packageNameSpace.Replace(".tests", string.Empty);
-                        packageDefinition = graph.Packages.FirstOrDefault(item => item.Name == packageNameSpace);
+                        packageDefinition = graph.Packages.FirstOrDefault(item => item.Name.Equals(packageNameSpace, System.StringComparison.Ordinal));
                     }
 
                     if (null == packageDefinition)
@@ -142,7 +142,7 @@ namespace Bam.Core
                 }
                 var attr = allModulePackageDirRedirection[0] as ModulePackageDirectoryRedirectAttribute;
                 var redirectedNamespace = attr.SourceModuleType.Namespace;
-                var redirectedPackageDefinition = Graph.Instance.Packages.FirstOrDefault(item => item.Name == redirectedNamespace);
+                var redirectedPackageDefinition = Graph.Instance.Packages.FirstOrDefault(item => item.Name.Equals(redirectedNamespace, System.StringComparison.Ordinal));
                 if (null == redirectedNamespace)
                 {
                     throw new Exception("Unable to find package definition for module type {0}", attr.SourceModuleType.FullName);
@@ -156,11 +156,11 @@ namespace Bam.Core
             {
                 foreach (PackageDirectoryRedirectAttribute packageDirRedirect in allPackageDirRedirection)
                 {
-                    if (packageDirRedirect.Name == PackageDefinition.Name)
+                    if (packageDirRedirect.Name.Equals(PackageDefinition.Name, System.StringComparison.Ordinal))
                     {
                         if (null != packageDirRedirect.Version)
                         {
-                            if (packageDirRedirect.Version != PackageDefinition.Version)
+                            if (!packageDirRedirect.Version.Equals(PackageDefinition.Version, System.StringComparison.Ordinal))
                             {
                                 continue;
                             }

@@ -102,7 +102,7 @@ namespace NativeBuilder
                     var contents = existingFile.ReadToEnd();
                     var contentsL = contents.Length;
                     var oldL = context.OutputStringBuilder.ToString().Length;
-                    if (contents.Equals(context.OutputStringBuilder.ToString()))
+                    if (contents.Equals(context.OutputStringBuilder.ToString(), System.StringComparison.Ordinal))
                     {
                         moveFile = false;
                     }

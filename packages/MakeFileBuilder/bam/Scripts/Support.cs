@@ -87,7 +87,7 @@ namespace MakeFileBuilder
             Bam.Core.Module module,
             string excludingGeneratedPath = null)
         {
-            if (module.GeneratedPaths.Any(item => (null == excludingGeneratedPath) || (item.Key != excludingGeneratedPath)))
+            if (module.GeneratedPaths.Any(item => (null == excludingGeneratedPath) || !item.Key.Equals(excludingGeneratedPath, System.StringComparison.Ordinal)))
             {
                 var message = new System.Text.StringBuilder();
                 message.AppendLine("A checkpoint must have no outputs");

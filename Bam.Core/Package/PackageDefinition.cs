@@ -119,7 +119,7 @@ namespace Bam.Core
             {
                 return null;
             }
-            if (System.IO.Path.GetFileName(thisRepo) == "tests")
+            if (System.IO.Path.GetFileName(thisRepo).Equals("tests", System.StringComparison.Ordinal))
             {
                 var associatedPackagesRepo = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(thisRepo), "packages");
                 if (System.IO.Directory.Exists(associatedPackagesRepo))
@@ -305,7 +305,7 @@ namespace Bam.Core
                         {
                             var attributes = node.Attributes;
                             var nameAttribute = attributes["Name"];
-                            if ((null != nameAttribute) && (nameAttribute.Value == packageName))
+                            if ((null != nameAttribute) && (nameAttribute.Value.Equals(packageName, System.StringComparison.Ordinal)))
                             {
                                 packageElement = node as System.Xml.XmlElement;
                                 break;
@@ -562,13 +562,13 @@ namespace Bam.Core
             var elName = "Repo";
             while (xmlReader.Read())
             {
-                if ((xmlReader.Name == rootName) &&
+                if (xmlReader.Name.Equals(rootName, System.StringComparison.Ordinal) &&
                     (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
                 {
                     break;
                 }
 
-                if (elName != xmlReader.Name)
+                if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
                     throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootName, xmlReader.Name, elName);
                 }
@@ -595,13 +595,13 @@ namespace Bam.Core
             var elName = "Package";
             while (xmlReader.Read())
             {
-                if ((xmlReader.Name == rootName) &&
+                if (xmlReader.Name.Equals(rootName, System.StringComparison.Ordinal) &&
                     (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
                 {
                     break;
                 }
 
-                if (xmlReader.Name != elName)
+                if (!xmlReader.Name.Equals(elName, System.StringComparison.Ordinal))
                 {
                     throw new Exception("Unexpected child element of '{0}'. Found '{1}'. Expected '{2}'", rootName, xmlReader.Name, elName);
                 }
@@ -615,7 +615,7 @@ namespace Bam.Core
 
             foreach (var duplicateDepName in this.Dependents.GroupBy(item => item.Item1).Where(item => item.Count() > 1).Select(item => item.Key))
             {
-                var numDefaults = this.Dependents.Where(item => item.Item1 == duplicateDepName).Where(item => item.Item3.HasValue && item.Item3.Value).Count();
+                var numDefaults = this.Dependents.Where(item => item.Item1.Equals(duplicateDepName, System.StringComparison.Ordinal)).Where(item => item.Item3.HasValue && item.Item3.Value).Count();
                 if (numDefaults > 1)
                 {
                     throw new Exception("Package definition {0} has defined dependency {1} multiple times as default", this.XMLFilename, duplicateDepName);
@@ -630,7 +630,7 @@ namespace Bam.Core
             System.Xml.XmlReader xmlReader)
         {
             var rootName = "BamAssemblies";
-            if (rootName != xmlReader.Name)
+            if (!rootName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
             {
                 return false;
             }
@@ -638,13 +638,13 @@ namespace Bam.Core
             var elName = "BamAssembly";
             while (xmlReader.Read())
             {
-                if ((xmlReader.Name == rootName) &&
+                if (xmlReader.Name.Equals(rootName, System.StringComparison.Ordinal) &&
                     (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
                 {
                     break;
                 }
 
-                if (elName != xmlReader.Name)
+                if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
                     throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootName, xmlReader.Name, elName);
                 }
@@ -690,7 +690,7 @@ namespace Bam.Core
             System.Xml.XmlReader xmlReader)
         {
             var rootEl = "DotNetAssemblies";
-            if (rootEl != xmlReader.Name)
+            if (!rootEl.Equals(xmlReader.Name, System.StringComparison.Ordinal))
             {
                 return false;
             }
@@ -698,13 +698,13 @@ namespace Bam.Core
             var elName = "DotNetAssembly";
             while (xmlReader.Read())
             {
-                if ((xmlReader.Name == rootEl) &&
+                if (xmlReader.Name.Equals(rootEl, System.StringComparison.Ordinal) &&
                     (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
                 {
                     break;
                 }
 
-                if (elName != xmlReader.Name)
+                if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
                     throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootEl, xmlReader.Name, elName);
                 }
@@ -729,7 +729,7 @@ namespace Bam.Core
             System.Xml.XmlReader xmlReader)
         {
             var rootEl = "NuGetPackages";
-            if (rootEl != xmlReader.Name)
+            if (!rootEl.Equals(xmlReader.Name, System.StringComparison.Ordinal))
             {
                 return false;
             }
@@ -737,13 +737,13 @@ namespace Bam.Core
             var elName = "NuGetPackage";
             while (xmlReader.Read())
             {
-                if ((xmlReader.Name == rootEl) &&
+                if (xmlReader.Name.Equals(rootEl, System.StringComparison.Ordinal) &&
                     (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
                 {
                     break;
                 }
 
-                if (elName != xmlReader.Name)
+                if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
                     throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootEl, xmlReader.Name, elName);
                 }
@@ -769,13 +769,13 @@ namespace Bam.Core
             var elName = "Platform";
             while (xmlReader.Read())
             {
-                if ((xmlReader.Name == rootName) &&
+                if (xmlReader.Name.Equals(rootName, System.StringComparison.Ordinal) &&
                     (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
                 {
                     break;
                 }
 
-                if (elName != xmlReader.Name)
+                if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
                     throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootName, xmlReader.Name, elName);
                 }
@@ -808,7 +808,7 @@ namespace Bam.Core
             System.Xml.XmlReader xmlReader)
         {
             var rootName = "SupportedPlatforms";
-            if (rootName != xmlReader.Name)
+            if (!rootName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
             {
                 return false;
             }
@@ -823,7 +823,7 @@ namespace Bam.Core
             System.Xml.XmlReader xmlReader)
         {
             var rootName = "Definitions";
-            if (rootName != xmlReader.Name)
+            if (!rootName.Equals(xmlReader.Name,  System.StringComparison.Ordinal))
             {
                 return false;
             }
@@ -831,13 +831,13 @@ namespace Bam.Core
             var elName = "Definition";
             while (xmlReader.Read())
             {
-                if ((xmlReader.Name == rootName) &&
+                if (xmlReader.Name.Equals(rootName, System.StringComparison.Ordinal) &&
                     (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
                 {
                     break;
                 }
 
-                if (elName != xmlReader.Name)
+                if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
                     throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootName, xmlReader.Name, elName);
                 }
@@ -904,7 +904,7 @@ namespace Bam.Core
                         {
                             // all done
                         }
-                        else if (xmlReader.Name == rootElementName)
+                        else if (xmlReader.Name.Equals(rootElementName, System.StringComparison.Ordinal))
                         {
                             // should be the end element
                             if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
@@ -1080,10 +1080,10 @@ namespace Bam.Core
             Array<PackageDefinition> authenticated,
             Array<PackageDefinition> candidatePackageDefinitions)
         {
-            var matchingPackages = authenticated.Where(item => item.Name == current.Name);
+            var matchingPackages = authenticated.Where(item => item.Name.Equals(current.Name, System.StringComparison.Ordinal));
             if (null != current.Version)
             {
-                matchingPackages = matchingPackages.Where(item => item.Version == current.Version);
+                matchingPackages = matchingPackages.Where(item => item.Version.Equals(current.Version, System.StringComparison.Ordinal));
             }
             if (matchingPackages.FirstOrDefault() != null)
             {
@@ -1100,10 +1100,10 @@ namespace Bam.Core
             {
                 var depName = dependent.Item1;
                 var depVersion = dependent.Item2;
-                var candidates = candidatePackageDefinitions.Where(item => item.Name == depName);
+                var candidates = candidatePackageDefinitions.Where(item => item.Name.Equals(depName, System.StringComparison.Ordinal));
                 if (depVersion != null)
                 {
-                    candidates = candidates.Where(item => item.Version == depVersion);
+                    candidates = candidates.Where(item => item.Version.Equals(depVersion, System.StringComparison.Ordinal));
                 }
                 var candidateCount = candidates.Count();
                 if (0 == candidateCount)
@@ -1251,7 +1251,7 @@ namespace Bam.Core
         {
             // package repo/package name/bam/<definition file>.xml
             var repo = System.IO.Path.GetDirectoryName(this.GetPackageDirectory());
-            if (repo.EndsWith("packages") || repo.EndsWith("tests"))
+            if (repo.EndsWith("packages", System.StringComparison.Ordinal) || repo.EndsWith("tests", System.StringComparison.Ordinal))
             {
                 return repo;
             }
@@ -1277,7 +1277,7 @@ namespace Bam.Core
             visitedPackages.Add(this);
             foreach (var dependent in this.Dependents)
             {
-                var dep = Graph.Instance.Packages.First(item => item.Name == dependent.Item1 && item.Version == dependent.Item2);
+                var dep = Graph.Instance.Packages.First(item => item.Name.Equals(dependent.Item1, System.StringComparison.Ordinal) && item.Version.Equals(dependent.Item2, System.StringComparison.Ordinal));
                 if (visitedPackages.Contains(dep))
                 {
                     continue;
@@ -1405,7 +1405,7 @@ namespace Bam.Core
         {
             foreach (var asm in this.BamAssemblies)
             {
-                if (asm.Name == "Bam.Core")
+                if (asm.Name.Equals("Bam.Core", System.StringComparison.Ordinal))
                 {
                     var bamVersion = Graph.Instance.ProcessState.Version;
                     if (asm.MajorVersion <= bamVersion.Major)

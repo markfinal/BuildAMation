@@ -100,7 +100,7 @@ namespace C
             this string lhs,
             string rhs)
         {
-            return (lhs == rhs) ? lhs : null;
+            return lhs.Equals(rhs, System.StringComparison.Ordinal) ? lhs : null;
         }
 
         public static string

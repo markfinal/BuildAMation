@@ -277,7 +277,7 @@ namespace Bam.Core
         {
             var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
             var allTypes = assembly.GetTypes();
-            var allModuleTypesInPackage = allTypes.Where(type => ((type.Namespace == ns) || (includeTests && (type.Namespace == ns + ".tests"))) && type.IsSubclassOf(typeof(Module)));
+            var allModuleTypesInPackage = allTypes.Where(type => (ns.Equals(type.Namespace, System.StringComparison.Ordinal) || (includeTests && (ns + "tests").Equals(type.Namespace, System.StringComparison.Ordinal))) && type.IsSubclassOf(typeof(Module)));
             if (0 == allModuleTypesInPackage.Count())
             {
                 throw new Exception("No modules found in the namespace '{0}'. Please define some modules in the build scripts to use {0} as a master package.", ns);
@@ -954,7 +954,7 @@ namespace Bam.Core
             string packageName)
             where MetaDataType : class
         {
-            var package = Bam.Core.Graph.Instance.Packages.FirstOrDefault(item => item.Name == packageName);
+            var package = Bam.Core.Graph.Instance.Packages.FirstOrDefault(item => item.Name.Equals(packageName, System.StringComparison.Ordinal));
             if (null == package)
             {
                 throw new Exception("Unable to locate package '{0}'", packageName);
