@@ -593,7 +593,7 @@ namespace Publisher
                 {
                     continue;
                 }
-                if (next.Item2.Equals(default(string), System.StringComparison.Ordinal))
+                if (null == next.Item2)
                 {
                     Bam.Core.Log.DebugMessage("Ignoring '{0}' for collation, with no string path key", next.Item1.ToString());
                     continue;

@@ -595,7 +595,7 @@ namespace CommandLineProcessor
             foreach (var input_module_and_pathkey in module.InputModules)
             {
                 var matching_input_attr = input_files_attributes.FirstOrDefault(
-                    item => item.PathKey.Equals(input_module_and_pathkey.Key, System.StringComparison.Ordinal)
+                    item => input_module_and_pathkey.Key.Equals(item.PathKey, System.StringComparison.Ordinal)
                 );
                 if (null == matching_input_attr)
                 {
