@@ -36,7 +36,7 @@ namespace MakeFileBuilder
     public sealed class MakeFileCommonMetaData
     {
         // experimental
-        public static bool IsNMAKE = ("NMAKE" == Bam.Core.CommandLineProcessor.Evaluate(new Options.ChooseFormat()));
+        public static bool IsNMAKE = ("NMAKE".Equals(Bam.Core.CommandLineProcessor.Evaluate(new Options.ChooseFormat()), System.StringComparison.Ordinal));
 
         // a fake Target for order only dependencies
         public static Target DIRSTarget = new Target(
@@ -253,11 +253,11 @@ namespace MakeFileBuilder
         {
             if (this.PackageVariables.ContainsKey(path))
             {
-                if (this.PackageVariables[path] == variableName)
+                if (this.PackageVariables[path].Equals(variableName, System.StringComparison.Ordinal))
                 {
                     return;
                 }
-                if (variableName.EndsWith(".tests_DIR"))
+                if (variableName.EndsWith(".tests_DIR", System.StringComparison.Ordinal))
                 {
                     // this is a package test namespace
                     return;

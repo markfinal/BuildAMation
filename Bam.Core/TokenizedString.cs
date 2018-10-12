@@ -464,7 +464,7 @@ namespace Bam.Core
                 var tokens = new System.Text.StringBuilder();
                 foreach (var token in this.Tokens)
                 {
-                    if (!token.StartsWith(TokenPrefix))
+                    if (!token.StartsWith(TokenPrefix, System.StringComparison.Ordinal))
                     {
                         continue;
                     }
@@ -658,7 +658,7 @@ namespace Bam.Core
                 var token = tokens[index];
 
                 // if not identified as a token, just add the string, and move along
-                if (!(token.StartsWith(TokenPrefix) && token.EndsWith(TokenSuffix)))
+                if (!(token.StartsWith(TokenPrefix, System.StringComparison.Ordinal) && token.EndsWith(TokenSuffix, System.StringComparison.Ordinal)))
                 {
                     parsedString.Append(token);
                     tokens.Remove(token);
@@ -895,7 +895,7 @@ namespace Bam.Core
                         }
                         var original = split[0];
                         var totrim = split[1];
-                        while (original.StartsWith(totrim))
+                        while (original.StartsWith(totrim, System.StringComparison.Ordinal))
                         {
                             original = original.Replace(totrim, string.Empty);
                         }
@@ -1161,7 +1161,7 @@ namespace Bam.Core
                             var allTokensValid = true;
                             foreach (var token in tokens)
                             {
-                                if (!(token.StartsWith(TokenPrefix) && token.EndsWith(TokenSuffix)))
+                                if (!(token.StartsWith(TokenPrefix, System.StringComparison.Ordinal) && token.EndsWith(TokenSuffix, System.StringComparison.Ordinal)))
                                 {
                                     continue;
                                 }
@@ -1253,7 +1253,7 @@ namespace Bam.Core
         RefersToMacro(
             string macro)
         {
-            if (!(macro.StartsWith(TokenizedString.TokenPrefix) && macro.EndsWith(TokenizedString.TokenSuffix)))
+            if (!(macro.StartsWith(TokenizedString.TokenPrefix, System.StringComparison.Ordinal) && macro.EndsWith(TokenizedString.TokenSuffix, System.StringComparison.Ordinal)))
             {
                 throw new Exception("Invalid macro key: {0}", macro);
             }

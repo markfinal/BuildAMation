@@ -135,7 +135,7 @@ namespace Bam.Core
                 {
                     if (element.IsParsed)
                     {
-                        if (itemString == element.ToString())
+                        if (itemString.Equals(element.ToString(), System.StringComparison.Ordinal))
                         {
                             return true;
                         }
@@ -161,7 +161,7 @@ namespace Bam.Core
                 TokenizedString x,
                 TokenizedString y)
             {
-                return x.ToString() == y.ToString();
+                return x.ToString().Equals(y.ToString(), System.StringComparison.Ordinal);
             }
 
             int

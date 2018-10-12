@@ -85,7 +85,7 @@ namespace VSSolutionBuilder
                             item.Include.Parse();
                         }
                     }
-                    return item.Include.ToString() == sourceGroup.Include.ToString();
+                    return item.Include.ToString().Equals(sourceGroup.Include.ToString(), System.StringComparison.Ordinal);
                 }))
             {
                 return;

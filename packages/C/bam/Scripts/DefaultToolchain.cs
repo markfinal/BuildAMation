@@ -153,7 +153,7 @@ namespace C
                         {
                             var attr = toolTypeToUse.GetCustomAttributes(false);
                             var toolToolSet = (attr[0] as ToolRegistrationAttribute).ToolsetName;
-                            if (toolToolSet == UserToolchainOverride)
+                            if (toolToolSet.Equals(UserToolchainOverride, System.StringComparison.Ordinal))
                             {
                                 DisambiguousToolchainToUse.Add(bitDepth, toolToolSet);
                                 break;
@@ -206,7 +206,7 @@ namespace C
                 throw new Bam.Core.Exception("{0} tool is undefined in {1}-bit architectures", toolDescription, bitDepth.ToString());
             }
             var toolTypeCollection = collection[bitDepth];
-            var toolTypeToInstantiate = toolTypeCollection.FirstOrDefault(item => (item.GetCustomAttributes(false)[0] as ToolRegistrationAttribute).ToolsetName == toolchainToUse);
+            var toolTypeToInstantiate = toolTypeCollection.FirstOrDefault(item => (item.GetCustomAttributes(false)[0] as ToolRegistrationAttribute).ToolsetName.Equals(toolchainToUse, System.StringComparison.Ordinal));
             if (null == toolTypeToInstantiate)
             {
                 throw new Bam.Core.Exception("Unable to identify {0} tool in {1}-bit architectures for toolchain {2}", toolDescription, bitDepth.ToString(), toolchainToUse);

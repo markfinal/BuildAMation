@@ -95,7 +95,7 @@ namespace Publisher
                 System.Diagnostics.Debug.Assert(1 == module.OutputDirectories.Count());
                 var output_dir = module.OutputDirectories.First().ToString();
                 var input_dir = System.IO.Path.GetDirectoryName(module.SourcePath.ToString());
-                if (output_dir == input_dir)
+                if (output_dir.Equals(input_dir, System.StringComparison.Ordinal))
                 {
                     return;
                 }

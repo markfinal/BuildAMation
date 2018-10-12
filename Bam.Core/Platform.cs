@@ -58,39 +58,39 @@ namespace Bam.Core
             string platformName)
         {
             var platform = EPlatform.Invalid;
-            if (0 == System.String.Compare(platformName, "Windows", true))
+            if (platformName.Equals("Windows", System.StringComparison.OrdinalIgnoreCase))
             {
                 platform = EPlatform.Windows;
             }
-            else if (0 == System.String.Compare(platformName, "Win32", true))
+            else if (platformName.Equals("Win32", System.StringComparison.OrdinalIgnoreCase))
             {
                 platform = EPlatform.Win32;
             }
-            else if (0 == System.String.Compare(platformName, "Win64", true))
+            else if (platformName.Equals("Win64", System.StringComparison.OrdinalIgnoreCase))
             {
                 platform = EPlatform.Win64;
             }
-            else if (0 == System.String.Compare(platformName, "Linux", true))
+            else if (platformName.Equals("Linux", System.StringComparison.OrdinalIgnoreCase))
             {
                 platform = EPlatform.Linux;
             }
-            else if (0 == System.String.Compare(platformName, "Linux32", true))
+            else if (platformName.Equals("Linux32", System.StringComparison.OrdinalIgnoreCase))
             {
                 platform = EPlatform.Linux32;
             }
-            else if (0 == System.String.Compare(platformName, "Linux64", true))
+            else if (platformName.Equals("Linux64", System.StringComparison.OrdinalIgnoreCase))
             {
                 platform = EPlatform.Linux64;
             }
-            else if (0 == System.String.Compare(platformName, "OSX", true))
+            else if (platformName.Equals("OSX", System.StringComparison.OrdinalIgnoreCase))
             {
                 platform = EPlatform.OSX;
             }
-            else if (0 == System.String.Compare(platformName, "OSX32", true))
+            else if (platformName.Equals("OSX32", System.StringComparison.OrdinalIgnoreCase))
             {
                 platform = EPlatform.OSX32;
             }
-            else if (0 == System.String.Compare(platformName, "OSX64", true))
+            else if (platformName.Equals("OSX64", System.StringComparison.OrdinalIgnoreCase))
             {
                 platform = EPlatform.OSX64;
             }

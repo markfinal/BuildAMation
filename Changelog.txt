@@ -1,3 +1,5 @@
+12-Oct-2018 Fixes #383. Changed all string comparisons to use Ordinal or OrdinalIgnoreCase. Initially this was thought of as a speed improvement, but it also resolves string comparisons from strings provided on the command line when a non-standard locale is in use.
+
 10-Oct-2018 Fixes #492. Added Gcc 7 support. Tested in Ubuntu 18.04.01 LTS.
 
 29-Sep-2018 Fixes #487. Xcode 9 and 10 now use objectVersion=50 in their pbxproject files.

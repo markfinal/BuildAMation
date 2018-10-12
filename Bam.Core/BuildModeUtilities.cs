@@ -44,7 +44,7 @@ namespace Bam.Core
         IsBuildModePackage(
             string packageName)
         {
-            return packageName.EndsWith("Builder");
+            return packageName.EndsWith("Builder", System.StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Bam.Core
             }
 
             var builderPackageName = System.String.Format("{0}Builder", Graph.Instance.Mode);
-            var builderPackage = Graph.Instance.Packages.FirstOrDefault(item => item.Name == builderPackageName);
+            var builderPackage = Graph.Instance.Packages.FirstOrDefault(item => item.Name.Equals(builderPackageName, System.StringComparison.Ordinal));
             if (null != builderPackage)
             {
                 return;

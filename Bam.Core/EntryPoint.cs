@@ -115,7 +115,7 @@ namespace Bam.Core
                 var localPolicies = graph.ScriptAssembly.GetTypes().Where(t => typeof(ISitePolicy).IsAssignableFrom(t));
                 if (!testModeEnabled)
                 {
-                    localPolicies = localPolicies.Where(item => !item.Namespace.EndsWith(".tests"));
+                    localPolicies = localPolicies.Where(item => !item.Namespace.EndsWith(".tests", System.StringComparison.Ordinal));
                 }
                 var numLocalPolicies = localPolicies.Count();
                 if (numLocalPolicies > 0)
@@ -176,7 +176,7 @@ namespace Bam.Core
             foreach (var package in graph.Packages)
             {
                 var ns = package.Name;
-                var metaType = graph.ScriptAssembly.GetTypes().FirstOrDefault(item => item.Namespace == ns && typeof(PackageMetaData).IsAssignableFrom(item));
+                var metaType = graph.ScriptAssembly.GetTypes().FirstOrDefault(item => ns.Equals(item.Namespace, System.StringComparison.Ordinal) && typeof(PackageMetaData).IsAssignableFrom(item));
                 if (null == metaType)
                 {
                     continue;

@@ -53,7 +53,7 @@ namespace VisualStudioProcessor
                         new[] { interface_property.DeclaringType.FullName, interface_property.Name }
                     );
                     var value_settings_property = settings.Properties.First(
-                        item => full_property_interface_name == item.Name
+                        item => full_property_interface_name.Equals(item.Name, System.StringComparison.Ordinal)
                     );
                     var property_value = value_settings_property.GetValue(settings);
                     if (null == property_value)
@@ -61,7 +61,7 @@ namespace VisualStudioProcessor
                         continue;
                     }
                     var attribute_settings_property = Bam.Core.Settings.FindProperties(real_settings_type).First(
-                        item => full_property_interface_name == item.Name
+                        item => full_property_interface_name.Equals(item.Name, System.StringComparison.Ordinal)
                     );
                     var attributeArray = attribute_settings_property.GetCustomAttributes(typeof(BaseAttribute), false);
                     if (!attributeArray.Any())
@@ -427,7 +427,7 @@ namespace VisualStudioProcessor
                     continue;
                 }
                 var outputKey = generatedPath.Key;
-                var matching_attr = output_file_attributes.FirstOrDefault(item => item.PathKey == outputKey);
+                var matching_attr = output_file_attributes.FirstOrDefault(item => item.PathKey.Equals(outputKey, System.StringComparison.Ordinal));
                 if (null == matching_attr)
                 {
                     throw new Bam.Core.Exception(

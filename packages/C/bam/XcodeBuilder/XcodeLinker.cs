@@ -39,7 +39,7 @@ namespace C
             Bam.Core.TokenizedString productName;
             if (module is IDynamicLibrary && !((module is Plugin) || (module is C.Cxx.Plugin)))
             {
-                if (module.Macros["OutputName"].ToString().Equals(module.Macros["modulename"].ToString()))
+                if (module.Macros["OutputName"].ToString().Equals(module.Macros["modulename"].ToString(), System.StringComparison.Ordinal))
                 {
                     productName = module.CreateTokenizedString("${TARGET_NAME}.$(MajorVersion)");
 
@@ -51,7 +51,7 @@ namespace C
             }
             else
             {
-                if (module.Macros["OutputName"].ToString().Equals(module.Macros["modulename"].ToString()))
+                if (module.Macros["OutputName"].ToString().Equals(module.Macros["modulename"].ToString(), System.StringComparison.Ordinal))
                 {
                     productName = Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}");
                 }

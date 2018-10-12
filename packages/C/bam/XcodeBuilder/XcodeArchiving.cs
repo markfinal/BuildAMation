@@ -37,7 +37,7 @@ namespace C
             StaticLibrary module)
         {
             Bam.Core.TokenizedString productName;
-            if (module.Macros["OutputName"].ToString().Equals(module.Macros["modulename"].ToString()))
+            if (module.Macros["OutputName"].ToString().Equals(module.Macros["modulename"].ToString(), System.StringComparison.Ordinal))
             {
                 productName = Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}");
             }

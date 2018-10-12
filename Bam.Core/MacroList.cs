@@ -111,7 +111,7 @@ namespace Bam.Core
             string key,
             TokenizedString value)
         {
-            if (key.StartsWith(TokenizedString.TokenPrefix) || key.EndsWith(TokenizedString.TokenSuffix))
+            if (key.StartsWith(TokenizedString.TokenPrefix, System.StringComparison.Ordinal) || key.EndsWith(TokenizedString.TokenSuffix, System.StringComparison.Ordinal))
             {
                 throw new Exception("Invalid macro key: {0}", key);
             }

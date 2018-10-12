@@ -261,7 +261,7 @@ namespace Publisher
             Bam.Core.ExecutionContext context)
         {
 #if D_PACKAGE_MAKEFILEBUILDER
-            if ("MakeFile" == Bam.Core.Graph.Instance.Mode)
+            if ("MakeFile".Equals(Bam.Core.Graph.Instance.Mode, System.StringComparison.Ordinal))
             {
                 // append to the strip rule
                 System.Diagnostics.Debug.Assert((this as ICollatedObject).SourceModule is StripModule);
