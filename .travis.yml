@@ -7,6 +7,8 @@ notifications:
 language: csharp
 install:
   - if [ $TRAVIS_OS_NAME = linux ]; then ./codingtools/install_ubuntu_dependencies.sh; fi
+before_script:
+  - dotnet --version
 matrix:
   include:
   - os: linux

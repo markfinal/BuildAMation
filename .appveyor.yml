@@ -1,29 +1,49 @@
-image: Visual Studio 2017
+image:
+  - Visual Studio 2017
+  - Ubuntu
+  - Ubuntu1804
 clone_depth: 1
 configuration: Release
 platform: AnyCPU
+for:
+  - matrix:
+      only:
+        - image: Ubuntu
+    environment:
+      GCC_VERSION: 5.4
+  - matrix:
+      only:
+        - image: Ubuntu1804
+    environment:
+      GCC_VERSION: 7
 install:
-  - ps: choco install doxygen.portable
+  - cmd: powershell choco install doxygen.portable
+  - sh: ./codingtools/install_ubuntu_dependencies.sh
 before_build:
-  - cmd: dotnet --version
+  - dotnet --version
 build_script:
-  - python codingtools\dotnetcore_run_unittests.py
-  - python codingtools\dotnetcore_make_release.py --local --doxygen doxygen.exe
+  - cmd: python codingtools\dotnetcore_run_unittests.py
+  - cmd: python codingtools\dotnetcore_make_release.py --local --doxygen doxygen.exe
+  - sh: python codingtools/dotnetcore_run_unittests.py
+  - sh: python codingtools/dotnetcore_make_release.py --local
 after_build:
-  - 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish
-  - 7z a bam_docs.zip %APPVEYOR_BUILD_FOLDER%\docs
+  - cmd: 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish
+  - cmd: 7z a bam_docs.zip %APPVEYOR_BUILD_FOLDER%\docs
 artifacts:
   - path: bam.zip
     name: Bam
   - path: bam_docs.zip
     name: Bam Documentation
 test_script:
-  - "SET PATH=C:\\Python27-x64;%PATH%"
   - cd bam_publish
-  - env.bat
-  - python tests\runtests.py -x Mingw --VisualC.version=15.0 -b Native -c debug -c profile -j0 -d
-  - python tests\runtests.py -x Mingw --VisualC.version=15.0 -b VSSolution -c debug -c profile -j0 -d
-  - python tests\runtests.py -x Mingw --VisualC.version=15.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
+  - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
+  - cmd: env.bat
+  - cmd: python tests\runtests.py -x Mingw --VisualC.version=15.0 -b Native -c debug -c profile -j0 -d
+  - cmd: python tests\runtests.py -x Mingw --VisualC.version=15.0 -b VSSolution -c debug -c profile -j0 -d
+  - cmd: python tests\runtests.py -x Mingw --VisualC.version=15.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
+  - sh: source env.sh
+  - sh: python tests/runtests.py --Gcc.version=$GCC_VERSION -b Native -c debug -c profile -j0 -d
+  - sh: python tests/runtests.py --Gcc.version=$GCC_VERSION -b MakeFile -c debug -c profile -j0 -d
   - cd ..
 on_finish:
   - ps: |

@@ -47,7 +47,7 @@ namespace Gcc
         {
             get
             {
-                return 4;
+                return null;
             }
         }
     }
