@@ -248,7 +248,8 @@ namespace XcodeBuilder
             FileReference.EFileType inputFileType,
             bool checkForNewer,
             bool allowNonZeroSuccessfulExitCodes,
-            bool addOrderOnlyDependencyOnTool = false)
+            bool addOrderOnlyDependencyOnTool = false,
+            Bam.Core.TokenizedStringArray outputPaths = null)
         {
             AddPreBuildStepForCommandLineTool(
                 module,
@@ -256,7 +257,8 @@ namespace XcodeBuilder
                 out configuration,
                 checkForNewer,
                 allowNonZeroSuccessfulExitCodes,
-                addOrderOnlyDependencyOnTool: allowNonZeroSuccessfulExitCodes
+                addOrderOnlyDependencyOnTool: allowNonZeroSuccessfulExitCodes,
+                outputPaths: outputPaths
             );
             foreach (var input in module.InputModules)
             {
