@@ -69,8 +69,8 @@ namespace XcodeBuilder
             plistEl.AppendChild(dictEl);
             doc.AppendChild(plistEl);
 
-            // TODO: revisit for the Xcode 10 'new build system'
-            CreateKeyValuePair(doc, dictEl, "BuildSystemType", "Original");
+            // use the new build system across the workspace
+            CreateKeyValuePair(doc, dictEl, "BuildSystemType", "Latest");
 
             this.Document = doc;
         }

@@ -59,7 +59,8 @@ namespace C
                 module,
                 target,
                 configuration,
-                cmd_line
+                cmd_line,
+                new Bam.Core.TokenizedStringArray(module.ExpectedOutputFiles.Values)
             );
         }
     }

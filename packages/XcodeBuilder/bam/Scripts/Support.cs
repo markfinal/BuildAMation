@@ -166,7 +166,8 @@ namespace XcodeBuilder
             Bam.Core.Module module,
             Target target,
             Configuration configuration,
-            string commandLine)
+            string commandLine,
+            Bam.Core.TokenizedStringArray outputPaths = null)
         {
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
@@ -177,7 +178,8 @@ namespace XcodeBuilder
 
             target.AddPreBuildCommands(
                 shellCommandLines,
-                configuration
+                configuration,
+                outputPaths
             );
         }
 
@@ -188,7 +190,8 @@ namespace XcodeBuilder
             out Configuration configuration,
             bool checkForNewer,
             bool allowNonZeroSuccessfulExitCodes,
-            bool addOrderOnlyDependencyOnTool = false)
+            bool addOrderOnlyDependencyOnTool = false,
+            Bam.Core.TokenizedStringArray outputPaths = null)
         {
             GetTargetAndConfiguration(
                 module,
@@ -214,7 +217,8 @@ namespace XcodeBuilder
 
             target.AddPreBuildCommands(
                 shellCommandLines,
-                configuration
+                configuration,
+                outputPaths
             );
 
             if (addOrderOnlyDependencyOnTool)
@@ -244,7 +248,8 @@ namespace XcodeBuilder
             FileReference.EFileType inputFileType,
             bool checkForNewer,
             bool allowNonZeroSuccessfulExitCodes,
-            bool addOrderOnlyDependencyOnTool = false)
+            bool addOrderOnlyDependencyOnTool = false,
+            Bam.Core.TokenizedStringArray outputPaths = null)
         {
             AddPreBuildStepForCommandLineTool(
                 module,
@@ -252,7 +257,8 @@ namespace XcodeBuilder
                 out configuration,
                 checkForNewer,
                 allowNonZeroSuccessfulExitCodes,
-                addOrderOnlyDependencyOnTool: allowNonZeroSuccessfulExitCodes
+                addOrderOnlyDependencyOnTool: allowNonZeroSuccessfulExitCodes,
+                outputPaths: outputPaths
             );
             foreach (var input in module.InputModules)
             {

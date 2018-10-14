@@ -1,3 +1,5 @@
+14-Oct-2018 Fixes #490. Switched Xcode 10 support in the Xcode build mode to use the new build system. https://developer.apple.com/documentation/xcode_release_notes/xcode_10_release_notes/build_system_release_notes_for_xcode_10
+
 12-Oct-2018 Fixes #383. Changed all string comparisons to use Ordinal or OrdinalIgnoreCase. Initially this was thought of as a speed improvement, but it also resolves string comparisons from strings provided on the command line when a non-standard locale is in use.
 
 10-Oct-2018 Fixes #492. Added Gcc 7 support. Tested in Ubuntu 18.04.01 LTS.
@@ -6,7 +8,7 @@
 
 29-Sep-2018 Fixes #489. Added Bam.Core.Settings.ModifyDefaults(), an empty virtual function, which is called after all settings interfaces defaults are called, but before the LocalPolicy. This allows, for example, specific compiler versions to override defaults since their own specifications have changed from previous versions.
 
-29-Sep-2018 Fixes #486. Added initial support for Xcode 10. Use --Clang.version=Xcode10 to switch. Reminders from the Apple release notes; building 32-bit applications and using libstdc++ are no longer support.
+29-Sep-2018 Fixes #486. Added initial support for Xcode 10 using the legacy build system. Use --Clang.version=Xcode10 to use. Reminders from the Apple release notes; building 32-bit applications and using libstdc++ are no longer support.
 
 20-Sep-2018 Fixes #475. BREAKING CHANGE. Introducing an Attribute based mechanism for translating Settings interface properties into what the specified build mode requires. This significantly reduces the amount of boilerplate code required to add new tools with custom settings. As a good example, see any of the 'Common' toolchain packages for the Settings class for each tool defined.
 Associated changes

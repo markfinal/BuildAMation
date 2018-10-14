@@ -476,7 +476,7 @@ namespace Publisher
             var genericFindReference = typeof(Bam.Core.Graph).GetMethod("FindReferencedModule", System.Type.EmptyTypes);
             var genericInclude = this.GetType().GetMethod("Include", new[] { typeof(string), typeof(Bam.Core.TokenizedString) });
             var moduleTypes = global::System.Reflection.Assembly.GetExecutingAssembly().GetTypes().Where(
-                item => item.Namespace.Equals(nameSpace, System.StringComparison.Ordinal) &&
+                item => System.String.Equals(item.Namespace, nameSpace, System.StringComparison.Ordinal) &&
                 item.IsSubclassOf(typeof(Bam.Core.Module)));
             if (null != filter)
             {

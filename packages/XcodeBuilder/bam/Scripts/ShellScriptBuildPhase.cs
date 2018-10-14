@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace XcodeBuilder
 {
     public sealed class ShellScriptBuildPhase :
@@ -43,8 +44,8 @@ namespace XcodeBuilder
         {
             this.ShellPath = "/bin/sh";
             this.ShowEnvironmentInLog = true;
-            this.InputPaths = new Bam.Core.StringArray();
-            this.OutputPaths = new Bam.Core.StringArray();
+            this.InputPaths = new Bam.Core.TokenizedStringArray();
+            this.OutputPaths = new Bam.Core.TokenizedStringArray();
             this.AssociatedTarget = target;
             this.GenerateScript = generateScript;
         }
@@ -79,13 +80,13 @@ namespace XcodeBuilder
             set;
         }
 
-        private Bam.Core.StringArray InputPaths
+        private Bam.Core.TokenizedStringArray InputPaths
         {
             get;
             set;
         }
 
-        private Bam.Core.StringArray OutputPaths
+        private Bam.Core.TokenizedStringArray OutputPaths
         {
             get;
             set;
@@ -95,6 +96,16 @@ namespace XcodeBuilder
         {
             get;
             private set;
+        }
+
+        public void
+        AddOutputPaths(
+            Bam.Core.TokenizedStringArray outputPaths)
+        {
+            lock (this.OutputPaths)
+            {
+                this.OutputPaths.AddRangeUnique(outputPaths);
+            }
         }
 
         public override void
@@ -123,13 +134,13 @@ namespace XcodeBuilder
                 text.AppendFormat("{0});", indent2);
                 text.AppendLine();
             }
-            if (this.InputPaths.Count > 0)
+            if (this.InputPaths.Any())
             {
                 text.AppendFormat("{0}inputPaths = (", indent2);
                 text.AppendLine();
                 foreach (var path in this.InputPaths)
                 {
-                    text.AppendFormat("{0}\"{1}\",", indent3, path);
+                    text.AppendFormat("{0}\"{1}\",", indent3, path.ToString());
                     text.AppendLine();
                 }
                 text.AppendFormat("{0});", indent2);
@@ -137,13 +148,13 @@ namespace XcodeBuilder
             }
             text.AppendFormat("{0}name = \"{1}\";", indent2, this.Name);
             text.AppendLine();
-            if (this.OutputPaths.Count > 0)
+            if (this.OutputPaths.Any())
             {
                 text.AppendFormat("{0}outputPaths = (", indent2);
                 text.AppendLine();
                 foreach (var path in this.OutputPaths)
                 {
-                    text.AppendFormat("{0}\"{1}\",", indent3, path);
+                    text.AppendFormat("{0}\"{1}\",", indent3, path.ToString());
                     text.AppendLine();
                 }
                 text.AppendFormat("{0});", indent2);

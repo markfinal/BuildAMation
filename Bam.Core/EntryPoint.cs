@@ -176,7 +176,10 @@ namespace Bam.Core
             foreach (var package in graph.Packages)
             {
                 var ns = package.Name;
-                var metaType = graph.ScriptAssembly.GetTypes().FirstOrDefault(item => ns.Equals(item.Namespace, System.StringComparison.Ordinal) && typeof(PackageMetaData).IsAssignableFrom(item));
+                var metaType = graph.ScriptAssembly.GetTypes().FirstOrDefault(item =>
+                    System.String.Equals(item.Namespace, ns, System.StringComparison.Ordinal) &&
+                    typeof(PackageMetaData).IsAssignableFrom(item)
+                );
                 if (null == metaType)
                 {
                     continue;

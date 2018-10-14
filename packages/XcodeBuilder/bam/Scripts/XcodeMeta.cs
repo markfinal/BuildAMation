@@ -51,8 +51,12 @@ namespace XcodeBuilder
             var userWorkspaceSettings = new UserWorkspaceSettings(workspaceDir);
             userWorkspaceSettings.Serialize();
 
-            var sharedWorkspaceSettings = new SharedWorkspaceSettings(workspaceDir);
-            sharedWorkspaceSettings.Serialize();
+            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+            if (clangMeta.CompilerMajorVersion >= 10)
+            {
+                var sharedWorkspaceSettings = new SharedWorkspaceSettings(workspaceDir);
+                sharedWorkspaceSettings.Serialize();
+            }
 
             Bam.Core.Log.Info(
                 "Successfully created Xcode workspace for package '{0}'\n\t{1}",

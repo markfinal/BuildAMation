@@ -130,7 +130,7 @@ namespace Publisher
             }
             else
             {
-                target.AddPreBuildCommands(commands, configuration);
+                target.AddPreBuildCommands(commands, configuration, null);
             }
         }
     }

@@ -79,6 +79,8 @@ namespace CodeGenTest
 #if D_PACKAGE_XCODEBUILDER
                 case "Xcode":
                     {
+                        var output_paths = new Bam.Core.TokenizedStringArray();
+                        output_paths.AddUnique(this.GeneratedPaths[SourceFileKey]);
                         XcodeBuilder.Target target;
                         XcodeBuilder.Configuration configuration;
                         XcodeBuilder.Support.AddPreBuildStepForCommandLineTool(
@@ -87,7 +89,8 @@ namespace CodeGenTest
                             out configuration,
                             true,
                             false,
-                            addOrderOnlyDependencyOnTool: true
+                            addOrderOnlyDependencyOnTool: true,
+                            outputPaths: output_paths
                         );
                     }
                     break;

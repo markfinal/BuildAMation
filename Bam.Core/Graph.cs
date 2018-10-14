@@ -277,7 +277,11 @@ namespace Bam.Core
         {
             var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
             var allTypes = assembly.GetTypes();
-            var allModuleTypesInPackage = allTypes.Where(type => (ns.Equals(type.Namespace, System.StringComparison.Ordinal) || (includeTests && (ns + "tests").Equals(type.Namespace, System.StringComparison.Ordinal))) && type.IsSubclassOf(typeof(Module)));
+            var allModuleTypesInPackage = allTypes.Where(type =>
+                (System.String.Equals(ns, type.Namespace, System.StringComparison.Ordinal) ||
+                (includeTests && System.String.Equals(ns + ".tests", type.Namespace, System.StringComparison.Ordinal))) &&
+                type.IsSubclassOf(typeof(Module))
+            );
             if (0 == allModuleTypesInPackage.Count())
             {
                 throw new Exception("No modules found in the namespace '{0}'. Please define some modules in the build scripts to use {0} as a master package.", ns);
