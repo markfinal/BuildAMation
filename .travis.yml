@@ -59,8 +59,8 @@ matrix:
       - cd bam_publish
       - source env.sh
       - python tests/runtests.py --Clang.version=Xcode10 -b Native -c debug -c profile -j0 -d --C.bitdepth=64
-      #- python tests/runtests.py --Clang.version=Xcode10 -b MakeFile -c debug -c profile -j0 -d --C.bitdepth=64
       - python tests/runtests.py --Clang.version=Xcode10 -b Xcode -c debug -c profile -j0 -d --C.bitdepth=64
+      - python tests/runtests.py --Clang.version=Xcode10 -b MakeFile -c debug -c profile -j0 -d --C.bitdepth=64
       - cd ..
 # Xcode 6 is obsolete on TravisCI
 # Xcode 7 is too old for .NET Core
