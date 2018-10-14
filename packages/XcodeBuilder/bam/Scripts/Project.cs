@@ -527,8 +527,9 @@ namespace XcodeBuilder
 
                 // add configuration to project
                 var projectConfig = new Configuration(config, this, null);
-                if (clangMeta.CompilerMajorVersion >= 10)
+                if (clangMeta.CompilerMajorVersion >= 1000)
                 {
+                    Bam.Core.Log.MessageAll("Xcode 10: {0}", clangMeta.CompilerMajorVersion);
                     // use new build system
                     projectConfig["ALWAYS_SEARCH_USER_PATHS"] = new UniqueConfigurationValue("NO");
 

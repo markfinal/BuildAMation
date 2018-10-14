@@ -152,7 +152,7 @@ namespace ClangCommon
                     );
                     if (!this.Contains("MacOSXMinVersion"))
                     {
-                        if (this.CompilerMajorVersion >= 10)
+                        if (this.CompilerMajorVersion >= 1000)
                         {
                             // Xcode 10 now requires 10.9+, and only libc++
                             this.MacOSXMinimumVersionSupported = "10.9";

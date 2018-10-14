@@ -52,7 +52,7 @@ namespace XcodeBuilder
             userWorkspaceSettings.Serialize();
 
             var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
-            if (clangMeta.CompilerMajorVersion >= 10)
+            if (clangMeta.CompilerMajorVersion >= 1000)
             {
                 var sharedWorkspaceSettings = new SharedWorkspaceSettings(workspaceDir);
                 sharedWorkspaceSettings.Serialize();
