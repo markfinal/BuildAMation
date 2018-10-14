@@ -523,37 +523,59 @@ namespace XcodeBuilder
                     return;
                 }
 
+                var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+
                 // add configuration to project
                 var projectConfig = new Configuration(config, this, null);
-                projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
-                projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
+                if (clangMeta.CompilerMajorVersion >= 10)
+                {
+                    // use new build system
+                    projectConfig["ALWAYS_SEARCH_USER_PATHS"] = new UniqueConfigurationValue("NO");
 
-                // reset SRCROOT, or it is taken to be where the workspace is
-                var pkgdir = this.Module.Macros["packagedir"].ToString() + "/";
-                var relativeSourcePath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
-                    System.IO.Path.GetDirectoryName(this.ProjectDir.ToString()),
-                    pkgdir
-                );
-                projectConfig["SRCROOT"] = new UniqueConfigurationValue(relativeSourcePath);
+                    // sadly, an absolute path, but cannot find another variable to make this relative to
+                    // and BAM pbxproj files are not in the source tree
+                    projectConfig["SRCROOT"] = new UniqueConfigurationValue(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.ProjectDir.ToString())));
 
-                // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
-                // needed so that built products are no longer 'red' in the IDE
-                var relativeSymRoot = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
-                    this.SourceRoot,
-                    this.BuiltProductsDir
-                );
-                projectConfig["SYMROOT"] = new UniqueConfigurationValue("$(SRCROOT)/" + relativeSymRoot.TrimEnd('/'));
+                    // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
+                    // needed so that built products are no longer 'red' in the IDE
+                    var relativeSymRoot = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                        this.SourceRoot,
+                        this.BuiltProductsDir
+                    );
+                    projectConfig["SYMROOT"] = new UniqueConfigurationValue("$(SRCROOT)/" + relativeSymRoot.TrimEnd('/'));
+                }
+                else
+                {
+                    projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
+                    projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
 
-                // all intermediate files generated are relative to this
-                projectConfig["OBJROOT"] = new UniqueConfigurationValue("$(SYMROOT)/intermediates");
+                    // reset SRCROOT, or it is taken to be where the workspace is
+                    var pkgdir = this.Module.Macros["packagedir"].ToString() + "/";
+                    var relativeSourcePath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                        System.IO.Path.GetDirectoryName(this.ProjectDir.ToString()),
+                        pkgdir
+                    );
+                    projectConfig["SRCROOT"] = new UniqueConfigurationValue(relativeSourcePath);
 
-                // would like to be able to set this to '$(SYMROOT)/$(TARGET_NAME)/$(CONFIGURATION)'
-                // but TARGET_NAME is not defined in the Project configuration settings, and will end up collapsing
-                // to an empty value
-                // 'products' use the Project configuration value of CONFIGURATION_BUILD_DIR for their path, while
-                // written target files use the Target configuration value of CONFIGURATION_BUILD_DIR
-                // if these are inconsistent the IDE shows the product in red
-                projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(SYMROOT)/$(CONFIGURATION)");
+                    // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
+                    // needed so that built products are no longer 'red' in the IDE
+                    var relativeSymRoot = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                        this.SourceRoot,
+                        this.BuiltProductsDir
+                    );
+                    projectConfig["SYMROOT"] = new UniqueConfigurationValue("$(SRCROOT)/" + relativeSymRoot.TrimEnd('/'));
+
+                    // all intermediate files generated are relative to this
+                    projectConfig["OBJROOT"] = new UniqueConfigurationValue("$(SYMROOT)/intermediates");
+
+                    // would like to be able to set this to '$(SYMROOT)/$(TARGET_NAME)/$(CONFIGURATION)'
+                    // but TARGET_NAME is not defined in the Project configuration settings, and will end up collapsing
+                    // to an empty value
+                    // 'products' use the Project configuration value of CONFIGURATION_BUILD_DIR for their path, while
+                    // written target files use the Target configuration value of CONFIGURATION_BUILD_DIR
+                    // if these are inconsistent the IDE shows the product in red
+                    projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(SYMROOT)/$(CONFIGURATION)");
+                }
 
                 this.getProjectConfiguratonList().AddConfiguration(projectConfig);
                 this.appendAllConfigurations(projectConfig);

@@ -65,20 +65,9 @@ namespace XcodeBuilder
             plistEl.AppendChild(dictEl);
             doc.AppendChild(plistEl);
 
-#if true
-            // TODO: this seems to be the only way to get the target settings working
+            // this appears to be the only way to make Xcode save out in
+            // in a BAM-like directory hierarchy
             CreateKeyValuePair(doc, dictEl, "BuildLocationStyle", "UseTargetSettings");
-#else
-            // build and intermediate file locations
-            CreateKeyValuePair(doc, dictEl, "BuildLocationStyle", "CustomLocation");
-            CreateKeyValuePair(doc, dictEl, "CustomBuildIntermediatesPath", "XcodeIntermediates"); // where xxx.build folders are stored
-            CreateKeyValuePair(doc, dictEl, "CustomBuildLocationType", "RelativeToWorkspace");
-            CreateKeyValuePair(doc, dictEl, "CustomBuildProductsPath", "."); // has to be the workspace folder, in order to write files to expected locations
-
-            // derived data
-            CreateKeyValuePair(doc, dictEl, "DerivedDataCustomLocation", "XcodeDerivedData");
-            CreateKeyValuePair(doc, dictEl, "DerivedDataLocationStyle", "WorkspaceRelativePath");
-#endif
 
             this.Document = doc;
         }

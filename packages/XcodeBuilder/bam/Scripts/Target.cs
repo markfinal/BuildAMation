@@ -546,7 +546,8 @@ namespace XcodeBuilder
         public void
         AddPreBuildCommands(
             Bam.Core.StringArray commands,
-            Configuration configuration)
+            Configuration configuration,
+            Bam.Core.TokenizedStringArray outputPaths)
         {
             if (!this.PreBuildBuildPhase.IsValueCreated)
             {
@@ -555,6 +556,10 @@ namespace XcodeBuilder
             }
 
             configuration.appendPreBuildCommands(commands);
+            if (null != outputPaths)
+            {
+                this.PreBuildBuildPhase.Value.AddOutputPaths(outputPaths);
+            }
         }
 
         public void

@@ -152,8 +152,16 @@ namespace ClangCommon
                     );
                     if (!this.Contains("MacOSXMinVersion"))
                     {
-                        // 10.7 is the minimum version required for libc++ currently
-                        this.MacOSXMinimumVersionSupported = "10.7";
+                        if (this.CompilerMajorVersion >= 10)
+                        {
+                            // Xcode 10 now requires 10.9+, and only libc++
+                            this.MacOSXMinimumVersionSupported = "10.9";
+                        }
+                        else
+                        {
+                            // 10.7 is the minimum version required for libc++ currently
+                            this.MacOSXMinimumVersionSupported = "10.7";
+                        }
                     }
                 }
                 catch (System.ComponentModel.Win32Exception)
