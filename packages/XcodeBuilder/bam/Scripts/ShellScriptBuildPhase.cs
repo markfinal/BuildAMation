@@ -102,7 +102,10 @@ namespace XcodeBuilder
         AddOutputPaths(
             Bam.Core.TokenizedStringArray outputPaths)
         {
-            this.OutputPaths.AddRangeUnique(outputPaths);
+            lock (this.OutputPaths)
+            {
+                this.OutputPaths.AddRangeUnique(outputPaths);
+            }
         }
 
         public override void
