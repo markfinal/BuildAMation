@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace C
 {
     /// <summary>
@@ -68,6 +67,17 @@ namespace C
             {
                 return this.Tool as CompilerTool;
             }
+        }
+
+        public void
+        SuppressWarningsDelegate(
+            SuppressWarningsDelegate suppresor)
+        {
+            if (null == suppresor)
+            {
+                return;
+            }
+            suppresor.Execute(this);
         }
     }
 }
