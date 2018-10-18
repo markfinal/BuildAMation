@@ -38,18 +38,61 @@ namespace C
     /// A SuppressWarningsDelegate can work in conjunction with regular patches suppression warnings; it is simply
     /// a more concise way of expressing many suppressions.
     /// Each SuppressWarningsDelegate derivation is intended to be compiler specific since you can do compiler major
-    /// version comparisons in order to selectively add warning suppressions.
+    /// version comparisons in order to selectively add warning suppressions. You may also do BAM configuration specific
+    /// suppressions exclusively, or in conjunction with compiler major version comparisons.
     /// Derived classes should construct a mapping of source path (in the source collection applied to) to warning suppressions
     /// in the derived constructor, using the helper functions in SuppressWarningsDelegate.
     /// </summary>
     public abstract class SuppressWarningsDelegate
     {
-        private System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, int?>> suppressions = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, int?>>();
+        private class Conditions
+        {
+            private int? minimum_compiler_version;
+            private Bam.Core.EConfiguration? matching_configurations;
+
+            public Conditions(
+                int min_version)
+            {
+                this.minimum_compiler_version = min_version;
+            }
+
+            public Conditions(
+                Bam.Core.EConfiguration matching_config)
+            {
+                this.matching_configurations = matching_config;
+            }
+
+            public Conditions(
+                int min_version,
+                Bam.Core.EConfiguration matching_config)
+            {
+                this.minimum_compiler_version = min_version;
+                this.matching_configurations = matching_config;
+            }
+
+            public bool
+            Match(
+                CompilerTool compilerTool,
+                Bam.Core.Environment environment)
+            {
+                if (this.minimum_compiler_version.HasValue && !compilerTool.IsAtLeast(this.minimum_compiler_version.Value))
+                {
+                    return false;
+                }
+                if (this.matching_configurations.HasValue && (0 == (environment.Configuration & this.matching_configurations.Value)))
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        private System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, Conditions>> suppressions = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, Conditions>>();
 
         private void
         Merge(
             string path,
-            System.Collections.Generic.Dictionary<string, int?> newSuppressions)
+            System.Collections.Generic.Dictionary<string, Conditions> newSuppressions)
         {
             if (!this.suppressions.ContainsKey(path))
             {
@@ -66,7 +109,7 @@ namespace C
             string path,
             params string[] suppression)
         {
-            var warnings = new System.Collections.Generic.Dictionary<string, int?>();
+            var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
             foreach (var sup in suppression)
             {
                 warnings.Add(sup, null);
@@ -80,10 +123,39 @@ namespace C
             int minCompilerVersion,
             params string[] suppression)
         {
-            var warnings = new System.Collections.Generic.Dictionary<string, int?>();
+            var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
             foreach (var sup in suppression)
             {
-                warnings.Add(sup, minCompilerVersion);
+                warnings.Add(sup, new Conditions(minCompilerVersion));
+            }
+            this.Merge(path, warnings);
+        }
+
+        protected void
+        Add(
+            string path,
+            Bam.Core.EConfiguration config,
+            params string[] suppression)
+        {
+            var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
+            foreach (var sup in suppression)
+            {
+                warnings.Add(sup, new Conditions(config));
+            }
+            this.Merge(path, warnings);
+        }
+
+        protected void
+        Add(
+            string path,
+            int minCompilerVersion,
+            Bam.Core.EConfiguration config,
+            params string[] suppression)
+        {
+            var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
+            foreach (var sup in suppression)
+            {
+                warnings.Add(sup, new Conditions(minCompilerVersion, config));
             }
             this.Merge(path, warnings);
         }
@@ -101,20 +173,20 @@ namespace C
                             var compiler = settings as C.ICommonCompilerSettings;
                             foreach (var warning in item.Value)
                             {
-                                if (warning.Value.HasValue)
+                                if (null != warning.Value)
                                 {
                                     var compilerUsed = (settings.Module is Bam.Core.IModuleGroup) ?
                                         (settings.Module as C.CCompilableModuleContainer<C.ObjectFile>).Compiler :
                                         (settings.Module as C.ObjectFile).Compiler;
-                                    if (compilerUsed.IsAtLeast(warning.Value.Value))
+                                    if (warning.Value.Match(compilerUsed, sourceItem.BuildEnvironment))
                                     {
-                                        // compiler specific warning
+                                        // compiler or configuration specific warning
                                         compiler.DisableWarnings.AddUnique(warning.Key);
                                     }
                                 }
                                 else
                                 {
-                                    // compiler version agnostic
+                                    // unconditional suppression
                                     compiler.DisableWarnings.AddUnique(warning.Key);
                                 }
                             }
