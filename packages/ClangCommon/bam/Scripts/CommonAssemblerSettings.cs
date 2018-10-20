@@ -34,6 +34,7 @@ namespace ClangCommon
     public abstract class CommonAssemblerSettings :
         C.SettingsBase,
         C.ICommonAssemblerSettings,
+        C.ICommonAssemblerSettingsOSX,
         C.IAdditionalSettings,
         ICommonAssemblerSettings
     {
@@ -41,6 +42,10 @@ namespace ClangCommon
             Bam.Core.Module module)
         {
             this.InitializeAllInterfaces(module, false, true);
+
+            // not in the defaults in the C package to avoid a compile-time dependency on the Clang package
+            (this as C.ICommonAssemblerSettingsOSX).MacOSXMinimumVersionSupported =
+                Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MacOSXMinimumVersionSupported;
         }
 
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-arch i386")]
@@ -80,6 +85,14 @@ namespace ClangCommon
         [CommandLineProcessor.PreprocessorDefines("-D")]
         [XcodeProjectProcessor.PreprocessorDefines("GCC_PREPROCESSOR_DEFINITIONS")]
         C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
+        {
+            get;
+            set;
+        }
+
+        [CommandLineProcessor.String("-mmacosx-version-min=")]
+        [XcodeProjectProcessor.String("", ignore: true)]
+        string C.ICommonAssemblerSettingsOSX.MacOSXMinimumVersionSupported
         {
             get;
             set;

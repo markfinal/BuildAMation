@@ -1,3 +1,5 @@
+20-Oct-2018 Fixes #500. Added C.ICommonAssemblerSettingsOSX interface, containing MacOSXMinimumVersionSupported, in order to specify this in mixed assembler-compiled source binaries. There have been instances of errors when this is mismatching.
+
 14-Oct-2018 Fixes #490. Switched Xcode 10 support in the Xcode build mode to use the new build system. https://developer.apple.com/documentation/xcode_release_notes/xcode_10_release_notes/build_system_release_notes_for_xcode_10
 
 12-Oct-2018 Fixes #383. Changed all string comparisons to use Ordinal or OrdinalIgnoreCase. Initially this was thought of as a speed improvement, but it also resolves string comparisons from strings provided on the command line when a non-standard locale is in use.
