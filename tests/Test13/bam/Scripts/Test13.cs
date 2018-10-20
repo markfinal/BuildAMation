@@ -46,8 +46,7 @@ namespace Test13
             this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryA.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }
@@ -71,8 +70,7 @@ namespace Test13
             this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryB.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }
@@ -95,8 +93,7 @@ namespace Test13
 
             this.PrivatePatch(settings =>
                 {
-                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
-                    if (null != gccLinker)
+                    if (settings is GccCommon.ICommonLinkerSettings gccLinker)
                     {
                         gccLinker.CanUseOrigin = true;
                         gccLinker.RPath.AddUnique("$ORIGIN");

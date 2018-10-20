@@ -42,8 +42,7 @@ namespace Test14
             this.CreateCSourceContainer("$(packagedir)/source/staticlibrary1.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings as C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }
@@ -67,8 +66,7 @@ namespace Test14
             this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary1.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }

@@ -48,12 +48,10 @@ namespace Test7
             this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null == compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
-                        return;
+                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }
-                    compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                 });
         }
     }

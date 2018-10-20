@@ -67,8 +67,7 @@ namespace HeaderLibraryTest
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                     }
@@ -105,8 +104,7 @@ namespace HeaderLibraryTest
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                var compiler = settings as C.ICommonCompilerSettings;
-                if (null != compiler)
+                if (settings is C.ICommonCompilerSettings compiler)
                 {
                     compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/lib1"));
                 }
@@ -130,8 +128,7 @@ namespace HeaderLibraryTest
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                var compiler = settings as C.ICommonCompilerSettings;
-                if (null != compiler)
+                if (settings is C.ICommonCompilerSettings compiler)
                 {
                     compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/lib2"));
                 }
@@ -168,8 +165,7 @@ namespace HeaderLibraryTest
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/level1"));
                     }

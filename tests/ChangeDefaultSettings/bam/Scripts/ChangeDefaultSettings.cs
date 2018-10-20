@@ -42,30 +42,26 @@ namespace ChangeDefaultSettings
             Bam.Core.Settings settings,
             Bam.Core.Module module)
         {
-            var vcCompiler = settings as VisualCCommon.ICommonCompilerSettings;
-            if (null != vcCompiler)
+            if (settings is VisualCCommon.ICommonCompilerSettings vcCompiler)
             {
                 vcCompiler.WarningLevel = VisualCCommon.EWarningLevel.Level4;
             }
 
-            var mingwCompiler = settings as MingwCommon.ICommonCompilerSettings;
-            if (null != mingwCompiler)
+            if (settings is MingwCommon.ICommonCompilerSettings mingwCompiler)
             {
                 mingwCompiler.AllWarnings = true;
                 mingwCompiler.ExtraWarnings = true;
                 mingwCompiler.Pedantic = true;
             }
 
-            var gccCompiler = settings as GccCommon.ICommonCompilerSettings;
-            if (null != gccCompiler)
+            if (settings is GccCommon.ICommonCompilerSettings gccCompiler)
             {
                 gccCompiler.AllWarnings = true;
                 gccCompiler.ExtraWarnings = true;
                 gccCompiler.Pedantic = true;
             }
 
-            var clangCompiler = settings as ClangCommon.ICommonCompilerSettings;
-            if (null != clangCompiler)
+            if (settings is ClangCommon.ICommonCompilerSettings clangCompiler)
             {
                 clangCompiler.AllWarnings = true;
                 clangCompiler.ExtraWarnings = true;

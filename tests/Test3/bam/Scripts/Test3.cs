@@ -42,8 +42,7 @@ namespace Test3
             this.CreateCSourceContainer("$(packagedir)/source/library2.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }

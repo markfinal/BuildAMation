@@ -38,15 +38,13 @@ namespace Cxx11Test1
             Settings settings,
             Module module)
         {
-            var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
-            if (null != cxxCompiler)
+            if (settings is C.ICxxOnlyCompilerSettings cxxCompiler)
             {
                 cxxCompiler.LanguageStandard = C.Cxx.ELanguageStandard.Cxx11;
                 cxxCompiler.StandardLibrary = C.Cxx.EStandardLibrary.libcxx;
             }
 
-            var cxxLinker = settings as C.ICxxOnlyLinkerSettings;
-            if (null != cxxLinker)
+            if (settings is C.ICxxOnlyLinkerSettings cxxLinker)
             {
                 cxxLinker.StandardLibrary = C.Cxx.EStandardLibrary.libcxx;
             }
@@ -78,8 +76,7 @@ namespace Cxx11Test1
 
             source.PrivatePatch(settings =>
                 {
-                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
-                        this.Linker is VisualCCommon.LinkerBase)
+                    if (this.Linker is VisualCCommon.LinkerBase)
                     {
                         var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                         cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;

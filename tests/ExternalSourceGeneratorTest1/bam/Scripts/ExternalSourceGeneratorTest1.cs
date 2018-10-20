@@ -44,8 +44,7 @@ namespace ExternalSourceGeneratorTest1
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.AddUnique(this.OutputDirectory);
                     }

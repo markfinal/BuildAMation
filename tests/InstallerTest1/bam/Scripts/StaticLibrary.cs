@@ -44,8 +44,7 @@ namespace InstallerTest1
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                var compiler = settings as C.ICommonCompilerSettings;
-                if (null != compiler)
+                if (settings is C.ICommonCompilerSettings compiler)
                 {
                     compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/source/staticlib"));
                 }
@@ -67,8 +66,7 @@ namespace InstallerTest1
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                var compiler = settings as C.ICommonCompilerSettings;
-                if (null != compiler)
+                if (settings is C.ICommonCompilerSettings compiler)
                 {
                     compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/source/staticlib"));
                 }

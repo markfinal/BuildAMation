@@ -38,14 +38,12 @@ namespace Test
             Settings settings,
             Module module)
         {
-            var compiler = settings as C.ICommonCompilerSettings;
-            if (null != compiler)
+            if (settings is C.ICommonCompilerSettings compiler)
             {
                 compiler.PreprocessorDefines.Add("GLOBALOVERRIDE");
             }
 
-            var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
-            if (null != cxxCompiler)
+            if (settings is C.ICxxOnlyCompilerSettings cxxCompiler)
             {
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
             }

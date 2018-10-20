@@ -45,14 +45,12 @@ namespace DeltaSettingsTest2
                 var cCompiler = settings as C.ICOnlyCompilerSettings;
                 cCompiler.LanguageStandard = C.ELanguageStandard.C89;
 
-                var vcCompiler = settings as VisualCCommon.ICommonCompilerSettings;
-                if (null != vcCompiler)
+                if (settings is VisualCCommon.ICommonCompilerSettings vcCompiler)
                 {
                     vcCompiler.WarningLevel = VisualCCommon.EWarningLevel.Level4;
                 }
 
-                var gccCompiler = settings as GccCommon.ICommonCompilerSettings;
-                if (null != gccCompiler)
+                if (settings is GccCommon.ICommonCompilerSettings gccCompiler)
                 {
                     gccCompiler.AllWarnings = true;
                     gccCompiler.ExtraWarnings = true;
@@ -62,8 +60,7 @@ namespace DeltaSettingsTest2
                     compiler.DisableWarnings.AddUnique("long-long"); // DeltaSettingsTest2/source/main.c:37:10: error: ISO C90 does not support ‘long long’ [-Werror=long-long]
                 }
 
-                var clangCompiler = settings as ClangCommon.ICommonCompilerSettings;
-                if (null != clangCompiler)
+                if (settings is ClangCommon.ICommonCompilerSettings clangCompiler)
                 {
                     clangCompiler.AllWarnings = true;
                     clangCompiler.ExtraWarnings = true;
@@ -81,13 +78,11 @@ namespace DeltaSettingsTest2
             source["literal"].ForEach(item =>
                 item.PrivatePatch(settings =>
                     {
-                        var clangCompiler = settings as ClangCommon.ICommonCompilerSettings;
-                        if (null != clangCompiler)
+                        if (settings is ClangCommon.ICommonCompilerSettings clangCompiler)
                         {
                             clangCompiler.Pedantic = false; // DeltaSettingsTest2/source/literal.c:35:9: error: string literal of length 510 exceeds maximum length 509 that C90 compilers are required to support [-Werror,-Woverlength-strings]
                         }
-                        var gccCompiler = settings as GccCommon.ICommonCompilerSettings;
-                        if (null != gccCompiler)
+                        if (settings is GccCommon.ICommonCompilerSettings gccCompiler)
                         {
                             gccCompiler.Pedantic = false; // DeltaSettingsTest2/source/literal.c:35:9: error: string length ‘510’ is greater than the length ‘509’ ISO C90 compilers are required to support [-Werror=overlength-strings]
                         }

@@ -43,8 +43,7 @@ namespace EmbedStaticIntoDynamicLibrary
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/static"));
                     }
@@ -75,8 +74,7 @@ namespace EmbedStaticIntoDynamicLibrary
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/static"));
                     }
@@ -118,8 +116,7 @@ namespace EmbedStaticIntoDynamicLibrary
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/dynamic"));
                     }
@@ -151,8 +148,7 @@ namespace EmbedStaticIntoDynamicLibrary
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/dynamic"));
                     }

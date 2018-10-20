@@ -46,15 +46,13 @@ namespace InstallerTest1
 
             this.PrivatePatch(settings =>
                 {
-                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
-                    if (null != gccLinker)
+                    if (settings is GccCommon.ICommonLinkerSettings gccLinker)
                     {
                         gccLinker.CanUseOrigin = true;
                         gccLinker.RPath.AddUnique("$ORIGIN/../lib");
                     }
 
-                    var clangLinker = settings as ClangCommon.ICommonLinkerSettings;
-                    if (null != clangLinker)
+                    if (settings is ClangCommon.ICommonLinkerSettings clangLinker)
                     {
                         clangLinker.RPath.AddUnique("@executable_path/../Frameworks/");
                     }
@@ -87,15 +85,13 @@ namespace InstallerTest1
 
             this.PrivatePatch(settings =>
                 {
-                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
-                    if (null != gccLinker)
+                    if (settings is GccCommon.ICommonLinkerSettings gccLinker)
                     {
                         gccLinker.CanUseOrigin = true;
                         gccLinker.RPath.AddUnique("$ORIGIN/../lib");
                     }
 
-                    var clangLinker = settings as ClangCommon.ICommonLinkerSettings;
-                    if (null != clangLinker)
+                    if (settings is ClangCommon.ICommonLinkerSettings clangLinker)
                     {
                         clangLinker.RPath.AddUnique("@executable_path/../Frameworks/");
                     }

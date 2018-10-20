@@ -38,8 +38,7 @@ namespace ConfigurationTest1
             Bam.Core.IModuleConfiguration config,
             Bam.Core.Environment buildEnvironment)
         {
-            var libConfig = config as ConfigureLibrary;
-            if (null != libConfig)
+            if (config is ConfigureLibrary libConfig)
             {
                 libConfig.UseFunkyNewFeature = true;
             }

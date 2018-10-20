@@ -87,8 +87,7 @@ namespace Test10
 
             this.PrivatePatch(settings =>
                 {
-                    var gccLinker = settings as GccCommon.ICommonLinkerSettings;
-                    if (gccLinker != null)
+                    if (settings is GccCommon.ICommonLinkerSettings gccLinker)
                     {
                         gccLinker.CanUseOrigin = true;
                         gccLinker.RPath.AddUnique("$ORIGIN");

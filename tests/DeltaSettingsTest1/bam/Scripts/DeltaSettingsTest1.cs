@@ -63,13 +63,11 @@ namespace DeltaSettingsTest1
                 item.PrivatePatch(settings =>
                     {
                         // delta an enumeration setting
-                        var vcCompiler = settings as VisualCCommon.ICommonCompilerSettings;
-                        if (null != vcCompiler)
+                        if (settings is VisualCCommon.ICommonCompilerSettings vcCompiler)
                         {
                             vcCompiler.WarningLevel = VisualCCommon.EWarningLevel.Level3;
                         }
-                        var clangCompiler = settings as ClangCommon.ICommonCompilerSettings;
-                        if (null != clangCompiler)
+                        if (settings is ClangCommon.ICommonCompilerSettings clangCompiler)
                         {
                             clangCompiler.Visibility = ClangCommon.EVisibility.Default;
                         }

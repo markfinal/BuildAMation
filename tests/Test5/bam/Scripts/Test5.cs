@@ -41,8 +41,7 @@ namespace Test5
 
             this.PrivatePatch(settings =>
                 {
-                    var gccCommon = settings as GccCommon.ICommonLinkerSettings;
-                    if (null != gccCommon)
+                    if (settings is GccCommon.ICommonLinkerSettings gccCommon)
                     {
                         gccCommon.CanUseOrigin = true;
                         gccCommon.RPath.AddUnique("$ORIGIN");

@@ -57,8 +57,7 @@ namespace ObjectiveCTest1
 
             this.PrivatePatch(settings =>
                 {
-                    var osxLinker = settings as C.ICommonLinkerSettingsOSX;
-                    if (null != osxLinker)
+                    if (settings is C.ICommonLinkerSettingsOSX osxLinker)
                     {
                         osxLinker.Frameworks.Add(Bam.Core.TokenizedString.CreateVerbatim("Cocoa"));
                     }
