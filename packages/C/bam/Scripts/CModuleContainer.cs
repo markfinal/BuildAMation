@@ -292,11 +292,30 @@ namespace C
                     });
                 if (!validSources.Any())
                 {
+                    var list_of_valid_source = new System.Text.StringBuilder();
+                    foreach (var child in this.children)
+                    {
+                        list_of_valid_source.AppendFormat("\t{0}", child.InputPath.ToString());
+                        list_of_valid_source.AppendLine();
+                    }
                     if (!filename.Equals(truePath, System.StringComparison.Ordinal))
                     {
-                        throw new Bam.Core.Exception("No source files found matching '{0}' (actually checking '{1}' after directory slash replacement) in module {2}", filename, truePath, Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString());
+                        throw new Bam.Core.Exception(
+                            "No source files found matching '{0}' (actually checking '{1}' after directory slash replacement) in module {2}. Found{3}{4}",
+                            filename,
+                            truePath,
+                            Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString(),
+                            System.Environment.NewLine,
+                            list_of_valid_source.ToString()
+                        );
                     }
-                    throw new Bam.Core.Exception("No source files found matching '{0}' in module {1}", filename, Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString());
+                    throw new Bam.Core.Exception(
+                        "No source files found matching '{0}' in module {1}. Found{2}{3}",
+                        filename,
+                        Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString(),
+                        System.Environment.NewLine,
+                        list_of_valid_source.ToString()
+                    );
                 }
                 return validSources.ToList();
             }
