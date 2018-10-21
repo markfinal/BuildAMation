@@ -175,6 +175,22 @@ namespace GccCommon
             }
         }
 
+        private string
+        GetCompilerVersion()
+        {
+            var contents = new System.Text.StringBuilder();
+            contents.AppendLine("__GNUC__");
+            contents.AppendLine("__GNUC_MINOR__");
+            contents.AppendLine("__GNUC_PATCHLEVEL__");
+            var temp_file = System.IO.Path.GetTempFileName();
+            System.IO.File.WriteAllText(temp_file, contents.ToString());
+            var result = Bam.Core.OSUtilities.RunExecutable(
+                this.GccPath,
+                $"-E -P -x c {temp_file}"
+            );
+            return result.StandardOutput;
+        }
+
         void
         C.IToolchainDiscovery.discover (
             C.EBit? depth)
@@ -194,6 +210,10 @@ namespace GccCommon
                 var gccVersionSplit = gccVersion.Split(new [] { '.' });
                 this.Meta.Add("GccVersion", gccVersionSplit);
                 Bam.Core.Log.Info("Using GCC version {0} installed at {1}", gccVersion, location);
+
+                var version = this.GetCompilerVersion();
+                Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
+                this.Meta.Add("CompilerVersion", version);
             }
 
             var gxxLocations = Bam.Core.OSUtilities.GetInstallLocation("g++");

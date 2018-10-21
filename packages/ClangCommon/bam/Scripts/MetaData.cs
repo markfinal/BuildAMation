@@ -141,9 +141,10 @@ namespace ClangCommon
             contents.AppendLine("__clang_patchlevel__");
             var temp_file = System.IO.Path.GetTempFileName();
             System.IO.File.WriteAllText(temp_file, contents.ToString());
+            var sdk = this.SDK;
             var result = Bam.Core.OSUtilities.RunExecutable(
-                "clang",
-                $"-E -P -x c {temp_file}"
+                ConfigureUtilities.xcrunPath,
+                $"--sdk {sdk} clang -E -P -x c {temp_file}"
             );
             return result.StandardOutput;
         }
