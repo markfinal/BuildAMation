@@ -1,4 +1,4 @@
-20-Oct-2018 Fixes #499. Added C.SuppressWarningsDelegate abstract class, and C.CCompilableModuleContainer.SuppressWarningsDelegate function, as an aid to delegating responsibility for warning suppressions away from the main build script. Build scripts are then more succinct for the details on the build, rather than bogging down with details of making it build cleanly. The intended use for this is for external code which cannot be fixed.
+20-Oct-2018 Fixes #497. Added C.SuppressWarningsDelegate abstract class, and C.CCompilableModuleContainer.SuppressWarningsDelegate function, as an aid to delegating responsibility for warning suppressions away from the main build script. Build scripts are then more succinct for the details on the build, rather than bogging down with details of making it build cleanly. The intended use for this is for external code which cannot be fixed.
 
 20-Oct-2018 Fixes #500. Added C.ICommonAssemblerSettingsOSX interface, containing MacOSXMinimumVersionSupported, in order to specify this in mixed assembler-compiled source binaries. There have been instances of errors when this is mismatching.
 
