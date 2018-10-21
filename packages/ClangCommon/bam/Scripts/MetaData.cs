@@ -33,7 +33,7 @@ namespace ClangCommon
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
     {
-        protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
+        protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
         private Bam.Core.StringArray expectedSDKs;
 
         protected MetaData(
@@ -132,6 +132,22 @@ namespace ClangCommon
             get;
         }
 
+        private string
+        GetCompilerVersion()
+        {
+            var contents = new System.Text.StringBuilder();
+            contents.AppendLine("__clang_major__");
+            contents.AppendLine("__clang_minor__");
+            contents.AppendLine("__clang_patchlevel__");
+            var temp_file = System.IO.Path.GetTempFileName();
+            System.IO.File.WriteAllText(temp_file, contents.ToString());
+            var result = Bam.Core.OSUtilities.RunExecutable(
+                "clang",
+                $"-E -P -x c {temp_file}"
+            );
+            return result.StandardOutput;
+        }
+
         void
         C.IToolchainDiscovery.discover(
             C.EBit? depth)
@@ -181,6 +197,10 @@ namespace ClangCommon
                     this.SDK,
                     this.SDKPath
                 );
+
+                var version = this.GetCompilerVersion();
+                Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
+                this.Meta.Add("CompilerVersion", version);
             }
             catch (System.InvalidOperationException)
             {
