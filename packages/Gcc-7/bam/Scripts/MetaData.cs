@@ -33,7 +33,7 @@ namespace Gcc
     public sealed class MetaData :
         GccCommon.MetaData
     {
-        public override int
+        protected override int
         CompilerMajorVersion
         {
             get

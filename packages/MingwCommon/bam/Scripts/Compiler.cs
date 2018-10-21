@@ -40,8 +40,7 @@ namespace MingwCommon
             var discovery = mingwMeta as C.IToolchainDiscovery;
             discovery.discover(null);
 
-            this.MajorVersion = mingwMeta.CompilerMajorVersion;
-            this.MinorVersion = mingwMeta.CompilerMinorVersion;
+            this.Version = null; // TODO
 
             this.Macros.AddVerbatim("CompilerSuffix", mingwMeta.ToolSuffix);
 

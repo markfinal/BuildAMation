@@ -126,12 +126,6 @@ namespace ClangCommon
             }
         }
 
-        // this is the clang version
-        public abstract int CompilerMajorVersion
-        {
-            get;
-        }
-
         private string
         GetCompilerVersion()
         {
@@ -167,9 +161,15 @@ namespace ClangCommon
                         this.expectedSDKs,
                         this.Contains("SDK") ? this.SDK : null
                     );
+
+                    var version = this.GetCompilerVersion();
+                    Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
+                    this.Meta.Add("CompilerVersion", version);
+
                     if (!this.Contains("MacOSXMinVersion"))
                     {
-                        if (this.CompilerMajorVersion >= 1000)
+                        var isXcode10 = false; // version >= 1000
+                        if (isXcode10)
                         {
                             // Xcode 10 now requires 10.9+, and only libc++
                             this.MacOSXMinimumVersionSupported = "10.9";
@@ -198,10 +198,6 @@ namespace ClangCommon
                     this.SDK,
                     this.SDKPath
                 );
-
-                var version = this.GetCompilerVersion();
-                Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
-                this.Meta.Add("CompilerVersion", version);
             }
             catch (System.InvalidOperationException)
             {

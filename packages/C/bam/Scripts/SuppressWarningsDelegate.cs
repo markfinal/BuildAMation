@@ -47,13 +47,16 @@ namespace C
     {
         private class Conditions
         {
-            private int? minimum_compiler_version;
-            private Bam.Core.EConfiguration? matching_configurations;
+            private readonly ICompilerVersion minimum_compiler_version;
+            private readonly ICompilerVersion maximum_compiler_version;
+            private readonly Bam.Core.EConfiguration? matching_configurations;
 
             public Conditions(
-                int min_version)
+                ICompilerVersion min_version,
+                ICompilerVersion max_version)
             {
                 this.minimum_compiler_version = min_version;
+                this.maximum_compiler_version = max_version;
             }
 
             public Conditions(
@@ -63,10 +66,12 @@ namespace C
             }
 
             public Conditions(
-                int min_version,
+                ICompilerVersion min_version,
+                ICompilerVersion max_version,
                 Bam.Core.EConfiguration matching_config)
             {
                 this.minimum_compiler_version = min_version;
+                this.maximum_compiler_version = max_version;
                 this.matching_configurations = matching_config;
             }
 
@@ -75,10 +80,31 @@ namespace C
                 CompilerTool compilerTool,
                 Bam.Core.Environment environment)
             {
-                if (this.minimum_compiler_version.HasValue && !compilerTool.IsAtLeast(this.minimum_compiler_version.Value))
+                if (null != this.minimum_compiler_version)
                 {
-                    return false;
+                    if (null != this.maximum_compiler_version)
+                    {
+                        if (!compilerTool.Version.InRange(this.minimum_compiler_version, this.maximum_compiler_version))
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        if (!compilerTool.Version.AtLeast(this.minimum_compiler_version))
+                        {
+                            return false;
+                        }
+                    }
                 }
+                else if (null != this.maximum_compiler_version)
+                {
+                    if (!compilerTool.Version.AtMost(this.maximum_compiler_version))
+                    {
+                        return false;
+                    }
+                }
+
                 if (this.matching_configurations.HasValue && (0 == (environment.Configuration & this.matching_configurations.Value)))
                 {
                     return false;
@@ -120,13 +146,14 @@ namespace C
         protected void
         Add(
             string path,
-            int minCompilerVersion,
+            ICompilerVersion minCompilerVersion,
+            ICompilerVersion maxCompilerVersion,
             params string[] suppression)
         {
             var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
             foreach (var sup in suppression)
             {
-                warnings.Add(sup, new Conditions(minCompilerVersion));
+                warnings.Add(sup, new Conditions(minCompilerVersion, maxCompilerVersion));
             }
             this.Merge(path, warnings);
         }
@@ -148,14 +175,15 @@ namespace C
         protected void
         Add(
             string path,
-            int minCompilerVersion,
+            ICompilerVersion minCompilerVersion,
+            ICompilerVersion maxCompilerVersion,
             Bam.Core.EConfiguration config,
             params string[] suppression)
         {
             var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
             foreach (var sup in suppression)
             {
-                warnings.Add(sup, new Conditions(minCompilerVersion, config));
+                warnings.Add(sup, new Conditions(minCompilerVersion, maxCompilerVersion, config));
             }
             this.Merge(path, warnings);
         }

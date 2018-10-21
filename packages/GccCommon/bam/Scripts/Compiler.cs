@@ -37,8 +37,7 @@ namespace GccCommon
             this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
             var discovery = this.GccMetaData as C.IToolchainDiscovery;
             discovery.discover(null);
-            this.MajorVersion = this.GccMetaData.CompilerMajorVersion;
-            this.MinorVersion = this.GccMetaData.CompilerMinorVersion;
+            this.Version = null; // TODO
             this.Macros.AddVerbatim("objext", ".o");
         }
 

@@ -36,13 +36,5 @@ namespace Clang
             :
             base("0820", new Bam.Core.StringArray("macosx10.12"))
         {}
-
-        public override int CompilerMajorVersion
-        {
-            get
-            {
-                return 800;
-            }
-        }
     }
 }

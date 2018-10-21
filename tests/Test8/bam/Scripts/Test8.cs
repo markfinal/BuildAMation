@@ -38,15 +38,17 @@ namespace Test8
         SuppressC4091(
             Bam.Core.Settings settings)
         {
-            // warning suppression only required for VS2015 and above
+            // this is an issue with the Windows 8.1 SDK that emits the warning
+            // it's fixed in WindowsSDK 10 and above
+            // currently match is to when VS2015 is in use, as that's the common use of Windows SDK 8.1
             // this is a less common example of a static private patch, so it has no access
             // to the variables generally available to patches inlined in Init()
-            // so settings.Module is just a Bam.Core.Module, so utility functions from the C package
+            // settings.Module is just a Bam.Core.Module, so utility functions from the C package
             // are provided to get access to properties on the compilable module
             if (settings is VisualCCommon.ICommonCompilerSettings)
             {
                 var compilerUsed = C.PatchUtilities.GetCompiler<C.ObjectFile>(settings.Module);
-                if (compilerUsed.IsAtLeast(19))
+                if (compilerUsed.Version.InRange(VisualCCommon.CompilerVersion.VC2015, VisualCCommon.CompilerVersion.VC2017_15_0))
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
                     compiler.DisableWarnings.AddUnique("4091"); // C:\Program Files (x86)\Windows Kits\8.1\Include\um\DbgHelp.h(1544): warning C4091: 'typedef ': ignored on left of '' when no variable is declared

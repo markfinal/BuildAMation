@@ -160,13 +160,13 @@ namespace GccCommon
             }
         }
 
-        public abstract int
+        protected abstract int
         CompilerMajorVersion
         {
             get;
         }
 
-        public virtual int?
+        protected virtual int?
         CompilerMinorVersion
         {
             get

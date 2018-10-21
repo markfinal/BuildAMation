@@ -29,6 +29,26 @@
 #endregion // License
 namespace C
 {
+    public interface ICompilerVersion
+    {
+        bool
+        Match(
+            ICompilerVersion compare);
+
+        bool
+        AtLeast(
+            ICompilerVersion minimum);
+
+        bool
+        AtMost(
+            ICompilerVersion maximum);
+
+        bool
+        InRange(
+            ICompilerVersion minimum,
+            ICompilerVersion maximum);
+    }
+
     public interface IToolchainDiscovery
     {
         void

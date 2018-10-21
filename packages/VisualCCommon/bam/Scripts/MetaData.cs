@@ -30,6 +30,66 @@
 using System.Linq;
 namespace VisualCCommon
 {
+    public sealed class CompilerVersion :
+        C.ICompilerVersion
+    {
+        private int _mscver;
+
+        public static readonly CompilerVersion VC2010 = FromMSCVer(1600);
+        public static readonly CompilerVersion VC2012 = FromMSCVer(1700);
+        public static readonly CompilerVersion VC2013 = FromMSCVer(1800);
+        public static readonly CompilerVersion VC2015 = FromMSCVer(1900);
+        public static readonly CompilerVersion VC2017_15_0 = FromMSCVer(1910);
+        public static readonly CompilerVersion VC2017_15_3 = FromMSCVer(1911);
+        public static readonly CompilerVersion VC2017_15_5 = FromMSCVer(1912);
+        public static readonly CompilerVersion VC2017_15_6 = FromMSCVer(1913);
+        public static readonly CompilerVersion VC2017_15_7 = FromMSCVer(1914);
+        public static readonly CompilerVersion VC2017_15_8 = FromMSCVer(1915);
+
+        private CompilerVersion(
+            int mscVer)
+        {
+            this._mscver = mscVer;
+        }
+
+        static public CompilerVersion
+        FromMSCVer(
+            int mscVer)
+        {
+            return new CompilerVersion(mscVer);
+        }
+
+        bool
+        C.ICompilerVersion.Match(
+            C.ICompilerVersion compare)
+        {
+            return this._mscver == (compare as CompilerVersion)._mscver;
+        }
+
+        bool
+        C.ICompilerVersion.AtLeast(
+            C.ICompilerVersion minimum)
+        {
+            return this._mscver >= (minimum as CompilerVersion)._mscver;
+        }
+
+        bool
+        C.ICompilerVersion.AtMost(
+            C.ICompilerVersion maximum)
+        {
+            return this._mscver <= (maximum as CompilerVersion)._mscver;
+        }
+
+        bool
+        C.ICompilerVersion.InRange(
+            C.ICompilerVersion minimum,
+            C.ICompilerVersion maximum)
+        {
+            return (this as C.ICompilerVersion).AtLeast(minimum) &&
+                   (this as C.ICompilerVersion).AtMost(maximum);
+        }
+    }
+
     public abstract class MetaData :
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
@@ -66,32 +126,34 @@ namespace VisualCCommon
         protected string
         vswhere_getinstallpath()
         {
+            var package_version = Bam.Core.Graph.Instance.Packages.First(item => item.Name == "VisualC").Version;
+            var major_version = System.Convert.ToInt32(package_version.Split('.').First());
             try
             {
                 var args = new System.Text.StringBuilder();
-                var legacy = this.major_version < 15;
+                var legacy = major_version < 15;
                 args.Append("-property installationPath -version ");
                 if (legacy)
                 {
                     // note the [] around the version to specify only that version
-                    args.AppendFormat("[{0}] -legacy", this.major_version);
+                    args.AppendFormat("[{0}] -legacy", major_version);
                 }
                 else
                 {
-                    args.Append(this.major_version);
+                    args.Append(major_version);
                 }
                 var installpath = Bam.Core.OSUtilities.RunExecutable(
                     this.vswherePath,
                     args.ToString()
                 ).StandardOutput;
-                Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", this.major_version, installpath);
+                Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", major_version, installpath);
                 return installpath;
             }
             catch (Bam.Core.RunExecutableException)
             {
                 throw new Bam.Core.Exception(
                     "Unable to locate installation directory for Visual Studio major version {0}",
-                    this.major_version
+                    major_version
                 );
             }
         }
@@ -385,9 +447,17 @@ namespace VisualCCommon
             set;
         }
 
-        protected abstract int major_version
+        public CompilerVersion CompilerVersion
         {
-            get;
+            get
+            {
+                return this.Meta["CompilerVersion"] as CompilerVersion;
+            }
+
+            private set
+            {
+                this.Meta["CompilerVersion"] = value;
+            }
         }
 
         protected abstract string subpath_to_vcvars
@@ -514,9 +584,10 @@ namespace VisualCCommon
             }
             if (!this.Meta.ContainsKey("CompilerVersion"))
             {
-                var version = this.GetCompilerVersion();
-                Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
-                this.Meta.Add("CompilerVersion", version);
+                var version_string = this.GetCompilerVersion();
+                var version = CompilerVersion.FromMSCVer(System.Convert.ToInt32(version_string));
+                Bam.Core.Log.MessageAll($"*** Compiler version = {version_string}");
+                this.CompilerVersion = version;
             }
         }
     }
