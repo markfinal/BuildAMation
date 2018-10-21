@@ -30,6 +30,88 @@
 using System.Linq;
 namespace GccCommon
 {
+    public sealed class CompilerVersion :
+        C.ICompilerVersion
+    {
+        public static readonly CompilerVersion GCC_4_8_4 = FromComponentVersions(4, 8, 4);
+        public static readonly CompilerVersion GCC_5_4 = FromComponentVersions(5, 4, 0);
+        public static readonly CompilerVersion GCC_7 = FromComponentVersions(7, 0, 0);
+
+        private int Major
+        {
+            get;
+            set;
+        }
+
+        private int Minor
+        {
+            get;
+            set;
+        }
+
+        private int Patch
+        {
+            get;
+            set;
+        }
+
+        private int Combined
+        {
+            get;
+            set;
+        }
+
+        private CompilerVersion(
+            int major_version,
+            int minor_version,
+            int patch_level)
+        {
+            this.Major = major_version;
+            this.Minor = minor_version;
+            this.Patch = patch_level;
+            this.Combined = 10000 * this.Major + 100 * this.Minor + this.Patch;
+        }
+
+        static public CompilerVersion
+        FromComponentVersions(
+            int major,
+            int minor,
+            int patch)
+        {
+            return new CompilerVersion(major, minor, patch);
+        }
+
+        bool
+        C.ICompilerVersion.Match(
+            C.ICompilerVersion compare)
+        {
+            return this.Combined == (compare as CompilerVersion).Combined;
+        }
+
+        bool
+        C.ICompilerVersion.AtLeast(
+            C.ICompilerVersion minimum)
+        {
+            return this.Combined >= (minimum as CompilerVersion).Combined;
+        }
+
+        bool
+        C.ICompilerVersion.AtMost(
+            C.ICompilerVersion maximum)
+        {
+            return this.Combined <= (maximum as CompilerVersion).Combined;
+        }
+
+        bool
+        C.ICompilerVersion.InRange(
+            C.ICompilerVersion minimum,
+            C.ICompilerVersion maximum)
+        {
+            return (this as C.ICompilerVersion).AtLeast(minimum) &&
+                   (this as C.ICompilerVersion).AtMost(maximum);
+        }
+    }
+
     public abstract class MetaData :
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
@@ -175,7 +257,20 @@ namespace GccCommon
             }
         }
 
-        private string
+        public CompilerVersion CompilerVersion
+        {
+            get
+            {
+                return this.Meta["CompilerVersion"] as CompilerVersion;
+            }
+
+            private set
+            {
+                this.Meta["CompilerVersion"] = value;
+            }
+        }
+
+        private CompilerVersion
         GetCompilerVersion()
         {
             var contents = new System.Text.StringBuilder();
@@ -188,7 +283,18 @@ namespace GccCommon
                 this.GccPath,
                 $"-E -P -x c {temp_file}"
             );
-            return result.StandardOutput;
+            var version = result.StandardOutput.Split(System.Environment.NewLine);
+            if (version.Length != 3)
+            {
+                throw new Bam.Core.Exception(
+                    $"Expected 3 lines: major, minor, patchlevel; instead got {version.Length} and {result.StandardOutput}"
+                );
+            }
+            return CompilerVersion.FromComponentVersions(
+                System.Convert.ToInt32(version[0]),
+                System.Convert.ToInt32(version[1]),
+                System.Convert.ToInt32(version[2])
+            );
         }
 
         void
@@ -204,16 +310,18 @@ namespace GccCommon
             {
                 var location = gccLocations.First();
                 this.Meta.Add("GccPath", location);
+
                 var gccVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion").StandardOutput;
                 // older versions of the GCC compiler display a major.minor version number
                 // newer versions just display a major version number
                 var gccVersionSplit = gccVersion.Split(new [] { '.' });
                 this.Meta.Add("GccVersion", gccVersionSplit);
-                Bam.Core.Log.Info("Using GCC version {0} installed at {1}", gccVersion, location);
 
                 var version = this.GetCompilerVersion();
                 Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
-                this.Meta.Add("CompilerVersion", version);
+                this.CompilerVersion = version;
+
+                Bam.Core.Log.Info("Using GCC version {0} installed at {1}", gccVersion, location);
             }
 
             var gxxLocations = Bam.Core.OSUtilities.GetInstallLocation("g++");
