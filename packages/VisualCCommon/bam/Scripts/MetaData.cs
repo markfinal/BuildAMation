@@ -464,7 +464,7 @@ namespace VisualCCommon
         }
 
         private string
-        get_compiler_version()
+        GetCompilerVersion()
         {
             var temp_file = System.IO.Path.GetTempFileName();
             System.IO.File.WriteAllText(temp_file, "_MSC_VER");
@@ -514,7 +514,7 @@ namespace VisualCCommon
             }
             if (!this.Meta.ContainsKey("CompilerVersion"))
             {
-                var version = this.get_compiler_version();
+                var version = this.GetCompilerVersion();
                 Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
                 this.Meta.Add("CompilerVersion", version);
             }
