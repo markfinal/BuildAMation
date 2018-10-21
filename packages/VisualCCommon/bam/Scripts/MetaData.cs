@@ -223,7 +223,7 @@ namespace VisualCCommon
             }
             else
             {
-                startinfo.WorkingDirectory = System.IO.Path.Combine(this.InstallDir.ToString(), subpath_to_vcvars);
+                startinfo.WorkingDirectory = System.IO.Path.Combine(this.InstallDir.ToString(), this.subpath_to_vcvars);
                 environment_generator_cmdline = vcvarsall_command();
             }
 
@@ -463,6 +463,24 @@ namespace VisualCCommon
             Bam.Core.Log.Info(report.ToString());
         }
 
+        private string
+        get_compiler_version()
+        {
+            var temp_file = System.IO.Path.GetTempFileName();
+            System.IO.File.WriteAllText(temp_file, "_MSC_VER");
+            var result = Bam.Core.OSUtilities.RunExecutable(
+                System.IO.Path.Combine(
+                    System.IO.Path.Combine(
+                        this.InstallDir.ToString(),
+                        this.subpath_to_vcvars
+                    ),
+                    "vcvarsall.bat"
+                ),
+                $"amd64 && cl /EP /nologo {temp_file}"
+            );
+            return result.StandardOutput.Split(System.Environment.NewLine.ToCharArray()).Reverse().First();
+        }
+
         void
         C.IToolchainDiscovery.discover(
             C.EBit? depth)
@@ -493,6 +511,12 @@ namespace VisualCCommon
                     this.hasNative64BitTools
                 );
                 report_WindowsSDK(this.Environment(bitdepth), bitdepth);
+            }
+            if (!this.Meta.ContainsKey("CompilerVersion"))
+            {
+                var version = this.get_compiler_version();
+                Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
+                this.Meta.Add("CompilerVersion", version);
             }
         }
     }
