@@ -356,26 +356,44 @@ namespace Bam.Core
             processStartInfo.RedirectStandardError = true;
             processStartInfo.RedirectStandardInput = true;
             processStartInfo.UseShellExecute = false; // to redirect IO streams
-            System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
-            process.StandardInput.Close();
-            process.WaitForExit();
-
-            var result = new RunExecutableResult(
-                process.StandardOutput.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray()),
-                process.StandardError.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray()),
-                process.ExitCode
-            );
-            if (0 != process.ExitCode)
+            try
             {
+                System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
+                process.StandardInput.Close();
+                process.WaitForExit();
+
+                var result = new RunExecutableResult(
+                    process.StandardOutput.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray()),
+                    process.StandardError.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray()),
+                    process.ExitCode
+                );
+                if (0 != process.ExitCode)
+                {
+                    throw new RunExecutableException(
+                        result,
+                        "Failed while running '{0} {1}'",
+                        executable,
+                        arguments
+                    );
+                }
+
+                return result;
+            }
+            catch (System.ComponentModel.Win32Exception exception)
+            {
+                var result = new RunExecutableResult(
+                    "",
+                    "",
+                    -1
+                );
                 throw new RunExecutableException(
                     result,
-                    "Failed while running '{0} {1}'",
+                    "Failed while trying to run '{0} {1}' because {2}",
                     executable,
-                    arguments
+                    arguments,
+                    exception.Message
                 );
             }
-
-            return result;
         }
 
         /// <summary>
