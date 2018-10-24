@@ -74,7 +74,7 @@ namespace AssemblerTest1
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var gccMeta = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-                var gccVersion = gccMeta.CompilerVersion as C.ICompilerVersion;
+                var gccVersion = gccMeta.CompilerVersion;
                 if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_7))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/7/*.S");
@@ -159,7 +159,7 @@ namespace AssemblerTest1
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var gccMeta = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-                var gccVersion = gccMeta.CompilerVersion as C.ICompilerVersion;
+                var gccVersion = gccMeta.CompilerVersion;
                 if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_7))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/7/*.S");

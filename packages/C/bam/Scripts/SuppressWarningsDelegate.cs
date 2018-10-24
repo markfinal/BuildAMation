@@ -47,13 +47,13 @@ namespace C
     {
         private class Conditions
         {
-            private readonly ICompilerVersion minimum_compiler_version;
-            private readonly ICompilerVersion maximum_compiler_version;
+            private readonly CompilerVersion minimum_compiler_version;
+            private readonly CompilerVersion maximum_compiler_version;
             private readonly Bam.Core.EConfiguration? matching_configurations;
 
             public Conditions(
-                ICompilerVersion min_version,
-                ICompilerVersion max_version)
+                CompilerVersion min_version,
+                CompilerVersion max_version)
             {
                 this.minimum_compiler_version = min_version;
                 this.maximum_compiler_version = max_version;
@@ -66,8 +66,8 @@ namespace C
             }
 
             public Conditions(
-                ICompilerVersion min_version,
-                ICompilerVersion max_version,
+                CompilerVersion min_version,
+                CompilerVersion max_version,
                 Bam.Core.EConfiguration matching_config)
             {
                 this.minimum_compiler_version = min_version;
@@ -146,8 +146,8 @@ namespace C
         protected void
         Add(
             string path,
-            ICompilerVersion minCompilerVersion,
-            ICompilerVersion maxCompilerVersion,
+            CompilerVersion minCompilerVersion,
+            CompilerVersion maxCompilerVersion,
             params string[] suppression)
         {
             var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
@@ -175,8 +175,8 @@ namespace C
         protected void
         Add(
             string path,
-            ICompilerVersion minCompilerVersion,
-            ICompilerVersion maxCompilerVersion,
+            CompilerVersion minCompilerVersion,
+            CompilerVersion maxCompilerVersion,
             Bam.Core.EConfiguration config,
             params string[] suppression)
         {

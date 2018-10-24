@@ -38,7 +38,7 @@ namespace C
             Bam.Core.Settings settings)
         {}
 
-        public ICompilerVersion Version
+        public CompilerVersion Version
         {
             get;
             protected set;

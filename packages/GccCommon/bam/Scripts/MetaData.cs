@@ -31,85 +31,28 @@ using System.Linq;
 namespace GccCommon
 {
     public sealed class CompilerVersion :
-        C.ICompilerVersion
+        C.CompilerVersion
     {
-        public static readonly CompilerVersion GCC_4_8_4 = FromComponentVersions(4, 8, 4);
-        public static readonly CompilerVersion GCC_5 = FromComponentVersions(5, 0, 0);
-        public static readonly CompilerVersion GCC_5_4 = FromComponentVersions(5, 4, 0);
-        public static readonly CompilerVersion GCC_7 = FromComponentVersions(7, 0, 0);
-
-        private int Major
-        {
-            get;
-            set;
-        }
-
-        private int Minor
-        {
-            get;
-            set;
-        }
-
-        private int Patch
-        {
-            get;
-            set;
-        }
-
-        private int Combined
-        {
-            get;
-            set;
-        }
+        public static readonly C.CompilerVersion GCC_4_8_4 = FromComponentVersions(4, 8, 4);
+        public static readonly C.CompilerVersion GCC_5 = FromComponentVersions(5, 0, 0);
+        public static readonly C.CompilerVersion GCC_5_4 = FromComponentVersions(5, 4, 0);
+        public static readonly C.CompilerVersion GCC_7 = FromComponentVersions(7, 0, 0);
 
         private CompilerVersion(
             int major_version,
             int minor_version,
             int patch_level)
         {
-            this.Major = major_version;
-            this.Minor = minor_version;
-            this.Patch = patch_level;
-            this.Combined = 10000 * this.Major + 100 * this.Minor + this.Patch;
+            this.combinedVersion = 10000 * major_version + 100 * minor_version + patch_level;
         }
 
-        static public CompilerVersion
+        static public C.CompilerVersion
         FromComponentVersions(
             int major,
             int minor,
             int patch)
         {
             return new CompilerVersion(major, minor, patch);
-        }
-
-        bool
-        C.ICompilerVersion.Match(
-            C.ICompilerVersion compare)
-        {
-            return this.Combined == (compare as CompilerVersion).Combined;
-        }
-
-        bool
-        C.ICompilerVersion.AtLeast(
-            C.ICompilerVersion minimum)
-        {
-            return this.Combined >= (minimum as CompilerVersion).Combined;
-        }
-
-        bool
-        C.ICompilerVersion.AtMost(
-            C.ICompilerVersion maximum)
-        {
-            return this.Combined <= (maximum as CompilerVersion).Combined;
-        }
-
-        bool
-        C.ICompilerVersion.InRange(
-            C.ICompilerVersion minimum,
-            C.ICompilerVersion maximum)
-        {
-            return (this as C.ICompilerVersion).AtLeast(minimum) &&
-                   (this as C.ICompilerVersion).AtMost(maximum);
         }
     }
 
@@ -258,11 +201,11 @@ namespace GccCommon
             }
         }
 
-        public CompilerVersion CompilerVersion
+        public C.CompilerVersion CompilerVersion
         {
             get
             {
-                return this.Meta["CompilerVersion"] as CompilerVersion;
+                return this.Meta["CompilerVersion"] as C.CompilerVersion;
             }
 
             private set
@@ -271,7 +214,7 @@ namespace GccCommon
             }
         }
 
-        private CompilerVersion
+        private C.CompilerVersion
         GetCompilerVersion()
         {
             var contents = new System.Text.StringBuilder();
@@ -291,7 +234,7 @@ namespace GccCommon
                     $"Expected 3 lines: major, minor, patchlevel; instead got {version.Length} and {result.StandardOutput}"
                 );
             }
-            return CompilerVersion.FromComponentVersions(
+            return GccCommon.CompilerVersion.FromComponentVersions(
                 System.Convert.ToInt32(version[0]),
                 System.Convert.ToInt32(version[1]),
                 System.Convert.ToInt32(version[2])

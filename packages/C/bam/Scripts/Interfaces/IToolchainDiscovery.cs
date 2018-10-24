@@ -29,24 +29,45 @@
 #endregion // License
 namespace C
 {
-    public interface ICompilerVersion
+    public abstract class CompilerVersion
     {
-        bool
+        protected int combinedVersion;
+
+        public bool
         Match(
-            ICompilerVersion compare);
+            CompilerVersion compare)
+        {
+            return this.combinedVersion == (compare as CompilerVersion).combinedVersion;
+        }
 
-        bool
+        public bool
         AtLeast(
-            ICompilerVersion minimum);
+            CompilerVersion minimum)
+        {
+            return this.combinedVersion >= (minimum as CompilerVersion).combinedVersion;
+        }
 
-        bool
+        public bool
         AtMost(
-            ICompilerVersion maximum);
+            CompilerVersion maximum)
+        {
+            return this.combinedVersion <= (maximum as CompilerVersion).combinedVersion;
+        }
 
-        bool
+        public bool
         InRange(
-            ICompilerVersion minimum,
-            ICompilerVersion maximum);
+            CompilerVersion minimum,
+            CompilerVersion maximum)
+        {
+            return this.AtLeast(minimum) &&
+                   this.AtMost(maximum);
+        }
+
+        public override string
+        ToString()
+        {
+            return combinedVersion.ToString();
+        }
     }
 
     public interface IToolchainDiscovery

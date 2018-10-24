@@ -31,62 +31,30 @@ using System.Linq;
 namespace VisualCCommon
 {
     public sealed class CompilerVersion :
-        C.ICompilerVersion
+        C.CompilerVersion
     {
-        private int _mscver;
-
-        public static readonly CompilerVersion VC2010 = FromMSCVer(1600);
-        public static readonly CompilerVersion VC2012 = FromMSCVer(1700);
-        public static readonly CompilerVersion VC2013 = FromMSCVer(1800);
-        public static readonly CompilerVersion VC2015 = FromMSCVer(1900);
-        public static readonly CompilerVersion VC2017_15_0 = FromMSCVer(1910);
-        public static readonly CompilerVersion VC2017_15_3 = FromMSCVer(1911);
-        public static readonly CompilerVersion VC2017_15_5 = FromMSCVer(1912);
-        public static readonly CompilerVersion VC2017_15_6 = FromMSCVer(1913);
-        public static readonly CompilerVersion VC2017_15_7 = FromMSCVer(1914);
-        public static readonly CompilerVersion VC2017_15_8 = FromMSCVer(1915);
+        public static readonly C.CompilerVersion VC2010 = FromMSCVer(1600);
+        public static readonly C.CompilerVersion VC2012 = FromMSCVer(1700);
+        public static readonly C.CompilerVersion VC2013 = FromMSCVer(1800);
+        public static readonly C.CompilerVersion VC2015 = FromMSCVer(1900);
+        public static readonly C.CompilerVersion VC2017_15_0 = FromMSCVer(1910);
+        public static readonly C.CompilerVersion VC2017_15_3 = FromMSCVer(1911);
+        public static readonly C.CompilerVersion VC2017_15_5 = FromMSCVer(1912);
+        public static readonly C.CompilerVersion VC2017_15_6 = FromMSCVer(1913);
+        public static readonly C.CompilerVersion VC2017_15_7 = FromMSCVer(1914);
+        public static readonly C.CompilerVersion VC2017_15_8 = FromMSCVer(1915);
 
         private CompilerVersion(
             int mscVer)
         {
-            this._mscver = mscVer;
+            this.combinedVersion = mscVer;
         }
 
-        static public CompilerVersion
+        static public C.CompilerVersion
         FromMSCVer(
             int mscVer)
         {
             return new CompilerVersion(mscVer);
-        }
-
-        bool
-        C.ICompilerVersion.Match(
-            C.ICompilerVersion compare)
-        {
-            return this._mscver == (compare as CompilerVersion)._mscver;
-        }
-
-        bool
-        C.ICompilerVersion.AtLeast(
-            C.ICompilerVersion minimum)
-        {
-            return this._mscver >= (minimum as CompilerVersion)._mscver;
-        }
-
-        bool
-        C.ICompilerVersion.AtMost(
-            C.ICompilerVersion maximum)
-        {
-            return this._mscver <= (maximum as CompilerVersion)._mscver;
-        }
-
-        bool
-        C.ICompilerVersion.InRange(
-            C.ICompilerVersion minimum,
-            C.ICompilerVersion maximum)
-        {
-            return (this as C.ICompilerVersion).AtLeast(minimum) &&
-                   (this as C.ICompilerVersion).AtMost(maximum);
         }
     }
 
@@ -447,11 +415,11 @@ namespace VisualCCommon
             set;
         }
 
-        public CompilerVersion CompilerVersion
+        public C.CompilerVersion CompilerVersion
         {
             get
             {
-                return this.Meta["CompilerVersion"] as CompilerVersion;
+                return this.Meta["CompilerVersion"] as C.CompilerVersion;
             }
 
             private set
@@ -533,7 +501,7 @@ namespace VisualCCommon
             Bam.Core.Log.Info(report.ToString());
         }
 
-        private string
+        private C.CompilerVersion
         GetCompilerVersion()
         {
             var temp_file = System.IO.Path.GetTempFileName();
@@ -548,7 +516,8 @@ namespace VisualCCommon
                 ),
                 $"amd64 && cl /EP /nologo {temp_file}"
             );
-            return result.StandardOutput.Split(System.Environment.NewLine.ToCharArray()).Reverse().First();
+            var mscver = result.StandardOutput.Split(System.Environment.NewLine.ToCharArray()).Reverse().First();
+            return VisualCCommon.CompilerVersion.FromMSCVer(System.Convert.ToInt32(mscver));
         }
 
         void
@@ -584,9 +553,8 @@ namespace VisualCCommon
             }
             if (!this.Meta.ContainsKey("CompilerVersion"))
             {
-                var version_string = this.GetCompilerVersion();
-                var version = CompilerVersion.FromMSCVer(System.Convert.ToInt32(version_string));
-                Bam.Core.Log.MessageAll($"*** Compiler version = {version_string}");
+                var version = this.GetCompilerVersion();
+                Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
                 this.CompilerVersion = version;
             }
         }
