@@ -217,7 +217,7 @@ namespace ClangCommon
 
                     if (!this.Contains("MacOSXMinVersion"))
                     {
-                        var isXcode10 = false; // version >= 1000
+                        var isXcode10 = this.CompilerVersion.AtLeast(ClangCommon.CompilerVersion.Xcode_10);
                         if (isXcode10)
                         {
                             // Xcode 10 now requires 10.9+, and only libc++
