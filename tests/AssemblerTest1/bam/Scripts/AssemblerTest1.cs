@@ -74,21 +74,22 @@ namespace AssemblerTest1
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var gccMeta = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-                if (gccMeta.CompilerMajorVersion < 8)
+                var gccVersion = gccMeta.CompilerVersion as C.ICompilerVersion;
+                if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_7))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/7/*.S");
                 }
-                else if (gccMeta.CompilerMajorVersion < 6)
+                else if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_5))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/5/*.S");
                 }
-                else if (gccMeta.CompilerMajorVersion < 5)
+                else if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_4_8_4))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/4/*.S");
                 }
                 else
                 {
-                    throw new Bam.Core.Exception("No assembly code found for GCC version {0}", gccMeta.CompilerMajorVersion);
+                    throw new Bam.Core.Exception("No assembly code found for GCC version {0}", gccVersion.ToString());
                 }
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
@@ -158,21 +159,22 @@ namespace AssemblerTest1
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var gccMeta = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-                if (gccMeta.CompilerMajorVersion < 8)
+                var gccVersion = gccMeta.CompilerVersion as C.ICompilerVersion;
+                if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_7))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/7/*.S");
                 }
-                else if (gccMeta.CompilerMajorVersion < 6)
+                else if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_5))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/5/*.S");
                 }
-                else if (gccMeta.CompilerMajorVersion < 5)
+                else if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_4_8_4))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/4/*.S");
                 }
                 else
                 {
-                    throw new Bam.Core.Exception("No assembly code found for GCC version {0}", gccMeta.CompilerMajorVersion);
+                    throw new Bam.Core.Exception("No assembly code found for GCC version {0}", gccVersion.ToString());
                 }
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
