@@ -32,6 +32,7 @@ namespace ClangCommon
     public sealed class CompilerVersion :
         C.ICompilerVersion
     {
+        public static readonly CompilerVersion Xcode_7 = FromComponentVersions(7, 0, 0);
         public static readonly CompilerVersion Xcode_9_4_1 = FromComponentVersions(9, 1, 0);
         public static readonly CompilerVersion Xcode_10 = FromComponentVersions(10, 0, 0);
 
