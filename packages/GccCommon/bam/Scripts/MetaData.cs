@@ -34,6 +34,7 @@ namespace GccCommon
         C.ICompilerVersion
     {
         public static readonly CompilerVersion GCC_4_8_4 = FromComponentVersions(4, 8, 4);
+        public static readonly CompilerVersion GCC_5 = FromComponentVersions(5, 0, 0);
         public static readonly CompilerVersion GCC_5_4 = FromComponentVersions(5, 4, 0);
         public static readonly CompilerVersion GCC_7 = FromComponentVersions(7, 0, 0);
 
