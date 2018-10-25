@@ -31,6 +31,32 @@ namespace C
 {
     public abstract class CompilerVersion
     {
+        public sealed class IncompatibleTypesException :
+            Bam.Core.Exception
+        {
+            public IncompatibleTypesException(
+                System.Type baseType,
+                System.Type comparingType)
+                :
+                base($"Unable to compare compiler versions of different types: '{baseType.ToString()}' vs '{comparingType.ToString()}'")
+            {
+                this.BaseType = baseType;
+                this.ComparingType = comparingType;
+            }
+
+            public System.Type BaseType
+            {
+                get;
+                private set;
+            }
+
+            public System.Type ComparingType
+            {
+                get;
+                private set;
+            }
+        }
+
         protected int combinedVersion;
 
         public bool
@@ -44,6 +70,10 @@ namespace C
         AtLeast(
             CompilerVersion minimum)
         {
+            if (this.GetType() != minimum.GetType())
+            {
+                throw new IncompatibleTypesException(this.GetType(), minimum.GetType());
+            }
             return this.combinedVersion >= (minimum as CompilerVersion).combinedVersion;
         }
 
@@ -51,6 +81,10 @@ namespace C
         AtMost(
             CompilerVersion maximum)
         {
+            if (this.GetType() != maximum.GetType())
+            {
+                throw new IncompatibleTypesException(this.GetType(), maximum.GetType());
+            }
             return this.combinedVersion <= (maximum as CompilerVersion).combinedVersion;
         }
 
