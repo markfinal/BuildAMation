@@ -30,18 +30,60 @@
 using System.Linq;
 namespace VisualCCommon
 {
+    /// <summary>
+    /// VisualC toolchain version wrapper.
+    /// </summary>
     public sealed class CompilerVersion :
         C.CompilerVersion
     {
+        /// <summary>
+        /// VisualC 2010
+        /// </summary>
         public static readonly C.CompilerVersion VC2010 = FromMSCVer(1600);
+
+        /// <summary>
+        /// VisualC 2012
+        /// </summary>
         public static readonly C.CompilerVersion VC2012 = FromMSCVer(1700);
+
+        /// <summary>
+        /// VisualC 2013
+        /// </summary>
         public static readonly C.CompilerVersion VC2013 = FromMSCVer(1800);
+
+        /// <summary>
+        /// VisualC 2015
+        /// </summary>
         public static readonly C.CompilerVersion VC2015 = FromMSCVer(1900);
+
+        /// <summary>
+        /// VisualC 2017 15.0
+        /// </summary>
         public static readonly C.CompilerVersion VC2017_15_0 = FromMSCVer(1910);
+
+        /// <summary>
+        /// VisualC 2017 15.3
+        /// </summary>
         public static readonly C.CompilerVersion VC2017_15_3 = FromMSCVer(1911);
+
+        /// <summary>
+        /// VisualC 2017 15.5
+        /// </summary>
         public static readonly C.CompilerVersion VC2017_15_5 = FromMSCVer(1912);
+
+        /// <summary>
+        /// VisualC 2017 15.6
+        /// </summary>
         public static readonly C.CompilerVersion VC2017_15_6 = FromMSCVer(1913);
+
+        /// <summary>
+        /// VisualC 2017 15.7
+        /// </summary>
         public static readonly C.CompilerVersion VC2017_15_7 = FromMSCVer(1914);
+
+        /// <summary>
+        /// VisualC 2017 15.8
+        /// </summary>
         public static readonly C.CompilerVersion VC2017_15_8 = FromMSCVer(1915);
 
         private CompilerVersion(
@@ -50,6 +92,11 @@ namespace VisualCCommon
             this.combinedVersion = mscVer;
         }
 
+        /// <summary>
+        /// Generate a VisualC toolchain version from _MSC_VER
+        /// </summary>
+        /// <param name="mscVer">The specified _MSC_VER value.</param>
+        /// <returns>Toolchain version</returns>
         static public C.CompilerVersion
         FromMSCVer(
             int mscVer)

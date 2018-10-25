@@ -30,12 +30,30 @@
 using System.Linq;
 namespace GccCommon
 {
+    /// <summary>
+    /// Gcc toolchain version wrapper.
+    /// </summary>
     public sealed class CompilerVersion :
         C.CompilerVersion
     {
+        /// <summary>
+        /// Gcc 4.8.4
+        /// </summary>
         public static readonly C.CompilerVersion GCC_4_8_4 = FromComponentVersions(4, 8, 4);
+
+        /// <summary>
+        /// Gcc 5
+        /// </summary>
         public static readonly C.CompilerVersion GCC_5 = FromComponentVersions(5, 0, 0);
+
+        /// <summary>
+        /// Gcc 5.4
+        /// </summary>
         public static readonly C.CompilerVersion GCC_5_4 = FromComponentVersions(5, 4, 0);
+
+        /// <summary>
+        /// Gcc 7
+        /// </summary>
         public static readonly C.CompilerVersion GCC_7 = FromComponentVersions(7, 0, 0);
 
         private CompilerVersion(
@@ -46,6 +64,13 @@ namespace GccCommon
             this.combinedVersion = 10000 * major_version + 100 * minor_version + patch_level;
         }
 
+        /// <summary>
+        /// Generate a Gcc toolchain version from major, minor, patch components.
+        /// </summary>
+        /// <param name="major">Major version number</param>
+        /// <param name="minor">Minor version number</param>
+        /// <param name="patch">Patch version</param>
+        /// <returns>Toolchain version</returns>
         static public C.CompilerVersion
         FromComponentVersions(
             int major,
