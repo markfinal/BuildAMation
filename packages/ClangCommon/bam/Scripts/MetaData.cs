@@ -155,6 +155,10 @@ namespace ClangCommon
         {
             get
             {
+                if (!this.Meta.ContainsKey("CompilerVersion"))
+                {
+                    (this as C.IToolchainDiscovery).discover(null);
+                }
                 return this.Meta["CompilerVersion"] as C.CompilerVersion;
             }
 
