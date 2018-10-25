@@ -27,12 +27,51 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace ClangCommon
 {
-    public interface IToolchainDiscovery
+    /// <summary>
+    /// Clang toolchain version wrapper.
+    /// </summary>
+    public sealed class ToolchainVersion :
+        C.ToolchainVersion
     {
-        void
-        discover(
-            EBit? depth);
+        /// <summary>
+        /// Xcode 7.0
+        /// </summary>
+        public static readonly C.ToolchainVersion Xcode_7 = FromComponentVersions(7, 0, 0);
+
+        /// <summary>
+        /// Xcode 9.4.1
+        /// </summary>
+        public static readonly C.ToolchainVersion Xcode_9_4_1 = FromComponentVersions(9, 1, 0);
+
+        /// <summary>
+        /// Xcode 10.0
+        /// </summary>
+        public static readonly C.ToolchainVersion Xcode_10 = FromComponentVersions(10, 0, 0);
+
+        private ToolchainVersion(
+            int major_version,
+            int minor_version,
+            int patch_level)
+        {
+            this.combinedVersion = 10000 * major_version + 100 * minor_version + patch_level;
+        }
+
+        /// <summary>
+        /// Generate a Clang toolchain version from major, minor, patch components.
+        /// </summary>
+        /// <param name="major">Major version number</param>
+        /// <param name="minor">Minor version number</param>
+        /// <param name="patch">Patch version</param>
+        /// <returns>Toolchain version</returns>
+        static public C.ToolchainVersion
+        FromComponentVersions(
+            int major,
+            int minor,
+            int patch)
+        {
+            return new ToolchainVersion(major, minor, patch);
+        }
     }
 }

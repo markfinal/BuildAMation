@@ -74,16 +74,16 @@ namespace AssemblerTest1
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var gccMeta = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-                var gccVersion = gccMeta.CompilerVersion;
-                if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_7))
+                var gccVersion = gccMeta.ToolchainVersion;
+                if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_7))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/7/*.S");
                 }
-                else if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_5))
+                else if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_5))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/5/*.S");
                 }
-                else if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_4_8_4))
+                else if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_4_8_4))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/4/*.S");
                 }
@@ -159,16 +159,16 @@ namespace AssemblerTest1
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var gccMeta = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-                var gccVersion = gccMeta.CompilerVersion;
-                if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_7))
+                var gccVersion = gccMeta.ToolchainVersion;
+                if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_7))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/7/*.S");
                 }
-                else if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_5))
+                else if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_5))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/5/*.S");
                 }
-                else if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_4_8_4))
+                else if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_4_8_4))
                 {
                     source.AddFiles("$(packagedir)/source/gcc/4/*.S");
                 }

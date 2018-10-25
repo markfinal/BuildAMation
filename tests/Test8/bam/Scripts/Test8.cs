@@ -48,7 +48,7 @@ namespace Test8
             if (settings is VisualCCommon.ICommonCompilerSettings)
             {
                 var compilerUsed = C.PatchUtilities.GetCompiler<C.ObjectFile>(settings.Module);
-                if (compilerUsed.Version.InRange(VisualCCommon.CompilerVersion.VC2015, VisualCCommon.CompilerVersion.VC2017_15_0))
+                if (compilerUsed.Version.InRange(VisualCCommon.ToolchainVersion.VC2015, VisualCCommon.ToolchainVersion.VC2017_15_0))
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
                     compiler.DisableWarnings.AddUnique("4091"); // C:\Program Files (x86)\Windows Kits\8.1\Include\um\DbgHelp.h(1544): warning C4091: 'typedef ': ignored on left of '' when no variable is declared

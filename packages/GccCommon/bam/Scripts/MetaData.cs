@@ -30,57 +30,6 @@
 using System.Linq;
 namespace GccCommon
 {
-    /// <summary>
-    /// Gcc toolchain version wrapper.
-    /// </summary>
-    public sealed class CompilerVersion :
-        C.CompilerVersion
-    {
-        /// <summary>
-        /// Gcc 4.8.4
-        /// </summary>
-        public static readonly C.CompilerVersion GCC_4_8_4 = FromComponentVersions(4, 8, 4);
-
-        /// <summary>
-        /// Gcc 5
-        /// </summary>
-        public static readonly C.CompilerVersion GCC_5 = FromComponentVersions(5, 0, 0);
-
-        /// <summary>
-        /// Gcc 5.4
-        /// </summary>
-        public static readonly C.CompilerVersion GCC_5_4 = FromComponentVersions(5, 4, 0);
-
-        /// <summary>
-        /// Gcc 7
-        /// </summary>
-        public static readonly C.CompilerVersion GCC_7 = FromComponentVersions(7, 0, 0);
-
-        private CompilerVersion(
-            int major_version,
-            int minor_version,
-            int patch_level)
-        {
-            this.combinedVersion = 10000 * major_version + 100 * minor_version + patch_level;
-        }
-
-        /// <summary>
-        /// Generate a Gcc toolchain version from major, minor, patch components.
-        /// </summary>
-        /// <param name="major">Major version number</param>
-        /// <param name="minor">Minor version number</param>
-        /// <param name="patch">Patch version</param>
-        /// <returns>Toolchain version</returns>
-        static public C.CompilerVersion
-        FromComponentVersions(
-            int major,
-            int minor,
-            int patch)
-        {
-            return new CompilerVersion(major, minor, patch);
-        }
-    }
-
     public abstract class MetaData :
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
@@ -226,20 +175,20 @@ namespace GccCommon
             }
         }
 
-        public C.CompilerVersion CompilerVersion
+        public C.ToolchainVersion ToolchainVersion
         {
             get
             {
-                return this.Meta["CompilerVersion"] as C.CompilerVersion;
+                return this.Meta["ToolchainVersion"] as C.ToolchainVersion;
             }
 
             private set
             {
-                this.Meta["CompilerVersion"] = value;
+                this.Meta["ToolchainVersion"] = value;
             }
         }
 
-        private C.CompilerVersion
+        private C.ToolchainVersion
         GetCompilerVersion()
         {
             var contents = new System.Text.StringBuilder();
@@ -259,7 +208,7 @@ namespace GccCommon
                     $"Expected 3 lines: major, minor, patchlevel; instead got {version.Length} and {result.StandardOutput}"
                 );
             }
-            return GccCommon.CompilerVersion.FromComponentVersions(
+            return GccCommon.ToolchainVersion.FromComponentVersions(
                 System.Convert.ToInt32(version[0]),
                 System.Convert.ToInt32(version[1]),
                 System.Convert.ToInt32(version[2])
@@ -288,7 +237,7 @@ namespace GccCommon
 
                 var version = this.GetCompilerVersion();
                 Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
-                this.CompilerVersion = version;
+                this.ToolchainVersion = version;
 
                 Bam.Core.Log.Info("Using GCC version {0} installed at {1}", gccVersion, location);
             }

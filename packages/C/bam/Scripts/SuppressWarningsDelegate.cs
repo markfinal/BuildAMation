@@ -47,13 +47,13 @@ namespace C
     {
         private class Conditions
         {
-            private readonly CompilerVersion minimum_compiler_version;
-            private readonly CompilerVersion maximum_compiler_version;
+            private readonly ToolchainVersion minimum_compiler_version;
+            private readonly ToolchainVersion maximum_compiler_version;
             private readonly Bam.Core.EConfiguration? matching_configurations;
 
             public Conditions(
-                CompilerVersion min_version,
-                CompilerVersion max_version)
+                ToolchainVersion min_version,
+                ToolchainVersion max_version)
             {
                 this.minimum_compiler_version = min_version;
                 this.maximum_compiler_version = max_version;
@@ -66,8 +66,8 @@ namespace C
             }
 
             public Conditions(
-                CompilerVersion min_version,
-                CompilerVersion max_version,
+                ToolchainVersion min_version,
+                ToolchainVersion max_version,
                 Bam.Core.EConfiguration matching_config)
             {
                 this.minimum_compiler_version = min_version;
@@ -146,14 +146,14 @@ namespace C
         protected void
         Add(
             string path,
-            CompilerVersion minCompilerVersion,
-            CompilerVersion maxCompilerVersion,
+            ToolchainVersion minVersion,
+            ToolchainVersion maxVersion,
             params string[] suppression)
         {
             var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
             foreach (var sup in suppression)
             {
-                warnings.Add(sup, new Conditions(minCompilerVersion, maxCompilerVersion));
+                warnings.Add(sup, new Conditions(minVersion, maxVersion));
             }
             this.Merge(path, warnings);
         }
@@ -175,15 +175,15 @@ namespace C
         protected void
         Add(
             string path,
-            CompilerVersion minCompilerVersion,
-            CompilerVersion maxCompilerVersion,
+            ToolchainVersion minVersion,
+            ToolchainVersion maxVersion,
             Bam.Core.EConfiguration config,
             params string[] suppression)
         {
             var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
             foreach (var sup in suppression)
             {
-                warnings.Add(sup, new Conditions(minCompilerVersion, maxCompilerVersion, config));
+                warnings.Add(sup, new Conditions(minVersion, maxVersion, config));
             }
             this.Merge(path, warnings);
         }

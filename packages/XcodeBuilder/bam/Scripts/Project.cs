@@ -527,7 +527,7 @@ namespace XcodeBuilder
 
                 // add configuration to project
                 var projectConfig = new Configuration(config, this, null);
-                var isXcode10 = clangMeta.CompilerVersion.AtLeast(ClangCommon.CompilerVersion.Xcode_10);
+                var isXcode10 = clangMeta.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
                 if (isXcode10)
                 {
                     // use new build system

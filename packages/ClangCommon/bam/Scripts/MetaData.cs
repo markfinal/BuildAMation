@@ -29,52 +29,6 @@
 #endregion // License
 namespace ClangCommon
 {
-    /// <summary>
-    /// Clang toolchain version wrapper.
-    /// </summary>
-    public sealed class CompilerVersion :
-        C.CompilerVersion
-    {
-        /// <summary>
-        /// Xcode 7.0
-        /// </summary>
-        public static readonly C.CompilerVersion Xcode_7 = FromComponentVersions(7, 0, 0);
-
-        /// <summary>
-        /// Xcode 9.4.1
-        /// </summary>
-        public static readonly C.CompilerVersion Xcode_9_4_1 = FromComponentVersions(9, 1, 0);
-
-        /// <summary>
-        /// Xcode 10.0
-        /// </summary>
-        public static readonly C.CompilerVersion Xcode_10 = FromComponentVersions(10, 0, 0);
-
-        private CompilerVersion(
-            int major_version,
-            int minor_version,
-            int patch_level)
-        {
-            this.combinedVersion = 10000 * major_version + 100 * minor_version + patch_level;
-        }
-
-        /// <summary>
-        /// Generate a Clang toolchain version from major, minor, patch components.
-        /// </summary>
-        /// <param name="major">Major version number</param>
-        /// <param name="minor">Minor version number</param>
-        /// <param name="patch">Patch version</param>
-        /// <returns>Toolchain version</returns>
-        static public C.CompilerVersion
-        FromComponentVersions(
-            int major,
-            int minor,
-            int patch)
-        {
-            return new CompilerVersion(major, minor, patch);
-        }
-    }
-
     public abstract class MetaData :
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
@@ -172,24 +126,24 @@ namespace ClangCommon
             }
         }
 
-        public C.CompilerVersion CompilerVersion
+        public C.ToolchainVersion ToolchainVersion
         {
             get
             {
-                if (!this.Meta.ContainsKey("CompilerVersion"))
+                if (!this.Meta.ContainsKey("ToolchainVersion"))
                 {
                     (this as C.IToolchainDiscovery).discover(null);
                 }
-                return this.Meta["CompilerVersion"] as C.CompilerVersion;
+                return this.Meta["ToolchainVersion"] as C.ToolchainVersion;
             }
 
             private set
             {
-                this.Meta["CompilerVersion"] = value;
+                this.Meta["ToolchainVersion"] = value;
             }
         }
 
-        private C.CompilerVersion
+        private C.ToolchainVersion
         GetCompilerVersion()
         {
             var contents = new System.Text.StringBuilder();
@@ -210,7 +164,7 @@ namespace ClangCommon
                     $"Expected 3 lines: major, minor, patchlevel; instead got {version.Length} and {result.StandardOutput}"
                 );
             }
-            return ClangCommon.CompilerVersion.FromComponentVersions(
+            return ClangCommon.ToolchainVersion.FromComponentVersions(
                 System.Convert.ToInt32(version[0]),
                 System.Convert.ToInt32(version[1]),
                 System.Convert.ToInt32(version[2])
@@ -238,11 +192,11 @@ namespace ClangCommon
 
                     var version = this.GetCompilerVersion();
                     Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
-                    this.CompilerVersion = version;
+                    this.ToolchainVersion = version;
 
                     if (!this.Contains("MacOSXMinVersion"))
                     {
-                        var isXcode10 = this.CompilerVersion.AtLeast(ClangCommon.CompilerVersion.Xcode_10);
+                        var isXcode10 = this.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
                         if (isXcode10)
                         {
                             // Xcode 10 now requires 10.9+, and only libc++

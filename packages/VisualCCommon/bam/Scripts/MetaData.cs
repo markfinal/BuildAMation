@@ -30,81 +30,6 @@
 using System.Linq;
 namespace VisualCCommon
 {
-    /// <summary>
-    /// VisualC toolchain version wrapper.
-    /// </summary>
-    public sealed class CompilerVersion :
-        C.CompilerVersion
-    {
-        /// <summary>
-        /// VisualC 2010
-        /// </summary>
-        public static readonly C.CompilerVersion VC2010 = FromMSCVer(1600);
-
-        /// <summary>
-        /// VisualC 2012
-        /// </summary>
-        public static readonly C.CompilerVersion VC2012 = FromMSCVer(1700);
-
-        /// <summary>
-        /// VisualC 2013
-        /// </summary>
-        public static readonly C.CompilerVersion VC2013 = FromMSCVer(1800);
-
-        /// <summary>
-        /// VisualC 2015
-        /// </summary>
-        public static readonly C.CompilerVersion VC2015 = FromMSCVer(1900);
-
-        /// <summary>
-        /// VisualC 2017 15.0
-        /// </summary>
-        public static readonly C.CompilerVersion VC2017_15_0 = FromMSCVer(1910);
-
-        /// <summary>
-        /// VisualC 2017 15.3
-        /// </summary>
-        public static readonly C.CompilerVersion VC2017_15_3 = FromMSCVer(1911);
-
-        /// <summary>
-        /// VisualC 2017 15.5
-        /// </summary>
-        public static readonly C.CompilerVersion VC2017_15_5 = FromMSCVer(1912);
-
-        /// <summary>
-        /// VisualC 2017 15.6
-        /// </summary>
-        public static readonly C.CompilerVersion VC2017_15_6 = FromMSCVer(1913);
-
-        /// <summary>
-        /// VisualC 2017 15.7
-        /// </summary>
-        public static readonly C.CompilerVersion VC2017_15_7 = FromMSCVer(1914);
-
-        /// <summary>
-        /// VisualC 2017 15.8
-        /// </summary>
-        public static readonly C.CompilerVersion VC2017_15_8 = FromMSCVer(1915);
-
-        private CompilerVersion(
-            int mscVer)
-        {
-            this.combinedVersion = mscVer;
-        }
-
-        /// <summary>
-        /// Generate a VisualC toolchain version from _MSC_VER
-        /// </summary>
-        /// <param name="mscVer">The specified _MSC_VER value.</param>
-        /// <returns>Toolchain version</returns>
-        static public C.CompilerVersion
-        FromMSCVer(
-            int mscVer)
-        {
-            return new CompilerVersion(mscVer);
-        }
-    }
-
     public abstract class MetaData :
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
@@ -462,16 +387,16 @@ namespace VisualCCommon
             set;
         }
 
-        public C.CompilerVersion CompilerVersion
+        public C.ToolchainVersion ToolchainVersion
         {
             get
             {
-                return this.Meta["CompilerVersion"] as C.CompilerVersion;
+                return this.Meta["ToolchainVersion"] as C.ToolchainVersion;
             }
 
             private set
             {
-                this.Meta["CompilerVersion"] = value;
+                this.Meta["ToolchainVersion"] = value;
             }
         }
 
@@ -548,7 +473,7 @@ namespace VisualCCommon
             Bam.Core.Log.Info(report.ToString());
         }
 
-        private C.CompilerVersion
+        private C.ToolchainVersion
         GetCompilerVersion()
         {
             var temp_file = System.IO.Path.GetTempFileName();
@@ -564,7 +489,7 @@ namespace VisualCCommon
                 $"amd64 && cl /EP /nologo {temp_file}"
             );
             var mscver = result.StandardOutput.Split(System.Environment.NewLine.ToCharArray()).Reverse().First();
-            return VisualCCommon.CompilerVersion.FromMSCVer(System.Convert.ToInt32(mscver));
+            return VisualCCommon.ToolchainVersion.FromMSCVer(System.Convert.ToInt32(mscver));
         }
 
         void
@@ -598,11 +523,11 @@ namespace VisualCCommon
                 );
                 report_WindowsSDK(this.Environment(bitdepth), bitdepth);
             }
-            if (!this.Meta.ContainsKey("CompilerVersion"))
+            if (!this.Meta.ContainsKey("ToolchainVersion"))
             {
                 var version = this.GetCompilerVersion();
                 Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
-                this.CompilerVersion = version;
+                this.ToolchainVersion = version;
             }
         }
     }
