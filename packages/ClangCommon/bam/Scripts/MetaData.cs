@@ -190,9 +190,7 @@ namespace ClangCommon
                         this.Contains("SDK") ? this.SDK : null
                     );
 
-                    var version = this.GetCompilerVersion();
-                    Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
-                    this.ToolchainVersion = version;
+                    this.ToolchainVersion = this.GetCompilerVersion();
 
                     if (!this.Contains("MacOSXMinVersion"))
                     {

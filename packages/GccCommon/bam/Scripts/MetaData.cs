@@ -235,9 +235,7 @@ namespace GccCommon
                 var gccVersionSplit = gccVersion.Split(new [] { '.' });
                 this.Meta.Add("GccVersion", gccVersionSplit);
 
-                var version = this.GetCompilerVersion();
-                Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
-                this.ToolchainVersion = version;
+                this.ToolchainVersion = this.GetCompilerVersion();
 
                 Bam.Core.Log.Info("Using GCC version {0} installed at {1}", gccVersion, location);
             }

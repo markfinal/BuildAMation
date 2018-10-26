@@ -525,9 +525,7 @@ namespace VisualCCommon
             }
             if (!this.Meta.ContainsKey("ToolchainVersion"))
             {
-                var version = this.GetCompilerVersion();
-                Bam.Core.Log.MessageAll($"*** Compiler version = {version}");
-                this.ToolchainVersion = version;
+                this.ToolchainVersion = this.GetCompilerVersion();
             }
         }
     }
