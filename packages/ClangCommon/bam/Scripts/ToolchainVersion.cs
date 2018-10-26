@@ -41,6 +41,16 @@ namespace ClangCommon
         public static readonly C.ToolchainVersion Xcode_7 = FromComponentVersions(7, 0, 0);
 
         /// <summary>
+        /// Xcode 8.0
+        /// </summary>
+        public static readonly C.ToolchainVersion Xcode_8 = FromComponentVersions(8, 0, 0);
+
+        /// <summary>
+        /// Xcode 9.0
+        /// </summary>
+        public static readonly C.ToolchainVersion Xcode_9 = FromComponentVersions(9, 0, 0);
+
+        /// <summary>
         /// Xcode 9.4.1
         /// </summary>
         public static readonly C.ToolchainVersion Xcode_9_4_1 = FromComponentVersions(9, 1, 0);
