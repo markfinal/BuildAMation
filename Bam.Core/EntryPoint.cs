@@ -103,6 +103,7 @@ namespace Bam.Core
                 PackageUtilities.CompilePackageAssembly();
                 PackageUtilities.LoadPackageAssembly();
             }
+            Graph.Instance.ProcessState.WaitOnAllPreBuildTasks();
 
             var packageMetaDataProfile = new TimeProfile(ETimingProfiles.PackageMetaData);
             packageMetaDataProfile.StartProfile();

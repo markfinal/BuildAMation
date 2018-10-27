@@ -510,12 +510,16 @@ namespace Bam.Core
                     var client = new System.Net.Http.HttpClient();
                     client.BaseAddress = new System.Uri(this.Source);
                     client.DefaultRequestHeaders.Accept.Clear();
-                    var response = await client.GetAsync(client.BaseAddress);
+                    var getTask = client.GetAsync(client.BaseAddress);
+                    Graph.Instance.ProcessState.AppendPreBuildTask(getTask);
+                    var response = await getTask;
                     Log.MessageAll(response.Content.Headers.ToString());
                     if (response.IsSuccessStatusCode)
                     {
                         var stream = new System.IO.FileStream(path, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.None);
-                        await response.Content.CopyToAsync(stream);
+                        var copyTask = response.Content.CopyToAsync(stream);
+                        Graph.Instance.ProcessState.AppendPreBuildTask(copyTask);
+                        await copyTask;
                         stream.Close();
                     }
                     else
