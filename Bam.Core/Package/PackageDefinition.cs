@@ -28,8 +28,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
-using Microsoft.Extensions.Configuration;
-using SharpCompress.Readers;
 namespace Bam.Core
 {
     /// <summary>
@@ -491,83 +489,7 @@ namespace Bam.Core
             var packageDefinition = this.GetPackageDefinitionName();
             this.Definitions.AddUnique(packageDefinition);
 
-            if (!System.String.IsNullOrEmpty(this.Source))
-            {
-                var config = UserConfiguration.Configuration;
-                foreach (var i in config.AsEnumerable())
-                {
-                    Log.MessageAll($"{i.Key}={i.Value}");
-                }
-                var sourcesDir = $"{config[UserConfiguration.SourcesDir]}";
-                var packageSourcesDir = System.IO.Path.Combine(sourcesDir, this.Name);
-                if (!System.IO.Directory.Exists(packageSourcesDir))
-                {
-                    // doesn't need to be locked, synchronous
-                    System.IO.Directory.CreateDirectory(packageSourcesDir);
-                }
-
-                async void
-                RunMe(
-                    string path,
-                    string extractTo)
-                {
-                    var client = new System.Net.Http.HttpClient();
-                    client.BaseAddress = new System.Uri(this.Source);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    var getTask = client.GetAsync(client.BaseAddress);
-                    Graph.Instance.ProcessState.AppendPreBuildTask(getTask);
-                    var response = await getTask;
-                    Log.MessageAll(response.Content.Headers.ToString());
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var stream = new System.IO.FileStream(path, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.None);
-                        var copyTask = response.Content.CopyToAsync(stream);
-                        Graph.Instance.ProcessState.AppendPreBuildTask(copyTask);
-                        await copyTask;
-                        stream.Close();
-
-                        if (!System.IO.Directory.Exists(extractTo))
-                        {
-                            System.IO.Directory.CreateDirectory(extractTo);
-                        }
-
-                        using (var readerStream = System.IO.File.OpenRead(path))
-                        using (var reader = SharpCompress.Readers.ReaderFactory.Open(readerStream))
-                        {
-                            while (reader.MoveToNextEntry())
-                            {
-                                if (!reader.Entry.IsDirectory)
-                                {
-                                    Log.MessageAll(reader.Entry.Key);
-                                    reader.WriteEntryToDirectory(extractTo, new SharpCompress.Common.ExtractionOptions()
-                                    {
-                                        ExtractFullPath = true,
-                                        Overwrite = true
-                                    });
-                                }
-                            }
-                        }
-
-                        Graph.Instance.ProcessState.AddDownloadedPackageSourceMapping(
-                            this.Name,
-                            System.IO.Path.Combine(extractTo, "tinyxml2-4.0.1") // TODO: parameterise this in the definition file
-                        );
-                    }
-                    else
-                    {
-                        throw new Exception($"Failed to download {this.Source} because {response.ReasonPhrase}");
-                    }
-                }
-
-                var leafname = System.IO.Path.GetFileName(this.Source);
-                var packageSourcePath = System.IO.Path.Combine(packageSourcesDir, leafname);
-                var packageSourceExtractDir = packageSourcePath.Substring(0, packageSourcePath.LastIndexOf('.'));
-                if (!System.IO.File.Exists(packageSourcePath))
-                {
-                    Log.MessageAll($"Need to download '{this.Source}' to '{packageSourcePath}' and extract to '{packageSourceExtractDir}'");
-                    RunMe(packageSourcePath, packageSourceExtractDir);
-                }
-            }
+            this.Source?.Execute(this.Name);
         }
 
         /// <summary>
@@ -939,8 +861,14 @@ namespace Bam.Core
                 return false;
             }
 
-            var message = xmlReader.ReadString();
-            this.Source = message;
+            var type = xmlReader.GetAttribute("type");
+            var path = xmlReader.GetAttribute("path");
+            var subdir = xmlReader.GetAttribute("subdir");
+            this.Source = new PackageSource(
+                type,
+                path,
+                subdir
+            );
 
             return true;
 
@@ -1161,7 +1089,7 @@ namespace Bam.Core
         /// <summary>
         /// Gets or sets the source of the package.
         /// </summary>
-        public string Source
+        public PackageSource Source
         {
             get;
             set;
