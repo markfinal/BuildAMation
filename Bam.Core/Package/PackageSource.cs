@@ -62,7 +62,7 @@ namespace Bam.Core
             }
 
             this.Type = ToType(type);
-            this.Path = path;
+            this.RemotePath = path;
             this.SubdirectoryAsPackageDir = subdir;
 
             var config = UserConfiguration.Configuration;
@@ -78,7 +78,7 @@ namespace Bam.Core
                 System.IO.Directory.CreateDirectory(packageSourcesDir);
             }
 
-            var leafname = System.IO.Path.GetFileName(this.Path);
+            var leafname = System.IO.Path.GetFileName(this.RemotePath);
             this.ArchivePath = System.IO.Path.Combine(packageSourcesDir, leafname);
             this.ExtractTo = this.ArchivePath.Substring(0, this.ArchivePath.LastIndexOf('.'));
             this.ExtractedPackageDir = this.ExtractTo;
@@ -139,7 +139,7 @@ namespace Bam.Core
             set;
         }
 
-        private string Path
+        private string RemotePath
         {
             get;
             set;
@@ -156,10 +156,10 @@ namespace Bam.Core
             string packageName)
         {
             async void
-            RunMe()
+            Execute()
             {
                 var client = new System.Net.Http.HttpClient();
-                client.BaseAddress = new System.Uri(this.Path);
+                client.BaseAddress = new System.Uri(this.RemotePath);
                 client.DefaultRequestHeaders.Accept.Clear();
 
                 var getTask = client.GetAsync(client.BaseAddress);
@@ -208,11 +208,13 @@ namespace Bam.Core
                 }
             }
 
-            if (!System.IO.File.Exists(this.ArchivePath))
+            if (System.IO.File.Exists(this.ArchivePath))
             {
-                Log.MessageAll($"Need to download '{this}' to '{this.ArchivePath}' and extract to '{this.ExtractTo}'");
-                RunMe();
+                return;
             }
+
+            Log.MessageAll($"Need to download '{this}' to '{this.ArchivePath}' and extract to '{this.ExtractTo}'");
+            Execute();
         }
     }
 }
