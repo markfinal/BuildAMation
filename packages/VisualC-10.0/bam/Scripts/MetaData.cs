@@ -41,14 +41,6 @@ namespace VisualC
             this.VCXProjFiltersToolsVersion = "4.0";
         }
 
-        protected override int major_version
-        {
-            get
-            {
-                return 10;
-            }
-        }
-
         protected override string subpath_to_vcvars
         {
             get
@@ -141,24 +133,6 @@ namespace VisualC
             private set
             {
                 this.Meta["VCXProjFiltersToolsVersion"] = value;
-            }
-        }
-
-        public int
-        CompilerMajorVersion
-        {
-            get
-            {
-                return 16;
-            }
-        }
-
-        public int
-        CompilerMinorVersion
-        {
-            get
-            {
-                return 0;
             }
         }
 

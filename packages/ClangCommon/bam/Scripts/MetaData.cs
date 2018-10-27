@@ -33,7 +33,7 @@ namespace ClangCommon
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
     {
-        protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
+        protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
         private Bam.Core.StringArray expectedSDKs;
 
         protected MetaData(
@@ -126,10 +126,49 @@ namespace ClangCommon
             }
         }
 
-        // this is the clang version
-        public abstract int CompilerMajorVersion
+        public C.ToolchainVersion ToolchainVersion
         {
-            get;
+            get
+            {
+                if (!this.Meta.ContainsKey("ToolchainVersion"))
+                {
+                    (this as C.IToolchainDiscovery).discover(null);
+                }
+                return this.Meta["ToolchainVersion"] as C.ToolchainVersion;
+            }
+
+            private set
+            {
+                this.Meta["ToolchainVersion"] = value;
+            }
+        }
+
+        private C.ToolchainVersion
+        GetCompilerVersion()
+        {
+            var contents = new System.Text.StringBuilder();
+            contents.AppendLine("__clang_major__");
+            contents.AppendLine("__clang_minor__");
+            contents.AppendLine("__clang_patchlevel__");
+            var temp_file = System.IO.Path.GetTempFileName();
+            System.IO.File.WriteAllText(temp_file, contents.ToString());
+            var sdk = this.SDK;
+            var result = Bam.Core.OSUtilities.RunExecutable(
+                ConfigureUtilities.xcrunPath,
+                $"--sdk {sdk} clang -E -P -x c {temp_file}"
+            );
+            var version = result.StandardOutput.Split(System.Environment.NewLine);
+            if (version.Length != 3)
+            {
+                throw new Bam.Core.Exception(
+                    $"Expected 3 lines: major, minor, patchlevel; instead got {version.Length} and {result.StandardOutput}"
+                );
+            }
+            return ClangCommon.ToolchainVersion.FromComponentVersions(
+                System.Convert.ToInt32(version[0]),
+                System.Convert.ToInt32(version[1]),
+                System.Convert.ToInt32(version[2])
+            );
         }
 
         void
@@ -150,9 +189,13 @@ namespace ClangCommon
                         this.expectedSDKs,
                         this.Contains("SDK") ? this.SDK : null
                     );
+
+                    this.ToolchainVersion = this.GetCompilerVersion();
+
                     if (!this.Contains("MacOSXMinVersion"))
                     {
-                        if (this.CompilerMajorVersion >= 1000)
+                        var isXcode10 = this.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
+                        if (isXcode10)
                         {
                             // Xcode 10 now requires 10.9+, and only libc++
                             this.MacOSXMinimumVersionSupported = "10.9";

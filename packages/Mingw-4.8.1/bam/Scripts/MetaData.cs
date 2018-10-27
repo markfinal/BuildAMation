@@ -59,24 +59,6 @@ namespace Mingw
             }
         }
 
-        public int
-        CompilerMajorVersion
-        {
-            get
-            {
-                return 4;
-            }
-        }
-
-        public int
-        CompilerMinorVersion
-        {
-            get
-            {
-                return 8;
-            }
-        }
-
         void
         C.IToolchainDiscovery.discover(
             C.EBit? depth)

@@ -66,32 +66,34 @@ namespace VisualCCommon
         protected string
         vswhere_getinstallpath()
         {
+            var package_version = Bam.Core.Graph.Instance.Packages.First(item => item.Name == "VisualC").Version;
+            var major_version = System.Convert.ToInt32(package_version.Split('.').First());
             try
             {
                 var args = new System.Text.StringBuilder();
-                var legacy = this.major_version < 15;
+                var legacy = major_version < 15;
                 args.Append("-property installationPath -version ");
                 if (legacy)
                 {
                     // note the [] around the version to specify only that version
-                    args.AppendFormat("[{0}] -legacy", this.major_version);
+                    args.AppendFormat("[{0}] -legacy", major_version);
                 }
                 else
                 {
-                    args.Append(this.major_version);
+                    args.Append(major_version);
                 }
                 var installpath = Bam.Core.OSUtilities.RunExecutable(
                     this.vswherePath,
                     args.ToString()
                 ).StandardOutput;
-                Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", this.major_version, installpath);
+                Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", major_version, installpath);
                 return installpath;
             }
             catch (Bam.Core.RunExecutableException)
             {
                 throw new Bam.Core.Exception(
                     "Unable to locate installation directory for Visual Studio major version {0}",
-                    this.major_version
+                    major_version
                 );
             }
         }
@@ -223,7 +225,7 @@ namespace VisualCCommon
             }
             else
             {
-                startinfo.WorkingDirectory = System.IO.Path.Combine(this.InstallDir.ToString(), subpath_to_vcvars);
+                startinfo.WorkingDirectory = System.IO.Path.Combine(this.InstallDir.ToString(), this.subpath_to_vcvars);
                 environment_generator_cmdline = vcvarsall_command();
             }
 
@@ -385,9 +387,17 @@ namespace VisualCCommon
             set;
         }
 
-        protected abstract int major_version
+        public C.ToolchainVersion ToolchainVersion
         {
-            get;
+            get
+            {
+                return this.Meta["ToolchainVersion"] as C.ToolchainVersion;
+            }
+
+            private set
+            {
+                this.Meta["ToolchainVersion"] = value;
+            }
         }
 
         protected abstract string subpath_to_vcvars
@@ -463,6 +473,25 @@ namespace VisualCCommon
             Bam.Core.Log.Info(report.ToString());
         }
 
+        private C.ToolchainVersion
+        GetCompilerVersion()
+        {
+            var temp_file = System.IO.Path.GetTempFileName();
+            System.IO.File.WriteAllText(temp_file, "_MSC_VER");
+            var result = Bam.Core.OSUtilities.RunExecutable(
+                System.IO.Path.Combine(
+                    System.IO.Path.Combine(
+                        this.InstallDir.ToString(),
+                        this.subpath_to_vcvars
+                    ),
+                    "vcvarsall.bat"
+                ),
+                $"amd64 && cl /EP /nologo {temp_file}"
+            );
+            var mscver = result.StandardOutput.Split(System.Environment.NewLine.ToCharArray()).Reverse().First();
+            return VisualCCommon.ToolchainVersion.FromMSCVer(System.Convert.ToInt32(mscver));
+        }
+
         void
         C.IToolchainDiscovery.discover(
             C.EBit? depth)
@@ -493,6 +522,10 @@ namespace VisualCCommon
                     this.hasNative64BitTools
                 );
                 report_WindowsSDK(this.Environment(bitdepth), bitdepth);
+            }
+            if (!this.Meta.ContainsKey("ToolchainVersion"))
+            {
+                this.ToolchainVersion = this.GetCompilerVersion();
             }
         }
     }

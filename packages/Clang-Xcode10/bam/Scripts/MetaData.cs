@@ -36,13 +36,5 @@ namespace Clang
             :
             base("1000", new Bam.Core.StringArray("macosx10.14"), pbxprojObjectVersion: 50)
         {}
-
-        public override int CompilerMajorVersion
-        {
-            get
-            {
-                return 1000;
-            }
-        }
     }
 }

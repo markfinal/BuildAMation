@@ -160,19 +160,59 @@ namespace GccCommon
             }
         }
 
-        public abstract int
+        protected abstract int
         CompilerMajorVersion
         {
             get;
         }
 
-        public virtual int?
+        protected virtual int?
         CompilerMinorVersion
         {
             get
             {
                 return null; // defaults to no minor version number
             }
+        }
+
+        public C.ToolchainVersion ToolchainVersion
+        {
+            get
+            {
+                return this.Meta["ToolchainVersion"] as C.ToolchainVersion;
+            }
+
+            private set
+            {
+                this.Meta["ToolchainVersion"] = value;
+            }
+        }
+
+        private C.ToolchainVersion
+        GetCompilerVersion()
+        {
+            var contents = new System.Text.StringBuilder();
+            contents.AppendLine("__GNUC__");
+            contents.AppendLine("__GNUC_MINOR__");
+            contents.AppendLine("__GNUC_PATCHLEVEL__");
+            var temp_file = System.IO.Path.GetTempFileName();
+            System.IO.File.WriteAllText(temp_file, contents.ToString());
+            var result = Bam.Core.OSUtilities.RunExecutable(
+                this.GccPath,
+                $"-E -P -x c {temp_file}"
+            );
+            var version = result.StandardOutput.Split(System.Environment.NewLine);
+            if (version.Length != 3)
+            {
+                throw new Bam.Core.Exception(
+                    $"Expected 3 lines: major, minor, patchlevel; instead got {version.Length} and {result.StandardOutput}"
+                );
+            }
+            return GccCommon.ToolchainVersion.FromComponentVersions(
+                System.Convert.ToInt32(version[0]),
+                System.Convert.ToInt32(version[1]),
+                System.Convert.ToInt32(version[2])
+            );
         }
 
         void
@@ -188,11 +228,15 @@ namespace GccCommon
             {
                 var location = gccLocations.First();
                 this.Meta.Add("GccPath", location);
+
                 var gccVersion = Bam.Core.OSUtilities.RunExecutable(location, "-dumpversion").StandardOutput;
                 // older versions of the GCC compiler display a major.minor version number
                 // newer versions just display a major version number
                 var gccVersionSplit = gccVersion.Split(new [] { '.' });
                 this.Meta.Add("GccVersion", gccVersionSplit);
+
+                this.ToolchainVersion = this.GetCompilerVersion();
+
                 Bam.Core.Log.Info("Using GCC version {0} installed at {1}", gccVersion, location);
             }
 

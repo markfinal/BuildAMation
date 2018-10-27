@@ -41,14 +41,6 @@ namespace VisualC
             this.VCXProjFiltersToolsVersion = "4.0"; // same as VS2015
         }
 
-        protected override int major_version
-        {
-            get
-            {
-                return 15;
-            }
-        }
-
         protected override string subpath_to_vcvars
         {
             get
@@ -125,24 +117,6 @@ namespace VisualC
             private set
             {
                 this.Meta["VCXProjFiltersToolsVersion"] = value;
-            }
-        }
-
-        public int
-        CompilerMajorVersion
-        {
-            get
-            {
-                return 19;
-            }
-        }
-
-        public int
-        CompilerMinorVersion
-        {
-            get
-            {
-                return 10;
             }
         }
 
