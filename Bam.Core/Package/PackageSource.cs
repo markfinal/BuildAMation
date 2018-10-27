@@ -164,6 +164,7 @@ namespace Bam.Core
 
                 var getTask = client.GetAsync(client.BaseAddress);
                 Graph.Instance.ProcessState.AppendPreBuildTask(getTask);
+                Log.Info($"Downloading {this.RemotePath}...");
                 var response = await getTask;
 
                 Log.MessageAll(response.Content.Headers.ToString());
