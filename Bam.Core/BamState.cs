@@ -133,6 +133,7 @@ namespace Bam.Core
             this.TargetFrameworkVersion = targetFrameworkName;
 
             this.preBuildTasks = new Array<System.Threading.Tasks.Task>();
+            this.downloadedPackageSourcePaths = new System.Collections.Generic.Dictionary<string, string>();
 
             this.BuildStartTime = System.Diagnostics.Process.GetCurrentProcess().StartTime;
         }
@@ -245,6 +246,50 @@ namespace Bam.Core
         {
             Log.MessageAll($"*** WAITING ON {this.preBuildTasks.Count} TASKS");
             System.Threading.Tasks.Task.WaitAll(this.preBuildTasks.ToArray());
+        }
+
+        private readonly System.Collections.Generic.Dictionary<string, string> downloadedPackageSourcePaths;
+
+        /// <summary>
+        /// Add the extracted package source directory for a downloaded package.
+        /// </summary>
+        /// <param name="packageName">Name of the downloaded package.</param>
+        /// <param name="sourceDir">Path to the extracted source.</param>
+        public void
+        AddDownloadedPackageSourceMapping(
+            string packageName,
+            string sourceDir)
+        {
+            lock (this.downloadedPackageSourcePaths)
+            {
+                Log.MessageAll($"*** Package '{packageName}' is at '{sourceDir}'");
+                this.downloadedPackageSourcePaths.Add(packageName, sourceDir);
+            }
+        }
+
+        /// <summary>
+        /// Query whether the package named has a downloaded source tree.
+        /// </summary>
+        /// <param name="packageName">Name of the package to query</param>
+        /// <returns>true if the named package has downloaded source.</returns>
+        public bool
+        PackageHasDownloadedSource(
+            string packageName)
+        {
+            Log.MessageAll($"Checking download source for '{packageName}'");
+            return this.downloadedPackageSourcePaths.ContainsKey(packageName);
+        }
+
+        /// <summary>
+        /// Gets the downloaded path of the named package.
+        /// </summary>
+        /// <param name="packageName">Name of the package to query.</param>
+        /// <returns>Downloaded source path of the extracted package source.</returns>
+        public string
+        PackageDownloadSource(
+            string packageName)
+        {
+            return this.downloadedPackageSourcePaths[packageName];
         }
     }
 }

@@ -133,6 +133,17 @@ namespace Bam.Core
         AddRedirectedPackageDirectory(
             Module moduleWithAttributes)
         {
+            var packageNameAsNamespace = moduleWithAttributes.GetType().Namespace;
+            if (packageNameAsNamespace.EndsWith(".tests", System.StringComparison.Ordinal))
+            {
+                packageNameAsNamespace = packageNameAsNamespace.Replace(".tests", string.Empty);
+            }
+            if (Graph.Instance.ProcessState.PackageHasDownloadedSource(packageNameAsNamespace))
+            {
+                this.Macros.AddVerbatim("packagedir", Graph.Instance.ProcessState.PackageDownloadSource(packageNameAsNamespace));
+                return;
+            }
+
             var allModulePackageDirRedirection = moduleWithAttributes.GetType().GetCustomAttributes(typeof(ModulePackageDirectoryRedirectAttribute), false);
             if (allModulePackageDirRedirection.Length > 0)
             {

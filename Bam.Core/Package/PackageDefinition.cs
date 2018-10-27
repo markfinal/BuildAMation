@@ -547,6 +547,11 @@ namespace Bam.Core
                                 }
                             }
                         }
+
+                        Graph.Instance.ProcessState.AddDownloadedPackageSourceMapping(
+                            this.Name,
+                            System.IO.Path.Combine(extractTo, "tinyxml2-4.0.1") // TODO: parameterise this in the definition file
+                        );
                     }
                     else
                     {
