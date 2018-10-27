@@ -158,6 +158,7 @@ namespace Bam.Core
             async void
             Execute()
             {
+                // download the archive...
                 var client = new System.Net.Http.HttpClient();
                 client.BaseAddress = new System.Uri(this.RemotePath);
                 client.DefaultRequestHeaders.Accept.Clear();
@@ -167,9 +168,9 @@ namespace Bam.Core
                 Log.Info($"Downloading {this.RemotePath}...");
                 var response = await getTask;
 
-                Log.MessageAll(response.Content.Headers.ToString());
                 if (response.IsSuccessStatusCode)
                 {
+                    // save the downloaded archive to disk
                     var stream = new System.IO.FileStream(
                         this.ArchivePath,
                         System.IO.FileMode.Create,
@@ -181,11 +182,7 @@ namespace Bam.Core
                     await copyTask;
                     stream.Close();
 
-                    if (!System.IO.Directory.Exists(this.ExtractTo))
-                    {
-                        System.IO.Directory.CreateDirectory(this.ExtractTo);
-                    }
-
+                    // extract the archive...
                     using (var readerStream = System.IO.File.OpenRead(this.ArchivePath))
                     using (var reader = SharpCompress.Readers.ReaderFactory.Open(readerStream))
                     {
