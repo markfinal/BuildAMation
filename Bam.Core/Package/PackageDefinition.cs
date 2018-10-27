@@ -489,6 +489,7 @@ namespace Bam.Core
             var packageDefinition = this.GetPackageDefinitionName();
             this.Definitions.AddUnique(packageDefinition);
 
+            // TODO: Only do this on a real build - not debug project generation
             this.Source?.Execute(this.Name);
         }
 
