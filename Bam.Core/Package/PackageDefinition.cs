@@ -29,6 +29,7 @@
 #endregion // License
 using System.Linq;
 using Microsoft.Extensions.Configuration;
+using SharpCompress.Readers;
 namespace Bam.Core
 {
     /// <summary>
@@ -505,7 +506,10 @@ namespace Bam.Core
                     System.IO.Directory.CreateDirectory(packageSourcesDir);
                 }
 
-                async void RunMe(string path)
+                async void
+                RunMe(
+                    string path,
+                    string extractTo)
                 {
                     var client = new System.Net.Http.HttpClient();
                     client.BaseAddress = new System.Uri(this.Source);
@@ -521,6 +525,28 @@ namespace Bam.Core
                         Graph.Instance.ProcessState.AppendPreBuildTask(copyTask);
                         await copyTask;
                         stream.Close();
+
+                        if (!System.IO.Directory.Exists(extractTo))
+                        {
+                            System.IO.Directory.CreateDirectory(extractTo);
+                        }
+
+                        using (var readerStream = System.IO.File.OpenRead(path))
+                        using (var reader = SharpCompress.Readers.ReaderFactory.Open(readerStream))
+                        {
+                            while (reader.MoveToNextEntry())
+                            {
+                                if (!reader.Entry.IsDirectory)
+                                {
+                                    Log.MessageAll(reader.Entry.Key);
+                                    reader.WriteEntryToDirectory(extractTo, new SharpCompress.Common.ExtractionOptions()
+                                    {
+                                        ExtractFullPath = true,
+                                        Overwrite = true
+                                    });
+                                }
+                            }
+                        }
                     }
                     else
                     {
@@ -530,10 +556,11 @@ namespace Bam.Core
 
                 var leafname = System.IO.Path.GetFileName(this.Source);
                 var packageSourcePath = System.IO.Path.Combine(packageSourcesDir, leafname);
+                var packageSourceExtractDir = packageSourcePath.Substring(0, packageSourcePath.LastIndexOf('.'));
                 if (!System.IO.File.Exists(packageSourcePath))
                 {
-                    Log.MessageAll($"Need to download '{this.Source}' to '{packageSourcePath}");
-                    RunMe(packageSourcePath);
+                    Log.MessageAll($"Need to download '{this.Source}' to '{packageSourcePath}' and extract to '{packageSourceExtractDir}'");
+                    RunMe(packageSourcePath, packageSourceExtractDir);
                 }
             }
         }
