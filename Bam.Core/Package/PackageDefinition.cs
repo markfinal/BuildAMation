@@ -865,6 +865,7 @@ namespace Bam.Core
             var path = xmlReader.GetAttribute("path");
             var subdir = xmlReader.GetAttribute("subdir");
             this.Source = new PackageSource(
+                this.Name,
                 type,
                 path,
                 subdir

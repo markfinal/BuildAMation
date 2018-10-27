@@ -39,10 +39,12 @@ namespace Bam.Core
         /// <summary>
         /// TODO
         /// </summary>
+        /// <param name="name">TODO</param>
         /// <param name="type">TODO</param>
         /// <param name="path">TODO</param>
         /// <param name="subdir">TODO</param>
         public PackageSource(
+            string name,
             string type,
             string path,
             string subdir)
@@ -62,6 +64,28 @@ namespace Bam.Core
             this.Type = ToType(type);
             this.Path = path;
             this.SubdirectoryAsPackageDir = subdir;
+
+            var config = UserConfiguration.Configuration;
+            foreach (var i in config.AsEnumerable())
+            {
+                Log.MessageAll($"{i.Key}={i.Value}");
+            }
+            var sourcesDir = $"{config[UserConfiguration.SourcesDir]}";
+            var packageSourcesDir = System.IO.Path.Combine(sourcesDir, name);
+            if (!System.IO.Directory.Exists(packageSourcesDir))
+            {
+                // doesn't need to be locked, synchronous
+                System.IO.Directory.CreateDirectory(packageSourcesDir);
+            }
+
+            var leafname = System.IO.Path.GetFileName(this.Path);
+            this.ArchivePath = System.IO.Path.Combine(packageSourcesDir, leafname);
+            this.ExtractTo = this.ArchivePath.Substring(0, this.ArchivePath.LastIndexOf('.'));
+            this.ExtractedPackageDir = this.ExtractTo;
+            if (this.SubdirectoryAsPackageDir != null)
+            {
+                this.ExtractedPackageDir = System.IO.Path.Combine(this.ExtractedPackageDir, this.SubdirectoryAsPackageDir);
+            }
         }
 
         /// <summary>
@@ -78,6 +102,30 @@ namespace Bam.Core
                     this.DownloadAndExtractPackageViaHTTP(packageName);
                     break;
             }
+        }
+
+        /// <summary>
+        ///
+        /// </summary>
+        public string ArchivePath
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// TODO
+        /// </summary>
+        public string ExtractedPackageDir
+        {
+            get;
+            private set;
+        }
+
+        private string ExtractTo
+        {
+            get;
+            set;
         }
 
         private enum EType
@@ -108,9 +156,7 @@ namespace Bam.Core
             string packageName)
         {
             async void
-            RunMe(
-                string path,
-                string extractTo)
+            RunMe()
             {
                 var client = new System.Net.Http.HttpClient();
                 client.BaseAddress = new System.Uri(this.Path);
@@ -123,18 +169,23 @@ namespace Bam.Core
                 Log.MessageAll(response.Content.Headers.ToString());
                 if (response.IsSuccessStatusCode)
                 {
-                    var stream = new System.IO.FileStream(path, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.None);
+                    var stream = new System.IO.FileStream(
+                        this.ArchivePath,
+                        System.IO.FileMode.Create,
+                        System.IO.FileAccess.Write,
+                        System.IO.FileShare.None
+                    );
                     var copyTask = response.Content.CopyToAsync(stream);
                     Graph.Instance.ProcessState.AppendPreBuildTask(copyTask);
                     await copyTask;
                     stream.Close();
 
-                    if (!System.IO.Directory.Exists(extractTo))
+                    if (!System.IO.Directory.Exists(this.ExtractTo))
                     {
-                        System.IO.Directory.CreateDirectory(extractTo);
+                        System.IO.Directory.CreateDirectory(this.ExtractTo);
                     }
 
-                    using (var readerStream = System.IO.File.OpenRead(path))
+                    using (var readerStream = System.IO.File.OpenRead(this.ArchivePath))
                     using (var reader = SharpCompress.Readers.ReaderFactory.Open(readerStream))
                     {
                         while (reader.MoveToNextEntry())
@@ -142,28 +193,13 @@ namespace Bam.Core
                             if (!reader.Entry.IsDirectory)
                             {
                                 Log.MessageAll(reader.Entry.Key);
-                                reader.WriteEntryToDirectory(extractTo, new SharpCompress.Common.ExtractionOptions()
+                                reader.WriteEntryToDirectory(this.ExtractTo, new SharpCompress.Common.ExtractionOptions()
                                 {
                                     ExtractFullPath = true,
                                     Overwrite = true
                                 });
                             }
                         }
-                    }
-
-                    if (this.SubdirectoryAsPackageDir != null)
-                    {
-                        Graph.Instance.ProcessState.AddDownloadedPackageSourceMapping(
-                            packageName,
-                            System.IO.Path.Combine(extractTo, this.SubdirectoryAsPackageDir)
-                        );
-                    }
-                    else
-                    {
-                        Graph.Instance.ProcessState.AddDownloadedPackageSourceMapping(
-                            packageName,
-                            extractTo
-                        );
                     }
                 }
                 else
@@ -172,29 +208,10 @@ namespace Bam.Core
                 }
             }
 
-            var config = UserConfiguration.Configuration;
-            foreach (var i in config.AsEnumerable())
+            if (!System.IO.File.Exists(this.ArchivePath))
             {
-                Log.MessageAll($"{i.Key}={i.Value}");
-            }
-            var sourcesDir = $"{config[UserConfiguration.SourcesDir]}";
-            var packageSourcesDir = System.IO.Path.Combine(sourcesDir, packageName);
-            if (!System.IO.Directory.Exists(packageSourcesDir))
-            {
-                // doesn't need to be locked, synchronous
-                System.IO.Directory.CreateDirectory(packageSourcesDir);
-            }
-
-            var leafname = System.IO.Path.GetFileName(this.Path);
-            var packageSourcePath = System.IO.Path.Combine(packageSourcesDir, leafname);
-            var packageSourceExtractDir = packageSourcePath.Substring(0, packageSourcePath.LastIndexOf('.'));
-            if (!System.IO.File.Exists(packageSourcePath))
-            {
-                Log.MessageAll($"Need to download '{this}' to '{packageSourcePath}' and extract to '{packageSourceExtractDir}'");
-                RunMe(
-                    packageSourcePath,
-                    packageSourceExtractDir
-                );
+                Log.MessageAll($"Need to download '{this}' to '{this.ArchivePath}' and extract to '{this.ExtractTo}'");
+                RunMe();
             }
         }
     }
