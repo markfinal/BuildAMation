@@ -113,6 +113,7 @@
             <xs:element name="SupportedPlatforms" type="supported-platforms-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="Definitions" type="definitions-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="NuGetPackages" type="nuget-packages-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Source" type="xs:string" minOccurs="0" maxOccurs="1" />
         </xs:all>
         <xs:attribute name="name" type="xs:string" use="required" />
         <xs:attribute name="version" type="xs:string" use="optional" />

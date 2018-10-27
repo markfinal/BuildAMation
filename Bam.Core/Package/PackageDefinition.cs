@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
+using Microsoft.Extensions.Configuration;
 namespace Bam.Core
 {
     /// <summary>
@@ -488,6 +489,49 @@ namespace Bam.Core
 
             var packageDefinition = this.GetPackageDefinitionName();
             this.Definitions.AddUnique(packageDefinition);
+
+            if (!System.String.IsNullOrEmpty(this.Source))
+            {
+                var config = UserConfiguration.Configuration;
+                foreach (var i in config.AsEnumerable())
+                {
+                    Log.MessageAll($"{i.Key}={i.Value}");
+                }
+                var sourcesDir = $"{config[UserConfiguration.SourcesDir]}";
+                var packageSourcesDir = System.IO.Path.Combine(sourcesDir, this.Name);
+                if (!System.IO.Directory.Exists(packageSourcesDir))
+                {
+                    // doesn't need to be locked, synchronous
+                    System.IO.Directory.CreateDirectory(packageSourcesDir);
+                }
+
+                async void RunMe(string path)
+                {
+                    var client = new System.Net.Http.HttpClient();
+                    client.BaseAddress = new System.Uri(this.Source);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    var response = await client.GetAsync(client.BaseAddress);
+                    Log.MessageAll(response.Content.Headers.ToString());
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var stream = new System.IO.FileStream(path, System.IO.FileMode.Create, System.IO.FileAccess.Write, System.IO.FileShare.None);
+                        await response.Content.CopyToAsync(stream);
+                        stream.Close();
+                    }
+                    else
+                    {
+                        throw new Exception($"Failed to download {this.Source} because {response.ReasonPhrase}");
+                    }
+                }
+
+                var leafname = System.IO.Path.GetFileName(this.Source);
+                var packageSourcePath = System.IO.Path.Combine(packageSourcesDir, leafname);
+                if (!System.IO.File.Exists(packageSourcePath))
+                {
+                    Log.MessageAll($"Need to download '{this.Source}' to '{packageSourcePath}");
+                    RunMe(packageSourcePath);
+                }
+            }
         }
 
         /// <summary>
@@ -823,7 +867,7 @@ namespace Bam.Core
             System.Xml.XmlReader xmlReader)
         {
             var rootName = "Definitions";
-            if (!rootName.Equals(xmlReader.Name,  System.StringComparison.Ordinal))
+            if (!rootName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
             {
                 return false;
             }
@@ -847,6 +891,23 @@ namespace Bam.Core
             }
 
             return true;
+        }
+
+        private bool
+        ReadSource(
+            System.Xml.XmlReader xmlReader)
+        {
+            var rootName = "Source";
+            if (rootName != xmlReader.Name)
+            {
+                return false;
+            }
+
+            var message = xmlReader.ReadString();
+            this.Source = message;
+
+            return true;
+
         }
 
         /// <summary>
@@ -901,6 +962,10 @@ namespace Bam.Core
                             // all done
                         }
                         else if (ReadDefinitions(xmlReader))
+                        {
+                            // all done
+                        }
+                        else if (ReadSource(xmlReader))
                         {
                             // all done
                         }
@@ -1052,6 +1117,15 @@ namespace Bam.Core
         /// </summary>
         /// <value>The description.</value>
         public string Description
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the source of the package.
+        /// </summary>
+        public string Source
         {
             get;
             set;
