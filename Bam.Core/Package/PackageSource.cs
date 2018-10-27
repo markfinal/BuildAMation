@@ -29,6 +29,7 @@
 #endregion // License
 using Microsoft.Extensions.Configuration;
 using SharpCompress.Readers;
+using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
@@ -61,6 +62,7 @@ namespace Bam.Core
                 throw new Exception($"Invalid package source type, '{typeAsString}'");
             }
 
+            this.PackageName = name;
             this.Type = ToType(type);
             this.RemotePath = path;
             this.SubdirectoryAsPackageDir = subdir;
@@ -80,6 +82,7 @@ namespace Bam.Core
 
             var leafname = System.IO.Path.GetFileName(this.RemotePath);
             this.ArchivePath = System.IO.Path.Combine(packageSourcesDir, leafname);
+            this.ExtractedSourceChecksum = $"{this.ArchivePath}.md5";
             this.ExtractTo = this.ArchivePath.Substring(0, this.ArchivePath.LastIndexOf('.'));
             this.ExtractedPackageDir = this.ExtractTo;
             if (this.SubdirectoryAsPackageDir != null)
@@ -128,6 +131,18 @@ namespace Bam.Core
             set;
         }
 
+        private string ExtractedSourceChecksum
+        {
+            get;
+            set;
+        }
+
+        private string PackageName
+        {
+            get;
+            set;
+        }
+
         private enum EType
         {
             Http
@@ -149,6 +164,34 @@ namespace Bam.Core
         {
             get;
             set;
+        }
+
+        private System.Security.Cryptography.MD5
+        GenerateMD5Hash()
+        {
+            var filelist = new StringArray();
+            foreach (var path in System.IO.Directory.EnumerateFiles(this.ExtractTo, "*", System.IO.SearchOption.AllDirectories))
+            {
+                Log.MessageAll($"-> {path}");
+                filelist.Add(path);
+            }
+
+            var hash = System.Security.Cryptography.MD5.Create();
+            for (int i = 0; i < filelist.Count; ++i)
+            {
+                var path = filelist[i];
+                var bytes = System.IO.File.ReadAllBytes(path); // TODO: ouch
+                if (i < filelist.Count - 1)
+                {
+                    hash.TransformBlock(bytes, 0, bytes.Length, bytes, 0);
+                }
+                else
+                {
+                    hash.TransformFinalBlock(bytes, 0, bytes.Length);
+                }
+            }
+            Log.MessageAll($"{string.Concat(hash.Hash.Select(x => x.ToString("X2")))}");
+            return hash;
         }
 
         private void
@@ -199,6 +242,10 @@ namespace Bam.Core
                             }
                         }
                     }
+
+                    // write the MD5 checksum to disk
+                    var checksum = this.GenerateMD5Hash();
+                    System.IO.File.WriteAllBytes(this.ExtractedSourceChecksum, checksum.Hash);
                 }
                 else
                 {
@@ -206,13 +253,22 @@ namespace Bam.Core
                 }
             }
 
-            if (System.IO.File.Exists(this.ArchivePath))
+            if (System.IO.File.Exists(this.ArchivePath) &&
+                System.IO.File.Exists(this.ExtractedSourceChecksum))
             {
-                return;
+                // TODO: this could be quite expensive, so put it onto a command line switch
+                var checksum = this.GenerateMD5Hash();
+                var old = System.IO.File.ReadAllBytes(this.ExtractedSourceChecksum);
+                if (!checksum.Hash.SequenceEqual(old))
+                {
+                    throw new Exception($"MD5 checksum comparison failed for package {this.PackageName}");
+                }
             }
-
-            Log.MessageAll($"Need to download '{this}' to '{this.ArchivePath}' and extract to '{this.ExtractTo}'");
-            Execute();
+            else
+            {
+                Log.MessageAll($"Need to download '{this}' to '{this.ArchivePath}' and extract to '{this.ExtractTo}'");
+                Execute();
+            }
         }
     }
 }
