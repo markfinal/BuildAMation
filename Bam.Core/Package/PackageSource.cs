@@ -41,11 +41,13 @@ namespace Bam.Core
         /// TODO
         /// </summary>
         /// <param name="name">TODO</param>
+        /// <param name="version">TODO</param>
         /// <param name="type">TODO</param>
         /// <param name="path">TODO</param>
         /// <param name="subdir">TODO</param>
         public PackageSource(
             string name,
+            string version,
             string type,
             string path,
             string subdir)
@@ -81,6 +83,12 @@ namespace Bam.Core
             }
 
             var leafname = System.IO.Path.GetFileName(this.RemotePath);
+            if (leafname.LastIndexOf('.') < 0)
+            {
+                // if the original download link doesn't have an extension (e.g. SourceForge)
+                // make one up, so it's versioned
+                leafname = $"{name}-{version}.archive";
+            }
             this.ArchivePath = System.IO.Path.Combine(packageSourcesDir, leafname);
             this.ExtractedSourceChecksum = $"{this.ArchivePath}.md5";
             this.ExtractTo = this.ArchivePath.Substring(0, this.ArchivePath.LastIndexOf('.'));
