@@ -245,6 +245,7 @@ namespace Bam.Core
         {
             Log.MessageAll($"*** WAITING ON {this.preBuildTasks.Count} TASKS");
             System.Threading.Tasks.Task.WaitAll(this.preBuildTasks.ToArray());
+            Log.MessageAll($"*** FINISHED WAITING ON TASKS");
         }
     }
 }
