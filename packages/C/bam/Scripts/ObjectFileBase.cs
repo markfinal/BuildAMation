@@ -78,7 +78,7 @@ namespace C
                 this.RegisterGeneratedFile(
                     ObjectFileKey,
                     this.CreateTokenizedString(
-                        "$(packagebuilddir)/$(moduleoutputdir)/@changeextension(@trimstart(@relativeto($(0),$(packagedir)),../),$(objext))",
+                        "$(packagebuilddir)/$(moduleoutputdir)/@changeextension(@isrelative(@trimstart(@relativeto($(0),$(packagedir)),../),@filename($(0))),$(objext))",
                         value.GeneratedPaths[SourceFile.SourceFileKey]
                     )
                 );

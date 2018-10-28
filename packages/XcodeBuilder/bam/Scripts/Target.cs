@@ -335,7 +335,7 @@ namespace XcodeBuilder
         AddFileRefToGroup(
             FileReference fileRef)
         {
-            var relDir = this.Module.CreateTokenizedString("@trimstart(@relativeto(@dir($(0)),$(packagedir)),../)", fileRef.Path);
+            var relDir = this.Module.CreateTokenizedString("@isrelative(@trimstart(@relativeto(@dir($(0)),$(packagedir)),../),@dir($(0)))", fileRef.Path);
             lock (relDir)
             {
                 if (!relDir.IsParsed)
