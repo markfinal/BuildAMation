@@ -111,6 +111,7 @@
   <xs:attribute name="type" type="source-valid-type" use="required" />
   <xs:attribute name="path" type="xs:string" use="required" />
   <xs:attribute name="subdir" type="xs:string" use="optional" />
+  <xs:attribute name="platform" type="platform-type" use="optional" />
 </xs:complexType>
 
 <!-- root node -->

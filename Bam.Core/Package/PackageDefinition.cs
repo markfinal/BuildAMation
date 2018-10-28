@@ -781,23 +781,7 @@ namespace Bam.Core
                 }
 
                 var name = xmlReader.GetAttribute("name");
-                switch (name)
-                {
-                    case "Windows":
-                        platforms |= EPlatform.Windows;
-                        break;
-
-                    case "Linux":
-                        platforms |= EPlatform.Linux;
-                        break;
-
-                    case "OSX":
-                        platforms |= EPlatform.OSX;
-                        break;
-
-                    default:
-                        throw new Exception("Unexpected platform '{0}'", name);
-                }
+                platforms |= Platform.FromString(name);
             }
 
             return platforms;
@@ -857,6 +841,16 @@ namespace Bam.Core
             if (rootName != xmlReader.Name)
             {
                 return false;
+            }
+
+            var platform = xmlReader.GetAttribute("platform");
+            if (null != platform)
+            {
+                var platformEnum = Platform.FromString(platform);
+                if (!OSUtilities.IsCurrentPlatformSupported(platformEnum))
+                {
+                    return true;
+                }
             }
 
             var type = xmlReader.GetAttribute("type");
