@@ -65,6 +65,14 @@ namespace VSSolutionBuilder
                         // may have been parsed already, e.g. a common header
                         this.RelativeDirectory.Parse();
                     }
+
+                    // this can happen if the source file lies directly in the package directory
+                    // rather than in subdirectories
+                    // project filters called '.' look weird
+                    if (this.RelativeDirectory.ToString().Equals(".", System.StringComparison.Ordinal))
+                    {
+                        this.RelativeDirectory = null;
+                    }
                 }
             }
             this.Settings = new Bam.Core.Array<VSSetting>();
