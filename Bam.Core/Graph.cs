@@ -887,6 +887,7 @@ namespace Bam.Core
         /// Assign the array of package definitions to the Graph.
         /// Macros added to the Graph are:
         /// 'masterpackagename'
+        /// Packages with external sources are fetched at this point.
         /// </summary>
         /// <param name="packages">Array of package definitions.</param>
         public void
@@ -895,6 +896,12 @@ namespace Bam.Core
         {
             this.PackageDefinitions = packages;
             this.Macros.AddVerbatim("masterpackagename", this.MasterPackage.Name);
+
+            foreach (var package in packages)
+            {
+                // TODO: Only do this on a real build - not debug project generation
+                package.Source?.Execute(package.Name);
+            }
         }
 
         /// <summary>
