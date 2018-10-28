@@ -103,16 +103,16 @@ namespace Bam.Core
         /// TODO
         /// </summary>
         /// <param name="packageName"></param>
-        public void
+        public System.Threading.Tasks.Task
         Execute(
             string packageName)
         {
             switch (this.Type)
             {
                 case PackageSource.EType.Http:
-                    this.DownloadAndExtractPackageViaHTTP(packageName);
-                    break;
+                    return this.DownloadAndExtractPackageViaHTTP(packageName);
             }
+            throw new Exception($"Unhandled package source type, '{this.Type.ToString()}'");
         }
 
         /// <summary>
@@ -180,7 +180,6 @@ namespace Bam.Core
             var filelist = new StringArray();
             foreach (var path in System.IO.Directory.EnumerateFiles(this.ExtractTo, "*", System.IO.SearchOption.AllDirectories))
             {
-                Log.MessageAll($"-> {path}");
                 filelist.Add(path);
             }
 
@@ -202,81 +201,63 @@ namespace Bam.Core
             return hash;
         }
 
-        private void
+        private System.Threading.Tasks.Task
         DownloadAndExtractPackageViaHTTP(
             string packageName)
         {
-            async void
-            Execute()
+            var client = new System.Net.Http.HttpClient();
+            client.BaseAddress = new System.Uri(this.RemotePath);
+            client.DefaultRequestHeaders.Accept.Clear();
+
+            var downloadTask = client.GetAsync(client.BaseAddress);
+            Log.Info($"Downloading {this.RemotePath}...");
+
+            var savingTask = downloadTask.ContinueWith(t =>
             {
-                // download the archive...
-                var client = new System.Net.Http.HttpClient();
-                client.BaseAddress = new System.Uri(this.RemotePath);
-                client.DefaultRequestHeaders.Accept.Clear();
+                Log.Info($"Saving {this.RemotePath} to {this.ArchivePath}...");
 
-                var getTask = client.GetAsync(client.BaseAddress);
-                Graph.Instance.ProcessState.AppendPreBuildTask(getTask);
-                Log.Info($"Downloading {this.RemotePath}...");
-                var response = await getTask;
-
-                if (response.IsSuccessStatusCode)
+                if (!t.Result.IsSuccessStatusCode)
                 {
-                    // save the downloaded archive to disk
-                    var stream = new System.IO.FileStream(
-                        this.ArchivePath,
-                        System.IO.FileMode.Create,
-                        System.IO.FileAccess.Write,
-                        System.IO.FileShare.None
-                    );
-                    var copyTask = response.Content.CopyToAsync(stream);
-                    Graph.Instance.ProcessState.AppendPreBuildTask(copyTask);
-                    await copyTask;
-                    stream.Close();
+                    throw new Exception($"Failed to download {this} because {t.Result.ReasonPhrase}");
+                }
+                using (var stream = new System.IO.FileStream(
+                            this.ArchivePath,
+                            System.IO.FileMode.Create,
+                            System.IO.FileAccess.Write,
+                            System.IO.FileShare.None
+                            ))
+                {
+                    t.Result.Content.CopyToAsync(stream).Wait(); // waiting since it's already in a task
+                }
+            });
 
-                    // extract the archive...
-                    using (var readerStream = System.IO.File.OpenRead(this.ArchivePath))
-                    using (var reader = SharpCompress.Readers.ReaderFactory.Open(readerStream))
+            var extractingTask = savingTask.ContinueWith(t =>
+            {
+                Log.Info($"Extracting {this.ArchivePath} to {this.ExtractTo}...");
+                using (var readerStream = System.IO.File.OpenRead(this.ArchivePath))
+                using (var reader = SharpCompress.Readers.ReaderFactory.Open(readerStream))
+                {
+                    while (reader.MoveToNextEntry())
                     {
-                        while (reader.MoveToNextEntry())
+                        if (!reader.Entry.IsDirectory)
                         {
-                            if (!reader.Entry.IsDirectory)
+                            reader.WriteEntryToDirectory(this.ExtractTo, new SharpCompress.Common.ExtractionOptions()
                             {
-                                Log.MessageAll(reader.Entry.Key);
-                                reader.WriteEntryToDirectory(this.ExtractTo, new SharpCompress.Common.ExtractionOptions()
-                                {
-                                    ExtractFullPath = true,
-                                    Overwrite = true
-                                });
-                            }
+                                ExtractFullPath = true,
+                                Overwrite = true
+                            });
                         }
                     }
-
-                    // write the MD5 checksum to disk
-                    var checksum = this.GenerateMD5Hash();
-                    System.IO.File.WriteAllBytes(this.ExtractedSourceChecksum, checksum.Hash);
                 }
-                else
-                {
-                    throw new Exception($"Failed to download {this} because {response.ReasonPhrase}");
-                }
-            }
 
-            if (System.IO.File.Exists(this.ArchivePath) &&
-                System.IO.File.Exists(this.ExtractedSourceChecksum))
-            {
-                // TODO: this could be quite expensive, so put it onto a command line switch
+                // write the MD5 checksum to disk
+                Log.Info($"Generating checksum of extracted {this.ArchivePath}...");
                 var checksum = this.GenerateMD5Hash();
-                var old = System.IO.File.ReadAllBytes(this.ExtractedSourceChecksum);
-                if (!checksum.Hash.SequenceEqual(old))
-                {
-                    throw new Exception($"MD5 checksum comparison failed for package {this.PackageName}");
-                }
-            }
-            else
-            {
-                Log.MessageAll($"Need to download '{this}' to '{this.ArchivePath}' and extract to '{this.ExtractTo}'");
-                Execute();
-            }
+                Log.Info($"Writing checksum of extracted {this.ArchivePath} to {this.ExtractedSourceChecksum}...");
+                System.IO.File.WriteAllBytes(this.ExtractedSourceChecksum, checksum.Hash);
+            });
+
+            return extractingTask;
         }
     }
 }

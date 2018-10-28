@@ -900,7 +900,11 @@ namespace Bam.Core
             foreach (var package in packages)
             {
                 // TODO: Only do this on a real build - not debug project generation
-                package.Source?.Execute(package.Name);
+                var task = package.Source?.Execute(package.Name);
+                if (null != task)
+                {
+                    this.ProcessState.AppendPreBuildTask(task);
+                }
             }
         }
 
