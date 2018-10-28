@@ -233,6 +233,10 @@ namespace Bam.Core
 
             var extractingTask = savingTask.ContinueWith(t =>
             {
+                if (t.IsFaulted)
+                {
+                    throw t.Exception;
+                }
                 Log.Info($"Extracting {this.ArchivePath} to {this.ExtractTo}...");
                 using (var readerStream = System.IO.File.OpenRead(this.ArchivePath))
                 using (var reader = SharpCompress.Readers.ReaderFactory.Open(readerStream))
