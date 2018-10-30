@@ -834,38 +834,60 @@ namespace Bam.Core
         }
 
         private bool
-        ReadSource(
+        ReadSources(
             System.Xml.XmlReader xmlReader)
         {
-            var rootName = "Source";
+            var rootName = "Sources";
             if (rootName != xmlReader.Name)
             {
                 return false;
             }
 
-            var platform = xmlReader.GetAttribute("platform");
-            if (null != platform)
+            var elName = "Source";
+            while (xmlReader.Read())
             {
-                var platformEnum = Platform.FromString(platform);
-                if (!OSUtilities.IsCurrentPlatformSupported(platformEnum))
+                if (xmlReader.Name.Equals(rootName, System.StringComparison.Ordinal) &&
+                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
                 {
-                    return true;
+                    break;
                 }
+
+                if (!xmlReader.Name.Equals(elName, System.StringComparison.Ordinal))
+                {
+                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'. Expected '{2}'", rootName, xmlReader.Name, elName);
+                }
+
+                var platform = xmlReader.GetAttribute("platform");
+                if (null != platform)
+                {
+                    var platformEnum = Platform.FromString(platform);
+                    if (!OSUtilities.IsCurrentPlatformSupported(platformEnum))
+                    {
+                        // skip Source elements not applicable to the current platform
+                        continue;
+                    }
+                }
+
+                var type = xmlReader.GetAttribute("type");
+                var path = xmlReader.GetAttribute("path");
+                var subdir = xmlReader.GetAttribute("subdir");
+
+                if (null == this.Sources)
+                {
+                    this.Sources = new Array<PackageSource>();
+                }
+                this.Sources.Add(
+                    new PackageSource(
+                        this.Name,
+                        this.Version,
+                        type,
+                        path,
+                        subdir
+                    )
+                );
             }
 
-            var type = xmlReader.GetAttribute("type");
-            var path = xmlReader.GetAttribute("path");
-            var subdir = xmlReader.GetAttribute("subdir");
-            this.Source = new PackageSource(
-                this.Name,
-                this.Version,
-                type,
-                path,
-                subdir
-            );
-
             return true;
-
         }
 
         /// <summary>
@@ -923,7 +945,7 @@ namespace Bam.Core
                         {
                             // all done
                         }
-                        else if (ReadSource(xmlReader))
+                        else if (ReadSources(xmlReader))
                         {
                             // all done
                         }
@@ -1081,12 +1103,12 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Gets or sets the source of the package.
+        /// Gets the array of sources of the package.
         /// </summary>
-        public PackageSource Source
+        public Array<PackageSource> Sources
         {
             get;
-            set;
+            private set;
         }
 
         /// <summary>

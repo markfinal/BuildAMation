@@ -107,11 +107,17 @@
   </xs:restriction>
 </xs:simpleType>
 
-<xs:complexType name="source-type">
-  <xs:attribute name="type" type="source-valid-type" use="required" />
-  <xs:attribute name="path" type="xs:string" use="required" />
-  <xs:attribute name="subdir" type="xs:string" use="optional" />
-  <xs:attribute name="platform" type="platform-type" use="optional" />
+<xs:complexType name="sources-type">
+  <xs:sequence>
+    <xs:element name="Source" minOccurs="1" maxOccurs="unbounded">
+      <xs:complexType>
+        <xs:attribute name="type" type="source-valid-type" use="required" />
+        <xs:attribute name="path" type="xs:string" use="required" />
+        <xs:attribute name="subdir" type="xs:string" use="optional" />
+        <xs:attribute name="platform" type="platform-type" use="optional" />
+      </xs:complexType>
+    </xs:element>
+  </xs:sequence>
 </xs:complexType>
 
 <!-- root node -->
@@ -126,7 +132,7 @@
             <xs:element name="SupportedPlatforms" type="supported-platforms-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="Definitions" type="definitions-type" minOccurs="0" maxOccurs="1" />
             <xs:element name="NuGetPackages" type="nuget-packages-type" minOccurs="0" maxOccurs="1" />
-            <xs:element name="Source" type="source-type" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Sources" type="sources-type" minOccurs="0" maxOccurs="1" />
         </xs:all>
         <xs:attribute name="name" type="xs:string" use="required" />
         <xs:attribute name="version" type="xs:string" use="optional" />

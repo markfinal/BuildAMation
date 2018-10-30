@@ -104,7 +104,7 @@ namespace Bam.Core
         /// </summary>
         /// <param name="packageName"></param>
         public System.Threading.Tasks.Task
-        Execute(
+        Fetch(
             string packageName)
         {
             switch (this.Type)
