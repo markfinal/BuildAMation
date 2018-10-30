@@ -118,6 +118,7 @@
       </xs:complexType>
     </xs:element>
   </xs:sequence>
+  <xs:attribute name="extractto" type="xs:string" use="optional" />
 </xs:complexType>
 
 <!-- root node -->

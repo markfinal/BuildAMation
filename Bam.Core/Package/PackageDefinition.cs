@@ -843,6 +843,8 @@ namespace Bam.Core
                 return false;
             }
 
+            var extractto = xmlReader.GetAttribute("extractto");
+
             var elName = "Source";
             while (xmlReader.Read())
             {
@@ -882,7 +884,8 @@ namespace Bam.Core
                         this.Version,
                         type,
                         path,
-                        subdir
+                        subdir,
+                        extractto
                     )
                 );
             }

@@ -45,12 +45,14 @@ namespace Bam.Core
         /// <param name="type">TODO</param>
         /// <param name="path">TODO</param>
         /// <param name="subdir">TODO</param>
+        /// <param name="extractto">TODO</param>
         public PackageSource(
             string name,
             string version,
             string type,
             string path,
-            string subdir)
+            string subdir,
+            string extractto)
         {
             PackageSource.EType
             ToType(
@@ -91,7 +93,14 @@ namespace Bam.Core
             }
             this.ArchivePath = System.IO.Path.Combine(packageSourcesDir, leafname);
             this.ExtractedSourceChecksum = $"{this.ArchivePath}.md5";
-            this.ExtractTo = this.ArchivePath.Substring(0, this.ArchivePath.LastIndexOf('.'));
+            if (null != extractto)
+            {
+                this.ExtractTo = System.IO.Path.Combine(packageSourcesDir, extractto);
+            }
+            else
+            {
+                this.ExtractTo = this.ArchivePath.Substring(0, this.ArchivePath.LastIndexOf('.'));
+            }
             this.ExtractedPackageDir = this.ExtractTo;
             if (this.SubdirectoryAsPackageDir != null)
             {
