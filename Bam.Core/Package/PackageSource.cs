@@ -106,6 +106,24 @@ namespace Bam.Core
             {
                 this.ExtractedPackageDir = System.IO.Path.Combine(this.ExtractedPackageDir, this.SubdirectoryAsPackageDir);
             }
+
+            // now check if there has already been an extraction
+            if (System.IO.File.Exists(this.ArchivePath) &&
+                System.IO.File.Exists(this.ExtractedSourceChecksum))
+            {
+                // TODO: this could be quite expensive, so put it onto a command line switch
+                var checksum = this.GenerateMD5Hash();
+                var old = System.IO.File.ReadAllBytes(this.ExtractedSourceChecksum);
+                if (!checksum.Hash.SequenceEqual(old))
+                {
+                    throw new Exception($"MD5 checksum comparison failed for package {this.PackageName}");
+                }
+                this.AlreadyFetched = true;
+            }
+            else
+            {
+                this.AlreadyFetched = false;
+            }
         }
 
         /// <summary>
@@ -116,6 +134,10 @@ namespace Bam.Core
         Fetch(
             string packageName)
         {
+            if (this.AlreadyFetched)
+            {
+                return null;
+            }
             switch (this.Type)
             {
                 case PackageSource.EType.Http:
@@ -183,20 +205,37 @@ namespace Bam.Core
             set;
         }
 
+        private bool AlreadyFetched { get; set; } = false;
+
         private System.Security.Cryptography.MD5
         GenerateMD5Hash()
         {
+            // regenerate filelist from the original archive, and then MD5 the actual files
+            // on disk (if they exist)
             var filelist = new StringArray();
-            foreach (var path in System.IO.Directory.EnumerateFiles(this.ExtractTo, "*", System.IO.SearchOption.AllDirectories))
+            using (var readerStream = System.IO.File.OpenRead(this.ArchivePath))
+            using (var reader = SharpCompress.Readers.ReaderFactory.Open(readerStream))
             {
-                filelist.Add(path);
+                while (reader.MoveToNextEntry())
+                {
+                    if (reader.Entry.IsDirectory)
+                    {
+                        continue;
+                    }
+
+                    filelist.Add(System.IO.Path.Combine(this.ExtractTo, reader.Entry.ToString()));
+                }
             }
 
             var hash = System.Security.Cryptography.MD5.Create();
             for (int i = 0; i < filelist.Count; ++i)
             {
-                var path = filelist[i];
-                var bytes = System.IO.File.ReadAllBytes(path); // TODO: ouch
+                var filepath = filelist[i];
+                if (!System.IO.File.Exists(filepath))
+                {
+                    continue;
+                }
+                var bytes = System.IO.File.ReadAllBytes(filepath); // TODO: ouch
                 if (i < filelist.Count - 1)
                 {
                     hash.TransformBlock(bytes, 0, bytes.Length, bytes, 0);
@@ -252,14 +291,16 @@ namespace Bam.Core
                 {
                     while (reader.MoveToNextEntry())
                     {
-                        if (!reader.Entry.IsDirectory)
+                        if (reader.Entry.IsDirectory)
                         {
-                            reader.WriteEntryToDirectory(this.ExtractTo, new SharpCompress.Common.ExtractionOptions()
-                            {
-                                ExtractFullPath = true,
-                                Overwrite = true
-                            });
+                            continue;
                         }
+
+                        reader.WriteEntryToDirectory(this.ExtractTo, new SharpCompress.Common.ExtractionOptions()
+                        {
+                            ExtractFullPath = true,
+                            Overwrite = true
+                        });
                     }
                 }
 
