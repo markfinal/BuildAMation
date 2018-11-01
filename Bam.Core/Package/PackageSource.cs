@@ -235,14 +235,21 @@ namespace Bam.Core
                 {
                     continue;
                 }
-                var bytes = System.IO.File.ReadAllBytes(filepath); // TODO: ouch
-                if (i < filelist.Count - 1)
+                try
                 {
-                    hash.TransformBlock(bytes, 0, bytes.Length, bytes, 0);
+                    var bytes = System.IO.File.ReadAllBytes(filepath); // TODO: ouch
+                    if (i < filelist.Count - 1)
+                    {
+                        hash.TransformBlock(bytes, 0, bytes.Length, bytes, 0);
+                    }
+                    else
+                    {
+                        hash.TransformFinalBlock(bytes, 0, bytes.Length);
+                    }
                 }
-                else
+                catch (System.IO.FileNotFoundException)
                 {
-                    hash.TransformFinalBlock(bytes, 0, bytes.Length);
+                    continue; // some archives have symlinks that go to nowhere
                 }
             }
             Log.MessageAll($"{string.Concat(hash.Hash.Select(x => x.ToString("X2")))}");
