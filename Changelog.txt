@@ -1,3 +1,5 @@
+04-Nov-2018 Fixes #504. Added macros to Bam.Core.Graph of the form <name>.packagename, where <name> is a package name. This allows expanding to a named package's directory when outside of that package's modules.
+
 27-Oct-2018 Fixes #499. BREAKING CHANGE. Making comparisons against toolchain versions clearer.
 C.CompilerTool no longer implements Bam.Core.ISemanticVersion, instead it offsets a property returning a C.ToolchainVersion. This class offers functionality of Match, AtLeast, AtMost, InRange as comparisons, and a customised ToString() override. Toolchains derive from C.ToolchainVersion to provide specific implementations.
 C.SuppressWarningsDelegate now requires a range of C.ToolchainVersions as a closed range of [min,max] versions. Either one may be null, to specify an open range.
