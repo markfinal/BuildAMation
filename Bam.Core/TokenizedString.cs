@@ -59,6 +59,7 @@ namespace Bam.Core
     /// <item><description><code>@trimstart(path,totrim)</code></description> Trim string from the start of path.</item>
     /// <item><description><code>@escapedquotes(path)</code></description> Ensure that the path is double quoted, suitable for use with preprocessor definitions.</item>
     /// <item><description><code>@ifnotempty(path,whennotempty,whenempty)</code></description> If path is not empty, replace the expression with that in whennotempty, otherwise use whenempty.</item>
+    /// <item><description><code>@tounix(path)</code></description> Convert any Windows paths (using back slashes) to Unix paths (using forward slashes).</item>
     /// </list>
     /// Custom unary post-functions can be registered using <code>registerPostUnaryFunction</code>.
     /// </remarks>
@@ -106,7 +107,8 @@ namespace Bam.Core
             "isrelative",
             "trimstart",
             "escapedquotes",
-            "ifnotempty"
+            "ifnotempty",
+            "tounix"
         };
 
         // static fields, initialised in reset()
@@ -960,6 +962,12 @@ namespace Bam.Core
                             var negativeString = split[2];
                             return negativeString;
                         }
+                    }
+
+                case "tounix":
+                    {
+                        argument = argument.Replace("\\", "/");
+                        return argument;
                     }
 
                 default:
