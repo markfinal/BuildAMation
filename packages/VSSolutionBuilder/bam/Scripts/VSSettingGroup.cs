@@ -57,7 +57,10 @@ namespace VSSolutionBuilder
             this.Include = include;
             if (null != include)
             {
-                this.RelativeDirectory = module.CreateTokenizedString("@isrelative(@trimstart(@relativeto(@dir($(0)),$(packagedir)),../),@dir($(0)))", include);
+                this.RelativeDirectory = module.CreateTokenizedString(
+                    "@isrelative(@trimstart(@relativeto(@dir($(0)),$(packagedir)),../),@dir($(0)))",
+                    include
+                );
                 lock (this.RelativeDirectory)
                 {
                     if (!this.RelativeDirectory.IsParsed)
