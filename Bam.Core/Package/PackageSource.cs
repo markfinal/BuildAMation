@@ -78,11 +78,6 @@ namespace Bam.Core
             }
             var sourcesDir = $"{config[UserConfiguration.SourcesDir]}";
             var packageSourcesDir = System.IO.Path.Combine(sourcesDir, name);
-            if (!System.IO.Directory.Exists(packageSourcesDir))
-            {
-                // doesn't need to be locked, synchronous
-                System.IO.Directory.CreateDirectory(packageSourcesDir);
-            }
 
             var leafname = System.IO.Path.GetFileName(this.RemotePath);
             if (leafname.LastIndexOf('.') < 0)
@@ -275,6 +270,13 @@ namespace Bam.Core
                 {
                     throw new Exception($"Failed to download {this} because {t.Result.ReasonPhrase}");
                 }
+
+                var parentDir = System.IO.Path.GetDirectoryName(this.ArchivePath);
+                if (!System.IO.Directory.Exists(parentDir))
+                {
+                    System.IO.Directory.CreateDirectory(parentDir);
+                }
+
                 using (var stream = new System.IO.FileStream(
                             this.ArchivePath,
                             System.IO.FileMode.Create,
