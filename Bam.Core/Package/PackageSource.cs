@@ -268,7 +268,7 @@ namespace Bam.Core
 
                 if (!t.Result.IsSuccessStatusCode)
                 {
-                    throw new Exception($"Failed to download {this} because {t.Result.ReasonPhrase}");
+                    throw new Exception($"Failed to download {this.RemotePath} because {t.Result.ReasonPhrase}");
                 }
 
                 var parentDir = System.IO.Path.GetDirectoryName(this.ArchivePath);
