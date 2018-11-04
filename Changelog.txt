@@ -1,3 +1,5 @@
+05-Nov-2018 Fixes #505. Added PreambleComment virtual property to C.ProceduralHeaderFile, in order to control the comment added to the top of generated headers. Set to null to exclude it.
+
 04-Nov-2018 Fixes #504. Added macros to Bam.Core.Graph of the form <name>.packagename, where <name> is a package name. This allows expanding to a named package's directory when outside of that package's modules.
 
 28-Oct-2018 Added TokenizedString function, @isrelative(path,fallback), which uses path if path is a relative path, and fallback if path is absolute. Useful when dealing with relative paths that cross drives on Windows.
