@@ -111,6 +111,7 @@ namespace Bam.Core
                 this.AddRedirectedPackageDirectory(this);
                 this.Macros.AddVerbatim("packagename", packageDefinition.Name);
                 this.Macros.AddVerbatim("packagebuilddir", packageDefinition.GetBuildDirectory());
+                Graph.Instance.Macros.Add($"{packageDefinition.Name}.packagedir", this.Macros["packagedir"]);
             }
             catch (System.NullReferenceException)
             {
