@@ -115,13 +115,16 @@ namespace Bam.Core
             if (System.IO.File.Exists(this.ArchivePath) &&
                 System.IO.File.Exists(this.ExtractedSourceChecksum))
             {
-                // TODO: this could be quite expensive, so put it onto a command line switch
-                var checksum = this.GenerateMD5Hash();
-                var old = System.IO.File.ReadAllBytes(this.ExtractedSourceChecksum);
-                if (!checksum.Hash.SequenceEqual(old))
+                if (CommandLineProcessor.Evaluate(new Options.ValidateSources()))
                 {
-                    throw new Exception($"MD5 checksum comparison failed for package {this.PackageName}");
+                    var checksum = this.GenerateMD5Hash();
+                    var old = System.IO.File.ReadAllBytes(this.ExtractedSourceChecksum);
+                    if (!checksum.Hash.SequenceEqual(old))
+                    {
+                        throw new Exception($"MD5 checksum comparison failed for package {this.PackageName}");
+                    }
                 }
+
                 this.AlreadyFetched = true;
             }
             else
