@@ -74,10 +74,6 @@ namespace Bam.Core
             this.SubdirectoryAsPackageDir = subdir;
 
             var config = UserConfiguration.Configuration;
-            foreach (var i in config.AsEnumerable())
-            {
-                Log.MessageAll($"{i.Key}={i.Value}");
-            }
             var sourcesDir = $"{config[UserConfiguration.SourcesDir]}";
             var packageSourcesDir = System.IO.Path.Combine(sourcesDir, name);
 
@@ -259,7 +255,7 @@ namespace Bam.Core
                     continue; // some archives have symlinks that go to nowhere
                 }
             }
-            Log.MessageAll($"{string.Concat(hash.Hash.Select(x => x.ToString("X2")))}");
+            Log.DebugMessage($"MD5 hash of {this.PackageName} is '{string.Concat(hash.Hash.Select(x => x.ToString("X2")))}'");
             return hash;
         }
 
@@ -275,12 +271,10 @@ namespace Bam.Core
             client.DefaultRequestHeaders.Accept.Clear();
 
             var downloadTask = client.GetAsync(client.BaseAddress);
-            Log.Info($"Downloading {this.RemotePath}...");
+            Log.Info($"Source downloading: {this.RemotePath} to {this.ArchivePath}...");
 
             var savingTask = downloadTask.ContinueWith(t =>
             {
-                Log.Info($"Saving {this.RemotePath} to {this.ArchivePath}...");
-
                 if (!t.Result.IsSuccessStatusCode)
                 {
                     throw new Exception($"Failed to download {this.RemotePath} because {t.Result.ReasonPhrase}");
@@ -309,7 +303,7 @@ namespace Bam.Core
                 {
                     throw t.Exception;
                 }
-                Log.Info($"Extracting {this.ArchivePath} to {this.ExtractTo}...");
+                Log.DebugMessage($"Extracting {this.ArchivePath} to {this.ExtractTo}...");
                 using (var readerStream = System.IO.File.OpenRead(this.ArchivePath))
                 using (var reader = SharpCompress.Readers.ReaderFactory.Open(readerStream))
                 {
@@ -329,9 +323,7 @@ namespace Bam.Core
                 }
 
                 // write the MD5 checksum to disk
-                Log.Info($"Generating checksum of extracted {this.ArchivePath}...");
                 var checksum = this.GenerateMD5Hash();
-                Log.Info($"Writing checksum of extracted {this.ArchivePath} to {this.ExtractedSourceChecksum}...");
                 System.IO.File.WriteAllBytes(this.ExtractedSourceChecksum, checksum.Hash);
             });
 

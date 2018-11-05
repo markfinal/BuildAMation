@@ -232,7 +232,7 @@ namespace Bam.Core
         {
             lock (this.preBuildTasks)
             {
-                Log.MessageAll($"Adding task {task.ToString()}");
+                Log.DebugMessage($"Adding task {task.ToString()}");
                 this.preBuildTasks.Add(task);
             }
         }
@@ -243,9 +243,13 @@ namespace Bam.Core
         public void
         WaitOnAllPreBuildTasks()
         {
-            Log.MessageAll($"*** WAITING ON {this.preBuildTasks.Count} TASKS");
+            if (!this.preBuildTasks.Any())
+            {
+                return;
+            }
+            Log.Info($"Waiting on package source download tasks to finish before build starts...");
             System.Threading.Tasks.Task.WaitAll(this.preBuildTasks.ToArray());
-            Log.MessageAll($"*** FINISHED WAITING ON TASKS");
+            Log.DebugMessage($"*** FINISHED WAITING ON TASKS");
         }
     }
 }

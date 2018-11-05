@@ -47,7 +47,12 @@ namespace Bam.Core
             new Microsoft.Extensions.Configuration.ConfigurationBuilder()
             .SetBasePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile))
             .AddIniFile(".buildamation.ini", optional: true, reloadOnChange: true)
-            .AddInMemoryCollection(new System.Collections.Generic.Dictionary<string, string> { { SourcesDir, System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), ".bam.package.sources") } })
+            .AddInMemoryCollection(
+                new System.Collections.Generic.Dictionary<string, string>
+                {
+                    { SourcesDir, System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), ".bam.package.sources") }
+                }
+            )
             .Build();
     }
 }
