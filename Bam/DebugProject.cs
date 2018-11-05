@@ -116,7 +116,7 @@ namespace Bam
         public static void
         Create()
         {
-            Core.PackageUtilities.IdentifyAllPackages();
+            Core.PackageUtilities.IdentifyAllPackages(false);
 
             var masterPackage = Core.Graph.Instance.MasterPackage;
             var projectPathname = masterPackage.GetDebugPackageProjectPathname();

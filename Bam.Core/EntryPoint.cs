@@ -94,13 +94,13 @@ namespace Bam.Core
             var graph = Graph.Instance;
             if (null != packageAssembly)
             {
-                PackageUtilities.IdentifyAllPackages();
+                PackageUtilities.IdentifyAllPackages(true);
                 graph.ScriptAssembly = packageAssembly;
                 graph.ScriptAssemblyPathname = packageAssembly.Location;
             }
             else
             {
-                PackageUtilities.CompilePackageAssembly();
+                PackageUtilities.CompilePackageAssembly(true);
                 PackageUtilities.LoadPackageAssembly();
             }
             Graph.Instance.ProcessState.WaitOnAllPreBuildTasks();

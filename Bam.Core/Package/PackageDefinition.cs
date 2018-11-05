@@ -132,7 +132,8 @@ namespace Bam.Core
 
         private void
         Initialize(
-            string xmlFilename)
+            string xmlFilename,
+            bool requiresSourceDownload)
         {
             this.XMLFilename = xmlFilename;
             this.Dependents = new Array<System.Tuple<string, string, bool?>>();
@@ -149,17 +150,20 @@ namespace Bam.Core
             }
             this.Description = string.Empty;
             this.Parents = new Array<PackageDefinition>();
+            this.RequiresSourceDownload = requiresSourceDownload;
         }
 
         /// <summary>
         /// Construct a new instance, based from an existing XML filename.
         /// </summary>
         /// <param name="xmlFilename">Xml filename.</param>
+        /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
         public
         PackageDefinition(
-            string xmlFilename)
+            string xmlFilename,
+            bool requiresSourceDownload)
         {
-            this.Initialize(xmlFilename);
+            this.Initialize(xmlFilename, requiresSourceDownload);
         }
 
         /// <summary>
@@ -168,15 +172,17 @@ namespace Bam.Core
         /// <param name="bamDirectory">Bam directory.</param>
         /// <param name="name">Name.</param>
         /// <param name="version">Version.</param>
+        /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
         public
         PackageDefinition(
             string bamDirectory,
             string name,
-            string version)
+            string version,
+            bool requiresSourceDownload)
         {
             var definitionName = (null != version) ? System.String.Format("{0}-{1}.xml", name, version) : name + ".xml";
             var xmlFilename = System.IO.Path.Combine(bamDirectory, definitionName);
-            this.Initialize(xmlFilename);
+            this.Initialize(xmlFilename, requiresSourceDownload);
             this.Name = name;
             this.Version = version;
             if (null != version)
@@ -885,7 +891,8 @@ namespace Bam.Core
                         type,
                         path,
                         subdir,
-                        extractto
+                        extractto,
+                        this.RequiresSourceDownload
                     )
                 );
             }
@@ -1104,6 +1111,8 @@ namespace Bam.Core
             get;
             set;
         }
+
+        private bool RequiresSourceDownload { get; set; } = false;
 
         /// <summary>
         /// Gets the array of sources of the package.

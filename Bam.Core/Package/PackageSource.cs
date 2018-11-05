@@ -46,13 +46,15 @@ namespace Bam.Core
         /// <param name="path">TODO</param>
         /// <param name="subdir">TODO</param>
         /// <param name="extractto">TODO</param>
+        /// <param name="downloadRequired">TODO</param>
         public PackageSource(
             string name,
             string version,
             string type,
             string path,
             string subdir,
-            string extractto)
+            string extractto,
+            bool downloadRequired)
         {
             PackageSource.EType
             ToType(
@@ -100,6 +102,13 @@ namespace Bam.Core
             if (this.SubdirectoryAsPackageDir != null)
             {
                 this.ExtractedPackageDir = System.IO.Path.Combine(this.ExtractedPackageDir, this.SubdirectoryAsPackageDir);
+            }
+
+            // bypass any downloads
+            if (!downloadRequired)
+            {
+                this.AlreadyFetched = true;
+                return;
             }
 
             // now check if there has already been an extraction

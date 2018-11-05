@@ -66,7 +66,7 @@ namespace Bam.Core
             }
 
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
-            var definition = new PackageDefinition(bamDir, packageName, packageVersion);
+            var definition = new PackageDefinition(bamDir, packageName, packageVersion, false);
 
             IOWrapper.CreateDirectory(bamDir);
             definition.Write();
@@ -103,7 +103,7 @@ namespace Bam.Core
 
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
 
-            var masterPackage = GetMasterPackage();
+            var masterPackage = GetMasterPackage(false);
             if (null != masterPackage.Dependents.FirstOrDefault(item => item.Item1.Equals(packageName, System.StringComparison.Ordinal) && item.Item2.Equals(packageVersion, System.StringComparison.Ordinal)))
             {
                 if (null != packageVersion)
@@ -124,7 +124,7 @@ namespace Bam.Core
             // validate that the addition is ok
             try
             {
-                PackageUtilities.IdentifyAllPackages();
+                PackageUtilities.IdentifyAllPackages(false);
             }
             catch (Exception exception)
             {
@@ -215,9 +215,11 @@ namespace Bam.Core
         /// <summary>
         /// Get the package in which Bam is executed.
         /// </summary>
+        /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
         /// <returns>The master package.</returns>
         public static PackageDefinition
-        GetMasterPackage()
+        GetMasterPackage(
+            bool requiresSourceDownload)
         {
             var workingDir = Graph.Instance.ProcessState.WorkingDirectory;
             var isWorkingPackageWellDefined = IsPackageDirectory(workingDir);
@@ -226,7 +228,10 @@ namespace Bam.Core
                 throw new Exception("Working directory package is not well defined");
             }
 
-            var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir));
+            var masterDefinitionFile = new PackageDefinition(
+                GetPackageDefinitionPathname(workingDir),
+                requiresSourceDownload
+            );
             masterDefinitionFile.Read();
 
             // in case the master package is not in a formal package repository structure, add it's parent directory
@@ -351,10 +356,12 @@ namespace Bam.Core
         /// by either data in the package definition file, or on the command line, by specifying a particular version to
         /// use. The master package definition file is the source of disambiguation for package versions.
         /// </summary>
+        /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
         /// <param name="allowDuplicates">If set to <c>true</c> allow duplicates.</param>
         /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
         public static void
         IdentifyAllPackages(
+            bool requiresSourceDownload,
             bool allowDuplicates = false,
             bool enforceBamAssemblyVersions = true)
         {
@@ -365,7 +372,7 @@ namespace Bam.Core
                 EnqueuePackageRepositoryToVisit(packageRepos, ref reposHWM, repo, null);
             }
 
-            var masterDefinitionFile = GetMasterPackage();
+            var masterDefinitionFile = GetMasterPackage(requiresSourceDownload);
             // inject any packages from the command line into the master definition file
             // and these will be defaults
             var injectPackages = CommandLineProcessor.Evaluate(new Options.InjectDefaultPackage());
@@ -434,7 +441,7 @@ namespace Bam.Core
                         continue;
                     }
 
-                    var definitionFile = new PackageDefinition(packageDefinitionPath);
+                    var definitionFile = new PackageDefinition(packageDefinitionPath, requiresSourceDownload);
                     definitionFile.Read();
                     candidatePackageDefinitions.Add(definitionFile);
 
@@ -568,10 +575,12 @@ namespace Bam.Core
         /// Compile the package assembly, using all the source files from the dependent packages.
         /// Throws Bam.Core.Exceptions if package compilation fails.
         /// </summary>
+        /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
         /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions. Default is true.</param>
         /// <param name="enableClean">If set to <c>true</c> cleaning the build root is allowed. Default is true.</param>
         public static void
         CompilePackageAssembly(
+            bool requiresSourceDownload,
             bool enforceBamAssemblyVersions = true,
             bool enableClean = true)
         {
@@ -584,7 +593,10 @@ namespace Bam.Core
             var gatherSourceProfile = new TimeProfile(ETimingProfiles.GatherSource);
             gatherSourceProfile.StartProfile();
 
-            IdentifyAllPackages(enforceBamAssemblyVersions: enforceBamAssemblyVersions);
+            IdentifyAllPackages(
+                requiresSourceDownload,
+                enforceBamAssemblyVersions: enforceBamAssemblyVersions
+            );
 
             var cleanFirst = CommandLineProcessor.Evaluate(new Options.CleanFirst());
             if (enableClean && cleanFirst && System.IO.Directory.Exists(Graph.Instance.BuildRoot))
