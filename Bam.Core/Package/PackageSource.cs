@@ -255,8 +255,11 @@ namespace Bam.Core
         DownloadAndExtractPackageViaHTTP(
             string packageName)
         {
-            var client = new System.Net.Http.HttpClient();
-            client.BaseAddress = new System.Uri(this.RemotePath);
+            var client = new System.Net.Http.HttpClient
+            {
+                BaseAddress = new System.Uri(this.RemotePath),
+                Timeout = System.TimeSpan.FromMilliseconds(-1) // infinite
+            };
             client.DefaultRequestHeaders.Accept.Clear();
 
             var downloadTask = client.GetAsync(client.BaseAddress);
