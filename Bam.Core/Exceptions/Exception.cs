@@ -105,11 +105,18 @@ namespace Bam.Core
                 return false;
             }
 
-            Log.ErrorMessage("({0}) {1}", exception.GetType().ToString(), exception.Message);
+            Log.ErrorMessage($"({exception.GetType().ToString()}) {exception.Message}");
             var anyInnerExceptions = DisplayException(exception.InnerException);
             if (!anyInnerExceptions)
             {
-                Log.ErrorMessage("{0}{1}", System.Environment.NewLine, exception.StackTrace.ToString());
+                if (null != exception.StackTrace)
+                {
+                    Log.ErrorMessage($"{System.Environment.NewLine}{exception.StackTrace.ToString()}");
+                }
+                else
+                {
+                    Log.ErrorMessage("<no stack trace available>");
+                }
             }
 
             return true;
