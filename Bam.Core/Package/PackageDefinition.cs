@@ -1334,7 +1334,9 @@ namespace Bam.Core
             visitedPackages.Add(this);
             foreach (var dependent in this.Dependents)
             {
-                var dep = Graph.Instance.Packages.First(item => item.Name.Equals(dependent.Item1, System.StringComparison.Ordinal) && item.Version.Equals(dependent.Item2, System.StringComparison.Ordinal));
+                var dep = Graph.Instance.Packages.First(item =>
+                    System.String.Equals(item.Name, dependent.Item1, System.StringComparison.Ordinal) && System.String.Equals(item.Version, dependent.Item2, System.StringComparison.Ordinal)
+                );
                 if (visitedPackages.Contains(dep))
                 {
                     continue;
