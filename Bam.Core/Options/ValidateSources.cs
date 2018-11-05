@@ -56,7 +56,7 @@ namespace Bam.Core.Options
         {
             get
             {
-                return "Before a build starts, validate that downloaded package sources are still valid. This is a slow operation.";
+                return "Before a build starts, validate that downloaded package sources are still valid. This is a slow operation. Any invalid source trees will throw an exception.";
             }
         }
     }
