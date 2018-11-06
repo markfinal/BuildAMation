@@ -58,16 +58,11 @@ namespace Bam.Core
         public UnableToBuildModuleException(
             string message) :
             base(message)
-        {
-        }
+        {}
 
         /// <summary>
         /// Get or set the type of module unable to build.
         /// </summary>
-        public System.Type ModuleType
-        {
-            get;
-            set;
-        }
+        public System.Type ModuleType { get; set; }
     }
 }
