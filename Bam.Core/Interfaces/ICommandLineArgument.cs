@@ -38,28 +38,19 @@ namespace Bam.Core
         /// Retrieve the short (single dash) name of the option. Null if not supported.
         /// </summary>
         /// <value>The short name.</value>
-        string ShortName
-        {
-            get;
-        }
+        string ShortName { get; }
 
         /// <summary>
         /// Retrieve the long (double dash) name of the option. Must be non-null;
         /// </summary>
         /// <value>The long name.</value>
-        string LongName
-        {
-            get;
-        }
+        string LongName { get; }
 
         /// <summary>
         /// Help text to display for the option.
         /// </summary>
         /// <value>The context help.</value>
-        string ContextHelp
-        {
-            get;
-        }
+        string ContextHelp { get; }
     }
 
     /// <summary>
@@ -71,10 +62,7 @@ namespace Bam.Core
         /// Obtain the default value, of type T, for the option.
         /// </summary>
         /// <value>The default.</value>
-        T Default
-        {
-            get;
-        }
+        T Default { get; }
     }
 
     /// <summary>
@@ -87,37 +75,30 @@ namespace Bam.Core
         /// Obtain the help for the option.
         /// </summary>
         /// <value>The option help.</value>
-        string OptionHelp
-        {
-            get;
-        }
+        string OptionHelp { get; }
     }
 
     /// <summary>
     /// Interface for an option that is <c>true</c> or <c>false</c>.
     /// </summary>
     public interface IBooleanCommandLineArgument : ICommandLineArgument
-    {
-    }
+    {}
 
     /// <summary>
     /// Interface for an option that has a string value.
     /// </summary>
     public interface IStringCommandLineArgument : ICommandLineArgument
-    {
-    }
+    {}
 
     /// <summary>
     /// Interface that is a regular expression to match a family of command line options.
     /// </summary>
     public interface IRegExCommandLineArgument : ICommandLineArgument, ICustomHelpText
-    {
-    }
+    {}
 
     /// <summary>
     /// Interface for an option that has an integer value, and always defines a default.
     /// </summary>
     public interface IIntegerCommandLineArgument : ICommandLineArgument, ICommandLineArgumentDefault<int>
-    {
-    }
+    {}
 }

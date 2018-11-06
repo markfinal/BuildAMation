@@ -38,33 +38,21 @@ namespace Bam.Core
         /// <summary>
         /// Name of the software product.
         /// </summary>
-        string Name
-        {
-            get;
-        }
+        string Name { get; }
 
         /// <summary>
         /// Is the software product version a pre-release?
         /// </summary>
-        bool IsPrerelease
-        {
-            get;
-        }
+        bool IsPrerelease { get; }
 
         /// <summary>
         /// Copyright notice of the software product
         /// </summary>
-        string CopyrightNotice
-        {
-            get;
-        }
+        string CopyrightNotice { get; }
 
         /// <summary>
         /// Name of the company that wrote/owns the software product
         /// </summary>
-        string CompanyName
-        {
-            get;
-        }
+        string CompanyName { get; }
     }
 }

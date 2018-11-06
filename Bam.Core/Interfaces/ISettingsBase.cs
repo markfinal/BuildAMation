@@ -33,6 +33,5 @@ namespace Bam.Core
     /// Interface that defines another interface as forming the properties required to be used in Settings classes.
     /// </summary>
     public interface ISettingsBase
-    {
-    }
+    {}
 }

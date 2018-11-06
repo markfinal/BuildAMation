@@ -38,10 +38,6 @@ namespace Bam.Core
         /// Obtain the source path for the module.
         /// </summary>
         /// <value>The input path.</value>
-        TokenizedString InputPath
-        {
-            get;
-            set;
-        }
+        TokenizedString InputPath { get; set; }
     }
 }

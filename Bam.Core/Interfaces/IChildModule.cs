@@ -39,10 +39,6 @@ namespace Bam.Core
         /// Obtain the parent collection module.
         /// </summary>
         /// <value>The parent.</value>
-        Module Parent
-        {
-            get;
-            set;
-        }
+        Module Parent { get; set; }
     }
 }
