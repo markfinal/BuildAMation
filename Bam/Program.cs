@@ -127,7 +127,7 @@ namespace Bam
 
                 var configs = new Core.Array<Core.Environment>();
                 var requestedConfigs = Core.CommandLineProcessor.Evaluate(new Core.Options.BuildConfigurations());
-                if (0 == requestedConfigs.Count)
+                if (!requestedConfigs.Any())
                 {
                     // default
                     requestedConfigs.Add(new Core.StringArray("debug"));
@@ -136,8 +136,10 @@ namespace Bam
                 {
                     foreach (var config in configOption)
                     {
-                        var env = new Core.Environment();
-                        env.Configuration = Core.Configuration.FromString(config);
+                        var env = new Core.Environment
+                        {
+                            Configuration = Core.Configuration.FromString(config)
+                        };
                         configs.Add(env);
                     }
                 }
@@ -160,7 +162,7 @@ namespace Bam
             }
             finally
             {
-                if (Core.Graph.Instance.BuildEnvironments.Count > 0)
+                if (Core.Graph.Instance.BuildEnvironments.Any())
                 {
                     Core.Log.Info((0 == System.Environment.ExitCode) ? "\nBuild Succeeded" : "\nBuild Failed");
 
