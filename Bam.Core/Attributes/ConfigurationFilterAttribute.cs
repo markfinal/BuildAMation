@@ -41,7 +41,7 @@ namespace Bam.Core
         /// </summary>
         /// <param name="config">The configuration(s) for which the module can be built.</param>
         public ConfigurationFilterAttribute(
-            EConfiguration config) => Configuration = config;
+            EConfiguration config) => this.Configuration = config;
 
         /// <summary>
         /// Is the configuration in <paramref name="other" /> included in those specified at construction.

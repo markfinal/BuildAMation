@@ -83,12 +83,12 @@ namespace Bam.Core
         private System.Xml.XmlElement
         CreatePropertyGroup(
             string condition = null,
-            System.Xml.XmlElement parent = null) => CreateElement("PropertyGroup", condition: condition, parent: parent);
+            System.Xml.XmlElement parent = null) => this.CreateElement("PropertyGroup", condition: condition, parent: parent);
 
         private System.Xml.XmlElement
         CreateItemGroup(
             string condition = null,
-            System.Xml.XmlElement parent = null) => CreateElement("ItemGroup", condition: condition, parent: parent);
+            System.Xml.XmlElement parent = null) => this.CreateElement("ItemGroup", condition: condition, parent: parent);
 
         private void
         CreateCompilableSourceFile(

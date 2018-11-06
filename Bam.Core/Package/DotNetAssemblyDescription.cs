@@ -41,7 +41,7 @@ namespace Bam.Core
         /// <param name="name">Name.</param>
         public
         DotNetAssemblyDescription(
-            string name) => Name = name;
+            string name) => this.Name = name;
 
         /// <summary>
         /// Get the name of the .NET framework assembly.

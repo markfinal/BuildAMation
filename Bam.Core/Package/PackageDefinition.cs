@@ -145,7 +145,7 @@ namespace Bam.Core
         public
         PackageDefinition(
             string xmlFilename,
-            bool requiresSourceDownload) => Initialize(xmlFilename, requiresSourceDownload);
+            bool requiresSourceDownload) => this.Initialize(xmlFilename, requiresSourceDownload);
 
         /// <summary>
         /// Create a new instance, for the specified directory, package name and version.
@@ -1061,7 +1061,7 @@ namespace Bam.Core
         /// </summary>
         /// <returns>A <see cref="System.String"/> that represents the current <see cref="Bam.Core.PackageDefinition"/>.</returns>
         public override string
-        ToString() => XMLFilename;
+        ToString() => this.XMLFilename;
 
         /// <summary>
         /// Based on the dependents lists in the XML file, resolve all dependents by reading more

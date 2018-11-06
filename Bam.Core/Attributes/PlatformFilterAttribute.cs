@@ -41,7 +41,7 @@ namespace Bam.Core
         /// </summary>
         /// <param name="platform">The platform(s) for which the module can be built.</param>
         public PlatformFilterAttribute(
-            EPlatform platform) => Platform = platform;
+            EPlatform platform) => this.Platform = platform;
 
         /// <summary>
         /// Is the platform in <paramref name="other" /> included in those specified at construction.

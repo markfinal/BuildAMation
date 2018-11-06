@@ -43,7 +43,7 @@ namespace Bam.Core
         public ModuleCreationException(
             System.Type moduleType,
             System.Exception exception) :
-            base(exception, "Error creating module") => ModuleType = moduleType;
+            base(exception, "Error creating module") => this.ModuleType = moduleType;
 
         /// <summary>
         /// Gets the type of the module that failed to be created.

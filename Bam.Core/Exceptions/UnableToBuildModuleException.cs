@@ -46,7 +46,7 @@ namespace Bam.Core
         public UnableToBuildModuleException(
             string message,
             System.Type moduleType) :
-            base(message) => ModuleType = moduleType;
+            base(message) => this.ModuleType = moduleType;
 
         /// <summary>
         /// Construct an exception, with a message of failure. The type of module failing can be set later.

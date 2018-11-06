@@ -41,7 +41,7 @@ namespace Bam.Core
         /// <param name="name">Name.</param>
         public
         BamAssemblyDescription(
-            string name) => Name = name;
+            string name) => this.Name = name;
 
         /// <summary>
         /// Construct a new instance, with a name and a major version number.
@@ -53,7 +53,7 @@ namespace Bam.Core
             string name,
             int major)
             :
-            this(name) => MajorVersion = major;
+            this(name) => this.MajorVersion = major;
 
         /// <summary>
         /// Construct a new instance, with a name, major and minor version numbers.
@@ -66,7 +66,7 @@ namespace Bam.Core
             int major,
             int minor)
             :
-            this(name, major) => MinorVersion = minor;
+            this(name, major) => this.MinorVersion = minor;
 
         /// <summary>
         /// Construct a new instance, with a name, major, minor and patch version numbers.
@@ -81,7 +81,7 @@ namespace Bam.Core
             int minor,
             int patch)
             :
-            this(name, major, minor) => PatchVersion = patch;
+            this(name, major, minor) => this.PatchVersion = patch;
 
         /// <summary>
         /// Get the name of the assembly.

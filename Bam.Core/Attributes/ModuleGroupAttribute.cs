@@ -43,7 +43,7 @@ namespace Bam.Core
         /// <param name="groupName">Name of the group. This can be a full path, e.g. Path/To/Something, and if the build mode supports it, the directory structure will be honoured. Note, use forward slashes.</param>
         public
         ModuleGroupAttribute(
-            string groupName) => GroupName = groupName;
+            string groupName) => this.GroupName = groupName;
 
         /// <summary>
         /// Obtain the name of the group associated with the attribute.
