@@ -47,15 +47,9 @@ namespace Bam.Core
         /// This function is only really useful in unit tests.
         /// </summary>
         public static void
-        reset()
-        {
-            AllModules = new System.Collections.Generic.List<Module>();
-        }
+        Reset() => AllModules = new System.Collections.Generic.List<Module>();
 
-        static Module()
-        {
-            reset();
-        }
+        static Module() => Reset();
 
         /// <summary>
         /// Protected constructor (use Init function in general use to configure a module) for a new module. Use Module.Create
@@ -74,7 +68,7 @@ namespace Bam.Core
             var graph = Graph.Instance;
             if (null == graph.BuildEnvironment)
             {
-                throw new Exception("No build environment for module {0}", this.GetType().ToString());
+                throw new Exception($"No build environment for module {this.GetType().ToString()}");
             }
 
             graph.AddModule(this);
@@ -103,7 +97,7 @@ namespace Bam.Core
 
                     if (null == packageDefinition)
                     {
-                        throw new Exception("Unable to locate package for namespace '{0}'", packageNameSpace);
+                        throw new Exception($"Unable to locate package for namespace '{packageNameSpace}'");
                     }
                 }
                 this.PackageDefinition = packageDefinition;
@@ -147,14 +141,16 @@ namespace Bam.Core
             {
                 if (allModulePackageDirRedirection.Length > 1)
                 {
-                    throw new Exception("Cannot be more than one module packagedir redirection attribute on module {0}", moduleWithAttributes.GetType().FullName);
+                    throw new Exception(
+                        $"Cannot be more than one module packagedir redirection attribute on module {moduleWithAttributes.GetType().FullName}"
+                    );
                 }
                 var attr = allModulePackageDirRedirection[0] as ModulePackageDirectoryRedirectAttribute;
                 var redirectedNamespace = attr.SourceModuleType.Namespace;
                 var redirectedPackageDefinition = Graph.Instance.Packages.FirstOrDefault(item => item.Name.Equals(redirectedNamespace, System.StringComparison.Ordinal));
                 if (null == redirectedNamespace)
                 {
-                    throw new Exception("Unable to find package definition for module type {0}", attr.SourceModuleType.FullName);
+                    throw new Exception($"Unable to find package definition for module type {attr.SourceModuleType.FullName}");
                 }
                 this.Macros.AddVerbatim("packagedir", redirectedPackageDefinition.GetPackageDirectory());
                 return;
@@ -181,7 +177,13 @@ namespace Bam.Core
                         }
                         else
                         {
-                            this.Macros.Add("packagedir", this.CreateTokenizedString("@normalize($(bampackagedir)/$(0))", Bam.Core.TokenizedString.CreateVerbatim(packageDirRedirect.RedirectedPath)));
+                            this.Macros.Add(
+                                "packagedir",
+                                this.CreateTokenizedString(
+                                    "@normalize($(bampackagedir)/$(0))",
+                                    Bam.Core.TokenizedString.CreateVerbatim(packageDirRedirect.RedirectedPath)
+                                )
+                            );
                         }
                         return;
                     }
@@ -199,7 +201,7 @@ namespace Bam.Core
         protected virtual void
         Init(
             Module parent)
-        { }
+        {}
 
         /// <summary>
         /// Utillity function to determine whether a specific module type can be created. Does it satisfy all requirements,
@@ -215,12 +217,12 @@ namespace Bam.Core
             var configurationFilters = moduleType.GetCustomAttributes(typeof(ConfigurationFilterAttribute), true) as ConfigurationFilterAttribute[];
             if (platformFilters.Length > 0 && !platformFilters[0].Includes(Graph.Instance.BuildEnvironment.Platform))
             {
-                Log.DebugMessage("Cannot create module of type {0} as it does not satisfy the platform filter", moduleType.ToString());
+                Log.DebugMessage($"Cannot create module of type {moduleType.ToString()} as it does not satisfy the platform filter");
                 return false;
             }
             if (configurationFilters.Length > 0 && !configurationFilters[0].Includes(Graph.Instance.BuildEnvironment.Configuration))
             {
-                Log.DebugMessage("Cannot create module of type {0} as it does not satisfy the configuration filter", moduleType.ToString());
+                Log.DebugMessage($"Cannot create module of type {moduleType.ToString()} as it does not satisfy the configuration filter");
                 return false;
             }
             return true;
@@ -329,12 +331,14 @@ namespace Bam.Core
             var clone = Create<T>(parent, preInitCallback, postInitCallback);
             if (null == clone)
             {
-                throw new Exception("Making a clone has failed, even though the source module exists. This is unexpected behaviour. Please report it with details for reproduction.");
+                throw new Exception(
+                    "Making a clone has failed, even though the source module exists. This is unexpected behaviour. Please report it with details for reproduction."
+                );
             }
             clone.PrivatePatches.AddRange(source.PrivatePatches);
-            if (source is IChildModule)
+            if (source is IChildModule sourceAsChild)
             {
-                clone.PrivatePatches.AddRange((source as IChildModule).Parent.PrivatePatches);
+                clone.PrivatePatches.AddRange(sourceAsChild.Parent.PrivatePatches);
             }
             return clone;
         }
@@ -356,9 +360,7 @@ namespace Bam.Core
                 if (this._GeneratedPaths[key].IsParsed)
                 {
                     throw new Exception(
-                        "Key '{0}' has already been registered as a generated file for module {1}",
-                        key,
-                        this.ToString()
+                        $"Key '{key}' has already been registered as a generated file for module {this.ToString()}"
                     );
                 }
                 if (this.OutputDirs.ContainsKey(key))
@@ -386,10 +388,7 @@ namespace Bam.Core
         /// <param name="key">Key.</param>
         private void
         RegisterGeneratedFile(
-            string key)
-        {
-            this.RegisterGeneratedFile(key, null);
-        }
+            string key) => this.RegisterGeneratedFile(key, null);
 
         private void
         InternalDependsOn(
@@ -397,7 +396,9 @@ namespace Bam.Core
         {
             if (this == module)
             {
-                throw new Exception("Circular reference. Module {0} cannot depend on itself", this.ToString());
+                throw new Exception(
+                    $"Circular reference. Module {this.ToString()} cannot depend on itself"
+                );
             }
             if (this.DependentsList.Contains(module))
             {
@@ -405,7 +406,9 @@ namespace Bam.Core
             }
             if (this.DependeesList.Contains(module))
             {
-                throw new Exception("Cyclic dependency found between {0} and {1}", this.ToString(), module.ToString());
+                throw new Exception(
+                    $"Cyclic dependency found between {this.ToString()} and {module.ToString()}"
+                );
             }
             this.DependentsList.Add(module);
             module.DependeesList.Add(this);
@@ -450,7 +453,9 @@ namespace Bam.Core
         {
             if (this == module)
             {
-                throw new Exception("Circular reference. Module {0} cannot require itself", this.ToString());
+                throw new Exception(
+                    $"Circular reference. Module {this.ToString()} cannot require itself"
+                );
             }
             if (this.RequiredDependentsList.Contains(module))
             {
@@ -496,21 +501,13 @@ namespace Bam.Core
         /// Get or set the Settings instance associated with the Tool for this Module. Can be null.
         /// </summary>
         /// <value>The settings.</value>
-        public Settings Settings
-        {
-            get;
-            set;
-        }
+        public Settings Settings { get; set; }
 
         /// <summary>
         /// Get the package definition containing this module.
         /// </summary>
         /// <value>The package definition.</value>
-        public PackageDefinition PackageDefinition
-        {
-            get;
-            private set;
-        }
+        public PackageDefinition PackageDefinition { get; private set; }
 
         /// <summary>
         /// Delegate used for private-scope patching of Settings.
@@ -523,10 +520,7 @@ namespace Bam.Core
         /// <param name="dlg">The delegate to execute privately on the module.</param>
         public void
         PrivatePatch(
-            PrivatePatchDelegate dlg)
-        {
-            this.PrivatePatches.Add(dlg);
-        }
+            PrivatePatchDelegate dlg) => this.PrivatePatches.Add(dlg);
 
         /// <summary>
         /// Add a closing patch to the current module, using the same delegate as a private patch.
@@ -558,10 +552,7 @@ namespace Bam.Core
         /// <param name="dlg">The delegate to execute on the module, and on its dependees.</param>
         public void
         PublicPatch(
-            PublicPatchDelegate dlg)
-        {
-            this.PublicPatches.Add(dlg);
-        }
+            PublicPatchDelegate dlg) => this.PublicPatches.Add(dlg);
 
         /// <summary>
         /// Instruct this module to use the public patches, and any inherited patches, from the dependent module.
@@ -597,9 +588,9 @@ namespace Bam.Core
         {
             get
             {
-                return (this.PrivatePatches.Count() > 0) ||
-                       (this.PublicPatches.Count() > 0) ||
-                       (this.PublicInheritedPatches.Count() > 0) ||
+                return this.PrivatePatches.Any() ||
+                       this.PublicPatches.Any() ||
+                       this.PublicInheritedPatches.Any() ||
                        (null != this.TheClosingPatch);
             }
         }
@@ -608,67 +599,37 @@ namespace Bam.Core
         /// Obtain a read-only list of modules it depends on.
         /// </summary>
         /// <value>The dependents.</value>
-        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependents
-        {
-            get
-            {
-                return this.DependentsList.ToReadOnlyCollection();
-            }
-        }
+        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependents => this.DependentsList.ToReadOnlyCollection();
 
         /// <summary>
         /// Obtain a read-only list of modules that depend on it.
         /// </summary>
         /// <value>The dependees.</value>
-        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependees
-        {
-            get
-            {
-                return this.DependeesList.ToReadOnlyCollection();
-            }
-        }
+        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependees => this.DependeesList.ToReadOnlyCollection();
 
         /// <summary>
         /// Obtain a read-only list of modules it requires to be up-to-date.
         /// </summary>
         /// <value>The requirements.</value>
-        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Requirements
-        {
-            get
-            {
-                return this.RequiredDependentsList.ToReadOnlyCollection();
-            }
-        }
+        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Requirements => this.RequiredDependentsList.ToReadOnlyCollection();
 
         /// <summary>
         /// Obtain a read-only list of modules that require it.
         /// </summary>
-        /// <value>The requirements.</value>
-        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Requirees
-        {
-            get
-            {
-                return this.RequiredDependeesList.ToReadOnlyCollection();
-            }
-        }
+        /// <value>The requirees.</value>
+        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Requirees => this.RequiredDependeesList.ToReadOnlyCollection();
 
         /// <summary>
         /// Obtain a read-only list of dependents that are children of this module.
         /// </summary>
         /// <value>The children.</value>
-        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Children
-        {
-            get
-            {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.DependentsList.Where(item => (item is IChildModule) && ((item as IChildModule).Parent == this)).ToList());
-            }
-        }
+        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Children => new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.DependentsList.Where(item => (item is IChildModule child) && (child.Parent == this)).ToList());
 
-        private Array<Module> DependentsList = new Array<Module>();
-        private Array<Module> DependeesList = new Array<Module>();
+        private readonly Array<Module> DependentsList = new Array<Module>();
+        private readonly Array<Module> DependeesList = new Array<Module>();
 
-        private Array<Module> RequiredDependentsList = new Array<Module>();
-        private Array<Module> RequiredDependeesList = new Array<Module>();
+        private readonly Array<Module> RequiredDependentsList = new Array<Module>();
+        private readonly Array<Module> RequiredDependeesList = new Array<Module>();
 
         private System.Collections.Generic.List<PrivatePatchDelegate> PrivatePatches = new System.Collections.Generic.List<PrivatePatchDelegate>();
         private System.Collections.Generic.List<PublicPatchDelegate> PublicPatches = new System.Collections.Generic.List<PublicPatchDelegate>();
@@ -676,25 +637,15 @@ namespace Bam.Core
         private System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>> PrivateInheritedPatches = new System.Collections.Generic.List<System.Collections.Generic.List<PublicPatchDelegate>>();
         private PrivatePatchDelegate TheClosingPatch = null;
 
-        private System.Collections.Generic.Dictionary<string, TokenizedString> _GeneratedPaths
-        {
-            get;
-            set;
-        }
+        private System.Collections.Generic.Dictionary<string, TokenizedString> _GeneratedPaths { get; set; }
 
         /// <summary>
         /// Get the dictionary of keys and strings for all registered generated paths with the module.
         /// </summary>
         /// <value>The generated paths.</value>
-        public System.Collections.Generic.IReadOnlyDictionary<string, TokenizedString> GeneratedPaths
-        {
-            get
-            {
-                return this._GeneratedPaths;
-            }
-        }
+        public System.Collections.Generic.IReadOnlyDictionary<string, TokenizedString> GeneratedPaths => this._GeneratedPaths;
 
-        private System.Collections.Generic.Dictionary<string, TokenizedString> OutputDirs = new System.Collections.Generic.Dictionary<string, TokenizedString>();
+        private readonly System.Collections.Generic.Dictionary<string, TokenizedString> OutputDirs = new System.Collections.Generic.Dictionary<string, TokenizedString>();
 
         /// <summary>
         /// Return output directories required to exist for this module.
@@ -714,11 +665,7 @@ namespace Bam.Core
         /// Gets or sets meta data on the module, which build mode packages use to associated extra data for builds.
         /// </summary>
         /// <value>The meta data.</value>
-        public object MetaData
-        {
-            get;
-            set;
-        }
+        public object MetaData { get; set; }
 
         /// <summary>
         /// Internal module execution function, invoked from IModuleExecution.
@@ -734,17 +681,20 @@ namespace Bam.Core
         {
             if (context.Evaluate)
             {
-                if (null != this.EvaluationTask)
-                {
-                    this.EvaluationTask.Wait();
-                }
+                this.EvaluationTask?.Wait();
                 if (null == this.ReasonToExecute)
                 {
-                    Log.Message(context.ExplainLoggingLevel, "Module {0} is up-to-date", this.ToString());
+                    Log.Message(
+                        context.ExplainLoggingLevel,
+                        $"Module {this.ToString()} is up-to-date"
+                    );
                     this.Executed = true;
                     return;
                 }
-                Log.Message(context.ExplainLoggingLevel, "Module {0} will change because {1}.", this.ToString(), this.ReasonToExecute.ToString());
+                Log.Message(
+                    context.ExplainLoggingLevel,
+                    $"Module {this.ToString()} will change because {this.ReasonToExecute.ToString()}."
+                );
             }
             this.ExecuteInternal(context);
             this.Executed = true;
@@ -753,11 +703,7 @@ namespace Bam.Core
         /// <summary>
         /// Implementation of IModuleExecution.Executed
         /// </summary>
-        public bool Executed
-        {
-            get;
-            private set;
-        }
+        public bool Executed { get; private set; }
 
         /// <summary>
         /// Determine if the module is a top-level module, i.e. is from the package in which Bam was invoked,
@@ -768,8 +714,8 @@ namespace Bam.Core
         {
             get
             {
-                var isTopLevel = (0 == this.DependeesList.Count) &&
-                    (0 == this.RequiredDependeesList.Count) &&
+                var isTopLevel = !this.DependeesList.Any() &&
+                    !this.RequiredDependeesList.Any() &&
                     (this.PackageDefinition == Graph.Instance.MasterPackage);
                 return isTopLevel;
             }
@@ -779,21 +725,13 @@ namespace Bam.Core
         /// Gets the macros associated with this Module.
         /// </summary>
         /// <value>The macros.</value>
-        public MacroList Macros
-        {
-            get;
-            private set;
-        }
+        public MacroList Macros { get; private set; }
 
         /// <summary>
         /// Gets or sets the ModuleCollection, which is associated with a rank in the DependencyGraph.
         /// </summary>
         /// <value>The owning rank.</value>
-        public ModuleCollection OwningRank
-        {
-            get;
-            set;
-        }
+        public ModuleCollection OwningRank { get; set; }
 
         private Module TheTool;
         /// <summary>
@@ -856,13 +794,15 @@ namespace Bam.Core
             {
                 if (!this.PublicPatches.Any() && this.PrivatePatches.Any())
                 {
-                    throw new Exception("Module {0} only has private patches, but has no settings on the module to apply them to", this.ToString());
+                    throw new Exception(
+                        $"Module {this.ToString()} only has private patches, but has no settings on the module to apply them to"
+                    );
                 }
                 return;
             }
             // Note: first private patches, followed by public patches
             // TODO: they could override each other - anyway to check?
-            var parentModule = (this is IChildModule) && honourParents ? (this as IChildModule).Parent : null;
+            var parentModule = (this is IChildModule child) && honourParents ? child.Parent : null;
             if (parentModule != null)
             {
                 foreach (var patch in parentModule.PrivatePatches)
@@ -943,32 +883,19 @@ namespace Bam.Core
         /// Determine the reason why the module should (re)build.
         /// </summary>
         /// <value>The reason to execute.</value>
-        public ExecuteReasoning ReasonToExecute
-        {
-            get;
-            protected set;
-        }
+        public ExecuteReasoning ReasonToExecute { get; protected set; }
 
         /// <summary>
         /// Get or set the async Task for execution.
         /// </summary>
         /// <value>The execution task.</value>
-        public System.Threading.Tasks.Task ExecutionTask
-        {
-            get;
-            set;
-        }
+        public System.Threading.Tasks.Task ExecutionTask { get; set; }
 
         /// <summary>
         /// Get the async Task for evaluating the module for whether it is up-to-date.
         /// </summary>
         /// <value>The evaluation task.</value>
-        public System.Threading.Tasks.Task
-        EvaluationTask
-        {
-            get;
-            private set;
-        }
+        public System.Threading.Tasks.Task EvaluationTask { get; private set; }
 
         /// <summary>
         /// Evaluate the module to determine whether it requires a (re)build.
@@ -993,34 +920,18 @@ namespace Bam.Core
         /// Immediately run the module evaluation step.
         /// </summary>
         public void
-        EvaluateImmediate()
-        {
-            this.EvaluateInternal();
-        }
+        EvaluateImmediate() => this.EvaluateInternal();
 
         /// <summary>
         /// Get the Environment associated with this module. The same module in different environments will be different
         /// instances of a Module.
         /// </summary>
         /// <value>The build environment.</value>
-        public Environment BuildEnvironment
-        {
-            get;
-            private set;
-        }
+        public Environment BuildEnvironment { get; private set; }
 
-        private System.Type
-        EncapsulatingType
-        {
-            get;
-            set;
-        }
+        private System.Type EncapsulatingType { get; set; }
 
-        private Module EncapsulatingModule
-        {
-            get;
-            set;
-        }
+        private Module EncapsulatingModule { get; set; }
 
         /// <summary>
         /// A referenced module is an encapsulating module, and can be considered to be uniquely identifiable by name.
@@ -1114,47 +1025,25 @@ namespace Bam.Core
         /// Static utility method to count all modules created. Useful for profiling.
         /// </summary>
         /// <value>The count.</value>
-        public static int
-        Count
-        {
-            get
-            {
-                return AllModules.Count;
-            }
-        }
+        public static int Count => AllModules.Count;
 
         /// <summary>
         /// Virtual string property specifying a subdirectory name appended to the macro 'moduleoutputdir'
         /// that can be used to further improve the uniqueness of where built files are written.
         /// Default is null to indicate no subdirectory.
         /// </summary>
-        public virtual string
-        CustomOutputSubDirectory
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public virtual string CustomOutputSubDirectory => null;
 
         /// <summary>
         /// Extract the time taken to create the instance of this module.
         /// </summary>
         /// <value>The init time.</value>
-        public System.TimeSpan CreationTime
-        {
-            get;
-            private set;
-        }
+        public System.TimeSpan CreationTime { get; private set; }
 
         /// <summary>
         /// Cache of TokenizedStrings that use macros from this module.
         /// </summary>
-        public System.Collections.Generic.Dictionary<System.Int64, TokenizedString> TokenizedStringCacheMap
-        {
-            get;
-            private set;
-        }
+        public System.Collections.Generic.Dictionary<System.Int64, TokenizedString> TokenizedStringCacheMap { get; private set; }
 
         /// <summary>
         /// For the given module type, remove all module instances that are encapsulated by it.
@@ -1168,7 +1057,9 @@ namespace Bam.Core
             var modulesToRemove = AllModules.Where(item => item.EncapsulatingType == encapsulatingType);
             foreach (var i in modulesToRemove.ToList())
             {
-                Log.DebugMessage("Removing module {0} from {1}", i.ToString(), encapsulatingType.ToString());
+                Log.DebugMessage(
+                    $"Removing module {i.ToString()} from {encapsulatingType.ToString()}"
+                );
                 AllModules.Remove(i);
             }
         }
@@ -1180,10 +1071,7 @@ namespace Bam.Core
         /// <returns></returns>
         static public bool
         IsValid(
-            Module module)
-        {
-            return AllModules.Contains(module);
-        }
+            Module module) => AllModules.Contains(module);
 
         private void
         InitializeModuleConfiguration()
@@ -1201,24 +1089,30 @@ namespace Bam.Core
             var writeType = accessConfig.WriteableClassType;
             if (!writeType.IsClass)
             {
-                throw new Exception("Module configuration writeable type {0} must be a class", writeType.ToString());
+                throw new Exception($"Module configuration writeable type {writeType.ToString()} must be a class");
             }
             if (writeType.IsAbstract)
             {
-                throw new Exception("Module configuration writeable type {0} must not be abstract", writeType.ToString());
+                throw new Exception($"Module configuration writeable type {writeType.ToString()} must not be abstract");
             }
             if (!typeof(IModuleConfiguration).IsAssignableFrom(writeType))
             {
-                throw new Exception("Module configuration writeable type {0} must implement {1}", writeType.ToString(), typeof(IModuleConfiguration).ToString());
+                throw new Exception(
+                    $"Module configuration writeable type {writeType.ToString()} must implement {typeof(IModuleConfiguration).ToString()}"
+                );
             }
             if (null == writeType.GetConstructor(new[] { typeof(Environment) }))
             {
-                throw new Exception("Module configuration writeable type {0} must define a public constructor accepting a {1}", writeType.ToString(), typeof(Environment).ToString());
+                throw new Exception(
+                    $"Module configuration writeable type {writeType.ToString()} must define a public constructor accepting a {typeof(Environment).ToString()}"
+                );
             }
             var readType = accessConfig.ReadOnlyInterfaceType;
             if (!readType.IsAssignableFrom(writeType))
             {
-                throw new Exception("Module configuration writeable type {0} does not implement the readable type {1}", writeType.ToString(), readType.ToString());
+                throw new Exception(
+                    $"Module configuration writeable type {writeType.ToString()} does not implement the readable type {readType.ToString()}"
+                );
             }
             this.Configuration = System.Activator.CreateInstance(writeType, new[] { this.BuildEnvironment }) as IModuleConfiguration;
             if (Graph.Instance.OverrideModuleConfiguration != null)
@@ -1231,11 +1125,7 @@ namespace Bam.Core
         /// If a Module's configuration can be overridden by the user, the instance of the class for the Module allowing
         /// that configuration to be updated.
         /// </summary>
-        public IModuleConfiguration Configuration
-        {
-            get;
-            private set;
-        }
+        public IModuleConfiguration Configuration { get; set; }
 
         /// <summary>
         /// Enumerable of Modules that are considered inputs to this Module, as in, they need
@@ -1276,12 +1166,6 @@ namespace Bam.Core
         /// By default, this is null, meaning that either no working directory is needed
         /// or the call site for Tool execution can specify it.
         /// </summary>
-        public virtual TokenizedString WorkingDirectory
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public virtual TokenizedString WorkingDirectory => null;
     }
 }
