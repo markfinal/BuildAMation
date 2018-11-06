@@ -42,7 +42,7 @@ namespace Bam.Core
     public sealed class DependencyGraph :
         System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<int, ModuleCollection>>
     {
-        private System.Collections.Generic.Dictionary<int, ModuleCollection> graph = new System.Collections.Generic.Dictionary<int, ModuleCollection>();
+        private readonly System.Collections.Generic.Dictionary<int, ModuleCollection> graph = new System.Collections.Generic.Dictionary<int, ModuleCollection>();
 
         /// <summary>
         /// Access the rank of modules at the specified index, or returns an empty collection.
@@ -71,7 +71,7 @@ namespace Bam.Core
             get
             {
                 var pairs = this.graph.Where(item => item.Value == collection);
-                if (pairs.Count() > 0)
+                if (pairs.Any())
                 {
                     // TODO: I think it's highly unlikely that count > 1, so does this have to be catered for?
                     return pairs.ElementAt(0).Key;
@@ -96,9 +96,6 @@ namespace Bam.Core
         }
 
         System.Collections.IEnumerator
-        System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        System.Collections.IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }

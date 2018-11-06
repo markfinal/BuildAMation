@@ -40,13 +40,9 @@ namespace Bam.Core
             System.Type metaType)
         {
             var method = metaType.GetMethod("PreExecution");
-            if (null == method)
-            {
-                return;
-            }
             try
             {
-                method.Invoke(null, null);
+                method?.Invoke(null, null);
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
@@ -64,13 +60,9 @@ namespace Bam.Core
             System.Type metaType)
         {
             var method = metaType.GetMethod("PostExecution");
-            if (null == method)
-            {
-                return;
-            }
             try
             {
-                method.Invoke(null, null);
+                method?.Invoke(null, null);
             }
             catch (System.Reflection.TargetInvocationException exception)
             {
@@ -110,7 +102,7 @@ namespace Bam.Core
                     }
                 }
 
-                if (0 == modulesNeedEvaluating.Count)
+                if (!modulesNeedEvaluating.Any())
                 {
                     Log.DebugMessage("No Bam.Core.EvaluationRequired attribute on build mode metadata, assume rebuilds necessary");
                     return false;
@@ -198,8 +190,7 @@ namespace Bam.Core
             }
             var graph = Graph.Instance;
             var metaDataType = graph.BuildModeMetaData.GetType();
-            Array<Module> modulesNeedEvaluating = null;
-            var useEvaluation = IsEvaluationRequired(metaDataType, out modulesNeedEvaluating);
+            var useEvaluation = IsEvaluationRequired(metaDataType, out Array<Module> modulesNeedEvaluating);
             if (useEvaluation && threadCount > 1)
             {
                 // spawn the evaluation tasks early in multithreaded mode
@@ -229,10 +220,11 @@ namespace Bam.Core
                     var scheduler = new LimitedConcurrencyLevelTaskScheduler(threadCount);
 
                     var factory = new System.Threading.Tasks.TaskFactory(
-                            cancellationToken,
-                            creationOpts,
-                            continuationOpts,
-                            scheduler);
+                        cancellationToken,
+                        creationOpts,
+                        continuationOpts,
+                        scheduler
+                    );
 
                     var tasks = new Array<System.Threading.Tasks.Task>();
                     foreach (var rank in graph.Reverse())
@@ -280,11 +272,11 @@ namespace Bam.Core
                                     }
                                     finally
                                     {
-                                        if (context.OutputStringBuilder != null && context.OutputStringBuilder.Length > 0)
+                                        if (context.OutputStringBuilder?.Length > 0)
                                         {
                                             Log.Info(context.OutputStringBuilder.ToString());
                                         }
-                                        if (context.ErrorStringBuilder != null && context.ErrorStringBuilder.Length > 0)
+                                        if (context.ErrorStringBuilder?.Length > 0)
                                         {
                                             Log.Info(context.ErrorStringBuilder.ToString());
                                         }
@@ -300,7 +292,8 @@ namespace Bam.Core
                     }
                     catch (System.AggregateException exception)
                     {
-                        if (!(exception.InnerException is System.Threading.Tasks.TaskCanceledException))
+                        var flattened = exception.Flatten();
+                        if (!(flattened.InnerException is System.Threading.Tasks.TaskCanceledException))
                         {
                             throw new Exception(exception, "Error during threaded build");
                         }
@@ -334,11 +327,11 @@ namespace Bam.Core
                         }
                         finally
                         {
-                            if (context.OutputStringBuilder != null && context.OutputStringBuilder.Length > 0)
+                            if (context.OutputStringBuilder?.Length > 0)
                             {
                                 Log.Info(context.OutputStringBuilder.ToString());
                             }
-                            if (context.ErrorStringBuilder != null && context.ErrorStringBuilder.Length > 0)
+                            if (context.ErrorStringBuilder?.Length > 0)
                             {
                                 Log.Info(context.ErrorStringBuilder.ToString());
                             }
@@ -349,7 +342,11 @@ namespace Bam.Core
 
             if (null != abortException)
             {
-                throw new Exception(abortException, "Error during {0}threaded build", (threadCount > 1) ? string.Empty : "non-");
+                throw new Exception(
+                    abortException,
+                    "Error during {0}threaded build",
+                    (threadCount > 1) ? string.Empty : "non-"
+                );
             }
 
             ExecutePostBuild(metaDataType);

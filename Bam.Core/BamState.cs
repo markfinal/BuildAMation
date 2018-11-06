@@ -120,10 +120,7 @@ namespace Bam.Core
         /// </summary>
         public BamState()
         {
-            System.Version assemblyVersion;
-            string productVersion;
-            string targetFrameworkName;
-            GetAssemblyVersionData(out assemblyVersion, out productVersion, out targetFrameworkName);
+            GetAssemblyVersionData(out System.Version assemblyVersion, out string productVersion, out string targetFrameworkName);
 
             this.ExecutableDirectory = GetBamDirectory();
             this.WorkingDirectory = GetWorkingDirectory();
@@ -141,84 +138,42 @@ namespace Bam.Core
         /// Obtains the directory containing the Bam assemblies.
         /// </summary>
         /// <value>Bam assembly directory path</value>
-        public string ExecutableDirectory
-        {
-            get;
-            private set;
-        }
+        public string ExecutableDirectory { get; private set; }
 
         /// <summary>
         /// Obtains the version of Bam in use.
         /// </summary>
         /// <value>System.Version representation of the Bam version.</value>
-        public System.Version Version
-        {
-            get;
-            private set;
-        }
+        public System.Version Version { get; private set; }
 
         /// <summary>
         /// Obtains a string representation of the version of Bam in use.
         /// </summary>
         /// <value>The version string.</value>
-        public string VersionString
-        {
-            get;
-            private set;
-        }
+        public string VersionString { get; private set; }
 
         /// <summary>
         /// Obtains the working directory in which Bam is being executed.
         /// </summary>
         /// <value>The working directory.</value>
-        public string WorkingDirectory
-        {
-            get;
-            private set;
-        }
+        public string WorkingDirectory { get; private set; }
 
         /// <summary>
         /// Retrieves the .NET framework version being targeted for package builds.
         /// </summary>
         /// <value>The target framework version.</value>
-        public string TargetFrameworkVersion
-        {
-            get;
-            private set;
-        }
+        public string TargetFrameworkVersion { get; private set; }
 
         /// <summary>
         /// Retrieve the time that bam was launched.
         /// </summary>
-        public System.DateTime BuildStartTime
-        {
-            get;
-            private set;
-        }
+        public System.DateTime BuildStartTime { get; private set; }
 
-        int? ISemanticVersion.MajorVersion
-        {
-            get
-            {
-                return this.Version.Major;
-            }
-        }
+        int? ISemanticVersion.MajorVersion => Version.Major;
 
-        int? ISemanticVersion.MinorVersion
-        {
-            get
-            {
-                return this.Version.Minor;
-            }
-        }
+        int? ISemanticVersion.MinorVersion => Version.Minor;
 
-        int? ISemanticVersion.PatchVersion
-        {
-            get
-            {
-                return this.Version.Build;
-            }
-        }
+        int? ISemanticVersion.PatchVersion => Version.Build;
 
         private readonly Array<System.Threading.Tasks.Task> preBuildTasks;
 

@@ -74,10 +74,7 @@ namespace Bam.Core
         /// <param name="itemsToAdd">Array of objects to add to the list.</param>
         public
         Array(
-            params T[] itemsToAdd)
-        {
-            this.AddMultipleToEnd(itemsToAdd);
-        }
+            params T[] itemsToAdd) => this.AddMultipleToEnd(itemsToAdd);
 
         /// <summary>
         /// Create a list from an enumeration of objects.
@@ -85,10 +82,7 @@ namespace Bam.Core
         /// <param name="items">IEnumerable of objects to add to the list.</param>
         public
         Array(
-            System.Collections.Generic.IEnumerable<T> items)
-        {
-            this.AddMultipleToEnd(items);
-        }
+            System.Collections.Generic.IEnumerable<T> items) => this.AddMultipleToEnd(items);
 
         /// <summary>
         /// Add a single object to the end of an existing list.
@@ -97,10 +91,7 @@ namespace Bam.Core
         /// <param name="item">Object to be added</param>
         public virtual void
         Add(
-            T item)
-        {
-            this.AddToEnd(item);
-        }
+            T item) => this.AddToEnd(item);
 
         /// <summary>
         /// Add a single object to the end of an existing list, if that list does not already contain it.
@@ -123,10 +114,7 @@ namespace Bam.Core
         /// <param name="itemsToAdd">Array of objects to add.</param>
         public void
         AddRange(
-            T[] itemsToAdd)
-        {
-            this.AddMultipleToEnd(itemsToAdd);
-        }
+            T[] itemsToAdd) => this.AddMultipleToEnd(itemsToAdd);
 
         /// <summary>
         /// Append an existing Array to the end of an existing list.
@@ -153,10 +141,7 @@ namespace Bam.Core
         /// <param name="items">An enumeration of objects to add.</param>
         public void
         AddRange(
-            System.Collections.Generic.IEnumerable<T> items)
-        {
-            this.AddMultipleToEnd(items);
-        }
+            System.Collections.Generic.IEnumerable<T> items) => this.AddMultipleToEnd(items);
 
         /// <summary>
         /// Appends the contents of an existing Array to the end of an existing list, if they are not already in that list.
@@ -221,10 +206,7 @@ namespace Bam.Core
         /// Remove all objects from the list.
         /// </summary>
         public void
-        Clear()
-        {
-            this.list.Clear();
-        }
+        Clear() => this.list.Clear();
 
         /// <summary>
         /// Determine whether an item is stored in the list.
@@ -234,10 +216,7 @@ namespace Bam.Core
         /// <returns><c>true</c> if the object is in the list. <c>false</c> otherwise.</returns>
         public virtual bool
         Contains(
-            T item)
-        {
-            return this.list.Contains(item);
-        }
+            T item) => this.list.Contains(item);
 
         /// <summary>
         /// Copy a number of elements, starting from the index, to the specified array.
@@ -247,34 +226,19 @@ namespace Bam.Core
         public void
         CopyTo(
             T[] array,
-            int arrayIndex)
-        {
-            this.list.CopyTo(array, arrayIndex);
-        }
+            int arrayIndex) => this.list.CopyTo(array, arrayIndex);
 
         /// <summary>
         /// Determine the number of elements in the list.
         /// </summary>
         /// <value>An integer count of the list size.</value>
-        public int Count
-        {
-            get
-            {
-                return this.list.Count;
-            }
-        }
+        public int Count => this.list.Count;
 
         /// <summary>
         /// Is the list readonly? Required by the ICollection interface.
         /// </summary>
         /// <value>Always <c>false</c>.</value>
-        public bool IsReadOnly
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public bool IsReadOnly => false;
 
         /// <summary>
         /// Remove the specified object from the list if it is contained within it.
@@ -283,10 +247,7 @@ namespace Bam.Core
         /// <returns><c>true</c> if the object was removed. <c>false</c> if the object was not removed, or not found.</returns>
         public bool
         Remove(
-            T item)
-        {
-            return this.list.Remove(item);
-        }
+            T item) => this.list.Remove(item);
 
         /// <summary>
         /// Removes all objects from the list if they are contained within it.
@@ -311,54 +272,35 @@ namespace Bam.Core
         /// </summary>
         /// <returns>The enumerator.</returns>
         public System.Collections.Generic.IEnumerator<T>
-        GetEnumerator()
-        {
-            return this.list.GetEnumerator();
-        }
+        GetEnumerator() => this.list.GetEnumerator();
 
         /// <summary>
         /// Part of the IEnumerable interface.
         /// </summary>
         /// <returns>The enumerator.</returns>
         System.Collections.IEnumerator
-        System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.list.GetEnumerator();
-        }
+        System.Collections.IEnumerable.GetEnumerator() => this.list.GetEnumerator();
 
         /// <summary>
         /// Gets the object specified by the given index.
         /// </summary>
         /// <param name="index">Index of the object in the list desired.</param>
         /// <value>Object at the given index.</value>
-        public T this[int index]
-        {
-            get
-            {
-                return this.list[index];
-            }
-        }
+        public T this[int index] => list[index];
 
         /// <summary>
         /// Convert the list to an array.
         /// </summary>
         /// <returns>An array containing the elements of the list.</returns>
         public T[]
-        ToArray()
-        {
-            var array = this.list.ToArray();
-            return array;
-        }
+        ToArray() => this.list.ToArray();
 
         /// <summary>
         /// String conversion of the array.
         /// </summary>
         /// <returns>A <see cref="string"/> of all items in the array separated by a space.</returns>
         public override string
-        ToString()
-        {
-            return this.ToString(" ");
-        }
+        ToString() => this.ToString(" ");
 
         /// <summary>
         /// String conversion of the array, with a custom separator.
@@ -408,10 +350,7 @@ namespace Bam.Core
         /// Sorts the list, in place, using the default comparer for the type.
         /// </summary>
         public void
-        Sort()
-        {
-            this.list.Sort();
-        }
+        Sort() => this.list.Sort();
 
         /// <summary>
         /// Combine the elements of two lists uniquely.
@@ -502,10 +441,7 @@ namespace Bam.Core
         /// </summary>
         /// <returns>Hash code of the internal list.</returns>
         public override int
-        GetHashCode()
-        {
-            return this.list.GetHashCode();
-        }
+        GetHashCode() => this.list.GetHashCode();
 
         /// <summary>
         /// Extracts part of the existing array into another.
@@ -532,9 +468,6 @@ namespace Bam.Core
         /// </summary>
         /// <returns>A read-only version of the internal list.</returns>
         public System.Collections.ObjectModel.ReadOnlyCollection<T>
-        ToReadOnlyCollection()
-        {
-            return new System.Collections.ObjectModel.ReadOnlyCollection<T>(this.list);
-        }
+        ToReadOnlyCollection() => new System.Collections.ObjectModel.ReadOnlyCollection<T>(this.list);
     }
 }

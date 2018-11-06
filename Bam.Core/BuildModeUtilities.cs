@@ -42,10 +42,7 @@ namespace Bam.Core
         /// <param name="packageName">Name of the package to query.</param>
         public static bool
         IsBuildModePackage(
-            string packageName)
-        {
-            return packageName.EndsWith("Builder", System.StringComparison.Ordinal);
-        }
+            string packageName) => packageName.EndsWith("Builder", System.StringComparison.Ordinal);
 
         /// <summary>
         /// Validates the package associated with the selected build mode.

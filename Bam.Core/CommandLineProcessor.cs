@@ -35,12 +35,9 @@ namespace Bam.Core
     /// </summary>
     public static class CommandLineProcessor
     {
-        private static StringArray Arguments;
+        private static readonly StringArray Arguments;
 
-        static CommandLineProcessor()
-        {
-            Arguments = new StringArray(System.Environment.GetCommandLineArgs());
-        }
+        static CommandLineProcessor() => Arguments = new StringArray(System.Environment.GetCommandLineArgs());
 
         private static bool
         UsesName(

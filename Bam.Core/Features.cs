@@ -38,7 +38,7 @@ namespace Bam.Core
     /// </summary>
     public static class Features
     {
-        private static StringArray featurePreprocessorDefines = new StringArray();
+        private static readonly StringArray featurePreprocessorDefines = new StringArray();
 
         static Features()
         {
@@ -48,12 +48,6 @@ namespace Bam.Core
         /// <summary>
         /// Return the preprocessor defines for the features of this build.
         /// </summary>
-        public static StringArray PreprocessorDefines
-        {
-            get
-            {
-                return featurePreprocessorDefines;
-            }
-        }
+        public static StringArray PreprocessorDefines => featurePreprocessorDefines;
     }
 }

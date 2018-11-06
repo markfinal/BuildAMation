@@ -53,12 +53,12 @@ namespace Bam.Core
                 });
             if (null == type)
             {
-                throw new Exception("Unable to locate class '{0}'", classname);
+                throw new Exception($"Unable to locate class '{classname}'");
             }
             var policy = System.Activator.CreateInstance(type) as T;
             if (null == policy)
             {
-                throw new Exception("Unable to create instance of class '{0}'", classname);
+                throw new Exception($"Unable to create instance of class '{classname}'");
             }
             return policy;
         }
