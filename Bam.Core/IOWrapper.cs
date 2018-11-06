@@ -59,7 +59,7 @@ namespace Bam.Core
             }
             catch (System.Exception ex)
             {
-                throw new Exception(ex, "Unable to create directory, {0}", directoryPath);
+                throw new Exception(ex, $"Unable to create directory, {directoryPath}");
             }
         }
 
@@ -73,10 +73,11 @@ namespace Bam.Core
         CreateDirectoryIfNotExists(
             string directoryPath)
         {
-            if (!System.IO.Directory.Exists(directoryPath))
+            if (System.IO.Directory.Exists(directoryPath))
             {
-                CreateDirectory(directoryPath);
+                return;
             }
+            CreateDirectory(directoryPath);
         }
 
         /// <summary>
@@ -94,7 +95,10 @@ namespace Bam.Core
             }
             catch (System.IO.IOException ex)
             {
-                throw new Bam.Core.Exception(ex, "Unable to get a temporary path; please delete all temporary files in {0} and try again", System.IO.Path.GetTempPath());
+                throw new Bam.Core.Exception(
+                    ex,
+                    $"Unable to get a temporary path; please delete all temporary files in {System.IO.Path.GetTempPath()} and try again"
+                );
             }
         }
 
@@ -109,7 +113,7 @@ namespace Bam.Core
         {
             if (path.Contains(" "))
             {
-                return System.String.Format("\"{0}\"", path);
+                return $"\"{path}\"";
             }
             return path;
         }
