@@ -57,10 +57,6 @@ namespace Bam.Core
             return (other == (this.Configuration & other));
         }
 
-        private EConfiguration Configuration
-        {
-            get;
-            set;
-        }
+        private EConfiguration Configuration { get; set; }
     }
 }

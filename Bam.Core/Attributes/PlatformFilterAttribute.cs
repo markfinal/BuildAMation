@@ -57,10 +57,6 @@ namespace Bam.Core
             return (other == (this.Platform & other));
         }
 
-        private EPlatform Platform
-        {
-            get;
-            set;
-        }
+        private EPlatform Platform { get; set; }
     }
 }

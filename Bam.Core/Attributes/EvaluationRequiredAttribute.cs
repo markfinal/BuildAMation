@@ -55,10 +55,6 @@ namespace Bam.Core
         /// Return whether evaluation is required for modules.
         /// </summary>
         /// <value><c>true</c> if evaluation is used; <c>false</c> if not.</value>
-        public bool Enabled
-        {
-            get;
-            private set;
-        }
+        public bool Enabled { get; private set; }
     }
 }

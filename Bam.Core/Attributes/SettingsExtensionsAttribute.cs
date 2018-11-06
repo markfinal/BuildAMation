@@ -49,11 +49,7 @@ namespace Bam.Core
             this.ClassType = extensionClass;
         }
 
-        private System.Type ClassType
-        {
-            get;
-            set;
-        }
+        private System.Type ClassType { get; set; }
 
         /// <summary>
         /// The name of the static extensions class for the interface.

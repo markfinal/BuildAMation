@@ -52,10 +52,6 @@ namespace Bam.Core
         /// Obtain the name of the group associated with the attribute.
         /// </summary>
         /// <value>The name of the group.</value>
-        public string GroupName
-        {
-            get;
-            private set;
-        }
+        public string GroupName { get; private set; }
     }
 }

@@ -58,10 +58,6 @@ namespace Bam.Core
         /// Retrieve the precedence value.
         /// </summary>
         /// <value>Precedence</value>
-        public int Order
-        {
-            get;
-            private set;
-        }
+        public int Order { get; private set; }
     }
 }

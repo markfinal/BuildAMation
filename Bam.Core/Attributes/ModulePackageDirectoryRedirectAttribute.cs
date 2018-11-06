@@ -53,10 +53,6 @@ namespace Bam.Core
         /// <summary>
         /// Module type that has had its package directory adopted.
         /// </summary>
-        public System.Type SourceModuleType
-        {
-            get;
-            private set;
-        }
+        public System.Type SourceModuleType { get; private set; }
     }
 }
