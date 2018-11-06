@@ -36,28 +36,8 @@ namespace Bam.Core.Options
     public sealed class MakePackage :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--makepackage";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Make the current working directory into a Bam package.";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--makepackage";
+        string ICommandLineArgument.ContextHelp => "Make the current working directory into a Bam package.";
     }
 }

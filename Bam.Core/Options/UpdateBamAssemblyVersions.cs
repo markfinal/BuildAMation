@@ -38,28 +38,8 @@ namespace Bam.Core.Options
     public sealed class UpdateBamAssemblyVersion :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--updatebamassemblyversions";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Update BAM assembly versions in read definition files. Requires the definition files to be force updated.";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--updatebamassemblyversions";
+        string ICommandLineArgument.ContextHelp => "Update BAM assembly versions in read definition files. Requires the definition files to be force updated.";
     }
 }

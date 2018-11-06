@@ -35,28 +35,8 @@ namespace Bam.Core.Options
     public sealed class PrintStatistics :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--stats";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Display statistics at the end of the build";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--stats";
+        string ICommandLineArgument.ContextHelp => "Display statistics at the end of the build";
     }
 }

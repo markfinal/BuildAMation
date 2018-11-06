@@ -36,28 +36,8 @@ namespace Bam.Core.Options
     public sealed class PackageVersion :
         IStringCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--pkgversion";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Define the package version to use in other operations";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--pkgversion";
+        string ICommandLineArgument.ContextHelp => "Define the package version to use in other operations";
     }
 }

@@ -35,28 +35,8 @@ namespace Bam.Core.Options
     public sealed class ImmediateOutput :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Display tool output immediately for debugging, rather than deferred for the Bam.Core.Executor to display. Deferred by default.";
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--immediateoutput";
-            }
-        }
-
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return "-i";
-            }
-        }
+        string ICommandLineArgument.ContextHelp => "Display tool output immediately for debugging, rather than deferred for the Bam.Core.Executor to display. Deferred by default.";
+        string ICommandLineArgument.LongName => "--immediateoutput";
+        string ICommandLineArgument.ShortName => "-i";
     }
 }

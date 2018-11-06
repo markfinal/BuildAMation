@@ -36,28 +36,8 @@ namespace Bam.Core.Options
     public sealed class RecordStackTrace :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--withstacktrace";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Record stack traces where appropriate to aid error messages";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--withstacktrace";
+        string ICommandLineArgument.ContextHelp => "Record stack traces where appropriate to aid error messages";
     }
 }

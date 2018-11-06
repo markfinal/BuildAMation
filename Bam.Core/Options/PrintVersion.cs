@@ -35,28 +35,8 @@ namespace Bam.Core.Options
     public sealed class PrintVersion :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return "-v";
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--version";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Print the version of Bam!";
-            }
-        }
+        string ICommandLineArgument.ShortName => "-v";
+        string ICommandLineArgument.LongName => "--version";
+        string ICommandLineArgument.ContextHelp => "Print the version of Bam!";
     }
 }

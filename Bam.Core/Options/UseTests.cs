@@ -35,28 +35,8 @@ namespace Bam.Core.Options
     public sealed class UseTests :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return "-t";
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--tests";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Include modules in the tests nested namespace of the top level module";
-            }
-        }
+        string ICommandLineArgument.ShortName => "-t";
+        string ICommandLineArgument.LongName => "--tests";
+        string ICommandLineArgument.ContextHelp => "Include modules in the tests nested namespace of the top level module";
     }
 }

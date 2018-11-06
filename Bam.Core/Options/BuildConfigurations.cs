@@ -35,36 +35,9 @@ namespace Bam.Core.Options
     public sealed class BuildConfigurations :
         IRegExCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return @"--config=([A-Za-z0-9]+)";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Specify each configuration to build (can be specified multiple times).";
-            }
-        }
-
-        string ICustomHelpText.OptionHelp
-        {
-            get
-            {
-                return "--config=<configuration>";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => @"--config=([A-Za-z0-9]+)";
+        string ICommandLineArgument.ContextHelp => "Specify each configuration to build (can be specified multiple times).";
+        string ICustomHelpText.OptionHelp => "--config=<configuration>";
     }
 }

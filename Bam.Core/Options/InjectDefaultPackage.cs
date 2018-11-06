@@ -35,36 +35,9 @@ namespace Bam.Core.Options
     public sealed class InjectDefaultPackage :
         IRegExCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return @"--injectdefaultpackage=([A-Za-z0-9]+)(-.+)?";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Inject a package temporarily into the build and make it a default. Specify the package either as it's name or name-version. (May be specified multiple times.)";
-            }
-        }
-
-        string ICustomHelpText.OptionHelp
-        {
-            get
-            {
-                return "--injectdefaultpackage=<packagename>|<packagename>-<packageversion>";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => @"--injectdefaultpackage=([A-Za-z0-9]+)(-.+)?";
+        string ICommandLineArgument.ContextHelp => "Inject a package temporarily into the build and make it a default. Specify the package either as it's name or name-version. (May be specified multiple times.)";
+        string ICustomHelpText.OptionHelp => "--injectdefaultpackage=<packagename>|<packagename>-<packageversion>";
     }
 }

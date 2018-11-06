@@ -35,28 +35,8 @@ namespace Bam.Core.Options
     public sealed class PrintInstallDirectory :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--installdir";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Print the installation directory of Bam!";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--installdir";
+        string ICommandLineArgument.ContextHelp => "Print the installation directory of Bam!";
     }
 }

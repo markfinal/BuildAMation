@@ -37,36 +37,9 @@ namespace Bam.Core.Options
     public sealed class MultiThreaded :
         IIntegerCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return "-j";
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--threaded";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Define the number of thread to use to build (zero means to use the processor count)";
-            }
-        }
-
-        int ICommandLineArgumentDefault<int>.Default
-        {
-            get
-            {
-                return 1; // single threaded by default
-            }
-        }
+        string ICommandLineArgument.ShortName => "-j";
+        string ICommandLineArgument.LongName => "--threaded";
+        string ICommandLineArgument.ContextHelp => "Define the number of thread to use to build (zero means to use the processor count)";
+        int ICommandLineArgumentDefault<int>.Default => 1; // single threaded by default
     }
 }
