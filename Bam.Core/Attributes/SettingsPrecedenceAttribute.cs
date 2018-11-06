@@ -49,10 +49,7 @@ namespace Bam.Core
         /// </summary>
         /// <param name="order">The precedence value.</param>
         public SettingsPrecedenceAttribute(
-            int order)
-        {
-            this.Order = order;
-        }
+            int order) => Order = order;
 
         /// <summary>
         /// Retrieve the precedence value.

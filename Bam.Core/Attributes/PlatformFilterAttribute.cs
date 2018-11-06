@@ -41,10 +41,7 @@ namespace Bam.Core
         /// </summary>
         /// <param name="platform">The platform(s) for which the module can be built.</param>
         public PlatformFilterAttribute(
-            EPlatform platform)
-        {
-            this.Platform = platform;
-        }
+            EPlatform platform) => Platform = platform;
 
         /// <summary>
         /// Is the platform in <paramref name="other" /> included in those specified at construction.
@@ -52,10 +49,7 @@ namespace Bam.Core
         /// <param name="other">Platform to compare against.</param>
         public bool
         Includes(
-            EPlatform other)
-        {
-            return (other == (this.Platform & other));
-        }
+            EPlatform other) => other == (this.Platform & other);
 
         private EPlatform Platform { get; set; }
     }

@@ -44,10 +44,7 @@ namespace Bam.Core
         /// </summary>
         /// <param name="extensionClass">Type of the static class defining the extension methods for this interface.</param>
         public SettingsExtensionsAttribute(
-            System.Type extensionClass)
-        {
-            this.ClassType = extensionClass;
-        }
+            System.Type extensionClass) => ClassType = extensionClass;
 
         private System.Type ClassType { get; set; }
 
@@ -55,13 +52,7 @@ namespace Bam.Core
         /// The name of the static extensions class for the interface.
         /// </summary>
         /// <value>The name of class.</value>
-        public string ExtensionsClassName
-        {
-            get
-            {
-                return this.ClassType.FullName;
-            }
-        }
+        public string ExtensionsClassName => ClassType.FullName;
 
         /// <summary>
         /// Given a method name, and an array of parameter types, find that method on the extensions class.
@@ -72,9 +63,6 @@ namespace Bam.Core
         public System.Reflection.MethodInfo
         GetMethod(
             string name,
-            params System.Type[] inputs)
-        {
-            return this.ClassType.GetMethod(name, inputs);
-        }
+            params System.Type[] inputs) => ClassType.GetMethod(name, inputs);
     }
 }

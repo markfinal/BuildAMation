@@ -45,10 +45,7 @@ namespace Bam.Core
         /// </summary>
         /// <param name="sourceModuleType">Module type to adopt the package directory from.</param>
         public ModulePackageDirectoryRedirectAttribute(
-            System.Type sourceModuleType)
-        {
-            this.SourceModuleType = sourceModuleType;
-        }
+            System.Type sourceModuleType) => SourceModuleType = sourceModuleType;
 
         /// <summary>
         /// Module type that has had its package directory adopted.
