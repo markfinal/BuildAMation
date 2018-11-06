@@ -56,29 +56,17 @@ namespace Bam.Core
         /// Get the identifier of the NuGet package
         /// </summary>
         /// <value>The identifier.</value>
-        public string Identifier
-        {
-            get;
-            private set;
-        }
+        public string Identifier { get; private set; }
 
         /// <summary>
         /// Get the version of the NuGet package
         /// </summary>
         /// <value>The version.</value>
-        public string Version
-        {
-            get;
-            private set;
-        }
+        public string Version { get; private set; }
 
         /// <summary>
         /// Get the platform(s) applicable to this NuGet package.
         /// </summary>
-        public EPlatform Platforms
-        {
-            get;
-            private set;
-        }
+        public EPlatform Platforms { get; private set; }
     }
 }

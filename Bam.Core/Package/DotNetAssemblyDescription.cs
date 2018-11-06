@@ -41,29 +41,18 @@ namespace Bam.Core
         /// <param name="name">Name.</param>
         public
         DotNetAssemblyDescription(
-            string name)
-        {
-            this.Name = name;
-        }
+            string name) => Name = name;
 
         /// <summary>
         /// Get the name of the .NET framework assembly.
         /// </summary>
         /// <value>The name.</value>
-        public string Name
-        {
-            get;
-            private set;
-        }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Get or set the required target framework version.
         /// </summary>
         /// <value>The required target framework.</value>
-        public string RequiredTargetFramework
-        {
-            get;
-            set;
-        }
+        public string RequiredTargetFramework { get; set; }
     }
 }

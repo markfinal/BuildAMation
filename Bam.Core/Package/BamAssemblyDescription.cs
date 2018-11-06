@@ -41,10 +41,7 @@ namespace Bam.Core
         /// <param name="name">Name.</param>
         public
         BamAssemblyDescription(
-            string name)
-        {
-            this.Name = name;
-        }
+            string name) => Name = name;
 
         /// <summary>
         /// Construct a new instance, with a name and a major version number.
@@ -56,10 +53,7 @@ namespace Bam.Core
             string name,
             int major)
             :
-            this(name)
-        {
-            this.MajorVersion = major;
-        }
+            this(name) => MajorVersion = major;
 
         /// <summary>
         /// Construct a new instance, with a name, major and minor version numbers.
@@ -72,10 +66,7 @@ namespace Bam.Core
             int major,
             int minor)
             :
-            this(name, major)
-        {
-            this.MinorVersion = minor;
-        }
+            this(name, major) => MinorVersion = minor;
 
         /// <summary>
         /// Construct a new instance, with a name, major, minor and patch version numbers.
@@ -90,20 +81,13 @@ namespace Bam.Core
             int minor,
             int patch)
             :
-            this(name, major, minor)
-        {
-            this.PatchVersion = patch;
-        }
+            this(name, major, minor) => PatchVersion = patch;
 
         /// <summary>
         /// Get the name of the assembly.
         /// </summary>
         /// <value>The name.</value>
-        public string Name
-        {
-            get;
-            private set;
-        }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Determine the minimum version number of the assembly, including
@@ -133,30 +117,18 @@ namespace Bam.Core
         /// Get the assembly major version number, if defined.
         /// </summary>
         /// <value>The major version.</value>
-        public int? MajorVersion
-        {
-            get;
-            private set;
-        }
+        public int? MajorVersion { get; private set; }
 
         /// <summary>
         /// Get the assembly minor version number, if defined.
         /// </summary>
         /// <value>The minor version.</value>
-        public int? MinorVersion
-        {
-            get;
-            private set;
-        }
+        public int? MinorVersion { get; private set; }
 
         /// <summary>
         /// Get the assembly patch version number, if defined.
         /// </summary>
         /// <value>The patch version.</value>
-        public int? PatchVersion
-        {
-            get;
-            private set;
-        }
+        public int? PatchVersion { get; private set; }
     }
 }
