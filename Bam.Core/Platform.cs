@@ -43,10 +43,7 @@ namespace Bam.Core
         public static bool
         Includes(
             this EPlatform platform,
-            EPlatform choice)
-        {
-            return (0 != (platform & choice));
-        }
+            EPlatform choice) => (0 != (platform & choice));
 
         /// <summary>
         /// Convert a string to an EPlatform enumeration.
@@ -96,7 +93,7 @@ namespace Bam.Core
             }
             else
             {
-                throw new Exception("Platform name '{0}' not recognized", platformName);
+                throw new Exception($"Platform name '{platformName}' not recognized");
             }
             return platform;
         }
@@ -139,11 +136,7 @@ namespace Bam.Core
         /// <param name="platformFlags">Platform flags.</param>
         public static string
         ToString(
-            EPlatform platformFlags)
-        {
-            var value = ToString(platformFlags, '\0', null, false);
-            return value;
-        }
+            EPlatform platformFlags) => ToString(platformFlags, '\0', null, false);
 
         /// <summary>
         /// Convert EPlatform to a string.
@@ -154,20 +147,12 @@ namespace Bam.Core
         public static string
         ToString(
             EPlatform platformFlags,
-            char separator)
-        {
-            var value = ToString(platformFlags, separator, null, false);
-            return value;
-        }
+            char separator) => ToString(platformFlags, separator, null, false);
 
         private static bool
         Contains(
             EPlatform flags,
-            EPlatform specificPlatform)
-        {
-            var contains = (specificPlatform == (flags & specificPlatform));
-            return contains;
-        }
+            EPlatform specificPlatform) => (specificPlatform == (flags & specificPlatform));
 
         /// <summary>
         /// Convert an EPlatform to a string.
