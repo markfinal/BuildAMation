@@ -44,15 +44,8 @@ namespace Bam.Core.Test
             TokenizedStringTest.testModule = this;
         }
 
-        protected override void EvaluateInternal()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override void ExecuteInternal(ExecutionContext context)
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override void EvaluateInternal() => throw new System.NotImplementedException();
+        protected override void ExecuteInternal(ExecutionContext context) => throw new System.NotImplementedException();
     }
 
     [NUnit.Framework.TestFixture(Author="Mark Final")]
