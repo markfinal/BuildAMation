@@ -43,10 +43,7 @@ namespace Bam.Core
         public static bool
         IsAtLeast(
             this ISemanticVersion version,
-            int majorVersion)
-        {
-            return (version.MajorVersion.GetValueOrDefault(0) >= majorVersion);
-        }
+            int majorVersion) => (version.MajorVersion.GetValueOrDefault(0) >= majorVersion);
 
         /// <summary>
         /// Compare major and minor version numbers
@@ -59,10 +56,7 @@ namespace Bam.Core
         IsAtLeast(
             this ISemanticVersion version,
             int majorVersion,
-            int minorVersion)
-        {
-            return version.IsAtLeast(majorVersion) && (version.MinorVersion.GetValueOrDefault(0) >= minorVersion);
-        }
+            int minorVersion) => version.IsAtLeast(majorVersion) && (version.MinorVersion.GetValueOrDefault(0) >= minorVersion);
 
         /// <summary>
         /// Compare major, minor and patch version numbers
@@ -77,9 +71,6 @@ namespace Bam.Core
             this ISemanticVersion version,
             int majorVersion,
             int minorVersion,
-            int patchVersion)
-        {
-            return version.IsAtLeast(majorVersion, minorVersion) && (version.PatchVersion.GetValueOrDefault(0) >= patchVersion);
-        }
+            int patchVersion) => version.IsAtLeast(majorVersion, minorVersion) && (version.PatchVersion.GetValueOrDefault(0) >= patchVersion);
     }
 }

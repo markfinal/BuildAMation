@@ -41,10 +41,7 @@ namespace Bam.Core
         /// <param name="path">Path.</param>
         public static bool
         IsPathAbsolute(
-            string path)
-        {
-            return System.IO.Path.IsPathRooted(path);
-        }
+            string path) => System.IO.Path.IsPathRooted(path);
 
         /// <summary>
         /// Generate a relative path from the specified root.

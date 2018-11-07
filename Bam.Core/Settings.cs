@@ -77,11 +77,15 @@ namespace Bam.Core
                         var attributeArray = i.GetCustomAttributes(attributeType, false);
                         if (0 == attributeArray.Length)
                         {
-                            throw new Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
+                            throw new Exception(
+                                $"Settings interface {i.ToString()} is missing attribute {attributeType.ToString()}"
+                            );
                         }
 
-                        var newData = new InterfaceData();
-                        newData.InterfaceType = i;
+                        var newData = new InterfaceData
+                        {
+                            InterfaceType = i
+                        };
 
                         var attribute = attributeArray[0] as SettingsExtensionsAttribute;
                         // TODO: the Empty function could be replaced by the auto-property initializers in C#6.0 (when Mono catches up)
@@ -178,26 +182,17 @@ namespace Bam.Core
             {
                 if (emptyFirst)
                 {
-                    if (null != i.emptyMethod)
-                    {
-                        i.emptyMethod.Invoke(null, new[] { this });
-                    }
+                    i.emptyMethod?.Invoke(null, new[] { this });
                 }
                 if (useDefaults)
                 {
-                    if (null != i.defaultMethod)
-                    {
-                        i.defaultMethod.Invoke(null, new object[] { this, module });
-                    }
+                    i.defaultMethod?.Invoke(null, new object[] { this, module });
                 }
             }
             if (useDefaults)
             {
                 ModifyDefaults();
-                if (null != LocalPolicy)
-                {
-                    LocalPolicy.DefineLocalSettings(this, module);
-                }
+                LocalPolicy?.DefineLocalSettings(this, module);
             }
             this._Properties = FindProperties(this.GetType());
         }
@@ -206,24 +201,13 @@ namespace Bam.Core
         /// Read only access to the flattened list of properties for all interfaces
         /// on this Settings type, in the order of the interface priorities.
         /// </summary>
-        public System.Collections.Generic.IReadOnlyList<System.Reflection.PropertyInfo>
-        Properties
-        {
-            get
-            {
-                return this._Properties.ToReadOnlyCollection();
-            }
-        }
+        public System.Collections.Generic.IReadOnlyList<System.Reflection.PropertyInfo> Properties => this._Properties.ToReadOnlyCollection();
 
         /// <summary>
         /// Get or set the Module associated with the Settings instance.
         /// </summary>
         /// <value>The module.</value>
-        public Module Module
-        {
-            get;
-            private set;
-        }
+        public Module Module { get; private set; }
 
         /// <summary>
         /// Perform validation on this Settings instance, after all patches have been
@@ -233,7 +217,7 @@ namespace Bam.Core
         /// </summary>
         public virtual void
         Validate()
-        { }
+        {}
 
         /// <summary>
         /// If settings are linearised to a command line, layout of where files are placed.
@@ -273,11 +257,7 @@ namespace Bam.Core
         /// <summary>
         /// Access to the specified layout.
         /// </summary>
-        public ELayout FileLayout
-        {
-            get;
-            protected set;
-        }
+        public ELayout FileLayout { get; protected set; }
 
         /// <summary>
         /// Abstract function to assign the layout of the linearised settings.
@@ -290,11 +270,7 @@ namespace Bam.Core
         /// Defines the local policy to use for all settings
         /// </summary>
         /// <value>The local policy.</value>
-        static public ISitePolicy LocalPolicy
-        {
-            get;
-            set;
-        }
+        static public ISitePolicy LocalPolicy { get; set; }
 
         /// <summary>
         /// Hook into the Settings initialisation system to allow specific
