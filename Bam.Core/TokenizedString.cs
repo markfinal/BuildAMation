@@ -131,7 +131,7 @@ namespace Bam.Core
         private TokenizedStringArray PositionalTokens = null;
         private string CreationStackTrace = null;
         private int RefCount = 1;
-        private EFlags Flags = EFlags.None;
+        private readonly EFlags Flags = EFlags.None;
         private long hash = 0;
         private string parsedStackTrace = null;
 
@@ -142,7 +142,7 @@ namespace Bam.Core
         /// <param name="name">Name of the function that must be unique.</param>
         /// <param name="function">Function to apply to any usage of @name in TokenizedStrings.</param>
         public static void
-        registerPostUnaryFunction(
+        RegisterPostUnaryFunction(
             string name,
             System.Func<string, string> function)
         {
@@ -189,7 +189,7 @@ namespace Bam.Core
         }
 
         private static string
-        getStacktrace()
+        GetStacktrace()
         {
             if (RecordStackTraces)
             {
@@ -203,7 +203,7 @@ namespace Bam.Core
         /// This function is only really useful in unit tests.
         /// </summary>
         public static void
-        reset()
+        Reset()
         {
             VerbatimCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
             NoModuleCacheMap = new System.Collections.Generic.Dictionary<System.Int64, TokenizedString>();
@@ -217,7 +217,7 @@ namespace Bam.Core
 
         static TokenizedString()
         {
-            reset();
+            Reset();
             RecordStackTraces = CommandLineProcessor.Evaluate(new Options.RecordStackTrace());
             if (RecordStackTraces)
             {
@@ -240,7 +240,7 @@ namespace Bam.Core
             if (verbatim)
             {
                 this.ParsedString = original;
-                this.parsedStackTrace = getStacktrace();
+                this.parsedStackTrace = GetStacktrace();
             }
         }
 
@@ -297,8 +297,7 @@ namespace Bam.Core
                     var useCache = (0 == (flags & EFlags.NoCache));
                     if (useCache)
                     {
-                        TokenizedString foundTS;
-                        if (VerbatimCacheMap.TryGetValue(hash, out foundTS))
+                        if (VerbatimCacheMap.TryGetValue(hash, out TokenizedString foundTS))
                         {
                             ++foundTS.RefCount;
                             return foundTS;
@@ -326,8 +325,7 @@ namespace Bam.Core
                     var useCache = (0 == (flags & EFlags.NoCache));
                     if (useCache)
                     {
-                        TokenizedString foundTS;
-                        if (stringCache.TryGetValue(hash, out foundTS))
+                        if (stringCache.TryGetValue(hash, out TokenizedString foundTS))
                         {
                             ++foundTS.RefCount;
                             return foundTS;
@@ -365,10 +363,7 @@ namespace Bam.Core
         Create(
             string tokenizedString,
             Module macroSource,
-            TokenizedStringArray positionalTokens = null)
-        {
-            return CreateInternal(tokenizedString, macroSource, false, positionalTokens, EFlags.None);
-        }
+            TokenizedStringArray positionalTokens = null) => CreateInternal(tokenizedString, macroSource, false, positionalTokens, EFlags.None);
 
         /// <summary>
         /// Utility method to create a TokenizedString with no macro replacement, or return a cached version.
@@ -377,10 +372,7 @@ namespace Bam.Core
         /// <param name="verboseString">Verbose string.</param>
         public static TokenizedString
         CreateVerbatim(
-            string verboseString)
-        {
-            return CreateInternal(verboseString, null, true, null, EFlags.None);
-        }
+            string verboseString) => CreateInternal(verboseString, null, true, null, EFlags.None);
 
         /// <summary>
         /// Utility method to create a TokenizedString that can be inlined into other TokenizedStrings
@@ -390,10 +382,7 @@ namespace Bam.Core
         /// <param name="inlineString">Inline string.</param>
         public static TokenizedString
         CreateForcedInline(
-            string inlineString)
-        {
-            return CreateInternal(inlineString, null, false, null, EFlags.ForcedInline);
-        }
+            string inlineString) => CreateInternal(inlineString, null, false, null, EFlags.ForcedInline);
 
         /// <summary>
         /// Utility method to create a TokenizedString which will not be cached with any other existing
@@ -408,10 +397,7 @@ namespace Bam.Core
         CreateUncached(
             string uncachedString,
             Module macroSource,
-            TokenizedStringArray positionalTokens = null)
-        {
-            return CreateInternal(uncachedString, macroSource, false, positionalTokens, EFlags.NoCache);
-        }
+            TokenizedStringArray positionalTokens = null) => CreateInternal(uncachedString, macroSource, false, positionalTokens, EFlags.NoCache);
 
         /// <summary>
         /// Determine if the TokenizedString has been parsed already.
@@ -441,11 +427,7 @@ namespace Bam.Core
 
         private static string
         NormalizeDirectorySeparators(
-            string path)
-        {
-            var normalized = OSUtilities.IsWindowsHosting ? path.Replace('/', '\\') : path.Replace('\\', '/');
-            return normalized;
-        }
+            string path) => OSUtilities.IsWindowsHosting ? path.Replace('/', '\\') : path.Replace('\\', '/');
 
         /// <summary>
         /// Return the parsed string.
@@ -472,8 +454,7 @@ namespace Bam.Core
                     {
                         continue;
                     }
-                    tokens.AppendFormat("\t{0}", token);
-                    tokens.AppendLine("");
+                    tokens.AppendLine($"\t{token}");
                 }
                 throw new Exception("TokenizedString '{0}' has been parsed to{1}'{4}'{1}but the following tokens remain unresolved{3}:{1}{5}{1}Created at:{1}{2}{1}",
                     this.OriginalString,
@@ -491,21 +472,9 @@ namespace Bam.Core
         /// Determine if the string is empty.
         /// </summary>
         /// <value><c>true</c> if empty; otherwise, <c>false</c>.</value>
-        public bool Empty
-        {
-            get
-            {
-                return (null == this.Tokens) || !this.Tokens.Any();
-            }
-        }
+        public bool Empty => (null == this.Tokens) || !this.Tokens.Any();
 
-        private bool IsForcedInline
-        {
-            get
-            {
-                return (EFlags.ForcedInline == (this.Flags & EFlags.ForcedInline));
-            }
-        }
+        private bool IsForcedInline => (EFlags.ForcedInline == (this.Flags & EFlags.ForcedInline));
 
         /// <summary>
         /// Parse every TokenizedString.
@@ -574,21 +543,11 @@ namespace Bam.Core
         /// <param name="customMacroArray">Array of custom macros.</param>
         public string
         UncachedParse(
-            Array<MacroList> customMacroArray)
-        {
-            return this.ParseInternal(customMacroArray);
-        }
+            Array<MacroList> customMacroArray) => this.ParseInternal(customMacroArray);
 
         private string
         ParseInternalWithAlreadyParsedCheck(
-            Array<MacroList> customMacroArray)
-        {
-            if (this.ParsedString != null)
-            {
-                return this.ParsedString;
-            }
-            return this.ParseInternal(customMacroArray);
-        }
+            Array<MacroList> customMacroArray) => this.ParsedString ?? this.ParseInternal(customMacroArray);
 
         private string
         GetParsedString(
@@ -652,7 +611,7 @@ namespace Bam.Core
         {
             if (this.IsForcedInline)
             {
-                throw new Exception("Forced inline TokenizedString cannot be parsed, {0}", this.OriginalString);
+                throw new Exception($"Forced inline TokenizedString cannot be parsed, {this.OriginalString}");
             }
             var graph = Graph.Instance;
             var parsedString = new System.Text.StringBuilder();
@@ -676,7 +635,9 @@ namespace Bam.Core
                     var positionalIndex = System.Convert.ToInt32(positional);
                     if (positionalIndex > this.PositionalTokens.Count)
                     {
-                        throw new Exception("TokenizedString positional token at index {0} requested, but only {1} positional values given. Created at {2}.", positionalIndex, this.PositionalTokens.Count, this.CreationStackTrace);
+                        throw new Exception(
+                            $"TokenizedString positional token at index {positionalIndex} requested, but only {this.PositionalTokens.Count} positional values given. Created at {this.CreationStackTrace}."
+                        );
                     }
                     try
                     {
@@ -686,14 +647,16 @@ namespace Bam.Core
                     }
                     catch (System.ArgumentOutOfRangeException ex)
                     {
-                        throw new Exception(ex, "Positional token index {0} exceeded number of tokens available", positionalIndex, this.PositionalTokens.Count);
+                        throw new Exception(
+                            ex,
+                            $"Positional token index {positionalIndex} exceeded number of tokens available {this.PositionalTokens.Count}"
+                        );
                     }
                     continue;
                 }
 
                 // step 2 : try to resolve with custom macros passed to the Parse function
-                if (null != customMacroArray &&
-                    (null != customMacroArray.FirstOrDefault(item => item.Dict.ContainsKey(token))))
+                if (null != customMacroArray?.FirstOrDefault(item => item.Dict.ContainsKey(token)))
                 {
                     var containingMacroList = customMacroArray.First(item => item.Dict.ContainsKey(token));
                     var customTokenStr = containingMacroList.Dict[token];
@@ -757,7 +720,7 @@ namespace Bam.Core
                 // so that both unresolved tokens and literal text can be inserted into future strings
                 this.Tokens = SplitIntoTokens(parsedString.ToString(), TokenRegExPattern).ToList<string>();
                 this.ParsedString = parsedString.ToString();
-                Log.DebugMessage("\t'{0}' --> '{1}'", this.OriginalString, this.ParsedString);
+                Log.DebugMessage($"\t'{this.OriginalString}' --> '{this.ParsedString}'");
                 return this.ParsedString;
             }
             else
@@ -771,12 +734,12 @@ namespace Bam.Core
                 if (null == customMacroArray)
                 {
                     this.ParsedString = functionEvaluated;
-                    this.parsedStackTrace = getStacktrace();
-                    Log.DebugMessage(" '{0}' --> '{1}'", this.OriginalString, this.ToString());
+                    this.parsedStackTrace = GetStacktrace();
+                    Log.DebugMessage($" '{this.OriginalString}' --> '{this.ToString()}'");
                 }
                 else
                 {
-                    Log.DebugMessage(" '{0}' --> '{1}' (using custom macros)", this.OriginalString, functionEvaluated);
+                    Log.DebugMessage($" '{this.OriginalString}' --> '{functionEvaluated}' (using custom macros)");
                 }
                 return functionEvaluated;
             }
@@ -794,7 +757,7 @@ namespace Bam.Core
                     PostFunctionRegExPattern,
                     System.Text.RegularExpressions.RegexOptions.None,
                     RegExTimeout);
-                if (0 == matches.Count)
+                if (!matches.Any())
                 {
                     return sourceExpression;
                 }
@@ -802,14 +765,10 @@ namespace Bam.Core
             catch (System.Text.RegularExpressions.RegexMatchTimeoutException)
             {
                 var message = new System.Text.StringBuilder();
-                message.AppendFormat("TokenizedString post-function regular expression matching timed out after {0} seconds. Check details below for errors.", RegExTimeout.Seconds);
-                message.AppendLine();
-                message.AppendFormat("String being parsed: {0}", sourceExpression);
-                message.AppendLine();
-                message.AppendFormat("Regex              : {0}", PostFunctionRegExPattern);
-                message.AppendLine();
-                message.AppendFormat("Tokenized string {0} created at", this.OriginalString);
-                message.AppendLine();
+                message.AppendLine($"TokenizedString post-function regular expression matching timed out after {RegExTimeout.Seconds} seconds. Check details below for errors.");
+                message.AppendLine($"String being parsed: {sourceExpression}");
+                message.AppendLine($"Regex              : {PostFunctionRegExPattern}");
+                message.AppendLine($"Tokenized string {this.OriginalString} created at");
                 message.AppendLine(this.CreationStackTrace);
                 throw new Exception(message.ToString());
             }
@@ -992,7 +951,7 @@ namespace Bam.Core
             {
                 if (!this.IsParsed)
                 {
-                    throw new Exception("TokenizedString, '{0}', is not yet expanded", this.OriginalString);
+                    throw new Exception($"TokenizedString, '{this.OriginalString}', is not yet expanded");
                 }
                 if (null != this.ParsedString)
                 {
@@ -1031,45 +990,25 @@ namespace Bam.Core
         /// <returns>A hash code for this instance that is suitable for use in hashing algorithms and data structures such as a
         /// hash table.</returns>
         public override int
-        GetHashCode()
-        {
-            return base.GetHashCode();
-        }
+        GetHashCode() => base.GetHashCode();
 
         /// <summary>
         /// Quote the string if it contains a space
         /// </summary>
         /// <returns>The string and quote if necessary.</returns>
-        public string ToStringQuoteIfNecessary()
-        {
-            return IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(this.ToString());
-        }
+        public string ToStringQuoteIfNecessary() => IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(this.ToString());
 
         /// <summary>
         /// Static utility method to return the number of TokenizedStrings cached.
         /// </summary>
         /// <value>The count.</value>
-        public static int
-        Count
-        {
-            get
-            {
-                return AllStrings.Count();
-            }
-        }
+        public static int Count => AllStrings.Count();
 
         /// <summary>
         /// Static utility method to return the number of strings with a single refcount.
         /// </summary>
         /// <value>The unshared count.</value>
-        public static int
-        UnsharedCount
-        {
-            get
-            {
-                return AllStrings.Where(item => item.RefCount == 1).Count();
-            }
-        }
+        public static int UnsharedCount => AllStrings.Where(item => item.RefCount == 1).Count();
 
         /// <summary>
         /// In debug builds, dump data representing all of the tokenized strings.
@@ -1103,7 +1042,7 @@ namespace Bam.Core
                 return (positionalIndex <= this.PositionalTokens.Count);
             }
             // step 2 : try to resolve with custom macros passed to the Parse function
-            else if (null != customMacroArray && (null != customMacroArray.FirstOrDefault(item => item.Dict.ContainsKey(token))))
+            else if (null != customMacroArray?.FirstOrDefault(item => item.Dict.ContainsKey(token)))
             {
                 return true;
             }
@@ -1154,7 +1093,7 @@ namespace Bam.Core
                     PreFunctionRegExPattern,
                     System.Text.RegularExpressions.RegexOptions.None,
                     RegExTimeout);
-                if (0 == matches.Count)
+                if (!matches.Any())
                 {
                     return originalExpression;
                 }
@@ -1162,14 +1101,10 @@ namespace Bam.Core
             catch (System.Text.RegularExpressions.RegexMatchTimeoutException)
             {
                 var message = new System.Text.StringBuilder();
-                message.AppendFormat("TokenizedString pre-function regular expression matching timed out after {0} seconds. Check details below for errors.", RegExTimeout.Seconds);
-                message.AppendLine();
-                message.AppendFormat("String being parsed: {0}", originalExpression);
-                message.AppendLine();
-                message.AppendFormat("Regex              : {0}", PreFunctionRegExPattern);
-                message.AppendLine();
-                message.AppendFormat("Tokenized string {0} created at", this.OriginalString);
-                message.AppendLine();
+                message.AppendLine($"TokenizedString pre-function regular expression matching timed out after {RegExTimeout.Seconds} seconds. Check details below for errors.");
+                message.AppendLine($"String being parsed: {originalExpression}");
+                message.AppendLine($"Regex              : {PreFunctionRegExPattern}");
+                message.AppendLine($"Tokenized string {this.OriginalString} created at");
                 message.AppendLine(this.CreationStackTrace);
                 throw new Exception(message.ToString());
             }
@@ -1221,7 +1156,7 @@ namespace Bam.Core
                         break;
 
                     default:
-                        throw new Exception("Unknown pre-function '{0}' in TokenizedString '{1}'", functionName, this.OriginalString);
+                        throw new Exception($"Unknown pre-function '{functionName}' in TokenizedString '{this.OriginalString}'");
                 }
             }
             return modifiedString;
@@ -1245,7 +1180,7 @@ namespace Bam.Core
 
                     if (0 == i.RefCount)
                     {
-                        Log.DebugMessage("Removing string {0} from {1}", i.OriginalString, moduleType.ToString());
+                        Log.DebugMessage($"Removing string {i.OriginalString} from {moduleType.ToString()}");
                         AllStrings.Remove(i);
                         // Don't believe a separate lock is needed for StringsForParsing
                         if (StringsForParsing.Contains(i))
@@ -1288,7 +1223,7 @@ namespace Bam.Core
         {
             if (!(macro.StartsWith(TokenizedString.TokenPrefix, System.StringComparison.Ordinal) && macro.EndsWith(TokenizedString.TokenSuffix, System.StringComparison.Ordinal)))
             {
-                throw new Exception("Invalid macro key: {0}", macro);
+                throw new Exception($"Invalid macro key: {macro}");
             }
             var inString = this.OriginalString.Contains(macro);
             if (inString)
@@ -1312,9 +1247,11 @@ namespace Bam.Core
         {
             if (null != this.ParsedString)
             {
-                throw new Exception("Cannot change the TokenizedString '{0}' to '{1}' as it has been parsed already", this.OriginalString, newString);
+                throw new Exception(
+                    $"Cannot change the TokenizedString '{this.OriginalString}' to '{newString}' as it has been parsed already"
+                );
             }
-            this.CreationStackTrace = getStacktrace();
+            this.CreationStackTrace = GetStacktrace();
             this.PositionalTokens = new TokenizedStringArray();
             if (null != positionalTokens)
             {
@@ -1362,12 +1299,6 @@ namespace Bam.Core
         /// <summary>
         /// Extract the unparsed string, containing all original tokens.
         /// </summary>
-        public string UnparsedString
-        {
-            get
-            {
-                return this.OriginalString;
-            }
-        }
+        public string UnparsedString => this.OriginalString;
     }
 }

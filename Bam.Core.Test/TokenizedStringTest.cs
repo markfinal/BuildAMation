@@ -72,7 +72,7 @@ namespace Bam.Core.Test
             // - BamState.WorkingDirectory (will be null)
             // - Graph.PackageRepositories (will be empty)
             this.graph = Bam.Core.Graph.Instance;
-            Bam.Core.TokenizedString.reset();
+            Bam.Core.TokenizedString.Reset();
             Bam.Core.Module.Reset();
         }
 

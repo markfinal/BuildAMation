@@ -53,10 +53,11 @@ namespace Bam.Core
             // specialization, to avoid empty strings from being added
             foreach (var item in itemsToAdd)
             {
-                if (!System.String.IsNullOrEmpty(item))
+                if (System.String.IsNullOrEmpty(item))
                 {
-                    this.list.Add(item);
+                    continue;
                 }
+                this.list.Add(item);
             }
         }
 
@@ -71,10 +72,11 @@ namespace Bam.Core
             // specialization, to avoid empty strings from being added
             foreach (string item in items)
             {
-                if (!System.String.IsNullOrEmpty(item))
+                if (System.String.IsNullOrEmpty(item))
                 {
-                    this.list.Add(item);
+                    continue;
                 }
+                this.list.Add(item);
             }
         }
 
@@ -89,10 +91,11 @@ namespace Bam.Core
             // specialization, to avoid empty strings from being added
             foreach (var item in array)
             {
-                if (!System.String.IsNullOrEmpty(item))
+                if (System.String.IsNullOrEmpty(item))
                 {
-                    this.list.Add(item);
+                    continue;
                 }
+                this.list.Add(item);
             }
         }
 
@@ -107,10 +110,11 @@ namespace Bam.Core
             // specialization, to avoid empty strings from being added
             foreach (var item in array)
             {
-                if (!System.String.IsNullOrEmpty(item))
+                if (System.String.IsNullOrEmpty(item))
                 {
-                    this.list.Add(item);
+                    continue;
                 }
+                this.list.Add(item);
             }
         }
 
@@ -136,10 +140,7 @@ namespace Bam.Core
         /// </summary>
         /// <returns>A <see cref="System.String"/> that represents the current <see cref="Bam.Core.StringArray"/>.</returns>
         public override string
-        ToString()
-        {
-            return this.ToString(' ');
-        }
+        ToString() => this.ToString(' ');
 
         /// <summary>
         /// Convert the array of strings to a single string separated by the specified character.
@@ -153,7 +154,7 @@ namespace Bam.Core
             var builder = new System.Text.StringBuilder();
             foreach (var item in this.list)
             {
-                builder.AppendFormat("{0}{1}", item.ToString(), separator);
+                builder.Append($"{item.ToString()}{separator}");
             }
             // remove the trailing separator
             var output = builder.ToString().TrimEnd(separator);
@@ -169,10 +170,11 @@ namespace Bam.Core
             var newList = new System.Collections.Generic.List<string>();
             foreach (var item in this.list)
             {
-                if (!newList.Contains(item))
+                if (newList.Contains(item))
                 {
-                    newList.Add(item);
+                    continue;
                 }
+                newList.Add(item);
             }
 
             this.list = newList;
@@ -185,10 +187,7 @@ namespace Bam.Core
         /// <returns>The string array containing just those elements in both string arrays.</returns>
         public StringArray
         Intersect(
-            StringArray other)
-        {
-            return new StringArray(base.Intersect(other));
-        }
+            StringArray other) => new StringArray(base.Intersect(other));
 
         /// <summary>
         /// Find all strings in this but not in <paramref name="other"/>
@@ -197,9 +196,6 @@ namespace Bam.Core
         /// <returns>The string array containing the complement of the two string arrays.</returns>
         public StringArray
         Complement(
-            StringArray other)
-        {
-            return new StringArray(base.Complement(other));
-        }
+            StringArray other) => new StringArray(base.Complement(other));
     }
 }
