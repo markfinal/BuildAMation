@@ -34,18 +34,7 @@ namespace Bam.Core
     /// </summary>
     public static class Win32RegistryUtilities
     {
-        private static string Wow6432NodeString = @"Wow6432Node";
-
-        // TODO: what's the point of this? I can see no side-effects.
-        // it could throw an exception if ever instantiated on any other platform if that was the intention?
-        static
-        Win32RegistryUtilities()
-        {
-            if (!OSUtilities.IsWindowsHosting)
-            {
-                return;
-            }
-        }
+        private static readonly string Wow6432NodeString = @"Wow6432Node";
 
         private static string
         SoftwareKeyPath(
@@ -57,16 +46,16 @@ namespace Bam.Core
             {
                 if (query32Bit)
                 {
-                    keyPath.AppendFormat(@"Software\{0}\{1}", Wow6432NodeString, path);
+                    keyPath.Append($@"Software\{Wow6432NodeString}\{path}");
                 }
                 else
                 {
-                    keyPath.AppendFormat(@"Software\{0}", path);
+                    keyPath.Append($@"Software\{path}");
                 }
             }
             else
             {
-                keyPath.AppendFormat(@"Software\{0}", path);
+                keyPath.Append($@"Software\{path}");
             }
 
             return keyPath.ToString();
@@ -102,11 +91,7 @@ namespace Bam.Core
         /// <param name="path">Path.</param>
         public static bool
         DoesCUSoftwareKeyExist(
-            string path)
-        {
-            var exists = DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.CurrentUser, false);
-            return exists;
-        }
+            string path) => DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.CurrentUser, false);
 
         /// <summary>
         /// Does the 32-bit local machine software key at the provided path exists?
@@ -115,11 +100,7 @@ namespace Bam.Core
         /// <param name="path">Path.</param>
         public static bool
         Does32BitLMSoftwareKeyExist(
-            string path)
-        {
-            var exists = DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.LocalMachine, true);
-            return exists;
-        }
+            string path) => DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.LocalMachine, true);
 
         /// <summary>
         /// Wrapper around Microsoft.Win32.RegistryKey to avoid a public dependency on a NuGet package.
@@ -137,30 +118,18 @@ namespace Bam.Core
             public RegKey(
                 Microsoft.Win32.RegistryKey sourceKey)
             {
-                if (null == sourceKey)
-                {
-                    throw new Exception(
+                this.key = sourceKey ?? throw new Exception(
                         "Registry key cannot be null"
                     );
-                }
-                this.key = sourceKey;
             }
 
-            void System.IDisposable.Dispose()
-            {
-                this.key.Dispose();
-            }
+            void
+            System.IDisposable.Dispose() => this.key.Dispose();
 
             /// <summary>
             /// Name of the registry key represented.
             /// </summary>
-            public string Name
-            {
-                get
-                {
-                    return this.key.Name;
-                }
-            }
+            public string Name => this.key.Name;
 
             /// <summary>
             /// Get the string behind the named value on the registry key.
@@ -246,7 +215,7 @@ namespace Bam.Core
             var key = registryArea.OpenSubKey(keyPath);
             if (null == key)
             {
-                Log.DebugMessage("Registry key '{0}' on {1} not found", keyPath, registryArea.Name);
+                Log.DebugMessage($"Registry key '{keyPath}' on {registryArea.Name} not found");
                 return null;
             }
             return new RegKey(key);
@@ -259,10 +228,7 @@ namespace Bam.Core
         /// <param name="path">Path.</param>
         public static RegKey
         Open32BitLMSoftwareKey(
-            string path)
-        {
-            return OpenSoftwareKey(path, Microsoft.Win32.Registry.LocalMachine, true);
-        }
+            string path) => OpenSoftwareKey(path, Microsoft.Win32.Registry.LocalMachine, true);
 
         /// <summary>
         /// Open the current user software key specified by the path.
@@ -271,10 +237,7 @@ namespace Bam.Core
         /// <param name="path">Path.</param>
         public static RegKey
         OpenCUSoftwareKey(
-            string path)
-        {
-            return OpenSoftwareKey(path, Microsoft.Win32.Registry.CurrentUser, false);
-        }
+            string path) => OpenSoftwareKey(path, Microsoft.Win32.Registry.CurrentUser, false);
 
         /// <summary>
         /// Does the local machine software key exist at the path?
@@ -283,11 +246,7 @@ namespace Bam.Core
         /// <param name="path">Path.</param>
         public static bool
         DoesLMSoftwareKeyExist(
-            string path)
-        {
-            var exists = DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.LocalMachine, false);
-            return exists;
-        }
+            string path) => DoesSoftwareKeyExist(path, Microsoft.Win32.Registry.LocalMachine, false);
 
         /// <summary>
         /// Open the local machine software key at the path.
@@ -296,9 +255,6 @@ namespace Bam.Core
         /// <param name="path">Path.</param>
         public static RegKey
         OpenLMSoftwareKey(
-            string path)
-        {
-            return OpenSoftwareKey(path, Microsoft.Win32.Registry.LocalMachine, false);
-        }
+            string path) => OpenSoftwareKey(path, Microsoft.Win32.Registry.LocalMachine, false);
     }
 }
