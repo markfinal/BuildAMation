@@ -35,7 +35,7 @@ namespace Bam.Core
     public sealed class ModuleCollection :
         System.Collections.Generic.IEnumerable<Module>
     {
-        private System.Collections.Generic.List<Module> Modules = new System.Collections.Generic.List<Module>();
+        private readonly System.Collections.Generic.List<Module> Modules = new System.Collections.Generic.List<Module>();
 
         /// <summary>
         /// Add the module to the current collection. If the module already belongs to a collection, move it
@@ -64,9 +64,6 @@ namespace Bam.Core
         }
 
         System.Collections.IEnumerator
-        System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        System.Collections.IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }
