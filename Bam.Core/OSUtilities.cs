@@ -37,110 +37,28 @@ namespace Bam.Core
     {
         private static System.Collections.Generic.Dictionary<string, StringArray> InstallLocationCache = new System.Collections.Generic.Dictionary<string, StringArray>();
 
-        private static bool CheckFor64BitOS
+        static OSUtilities()
         {
-            get
+            var is64Bit = System.Environment.Is64BitOperatingSystem;
+            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
             {
-                return System.Environment.Is64BitOperatingSystem;
+                CurrentOS = EPlatform.Windows;
+                CurrentPlatform = is64Bit ? EPlatform.Win64 : EPlatform.Win32;
             }
-        }
-
-        // based on http://go-mono.com/forums/#nabble-td1549244
-        private static class Platform
-        {
-            [System.Runtime.InteropServices.DllImport("libc")]
-            static extern int uname(System.IntPtr buf);
-
-            static private bool mIsWindows;
-            static private bool mIsMac;
-
-            public enum OS
+            else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
             {
-                Windows,
-                OSX,
-                Linux,
-                unknown
-            };
-
-            static public OS
-            GetOS()
-            {
-                if (mIsWindows = (System.IO.Path.DirectorySeparatorChar == '\\'))
-                {
-                    return OS.Windows;
-                }
-
-                if (mIsMac = (!mIsWindows && IsRunningOnMac()))
-                {
-                    return OS.OSX;
-                }
-
-                if (!mIsMac && System.Environment.OSVersion.Platform == System.PlatformID.Unix)
-                {
-                    return OS.Linux;
-                }
-
-                return OS.unknown;
+                CurrentOS = EPlatform.Linux;
+                CurrentPlatform = is64Bit ? EPlatform.Linux64 : EPlatform.Linux32;
             }
-
-            //From Managed.Windows.Forms/XplatUI
-            static bool
-            IsRunningOnMac()
+            else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX))
             {
-                var buf = System.IntPtr.Zero;
-                try
-                {
-                    buf = System.Runtime.InteropServices.Marshal.AllocHGlobal(8192);
-                    // This is a hacktastic way of getting sysname from uname ()
-                    if (uname(buf) == 0)
-                    {
-                        var os = System.Runtime.InteropServices.Marshal.PtrToStringAnsi(buf);
-                        if ("Darwin".Equals(os, System.StringComparison.Ordinal))
-                        {
-                            return true;
-                        }
-                    }
-                }
-                catch
-                {
-                }
-                finally
-                {
-                    if (buf != System.IntPtr.Zero)
-                    {
-                        System.Runtime.InteropServices.Marshal.FreeHGlobal(buf);
-                    }
-                }
-
-                return false;
+                CurrentOS = EPlatform.OSX;
+                CurrentPlatform = is64Bit ? EPlatform.OSX64 : EPlatform.OSX32;
             }
-        }
-
-        /// <summary>
-        /// Configure the current platform, based on .NET framework settings.
-        /// </summary>
-        public static void
-        SetupPlatform()
-        {
-            var os = Platform.GetOS();
-            switch (os)
+            else
             {
-                case Platform.OS.Windows:
-                    CurrentPlatform = CheckFor64BitOS ? EPlatform.Win64 : EPlatform.Win32;
-                    break;
-
-                case Platform.OS.Linux:
-                    CurrentPlatform = CheckFor64BitOS ? EPlatform.Linux64 : EPlatform.Linux32;
-                    break;
-
-                case Platform.OS.OSX:
-                    CurrentPlatform = CheckFor64BitOS ? EPlatform.OSX64 : EPlatform.OSX32;
-                    break;
-
-                default:
-                    throw new Exception("Unrecognized platform, {0}", os.ToString());
+                throw new Exception("Unrecognized platform");
             }
-
             IsLittleEndian = System.BitConverter.IsLittleEndian;
         }
 
@@ -151,23 +69,13 @@ namespace Bam.Core
         /// <param name="platform">Platform.</param>
         public static bool
         IsWindows(
-            EPlatform platform)
-        {
-            var isWindows = (EPlatform.Win32 == platform || EPlatform.Win64 == platform);
-            return isWindows;
-        }
+            EPlatform platform) => (EPlatform.Win32 == platform || EPlatform.Win64 == platform);
 
         /// <summary>
         /// Determines if Windows is the current platform.
         /// </summary>
         /// <value><c>true</c> if is windows hosting; otherwise, <c>false</c>.</value>
-        public static bool IsWindowsHosting
-        {
-            get
-            {
-                return IsWindows(CurrentPlatform);
-            }
-        }
+        public static bool IsWindowsHosting => IsWindows(CurrentPlatform);
 
         /// <summary>
         /// Determines if is Linux the specified platform.
@@ -176,23 +84,13 @@ namespace Bam.Core
         /// <param name="platform">Platform.</param>
         public static bool
         IsLinux(
-            EPlatform platform)
-        {
-            var isLinux = (EPlatform.Linux32 == platform || EPlatform.Linux64 == platform);
-            return isLinux;
-        }
+            EPlatform platform) => (EPlatform.Linux32 == platform || EPlatform.Linux64 == platform);
 
         /// <summary>
         /// Determines if Linux is the current platform.
         /// </summary>
         /// <value><c>true</c> if is linux hosting; otherwise, <c>false</c>.</value>
-        public static bool IsLinuxHosting
-        {
-            get
-            {
-                return IsLinux(CurrentPlatform);
-            }
-        }
+        public static bool IsLinuxHosting => IsLinux(CurrentPlatform);
 
         /// <summary>
         /// Determines if is OSX the specified platform.
@@ -201,23 +99,13 @@ namespace Bam.Core
         /// <param name="platform">Platform.</param>
         public static bool
         IsOSX(
-            EPlatform platform)
-        {
-            var isOSX = (EPlatform.OSX32 == platform || EPlatform.OSX64 == platform);
-            return isOSX;
-        }
+            EPlatform platform) => (EPlatform.OSX32 == platform || EPlatform.OSX64 == platform);
 
         /// <summary>
         /// Determines if OSX is the current platform.
         /// </summary>
         /// <value><c>true</c> if is OSX hosting; otherwise, <c>false</c>.</value>
-        public static bool IsOSXHosting
-        {
-            get
-            {
-                return IsOSX(CurrentPlatform);
-            }
-        }
+        public static bool IsOSXHosting => IsOSX(CurrentPlatform);
 
         /// <summary>
         /// Determines if the current platform is 64-bits.
@@ -226,23 +114,13 @@ namespace Bam.Core
         /// <param name="platform">Platform.</param>
         public static bool
         Is64Bit(
-            EPlatform platform)
-        {
-            var is64Bit = (EPlatform.Win64 == platform || EPlatform.Linux64 == platform || EPlatform.OSX64 == platform);
-            return is64Bit;
-        }
+            EPlatform platform) => (EPlatform.Win64 == platform || EPlatform.Linux64 == platform || EPlatform.OSX64 == platform);
 
         /// <summary>
         /// Determines if the current OS is 64-bit.
         /// </summary>
         /// <value><c>true</c> if is64 bit hosting; otherwise, <c>false</c>.</value>
-        public static bool Is64BitHosting
-        {
-            get
-            {
-                return Is64Bit(CurrentPlatform);
-            }
-        }
+        public static bool Is64BitHosting => Is64Bit(CurrentPlatform);
 
         /// <summary>
         /// Determines if the specified platform is supported by the current platform.
@@ -251,56 +129,25 @@ namespace Bam.Core
         /// <param name="supportedPlatforms">Supported platforms.</param>
         public static bool
         IsCurrentPlatformSupported(
-            EPlatform supportedPlatforms)
-        {
-            var isSupported = (CurrentPlatform == (supportedPlatforms & CurrentPlatform));
-            return isSupported;
-        }
+            EPlatform supportedPlatforms) => (CurrentPlatform == (supportedPlatforms & CurrentPlatform));
 
         /// <summary>
         /// Get the current platform in terms of the EPlatform enumeration.
         /// </summary>
-        /// <value>The current O.</value>
-        public static EPlatform
-        CurrentOS
-        {
-            get
-            {
-                var os = Platform.GetOS();
-                switch (os)
-                {
-                    case Platform.OS.Windows:
-                        return EPlatform.Windows;
-                    case Platform.OS.Linux:
-                        return EPlatform.Linux;
-                    case Platform.OS.OSX:
-                        return EPlatform.OSX;
-                    default:
-                        throw new Exception("Unknown platform");
-                }
-            }
-        }
+        /// <value>The current OS.</value>
+        public static EPlatform CurrentOS { get; private set; }
 
         /// <summary>
         /// Determine if the current platform is little endian.
         /// </summary>
         /// <value><c>true</c> if is little endian; otherwise, <c>false</c>.</value>
-        public static bool
-        IsLittleEndian
-        {
-            get;
-            private set;
-        }
+        public static bool IsLittleEndian { get; private set; }
 
         /// <summary>
         /// Retrieve the current platform.
         /// </summary>
         /// <value>The current platform.</value>
-        public static EPlatform CurrentPlatform
-        {
-            get;
-            private set;
-        }
+        public static EPlatform CurrentPlatform { get; private set; }
 
         /// <summary>
         /// Retrieve the path to 'Program Files'. This is the path where native architecture programs are installed.
@@ -331,7 +178,9 @@ namespace Bam.Core
                 {
                     throw new Exception("Only available on Windows");
                 }
-                var envVar = Is64BitHosting ? System.Environment.GetEnvironmentVariable("ProgramFiles(x86)") : System.Environment.GetEnvironmentVariable("ProgramFiles");
+                var envVar = Is64BitHosting ?
+                    System.Environment.GetEnvironmentVariable("ProgramFiles(x86)") :
+                    System.Environment.GetEnvironmentVariable("ProgramFiles");
                 return TokenizedString.CreateVerbatim(envVar);
             }
         }
@@ -371,9 +220,7 @@ namespace Bam.Core
                 {
                     throw new RunExecutableException(
                         result,
-                        "Failed while running '{0} {1}'",
-                        executable,
-                        arguments
+                        $"Failed while running '{executable} {arguments}'"
                     );
                 }
 
@@ -388,10 +235,7 @@ namespace Bam.Core
                 );
                 throw new RunExecutableException(
                     result,
-                    "Failed while trying to run '{0} {1}' because {2}",
-                    executable,
-                    arguments,
-                    exception.Message
+                    $"Failed while trying to run '{executable} {arguments}' because {exception.Message}"
                 );
             }
         }
@@ -423,7 +267,7 @@ namespace Bam.Core
         {
             lock (InstallLocationCache)
             {
-                var key = (null != uniqueName) ? uniqueName : executable;
+                var key = uniqueName ?? executable;
                 if (InstallLocationCache.ContainsKey(key))
                 {
                     return InstallLocationCache[key];
@@ -436,7 +280,7 @@ namespace Bam.Core
                         if (null != searchDirectory)
                         {
                             var args = new System.Text.StringBuilder();
-                            args.AppendFormat("/R \"{0}\" {1}", searchDirectory, executable);
+                            args.Append($"/R \"{searchDirectory}\" {executable}");
                             location = RunExecutable("where", args.ToString()).StandardOutput;
                         }
                         else
@@ -448,7 +292,7 @@ namespace Bam.Core
                             catch (RunExecutableException)
                             {
                                 var args = new System.Text.StringBuilder();
-                                args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesPath.ToString(), executable);
+                                args.Append($"/R \"{WindowsProgramFilesPath.ToString()}\" {executable}");
                                 try
                                 {
                                     location = RunExecutable("where", args.ToString()).StandardOutput;
@@ -457,7 +301,7 @@ namespace Bam.Core
                                 {
                                     args.Length = 0;
                                     args.Capacity = 0;
-                                    args.AppendFormat("/R \"{0}\" {1}", WindowsProgramFilesx86Path.ToString(), executable);
+                                    args.Append($"/R \"{WindowsProgramFilesx86Path.ToString()}\" {executable}");
                                     location = RunExecutable("where", args.ToString()).StandardOutput;
                                 }
                             }
@@ -467,7 +311,7 @@ namespace Bam.Core
                     {
                         if (null != searchDirectory)
                         {
-                            Log.DebugMessage("Search path '{0}' is ignored on non-Windows platforms", searchDirectory);
+                            Log.DebugMessage($"Search path '{searchDirectory}' is ignored on non-Windows platforms");
                         }
                         location = RunExecutable("which", executable).StandardOutput;
                     }
@@ -476,7 +320,7 @@ namespace Bam.Core
                 {
                     if (throwOnFailure)
                     {
-                        throw new Exception(exception, "Unable to locate '{0}' in the system.", executable);
+                        throw new Exception(exception, $"Unable to locate '{executable}' in the system.");
                     }
                     else
                     {

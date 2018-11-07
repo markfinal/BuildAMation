@@ -56,8 +56,6 @@ namespace Bam.Core
         {
             this.ProcessState = new BamState();
 
-            OSUtilities.SetupPlatform();
-
             this.Modules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, Array<Module>>();
             this.TopLevelModules = new System.Collections.Generic.List<Module>();
