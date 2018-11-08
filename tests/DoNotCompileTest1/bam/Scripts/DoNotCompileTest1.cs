@@ -42,10 +42,8 @@ namespace DoNotCompileTest1
 
             // impl.c is #included into main.c, so should not be compiled
             // but should appear in IDEs
-            source["impl.c"].ForEach(item =>
-                (item as C.ObjectFileBase).PerformCompilation = false);
-            source["library.c"].ForEach(item =>
-                (item as C.ObjectFileBase).PerformCompilation = false);
+            source["impl.c"].ForEach(item => item.PerformCompilation = false);
+            source["library.c"].ForEach(item => item.PerformCompilation = false);
         }
     }
 
@@ -62,10 +60,8 @@ namespace DoNotCompileTest1
 
             // impl.c is #included into library.c, so should not be compiled
             // but should appear in IDEs
-            source["impl.c"].ForEach(item =>
-                (item as C.ObjectFileBase).PerformCompilation = false);
-            source["main.c"].ForEach(item =>
-                (item as C.ObjectFileBase).PerformCompilation = false);
+            source["impl.c"].ForEach(item => item.PerformCompilation = false);
+            source["main.c"].ForEach(item => item.PerformCompilation = false);
         }
     }
 }

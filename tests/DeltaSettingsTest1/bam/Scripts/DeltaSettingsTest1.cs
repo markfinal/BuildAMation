@@ -27,8 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-using System.Linq;
 namespace DeltaSettingsTest1
 {
     sealed class Test :
@@ -36,7 +34,7 @@ namespace DeltaSettingsTest1
     {
         protected override void
         Init(
-            Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
