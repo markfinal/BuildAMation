@@ -69,7 +69,7 @@ namespace Test5
             var appAnchor = this.Include<MyDynamicLibTestApp>(C.ConsoleApplication.ExecutableKey);
 
             // copy the required runtime library next to the binary
-            if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&
+            if (this.BuildEnvironment.Configuration != Bam.Core.EConfiguration.Debug &&
                 (appAnchor.SourceModule as MyDynamicLibTestApp).Linker is VisualCCommon.LinkerBase)
             {
                 // just C runtime here

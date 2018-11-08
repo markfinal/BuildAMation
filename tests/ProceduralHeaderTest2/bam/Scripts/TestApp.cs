@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace ProceduralHeaderTest2
 {
     sealed class TestApp :
@@ -52,21 +51,8 @@ namespace ProceduralHeaderTest2
     class GenHeader :
         C.ProceduralHeaderFileFromToolOutput
     {
-        protected override TokenizedString OutputPath
-        {
-            get
-            {
-                return this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/genheader.h");
-            }
-        }
-
-        protected override ICommandLineTool SourceTool
-        {
-            get
-            {
-                return Bam.Core.Graph.Instance.FindReferencedModule<GenerateHeaderTool>();
-            }
-        }
+        protected override Bam.Core.TokenizedString OutputPath => this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/genheader.h");
+        protected override Bam.Core.ICommandLineTool SourceTool => Bam.Core.Graph.Instance.FindReferencedModule<GenerateHeaderTool>();
     }
 
     class LibraryUsingGeneratedHeader :
