@@ -27,8 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-using System.Linq;
 namespace InstallerTest1
 {
     public sealed class CExecutableRuntime :
@@ -36,7 +34,7 @@ namespace InstallerTest1
     {
         protected override void
         Init(
-            Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -44,12 +42,16 @@ namespace InstallerTest1
             var appAnchor = this.Include<CExecutable>(C.GUIApplication.ExecutableKey);
 
             // copy the required runtime library next to the binary
-            if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&
+            if (this.BuildEnvironment.Configuration != Bam.Core.EConfiguration.Debug &&
                 (appAnchor.SourceModule as CExecutable).Linker is VisualCCommon.LinkerBase)
             {
                 // just C runtime here
                 var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
-                this.IncludeFiles(runtimeLibrary.CRuntimePaths((appAnchor.SourceModule as C.CModule).BitDepth), this.ExecutableDir, appAnchor);
+                this.IncludeFiles(
+                    runtimeLibrary.CRuntimePaths((appAnchor.SourceModule as C.CModule).BitDepth),
+                    this.ExecutableDir,
+                    appAnchor
+                );
             }
         }
     }
@@ -59,7 +61,7 @@ namespace InstallerTest1
     {
         protected override void
         Init(
-            Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -67,13 +69,21 @@ namespace InstallerTest1
             var appAnchor = this.Include<CxxExecutable>(C.Cxx.GUIApplication.ExecutableKey);
 
             // copy the required runtime library next to the binary
-            if (this.BuildEnvironment.Configuration != EConfiguration.Debug &&
+            if (this.BuildEnvironment.Configuration != Bam.Core.EConfiguration.Debug &&
                 (appAnchor.SourceModule as CxxExecutable).Linker is VisualCCommon.LinkerBase)
             {
                 // both C and C++ runtimes here
                 var runtimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualCCommon.IRuntimeLibraryPathMeta>("VisualC");
-                this.IncludeFiles(runtimeLibrary.CRuntimePaths((appAnchor.SourceModule as C.CModule).BitDepth), this.ExecutableDir, appAnchor);
-                this.IncludeFiles(runtimeLibrary.CxxRuntimePaths((appAnchor.SourceModule as C.CModule).BitDepth), this.ExecutableDir, appAnchor);
+                this.IncludeFiles(runtimeLibrary.CRuntimePaths(
+                    (appAnchor.SourceModule as C.CModule).BitDepth),
+                    this.ExecutableDir,
+                    appAnchor
+                );
+                this.IncludeFiles(
+                    runtimeLibrary.CxxRuntimePaths((appAnchor.SourceModule as C.CModule).BitDepth),
+                    this.ExecutableDir,
+                    appAnchor
+                );
             }
         }
     }

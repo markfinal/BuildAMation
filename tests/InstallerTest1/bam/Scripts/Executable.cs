@@ -35,7 +35,7 @@ namespace InstallerTest1
     {
         protected override void
         Init(
-            Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -65,7 +65,7 @@ namespace InstallerTest1
     {
         protected override void
         Init(
-            Module parent)
+            Bam.Core.Module parent)
         {
             base.Init(parent);
 
@@ -74,7 +74,7 @@ namespace InstallerTest1
             this.CompileAndLinkAgainst<CxxStaticLibrary>(source);
             this.CompileAndLinkAgainst<CxxDynamicLibrary>(source);
 
-            if (this.BuildEnvironment.Platform.Includes(EPlatform.Windows) )
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) )
             {
                 source.PrivatePatch(settings =>
                     {

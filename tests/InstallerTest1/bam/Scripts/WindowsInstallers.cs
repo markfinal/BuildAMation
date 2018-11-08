@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace InstallerTest1
 {
     [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
@@ -40,7 +39,7 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_InnoSetupInstaller");
+            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("C_InnoSetupInstaller");
 
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }
@@ -56,7 +55,7 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_InnoSetupInstaller");
+            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_InnoSetupInstaller");
 
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }
@@ -72,7 +71,7 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_NSISInstaller");
+            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("C_NSISInstaller");
 
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }
@@ -88,7 +87,7 @@ namespace InstallerTest1
         {
             base.Init(parent);
 
-            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_NSISInstaller");
+            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_NSISInstaller");
 
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }

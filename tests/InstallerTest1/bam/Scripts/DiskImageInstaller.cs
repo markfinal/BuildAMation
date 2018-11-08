@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace InstallerTest1
 {
     [Bam.Core.ConfigurationFilter(Bam.Core.EConfiguration.NotDebug)]
@@ -46,7 +45,7 @@ namespace InstallerTest1
                     dmgSettings.ImageSize = "128m";
                 });
 
-            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("C_DiskImageInstaller");
+            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("C_DiskImageInstaller");
 
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }
@@ -68,7 +67,7 @@ namespace InstallerTest1
                 dmgSettings.ImageSize = "128m";
             });
 
-            this.Macros["OutputName"] = TokenizedString.CreateVerbatim("Cxx_DiskImageInstaller");
+            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_DiskImageInstaller");
 
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }
