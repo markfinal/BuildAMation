@@ -44,10 +44,7 @@ namespace CodeGenTest
         }
 
         protected override void
-        EvaluateInternal()
-        {
-            this.ReasonToExecute = Bam.Core.ExecuteReasoning.Undefined();
-        }
+        EvaluateInternal() => this.ReasonToExecute = Bam.Core.ExecuteReasoning.Undefined();
 
         protected override void
         ExecuteInternal(
@@ -81,12 +78,10 @@ namespace CodeGenTest
                     {
                         var output_paths = new Bam.Core.TokenizedStringArray();
                         output_paths.AddUnique(this.GeneratedPaths[SourceFileKey]);
-                        XcodeBuilder.Target target;
-                        XcodeBuilder.Configuration configuration;
                         XcodeBuilder.Support.AddPreBuildStepForCommandLineTool(
                             this,
-                            out target,
-                            out configuration,
+                            out XcodeBuilder.Target target,
+                            out XcodeBuilder.Configuration configuration,
                             true,
                             false,
                             addOrderOnlyDependencyOnTool: true,

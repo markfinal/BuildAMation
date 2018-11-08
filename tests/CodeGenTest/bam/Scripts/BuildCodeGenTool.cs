@@ -45,61 +45,20 @@ namespace CodeGenTest
 
         public Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module) where T : Bam.Core.Module
-        {
-            return new GeneratedSourceSettings(module);
-        }
+            T module) where T : Bam.Core.Module => new GeneratedSourceSettings(module);
 
-        public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> EnvironmentVariables
-        {
-            get;
-            private set;
-        }
+        public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> EnvironmentVariables { get; private set; }
 
-        public Bam.Core.StringArray InheritedEnvironmentVariables
-        {
-            get;
-            private set;
-        }
+        public Bam.Core.StringArray InheritedEnvironmentVariables { get; private set; }
 
-        public Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.GeneratedPaths[C.ConsoleApplication.ExecutableKey];
-            }
-        }
+        public Bam.Core.TokenizedString Executable => this.GeneratedPaths[C.ConsoleApplication.ExecutableKey];
 
-        public Bam.Core.TokenizedStringArray InitialArguments
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public Bam.Core.TokenizedStringArray InitialArguments => null;
 
-        public Bam.Core.TokenizedStringArray TerminatingArguments
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public Bam.Core.TokenizedStringArray TerminatingArguments => null;
 
-        public string UseResponseFileOption
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public string UseResponseFileOption => null;
 
-        Bam.Core.Array<int> Bam.Core.ICommandLineTool.SuccessfulExitCodes
-        {
-            get
-            {
-                return new Bam.Core.Array<int>(0);
-            }
-        }
+        Bam.Core.Array<int> Bam.Core.ICommandLineTool.SuccessfulExitCodes => new Bam.Core.Array<int>(0);
     }
 }

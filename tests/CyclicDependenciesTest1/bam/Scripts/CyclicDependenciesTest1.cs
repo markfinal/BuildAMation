@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace CyclicDependenciesTest1
 {
     class A :
@@ -45,20 +44,12 @@ namespace CyclicDependenciesTest1
 
         protected override void
         EvaluateInternal()
-        {
-        }
+        {}
 
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
-        {
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-        }
+        {}
     }
 
     class B :
@@ -76,20 +67,12 @@ namespace CyclicDependenciesTest1
 
         protected override void
         EvaluateInternal()
-        {
-        }
+        {}
 
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
-        {
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-        }
+        {}
     }
 
     sealed class C :
@@ -107,19 +90,11 @@ namespace CyclicDependenciesTest1
 
         protected override void
         EvaluateInternal()
-        {
-        }
+        {}
 
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
-        {
-        }
-
-        protected override void
-        GetExecutionPolicy(
-            string mode)
-        {
-        }
+        {}
     }
 }
