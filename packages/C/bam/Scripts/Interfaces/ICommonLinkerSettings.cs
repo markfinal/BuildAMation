@@ -40,50 +40,30 @@ namespace C
         /// Link for the particular number of bits in the architecture.
         /// </summary>
         /// <value>The bits.</value>
-        EBit Bits
-        {
-            get;
-            set;
-        }
+        EBit Bits { get; set; }
 
         /// <summary>
         /// Linker will generate a particular output type.
         /// </summary>
         /// <value>The type of the output.</value>
-        C.ELinkerOutput OutputType
-        {
-            get;
-            set;
-        }
+        C.ELinkerOutput OutputType { get; set; }
 
         /// <summary>
         /// Search paths the linker will use to find libraries.
         /// </summary>
         /// <value>The library paths.</value>
-        Bam.Core.TokenizedStringArray LibraryPaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray LibraryPaths { get; set; }
 
         /// <summary>
         /// Libraries to link against that are not Bam modules.
         /// </summary>
         /// <value>The libraries.</value>
-        Bam.Core.StringArray Libraries
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray Libraries { get; set; }
 
         /// <summary>
         /// Link with debugging symbol information.
         /// </summary>
         /// <value><c>true</c> if debug symbols; otherwise, <c>false</c>.</value>
-        bool DebugSymbols
-        {
-            get;
-            set;
-        }
+        bool DebugSymbols { get; set; }
     }
 }

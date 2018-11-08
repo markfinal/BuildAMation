@@ -40,20 +40,12 @@ namespace C
         /// Determine if the symbolic link should always be written, regardless of whether it exists
         /// </summary>
         /// <value><c>true</c> if force; otherwise, <c>false</c>.</value>
-        bool Force
-        {
-            get;
-            set;
-        }
+        bool Force { get; set; }
 
         /// <summary>
         /// Should symbolic links be soft or hard
         /// </summary>
         /// <value><c>true</c> if soft link; otherwise, <c>false</c>.</value>
-        bool SoftLink
-        {
-            get;
-            set;
-        }
+        bool SoftLink { get; set; }
     }
 }

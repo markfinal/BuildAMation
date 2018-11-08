@@ -46,28 +46,15 @@ namespace C
         /// Specify the path to the external executable to run.
         /// </summary>
         /// <value>The executable.</value>
-        public Bam.Core.TokenizedString Executable
-        {
-            get;
-            set;
-        }
+        public Bam.Core.TokenizedString Executable { get; set; }
 
         /// <summary>
         /// Specify the list of arguments to invoke the executable with.
         /// </summary>
         /// <value>The arguments.</value>
-        public Bam.Core.TokenizedStringArray Arguments
-        {
-            get;
-            private set;
-        }
+        public Bam.Core.TokenizedStringArray Arguments { get; private set; }
 
-        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>
-        InternalInputFiles
-        {
-            get;
-            set;
-        }
+        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> InternalInputFiles { get; set; }
 
         public System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> InputFiles
         {
@@ -87,7 +74,7 @@ namespace C
         {
             if (this.InternalInputFiles.ContainsKey(name))
             {
-                throw new Bam.Core.Exception("Input file '{0}' has already been added", name);
+                throw new Bam.Core.Exception($"Input file '{name}' has already been added");
             }
             this.InternalInputFiles.Add(name, path);
             this.Macros.Add(name, path);
@@ -97,11 +84,7 @@ namespace C
         /// Gets the output directory.
         /// </summary>
         /// <value>The output directory.</value>
-        public Bam.Core.TokenizedString OutputDirectory
-        {
-            get;
-            private set;
-        }
+        public Bam.Core.TokenizedString OutputDirectory { get; private set; }
 
         /// <summary>
         /// Specify the output directory to write files.
@@ -123,24 +106,11 @@ namespace C
         /// <value>The output directory.</value>
         public void
         SetOutputDirectory(
-            string dir_path)
-        {
-            this.SetOutputDirectory(this.CreateTokenizedString(dir_path));
-        }
+            string dir_path) => this.SetOutputDirectory(this.CreateTokenizedString(dir_path));
 
-        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> InternalExpectedOutputFileDictionary
-        {
-            get;
-            set;
-        }
+        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> InternalExpectedOutputFileDictionary { get; set; }
 
-        public System.Collections.Generic.IReadOnlyDictionary<string, Bam.Core.TokenizedString> ExpectedOutputFiles
-        {
-            get
-            {
-                return this.InternalExpectedOutputFileDictionary;
-            }
-        }
+        public System.Collections.Generic.IReadOnlyDictionary<string, Bam.Core.TokenizedString> ExpectedOutputFiles => this.InternalExpectedOutputFileDictionary;
 
         /// <summary>
         /// Adds the expected output file together with a key, that is used as a macro.
@@ -154,7 +124,7 @@ namespace C
         {
             if (this.InternalExpectedOutputFileDictionary.ContainsKey(name))
             {
-                throw new Bam.Core.Exception("Expected output file with key '{0}' has already been registered", name);
+                throw new Bam.Core.Exception($"Expected output file with key '{name}' has already been registered");
             }
             this.InternalExpectedOutputFileDictionary.Add(name, path);
             this.RegisterGeneratedFile(name, path);
@@ -243,20 +213,16 @@ namespace C
 #if D_PACKAGE_VSSOLUTIONBUILDER
                 case "VSSolution":
                     {
-                        var args = new Bam.Core.StringArray();
-                        args.Add(
-                            System.String.Format(
-                                "{0} {1}",
-                                this.Executable.ToStringQuoteIfNecessary(),
-                                this.Arguments.ToString(' ')
-                            )
-                        );
+                        var args = new Bam.Core.StringArray
+                        {
+                            $"{this.Executable.ToStringQuoteIfNecessary()} {this.Arguments.ToString(' ')}"
+                        };
 
                         VSSolutionBuilder.Support.AddCustomBuildStep(
                             this,
                             this.InputFiles,
                             this.ExpectedOutputFiles.Values,
-                            System.String.Format("Running '{0}'", args.ToString(' ')),
+                            $"Running '{args.ToString(' ')}'",
                             args,
                             true,
                             true

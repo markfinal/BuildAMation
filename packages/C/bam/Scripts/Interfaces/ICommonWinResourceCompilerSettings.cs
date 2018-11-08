@@ -40,30 +40,18 @@ namespace C
         /// Verbose output during resource compilation.
         /// </summary>
         /// <value>The verbose.</value>
-        bool? Verbose
-        {
-            get;
-            set;
-        }
+        bool? Verbose { get; set; }
 
         /// <summary>
         /// List of paths to search for user headers, i.e. those quoted with double quotes.
         /// </summary>
         /// <value>The include paths.</value>
-        Bam.Core.TokenizedStringArray IncludePaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray IncludePaths { get; set; }
 
         /// <summary>
         /// List of preprocessor defines, of the form key or key=value.
         /// </summary>
         /// <value>The preprocessor defines.</value>
-        C.PreprocessorDefinitions PreprocessorDefines
-        {
-            get;
-            set;
-        }
+        C.PreprocessorDefinitions PreprocessorDefines { get; set; }
     }
 }

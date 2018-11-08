@@ -40,31 +40,19 @@ namespace C
         /// Which exception handler to compile support for.
         /// </summary>
         /// <value>The exception handler.</value>
-        C.Cxx.EExceptionHandler? ExceptionHandler
-        {
-            get;
-            set;
-        }
+        C.Cxx.EExceptionHandler? ExceptionHandler { get; set; }
 
         /// <summary>
         /// Enable or disable RTTI.
         /// </summary>
         /// <value>true to enable, false to disable.</value>
-        bool? EnableRunTimeTypeInfo
-        {
-            get;
-            set;
-        }
+        bool? EnableRunTimeTypeInfo { get; set; }
 
         /// <summary>
         /// The C++ language standard to compile against.
         /// </summary>
         /// <value>The language standard.</value>
-        C.Cxx.ELanguageStandard? LanguageStandard
-        {
-            get;
-            set;
-        }
+        C.Cxx.ELanguageStandard? LanguageStandard { get; set; }
 
         /// <summary>
         /// The C++ standard library to compile against. Some support for the standard library
@@ -72,10 +60,6 @@ namespace C
         /// dealt with separately on the linker.
         /// </summary>
         /// <value>The standard library.</value>
-        C.Cxx.EStandardLibrary? StandardLibrary
-        {
-            get;
-            set;
-        }
+        C.Cxx.EStandardLibrary? StandardLibrary { get; set; }
     }
 }

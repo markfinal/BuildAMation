@@ -44,10 +44,6 @@ namespace C
         /// Array of extra command line settings.
         /// </summary>
         /// <value>The additional settings.</value>
-        Bam.Core.StringArray AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray AdditionalSettings { get; set; }
     }
 }

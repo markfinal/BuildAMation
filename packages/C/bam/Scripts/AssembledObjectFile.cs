@@ -55,12 +55,6 @@ namespace C
             }
         }
 
-        protected override bool RequiresHeaderEvaluation
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool RequiresHeaderEvaluation => false;
     }
 }

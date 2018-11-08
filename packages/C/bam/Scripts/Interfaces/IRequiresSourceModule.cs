@@ -31,10 +31,6 @@ namespace C
 {
     public interface IRequiresSourceModule
     {
-        SourceFile Source
-        {
-            get;
-            set;
-        }
+        SourceFile Source { get; set; }
     }
 }

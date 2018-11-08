@@ -32,7 +32,7 @@ namespace C
 {
     public static class DefaultToolchain
     {
-        private static Options.DefaultToolchainCommand SelectDefaultToolChainCommand = new Options.DefaultToolchainCommand();
+        private static readonly Options.DefaultToolchainCommand SelectDefaultToolChainCommand = new Options.DefaultToolchainCommand();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> C_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> Cxx_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> Archivers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
@@ -42,7 +42,7 @@ namespace C
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> ObjectiveCxx_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> WinResourceCompilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> Assemblers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
-        private static string UserToolchainOverride = null;
+        private static readonly string UserToolchainOverride = null;
 
         // name of the toolchain to use, after disambiguation
         private static System.Collections.Generic.Dictionary<EBit, string> DisambiguousToolchainToUse = new System.Collections.Generic.Dictionary<EBit, string>();
@@ -187,29 +187,27 @@ namespace C
             {
                 var candidates = collection[bitDepth];
                 var tooManyInstance = new System.Text.StringBuilder();
-                tooManyInstance.AppendFormat("There are {0} {1}s available for this platform in {2}-bits. Resolve using the command line option {3}=<choice>",
-                    candidates.Count,
-                    toolDescription,
-                    (int)bitDepth,
-                    (SelectDefaultToolChainCommand as Bam.Core.ICommandLineArgument).LongName);
-                tooManyInstance.AppendLine();
+                tooManyInstance.AppendLine(
+                    $"There are {candidates.Count} {toolDescription}s available for this platform in {(int)bitDepth}-bits. Resolve using the command line option {(SelectDefaultToolChainCommand as Bam.Core.ICommandLineArgument).LongName}=<choice>"
+                );
                 foreach (var tool in candidates)
                 {
-                    tooManyInstance.AppendFormat("\t{0}", tool.ToString());
-                    tooManyInstance.AppendLine();
+                    tooManyInstance.AppendLine($"\t{tool.ToString()}");
                 }
                 throw new Bam.Core.Exception(tooManyInstance.ToString());
             }
             var toolchainToUse = DisambiguousToolchainToUse[bitDepth];
             if (null == toolchainToUse)
             {
-                throw new Bam.Core.Exception("{0} tool is undefined in {1}-bit architectures", toolDescription, bitDepth.ToString());
+                throw new Bam.Core.Exception($"{toolDescription} tool is undefined in {bitDepth.ToString()}-bit architectures");
             }
             var toolTypeCollection = collection[bitDepth];
             var toolTypeToInstantiate = toolTypeCollection.FirstOrDefault(item => (item.GetCustomAttributes(false)[0] as ToolRegistrationAttribute).ToolsetName.Equals(toolchainToUse, System.StringComparison.Ordinal));
             if (null == toolTypeToInstantiate)
             {
-                throw new Bam.Core.Exception("Unable to identify {0} tool in {1}-bit architectures for toolchain {2}", toolDescription, bitDepth.ToString(), toolchainToUse);
+                throw new Bam.Core.Exception(
+                    $"Unable to identify {toolDescription} tool in {bitDepth.ToString()}-bit architectures for toolchain {toolchainToUse}"
+                );
             }
             toolModule = Bam.Core.Graph.Instance.MakeModuleOfType<ToolType>(toolTypeToInstantiate);
             return toolModule;
@@ -217,65 +215,38 @@ namespace C
 
         public static CompilerTool
         C_Compiler(
-            EBit bitDepth)
-        {
-            return GetTool<CompilerTool>(C_Compilers, bitDepth, "C compiler", ref Default[bitDepth].c_compiler);
-        }
+            EBit bitDepth) => GetTool<CompilerTool>(C_Compilers, bitDepth, "C compiler", ref Default[bitDepth].c_compiler);
 
         public static CompilerTool
         Cxx_Compiler(
-            EBit bitDepth)
-        {
-            return GetTool<CompilerTool>(Cxx_Compilers, bitDepth, "C++ compiler", ref Default[bitDepth].cxx_compiler);
-        }
+            EBit bitDepth) => GetTool<CompilerTool>(Cxx_Compilers, bitDepth, "C++ compiler", ref Default[bitDepth].cxx_compiler);
 
         public static LibrarianTool
         Librarian(
-            EBit bitDepth)
-        {
-            return GetTool<LibrarianTool>(Archivers, bitDepth, "librarian", ref Default[bitDepth].librarian);
-        }
+            EBit bitDepth) => GetTool<LibrarianTool>(Archivers, bitDepth, "librarian", ref Default[bitDepth].librarian);
 
         public static LinkerTool
         C_Linker(
-            EBit bitDepth)
-        {
-            return GetTool<LinkerTool>(C_Linkers, bitDepth, "C linker", ref Default[bitDepth].c_linker);
-        }
+            EBit bitDepth) => GetTool<LinkerTool>(C_Linkers, bitDepth, "C linker", ref Default[bitDepth].c_linker);
 
         public static LinkerTool
         Cxx_Linker(
-            EBit bitDepth)
-        {
-            return GetTool<LinkerTool>(Cxx_Linkers, bitDepth, "C++ linker", ref Default[bitDepth].cxx_linker);
-        }
+            EBit bitDepth) => GetTool<LinkerTool>(Cxx_Linkers, bitDepth, "C++ linker", ref Default[bitDepth].cxx_linker);
 
         public static CompilerTool
         ObjectiveC_Compiler(
-            EBit bitDepth)
-        {
-            return GetTool<CompilerTool>(ObjectiveC_Compilers, bitDepth, "Objective C compiler", ref Default[bitDepth].objc_compiler);
-        }
+            EBit bitDepth) => GetTool<CompilerTool>(ObjectiveC_Compilers, bitDepth, "Objective C compiler", ref Default[bitDepth].objc_compiler);
 
         public static CompilerTool
         ObjectiveCxx_Compiler(
-            EBit bitDepth)
-        {
-            return GetTool<CompilerTool>(ObjectiveCxx_Compilers, bitDepth, "Objective C++ compiler", ref Default[bitDepth].objcxx_compiler);
-        }
+            EBit bitDepth) => GetTool<CompilerTool>(ObjectiveCxx_Compilers, bitDepth, "Objective C++ compiler", ref Default[bitDepth].objcxx_compiler);
 
         public static WinResourceCompilerTool
         WinResource_Compiler(
-            EBit bitDepth)
-        {
-            return GetTool<WinResourceCompilerTool>(WinResourceCompilers, bitDepth, "Windows resource compiler", ref Default[bitDepth].winres_compiler);
-        }
+            EBit bitDepth) => GetTool<WinResourceCompilerTool>(WinResourceCompilers, bitDepth, "Windows resource compiler", ref Default[bitDepth].winres_compiler);
 
         public static AssemblerTool
         Assembler(
-            EBit bitDepth)
-        {
-            return GetTool<AssemblerTool>(Assemblers, bitDepth, "Assembler", ref Default[bitDepth].assembler);
-        }
+            EBit bitDepth) => GetTool<AssemblerTool>(Assemblers, bitDepth, "Assembler", ref Default[bitDepth].assembler);
     }
 }

@@ -41,10 +41,6 @@ namespace C
         /// the operating system are used but should not be.
         /// </summary>
         /// <value>The minimum version supported.</value>
-        string MacOSXMinimumVersionSupported
-        {
-            get;
-            set;
-        }
+        string MacOSXMinimumVersionSupported { get; set; }
     }
 }

@@ -40,10 +40,6 @@ namespace C
         /// The C language standard to compile against.
         /// </summary>
         /// <value>The language standard.</value>
-        C.ELanguageStandard? LanguageStandard
-        {
-            get;
-            set;
-        }
+        C.ELanguageStandard? LanguageStandard { get; set; }
     }
 }

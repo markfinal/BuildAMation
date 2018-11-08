@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
     /// <summary>
@@ -50,37 +51,16 @@ namespace C
         SetSemanticVersion(
             int major,
             int minor,
-            int patch)
-        {
-            this.SetSemanticVersion(
-                major.ToString(),
-                minor.ToString(),
-                patch.ToString()
-            );
-        }
+            int patch) => this.SetSemanticVersion(major.ToString(), minor.ToString(), patch.ToString());
 
         protected void
         SetSemanticVersion(
             int major,
-            int minor)
-        {
-            this.SetSemanticVersion(
-                major.ToString(),
-                minor.ToString(),
-                null
-            );
-        }
+            int minor) => this.SetSemanticVersion(major.ToString(), minor.ToString(), null);
 
         protected void
         SetSemanticVersion(
-            int major)
-        {
-            this.SetSemanticVersion(
-                major.ToString(),
-                null,
-                null
-            );
-        }
+            int major) => this.SetSemanticVersion(major.ToString(), null, null);
 
         protected void
         SetSemanticVersion(
@@ -121,20 +101,12 @@ namespace C
         /// <summary>
         /// Query whether the module has the C.Prebuilt attribute assigned to it.
         /// </summary>
-        public bool IsPrebuilt
-        {
-            get;
-            private set;
-        }
+        public bool IsPrebuilt { get; private set; }
 
         /// <summary>
         /// Query whether the module has the C.Thirdparty attribute assigned to it, and extract the Windows version .rc resource path.
         /// </summary>
-        public string ThirdpartyWindowsVersionResourcePath
-        {
-            get;
-            private set;
-        }
+        public string ThirdpartyWindowsVersionResourcePath { get; private set; }
 
         protected override void
         Init(
@@ -149,7 +121,9 @@ namespace C
             {
                 if (thirdpartyAttrs.Length > 1)
                 {
-                    throw new Bam.Core.Exception("Too many {0} attributes on {1}", typeof(ThirdpartyAttribute).ToString(), this.GetType().ToString());
+                    throw new Bam.Core.Exception(
+                        $"Too many {typeof(ThirdpartyAttribute).ToString()} attributes on {this.GetType().ToString()}"
+                    );
                 }
                 this.ThirdpartyWindowsVersionResourcePath = thirdpartyAttrs[0].WindowsVersionResourcePath;
             }
@@ -161,11 +135,7 @@ namespace C
             }
         }
 
-        public EBit BitDepth
-        {
-            get;
-            set;
-        }
+        public EBit BitDepth { get; set; }
 
         protected static Bam.Core.Array<Bam.Core.Module>
         FlattenHierarchicalFileList(
@@ -274,7 +244,7 @@ namespace C
             // order only dependencies - recurse into each, so that all layers
             // of order only dependencies are included
             var queue = new System.Collections.Generic.Queue<Bam.Core.Module>(this.Requirements);
-            while (queue.Count > 0)
+            while (queue.Any())
             {
                 var required = queue.Dequeue();
                 foreach (var additional in required.Requirements)
@@ -293,10 +263,10 @@ namespace C
                 }
                 yield return dependent;
             }
-            if (this is IForwardedLibraries)
+            if (this is IForwardedLibraries forwarded)
             {
                 // however, there may be forwarded libraries, and these are useful order only dependents
-                foreach (var dependent in (this as IForwardedLibraries).ForwardedLibraries)
+                foreach (var dependent in forwarded.ForwardedLibraries)
                 {
                     yield return dependent;
                 }

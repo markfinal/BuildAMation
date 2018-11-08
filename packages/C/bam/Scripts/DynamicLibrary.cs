@@ -38,7 +38,7 @@ namespace C
         IDynamicLibrary,
         IForwardedLibraries
     {
-        private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
+        private readonly Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
         private SharedObjectSymbolicLink linkerNameSymLink = null;
         private SharedObjectSymbolicLink soNameSymLink = null;
 
@@ -90,8 +90,7 @@ namespace C
 
             this.PrivatePatch(settings =>
             {
-                var linker = settings as C.ICommonLinkerSettings;
-                if (null != linker)
+                if (settings is C.ICommonLinkerSettings linker)
                 {
                     linker.OutputType = ELinkerOutput.DynamicLibrary;
                 }
@@ -99,13 +98,7 @@ namespace C
         }
 
         // TODO: what is this used for?
-        public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> Source
-        {
-            get
-            {
-                return this.sourceModules.ToReadOnlyCollection();
-            }
-        }
+        public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> Source => this.sourceModules.ToReadOnlyCollection();
 
         public sealed override CObjectFileCollection
         CreateCSourceContainer(
@@ -127,11 +120,7 @@ namespace C
         CreateAssemblerSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null)
-        {
-            var collection = base.CreateAssemblerSourceContainer(wildcardPath, macroModuleOverride, filter);
-            return collection;
-        }
+            System.Text.RegularExpressions.Regex filter = null) => base.CreateAssemblerSourceContainer(wildcardPath, macroModuleOverride, filter);
 
         /// <summary>
         /// Specified sources compile against DependentModule, and re-exports the public patches
@@ -160,11 +149,7 @@ namespace C
             }
             foreach (var source in sources)
             {
-                if (null == source)
-                {
-                    continue;
-                }
-                source.UsePublicPatches(dependent);
+                source?.UsePublicPatches(dependent);
             }
             this.UsePublicPatches(dependent);
         }
@@ -208,8 +193,8 @@ namespace C
             {
                 return;
             }
-            this.addLinkDependency(dependent);
-            this.addRuntimeDependency(dependent);
+            this.AddLinkDependency(dependent);
+            this.AddRuntimeDependency(dependent);
             if (dependent is C.DynamicLibrary || dependent is C.Cxx.DynamicLibrary)
             {
                 this.forwardedDeps.AddUnique(dependent);
@@ -250,21 +235,9 @@ namespace C
             base.ExecuteInternal(context);
         }
 
-        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
-        {
-            get
-            {
-                return this.forwardedDeps.ToReadOnlyCollection();
-            }
-        }
+        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps.ToReadOnlyCollection();
 
-        SharedObjectSymbolicLink IDynamicLibrary.LinkerNameSymbolicLink
-        {
-            get
-            {
-                return this.linkerNameSymLink;
-            }
-        }
+        SharedObjectSymbolicLink IDynamicLibrary.LinkerNameSymbolicLink => this.linkerNameSymLink;
         protected SharedObjectSymbolicLink LinkerNameSymbolicLink
         {
             set
@@ -273,13 +246,7 @@ namespace C
             }
         }
 
-        SharedObjectSymbolicLink IDynamicLibrary.SONameSymbolicLink
-        {
-            get
-            {
-                return this.soNameSymLink;
-            }
-        }
+        SharedObjectSymbolicLink IDynamicLibrary.SONameSymbolicLink => this.soNameSymLink;
         protected SharedObjectSymbolicLink SONameSymbolicLink
         {
             set

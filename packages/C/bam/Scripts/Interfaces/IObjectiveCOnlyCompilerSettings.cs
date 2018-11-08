@@ -40,10 +40,6 @@ namespace C
         /// Which class to use for constant strings.
         /// </summary>
         /// <value>The constant string class.</value>
-        string ConstantStringClass
-        {
-            get;
-            set;
-        }
+        string ConstantStringClass { get; set; }
     }
 }

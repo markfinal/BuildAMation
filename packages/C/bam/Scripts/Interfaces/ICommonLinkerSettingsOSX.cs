@@ -40,60 +40,36 @@ namespace C
         /// Array of framework paths to link against.
         /// </summary>
         /// <value>The frameworks.</value>
-        Bam.Core.TokenizedStringArray Frameworks
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray Frameworks { get; set; }
 
         /// <summary>
         /// Array of paths the linker uses to search for frameworks.
         /// </summary>
         /// <value>The framework search paths.</value>
-        Bam.Core.TokenizedStringArray FrameworkSearchPaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray FrameworkSearchPaths { get; set; }
 
         /// <summary>
         /// For dylibs, the install name to use.
         /// </summary>
         /// <value>The name of the install.</value>
-        Bam.Core.TokenizedString InstallName
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString InstallName { get; set; }
 
         /// <summary>
         /// Minimum version of macOS supported for the binary.
         /// </summary>
         /// <value>The minimum version supported.</value>
-        string MacOSMinimumVersionSupported
-        {
-            get;
-            set;
-        }
+        string MacOSMinimumVersionSupported { get; set; }
 
         /// <summary>
         /// Specifies the current version of the dylib, or null
         /// if not defined.
         /// </summary>
-        Bam.Core.TokenizedString CurrentVersion
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString CurrentVersion { get; set; }
 
         /// <summary>
         /// Specifies the compatibility version of the dylib, or null
         /// if not defined.
         /// </summary>
-        Bam.Core.TokenizedString CompatibilityVersion
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString CompatibilityVersion { get; set; }
     }
 }

@@ -34,15 +34,8 @@ namespace C
         System.Attribute
     {
         public ThirdpartyAttribute(
-            string windowsVersionResourcePath = null)
-        {
-            this.WindowsVersionResourcePath = windowsVersionResourcePath;
-        }
+            string windowsVersionResourcePath = null) => this.WindowsVersionResourcePath = windowsVersionResourcePath;
 
-        public string WindowsVersionResourcePath
-        {
-            get;
-            private set;
-        }
+        public string WindowsVersionResourcePath { get; private set; }
     }
 }

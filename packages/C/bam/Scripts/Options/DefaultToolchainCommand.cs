@@ -32,28 +32,8 @@ namespace C.Options
     public class DefaultToolchainCommand :
         Bam.Core.IStringCommandLineArgument
     {
-        string Bam.Core.ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--C.toolchain";
-            }
-        }
-
-        string Bam.Core.ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string Bam.Core.ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Define the default C toolchain, used as resolution when multiple toolchains are present";
-            }
-        }
+        string Bam.Core.ICommandLineArgument.LongName => "--C.toolchain";
+        string Bam.Core.ICommandLineArgument.ShortName => null;
+        string Bam.Core.ICommandLineArgument.ContextHelp => "Define the default C toolchain, used as resolution when multiple toolchains are present";
     }
 }

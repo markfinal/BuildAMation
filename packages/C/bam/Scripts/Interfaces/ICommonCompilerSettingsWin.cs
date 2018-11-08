@@ -40,10 +40,6 @@ namespace C
         /// Specify the character set to use for compilation.
         /// </summary>
         /// <value>The character set.</value>
-        C.ECharacterSet? CharacterSet
-        {
-            get;
-            set;
-        }
+        C.ECharacterSet? CharacterSet { get; set; }
     }
 }

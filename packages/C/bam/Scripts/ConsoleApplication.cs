@@ -40,7 +40,7 @@ namespace C
         CModule
     {
         protected Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
-        private Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
+        private readonly Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
         public const string ExecutableKey = "Executable File";
         public const string ImportLibraryKey = "Windows Import Library File";
         public const string PDBKey = "Windows Program DataBase File";
@@ -95,13 +95,7 @@ namespace C
                 });
         }
 
-        public override string CustomOutputSubDirectory
-        {
-            get
-            {
-                return "bin";
-            }
-        }
+        public override string CustomOutputSubDirectory => "bin";
 
         /// <summary>
         /// Access the headers files associated with this executable.
@@ -270,21 +264,16 @@ namespace C
             }
             foreach (var source in sources)
             {
-                if (null == source)
-                {
-                    continue;
-                }
-                source.UsePublicPatches(dependent);
+                source?.UsePublicPatches(dependent);
             }
         }
 
         protected void
-        addLinkDependency(
+        AddLinkDependency(
             Bam.Core.Module dependent)
         {
-            if (dependent is IDynamicLibrary)
+            if (dependent is IDynamicLibrary dynamicLib)
             {
-                var dynamicLib = dependent as IDynamicLibrary;
                 if (dynamicLib.LinkerNameSymbolicLink != null)
                 {
                     this.DependsOn(dynamicLib.LinkerNameSymbolicLink);
@@ -298,12 +287,11 @@ namespace C
         }
 
         protected void
-        addRuntimeDependency(
+        AddRuntimeDependency(
             Bam.Core.Module dependent)
         {
-            if (dependent is IDynamicLibrary)
+            if (dependent is IDynamicLibrary dynamicLib)
             {
-                var dynamicLib = dependent as IDynamicLibrary;
                 if (dynamicLib.SONameSymbolicLink != null)
                 {
                     this.Requires(dynamicLib.SONameSymbolicLink);
@@ -326,8 +314,8 @@ namespace C
             {
                 return;
             }
-            this.addLinkDependency(dependent);
-            this.addRuntimeDependency(dependent);
+            this.AddLinkDependency(dependent);
+            this.AddRuntimeDependency(dependent);
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
             this.UsePublicPatchesPrivately(dependent);
         }
@@ -349,22 +337,17 @@ namespace C
                 {
                     return;
                 }
-                this.addRuntimeDependency(dependent);
+                this.AddRuntimeDependency(dependent);
                 foreach (var source in affectedSources)
                 {
-                    if (null == source)
-                    {
-                        continue;
-                    }
-                    source.UsePublicPatches(dependent);
+                    source?.UsePublicPatches(dependent);
                 }
             }
             catch (Bam.Core.UnableToBuildModuleException exception)
             {
-                Bam.Core.Log.Info("Unable to build {0} required by {1} because {2}, but the build will continue",
-                    typeof(DependentModule).ToString(),
-                    this.GetType().ToString(),
-                    exception.Message);
+                Bam.Core.Log.Info(
+                    $"Unable to build {typeof(DependentModule).ToString()} required by {this.GetType().ToString()} because {exception.Message}, but the build will continue"
+                );
             }
         }
 
@@ -384,8 +367,8 @@ namespace C
             {
                 return;
             }
-            this.addLinkDependency(dependent);
-            this.addRuntimeDependency(dependent);
+            this.AddLinkDependency(dependent);
+            this.AddRuntimeDependency(dependent);
             var sources = new CModule[additionalSources.Length + 1];
             sources[0] = affectedSource;
             if (additionalSources.Length > 0)
@@ -394,11 +377,7 @@ namespace C
             }
             foreach (var source in sources)
             {
-                if (null == source)
-                {
-                    continue;
-                }
-                source.UsePublicPatches(dependent);
+                source?.UsePublicPatches(dependent);
             }
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
             this.UsePublicPatchesPrivately(dependent);
@@ -418,8 +397,8 @@ namespace C
             // recursive
             foreach (var forwarded in withForwarded.ForwardedLibraries)
             {
-                this.addLinkDependency(forwarded);
-                this.addRuntimeDependency(forwarded);
+                this.AddLinkDependency(forwarded);
+                this.AddRuntimeDependency(forwarded);
                 this.linkedModules.AddUnique(forwarded);
                 this.LinkAllForwardedDependenciesFromLibraries(forwarded);
             }
@@ -451,12 +430,10 @@ namespace C
             // graph, but just won't do anything
             foreach (var child in dependent.Children)
             {
-                var childAsObjectFile = child as ObjectFileBase;
-                if (null == childAsObjectFile)
+                if (child is ObjectFileBase childAsObjectFile)
                 {
-                    continue;
+                    childAsObjectFile.PerformCompilation = false;
                 }
-                childAsObjectFile.PerformCompilation = false;
             }
 
             affectedSource.ExtendWith(dependent);
@@ -560,10 +537,7 @@ namespace C
             var binaryWriteTime = System.IO.File.GetLastWriteTime(binaryPath);
             foreach (var source in this.linkedModules)
             {
-                if (null != source.EvaluationTask)
-                {
-                    source.EvaluationTask.Wait();
-                }
+                source?.EvaluationTask.Wait();
                 if (null != source.ReasonToExecute)
                 {
                     switch (source.ReasonToExecute.Reason)
@@ -587,10 +561,7 @@ namespace C
             }
             foreach (var source in this.sourceModules)
             {
-                if (null != source.EvaluationTask)
-                {
-                    source.EvaluationTask.Wait();
-                }
+                source?.EvaluationTask.Wait();
                 if (null != source.ReasonToExecute)
                 {
                     switch (source.ReasonToExecute.Reason)
@@ -648,10 +619,6 @@ namespace C
         /// Reference to the module generated internally for Windows versioning of this binary.
         /// This can be used to attach local patches or dependencies, e.g. to satisfy header search paths.
         /// </summary>
-        public WinResource WindowsVersionResource
-        {
-            get;
-            private set;
-        }
+        public WinResource WindowsVersionResource { get; private set; }
     }
 }

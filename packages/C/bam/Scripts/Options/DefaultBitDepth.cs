@@ -32,36 +32,9 @@ namespace C.Options
     public sealed class DefaultBitDepth :
         Bam.Core.IIntegerCommandLineArgument
     {
-        string Bam.Core.ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Change the default bit depth of the builds. Default is 64.";
-            }
-        }
-
-        string Bam.Core.ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--C.bitdepth";
-            }
-        }
-
-        string Bam.Core.ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        int Bam.Core.ICommandLineArgumentDefault<int>.Default
-        {
-            get
-            {
-                return 64;
-            }
-        }
+        string Bam.Core.ICommandLineArgument.ContextHelp => "Change the default bit depth of the builds. Default is 64.";
+        string Bam.Core.ICommandLineArgument.LongName => "--C.bitdepth";
+        string Bam.Core.ICommandLineArgument.ShortName => null;
+        int Bam.Core.ICommandLineArgumentDefault<int>.Default => 64;
     }
 }

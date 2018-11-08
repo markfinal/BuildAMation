@@ -35,5 +35,5 @@ namespace C
     /// </summary>
     public abstract class CSDKModule :
         CModule
-    { }
+    {}
 }
