@@ -54,11 +54,11 @@ namespace AssemblerTest2
                     asmSource.AddFiles("$(packagedir)/source/*.asm");
                     if (this.BitDepth == C.EBit.ThirtyTwo)
                     {
-                        asmSource["helloworld64.asm"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                        asmSource["helloworld64.asm"].ForEach(item => item.PerformCompilation = false);
                     }
                     else
                     {
-                        asmSource["helloworld32.asm"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                        asmSource["helloworld32.asm"].ForEach(item => item.PerformCompilation = false);
                     }
                 }
             }
@@ -67,40 +67,42 @@ namespace AssemblerTest2
                 asmSource.AddFiles("$(packagedir)/source/clang/*.s");
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
-                    asmSource["helloworld64.s"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    asmSource["helloworld64.s"].ForEach(item => item.PerformCompilation = false);
                 }
                 else
                 {
-                    asmSource["helloworld32.s"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    asmSource["helloworld32.s"].ForEach(item => item.PerformCompilation = false);
                 }
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var gccMeta = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-                var gccVersion = gccMeta.CompilerVersion;
-                if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_7))
+                var gccVersion = gccMeta.ToolchainVersion;
+                if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_7))
                 {
                     asmSource.AddFiles("$(packagedir)/source/gcc/7/*.S");
                 }
-                else if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_5))
+                else if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_5))
                 {
                     asmSource.AddFiles("$(packagedir)/source/gcc/5/*.S");
                 }
-                else if (gccVersion.AtLeast(GccCommon.CompilerVersion.GCC_4_8_4))
+                else if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_4_8_4))
                 {
                     asmSource.AddFiles("$(packagedir)/source/gcc/4/*.S");
                 }
                 else
                 {
-                    throw new Bam.Core.Exception("No assembly code found for GCC version {0}", gccVersion.ToString());
+                    throw new Bam.Core.Exception(
+                        $"No assembly code found for GCC version {gccVersion.ToString()}"
+                    );
                 }
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
-                    asmSource["helloworld64.S"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    asmSource["helloworld64.S"].ForEach(item => item.PerformCompilation = false);
                 }
                 else
                 {
-                    asmSource["helloworld32.S"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    asmSource["helloworld32.S"].ForEach(item => item.PerformCompilation = false);
                 }
             }
 

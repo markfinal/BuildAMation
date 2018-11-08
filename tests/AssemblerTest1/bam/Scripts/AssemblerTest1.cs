@@ -51,11 +51,11 @@ namespace AssemblerTest1
                     source.AddFiles("$(packagedir)/source/*.asm");
                     if (this.BitDepth == C.EBit.ThirtyTwo)
                     {
-                        source["helloworld64.asm"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                        source["helloworld64.asm"].ForEach(item => item.PerformCompilation = false);
                     }
                     else
                     {
-                        source["helloworld32.asm"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                        source["helloworld32.asm"].ForEach(item => item.PerformCompilation = false);
                     }
                 }
             }
@@ -64,11 +64,11 @@ namespace AssemblerTest1
                 source.AddFiles("$(packagedir)/source/clang/*.s");
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
-                    source["helloworld64.s"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    source["helloworld64.s"].ForEach(item => item.PerformCompilation = false);
                 }
                 else
                 {
-                    source["helloworld32.s"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    source["helloworld32.s"].ForEach(item => item.PerformCompilation = false);
                 }
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
@@ -89,15 +89,17 @@ namespace AssemblerTest1
                 }
                 else
                 {
-                    throw new Bam.Core.Exception("No assembly code found for GCC version {0}", gccVersion.ToString());
+                    throw new Bam.Core.Exception(
+                        $"No assembly code found for GCC version {gccVersion.ToString()}"
+                    );
                 }
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
-                    source["helloworld64.S"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    source["helloworld64.S"].ForEach(item => item.PerformCompilation = false);
                 }
                 else
                 {
-                    source["helloworld32.S"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    source["helloworld32.S"].ForEach(item => item.PerformCompilation = false);
                 }
             }
 
@@ -136,11 +138,11 @@ namespace AssemblerTest1
                     source.AddFiles("$(packagedir)/source/*.asm");
                     if (this.BitDepth == C.EBit.ThirtyTwo)
                     {
-                        source["helloworld64.asm"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                        source["helloworld64.asm"].ForEach(item => item.PerformCompilation = false);
                     }
                     else
                     {
-                        source["helloworld32.asm"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                        source["helloworld32.asm"].ForEach(item => item.PerformCompilation = false);
                     }
                 }
             }
@@ -149,11 +151,11 @@ namespace AssemblerTest1
                 source.AddFiles("$(packagedir)/source/clang/*.s");
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
-                    source["helloworld64.s"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    source["helloworld64.s"].ForEach(item => item.PerformCompilation = false);
                 }
                 else
                 {
-                    source["helloworld32.s"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    source["helloworld32.s"].ForEach(item => item.PerformCompilation = false);
                 }
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
@@ -174,15 +176,17 @@ namespace AssemblerTest1
                 }
                 else
                 {
-                    throw new Bam.Core.Exception("No assembly code found for GCC version {0}", gccVersion.ToString());
+                    throw new Bam.Core.Exception(
+                        $"No assembly code found for GCC version {gccVersion.ToString()}"
+                    );
                 }
                 if (this.BitDepth == C.EBit.ThirtyTwo)
                 {
-                    source["helloworld64.S"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    source["helloworld64.S"].ForEach(item => item.PerformCompilation = false);
                 }
                 else
                 {
-                    source["helloworld32.S"].ForEach(item => (item as C.ObjectFileBase).PerformCompilation = false);
+                    source["helloworld32.S"].ForEach(item => item.PerformCompilation = false);
                 }
             }
         }
