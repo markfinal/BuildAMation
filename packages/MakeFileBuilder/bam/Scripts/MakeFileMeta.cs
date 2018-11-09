@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace MakeFileBuilder
 {
     public sealed class MakeFileMeta :
@@ -36,7 +35,7 @@ namespace MakeFileBuilder
         private static Bam.Core.Array<MakeFileMeta> allMeta = new Bam.Core.Array<MakeFileMeta>();
 
         private static void
-        addMeta(
+        AddMeta(
             MakeFileMeta meta)
         {
             lock (allMeta)
@@ -47,7 +46,7 @@ namespace MakeFileBuilder
 
         // only for the BuildModeMetaData
         public MakeFileMeta()
-        { }
+        {}
 
         public MakeFileMeta(
             Bam.Core.Module module)
@@ -56,14 +55,10 @@ namespace MakeFileBuilder
             module.MetaData = this;
             this.CommonMetaData = Bam.Core.Graph.Instance.MetaData as MakeFileCommonMetaData;
             this.Rules = new Bam.Core.Array<Rule>();
-            addMeta(this);
+            AddMeta(this);
         }
 
-        public MakeFileCommonMetaData CommonMetaData
-        {
-            get;
-            private set;
-        }
+        public MakeFileCommonMetaData CommonMetaData { get; private set; }
 
         public Rule
         AddRule()
@@ -73,17 +68,9 @@ namespace MakeFileBuilder
             return rule;
         }
 
-        public Bam.Core.Array<Rule> Rules
-        {
-            get;
-            private set;
-        }
+        public Bam.Core.Array<Rule> Rules { get; private set; }
 
-        private Bam.Core.Module Module
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Module Module { get; set; }
 
         public static void PreExecution()
         {
@@ -223,7 +210,7 @@ namespace MakeFileBuilder
                 writer.Write(makeRules.ToString());
             }
 
-            Bam.Core.Log.Info("Successfully created MakeFile for package '{0}'\n\t{1}", graph.MasterPackage.Name, makeFilePath);
+            Bam.Core.Log.Info($"Successfully created MakeFile for package '{graph.MasterPackage.Name}'\n\t{makeFilePath}");
         }
 
         Bam.Core.TokenizedString
@@ -240,20 +227,7 @@ namespace MakeFileBuilder
             return Bam.Core.TokenizedString.CreateVerbatim(outputDir);
         }
 
-        bool Bam.Core.IBuildModeMetaData.PublishBesideExecutable
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        bool Bam.Core.IBuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles
-        {
-            get
-            {
-                return false;
-            }
-        }
+        bool Bam.Core.IBuildModeMetaData.PublishBesideExecutable => false;
+        bool Bam.Core.IBuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles => false;
     }
 }

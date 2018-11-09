@@ -33,36 +33,9 @@ namespace MakeFileBuilder.Options
         Bam.Core.IStringCommandLineArgument,
         Bam.Core.ICommandLineArgumentDefault<string>
     {
-        string Bam.Core.ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Choose the format of the Makefiles generated. Options are GNUMake or NMAKE. Default is GNUMake";
-            }
-        }
-
-        string Bam.Core.ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--MakeFile.format";
-            }
-        }
-
-        string Bam.Core.ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string Bam.Core.ICommandLineArgumentDefault<string>.Default
-        {
-            get
-            {
-                return "GNUMake";
-            }
-        }
+        string Bam.Core.ICommandLineArgument.ContextHelp => "Choose the format of the Makefiles generated. Options are GNUMake or NMAKE. Default is GNUMake";
+        string Bam.Core.ICommandLineArgument.LongName => "--MakeFile.format";
+        string Bam.Core.ICommandLineArgument.ShortName => null;
+        string Bam.Core.ICommandLineArgumentDefault<string>.Default => "GNUMake";
     }
 }

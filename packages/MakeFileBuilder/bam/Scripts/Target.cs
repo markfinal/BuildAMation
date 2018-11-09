@@ -67,22 +67,20 @@ namespace MakeFileBuilder
             else
             {
                 var encapsulating = module.GetEncapsulatingReferencedModule();
-                varName.AppendFormat(
-                    "{0}_{1}",
-                    encapsulating.ToString(),
-                    module.ToString()
+                varName.Append(
+                    $"{encapsulating.ToString()}_{module.ToString()}"
                 );
             }
             if (null != keyName)
             {
-                varName.AppendFormat("_{0}", keyName);
+                varName.Append($"_{keyName}");
             }
-            varName.AppendFormat("_{0}", module.BuildEnvironment.Configuration.ToString());
+            varName.Append($"_{module.BuildEnvironment.Configuration.ToString()}");
             if (!isReferenced)
             {
                 lock (UniqueCounterGuard)
                 {
-                    varName.AppendFormat("_{0}", UniqueCounter++);
+                    varName.Append($"_{UniqueCounter++}");
                 }
             }
             var expanded_variable = varName.ToString();
@@ -120,29 +118,9 @@ namespace MakeFileBuilder
             this.VariableName = MakeUniqueVariableName(module, keyName);
         }
 
-        public bool
-        IsPrerequisiteofAll
-        {
-            get;
-            private set;
-        }
-
-        public Bam.Core.TokenizedString Path
-        {
-            get;
-            private set;
-        }
-
-        public bool IsPhony
-        {
-            get;
-            private set;
-        }
-
-        public string VariableName
-        {
-            get;
-            private set;
-        }
+        public bool IsPrerequisiteofAll { get; private set; }
+        public Bam.Core.TokenizedString Path { get; private set; }
+        public bool IsPhony { get; private set; }
+        public string VariableName { get; private set; }
     }
 }
