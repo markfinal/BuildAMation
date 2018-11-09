@@ -37,15 +37,8 @@ namespace CommandLineProcessor
             object key,
             string command_switch)
             :
-            base(command_switch)
-        {
-            this.Key = key as System.Enum;
-        }
+            base(command_switch) => this.Key = key as System.Enum;
 
-        public System.Enum Key
-        {
-            get;
-            private set;
-        }
+        public System.Enum Key { get; private set; }
     }
 }

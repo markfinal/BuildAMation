@@ -52,9 +52,7 @@ namespace CommandLineProcessor
                )
             {
                 throw new Bam.Core.Exception(
-                    "Attribute expected an enum (or nullable enum), but property {0} is of type {1}",
-                    propertyInfo.Name,
-                    propertyInfo.PropertyType.ToString()
+                    $"Attribute expected an enum (or nullable enum), but property {propertyInfo.Name} is of type {propertyInfo.PropertyType.ToString()}"
                 );
             }
             var matching_attribute = attributeArray.FirstOrDefault(
@@ -95,31 +93,21 @@ namespace CommandLineProcessor
                 if (!typeof(string).IsAssignableFrom(propertyInfo.PropertyType))
                 {
                     throw new Bam.Core.Exception(
-                        "Attribute expected either a Bam.Core.TokenizedString or string, but property {0} is of type {1}",
-                        propertyInfo.Name,
-                        propertyInfo.PropertyType.ToString()
+                        $"Attribute expected either a Bam.Core.TokenizedString or string, but property {propertyInfo.Name} is of type {propertyInfo.PropertyType.ToString()}"
                     );
                 }
             }
             if (typeof(Bam.Core.TokenizedString).IsAssignableFrom(propertyInfo.PropertyType))
             {
                 commandLine.Add(
-                    System.String.Format(
-                        "{0}{1}",
-                        (attributeArray.First() as BaseAttribute).CommandSwitch,
-                        (propertyValue as Bam.Core.TokenizedString).ToStringQuoteIfNecessary()
-                    )
+                    $"{(attributeArray.First() as BaseAttribute).CommandSwitch}{(propertyValue as Bam.Core.TokenizedString).ToStringQuoteIfNecessary()}"
                 );
             }
             else
             {
                 var path = module.GeneratedPaths[propertyValue as string];
                 commandLine.Add(
-                    System.String.Format(
-                        "{0}{1}",
-                        (attributeArray.First() as BaseAttribute).CommandSwitch,
-                        path.ToStringQuoteIfNecessary()
-                    )
+                    $"{(attributeArray.First() as BaseAttribute).CommandSwitch}{path.ToStringQuoteIfNecessary()}"
                 );
             }
         }
@@ -135,9 +123,7 @@ namespace CommandLineProcessor
             if (!typeof(Bam.Core.TokenizedStringArray).IsAssignableFrom(propertyInfo.PropertyType))
             {
                 throw new Bam.Core.Exception(
-                    "Attribute expected a Bam.Core.TokenizedStringArray, but property {0} is of type {1}",
-                    propertyInfo.Name,
-                    propertyInfo.PropertyType.ToString()
+                    $"Attribute expected a Bam.Core.TokenizedStringArray, but property {propertyInfo.Name} is of type {propertyInfo.PropertyType.ToString()}"
                 );
             }
             var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
@@ -146,11 +132,7 @@ namespace CommandLineProcessor
                 // TODO: a special case is needed for this being requested in Xcode mode
                 // which is done when there are overrides per source file
                 commandLine.Add(
-                    System.String.Format(
-                        "{0}{1}",
-                        command_switch,
-                        path.ToStringQuoteIfNecessary()
-                    )
+                    $"{command_switch}{path.ToStringQuoteIfNecessary()}"
                 );
             }
         }
@@ -166,20 +148,14 @@ namespace CommandLineProcessor
             if (!typeof(Bam.Core.TokenizedStringArray).IsAssignableFrom(propertyInfo.PropertyType))
             {
                 throw new Bam.Core.Exception(
-                    "Attribute expected a Bam.Core.TokenizedStringArray, but property {0} is of type {1}",
-                    propertyInfo.Name,
-                    propertyInfo.PropertyType.ToString()
+                    $"Attribute expected a Bam.Core.TokenizedStringArray, but property {propertyInfo.Name} is of type {propertyInfo.PropertyType.ToString()}"
                 );
             }
             var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
             foreach (var path in (propertyValue as Bam.Core.TokenizedStringArray).ToEnumerableWithoutDuplicates())
             {
                 commandLine.Add(
-                    System.String.Format(
-                        "{0}{1}",
-                        command_switch,
-                        System.IO.Path.GetFileNameWithoutExtension(path.ToStringQuoteIfNecessary())
-                    )
+                    $"{command_switch}{System.IO.Path.GetFileNameWithoutExtension(path.ToStringQuoteIfNecessary())}"
                 );
             }
         }
@@ -199,18 +175,12 @@ namespace CommandLineProcessor
             if (!typeof(string).IsAssignableFrom(propertyInfo.PropertyType))
             {
                 throw new Bam.Core.Exception(
-                    "Attribute expected a string, but property {0} is of type {1}",
-                    propertyInfo.Name,
-                    propertyInfo.PropertyType.ToString()
+                    $"Attribute expected a string, but property {propertyInfo.Name} is of type {propertyInfo.PropertyType.ToString()}"
                 );
             }
             var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
             commandLine.Add(
-                System.String.Format(
-                    "{0}{1}",
-                    command_switch,
-                    propertyValue as string
-                )
+                $"{command_switch}{propertyValue as string}"
             );
         }
 
@@ -225,9 +195,7 @@ namespace CommandLineProcessor
             if (!typeof(Bam.Core.StringArray).IsAssignableFrom(propertyInfo.PropertyType))
             {
                 throw new Bam.Core.Exception(
-                    "Attribute expected a Bam.Core.StringArray, but property {0} is of type {1}",
-                    propertyInfo.Name,
-                    propertyInfo.PropertyType.ToString()
+                    $"Attribute expected a Bam.Core.StringArray, but property {propertyInfo.Name} is of type {propertyInfo.PropertyType.ToString()}"
                 );
             }
             var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
@@ -236,11 +204,7 @@ namespace CommandLineProcessor
                 // TODO: a special case is needed for this being requested in Xcode mode
                 // which is done when there are overrides per source file
                 commandLine.Add(
-                    System.String.Format(
-                        "{0}{1}",
-                        command_switch,
-                        str
-                    )
+                    $"{command_switch}{str}"
                 );
             }
         }
@@ -261,9 +225,7 @@ namespace CommandLineProcessor
                )
             {
                 throw new Bam.Core.Exception(
-                    "Attribute expected an bool (or nullable bool), but property {0} is of type {1}",
-                    propertyInfo.Name,
-                    propertyInfo.PropertyType.ToString()
+                    $"Attribute expected an bool (or nullable bool), but property {propertyInfo.Name} is of type {propertyInfo.PropertyType.ToString()}"
                 );
             }
             bool value = (bool)propertyValue;
@@ -297,9 +259,7 @@ namespace CommandLineProcessor
             if (!typeof(C.PreprocessorDefinitions).IsAssignableFrom(propertyInfo.PropertyType))
             {
                 throw new Bam.Core.Exception(
-                    "Attribute expected a C.PreprocessorDefinitions, but property {0} is of type {1}",
-                    propertyInfo.Name,
-                    propertyInfo.PropertyType.ToString()
+                    $"Attribute expected a C.PreprocessorDefinitions, but property {propertyInfo.Name} is of type {propertyInfo.PropertyType.ToString()}"
                 );
             }
             var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
@@ -307,7 +267,7 @@ namespace CommandLineProcessor
             {
                 if (null == define.Value)
                 {
-                    commandLine.Add(System.String.Format("-D{0}", define.Key));
+                    commandLine.Add($"-D{define.Key}");
                 }
                 else
                 {
@@ -326,7 +286,7 @@ namespace CommandLineProcessor
                         }
                     }
                     defineValue = Bam.Core.IOWrapper.EncloseSpaceContainingPathWithDoubleQuotes(defineValue);
-                    commandLine.Add(System.String.Format("-D{0}={1}", define.Key, defineValue));
+                    commandLine.Add($"-D{define.Key}={defineValue}");
                 }
             }
         }
@@ -344,8 +304,7 @@ namespace CommandLineProcessor
             if (settings.FileLayout == Bam.Core.Settings.ELayout.Unassigned)
             {
                 throw new Bam.Core.Exception(
-                    "File layout for {0} settings is unassigned. Override AssignFileLayout in this class.",
-                    settings.ToString()
+                    $"File layout for {settings.ToString()} settings is unassigned. Override AssignFileLayout in this class."
                 );
             }
             var commandLine = new Bam.Core.StringArray();
@@ -368,10 +327,7 @@ namespace CommandLineProcessor
                     if (!attributeArray.Any())
                     {
                         throw new Bam.Core.Exception(
-                            "No attributes available for mapping property {0} to command line switches for module {1} and settings {2}",
-                            full_property_interface_name,
-                            module.ToString(),
-                            settings.ToString()
+                            $"No attributes available for mapping property {full_property_interface_name} to command line switches for module {module.ToString()} and settings {settings.ToString()}"
                         );
                     }
                     var property_value = settings_property.GetValue(settings);
@@ -463,10 +419,7 @@ namespace CommandLineProcessor
                     else
                     {
                         throw new Bam.Core.Exception(
-                            "Unhandled attribute {0} for property {1} in {2}",
-                            attributeArray.First().ToString(),
-                            settings_property.Name,
-                            module.ToString()
+                            $"Unhandled attribute {attributeArray.First().ToString()} for property {settings_property.Name} in {module.ToString()}"
                         );
                     }
                 }
@@ -482,8 +435,7 @@ namespace CommandLineProcessor
             if (null == settings.Module)
             {
                 throw new Bam.Core.Exception(
-                    "No Module was associated with the settings class {0}",
-                    settings.ToString()
+                    $"No Module was associated with the settings class {settings.ToString()}"
                 );
             }
 
@@ -494,8 +446,7 @@ namespace CommandLineProcessor
             if (!output_file_attributes.Any() && module.GeneratedPaths.Any())
             {
                 throw new Bam.Core.Exception(
-                    "There are no OutputPath attributes associated with the {0} settings class",
-                    settings.ToString()
+                    $"There are no OutputPath attributes associated with the {settings.ToString()} settings class"
                 );
             }
             var input_files_attributes = settings.GetType().GetCustomAttributes(
@@ -507,19 +458,16 @@ namespace CommandLineProcessor
                 if (!input_files_attributes.Any())
                 {
                     var message = new System.Text.StringBuilder();
-                    message.AppendFormat(
-                        "There is no InputPaths attribute associated with the {0} settings class and module {1}",
-                        settings.ToString(),
-                        module.ToString()
+                    message.AppendLine(
+                        $"There is no InputPaths attribute associated with the {settings.ToString()} settings class and module {module.ToString()}"
                     );
-                    message.AppendLine();
                     message.AppendLine("The following input paths were identified for the module:");
                     foreach (var input in module.InputModules)
                     {
-                        message.AppendFormat("\t{0}[{1}]", input.Value.ToString(), input.Key);
+                        message.Append($"\t{input.Value.ToString()}[{input.Key}]");
                         if (input.Value.GeneratedPaths.ContainsKey(input.Key))
                         {
-                            message.AppendFormat(" = '{0}'", input.Value.GeneratedPaths[input.Key].ToString());
+                            message.Append($" = '{input.Value.GeneratedPaths[input.Key].ToString()}'");
                         }
                         message.AppendLine();
                     }
@@ -532,9 +480,7 @@ namespace CommandLineProcessor
                     if (max_files != module.InputModules.Count())
                     {
                         throw new Bam.Core.Exception(
-                            "InputPaths attribute specifies a maximum of {0} files, but {1} are available",
-                            max_files,
-                            module.InputModules.Count()
+                            $"InputPaths attribute specifies a maximum of {max_files} files, but {module.InputModules.Count()} are available"
                         );
                     }
                 }
@@ -573,9 +519,7 @@ namespace CommandLineProcessor
 
                 default:
                     throw new Bam.Core.Exception(
-                        "Unhandled file layout {0} for settings {1}",
-                        settings.FileLayout.ToString(),
-                        settings.ToString()
+                        $"Unhandled file layout {settings.FileLayout.ToString()} for settings {settings.ToString()}"
                     );
             }
             return commandLine;
@@ -632,11 +576,7 @@ namespace CommandLineProcessor
                         modifiedPath.Parse();
                     }
                     commandLine.Add(
-                        System.String.Format(
-                            "{0}{1}",
-                            matching_input_attr.CommandSwitch,
-                            modifiedPath.ToStringQuoteIfNecessary()
-                        )
+                        $"{matching_input_attr.CommandSwitch}{modifiedPath.ToStringQuoteIfNecessary()}"
                     );
                     continue;
                 }
@@ -653,21 +593,13 @@ namespace CommandLineProcessor
                         modifiedPath.Parse();
                     }
                     commandLine.Add(
-                        System.String.Format(
-                            "{0}{1}",
-                            matching_input_attr.CommandSwitch,
-                            modifiedPath.ToStringQuoteIfNecessary()
-                        )
+                        $"{matching_input_attr.CommandSwitch}{modifiedPath.ToStringQuoteIfNecessary()}"
                     );
                 }
                 else
                 {
                     commandLine.Add(
-                        System.String.Format(
-                            "{0}{1}",
-                            matching_input_attr.CommandSwitch,
-                            input_path.ToStringQuoteIfNecessary()
-                        )
+                        $"{matching_input_attr.CommandSwitch}{input_path.ToStringQuoteIfNecessary()}"
                     );
                 }
             }
@@ -691,9 +623,7 @@ namespace CommandLineProcessor
                 if (null == matching_attr)
                 {
                     throw new Bam.Core.Exception(
-                        "Unable to locate OutputPath class attribute on {0} for path key {1}",
-                        settings.ToString(),
-                        outputKey
+                        $"Unable to locate OutputPath class attribute on {settings.ToString()} for path key {outputKey}"
                     );
                 }
                 if (matching_attr.Ignore)
@@ -712,21 +642,13 @@ namespace CommandLineProcessor
                         modifiedPath.Parse();
                     }
                     commandLine.Add(
-                        System.String.Format(
-                            "{0}{1}",
-                            matching_attr.CommandSwitch,
-                            modifiedPath.ToStringQuoteIfNecessary()
-                        )
+                        $"{matching_attr.CommandSwitch}{modifiedPath.ToStringQuoteIfNecessary()}"
                     );
                 }
                 else
                 {
                     commandLine.Add(
-                        System.String.Format(
-                            "{0}{1}",
-                            matching_attr.CommandSwitch,
-                            module.GeneratedPaths[outputKey].ToStringQuoteIfNecessary()
-                        )
+                        $"{matching_attr.CommandSwitch}{module.GeneratedPaths[outputKey].ToStringQuoteIfNecessary()}"
                     );
                 }
             }

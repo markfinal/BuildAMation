@@ -46,22 +46,8 @@ namespace CommandLineProcessor
             this.MaxFileCount = max_file_count;
         }
 
-        public string PathKey
-        {
-            get;
-            private set;
-        }
-
-        public string PathModifier
-        {
-            get;
-            private set;
-        }
-
-        public int MaxFileCount
-        {
-            get;
-            private set;
-        }
+        public string PathKey { get; private set; }
+        public string PathModifier { get; private set; }
+        public int MaxFileCount { get; private set; }
     }
 }

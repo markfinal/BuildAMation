@@ -33,15 +33,8 @@ namespace CommandLineProcessor
         System.Attribute
     {
         protected BaseAttribute(
-            string command_switch)
-        {
-            this.CommandSwitch = command_switch;
-        }
+            string command_switch) => this.CommandSwitch = command_switch;
 
-        public string CommandSwitch
-        {
-            get;
-            private set;
-        }
+        public string CommandSwitch { get; private set; }
     }
 }

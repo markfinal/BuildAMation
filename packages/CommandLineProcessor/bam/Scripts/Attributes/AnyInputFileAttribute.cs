@@ -37,15 +37,8 @@ namespace CommandLineProcessor
             string command_switch,
             string path_modifier_if_directory = null)
             :
-            base(null, command_switch, max_file_count: 1)
-        {
-            this.PathModifierIfDirectory = path_modifier_if_directory;
-        }
+            base(null, command_switch, max_file_count: 1) => this.PathModifierIfDirectory = path_modifier_if_directory;
 
-        public string PathModifierIfDirectory
-        {
-            get;
-            private set;
-        }
+        public string PathModifierIfDirectory { get; private set; }
     }
 }

@@ -37,12 +37,12 @@ namespace CommandLineProcessor
             Bam.Core.ICommandLineTool tool)
         {
             var linearized = new System.Text.StringBuilder();
-            linearized.AppendFormat("{0}", tool.Executable.ToStringQuoteIfNecessary());
+            linearized.Append(tool.Executable.ToStringQuoteIfNecessary());
             if (tool.InitialArguments != null)
             {
                 foreach (var arg in tool.InitialArguments)
                 {
-                    linearized.AppendFormat(" {0}", arg.ToString());
+                    linearized.Append($" {arg.ToString()}");
                 }
             }
             return linearized.ToString();
@@ -57,7 +57,7 @@ namespace CommandLineProcessor
             {
                 foreach (var arg in tool.TerminatingArguments)
                 {
-                    linearized.AppendFormat(" {0}", arg.ToString());
+                    linearized.Append($" {arg.ToString()}");
                 }
             }
             return linearized.ToString();
@@ -101,7 +101,6 @@ namespace CommandLineProcessor
             // first get the inherited environment variables from the system environment
             if (null != inheritedEnvironmentVariables)
             {
-                int envVarCount;
                 if (inheritedEnvironmentVariables.Count == 1 &&
                     inheritedEnvironmentVariables[0].Equals("*", System.StringComparison.Ordinal))
                 {
@@ -111,7 +110,7 @@ namespace CommandLineProcessor
                     }
                 }
                 else if (inheritedEnvironmentVariables.Count == 1 &&
-                         System.Int32.TryParse(inheritedEnvironmentVariables[0], out envVarCount) &&
+                         System.Int32.TryParse(inheritedEnvironmentVariables[0], out int envVarCount) &&
                          envVarCount < 0)
                 {
                     envVarCount += processStartInfo.EnvironmentVariables.Count;
@@ -131,7 +130,7 @@ namespace CommandLineProcessor
                     {
                         if (!processStartInfo.EnvironmentVariables.ContainsKey(envVar))
                         {
-                            Bam.Core.Log.Info("Environment variable '{0}' does not exist", envVar);
+                            Bam.Core.Log.Info($"Environment variable '{envVar}' does not exist");
                             continue;
                         }
                         cachedEnvVars.Add(envVar, processStartInfo.EnvironmentVariables[envVar]);
@@ -139,12 +138,9 @@ namespace CommandLineProcessor
                 }
             }
             processStartInfo.EnvironmentVariables.Clear();
-            if (null != inheritedEnvironmentVariables)
+            foreach (var envVar in cachedEnvVars)
             {
-                foreach (var envVar in cachedEnvVars)
-                {
-                    processStartInfo.EnvironmentVariables[envVar.Key] = envVar.Value;
-                }
+                processStartInfo.EnvironmentVariables[envVar.Key] = envVar.Value;
             }
             if (null != addedEnvironmentVariables)
             {
@@ -168,18 +164,20 @@ namespace CommandLineProcessor
                 {
                     if (null == useResponseFileOption)
                     {
-                        throw new Bam.Core.Exception("Command line is {0} characters long, but response files are not supported by the tool {1}", arguments.Length, executablePath);
+                        throw new Bam.Core.Exception(
+                            $"Command line is {arguments.Length} characters long, but response files are not supported by the tool {executablePath}"
+                        );
                     }
 
                     responseFilePath = Bam.Core.IOWrapper.CreateTemporaryFile();
                     using (System.IO.StreamWriter writer = new System.IO.StreamWriter(responseFilePath))
                     {
-                        Bam.Core.Log.DebugMessage("Written response file {0} containing:\n{1}", responseFilePath, arguments);
+                        Bam.Core.Log.DebugMessage($"Written response file {responseFilePath} containing:\n{arguments}");
                         // escape any back slashes
                         writer.WriteLine(arguments.Replace(@"\", @"\\"));
                     }
 
-                    arguments = System.String.Format("{0}{1}", useResponseFileOption, responseFilePath);
+                    arguments = $"{useResponseFileOption}{responseFilePath}";
                 }
             }
             processStartInfo.Arguments = arguments;
@@ -187,13 +185,13 @@ namespace CommandLineProcessor
             Bam.Core.Log.Detail("{0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
 
             // useful debugging of the command line processor
-            Bam.Core.Log.DebugMessage("Working directory: '{0}'", processStartInfo.WorkingDirectory);
+            Bam.Core.Log.DebugMessage($"Working directory: '{processStartInfo.WorkingDirectory}'");
             if (processStartInfo.EnvironmentVariables.Count > 0)
             {
                 Bam.Core.Log.DebugMessage("Environment variables:");
                 foreach (var envVar in processStartInfo.EnvironmentVariables.Cast<System.Collections.DictionaryEntry>().OrderBy(item => item.Key))
                 {
-                    Bam.Core.Log.DebugMessage("\t{0} = {1}", envVar.Key, envVar.Value);
+                    Bam.Core.Log.DebugMessage($"\t{envVar.Key} = {envVar.Value}");
                 }
             }
 
@@ -210,7 +208,7 @@ namespace CommandLineProcessor
             }
             catch (System.ComponentModel.Win32Exception ex)
             {
-                throw new Bam.Core.Exception("'{0}': process filename '{1}'", ex.Message, processStartInfo.FileName);
+                throw new Bam.Core.Exception($"'{ex.Message}': process filename '{processStartInfo.FileName}'");
             }
 
             if (null != process)
@@ -241,56 +239,16 @@ namespace CommandLineProcessor
             if (!successfulExitCodes.Contains(exitCode))
             {
                 var message = new System.Text.StringBuilder();
-                message.AppendFormat("Command failed: {0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
-                message.AppendLine();
+                message.AppendLine($"Command failed: {processStartInfo.FileName} {processStartInfo.Arguments}");
                 if (null != responseFilePath)
                 {
                     message.AppendLine("Response file contained:");
                     message.AppendLine(arguments);
                 }
-                message.AppendFormat("Command exit code: {0}", exitCode);
-                message.AppendLine();
+                message.AppendLine($"Command exit code: {exitCode}");
                 throw new Bam.Core.Exception(message.ToString());
             }
         }
-
-#if false
-        // TODO: deprecate this one, as you can't get the module override WorkingDirectory
-        public static void
-        Execute(
-            Bam.Core.ExecutionContext context,
-            Bam.Core.ICommandLineTool tool,
-            Bam.Core.StringArray commandLine,
-            string workingDirectory = null)
-        {
-            var commandLineArgs = new Bam.Core.StringArray();
-            if (tool.InitialArguments != null)
-            {
-                foreach (var arg in tool.InitialArguments)
-                {
-                    commandLineArgs.Add(arg.ToString());
-                }
-            }
-            commandLineArgs.AddRange(commandLine);
-            if (null != tool.TerminatingArguments)
-            {
-                foreach (var arg in tool.TerminatingArguments)
-                {
-                    commandLineArgs.Add(arg.ToString());
-                }
-            }
-
-            Execute(
-                context,
-                tool.Executable.ToString(),
-                tool.SuccessfulExitCodes,
-                commandLineArgs,
-                workingDirectory: workingDirectory,
-                inheritedEnvironmentVariables: tool.InheritedEnvironmentVariables,
-                addedEnvironmentVariables: tool.EnvironmentVariables,
-                useResponseFileOption: tool.UseResponseFileOption);
-        }
-#endif
 
         public static void
         Execute(
@@ -303,25 +261,18 @@ namespace CommandLineProcessor
             if (null == tool)
             {
                 throw new Bam.Core.Exception(
-                    "Command line tool passed with module '{0}' is invalid",
-                    module.ToString()
+                    $"Command line tool passed with module '{module.ToString()}' is invalid"
                 );
             }
             var commandLineArgs = new Bam.Core.StringArray();
-            if (tool.InitialArguments != null)
+            foreach (var arg in tool?.InitialArguments)
             {
-                foreach (var arg in tool.InitialArguments)
-                {
-                    commandLineArgs.Add(arg.ToString());
-                }
+                commandLineArgs.Add(arg.ToString());
             }
             commandLineArgs.AddRange(commandLine);
-            if (null != tool.TerminatingArguments)
+            foreach (var arg in tool?.TerminatingArguments)
             {
-                foreach (var arg in tool.TerminatingArguments)
-                {
-                    commandLineArgs.Add(arg.ToString());
-                }
+                commandLineArgs.Add(arg.ToString());
             }
 
             Execute(
@@ -329,11 +280,10 @@ namespace CommandLineProcessor
                 tool.Executable.ToString(),
                 tool.SuccessfulExitCodes,
                 commandLineArgs,
-                workingDirectory: (module.WorkingDirectory != null) ? module.WorkingDirectory.ToString() : null,
+                workingDirectory: module.WorkingDirectory?.ToString(),
                 inheritedEnvironmentVariables: tool.InheritedEnvironmentVariables,
                 addedEnvironmentVariables: tool.EnvironmentVariables,
                 useResponseFileOption: tool.UseResponseFileOption);
         }
-
     }
 }
