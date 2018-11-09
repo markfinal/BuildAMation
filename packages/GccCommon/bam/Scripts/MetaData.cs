@@ -34,7 +34,7 @@ namespace GccCommon
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
+        private readonly System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string,object>();
 
         protected MetaData()
         {
@@ -47,20 +47,11 @@ namespace GccCommon
             this.Meta.Add("ExpectedMinorVersion", this.CompilerMinorVersion);
         }
 
-        public override object this[string index]
-        {
-            get
-            {
-                return this.Meta[index];
-            }
-        }
+        public override object this[string index] => this.Meta[index];
 
         public override bool
         Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
-        }
+            string index) => this.Meta.ContainsKey(index);
 
         private void
         ValidateGcc()
@@ -160,20 +151,9 @@ namespace GccCommon
             }
         }
 
-        protected abstract int
-        CompilerMajorVersion
-        {
-            get;
-        }
+        protected abstract int CompilerMajorVersion { get; }
 
-        protected virtual int?
-        CompilerMinorVersion
-        {
-            get
-            {
-                return null; // defaults to no minor version number
-            }
-        }
+        protected virtual int? CompilerMinorVersion => null; // defaults to no minor version number
 
         public C.ToolchainVersion ToolchainVersion
         {
@@ -237,7 +217,7 @@ namespace GccCommon
 
                 this.ToolchainVersion = this.GetCompilerVersion();
 
-                Bam.Core.Log.Info("Using GCC version {0} installed at {1}", gccVersion, location);
+                Bam.Core.Log.Info($"Using GCC version {gccVersion} installed at {location}");
             }
 
             var gxxLocations = Bam.Core.OSUtilities.GetInstallLocation("g++");

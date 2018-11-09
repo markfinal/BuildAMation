@@ -36,17 +36,11 @@ namespace GccCommon
         public static string
         RunExecutable(
             string executable,
-            string arguments)
-        {
-            return Bam.Core.OSUtilities.RunExecutable(executable, arguments).StandardOutput;
-        }
+            string arguments) => Bam.Core.OSUtilities.RunExecutable(executable, arguments).StandardOutput;
 
         [System.Obsolete("Please use Bam.Core.OSUtilities.GetInstallLocation instead")]
         public static string
         GetInstallLocation(
-            string executable)
-        {
-            return Bam.Core.OSUtilities.GetInstallLocation(executable).First();
-        }
+            string executable) => Bam.Core.OSUtilities.GetInstallLocation(executable).First();
     }
 }

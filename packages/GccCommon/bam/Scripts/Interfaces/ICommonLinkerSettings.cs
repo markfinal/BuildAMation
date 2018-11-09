@@ -33,34 +33,10 @@ namespace GccCommon
     public interface ICommonLinkerSettings :
         Bam.Core.ISettingsBase
     {
-        bool CanUseOrigin
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray RPath
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray RPathLink
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedString VersionScript
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedString SharedObjectName
-        {
-            get;
-            set;
-        }
+        bool CanUseOrigin { get; set; }
+        Bam.Core.TokenizedStringArray RPath { get; set; }
+        Bam.Core.TokenizedStringArray RPathLink { get; set; }
+        Bam.Core.TokenizedString VersionScript { get; set; }
+        Bam.Core.TokenizedString SharedObjectName { get; set; }
     }
 }

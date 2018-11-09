@@ -38,89 +38,42 @@ namespace GccCommon
         ICommonLinkerSettings
     {
         protected CommonLinkerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
-        C.EBit C.ICommonLinkerSettings.Bits
-        {
-            get;
-            set;
-        }
+        C.EBit C.ICommonLinkerSettings.Bits { get; set; }
 
         [CommandLineProcessor.Enum(C.ELinkerOutput.Executable, "")]
         [CommandLineProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "--shared")]
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
+        C.ELinkerOutput C.ICommonLinkerSettings.OutputType { get; set; }
 
         [CommandLineProcessor.PathArray("-L")]
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths { get; set; }
 
         [CommandLineProcessor.StringArray("")]
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries { get; set; }
 
         [CommandLineProcessor.Bool("-g", "")]
-        bool C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
+        bool C.ICommonLinkerSettings.DebugSymbols { get; set; }
 
         [CommandLineProcessor.StringArray("")]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         [CommandLineProcessor.Bool("-Wl,-z,origin", "")]
-        bool ICommonLinkerSettings.CanUseOrigin
-        {
-            get;
-            set;
-        }
+        bool ICommonLinkerSettings.CanUseOrigin { get; set; }
 
         [CommandLineProcessor.PathArray("-Wl,-rpath,")]
-        Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPath
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPath { get; set; }
 
         [CommandLineProcessor.PathArray("-Wl,-rpath-link,")]
-        Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPathLink
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPathLink { get; set; }
 
         [CommandLineProcessor.Path("-Wl,--version-script=")]
-        Bam.Core.TokenizedString ICommonLinkerSettings.VersionScript
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString ICommonLinkerSettings.VersionScript { get; set; }
 
         [CommandLineProcessor.Path("-Wl,-soname,")] // ensure that the NEEDED flag is set to the expected symlink for the shared object
-        Bam.Core.TokenizedString ICommonLinkerSettings.SharedObjectName
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString ICommonLinkerSettings.SharedObjectName { get; set; }
 
         public override void AssignFileLayout ()
         {

@@ -36,7 +36,7 @@ namespace GccCommon
         {
             this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
             var discovery = this.GccMetaData as C.IToolchainDiscovery;
-            discovery.discover(null);
+            discovery.discover(depth: null);
 
             var ldPath = this.GccMetaData.LdPath;
             var installPath = Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.GetDirectoryName(ldPath));
@@ -57,11 +57,7 @@ namespace GccCommon
             this.Macros.AddVerbatim("pluginext", ".so");
         }
 
-        protected Gcc.MetaData GccMetaData
-        {
-            get;
-            private set;
-        }
+        protected Gcc.MetaData GccMetaData { get; private set; }
 
         private static string
         GetLPrefixLibraryName(
@@ -69,7 +65,7 @@ namespace GccCommon
         {
             var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
             libName = libName.Substring(3); // trim off lib prefix
-            return System.String.Format("-l{0}", libName);
+            return $"-l{libName}";
         }
 
         private static Bam.Core.Array<C.CModule>
@@ -85,9 +81,9 @@ namespace GccCommon
             foreach (var dep in (dynamicModule as C.CModule).Dependents)
             {
                 var dependent = dep;
-                if (dependent is C.SharedObjectSymbolicLink)
+                if (dependent is C.SharedObjectSymbolicLink symlinkDep)
                 {
-                    dependent = (dependent as C.SharedObjectSymbolicLink).SharedObject;
+                    dependent = symlinkDep.SharedObject;
                 }
                 if (!(dependent is C.IDynamicLibrary))
                 {
@@ -118,7 +114,7 @@ namespace GccCommon
             {
                 return null;
             }
-            throw new Bam.Core.Exception("Unsupported library type, {0}", library.GetType().ToString());
+            throw new Bam.Core.Exception($"Unsupported library type, {library.GetType().ToString()}");
         }
 
         public override void
@@ -193,19 +189,9 @@ namespace GccCommon
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Gcc.LinkerSettings(module);
-            return settings;
-        }
+            T module) => new Gcc.LinkerSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["LinkerPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["LinkerPath"];
     }
 
     [C.RegisterCLinker("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
@@ -213,10 +199,7 @@ namespace GccCommon
     public sealed class Linker :
         LinkerBase
     {
-        public Linker()
-        {
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
-        }
+        public Linker() => this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
     }
 
     [C.RegisterCxxLinker("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
@@ -224,9 +207,6 @@ namespace GccCommon
     public sealed class LinkerCxx :
         LinkerBase
     {
-        public LinkerCxx()
-        {
-            this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
-        }
+        public LinkerCxx() => this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
     }
 }

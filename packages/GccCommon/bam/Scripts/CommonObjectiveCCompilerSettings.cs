@@ -48,10 +48,6 @@ namespace GccCommon
         {}
 
         [CommandLineProcessor.String("-fconstant-string-class=")]
-        string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
-        {
-            get;
-            set;
-        }
+        string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass { get; set; }
     }
 }

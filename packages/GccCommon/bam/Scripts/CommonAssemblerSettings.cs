@@ -38,53 +38,26 @@ namespace GccCommon
         ICommonAssemblerSettings
     {
         protected CommonAssemblerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
-        C.EBit? C.ICommonAssemblerSettings.Bits
-        {
-            get;
-            set;
-        }
+        C.EBit? C.ICommonAssemblerSettings.Bits { get; set; }
 
         [CommandLineProcessor.Bool("-g", "")]
-        bool C.ICommonAssemblerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
+        bool C.ICommonAssemblerSettings.DebugSymbols { get; set; }
 
         [CommandLineProcessor.Bool("-Werror", "-Wno-error")]
-        bool C.ICommonAssemblerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
+        bool C.ICommonAssemblerSettings.WarningsAsErrors { get; set; }
 
         [CommandLineProcessor.PathArray("-I")]
-        Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths { get; set; }
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
-        C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
+        C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines { get; set; }
 
         [CommandLineProcessor.StringArray("-D")]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         public override void
         AssignFileLayout()

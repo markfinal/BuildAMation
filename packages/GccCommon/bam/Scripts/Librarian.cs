@@ -38,7 +38,7 @@ namespace GccCommon
         {
             var gccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
             var discovery = gccMetaData as C.IToolchainDiscovery;
-            discovery.discover(null);
+            discovery.discover(depth: null);
 
             this.Macros.AddVerbatim("libprefix", "lib");
             this.Macros.AddVerbatim("libext", ".a");
@@ -47,18 +47,8 @@ namespace GccCommon
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Gcc.ArchiverSettings(module);
-            return settings;
-        }
+            T module) => new Gcc.ArchiverSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["LibrarianPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["LibrarianPath"];
     }
 }
