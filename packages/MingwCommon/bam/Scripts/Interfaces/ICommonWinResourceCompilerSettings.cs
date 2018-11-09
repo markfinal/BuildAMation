@@ -33,10 +33,6 @@ namespace MingwCommon
     public interface ICommonWinResourceCompilerSettings :
         Bam.Core.ISettingsBase
     {
-        bool? UseTempFile
-        {
-            get;
-            set;
-        }
+        bool? UseTempFile { get; set; }
     }
 }

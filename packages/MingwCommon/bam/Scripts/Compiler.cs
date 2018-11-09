@@ -38,7 +38,7 @@ namespace MingwCommon
 
             var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
             var discovery = mingwMeta as C.IToolchainDiscovery;
-            discovery.discover(null);
+            discovery.discover(depth: null);
 
             this.Version = null; // TODO
 
@@ -51,21 +51,9 @@ namespace MingwCommon
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["CompilerPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
-        public override string UseResponseFileOption
-        {
-            get
-            {
-                return "@";
-            }
-        }
+        public override string UseResponseFileOption => "@";
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
@@ -87,7 +75,7 @@ namespace MingwCommon
             }
             else
             {
-                throw new Bam.Core.Exception("Could not determine type of module {0}", typeof(T).ToString());
+                throw new Bam.Core.Exception($"Could not determine type of module {typeof(T).ToString()}");
             }
         }
 
@@ -113,10 +101,7 @@ namespace MingwCommon
     public sealed class Compiler32Cxx :
         Compiler32
     {
-        public Compiler32Cxx()
-        {
-            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-g++.exe"));
-        }
+        public Compiler32Cxx() => this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-g++.exe"));
 
         protected override void
         OverrideDefaultSettings(

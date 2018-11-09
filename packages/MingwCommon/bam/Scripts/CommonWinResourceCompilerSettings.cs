@@ -38,45 +38,22 @@ namespace MingwCommon
         ICommonWinResourceCompilerSettings
     {
         protected CommonWinResourceCompilerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("-v", "")]
-        bool? C.ICommonWinResourceCompilerSettings.Verbose
-        {
-            get;
-            set;
-        }
+        bool? C.ICommonWinResourceCompilerSettings.Verbose { get; set; }
 
         [CommandLineProcessor.PathArray("--include-dir=")]
-        Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths { get; set; }
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
-        C.PreprocessorDefinitions C.ICommonWinResourceCompilerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
+        C.PreprocessorDefinitions C.ICommonWinResourceCompilerSettings.PreprocessorDefines { get; set; }
 
         [CommandLineProcessor.StringArray("")]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         [CommandLineProcessor.Bool("--use-temp-file", "")]
-        bool? ICommonWinResourceCompilerSettings.UseTempFile
-        {
-            get;
-            set;
-        }
+        bool? ICommonWinResourceCompilerSettings.UseTempFile { get; set; }
 
         public override void AssignFileLayout()
         {

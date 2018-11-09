@@ -32,6 +32,5 @@ namespace MingwCommon
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonAssemblerSettings :
         Bam.Core.ISettingsBase
-    {
-    }
+    {}
 }

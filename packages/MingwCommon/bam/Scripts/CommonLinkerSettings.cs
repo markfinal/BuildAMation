@@ -39,70 +39,35 @@ namespace MingwCommon
         C.IAdditionalSettings
     {
         protected CommonLinkerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Enum(C.ESubsystem.NotSet, "")]
         [CommandLineProcessor.Enum(C.ESubsystem.Console, "-Wl,-subsystem,console")]
         [CommandLineProcessor.Enum(C.ESubsystem.Windows, "-Wl,-subsystem,windows")]
-        C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem
-        {
-            get;
-            set;
-        }
+        C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem { get; set; }
 
         [CommandLineProcessor.Path("")] // just add it to the command line
-        Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile { get; set; }
 
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
-        C.EBit C.ICommonLinkerSettings.Bits
-        {
-            get;
-            set;
-        }
+        C.EBit C.ICommonLinkerSettings.Bits { get; set; }
 
         [CommandLineProcessor.Enum(C.ELinkerOutput.Executable, "")]
         [CommandLineProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "-shared")]
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
+        C.ELinkerOutput C.ICommonLinkerSettings.OutputType { get; set; }
 
         [CommandLineProcessor.PathArray("-L")]
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths { get; set; }
 
         [CommandLineProcessor.StringArray("")]
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries { get; set; }
 
         [CommandLineProcessor.Bool("-g", "")]
-        bool C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
+        bool C.ICommonLinkerSettings.DebugSymbols { get; set; }
 
         [CommandLineProcessor.StringArray("")]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         public override void
         AssignFileLayout()

@@ -36,7 +36,7 @@ namespace MingwCommon
         {
             var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
             var discovery = mingwMeta as C.IToolchainDiscovery;
-            discovery.discover(null);
+            discovery.discover(depth: null);
 
             this.Macros.AddVerbatim("LinkerSuffix", mingwMeta.ToolSuffix);
 
@@ -53,29 +53,13 @@ namespace MingwCommon
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["LinkerPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["LinkerPath"];
 
-        public override string UseResponseFileOption
-        {
-            get
-            {
-                return "@";
-            }
-        }
+        public override string UseResponseFileOption => "@";
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Mingw.LinkerSettings(module);
-            return settings;
-        }
+            T module) => new Mingw.LinkerSettings(module);
 
         public override Bam.Core.TokenizedString
         GetLibraryPath(
@@ -95,7 +79,7 @@ namespace MingwCommon
             {
                 return null;
             }
-            throw new Bam.Core.Exception("Unsupported library type, {0}", library.GetType().ToString());
+            throw new Bam.Core.Exception($"Unsupported library type, {library.GetType().ToString()}");
         }
 
         private static string
@@ -104,7 +88,7 @@ namespace MingwCommon
         {
             var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
             libName = libName.Substring(3); // trim off lib prefix
-            return System.String.Format("-l{0}", libName);
+            return $"-l{libName}";
         }
 
         public override void
@@ -139,19 +123,13 @@ namespace MingwCommon
     public sealed class Linker :
         LinkerBase
     {
-        public Linker()
-        {
-            this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-gcc$(LinkerSuffix).exe"));
-        }
+        public Linker() => this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-gcc$(LinkerSuffix).exe"));
     }
 
     [C.RegisterCxxLinker("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class LinkerCxx :
         LinkerBase
     {
-        public LinkerCxx()
-        {
-            this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-g++.exe"));
-        }
+        public LinkerCxx() => this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-g++.exe"));
     }
 }
