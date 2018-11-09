@@ -67,13 +67,7 @@ namespace C
             this.UsePublicPatchesPrivately(dependent);
         }
 
-        protected override bool RequiresHeaderEvaluation
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override bool RequiresHeaderEvaluation => false;
     }
 
     /// <summary>

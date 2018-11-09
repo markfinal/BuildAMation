@@ -56,7 +56,7 @@ namespace C
             }
             else
             {
-                throw new Bam.Core.Exception("Unknown settings group for module {0}", module.ToString());
+                throw new Bam.Core.Exception($"Unknown settings group for module {module.ToString()}");
             }
 
             var settingsGroup = config.GetSettingsGroup(
@@ -103,8 +103,7 @@ namespace C
                 {
                     continue;
                 }
-                var dependentProject = dependent.MetaData as VSSolutionBuilder.VSProject;
-                if (null != dependentProject)
+                if (dependent.MetaData is VSSolutionBuilder.VSProject dependentProject)
                 {
                     config.RequiresProject(dependentProject);
                 }

@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace C
 {
     public static partial class XcodeSupport
@@ -75,11 +74,9 @@ namespace C
                 productType = XcodeBuilder.Target.EProductType.Executable;
             }
 
-            XcodeBuilder.Target target;
-            XcodeBuilder.Configuration configuration;
             LinkOrArchive(
-                out target,
-                out configuration,
+                out XcodeBuilder.Target target,
+                out XcodeBuilder.Configuration configuration,
                 module,
                 fileType,
                 productType,

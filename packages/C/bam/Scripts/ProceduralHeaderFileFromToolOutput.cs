@@ -37,26 +37,9 @@ namespace C
         /// <summary>
         /// Override this function to specify the path of the header to be written to.
         /// </summary>
-        protected abstract Bam.Core.TokenizedString
-        OutputPath
-        {
-            get;
-        }
-
-        protected abstract Bam.Core.ICommandLineTool
-        SourceTool
-        {
-            get;
-        }
-
-        protected virtual Bam.Core.TokenizedString
-        IncludeDirectory
-        {
-            get
-            {
-                return this.CreateTokenizedString("@dir($(0))", this.InputPath);
-            }
-        }
+        protected abstract Bam.Core.TokenizedString OutputPath { get; }
+        protected abstract Bam.Core.ICommandLineTool SourceTool { get; }
+        protected virtual Bam.Core.TokenizedString IncludeDirectory => this.CreateTokenizedString("@dir($(0))", this.InputPath);
 
         protected override void
         Init(
@@ -70,20 +53,17 @@ namespace C
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    if (null != compiler)
+                    if (settings is C.ICommonCompilerSettings compiler)
                     {
                         compiler.IncludePaths.AddUnique(this.IncludeDirectory);
                     }
 
-                    var assembler = settings as C.ICommonAssemblerSettings;
-                    if (null != assembler)
+                    if (settings is C.ICommonAssemblerSettings assembler)
                     {
                         assembler.IncludePaths.AddUnique(this.IncludeDirectory);
                     }
 
-                    var rcCompiler = settings as C.ICommonWinResourceCompilerSettings;
-                    if (null != rcCompiler)
+                    if (settings is C.ICommonWinResourceCompilerSettings rcCompiler)
                     {
                         rcCompiler.IncludePaths.AddUnique(this.IncludeDirectory);
                     }

@@ -41,11 +41,7 @@ namespace C
 
             var commands = new Bam.Core.StringArray();
             commands.Add(
-                System.String.Format(
-                    "{0} > {1}",
-                    CommandLineProcessor.Processor.StringifyTool(tool),
-                    module.GeneratedPaths[ProceduralHeaderFileFromToolOutput.HeaderFileKey].ToString()
-                )
+                $"{CommandLineProcessor.Processor.StringifyTool(tool)} > {module.GeneratedPaths[ProceduralHeaderFileFromToolOutput.HeaderFileKey].ToString()}"
             );
 
             VSSolutionBuilder.Support.AddCustomPostBuildStep(

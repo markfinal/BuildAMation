@@ -50,11 +50,7 @@ namespace C
                 configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
             }
 
-            var cmd_line = System.String.Format(
-                "{0} {1}",
-                module.Executable.ToStringQuoteIfNecessary(),
-                module.Arguments.ToString(' ')
-            );
+            var cmd_line = $"{module.Executable.ToStringQuoteIfNecessary()} {module.Arguments.ToString(' ')}";
             XcodeBuilder.Support.AddPreBuildCommands(
                 module,
                 target,

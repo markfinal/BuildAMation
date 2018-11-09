@@ -40,8 +40,7 @@ namespace C
             if (!(settings is ClangCommon.ICommonCompilerSettings))
             {
                 throw new Bam.Core.Exception(
-                    "Compiler settings, {0}, do not implement the ClangCommon.ICommonCompilerSettings interface. Is this building on a platform other than macOS? Use --C.discoveralltoolchains --C.toolchain=Clang if so.",
-                    settings.GetType().ToString()
+                    $"Compiler settings, {settings.GetType().ToString()}, do not implement the ClangCommon.ICommonCompilerSettings interface. Is this building on a platform other than macOS? Use --C.discoveralltoolchains --C.toolchain=Clang if so."
                 );
             }
             // if Pedantic is variable among sources, and there are warning suppressions,

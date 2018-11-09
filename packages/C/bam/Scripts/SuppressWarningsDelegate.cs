@@ -28,7 +28,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
-using Bam.Core;
 namespace C
 {
     /// <summary>
@@ -113,7 +112,7 @@ namespace C
             }
         }
 
-        private System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, Conditions>> suppressions = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, Conditions>>();
+        private readonly System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, Conditions>> suppressions = new System.Collections.Generic.Dictionary<string, System.Collections.Generic.Dictionary<string, Conditions>>();
 
         private void
         Merge(

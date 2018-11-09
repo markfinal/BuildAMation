@@ -31,6 +31,5 @@ namespace C
 {
     public abstract class WinResourceCompilerTool :
         CompilerTool
-    {
-    }
+    {}
 }

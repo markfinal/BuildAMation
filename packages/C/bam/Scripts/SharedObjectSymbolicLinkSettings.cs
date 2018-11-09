@@ -36,26 +36,15 @@ namespace C
         ISharedObjectSymbolicLinkSettings
     {
         public SharedObjectSymbolicLinkSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("-f", "")]
-        bool ISharedObjectSymbolicLinkSettings.Force
-        {
-            get;
-            set;
-        }
+        bool ISharedObjectSymbolicLinkSettings.Force { get; set; }
 
         [CommandLineProcessor.Bool("-s", "")]
-        bool ISharedObjectSymbolicLinkSettings.SoftLink
-        {
-            get;
-            set;
-        }
+        bool ISharedObjectSymbolicLinkSettings.SoftLink { get; set; }
 
-        public override void AssignFileLayout ()
+        public override void AssignFileLayout()
         {
             this.FileLayout = ELayout.Cmds_Inputs_Outputs;
         }

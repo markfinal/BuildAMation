@@ -62,20 +62,12 @@ namespace C
             /// <summary>
             /// Get the underlying type of the toolchain version in use.
             /// </summary>
-            public System.Type BaseType
-            {
-                get;
-                private set;
-            }
+            public System.Type BaseType { get; private set; }
 
             /// <summary>
             /// Get the underlying type of the toolchain version to be compared against.
             /// </summary>
-            public System.Type ComparingType
-            {
-                get;
-                private set;
-            }
+            public System.Type ComparingType { get; private set; }
         }
 
         protected int combinedVersion;
@@ -87,10 +79,7 @@ namespace C
         /// <returns>true if identical</returns>
         public bool
         Match(
-            ToolchainVersion compare)
-        {
-            return this.combinedVersion == compare.combinedVersion;
-        }
+            ToolchainVersion compare) => this.combinedVersion == compare.combinedVersion;
 
         /// <summary>
         /// Is the current version at least as much (>=) the specified version?
@@ -133,20 +122,13 @@ namespace C
         public bool
         InRange(
             ToolchainVersion minimum,
-            ToolchainVersion maximum)
-        {
-            return this.AtLeast(minimum) &&
-                   this.AtMost(maximum);
-        }
+            ToolchainVersion maximum) => this.AtLeast(minimum) && this.AtMost(maximum);
 
         /// <summary>
         /// Convert the toolchain version to a human readable string.
         /// </summary>
         /// <returns>Version as string</returns>
         public override string
-        ToString()
-        {
-            return combinedVersion.ToString();
-        }
+        ToString() => combinedVersion.ToString();
     }
 }
