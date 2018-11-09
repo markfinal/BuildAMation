@@ -34,17 +34,11 @@ namespace Installer
     class TarInputFiles :
         Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
+        private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
+        private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
 
         // TODO: this could be improved
-        public System.Collections.Generic.KeyValuePair<string, Bam.Core.Module> ModulePathKeyPair
-        {
-            get
-            {
-                return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.Paths.First().Value, this.Paths.First().Key);
-            }
-        }
+        public System.Collections.Generic.KeyValuePair<string, Bam.Core.Module> ModulePathKeyPair => new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.Paths.First().Value, this.Paths.First().Key);
 
         protected override void
         Init(
@@ -54,11 +48,7 @@ namespace Installer
             this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)/$(config)/tarinput.txt");
         }
 
-        public Bam.Core.TokenizedString ScriptPath
-        {
-            get;
-            private set;
-        }
+        public Bam.Core.TokenizedString ScriptPath { get; private set; }
 
         public void
         AddFile(
@@ -105,7 +95,7 @@ namespace Installer
                     }
                     else
                     {
-                        scriptWriter.WriteLine("-C{0}", fileDir);
+                        scriptWriter.WriteLine($"-C{fileDir}");
                     }
                     scriptWriter.WriteLine(System.IO.Path.GetFileName(filePath));
                 }
@@ -119,7 +109,7 @@ namespace Installer
                     }
                     else
                     {
-                        scriptWriter.WriteLine("-C{0}", fileDir);
+                        scriptWriter.WriteLine($"-C{fileDir}");
                     }
                     scriptWriter.WriteLine(".");
                 }
@@ -132,18 +122,9 @@ namespace Installer
     {
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            return new TarBallSettings(module);
-        }
+            T module) => new TarBallSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("tar").First());
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("tar").First());
     }
 
     /// <summary>

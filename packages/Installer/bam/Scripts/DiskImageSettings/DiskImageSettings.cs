@@ -37,13 +37,10 @@ namespace Installer
         IDiskImageSettings
     {
         public DiskImageSettings()
-        { }
+        {}
 
         public DiskImageSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Enum(EDiskImageFormat.UDRW, "-format UDRW")]
         [CommandLineProcessor.Enum(EDiskImageFormat.UDRO, "-format UDRO")]
@@ -55,35 +52,19 @@ namespace Installer
         [CommandLineProcessor.Enum(EDiskImageFormat.UDSP, "-format UDSP")]
         [CommandLineProcessor.Enum(EDiskImageFormat.UDSB, "-format UDSB")]
         [CommandLineProcessor.Enum(EDiskImageFormat.UFBI, "-format UFBI")]
-        EDiskImageFormat IDiskImageSettings.Format
-        {
-            get;
-            set;
-        }
+        EDiskImageFormat IDiskImageSettings.Format { get; set; }
 
         [CommandLineProcessor.Enum(EDiskImageVerb.Create, "create")]
-        EDiskImageVerb IDiskImageSettings.Verb
-        {
-            get;
-            set;
-        }
+        EDiskImageVerb IDiskImageSettings.Verb { get; set; }
 
         [CommandLineProcessor.Enum(EDiskImageVerbosity.Default, "")]
         [CommandLineProcessor.Enum(EDiskImageVerbosity.Quiet, "-quiet")]
         [CommandLineProcessor.Enum(EDiskImageVerbosity.Verbose, "-verbose")]
         [CommandLineProcessor.Enum(EDiskImageVerbosity.Debug, "-debugs")]
-        EDiskImageVerbosity IDiskImageSettings.Verbosity
-        {
-            get;
-            set;
-        }
+        EDiskImageVerbosity IDiskImageSettings.Verbosity { get; set; }
 
         [CommandLineProcessor.String("-size ")]
-        string IDiskImageSettings.ImageSize
-        {
-            get;
-            set;
-        }
+        string IDiskImageSettings.ImageSize { get; set; }
 
         public override void
         AssignFileLayout()
