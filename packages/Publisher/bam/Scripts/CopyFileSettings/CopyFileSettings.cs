@@ -41,38 +41,19 @@ namespace Publisher
         {}
 
         public PosixCopyFileSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("-f", "")]
-        bool ICopyFileSettings.Force
-        {
-            get;
-            set;
-        }
+        bool ICopyFileSettings.Force { get; set; }
 
         [CommandLineProcessor.Bool("-v", "")]
-        bool ICopyFileSettings.Verbose
-        {
-            get;
-            set;
-        }
+        bool ICopyFileSettings.Verbose { get; set; }
 
         [CommandLineProcessor.Bool("-R", "")]
-        bool ICopyFileSettings.Recursive
-        {
-            get;
-            set;
-        }
+        bool ICopyFileSettings.Recursive { get; set; }
 
         [CommandLineProcessor.Bool("-a", "")]
-        bool ICopyFileSettings.PreserveAllAttributes
-        {
-            get;
-            set;
-        }
+        bool ICopyFileSettings.PreserveAllAttributes { get; set; }
 
         public override void AssignFileLayout()
         {
@@ -89,41 +70,22 @@ namespace Publisher
         ICopyFileSettings
     {
         public WinCopyFileSettings()
-        { }
+        {}
 
         public WinCopyFileSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("/Y /R", "")]
-        bool ICopyFileSettings.Force
-        {
-            get;
-            set;
-        }
+        bool ICopyFileSettings.Force { get; set; }
 
         [CommandLineProcessor.Bool("/F", "")]
-        bool ICopyFileSettings.Verbose
-        {
-            get;
-            set;
-        }
+        bool ICopyFileSettings.Verbose { get; set; }
 
         [CommandLineProcessor.Bool("/S", "")]
-        bool ICopyFileSettings.Recursive
-        {
-            get;
-            set;
-        }
+        bool ICopyFileSettings.Recursive { get; set; }
 
         [CommandLineProcessor.Bool("/K /B", "")]
-        bool ICopyFileSettings.PreserveAllAttributes
-        {
-            get;
-            set;
-        }
+        bool ICopyFileSettings.PreserveAllAttributes { get; set; }
 
         public override void AssignFileLayout()
         {

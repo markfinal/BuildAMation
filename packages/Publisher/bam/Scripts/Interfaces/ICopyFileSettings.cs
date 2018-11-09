@@ -33,28 +33,9 @@ namespace Publisher
     public interface ICopyFileSettings :
         Bam.Core.ISettingsBase
     {
-        bool Force
-        {
-            get;
-            set;
-        }
-
-        bool Verbose
-        {
-            get;
-            set;
-        }
-
-        bool Recursive
-        {
-            get;
-            set;
-        }
-
-        bool PreserveAllAttributes
-        {
-            get;
-            set;
-        }
+        bool Force { get; set; }
+        bool Verbose { get; set; }
+        bool Recursive { get; set; }
+        bool PreserveAllAttributes { get; set; }
     }
 }

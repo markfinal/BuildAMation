@@ -33,45 +33,27 @@ namespace Publisher
     public sealed class InstallNameTool :
         Bam.Core.PreBuiltTool
     {
-        private Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
+        private readonly Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
 
         public InstallNameTool()
         {
             var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("Clang");
             var discovery = clangMeta as C.IToolchainDiscovery;
-            discovery.discover(null);
+            discovery.discover(depth: null);
 
-            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta["SDK"]))); // could use clangMeta.SDK, but avoids compile-time dependency on the Clang packages
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim($"--sdk {clangMeta["SDK"]}")); // could use clangMeta.SDK, but avoids compile-time dependency on the Clang packages
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("install_name_tool"));
         }
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            return new InstallNameToolSettings(module);
-        }
+            T module) => new InstallNameToolSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("xcrun").First());
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("xcrun").First());
 
-        public override Bam.Core.TokenizedStringArray InitialArguments
-        {
-            get
-            {
-                return this.arguments;
-            }
-        }
+        public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
 
         protected override void
-        EvaluateInternal()
-        {
-            this.ReasonToExecute = null;
-        }
+        EvaluateInternal() => this.ReasonToExecute = null;
     }
 }

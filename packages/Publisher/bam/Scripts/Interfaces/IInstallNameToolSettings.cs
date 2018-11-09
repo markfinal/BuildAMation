@@ -33,22 +33,8 @@ namespace Publisher
     public interface IInstallNameToolSettings :
         Bam.Core.ISettingsBase
     {
-        EInstallNameToolMode Mode
-        {
-            get;
-            set;
-        }
-
-        string OldName
-        {
-            get;
-            set;
-        }
-
-        string NewName
-        {
-            get;
-            set;
-        }
+        EInstallNameToolMode Mode { get; set; }
+        string OldName { get; set; }
+        string NewName { get; set; }
     }
 }

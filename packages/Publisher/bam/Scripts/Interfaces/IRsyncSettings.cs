@@ -33,34 +33,10 @@ namespace Publisher
     public interface IRsyncSettings :
         Bam.Core.ISettingsBase
     {
-        bool Verbose
-        {
-            get;
-            set;
-        }
-
-        bool Recursive
-        {
-            get;
-            set;
-        }
-
-        bool PreserveAllAttributes
-        {
-            get;
-            set;
-        }
-
-        bool UseChecksums
-        {
-            get;
-            set;
-        }
-
-        Bam.Core.TokenizedStringArray Exclusions
-        {
-            get;
-            set;
-        }
+        bool Verbose { get; set; }
+        bool Recursive { get; set; }
+        bool PreserveAllAttributes { get; set; }
+        bool UseChecksums { get; set; }
+        Bam.Core.TokenizedStringArray Exclusions { get; set; }
     }
 }

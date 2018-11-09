@@ -40,38 +40,19 @@ namespace Publisher
         {}
 
         public StripToolSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("-v", "")]
-        bool IStripToolSettings.Verbose
-        {
-            get;
-            set;
-        }
+        bool IStripToolSettings.Verbose { get; set; }
 
         [CommandLineProcessor.Bool("-p", "")]
-        bool IStripToolSettings.PreserveTimestamp
-        {
-            get;
-            set;
-        }
+        bool IStripToolSettings.PreserveTimestamp { get; set; }
 
         [CommandLineProcessor.Bool("-S", "")]
-        bool IStripToolSettings.StripDebugSymbols
-        {
-            get;
-            set;
-        }
+        bool IStripToolSettings.StripDebugSymbols { get; set; }
 
         [CommandLineProcessor.Bool("-x", "")]
-        bool IStripToolSettings.StripLocalSymbols
-        {
-            get;
-            set;
-        }
+        bool IStripToolSettings.StripLocalSymbols { get; set; }
 
         public override void
         AssignFileLayout()

@@ -35,35 +35,20 @@ namespace Publisher
         IInstallNameToolSettings
     {
         public InstallNameToolSettings()
-        { }
+        {}
 
         public InstallNameToolSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Enum(EInstallNameToolMode.UpdateIDName, "-id")]
         [CommandLineProcessor.Enum(EInstallNameToolMode.ChangeIDName, "-change")]
-        EInstallNameToolMode IInstallNameToolSettings.Mode
-        {
-            get;
-            set;
-        }
+        EInstallNameToolMode IInstallNameToolSettings.Mode { get; set; }
 
         [CommandLineProcessor.String("")]
-        string IInstallNameToolSettings.OldName
-        {
-            get;
-            set;
-        }
+        string IInstallNameToolSettings.OldName { get; set; }
 
         [CommandLineProcessor.String("")]
-        string IInstallNameToolSettings.NewName
-        {
-            get;
-            set;
-        }
+        string IInstallNameToolSettings.NewName { get; set; }
 
         public override void AssignFileLayout()
         {

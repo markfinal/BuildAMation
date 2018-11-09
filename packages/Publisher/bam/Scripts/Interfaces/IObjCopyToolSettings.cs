@@ -33,16 +33,7 @@ namespace Publisher
     public interface IObjCopyToolSettings :
         Bam.Core.ISettingsBase
     {
-        bool OnlyKeepDebug
-        {
-            get;
-            set;
-        }
-
-        bool Verbose
-        {
-            get;
-            set;
-        }
+        bool OnlyKeepDebug { get; set; }
+        bool Verbose { get; set; }
     }
 }

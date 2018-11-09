@@ -28,7 +28,6 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
-using System.Linq;
 namespace Publisher
 {
     /// <summary>
@@ -47,7 +46,7 @@ namespace Publisher
 
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
-        private System.Collections.Generic.List<ICollatedObject> collatedObjects = new System.Collections.Generic.List<ICollatedObject>();
+        private readonly System.Collections.Generic.List<ICollatedObject> collatedObjects = new System.Collections.Generic.List<ICollatedObject>();
 
         protected override void
         Init(
@@ -164,11 +163,11 @@ namespace Publisher
             var sourceModule = collatedObj.SourceModule;
             if (sourceModule != null)
             {
-                Bam.Core.Log.DebugMessage("\t'{0}'", sourceModule.ToString());
+                Bam.Core.Log.DebugMessage($"\t'{sourceModule.ToString()}'");
             }
             else
             {
-                Bam.Core.Log.DebugMessage("\t'{0}'", (collatedObj as CollatedObject).SourcePath.ToString());
+                Bam.Core.Log.DebugMessage($"\t'{(collatedObj as CollatedObject).SourcePath.ToString()}'");
             }
 
             if ((collatedObj as CollatedObject).Ignore)
@@ -209,7 +208,7 @@ namespace Publisher
             }
             else
             {
-                throw new Bam.Core.Exception("Unsupported platform '{0}'", sourceModule.BuildEnvironment.Platform.ToString());
+                throw new Bam.Core.Exception($"Unsupported platform '{sourceModule.BuildEnvironment.Platform.ToString()}'");
             }
         }
 
@@ -221,11 +220,11 @@ namespace Publisher
         {
             if (null != anchor.SourceModule)
             {
-                Bam.Core.Log.DebugMessage("Debug Symbols Anchor '{0}'", anchor.SourceModule.ToString());
+                Bam.Core.Log.DebugMessage($"Debug Symbols Anchor '{anchor.SourceModule.ToString()}'");
             }
             else
             {
-                Bam.Core.Log.DebugMessage("Pre existing Debug Symbols Anchor '{0}'", (anchor as CollatedObject).SourcePath.ToString());
+                Bam.Core.Log.DebugMessage($"Pre existing Debug Symbols Anchor '{(anchor as CollatedObject).SourcePath.ToString()}'");
             }
             collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent, customData);
         }

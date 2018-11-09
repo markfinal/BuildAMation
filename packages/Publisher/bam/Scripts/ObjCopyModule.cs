@@ -83,13 +83,7 @@ namespace Publisher
             }
         }
 
-        Bam.Core.Module ICollatedObject.SourceModule
-        {
-            get
-            {
-                return this.sourceModule;
-            }
-        }
+        Bam.Core.Module ICollatedObject.SourceModule => this.sourceModule;
         public Bam.Core.Module SourceModule
         {
             set
@@ -98,13 +92,7 @@ namespace Publisher
             }
         }
 
-        string ICollatedObject.SourcePathKey
-        {
-            get
-            {
-                return this.sourcePathKey;
-            }
-        }
+        string ICollatedObject.SourcePathKey => this.sourcePathKey;
         public string SourcePathKey
         {
             set
@@ -113,21 +101,9 @@ namespace Publisher
             }
         }
 
-        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
-        {
-            get
-            {
-                return this.Macros["publishingdir"];
-            }
-        }
+        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory => this.Macros["publishingdir"];
 
-        ICollatedObject ICollatedObject.Anchor
-        {
-            get
-            {
-                return this.anchor;
-            }
-        }
+        ICollatedObject ICollatedObject.Anchor => this.anchor;
         public ICollatedObject Anchor
         {
             set
@@ -181,10 +157,7 @@ namespace Publisher
         }
 
         public override Settings
-        MakeSettings()
-        {
-            return new MakeDebugSymbolFileSettings(this);
-        }
+        MakeSettings() => new MakeDebugSymbolFileSettings(this);
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
@@ -236,17 +209,10 @@ namespace Publisher
             );
         }
 
-        public MakeDebugSymbolFile DebugSymbolModule
-        {
-            get;
-            set;
-        }
+        public MakeDebugSymbolFile DebugSymbolModule { get; set; }
 
         public override Settings
-        MakeSettings()
-        {
-            return new LinkBackDebugSymbolFileSettings(this);
-        }
+        MakeSettings() => new LinkBackDebugSymbolFileSettings(this);
 
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {

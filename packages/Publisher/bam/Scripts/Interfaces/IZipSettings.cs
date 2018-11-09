@@ -33,22 +33,8 @@ namespace Publisher
     public interface IZipSettings :
         Bam.Core.ISettingsBase
     {
-        bool Verbose
-        {
-            get;
-            set;
-        }
-
-        bool RecursivePaths
-        {
-            get;
-            set;
-        }
-
-        bool Update
-        {
-            get;
-            set;
-        }
+        bool Verbose { get; set; }
+        bool RecursivePaths { get; set; }
+        bool Update { get; set; }
     }
 }

@@ -33,10 +33,6 @@ namespace Publisher
     public interface IChangeRPathSettings :
         Bam.Core.ISettingsBase
     {
-        string NewRPath
-        {
-            get;
-            set;
-        }
+        string NewRPath { get; set; }
     }
 }

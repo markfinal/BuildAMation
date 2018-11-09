@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Collections.Generic;
 using Bam.Core;
 namespace Publisher
 {
@@ -45,15 +44,9 @@ namespace Publisher
         private Bam.Core.TokenizedString publishingDirectory;
         private ICollatedObject anchor = null;
 
-        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject>();
+        private readonly System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject>();
 
-        Bam.Core.Module ICollatedObject.SourceModule
-        {
-            get
-            {
-                return this.sourceModule;
-            }
-        }
+        Bam.Core.Module ICollatedObject.SourceModule => this.sourceModule;
         public Bam.Core.Module SourceModule
         {
             set
@@ -62,13 +55,7 @@ namespace Publisher
             }
         }
 
-        string ICollatedObject.SourcePathKey
-        {
-            get
-            {
-                return this.sourcePathKey;
-            }
-        }
+        string ICollatedObject.SourcePathKey => this.sourcePathKey;
         public string SourcePathKey
         {
             set
@@ -77,21 +64,9 @@ namespace Publisher
             }
         }
 
-        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
-        {
-            get
-            {
-                return this.publishingDirectory;
-            }
-        }
+        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory => this.publishingDirectory;
 
-        ICollatedObject ICollatedObject.Anchor
-        {
-            get
-            {
-                return this.anchor;
-            }
-        }
+        ICollatedObject ICollatedObject.Anchor => this.anchor;
         public ICollatedObject Anchor
         {
             set
@@ -105,20 +80,10 @@ namespace Publisher
             }
         }
 
-        public bool Ignore
-        {
-            get;
-            set;
-        }
+        public bool Ignore { get; set; }
 
         // helper function
-        public bool IsAnchor
-        {
-            get
-            {
-                return null == this.anchor;
-            }
-        }
+        public bool IsAnchor => null == this.anchor;
 
         // helper function (XcodeBuilder)
         public bool IsInAnchorPackage
@@ -176,14 +141,7 @@ namespace Publisher
             }
         }
 
-        public Bam.Core.TokenizedString
-        SourcePath
-        {
-            get
-            {
-                return this.sourceModule.GeneratedPaths[this.sourcePathKey];
-            }
-        }
+        public Bam.Core.TokenizedString SourcePath => this.sourceModule.GeneratedPaths[this.sourcePathKey];
 
         protected override void
         Init(
@@ -202,13 +160,17 @@ namespace Publisher
             {
                 if (null != this.sourceModule)
                 {
-                    throw new Bam.Core.Exception("The publishing directory for module '{0}', pathkey '{1}' has yet to be set", this.sourceModule.ToString(), this.sourcePathKey.ToString());
+                    throw new Bam.Core.Exception(
+                        $"The publishing directory for module '{this.sourceModule.ToString()}', pathkey '{this.sourcePathKey.ToString()}' has yet to be set"
+                    );
                 }
                 else
                 {
                     // TODO: this may result in a not-yet-parsed TokenizedString exception
                     // but what is the alternative for identifying the path?
-                    throw new Bam.Core.Exception("The publishing directory for '{0}' has yet to be set", this.SourcePath);
+                    throw new Bam.Core.Exception(
+                        $"The publishing directory for '{this.SourcePath}' has yet to be set"
+                    );
                 }
             }
             if (null != this.sourceModule)
@@ -217,9 +179,9 @@ namespace Publisher
                 if (!this.sourceModule.GeneratedPaths.ContainsKey(this.sourcePathKey))
                 {
                     // this shouldn't happen, but just in case, a sensible error...
-                    throw new Bam.Core.Exception("Unable to locate generated path '{0}' in module '{1}' for collation",
-                        this.sourcePathKey.ToString(),
-                        this.sourceModule.ToString());
+                    throw new Bam.Core.Exception(
+                        $"Unable to locate generated path '{this.sourcePathKey.ToString()}' in module '{this.sourceModule.ToString()}' for collation"
+                    );
                 }
             }
             if (this is CollatedFile)

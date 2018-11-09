@@ -44,71 +44,22 @@ namespace Publisher
         }
 
         private Bam.Core.ICommandLineTool
-        GetTool()
-        {
-            return (this as ICollatedObject).SourceModule as Bam.Core.ICommandLineTool;
-        }
+        GetTool() => (this as ICollatedObject).SourceModule as Bam.Core.ICommandLineTool;
 
-        System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> Bam.Core.ICommandLineTool.EnvironmentVariables
-        {
-            get
-            {
-                return this.GetTool().EnvironmentVariables;
-            }
-        }
+        System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> Bam.Core.ICommandLineTool.EnvironmentVariables => this.GetTool().EnvironmentVariables;
 
-        Bam.Core.TokenizedString Bam.Core.ICommandLineTool.Executable
-        {
-            get
-            {
-                // use the copied path
-                return this.GeneratedPaths[CollatedFile.CopiedFileKey];
-            }
-        }
+        Bam.Core.TokenizedString Bam.Core.ICommandLineTool.Executable => this.GeneratedPaths[CollatedFile.CopiedFileKey]; // use the copied path
 
-        Bam.Core.StringArray Bam.Core.ICommandLineTool.InheritedEnvironmentVariables
-        {
-            get
-            {
-                return this.GetTool().InheritedEnvironmentVariables;
-            }
-        }
+        Bam.Core.StringArray Bam.Core.ICommandLineTool.InheritedEnvironmentVariables => this.GetTool().InheritedEnvironmentVariables;
 
-        Bam.Core.TokenizedStringArray Bam.Core.ICommandLineTool.InitialArguments
-        {
-            get
-            {
-                return this.GetTool().InitialArguments;
-            }
-        }
+        Bam.Core.TokenizedStringArray Bam.Core.ICommandLineTool.InitialArguments => this.GetTool().InitialArguments;
 
-        Bam.Core.Array<int> Bam.Core.ICommandLineTool.SuccessfulExitCodes
-        {
-            get
-            {
-                return this.GetTool().SuccessfulExitCodes;
-            }
-        }
+        Bam.Core.Array<int> Bam.Core.ICommandLineTool.SuccessfulExitCodes => this.GetTool().SuccessfulExitCodes;
 
-        Bam.Core.TokenizedStringArray Bam.Core.ICommandLineTool.TerminatingArguments
-        {
-            get
-            {
-                return this.GetTool().TerminatingArguments;
-            }
-        }
+        Bam.Core.TokenizedStringArray Bam.Core.ICommandLineTool.TerminatingArguments => this.GetTool().TerminatingArguments;
 
-        string Bam.Core.ICommandLineTool.UseResponseFileOption
-        {
-            get
-            {
-                return this.GetTool().UseResponseFileOption;
-            }
-        }
+        string Bam.Core.ICommandLineTool.UseResponseFileOption => this.GetTool().UseResponseFileOption;
 
-        Bam.Core.Settings Bam.Core.ITool.CreateDefaultSettings<T>(T module)
-        {
-            return this.GetTool().CreateDefaultSettings(module);
-        }
+        Bam.Core.Settings Bam.Core.ITool.CreateDefaultSettings<T>(T module) => this.GetTool().CreateDefaultSettings(module);
     }
 }

@@ -65,9 +65,7 @@ namespace Publisher
                     else
                     {
                         throw new Bam.Core.Exception(
-                            "No anchor set on '{0}' with source path '{1}'",
-                            module.GetType().ToString(),
-                            module.SourcePath
+                            $"No anchor set on '{module.GetType().ToString()}' with source path '{module.SourcePath}'"
                         );
                     }
                 }
@@ -109,7 +107,7 @@ namespace Publisher
                 commands.Add(
                     System.String.Format(
                         "[[ ! -d {0} ]] && mkdir -p {0}",
-                        copyFileTool.escapePath(dir.ToString())
+                        copyFileTool.EscapePath(dir.ToString())
                     )
                 );
             }

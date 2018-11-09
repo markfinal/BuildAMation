@@ -33,28 +33,9 @@ namespace Publisher
     public interface IStripToolSettings :
         Bam.Core.ISettingsBase
     {
-        bool Verbose
-        {
-            get;
-            set;
-        }
-
-        bool PreserveTimestamp
-        {
-            get;
-            set;
-        }
-
-        bool StripDebugSymbols
-        {
-            get;
-            set;
-        }
-
-        bool StripLocalSymbols
-        {
-            get;
-            set;
-        }
+        bool Verbose { get; set; }
+        bool PreserveTimestamp { get; set; }
+        bool StripDebugSymbols { get; set; }
+        bool StripLocalSymbols { get; set; }
     }
 }

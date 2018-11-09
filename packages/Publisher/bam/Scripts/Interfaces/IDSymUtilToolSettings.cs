@@ -32,6 +32,5 @@ namespace Publisher
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface IDSymUtilToolSettings :
         Bam.Core.ISettingsBase
-    {
-    }
+    {}
 }

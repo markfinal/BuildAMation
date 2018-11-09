@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 using System.Linq;
 namespace Publisher
 {
@@ -35,11 +34,7 @@ namespace Publisher
     abstract class PreExistingObject :
         Bam.Core.Module
     {
-        public Bam.Core.Module ParentOfCollationModule
-        {
-            get;
-            private set;
-        }
+        public Bam.Core.Module ParentOfCollationModule { get; private set; }
 
         protected override void
         Init(
@@ -61,11 +56,7 @@ namespace Publisher
         }
 
         protected override void
-        EvaluateInternal()
-        {
-            // pre-existing so never needs evaluating
-            this.ReasonToExecute = null;
-        }
+        EvaluateInternal() => this.ReasonToExecute = null; // pre-existing so never needs evaluating
 
         protected override void
         ExecuteInternal(
@@ -187,14 +178,10 @@ namespace Publisher
 
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
-        private System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Module, string>, ICollatedObject>();
-        private System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>> preExistingCollatedObjects = new System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>>();
+        private readonly System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject>();
+        private readonly System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>> preExistingCollatedObjects = new System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>>();
 
-        private Bam.Core.TokenizedString PublishRoot
-        {
-            get;
-            set;
-        }
+        private Bam.Core.TokenizedString PublishRoot { get; set; }
 
         /// <summary>
         /// Set or get the directory where executables are published.
@@ -394,11 +381,7 @@ namespace Publisher
         /// Retrieve the application publishing type set in SetDefaultMacrosAndMappings.
         /// </summary>
         /// <value>The type of the publishing.</value>
-        public EPublishingType PublishingType
-        {
-            get;
-            protected set;
-        }
+        public EPublishingType PublishingType { get; protected set; }
 
         /// <summary>
         /// Invoke this function prior to including any modules into a collation, in order to configure defaults
@@ -508,16 +491,14 @@ namespace Publisher
             var results = new Bam.Core.Array<ICollatedObject>();
             foreach (var dep in this.Requirements)
             {
-                var collatedObj = dep as ICollatedObject;
-                if (null == collatedObj)
+                if (dep is ICollatedObject collatedObj)
                 {
-                    // can happen if non-collated objects end up in the requirements, e.g. tools to generate output from collated objects
-                    continue;
+                    if (collatedObj.SourceModule is DependentModule)
+                    {
+                        results.AddUnique(collatedObj);
+                    }
                 }
-                if (collatedObj.SourceModule is DependentModule)
-                {
-                    results.AddUnique(collatedObj);
-                }
+                // (else) can happen if non-collated objects end up in the requirements, e.g. tools to generate output from collated objects
             }
             return results;
         }
@@ -595,7 +576,7 @@ namespace Publisher
                 }
                 if (null == next.Item2)
                 {
-                    Bam.Core.Log.DebugMessage("Ignoring '{0}' for collation, with no string path key", next.Item1.ToString());
+                    Bam.Core.Log.DebugMessage($"Ignoring '{next.Item1.ToString()}' for collation, with no string path key");
                     continue;
                 }
                 var moduleShouldBePublished = true;
@@ -647,7 +628,7 @@ namespace Publisher
         /// </summary>
         public class ModuleOutputDefaultPublishingPathMapping
         {
-            private Bam.Core.Array<ModuleOutputDefaultPublishingPath> mapping = new Bam.Core.Array<ModuleOutputDefaultPublishingPath>();
+            private readonly Bam.Core.Array<ModuleOutputDefaultPublishingPath> mapping = new Bam.Core.Array<ModuleOutputDefaultPublishingPath>();
 
             /// <summary>
             /// Register a new module and PathKey to a location.
@@ -692,7 +673,9 @@ namespace Publisher
                         return mod.defaultPublishPath;
                     }
                 }
-                throw new Bam.Core.Exception("Unable to identify a publish directory for module {0} with path key {1}", module.ToString(), modulePathKey.ToString());
+                throw new Bam.Core.Exception(
+                    $"Unable to identify a publish directory for module {module.ToString()} with path key {modulePathKey.ToString()}"
+                );
             }
 
             /// <summary>
@@ -716,7 +699,9 @@ namespace Publisher
                     }
                     return mod.pathKey;
                 }
-                Bam.Core.Log.DebugMessage("Unable to locate collation mapping for modules of type '{0}'", module.GetType().ToString());
+                Bam.Core.Log.DebugMessage(
+                    $"Unable to locate collation mapping for modules of type '{module.GetType().ToString()}'"
+                );
                 return null;
             }
         }
@@ -724,11 +709,7 @@ namespace Publisher
         /// <summary>
         /// Access to the mapping from module to default publish path.
         /// </summary>
-        public ModuleOutputDefaultPublishingPathMapping Mapping
-        {
-            get;
-            private set;
-        }
+        public ModuleOutputDefaultPublishingPathMapping Mapping { get; private set; }
 
         private void
         recordCollatedObject(
@@ -763,8 +744,7 @@ namespace Publisher
             catch (System.ArgumentException)
             {
                 var message = new System.Text.StringBuilder();
-                message.AppendFormat("Module {0} with path key {1} has already been added for collation", dependent.ToString(), key.ToString());
-                message.AppendLine();
+                message.AppendLine($"Module {dependent.ToString()} with path key {key.ToString()} has already been added for collation");
                 message.AppendLine("Please use Collation.Find<ModuleType>() in order to modify any of it's traits.");
                 throw new Bam.Core.Exception(message.ToString());
             }
@@ -875,21 +855,23 @@ namespace Publisher
             var dir = System.IO.Path.GetDirectoryName(wildcardPaths);
             if (!System.IO.Directory.Exists(dir))
             {
-                throw new Bam.Core.Exception("The directory {0} does not exist", dir);
+                throw new Bam.Core.Exception($"The directory {dir} does not exist");
             }
             var leafname = System.IO.Path.GetFileName(wildcardPaths);
             var option = leafname.Contains("**") ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
             var files = System.IO.Directory.GetFiles(dir, leafname, option);
             if (0 == files.Length)
             {
-                throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPaths);
+                throw new Bam.Core.Exception($"No files were found that matched the pattern '{wildcardPaths}'");
             }
             if (filter != null)
             {
                 var filteredFiles = files.Where(pathname => filter.IsMatch(pathname)).ToArray();
                 if (0 == filteredFiles.Length)
                 {
-                    throw new Bam.Core.Exception("No files were found that matched the pattern '{0}', after applying the regex filter. {1} were found prior to applying the filter.", wildcardPaths, files.Count());
+                    throw new Bam.Core.Exception(
+                        $"No files were found that matched the pattern '{wildcardPaths}', after applying the regex filter. {files.Count()} were found prior to applying the filter."
+                    );
                 }
                 files = filteredFiles;
             }
@@ -974,22 +956,24 @@ namespace Publisher
             var dir = System.IO.Path.GetDirectoryName(wildcardPaths);
             if (!System.IO.Directory.Exists(dir))
             {
-                throw new Bam.Core.Exception("The directory {0} does not exist", dir);
+                throw new Bam.Core.Exception($"The directory {dir} does not exist");
             }
             var leafname = System.IO.Path.GetFileName(wildcardPaths);
             var option = leafname.Contains("**") ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
             var files = System.IO.Directory.GetDirectories(dir, leafname, option);
             if (0 == files.Length)
             {
-                throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPaths);
+                throw new Bam.Core.Exception($"No files were found that matched the pattern '{wildcardPaths}'");
             }
             if (filter != null)
             {
                 var filteredFiles = files.Where(pathname => filter.IsMatch(pathname)).ToArray();
                 if (0 == filteredFiles.Length)
                 {
-                    throw new Bam.Core.Exception("No files were found that matched the pattern '{0}', after applying the regex filter. {1} were found prior to applying the filter.", wildcardPaths, files.Count());
-                }
+                    throw new Bam.Core.Exception(
+                        $"No files were found that matched the pattern '{wildcardPaths}', after applying the regex filter. {files.Count()} were found prior to applying the filter."
+                    );
+            }
                 files = filteredFiles;
             }
             var results = new Bam.Core.Array<ICollatedObject>();

@@ -90,13 +90,7 @@ namespace Publisher
             }
         }
 
-        Bam.Core.Module ICollatedObject.SourceModule
-        {
-            get
-            {
-                return this.sourceModule;
-            }
-        }
+        Bam.Core.Module ICollatedObject.SourceModule => this.sourceModule;
         public Bam.Core.Module SourceModule
         {
             set
@@ -105,13 +99,7 @@ namespace Publisher
             }
         }
 
-        string ICollatedObject.SourcePathKey
-        {
-            get
-            {
-                return this.sourcePathKey;
-            }
-        }
+        string ICollatedObject.SourcePathKey => this.sourcePathKey;
         public string SourcePathKey
         {
             set
@@ -120,21 +108,9 @@ namespace Publisher
             }
         }
 
-        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory
-        {
-            get
-            {
-                return this.Macros["publishingdir"];
-            }
-        }
+        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory => this.Macros["publishingdir"];
 
-        ICollatedObject ICollatedObject.Anchor
-        {
-            get
-            {
-                return this.anchor;
-            }
-        }
+        ICollatedObject ICollatedObject.Anchor => this.anchor;
         public ICollatedObject Anchor
         {
             set

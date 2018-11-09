@@ -36,13 +36,10 @@ namespace Publisher
         IDSymUtilToolSettings
     {
         public DSymUtilToolSettings()
-        { }
+        {}
 
         public DSymUtilToolSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         public override void
         AssignFileLayout()
