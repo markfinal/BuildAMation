@@ -37,42 +37,23 @@ namespace ClangCommon
         ICommonArchiverSettings
     {
         protected CommonArchiverSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("-s", "")]
         [XcodeProjectProcessor.UniqueBool("", "", "", ignore: true)]
-        bool ICommonArchiverSettings.Ranlib
-        {
-            get;
-            set;
-        }
+        bool ICommonArchiverSettings.Ranlib { get; set; }
 
         [CommandLineProcessor.Bool("-c", "")]
         [XcodeProjectProcessor.UniqueBool("", "", "", ignore: true)]
-        bool ICommonArchiverSettings.DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
-        }
+        bool ICommonArchiverSettings.DoNotWarnIfLibraryCreated { get; set; }
 
         [CommandLineProcessor.StringArray("")]
         [XcodeProjectProcessor.StringArray("", ignore: true)]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         [CommandLineProcessor.Enum(EArchiverCommand.Replace, "-r")]
         [XcodeProjectProcessor.UniqueEnum(EArchiverCommand.Replace, "", "", ignore: true)]
-        EArchiverCommand ICommonArchiverSettings.Command
-        {
-            get;
-            set;
-        }
+        EArchiverCommand ICommonArchiverSettings.Command { get; set; }
 
         public override void
         AssignFileLayout()

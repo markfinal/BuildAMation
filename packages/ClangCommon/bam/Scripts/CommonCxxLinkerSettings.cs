@@ -45,10 +45,6 @@ namespace ClangCommon
         [XcodeProjectProcessor.UniqueEnum(C.Cxx.EStandardLibrary.NotSet, "CLANG_CXX_LIBRARY", "", ignore: true)]
         [XcodeProjectProcessor.UniqueEnum(C.Cxx.EStandardLibrary.libstdcxx, "CLANG_CXX_LIBRARY", "libstdc++")]
         [XcodeProjectProcessor.UniqueEnum(C.Cxx.EStandardLibrary.libcxx, "CLANG_CXX_LIBRARY", "libc++")]
-        C.Cxx.EStandardLibrary C.ICxxOnlyLinkerSettings.StandardLibrary
-        {
-            get;
-            set;
-        }
+        C.Cxx.EStandardLibrary C.ICxxOnlyLinkerSettings.StandardLibrary { get; set; }
     }
 }

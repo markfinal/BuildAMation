@@ -34,14 +34,14 @@ namespace ClangCommon
     public sealed class Librarian :
         C.LibrarianTool
     {
-        private Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
+        private readonly Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
 
         public Librarian()
         {
             var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
             var discovery = clangMeta as C.IToolchainDiscovery;
             discovery.discover(null);
-            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim($"--sdk {clangMeta.SDK}"));
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("ar"));
 
             this.Macros.AddVerbatim("libprefix", "lib");
@@ -50,26 +50,9 @@ namespace ClangCommon
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Clang.ArchiverSettings(module);
-            return settings;
-        }
+            T module) => new Clang.ArchiverSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.xcrunPath);
-            }
-        }
-
-        public override Bam.Core.TokenizedStringArray InitialArguments
-        {
-            get
-            {
-                return this.arguments;
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.XcrunPath);
+        public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
     }
 }

@@ -34,7 +34,7 @@ namespace ClangCommon
         C.IToolchainDiscovery
     {
         protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-        private Bam.Core.StringArray expectedSDKs;
+        private readonly Bam.Core.StringArray expectedSDKs;
 
         protected MetaData(
             string lastUpgradeCheck,
@@ -46,20 +46,11 @@ namespace ClangCommon
             this.expectedSDKs = expectedSDKs;
         }
 
-        public override object this[string index]
-        {
-            get
-            {
-                return this.Meta[index];
-            }
-        }
+        public override object this[string index] => this.Meta[index];
 
         public override bool
         Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
-        }
+            string index) => this.Meta.ContainsKey(index);
 
         public string SDK
         {
@@ -154,7 +145,7 @@ namespace ClangCommon
             System.IO.File.WriteAllText(temp_file, contents.ToString());
             var sdk = this.SDK;
             var result = Bam.Core.OSUtilities.RunExecutable(
-                ConfigureUtilities.xcrunPath,
+                ConfigureUtilities.XcrunPath,
                 $"--sdk {sdk} clang -E -P -x c {temp_file}"
             );
             var version = result.StandardOutput.Split(System.Environment.NewLine);
@@ -219,10 +210,8 @@ namespace ClangCommon
                 }
 
                 this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
-                Bam.Core.Log.Info("Using {0} and {1} SDK installed at {2}",
-                    ClangCommon.ConfigureUtilities.GetClangVersion(this.SDK),
-                    this.SDK,
-                    this.SDKPath
+                Bam.Core.Log.Info(
+                    $"Using {ClangCommon.ConfigureUtilities.GetClangVersion(this.SDK)} and {this.SDK} SDK installed at {this.SDKPath}"
                 );
             }
             catch (System.InvalidOperationException)

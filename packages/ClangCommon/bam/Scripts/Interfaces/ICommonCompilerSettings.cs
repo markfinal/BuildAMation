@@ -34,40 +34,11 @@ namespace ClangCommon
     public interface ICommonCompilerSettings :
         Bam.Core.ISettingsBase
     {
-        bool? AllWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? ExtraWarnings
-        {
-            get;
-            set;
-        }
-
-        bool? Pedantic
-        {
-            get;
-            set;
-        }
-
-        EVisibility? Visibility
-        {
-            get;
-            set;
-        }
-
-        bool? StrictAliasing
-        {
-            get;
-            set;
-        }
-
-        EOptimization? Optimization
-        {
-            get;
-            set;
-        }
+        bool? AllWarnings { get; set; }
+        bool? ExtraWarnings { get; set; }
+        bool? Pedantic { get; set; }
+        EVisibility? Visibility { get; set; }
+        bool? StrictAliasing { get; set; }
+        EOptimization? Optimization { get; set; }
     }
 }

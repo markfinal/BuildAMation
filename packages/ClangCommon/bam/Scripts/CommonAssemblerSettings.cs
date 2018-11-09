@@ -52,59 +52,31 @@ namespace ClangCommon
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-arch x86_64")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.ThirtyTwo, "VALID_ARCHS", "i386", "ARCHS", "$(ARCHS_STANDARD_32_BIT)")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.SixtyFour, "VALID_ARCHS", "x86_64", "ARCHS", "$(ARCHS_STANDARD_64_BIT)")]
-        C.EBit? C.ICommonAssemblerSettings.Bits
-        {
-            get;
-            set;
-        }
+        C.EBit? C.ICommonAssemblerSettings.Bits { get; set; }
 
         [CommandLineProcessor.Bool("-g", "")]
         [XcodeProjectProcessor.UniqueBool("GCC_GENERATE_DEBUGGING_SYMBOLS", "YES", "NO")]
-        bool C.ICommonAssemblerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
+        bool C.ICommonAssemblerSettings.DebugSymbols { get; set; }
 
         [CommandLineProcessor.Bool("-Werror", "-Wno-error")]
         [XcodeProjectProcessor.UniqueBool("GCC_TREAT_WARNINGS_AS_ERRORS", "YES", "NO")]
-        bool C.ICommonAssemblerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
+        bool C.ICommonAssemblerSettings.WarningsAsErrors { get; set; }
 
         [CommandLineProcessor.PathArray("-I")]
         [XcodeProjectProcessor.PathArray("USER_HEADER_SEARCH_PATHS")]
-        Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths { get; set; }
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
         [XcodeProjectProcessor.PreprocessorDefines("GCC_PREPROCESSOR_DEFINITIONS")]
-        C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
+        C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines { get; set; }
 
         [CommandLineProcessor.String("-mmacosx-version-min=")]
         [XcodeProjectProcessor.String("", ignore: true)]
-        string C.ICommonAssemblerSettingsOSX.MacOSXMinimumVersionSupported
-        {
-            get;
-            set;
-        }
+        string C.ICommonAssemblerSettingsOSX.MacOSXMinimumVersionSupported { get; set; }
 
         [CommandLineProcessor.StringArray("")]
         [XcodeProjectProcessor.StringArray("OTHER_CFLAGS", spacesSeparate: true)]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         public override void
         AssignFileLayout()

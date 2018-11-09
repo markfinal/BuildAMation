@@ -52,10 +52,6 @@ namespace ClangCommon
 
         [CommandLineProcessor.String("-fconstant-string-class=")]
         [XcodeProjectProcessor.String("", ignore: true)] // TODO
-        string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass
-        {
-            get;
-            set;
-        }
+        string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass { get; set; }
     }
 }

@@ -45,21 +45,8 @@ namespace ClangCommon
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
         }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.xcrunPath);
-            }
-        }
-
-        public override Bam.Core.TokenizedStringArray InitialArguments
-        {
-            get
-            {
-                return this.arguments;
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.XcrunPath);
+        public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
     }
 
     [C.RegisterCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
@@ -67,18 +54,11 @@ namespace ClangCommon
     public sealed class CCompiler :
         CompilerBase
     {
-        public CCompiler()
-        {
-            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
-        }
+        public CCompiler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Clang.CCompilerSettings(module);
-            return settings;
-        }
+            T module) => new Clang.CCompilerSettings(module);
     }
 
     [C.RegisterCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
@@ -86,18 +66,11 @@ namespace ClangCommon
     public sealed class CxxCompiler :
         CompilerBase
     {
-        public CxxCompiler()
-        {
-            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));
-        }
+        public CxxCompiler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Clang.CxxCompilerSettings(module);
-            return settings;
-        }
+            T module) => new Clang.CxxCompilerSettings(module);
     }
 
     [C.RegisterObjectiveCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
@@ -105,18 +78,11 @@ namespace ClangCommon
     public sealed class ObjectiveCCompiler :
         CompilerBase
     {
-        public ObjectiveCCompiler()
-        {
-            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
-        }
+        public ObjectiveCCompiler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Clang.ObjectiveCCompilerSettings(module);
-            return settings;
-        }
+            T module) => new Clang.ObjectiveCCompilerSettings(module);
     }
 
     [C.RegisterObjectiveCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
@@ -124,17 +90,10 @@ namespace ClangCommon
     public sealed class ObjectiveCxxCompiler :
     CompilerBase
     {
-        public ObjectiveCxxCompiler()
-        {
-            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));
-        }
+        public ObjectiveCxxCompiler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Clang.ObjectiveCxxCompilerSettings(module);
-            return settings;
-        }
+            T module) => new Clang.ObjectiveCxxCompilerSettings(module);
     }
 }
