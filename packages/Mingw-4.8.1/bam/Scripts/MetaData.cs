@@ -35,29 +35,13 @@ namespace Mingw
     {
         private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
 
-        public override object this[string index]
-        {
-            get
-            {
-                return this.Meta[index];
-            }
-        }
+        public override object this[string index] => this.Meta[index];
 
         public override bool
         Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
-        }
+            string index) => this.Meta.ContainsKey(index);
 
-        public string
-        ToolSuffix
-        {
-            get
-            {
-                return this.Meta["ToolSuffix"] as string;
-            }
-        }
+        public string ToolSuffix => this.Meta["ToolSuffix"] as string;
 
         void
         C.IToolchainDiscovery.discover(
@@ -74,7 +58,7 @@ namespace Mingw
             // TODO: some installations may not have a suffix - need to confirm
             this.Meta.Add("ToolSuffix", "-4.8.1");
 
-            Bam.Core.Log.Info("Using Mingw 4.8.1 installed at {0}", this.Meta["InstallDir"].ToString());
+            Bam.Core.Log.Info($"Using Mingw 4.8.1 installed at {this.Meta["InstallDir"].ToString()}");
         }
     }
 }
