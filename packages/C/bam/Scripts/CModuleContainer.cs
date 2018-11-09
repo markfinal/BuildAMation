@@ -331,7 +331,7 @@ namespace C
             {
                 foreach (var child in this.children)
                 {
-                    child?.EvaluationTask.Wait();
+                    child.EvaluationTask?.Wait();
                     if (null != child.ReasonToExecute)
                     {
                         switch (child.ReasonToExecute.Reason)

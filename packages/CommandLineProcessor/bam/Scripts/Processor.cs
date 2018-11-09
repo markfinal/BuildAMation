@@ -265,14 +265,20 @@ namespace CommandLineProcessor
                 );
             }
             var commandLineArgs = new Bam.Core.StringArray();
-            foreach (var arg in tool?.InitialArguments)
+            if (null != tool.InitialArguments)
             {
-                commandLineArgs.Add(arg.ToString());
+                foreach (var arg in tool.InitialArguments)
+                {
+                    commandLineArgs.Add(arg.ToString());
+                }
             }
             commandLineArgs.AddRange(commandLine);
-            foreach (var arg in tool?.TerminatingArguments)
+            if (null != tool.TerminatingArguments)
             {
-                commandLineArgs.Add(arg.ToString());
+                foreach (var arg in tool.TerminatingArguments)
+                {
+                    commandLineArgs.Add(arg.ToString());
+                }
             }
 
             Execute(
