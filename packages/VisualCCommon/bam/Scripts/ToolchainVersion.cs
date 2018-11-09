@@ -87,10 +87,7 @@ namespace VisualCCommon
         public static readonly C.ToolchainVersion VC2017_15_8 = FromMSCVer(1915);
 
         private ToolchainVersion(
-            int mscVer)
-        {
-            this.combinedVersion = mscVer;
-        }
+            int mscVer) => this.combinedVersion = mscVer;
 
         /// <summary>
         /// Generate a VisualC toolchain version from _MSC_VER
@@ -99,9 +96,6 @@ namespace VisualCCommon
         /// <returns>Toolchain version</returns>
         static public C.ToolchainVersion
         FromMSCVer(
-            int mscVer)
-        {
-            return new ToolchainVersion(mscVer);
-        }
+            int mscVer) => new ToolchainVersion(mscVer);
     }
 }

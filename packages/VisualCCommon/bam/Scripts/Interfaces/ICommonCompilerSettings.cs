@@ -34,40 +34,11 @@ namespace VisualCCommon
     public interface ICommonCompilerSettings :
         Bam.Core.ISettingsBase
     {
-        bool? NoLogo
-        {
-            get;
-            set;
-        }
-
-        ERuntimeLibrary? RuntimeLibrary
-        {
-            get;
-            set;
-        }
-
-        VisualCCommon.EWarningLevel? WarningLevel
-        {
-            get;
-            set;
-        }
-
-        bool? EnableLanguageExtensions
-        {
-            get;
-            set;
-        }
-
-        EOptimization? Optimization
-        {
-            get;
-            set;
-        }
-
-        bool? IncreaseObjectFileSectionCount
-        {
-            get;
-            set;
-        }
+        bool? NoLogo { get; set; }
+        ERuntimeLibrary? RuntimeLibrary { get; set; }
+        VisualCCommon.EWarningLevel? WarningLevel { get; set; }
+        bool? EnableLanguageExtensions { get; set; }
+        EOptimization? Optimization { get; set; }
+        bool? IncreaseObjectFileSectionCount { get; set; }
     }
 }

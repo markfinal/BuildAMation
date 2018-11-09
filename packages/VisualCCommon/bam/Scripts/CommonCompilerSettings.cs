@@ -49,10 +49,7 @@ namespace VisualCCommon
 
         protected CommonCompilerSettings(
             Bam.Core.Module module,
-            bool useDefaults)
-        {
-            this.InitializeAllInterfaces(module, true, useDefaults);
-        }
+            bool useDefaults) => this.InitializeAllInterfaces(module, true, useDefaults);
 
         [CommandLineProcessor.Enum(C.ECharacterSet.NotSet, "")]
         [CommandLineProcessor.Enum(C.ECharacterSet.Unicode, "-DUNICODE -D_UNICODE")]
@@ -60,62 +57,34 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(C.ECharacterSet.NotSet, "CharacterSet", VisualStudioProcessor.EnumAttribute.EMode.PassThrough, target: VisualStudioProcessor.BaseAttribute.TargetGroup.Configuration)] // set project wide
         [VisualStudioProcessor.Enum(C.ECharacterSet.Unicode, "CharacterSet", VisualStudioProcessor.EnumAttribute.EMode.PassThrough, target: VisualStudioProcessor.BaseAttribute.TargetGroup.Configuration)] // ditto
         [VisualStudioProcessor.Enum(C.ECharacterSet.MultiByte, "CharacterSet", VisualStudioProcessor.EnumAttribute.EMode.PassThrough, target: VisualStudioProcessor.BaseAttribute.TargetGroup.Configuration)] // ditto
-        C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
-        {
-            get;
-            set;
-        }
+        C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet { get; set; }
 
         // no attributes as this mapping is in which compiler executable is used
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "")]
         [VisualStudioProcessor.Enum(C.EBit.ThirtyTwo, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.EBit.SixtyFour, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
-        C.EBit? C.ICommonCompilerSettings.Bits
-        {
-            get;
-            set;
-        }
+        C.EBit? C.ICommonCompilerSettings.Bits { get; set; }
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
         [VisualStudioProcessor.PreprocessorDefines("PreprocessorDefinitions", inheritExisting: true)]
-        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
+        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines { get; set; }
 
         [CommandLineProcessor.PathArray("-I")]
         [VisualStudioProcessor.PathArray("AdditionalIncludeDirectories", inheritExisting: true)]
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths { get; set; }
 
         [CommandLineProcessor.PathArray("-I")]
         [VisualStudioProcessor.PathArray("AdditionalIncludeDirectories", inheritExisting: true)]
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths { get; set; }
 
         [CommandLineProcessor.Bool("-Z7", "")]
         [VisualStudioProcessor.Bool("DebugInformationFormat", "OldStyle", "None")]
-        bool? C.ICommonCompilerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
+        bool? C.ICommonCompilerSettings.DebugSymbols { get; set; }
 
         [CommandLineProcessor.Bool("-WX", "-WX-")]
         [VisualStudioProcessor.Bool("TreatWarningAsError")]
-        bool? C.ICommonCompilerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
+        bool? C.ICommonCompilerSettings.WarningsAsErrors { get; set; }
 
         [CommandLineProcessor.Enum(C.EOptimization.Off, "-Od")]
         [CommandLineProcessor.Enum(C.EOptimization.Size, "-O1")]
@@ -125,78 +94,42 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(C.EOptimization.Size, "Optimization", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "MinSpace")]
         [VisualStudioProcessor.Enum(C.EOptimization.Speed, "Optimization", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "MaxSpeed")]
         [VisualStudioProcessor.Enum(C.EOptimization.Custom, "Optimization", VisualStudioProcessor.EnumAttribute.EMode.NoOp)] // compiler specific setting
-        C.EOptimization? C.ICommonCompilerSettings.Optimization
-        {
-            get;
-            set;
-        }
+        C.EOptimization? C.ICommonCompilerSettings.Optimization { get; set; }
 
         // dialects other than C and C++ not supported
         [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-TC")]
         [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-TP")]
         [VisualStudioProcessor.Enum(C.ETargetLanguage.C, "CompileAs", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "CompileAsC")]
         [VisualStudioProcessor.Enum(C.ETargetLanguage.Cxx, "CompileAs", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "CompileAsCpp")]
-        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
-        {
-            get;
-            set;
-        }
+        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage { get; set; }
 
         [CommandLineProcessor.Bool("-Oy", "-Oy-")]
         [VisualStudioProcessor.Bool("OmitFramePointers")]
-        bool? C.ICommonCompilerSettings.OmitFramePointer
-        {
-            get;
-            set;
-        }
+        bool? C.ICommonCompilerSettings.OmitFramePointer { get; set; }
 
         [CommandLineProcessor.StringArray("-wd")]
         [VisualStudioProcessor.StringArray("DisableSpecificWarnings", inheritExisting: true)]
-        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings { get; set; }
 
         [CommandLineProcessor.StringArray("-U")]
         [VisualStudioProcessor.StringArray("UndefinePreprocessorDefinitions", inheritExisting: true)]
-        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines { get; set; }
 
         [CommandLineProcessor.StringArray("-FI")]
         [VisualStudioProcessor.StringArray("ForcedIncludeFiles", inheritExisting: true)]
-        Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders { get; set; }
 
         [CommandLineProcessor.Bool("-E", "-c")]
         [VisualStudioProcessor.Bool("PreprocessToFile")]
-        bool? C.ICommonCompilerSettings.PreprocessOnly
-        {
-            get;
-            set;
-        }
+        bool? C.ICommonCompilerSettings.PreprocessOnly { get; set; }
 
         [CommandLineProcessor.StringArray("")]
         [VisualStudioProcessor.StringArray("AdditionalOptions")]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         [CommandLineProcessor.Bool("-nologo", "")]
         [VisualStudioProcessor.Bool("SuppressStartupBanner")]
-        bool? ICommonCompilerSettings.NoLogo
-        {
-            get;
-            set;
-        }
+        bool? ICommonCompilerSettings.NoLogo { get; set; }
 
         [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreaded, "-MT")]
         [CommandLineProcessor.Enum(ERuntimeLibrary.MultiThreadedDebug, "-MTd")]
@@ -206,11 +139,7 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreadedDebug, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
         [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreadedDLL, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
         [VisualStudioProcessor.Enum(ERuntimeLibrary.MultiThreadedDebugDLL, "RuntimeLibrary", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
-        ERuntimeLibrary? ICommonCompilerSettings.RuntimeLibrary
-        {
-            get;
-            set;
-        }
+        ERuntimeLibrary? ICommonCompilerSettings.RuntimeLibrary { get; set; }
 
         [CommandLineProcessor.Enum(EWarningLevel.Level0, "-W0")]
         [CommandLineProcessor.Enum(EWarningLevel.Level1, "-W1")]
@@ -222,35 +151,19 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(EWarningLevel.Level2, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsIntegerWithPrefix, prefix: "Level")]
         [VisualStudioProcessor.Enum(EWarningLevel.Level3, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsIntegerWithPrefix, prefix: "Level")]
         [VisualStudioProcessor.Enum(EWarningLevel.Level4, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsIntegerWithPrefix, prefix: "Level")]
-        EWarningLevel? ICommonCompilerSettings.WarningLevel
-        {
-            get;
-            set;
-        }
+        EWarningLevel? ICommonCompilerSettings.WarningLevel { get; set; }
 
         [CommandLineProcessor.Bool("", "-Za")]
         [VisualStudioProcessor.Bool("DisableLanguageExtensions", inverted: true)]
-        bool? ICommonCompilerSettings.EnableLanguageExtensions
-        {
-            get;
-            set;
-        }
+        bool? ICommonCompilerSettings.EnableLanguageExtensions { get; set; }
 
         [CommandLineProcessor.Enum(EOptimization.Full, "-Ox")]
         [VisualStudioProcessor.Enum(EOptimization.Full, "Optimization", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
-        EOptimization? ICommonCompilerSettings.Optimization
-        {
-            get;
-            set;
-        }
+        EOptimization? ICommonCompilerSettings.Optimization { get; set; }
 
         [CommandLineProcessor.Bool("-bigobj", "")]
         [VisualStudioProcessor.Bool("AdditionalOptions", "-bigobj", "")]
-        bool ? ICommonCompilerSettings.IncreaseObjectFileSectionCount
-        {
-            get;
-            set;
-        }
+        bool ? ICommonCompilerSettings.IncreaseObjectFileSectionCount { get; set; }
 
         public override void
         Validate()

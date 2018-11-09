@@ -34,7 +34,7 @@ namespace VisualCCommon
         C.CompilerTool
     {
         private string
-        getCompilerPath(
+        GetCompilerPath(
             C.EBit depth)
         {
             const string executable = "cl.exe";
@@ -52,12 +52,10 @@ namespace VisualCCommon
                 }
             }
             var message = new System.Text.StringBuilder();
-            message.AppendFormat("Unable to locate {0} for {1}-bit on these search locations:", executable, (int)depth);
-            message.AppendLine();
+            message.AppendLine($"Unable to locate {executable} for {(int)depth}-bit on these search locations:");
             foreach (var path in this.EnvironmentVariables["PATH"])
             {
-                message.AppendFormat("\t{0}", path.ToString());
-                message.AppendLine();
+                message.AppendLine($"\t{path.ToString()}");
             }
             throw new Bam.Core.Exception(message.ToString());
         }
@@ -71,7 +69,7 @@ namespace VisualCCommon
             this.Version = meta.ToolchainVersion;
             this.Macros.Add("InstallPath", meta.InstallDir);
             this.EnvironmentVariables = meta.Environment(depth);
-            var fullCompilerExePath = this.getCompilerPath(depth);
+            var fullCompilerExePath = this.GetCompilerPath(depth);
             this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(fullCompilerExePath));
             this.Macros.AddVerbatim("objext", ".obj");
 
@@ -81,23 +79,13 @@ namespace VisualCCommon
             this.InheritedEnvironmentVariables.Add("TMP");
         }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["CompilerPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
-        public override string UseResponseFileOption
-        {
-            get
-            {
-                return "@";
-            }
-        }
+        public override string UseResponseFileOption => "@";
 
-        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
             if (typeof(C.Cxx.ObjectFile).IsInstanceOfType(module) ||
                 typeof(C.Cxx.ObjectFileCollection).IsInstanceOfType(module))
@@ -115,7 +103,7 @@ namespace VisualCCommon
             }
             else
             {
-                throw new Bam.Core.Exception("Could not determine type of module {0}", typeof(T).ToString());
+                throw new Bam.Core.Exception($"Could not determine type of module {typeof(T).ToString()}");
             }
         }
 

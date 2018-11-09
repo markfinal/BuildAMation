@@ -45,10 +45,7 @@ namespace VisualCCommon
         ICommonLinkerSettings
     {
         protected CommonLinkerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Enum(C.ESubsystem.NotSet, "")]
         [CommandLineProcessor.Enum(C.ESubsystem.Console, "-SUBSYSTEM:CONSOLE")]
@@ -56,95 +53,51 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(C.ESubsystem.NotSet, "SubSystem", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.ESubsystem.Console, "SubSystem", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
         [VisualStudioProcessor.Enum(C.ESubsystem.Windows, "SubSystem", VisualStudioProcessor.EnumAttribute.EMode.AsString)]
-        C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem
-        {
-            get;
-            set;
-        }
+        C.ESubsystem? C.ICommonLinkerSettingsWin.SubSystem { get; set; }
 
         [CommandLineProcessor.Path("-DEF:")]
         [VisualStudioProcessor.Path("ModuleDefinitionFile")]
-        Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsWin.ExportDefinitionFile { get; set; }
 
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-MACHINE:X86")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-MACHINE:X64")]
         [VisualStudioProcessor.Enum(C.EBit.ThirtyTwo, "TargetMachine", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "MachineX86")]
         [VisualStudioProcessor.Enum(C.EBit.SixtyFour, "TargetMachine", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "MachineX64")]
-        C.EBit C.ICommonLinkerSettings.Bits
-        {
-            get;
-            set;
-        }
+        C.EBit C.ICommonLinkerSettings.Bits { get; set; }
 
         [CommandLineProcessor.Enum(C.ELinkerOutput.Executable, "")]
         [CommandLineProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "-DLL")]
         [VisualStudioProcessor.Enum(C.ELinkerOutput.Executable, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
+        C.ELinkerOutput C.ICommonLinkerSettings.OutputType { get; set; }
 
         [CommandLineProcessor.PathArray("-LIBPATH:")]
         [VisualStudioProcessor.PathArray("AdditionalLibraryDirectories")]
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths { get; set; }
 
         [CommandLineProcessor.StringArray("")]
         [VisualStudioProcessor.StringArray("AdditionalDependencies")]
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries { get; set; }
 
         [CommandLineProcessor.Bool("-DEBUG", "")]
         [VisualStudioProcessor.Bool("GenerateDebugInformation")]
-        bool C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
+        bool C.ICommonLinkerSettings.DebugSymbols { get; set; }
 
         [CommandLineProcessor.StringArray("")]
         [VisualStudioProcessor.StringArray("AdditionalOptions")]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         [CommandLineProcessor.Bool("-NOLOGO", "")]
         [VisualStudioProcessor.Bool("SuppressStartupBanner")]
-        bool ICommonLinkerSettings.NoLogo
-        {
-            get;
-            set;
-        }
+        bool ICommonLinkerSettings.NoLogo { get; set; }
 
         [CommandLineProcessor.Bool("-MANIFEST", "-MANIFEST:NO")]
         [VisualStudioProcessor.Bool("EnableManifest", target: VisualStudioProcessor.BaseAttribute.TargetGroup.Configuration)]
-        bool ICommonLinkerSettings.GenerateManifest
-        {
-            get;
-            set;
-        }
+        bool ICommonLinkerSettings.GenerateManifest { get; set; }
 
         [CommandLineProcessor.Bool("-SAFESEH", "-SAFESEH:NO")]
         [VisualStudioProcessor.Bool("ImageHasSafeExceptionHandlers")]
-        bool ICommonLinkerSettings.SafeExceptionHandlers
-        {
-            get;
-            set;
-        }
+        bool ICommonLinkerSettings.SafeExceptionHandlers { get; set; }
 
         public override void AssignFileLayout()
         {

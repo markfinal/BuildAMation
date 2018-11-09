@@ -41,7 +41,7 @@ namespace VisualC
             this.VCXProjFiltersToolsVersion = "4.0";
         }
 
-        protected override string subpath_to_vcvars
+        protected override string Subpath_to_vcvars
         {
             get
             {
