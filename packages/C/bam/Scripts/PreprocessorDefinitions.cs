@@ -37,8 +37,9 @@ namespace C
     public sealed class PreprocessorDefinitions :
         System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.TokenizedString>>
     {
-        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> Defines = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
+        private readonly System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> Defines = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
 
+        // this might look empty, but a default constructor is needed to initialise Settings classes
         public PreprocessorDefinitions()
         {}
 
@@ -62,7 +63,9 @@ namespace C
                 // compares hashes
                 if (this.Defines[name] != valueTS)
                 {
-                    throw new Bam.Core.Exception("Preprocessor define {0} already exists with a different value to {1}", name, valueTS.ToString());
+                    throw new Bam.Core.Exception(
+                        $"Preprocessor define {name} already exists with a different value to {valueTS.ToString()}"
+                    );
                 }
                 return;
             }
@@ -79,7 +82,9 @@ namespace C
                 // compares hashes
                 if (this.Defines[name] != value)
                 {
-                    throw new Bam.Core.Exception("Preprocessor define {0} already exists with a different value", name);
+                    throw new Bam.Core.Exception(
+                        $"Preprocessor define {name} already exists with a different value"
+                    );
                 }
                 return;
             }
@@ -88,10 +93,7 @@ namespace C
 
         public void
         Add(
-            string name)
-        {
-            this.Add(name, null as Bam.Core.TokenizedString);
-        }
+            string name) => this.Add(name, null as Bam.Core.TokenizedString);
 
         public void
         Remove(
@@ -103,29 +105,13 @@ namespace C
             }
         }
 
-        public int Count
-        {
-            get
-            {
-                return this.Defines.Count;
-            }
-        }
+        public int Count => this.Defines.Count;
 
         public bool
         Contains(
-            string key)
-        {
-            return this.Defines.ContainsKey(key);
-        }
+            string key) => this.Defines.ContainsKey(key);
 
-        public Bam.Core.TokenizedString
-        this[string key]
-        {
-            get
-            {
-                return this.Defines[key];
-            }
-        }
+        public Bam.Core.TokenizedString this[string key] => this.Defines[key];
 
         public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, Bam.Core.TokenizedString>>
         GetEnumerator()
@@ -137,10 +123,7 @@ namespace C
         }
 
         System.Collections.IEnumerator
-        System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        System.Collections.IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         /// <summary>
         /// Convert the preprocessor define (and optional value) into a string.
@@ -156,11 +139,11 @@ namespace C
             {
                 if (null == item.Value)
                 {
-                    content.AppendFormat("{0};", item.Key);
+                    content.Append($"{item.Key};");
                 }
                 else
                 {
-                    content.AppendFormat("{0}={1};", item.Key, item.Value.ToString());
+                    content.Append($"{item.Key}={item.Value.ToString()};");
                 }
             }
             return content.ToString();
@@ -168,16 +151,10 @@ namespace C
 
         public PreprocessorDefinitions
         Intersect(
-            PreprocessorDefinitions other)
-        {
-            return new PreprocessorDefinitions(System.Linq.Enumerable.Intersect(this, other));
-        }
+            PreprocessorDefinitions other) => new PreprocessorDefinitions(System.Linq.Enumerable.Intersect(this, other));
 
         public PreprocessorDefinitions
         Complement(
-            PreprocessorDefinitions other)
-        {
-            return new PreprocessorDefinitions(System.Linq.Enumerable.Except(this, other));
-        }
+            PreprocessorDefinitions other) => new PreprocessorDefinitions(System.Linq.Enumerable.Except(this, other));
     }
 }

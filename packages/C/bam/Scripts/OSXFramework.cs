@@ -49,7 +49,7 @@ namespace C
                 FrameworkKey,
                 this.CreateTokenizedString(
                     "$(0)/$(1)",
-                    new [] { this.FrameworkPath, this.FrameworkBundleName }
+                    new[] { this.FrameworkPath, this.FrameworkBundleName }
                 )
             );
 
@@ -59,9 +59,7 @@ namespace C
             }
             var idName = Bam.Core.OSUtilities.RunExecutable(
                 Bam.Core.OSUtilities.GetInstallLocation("xcrun").First(),
-                System.String.Format("--sdk {0} otool -DX {1}",
-                clangMeta["SDK"], // should use clangMeta.SDK, but this avoids a compile time dependency
-                frameworkPath.ToString())
+                $"--sdk {clangMeta["SDK"]} otool -DX {frameworkPath.ToString()}" // should use clangMeta.SDK, but this avoids a compile time dependency
             ).StandardOutput;
             this.Macros["IDName"] = Bam.Core.TokenizedString.CreateVerbatim(idName);
         }
@@ -79,28 +77,18 @@ namespace C
         /// Directory in which the framework is stored.
         /// </summary>
         /// <value>The framework path.</value>
-        public abstract Bam.Core.TokenizedString FrameworkPath
-        {
-            get;
-        }
+        public abstract Bam.Core.TokenizedString FrameworkPath { get; }
 
         /// <summary>
         /// Name of the framework bundle itself, ending in .framework
         /// </summary>
         /// <value>The name of the framework bundle.</value>
-        protected abstract Bam.Core.TokenizedString FrameworkBundleName
-        {
-            get;
-        }
+        protected abstract Bam.Core.TokenizedString FrameworkBundleName { get; }
 
         /// <summary>
         /// Relative path from the framework directory to the .dylib
         /// </summary>
         /// <value>The framework library path.</value>
-        protected abstract Bam.Core.TokenizedString
-        FrameworkLibraryPath
-        {
-            get;
-        }
+        protected abstract Bam.Core.TokenizedString FrameworkLibraryPath { get; }
     }
 }

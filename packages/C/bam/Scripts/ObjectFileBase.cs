@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
     /// <summary>
@@ -51,13 +52,7 @@ namespace C
             this.PerformCompilation = true;
         }
 
-        public override string CustomOutputSubDirectory
-        {
-            get
-            {
-                return "obj";
-            }
-        }
+        public override string CustomOutputSubDirectory => "obj";
 
         SourceFile IRequiresSourceModule.Source
         {
@@ -71,7 +66,9 @@ namespace C
                 if (null != this.SourceModule)
                 {
                     this.SourceModule.InputPath.Parse();
-                    throw new Bam.Core.Exception("Source module already set on this object file, to '{0}'", this.SourceModule.InputPath.ToString());
+                    throw new Bam.Core.Exception(
+                        $"Source module already set on this object file, to '{this.SourceModule.InputPath.ToString()}'"
+                    );
                 }
                 this.SourceModule = value;
                 this.DependsOn(value);
@@ -100,7 +97,9 @@ namespace C
                 if (null != this.SourceModule)
                 {
                     this.SourceModule.InputPath.Parse();
-                    throw new Bam.Core.Exception("Source module already set on this object file, to '{0}'", this.SourceModule.InputPath.ToString());
+                    throw new Bam.Core.Exception(
+                        $"Source module already set on this object file, to '{this.SourceModule.InputPath.ToString()}'"
+                    );
                 }
 
                 // this cannot be a referenced module, since there will be more than one object
@@ -125,16 +124,9 @@ namespace C
             }
         }
 
-        public bool PerformCompilation
-        {
-            get;
-            set;
-        }
+        public bool PerformCompilation { get; set; }
 
-        protected abstract bool RequiresHeaderEvaluation
-        {
-            get;
-        }
+        protected abstract bool RequiresHeaderEvaluation { get; }
 
         protected override void
         ExecuteInternal(
@@ -195,17 +187,24 @@ namespace C
             {
                 if (!(dep is SourceFile) && !dep.Executed)
                 {
+                    // TODO: need to revisit this
+                    // it's odd to spinlock on the ExecutionTask, and then do an additional double check
+                    // on whether it's got the task (when the while loop says it must)
+                    // I *thought* I had coded it so that the dependencies of execution tasks were
+                    // satisfied in the core
                     var as_module_execution = dep as Bam.Core.IModuleExecution;
                     while (null == as_module_execution.ExecutionTask)
                     {
-                        Bam.Core.Log.DebugMessage("******** Waiting for {0} to have an execution task assigned", dep.ToString());
+                        Bam.Core.Log.DebugMessage($"******** Waiting for {dep.ToString()} to have an execution task assigned");
                         System.Threading.Thread.Yield();
                     }
                     // wait for execution task to be finished
                     var execution_task = as_module_execution.ExecutionTask;
                     if (null == execution_task)
                     {
-                        throw new Bam.Core.Exception("No execution task available for dependent {0}, of {1}", dep.ToString(), this.ToString());
+                        throw new Bam.Core.Exception(
+                            $"No execution task available for dependent {dep.ToString()}, of {this.ToString()}"
+                        );
                     }
                     execution_task.Wait();
                 }
@@ -251,18 +250,16 @@ namespace C
             var explicitHeadersUpdated = new Bam.Core.StringArray();
             foreach (var dep in this.Dependents)
             {
-                if (!(dep is HeaderFile))
+                if (dep is HeaderFile headerDep)
                 {
-                    continue;
-                }
-                if (null == dep.ReasonToExecute)
-                {
-                    continue;
-                }
-                var headerDep = dep as HeaderFile;
-                if (dep.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.InputFileIsNewer)
-                {
-                    explicitHeadersUpdated.AddUnique(headerDep.InputPath.ToString());
+                    if (null == dep.ReasonToExecute)
+                    {
+                        continue;
+                    }
+                    if (dep.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.InputFileIsNewer)
+                    {
+                        explicitHeadersUpdated.AddUnique(headerDep.InputPath.ToString());
+                    }
                 }
             }
 
@@ -276,7 +273,7 @@ namespace C
             filesToSearch.Enqueue(sourcePath);
 
             var headerPathsFound = new Bam.Core.StringArray();
-            while (filesToSearch.Count > 0)
+            while (filesToSearch.Any())
             {
                 var fileToSearch = filesToSearch.Dequeue();
 
@@ -292,7 +289,7 @@ namespace C
                     fileContents,
                     "^\\s*#include\\s*[\"<]([^\\s]*)[\">]",
                     System.Text.RegularExpressions.RegexOptions.Multiline);
-                if (0 == matches.Count)
+                if (!matches.Any())
                 {
                     // no #includes
                     return;
@@ -346,7 +343,9 @@ namespace C
                         }
                         catch (System.Exception ex)
                         {
-                            Bam.Core.Log.MessageAll("IncludeDependency Exception: Cannot locate '{0}' on '{1}' due to {2}", headerFile, includePath, ex.Message);
+                            Bam.Core.Log.MessageAll(
+                                $"IncludeDependency Exception: Cannot locate '{headerFile}' on '{includePath}' due to {ex.Message}"
+                            );
                         }
                     }
 
