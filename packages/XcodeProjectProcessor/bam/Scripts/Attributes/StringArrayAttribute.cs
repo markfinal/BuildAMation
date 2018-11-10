@@ -46,17 +46,9 @@ namespace XcodeProjectProcessor
             this.SpacesSeparate = spacesSeparate;
         }
 
-        public string Prefix
-        {
-            get;
-            private set;
-        }
+        public string Prefix { get; private set; }
 
         // any extra arguments separated by spaces splits them onto separate lines in the project file
-        public bool SpacesSeparate
-        {
-            get;
-            private set;
-        }
+        public bool SpacesSeparate { get; private set; }
     }
 }

@@ -48,22 +48,8 @@ namespace XcodeProjectProcessor
             this.Ignore = ignore;
         }
 
-        public string Property
-        {
-            get;
-            private set;
-        }
-
-        public ValueType Type
-        {
-            get;
-            private set;
-        }
-
-        public bool Ignore
-        {
-            get;
-            private set;
-        }
+        public string Property { get; private set; }
+        public ValueType Type { get; private set; }
+        public bool Ignore { get; private set; }
     }
 }

@@ -36,6 +36,6 @@ namespace XcodeProjectProcessor
         public FrameworkArrayAttribute()
             :
             base(null, ValueType.MultiValued, ignore: false)
-        { }
+        {}
     }
 }

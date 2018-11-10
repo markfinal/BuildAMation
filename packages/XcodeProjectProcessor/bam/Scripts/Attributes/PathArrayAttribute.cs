@@ -44,10 +44,6 @@ namespace XcodeProjectProcessor
             this.PrefixWithSrcRoot = prefixWithSrcRoot;
         }
 
-        public bool PrefixWithSrcRoot
-        {
-            get;
-            private set;
-        }
+        public bool PrefixWithSrcRoot { get; private set; }
     }
 }

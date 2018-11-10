@@ -47,16 +47,7 @@ namespace XcodeProjectProcessor
             this.Value = value;
         }
 
-        public System.Enum Key
-        {
-            get;
-            private set;
-        }
-
-        public string Value
-        {
-            get;
-            private set;
-        }
+        public System.Enum Key { get; private set; }
+        public string Value { get; private set; }
     }
 }
