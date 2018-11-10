@@ -38,7 +38,7 @@ namespace XcodeBuilder
         {
             this.Path = workspaceDir;
             this.Path = System.IO.Path.Combine(this.Path, "xcuserdata");
-            this.Path = System.IO.Path.Combine(this.Path, System.Environment.GetEnvironmentVariable("USER") + ".xcuserdatad");
+            this.Path = System.IO.Path.Combine(this.Path, $"{System.Environment.GetEnvironmentVariable("USER")}.xcuserdatad");
             this.Path = System.IO.Path.Combine(this.Path, "WorkspaceSettings.xcsettings");
             this.CreatePlist();
         }

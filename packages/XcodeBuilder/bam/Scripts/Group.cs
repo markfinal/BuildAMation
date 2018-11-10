@@ -69,23 +69,9 @@ namespace XcodeBuilder
             }
         }
 
-        public string SourceTree
-        {
-            get;
-            private set;
-        }
-
-        public Bam.Core.Array<Object> Children
-        {
-            get;
-            private set;
-        }
-
-        public Group Parent
-        {
-            get;
-            private set;
-        }
+        public string SourceTree { get; private set; }
+        public Bam.Core.Array<Object> Children { get; private set; }
+        public Group Parent { get; private set; }
 
         public void
         AddChild(
@@ -106,8 +92,9 @@ namespace XcodeBuilder
                         var otherGroup = other as Group;
                         if (null != otherGroup.Parent && otherGroup.Parent != this)
                         {
-                            throw new Bam.Core.Exception("Group '{0}' is already a child of '{1}'. Asking to make it a child of '{2}'",
-                                otherGroup.Name, otherGroup.Parent.Name, this.Name);
+                            throw new Bam.Core.Exception(
+                                $"Group '{otherGroup.Name}' is already a child of '{otherGroup.Parent.Name}'. Asking to make it a child of '{this.Name}'"
+                            );
                         }
                         otherGroup.Parent = this;
                     }
@@ -125,36 +112,28 @@ namespace XcodeBuilder
             var indent3 = new string('\t', indentLevel + 2);
             if (null != this.Name)
             {
-                text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
+                text.AppendLine($"{indent}{this.GUID} /* {this.Name} */ = {{");
             }
             else
             {
-                text.AppendFormat("{0}{1} = {{", indent, this.GUID);
+                text.AppendLine($"{indent}{this.GUID} = {{");
             }
-            text.AppendLine();
-            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
-            text.AppendLine();
-            if (this.Children.Count > 0)
+            text.AppendLine($"{indent2}isa = {this.IsA};");
+            if (this.Children.Any())
             {
-                text.AppendFormat("{0}children = (", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2}children = (");
                 foreach (var child in this.Children.OrderBy(item => item.Name))
                 {
-                    text.AppendFormat("{0}{1} /* {2} */,", indent3, child.GUID, child.Name);
-                    text.AppendLine();
+                    text.AppendLine($"{indent3}{child.GUID} /* {child.Name} */,");
                 }
-                text.AppendFormat("{0});", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2});");
             }
             if (null != this.Name)
             {
-                text.AppendFormat("{0}name = \"{1}\";", indent2, this.Name);
-                text.AppendLine();
+                text.AppendLine($"{indent2}name = \"{this.Name}\";");
             }
-            text.AppendFormat("{0}sourceTree = \"{1}\";", indent2, this.SourceTree);
-            text.AppendLine();
-            text.AppendFormat("{0}}};", indent);
-            text.AppendLine();
+            text.AppendLine($"{indent2}sourceTree = \"{this.SourceTree}\";");
+            text.AppendLine($"{indent}}};");
         }
     }
 }

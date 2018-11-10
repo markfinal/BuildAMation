@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace XcodeBuilder
 {
     public abstract class ConfigurationValue
@@ -35,10 +36,7 @@ namespace XcodeBuilder
 
         protected bool
         StringRequiresQuoting(
-            string input)
-        {
-            return (-1 != input.IndexOfAny(SpecialChars));
-        }
+            string input) => (-1 != input.IndexOfAny(SpecialChars));
 
         public abstract void
         Merge(
@@ -50,10 +48,7 @@ namespace XcodeBuilder
         ConfigurationValue
     {
         public UniqueConfigurationValue(
-            string value)
-        {
-            this.Value = value;
-        }
+            string value) => this.Value = value;
 
         public override void
         Merge(
@@ -65,15 +60,11 @@ namespace XcodeBuilder
             {
                 return;
             }
-            Bam.Core.Log.Info("Warning: Replacing '{0}' with '{1}' for '{2}'", this.Value, newValue, key);
+            Bam.Core.Log.Info($"Warning: Replacing '{this.Value}' with '{newValue}' for '{key}'");
             this.Value = (value as UniqueConfigurationValue).Value;
         }
 
-        private string Value
-        {
-            get;
-            set;
-        }
+        private string Value { get; set; }
 
         public override string
         ToString()
@@ -84,7 +75,7 @@ namespace XcodeBuilder
             }
             if (StringRequiresQuoting(this.Value))
             {
-                return System.String.Format("\"{0}\"", this.Value);
+                return $"\"{this.Value}\"";
             }
             return this.Value;
         }
@@ -93,48 +84,32 @@ namespace XcodeBuilder
     public sealed class MultiConfigurationValue :
         ConfigurationValue
     {
-        public MultiConfigurationValue()
-        {
-            this.Value = new Bam.Core.StringArray();
-        }
+        public MultiConfigurationValue() => this.Value = new Bam.Core.StringArray();
 
         public MultiConfigurationValue(
             string value)
-            : this()
-        {
-            this.Value.AddUnique(value);
-        }
+            : this() => this.Value.AddUnique(value);
 
         public override void
         Merge(
             string key,
-            ConfigurationValue value)
-        {
-            this.Value.AddRangeUnique((value as MultiConfigurationValue).Value);
-        }
+            ConfigurationValue value) => this.Value.AddRangeUnique((value as MultiConfigurationValue).Value);
 
-        private Bam.Core.StringArray Value
-        {
-            get;
-            set;
-        }
+        private Bam.Core.StringArray Value { get; set; }
 
         public void
         Add(
-            string value)
-        {
-            this.Value.AddUnique(value);
-        }
+            string value) => this.Value.AddUnique(value);
 
         public override string
         ToString()
         {
-            if (this.Value.Count == 0)
+            if (!this.Value.Any())
             {
                 return null;
             }
             var value = new System.Text.StringBuilder();
-            value.AppendFormat("(");
+            value.Append("(");
             foreach (var item in this.Value)
             {
                 if (System.String.IsNullOrEmpty(item))
@@ -144,14 +119,14 @@ namespace XcodeBuilder
                 }
                 if (StringRequiresQuoting(item))
                 {
-                    value.AppendFormat("\"{0}\", ", item);
+                    value.Append($"\"{item}\", ");
                 }
                 else
                 {
-                    value.AppendFormat("{0}, ", item);
+                    value.Append($"{item}, ");
                 }
             }
-            value.AppendFormat(")");
+            value.Append(")");
             return value.ToString();
         }
     }

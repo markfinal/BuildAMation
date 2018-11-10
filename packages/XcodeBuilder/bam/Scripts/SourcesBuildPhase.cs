@@ -38,20 +38,7 @@ namespace XcodeBuilder
             base(target.Project, "Sources", "PBXSourcesBuildPhase", target.GUID)
         {}
 
-        protected override string BuildActionMask
-        {
-            get
-            {
-                return "0";
-            }
-        }
-
-        protected override bool RunOnlyForDeploymentPostprocessing
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override string BuildActionMask => "0";
+        protected override bool RunOnlyForDeploymentPostprocessing => false;
     }
 }

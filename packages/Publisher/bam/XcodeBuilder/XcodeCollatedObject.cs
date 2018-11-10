@@ -122,7 +122,7 @@ namespace Publisher
             );
 
             var configuration = target.GetConfiguration(targetModule);
-            if (!target.isUtilityType && arePostBuildCommands)
+            if (!target.IsUtilityType && arePostBuildCommands)
             {
                 target.AddPostBuildCommands(commands, configuration);
             }

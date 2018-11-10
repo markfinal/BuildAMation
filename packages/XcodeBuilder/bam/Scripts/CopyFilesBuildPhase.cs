@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace XcodeBuilder
 {
     public sealed class CopyFilesBuildPhase :
@@ -56,33 +57,10 @@ namespace XcodeBuilder
             this.SubFolderSpec = ESubFolderSpec.AbsolutePath;
         }
 
-        protected override string BuildActionMask
-        {
-            get
-            {
-                return "2147483647";
-            }
-        }
-
-        protected override bool RunOnlyForDeploymentPostprocessing
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public string DestinationPath
-        {
-            get;
-            private set;
-        }
-
-        public ESubFolderSpec SubFolderSpec
-        {
-            get;
-            set;
-        }
+        protected override string BuildActionMask => "2147483647";
+        protected override bool RunOnlyForDeploymentPostprocessing => false;
+        public string DestinationPath { get; private set; }
+        public ESubFolderSpec SubFolderSpec { get; set; }
 
         public override void
         Serialize(
@@ -92,32 +70,23 @@ namespace XcodeBuilder
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
             var indent3 = new string('\t', indentLevel + 2);
-            text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
-            text.AppendLine();
-            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
-            text.AppendLine();
-            text.AppendFormat("{0}buildActionMask = {1};", indent2, this.BuildActionMask);
-            text.AppendLine();
-            text.AppendFormat("{0}dstPath = \"{1}\";", indent2, this.DestinationPath);
-            text.AppendLine();
-            text.AppendFormat("{0}dstSubfolderSpec = \"{1}\";", indent2, (int)this.SubFolderSpec);
-            text.AppendLine();
-            if (this.BuildFiles.Count > 0)
+            text.AppendLine($"{indent}{this.GUID} /* {this.Name} */ = {{");
+            text.AppendLine($"{indent2}isa = {this.IsA};");
+            text.AppendLine($"{indent2}buildActionMask = {this.BuildActionMask};");
+            text.AppendLine($"{indent2}dstPath = \"{this.DestinationPath}\";");
+            text.AppendLine($"{indent2}dstSubfolderSpec = \"{(int)this.SubFolderSpec}\";");
+            if (this.BuildFiles.Any())
             {
-                text.AppendFormat("{0}files = (", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2}files = (");
                 foreach (var file in this.BuildFiles)
                 {
-                    text.AppendFormat("{0}{1} /* in {2} */,", indent3, file.GUID, this.Name);
-                    text.AppendLine();
+                    text.AppendLine($"{indent3}{file.GUID} /* in {this.Name} */,");
                 }
-                text.AppendFormat("{0});", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2});");
             }
-            text.AppendFormat("{0}runOnlyForDeploymentPostprocessing = {1};", indent2, this.RunOnlyForDeploymentPostprocessing ? "1" : "0");
-            text.AppendLine();
-            text.AppendFormat("{0}}};", indent);
-            text.AppendLine();
+            var runOnly = this.RunOnlyForDeploymentPostprocessing ? "1" : "0";
+            text.AppendLine($"{indent2}runOnlyForDeploymentPostprocessing = {runOnly};");
+            text.AppendLine($"{indent}}};");
         }
     }
 }

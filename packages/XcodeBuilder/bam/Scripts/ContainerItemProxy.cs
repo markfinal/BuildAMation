@@ -41,7 +41,7 @@ namespace XcodeBuilder
         {
             this.ContainerPortal = portal;
             this.RemoteName = null;
-            project.appendContainerItemProxy(this);
+            project.AppendContainerItemProxy(this);
         }
 
         // for NativeTargets in a different Project
@@ -81,29 +81,10 @@ namespace XcodeBuilder
             this.RemoteName = refName;
         }
 
-        public Object ContainerPortal
-        {
-            get;
-            private set;
-        }
-
-        private int ProxyType
-        {
-            get;
-            set;
-        }
-
-        public Object Remote
-        {
-            get;
-            private set;
-        }
-
-        private string RemoteName
-        {
-            get;
-            set;
-        }
+        public Object ContainerPortal { get; private set; }
+        private int ProxyType { get; set; }
+        public Object Remote { get; private set; }
+        private string RemoteName { get; set; }
 
         public override void
         Serialize(
@@ -114,25 +95,19 @@ namespace XcodeBuilder
             var indent2 = new string('\t', indentLevel + 1);
             if (null != this.Name)
             {
-                text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
+                text.AppendLine($"{indent}{this.GUID} /* {this.Name} */ = {{");
             }
             else
             {
-                text.AppendFormat("{0}{1} = {{", indent, this.GUID);
+                text.AppendLine($"{indent}{this.GUID} = {{");
             }
-            text.AppendLine();
-            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
-            text.AppendLine();
-            text.AppendFormat("{0}containerPortal = {1} /* {2} */;", indent2, this.ContainerPortal.GUID, this.ContainerPortal.Name);
-            text.AppendLine();
-            text.AppendFormat("{0}proxyType = {1};", indent2, this.ProxyType);
-            text.AppendLine();
-            text.AppendFormat("{0}remoteGlobalIDString = {1};", indent2, this.Remote.GUID);
-            text.AppendLine();
-            text.AppendFormat("{0}remoteInfo = {1};", indent2, (null != this.RemoteName) ? this.RemoteName : this.Remote.Name);
-            text.AppendLine();
-            text.AppendFormat("{0}}};", indent);
-            text.AppendLine();
+            text.AppendLine($"{indent2}isa = {this.IsA};");
+            text.AppendLine($"{indent2}containerPortal = {this.ContainerPortal.GUID} /* {this.ContainerPortal.Name} */;");
+            text.AppendLine($"{indent2}proxyType = {this.ProxyType};");
+            text.AppendLine($"{indent2}remoteGlobalIDString = {this.Remote.GUID};");
+            var remoteInfo = this.RemoteName ?? this.Remote.Name;
+            text.AppendLine($"{indent2}remoteInfo = {remoteInfo};");
+            text.AppendLine($"{indent}}};");
         }
     }
 }

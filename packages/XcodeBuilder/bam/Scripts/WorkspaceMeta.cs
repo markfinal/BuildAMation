@@ -31,9 +31,9 @@ namespace XcodeBuilder
 {
     public sealed class WorkspaceMeta
     {
-        private bool ProjectPerModule = false;
-        private System.Collections.Generic.Dictionary<string, Project> ProjectMap = new System.Collections.Generic.Dictionary<string, Project>();
-        private System.Collections.Generic.Dictionary<System.Type, Target> TargetMap = new System.Collections.Generic.Dictionary<System.Type, Target>();
+        private readonly bool ProjectPerModule = false;
+        private readonly System.Collections.Generic.Dictionary<string, Project> ProjectMap = new System.Collections.Generic.Dictionary<string, Project>();
+        private readonly System.Collections.Generic.Dictionary<System.Type, Target> TargetMap = new System.Collections.Generic.Dictionary<System.Type, Target>();
 
         private Project
         EnsureProjectExists(
@@ -76,7 +76,7 @@ namespace XcodeBuilder
                     var target = new Target(module, project);
                     this.TargetMap.Add(moduleType, target);
 
-                    project.appendTarget(target);
+                    project.AppendTarget(target);
                 }
             }
             if (null == module.MetaData)
@@ -192,18 +192,14 @@ namespace XcodeBuilder
                 text.AppendLine("{");
                 var indentLevel = 1;
                 var indent = new string('\t', indentLevel);
-                text.AppendFormat("{0}archiveVersion = 1;", indent);
-                text.AppendLine();
-                text.AppendFormat("{0}classes = {{", indent);
-                text.AppendLine();
-                text.AppendFormat("{0}}};", indent);
-                text.AppendLine();
+                text.AppendLine($"{indent}archiveVersion = 1;");
+                text.AppendLine($"{indent}classes = {{");
+                text.AppendLine($"{indent}}};");
 
                 try
                 {
                     var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
-                    text.AppendFormat("{0}objectVersion = {1};", indent, clangMeta.PbxprojObjectVersion);
-                    text.AppendLine();
+                    text.AppendLine($"{indent}objectVersion = {clangMeta.PbxprojObjectVersion};");
                 }
                 catch (System.Collections.Generic.KeyNotFoundException)
                 {
@@ -215,14 +211,10 @@ namespace XcodeBuilder
                     // otherwise, silently ignore
                 }
 
-                text.AppendFormat("{0}objects = {{", indent);
-                text.AppendLine();
+                text.AppendLine($"{indent}objects = {{");
                 project.Serialize(text, indentLevel + 1);
-                text.AppendFormat("{0}}};", indent);
-                text.AppendLine();
-                text.AppendFormat("{0}rootObject = {1} /* Project object */;", indent, project.GUID);
-                text.AppendLine();
-                text.AppendLine("}");
+                text.AppendLine($"{indent}}};");
+                text.AppendLine($"{indent}rootObject = {project.GUID} /* Project object */;");
 
                 var projectDir = project.ProjectDir;
                 Bam.Core.IOWrapper.CreateDirectoryIfNotExists(projectDir.ToString());
