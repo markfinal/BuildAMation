@@ -68,26 +68,18 @@ namespace WindowsSDK
             }
             else
             {
-                throw new Bam.Core.Exception("Unable to determine resource compiler path, as neither %WindowsSdkVerBinPath% nor %WindowsSdkDir% were defined");
+                throw new Bam.Core.Exception(
+                    "Unable to determine resource compiler path, as neither %WindowsSdkVerBinPath% nor %WindowsSdkDir% were defined"
+                );
             }
             this.Macros.AddVerbatim("objext", ".res");
         }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["CompilerPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new WinResourceCompilerSettings(module);
-            return settings;
-        }
+            T module) => new WinResourceCompilerSettings(module);
     }
 
     [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]

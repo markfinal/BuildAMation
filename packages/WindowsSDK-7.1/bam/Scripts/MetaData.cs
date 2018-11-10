@@ -32,7 +32,7 @@ namespace WindowsSDK
     public sealed class MetaData :
         Bam.Core.PackageMetaData
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
+        private readonly System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
 
         public MetaData()
         {
@@ -44,7 +44,7 @@ namespace WindowsSDK
                 }
                 var installPath = key.GetValue("InstallationFolder") as string;
                 this.Meta.Add("InstallPath", installPath);
-                Bam.Core.Log.DebugMessage("Windows SDK installation folder is {0}", installPath);
+                Bam.Core.Log.DebugMessage($"Windows SDK installation folder is {installPath}");
 
                 this.Meta.Add("setenvdir", System.String.Format("{0}bin", installPath));
                 this.Meta.Add("setenvcmd", "SetEnv.cmd");
@@ -52,19 +52,10 @@ namespace WindowsSDK
             }
         }
 
-        public override object this[string index]
-        {
-            get
-            {
-                return this.Meta[index];
-            }
-        }
+        public override object this[string index] => this.Meta[index];
 
         public override bool
         Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
-        }
+            string index) => this.Meta.ContainsKey(index);
     }
 }
