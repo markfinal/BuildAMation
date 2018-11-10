@@ -263,7 +263,7 @@ namespace XcodeBuilder
             text.Append($"path = \"{path}\"; ");
 
             text.Append($"sourceTree = {this.SourceTree.AsString()}; ");
-            text.AppendLine("}};");
+            text.AppendLine("};");
         }
     }
 }

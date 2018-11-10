@@ -215,6 +215,7 @@ namespace XcodeBuilder
                 project.Serialize(text, indentLevel + 1);
                 text.AppendLine($"{indent}}};");
                 text.AppendLine($"{indent}rootObject = {project.GUID} /* Project object */;");
+                text.AppendLine("}");
 
                 var projectDir = project.ProjectDir;
                 Bam.Core.IOWrapper.CreateDirectoryIfNotExists(projectDir.ToString());
