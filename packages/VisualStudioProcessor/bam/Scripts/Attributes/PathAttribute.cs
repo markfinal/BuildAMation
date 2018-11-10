@@ -46,16 +46,7 @@ namespace VisualStudioProcessor
             this.BoolPropertyWhenValid = boolWhenValid;
         }
 
-        public bool Ignored
-        {
-            get;
-            private set;
-        }
-
-        public string BoolPropertyWhenValid
-        {
-            get;
-            private set;
-        }
+        public bool Ignored { get; private set; }
+        public string BoolPropertyWhenValid { get; private set; }
     }
 }

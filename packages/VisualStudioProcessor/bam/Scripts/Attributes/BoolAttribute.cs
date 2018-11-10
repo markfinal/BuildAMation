@@ -58,22 +58,8 @@ namespace VisualStudioProcessor
             this.Falisy = falisy;
         }
 
-        public bool Inverted
-        {
-            get;
-            private set;
-        }
-
-        public string Truth
-        {
-            get;
-            private set;
-        }
-
-        public string Falisy
-        {
-            get;
-            private set;
-        }
+        public bool Inverted { get; private set; }
+        public string Truth { get; private set; }
+        public string Falisy { get; private set; }
     }
 }

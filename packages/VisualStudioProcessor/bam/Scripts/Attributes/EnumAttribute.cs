@@ -61,28 +61,9 @@ namespace VisualStudioProcessor
             this.Prefix = prefix;
         }
 
-        public System.Enum Key
-        {
-            get;
-            private set;
-        }
-
-        public EMode Mode
-        {
-            get;
-            private set;
-        }
-
-        public string VerbatimString
-        {
-            get;
-            private set;
-        }
-
-        public string Prefix
-        {
-            get;
-            private set;
-        }
+        public System.Enum Key { get; private set; }
+        public EMode Mode { get; private set; }
+        public string VerbatimString { get; private set; }
+        public string Prefix { get; private set; }
     }
 }

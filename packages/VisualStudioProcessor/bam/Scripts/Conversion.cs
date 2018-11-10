@@ -67,9 +67,7 @@ namespace VisualStudioProcessor
                     if (!attributeArray.Any())
                     {
                         throw new Bam.Core.Exception(
-                            "No VisualStudioProcessor attributes for property {0} in module {1}",
-                            full_property_interface_name,
-                            module.ToString()
+                            $"No VisualStudioProcessor attributes for property {full_property_interface_name} in module {module.ToString()}"
                         );
                     }
                     if (attributeArray.First() is EnumAttribute)
@@ -100,11 +98,7 @@ namespace VisualStudioProcessor
                                 case EnumAttribute.EMode.AsIntegerWithPrefix:
                                     vsSettingsGroup.AddSetting(
                                         associated_attribute.Property,
-                                        System.String.Format(
-                                            "{0}{1}",
-                                            associated_attribute.Prefix,
-                                            ((int)property_value).ToString("D")
-                                        ),
+                                        $"{associated_attribute.Prefix}{((int)property_value).ToString("D")}",
                                         condition: condition
                                     );
                                     break;
@@ -130,8 +124,7 @@ namespace VisualStudioProcessor
 
                                 default:
                                     throw new Bam.Core.Exception(
-                                        "Unhandled enum mode, {0}",
-                                        associated_attribute.Mode.ToString()
+                                        $"Unhandled enum mode, {associated_attribute.Mode.ToString()}"
                                     );
                             }
                         }
@@ -147,8 +140,7 @@ namespace VisualStudioProcessor
 
                                 default:
                                     throw new Bam.Core.Exception(
-                                        "Unhandled enum mode, {0}",
-                                        associated_attribute.Mode.ToString()
+                                        $"Unhandled enum mode, {associated_attribute.Mode.ToString()}"
                                     );
                             }
                         }
@@ -159,8 +151,7 @@ namespace VisualStudioProcessor
                         if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
                         {
                             throw new Bam.Core.Exception(
-                                "Unable to use property target, {0}",
-                                associated_attribute.Target.ToString()
+                                $"Unable to use property target, {associated_attribute.Target.ToString()}"
                             );
                         }
 
@@ -179,14 +170,8 @@ namespace VisualStudioProcessor
                         );
 
                         var prop = vsConfig.GetType().GetProperty(associated_attribute.Property);
-                        if (null != prop)
-                        {
-                            var setter = prop.GetSetMethod();
-                            if (null != setter)
-                            {
-                                setter.Invoke(vsConfig, new[] { property_value });
-                            }
-                        }
+                        var setter = prop?.GetSetMethod();
+                        setter?.Invoke(vsConfig, new[] { property_value });
 
                         if (associated_attribute.BoolPropertyWhenValid != null)
                         {
@@ -225,8 +210,7 @@ namespace VisualStudioProcessor
                         if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
                         {
                             throw new Bam.Core.Exception(
-                                "Unable to use property target, {0}",
-                                associated_attribute.Target.ToString()
+                                $"Unable to use property target, {associated_attribute.Target.ToString()}"
                             );
                         }
                         vsSettingsGroup.AddSetting(
@@ -289,8 +273,7 @@ namespace VisualStudioProcessor
                         if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
                         {
                             throw new Bam.Core.Exception(
-                                "Unable to use property target, {0}",
-                                associated_attribute.Target.ToString()
+                                $"Unable to use property target, {associated_attribute.Target.ToString()}"
                             );
                         }
                         vsSettingsGroup.AddSetting(
@@ -303,10 +286,7 @@ namespace VisualStudioProcessor
                     else
                     {
                         throw new Bam.Core.Exception(
-                            "Unhandled attribute {0} for property {1} in {2}",
-                            attributeArray.First().ToString(),
-                            attribute_settings_property.Name,
-                            module.ToString()
+                            $"Unhandled attribute {attributeArray.First().ToString()} for property {attribute_settings_property.Name} in {module.ToString()}"
                         );
                     }
                 }
@@ -319,8 +299,7 @@ namespace VisualStudioProcessor
             if (!output_file_attributes.Any() && settings.Module.GeneratedPaths.Any())
             {
                 throw new Bam.Core.Exception(
-                    "There are no OutputPath attributes associated with the {0} settings class",
-                    settings.ToString()
+                    $"There are no OutputPath attributes associated with the {settings.ToString()} settings class"
                 );
             }
             var input_files_attributes = real_settings_type.GetCustomAttributes(
@@ -332,8 +311,7 @@ namespace VisualStudioProcessor
                 if (!input_files_attributes.Any())
                 {
                     throw new Bam.Core.Exception(
-                        "There is no InputPaths attribute associated with the {0} settings class",
-                        settings.ToString()
+                        $"There is no InputPaths attribute associated with the {settings.ToString()} settings class"
                     );
                 }
                 var attr = input_files_attributes.First();
@@ -343,9 +321,7 @@ namespace VisualStudioProcessor
                     if (max_files != settings.Module.InputModules.Count())
                     {
                         throw new Bam.Core.Exception(
-                            "InputPaths attribute specifies a maximum of {0} files, but {1} are available",
-                            max_files,
-                            settings.Module.InputModules.Count()
+                            $"InputPaths attribute specifies a maximum of {max_files} files, but {settings.Module.InputModules.Count()} are available"
                         );
                     }
                 }
@@ -403,9 +379,7 @@ namespace VisualStudioProcessor
                 catch (System.Collections.Generic.KeyNotFoundException)
                 {
                     throw new Bam.Core.Exception(
-                        "Unable to locate path key {0} for input module of type {1}",
-                        matching_input_attr.PathKey,
-                        input_module.ToString()
+                        $"Unable to locate path key {matching_input_attr.PathKey} for input module of type {input_module.ToString()}"
                     );
                 }
             }
@@ -431,9 +405,7 @@ namespace VisualStudioProcessor
                 if (null == matching_attr)
                 {
                     throw new Bam.Core.Exception(
-                        "Unable to locate OutputPath class attribute on {0} for path key {1}",
-                        settings.ToString(),
-                        outputKey
+                        $"Unable to locate OutputPath class attribute on {settings.ToString()} for path key {outputKey}"
                     );
                 }
                 if (matching_attr.HandledByMetaData)
@@ -458,16 +430,14 @@ namespace VisualStudioProcessor
                     if (null == prop)
                     {
                         throw new Bam.Core.Exception(
-                            "A side-effect was enabled, but no property called {0} exists on the VSConfiguration",
-                            matching_attr.Property
+                            $"A side-effect was enabled, but no property called {matching_attr.Property} exists on the VSConfiguration"
                         );
                     }
                     var setter = prop.GetSetMethod();
                     if (null == setter)
                     {
                         throw new Bam.Core.Exception(
-                            "No setter was available on property {0} on the VSConfiguration",
-                            matching_attr.Property
+                            $"No setter was available on property {matching_attr.Property} on the VSConfiguration"
                         );
                     }
                     setter.Invoke(vsConfig, new[] { generatedPath.Value });
