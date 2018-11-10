@@ -41,44 +41,14 @@ namespace VisualC
             this.VCXProjFiltersToolsVersion = "4.0";
         }
 
-        protected override string Subpath_to_vcvars
-        {
-            get
-            {
-                return "VC";
-            }
-        }
-
-        protected override bool Has64bithost_32bitcross
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        protected override bool HasNative64BitTools
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public override object this[string index]
-        {
-            get
-            {
-                return this.Meta[index];
-            }
-        }
+        protected override string Subpath_to_vcvars => "VC";
+        protected override bool Has64bithost_32bitcross => false;
+        protected override bool HasNative64BitTools => false;
+        public override object this[string index] => this.Meta[index];
 
         public override bool
         Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
-        }
+            string index) => this.Meta.ContainsKey(index);
 
         public string
         SolutionFormatVersion
@@ -155,7 +125,7 @@ namespace VisualC
                         break;
 
                     default:
-                        throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+                        throw new Bam.Core.Exception($"Unrecognized bit depth, {depth}");
                 }
             }
             else
@@ -170,7 +140,7 @@ namespace VisualC
                         throw new Bam.Core.Exception("64-bit CRT is not available on 32-bit operating systems.");
 
                     default:
-                        throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+                        throw new Bam.Core.Exception($"Unrecognized bit depth, {depth}");
                 }
             }
             return dynamicLibPaths;
@@ -195,7 +165,7 @@ namespace VisualC
                         break;
 
                     default:
-                        throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+                        throw new Bam.Core.Exception($"Unrecognized bit depth, {depth}");
                 }
             }
             else
@@ -210,7 +180,7 @@ namespace VisualC
                         throw new Bam.Core.Exception("64-bit CRT is not available on 32-bit operating systems.");
 
                     default:
-                        throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+                        throw new Bam.Core.Exception($"Unrecognized bit depth, {depth}");
                 }
             }
             return dynamicLibPaths;
