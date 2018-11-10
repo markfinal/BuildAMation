@@ -292,7 +292,7 @@ namespace MakeFileBuilder
                 foreach (var pre in this.Prequisities)
                 {
                     rules.Append(
-                        "${commonMeta.UseMacrosInPath(pre.Key.GeneratedPaths[pre.Value].ToStringQuoteIfNecessary())} "
+                        $"{commonMeta.UseMacrosInPath(pre.Key.GeneratedPaths[pre.Value].ToStringQuoteIfNecessary())} "
                     );
                 }
                 foreach (var pre in this.PrerequisiteTargets)
