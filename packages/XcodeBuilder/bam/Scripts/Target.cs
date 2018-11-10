@@ -566,7 +566,7 @@ namespace XcodeBuilder
                 // do not add PreBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
             }
 
-            configuration.appendPreBuildCommands(commands);
+            configuration.AppendPreBuildCommands(commands);
             if (null != outputPaths)
             {
                 this.PreBuildBuildPhase.Value.AddOutputPaths(outputPaths);
@@ -584,7 +584,7 @@ namespace XcodeBuilder
                 // do not add PostBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
             }
 
-            configuration.appendPostBuildCommands(commands);
+            configuration.AppendPostBuildCommands(commands);
         }
 
         public void
