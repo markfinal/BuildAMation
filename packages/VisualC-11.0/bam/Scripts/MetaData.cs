@@ -41,7 +41,7 @@ namespace VisualC
             this.VCXProjFiltersToolsVersion = "4.0";
         }
 
-        protected override string subpath_to_vcvars
+        protected override string Subpath_to_vcvars
         {
             get
             {
@@ -49,7 +49,7 @@ namespace VisualC
             }
         }
 
-        protected override bool has64bithost_32bitcross
+        protected override bool Has64bithost_32bitcross
         {
             get
             {
@@ -57,7 +57,7 @@ namespace VisualC
             }
         }
 
-        protected override bool hasNative64BitTools
+        protected override bool HasNative64BitTools
         {
             get
             {
