@@ -43,7 +43,8 @@ namespace Bam.Core
         const int LINKTYPE = 1;
         const int SYMLINK = 2;
         const int DIRTYPE = 5;
-        const string GLOBALEXTENDEDHEADER = "g";
+        const char GLOBALEXTENDEDHEADER = 'g';
+        const char LONGFILENAMENEXT = 'L';
 
         public class CompressionMethodUnsupportedException :
             Exception
@@ -138,23 +139,36 @@ namespace Bam.Core
                     {
                         return 0;
                     }
-                    if (asString == GLOBALEXTENDEDHEADER)
+                    if (asString[0] == GLOBALEXTENDEDHEADER)
                     {
                         return Type.GlobalExtendedHeader;
                     }
-                    var asInt = System.Convert.ToInt32(asString, 8);
-                    switch (asInt)
+                    else if (asString[0] == LONGFILENAMENEXT)
                     {
-                        case DIRTYPE:
-                            return Type.Directory;
-                        case LINKTYPE:
-                            return Type.Link;
-                        case SYMLINK:
-                            return Type.Symlink;
-                        case REGTYPE:
-                            return Type.File;
-                        default:
-                            return Type.Unknown;
+                        // long filename should just be this.prefix/this.name
+                        return Type.File;
+                    }
+                    try
+                    {
+
+                        var asInt = System.Convert.ToInt32(asString, 8);
+                        switch (asInt)
+                        {
+                            case DIRTYPE:
+                                return Type.Directory;
+                            case LINKTYPE:
+                                return Type.Link;
+                            case SYMLINK:
+                                return Type.Symlink;
+                            case REGTYPE:
+                                return Type.File;
+                            default:
+                                return Type.Unknown;
+                        }
+                    }
+                    catch (System.FormatException ex)
+                    {
+                        throw new BadFormattingException(ex, $"Unable to parse '{asString}' as an octal number");
                     }
                 }
 
