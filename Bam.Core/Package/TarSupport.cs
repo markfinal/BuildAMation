@@ -39,11 +39,38 @@ namespace Bam.Core
         const int TUNMLEN = 32;
         const int TGNMLEN = 32;
 
+        const int REGTYPE = 0;
+        const int LINKTYPE = 1;
+        const int SYMLINK = 2;
+        const int DIRTYPE = 5;
+        const string GLOBALEXTENDEDHEADER = "g";
+
         class Header
         {
-            public class EndOfStream :
-                System.Exception
+            public enum Type
+            {
+                Unknown,
+                File,
+                Directory,
+                Link,
+                Symlink,
+                GlobalExtendedHeader
+            }
+
+            public class EndOfStreamException :
+                Exception
             {}
+
+            public class BadFormattingException :
+                Exception
+            {
+                public BadFormattingException(
+                    System.FormatException ex,
+                    string message)
+                    :
+                    base(ex, message)
+                {}
+            }
 
             string
             NullTerminatedCharArrayToString(char[] array)
@@ -83,7 +110,42 @@ namespace Bam.Core
                     {
                         return 0;
                     }
-                    return System.Convert.ToInt32(asString, 8);
+                    try
+                    {
+                        return System.Convert.ToInt32(asString, 8);
+                    }
+                    catch (System.FormatException ex)
+                    {
+                        throw new BadFormattingException(ex, $"Unable to parse '{asString}' as an octal number");
+                    }
+                }
+
+                Type
+                CharArrayToType(char[] array)
+                {
+                    var asString = NullTerminatedCharArrayToString(array);
+                    if (System.String.IsNullOrEmpty(asString))
+                    {
+                        return 0;
+                    }
+                    if (asString == GLOBALEXTENDEDHEADER)
+                    {
+                        return Type.GlobalExtendedHeader;
+                    }
+                    var asInt = System.Convert.ToInt32(asString, 8);
+                    switch (asInt)
+                    {
+                        case DIRTYPE:
+                            return Type.Directory;
+                        case LINKTYPE:
+                            return Type.Link;
+                        case SYMLINK:
+                            return Type.Symlink;
+                        case REGTYPE:
+                            return Type.File;
+                        default:
+                            return Type.Unknown;
+                    }
                 }
 
                 int
@@ -102,7 +164,7 @@ namespace Bam.Core
                 this.name = ReadChars(stream, NAMESIZ, ref offset);         // 100
                 if (null == this.name)
                 {
-                    throw new EndOfStream();
+                    throw new EndOfStreamException();
                 }
                 this.mode = ReadChars(stream, 8, ref offset);               // 108
                 this.uid = ReadChars(stream, 8, ref offset);                // 116
@@ -117,6 +179,7 @@ namespace Bam.Core
                 this.gname = ReadChars(stream, TGNMLEN, ref offset);        // 329
                 this.devmajor = ReadChars(stream, 8, ref offset);           // 337
                 this.devminor = ReadChars(stream, 8, ref offset);           // 345
+                this.prefix = ReadChars(stream, 155, ref offset);           // 500
 
                 // cannot just seek ahead, as not all Stream implementations offer it
                 this.padding = new byte[HEADERSIZE - offset];
@@ -125,75 +188,81 @@ namespace Bam.Core
                 this.realSize = CharArrayOctalToInt(this.size);
                 this.paddedSize = PadSizeUpToHeaderMultiple(this.realSize);
 
-                this.type = CharArrayOctalToInt(this.typeFlag);
+                this.type = CharArrayToType(this.typeFlag);
             }
 
             private void
             SkipData(
-                int size)
+                int skipSize)
             {
-                if (0 == size)
+                if (0 == skipSize)
                 {
                     return;
                 }
                 // cannot just seek ahead, as not all Stream implementations offer it
-                var temp = new byte[size];
-                this.stream.Read(temp, 0, size);
+                var temp = new byte[skipSize];
+                this.stream.Read(temp, 0, skipSize);
             }
 
             public void
-            Export(
+            WriteToDisk(
                 string baseDir)
             {
-                var tarPath = NullTerminatedCharArrayToString(this.name);
+                string tarPath = null;
+                if (NullTerminatedCharArrayToString(this.magic).StartsWith("ustar", System.StringComparison.Ordinal))
+                {
+                    var prefixString = NullTerminatedCharArrayToString(this.prefix);
+                    if (!System.String.IsNullOrEmpty(prefixString))
+                    {
+                        tarPath = System.IO.Path.Combine(prefixString, NullTerminatedCharArrayToString(this.name));
+                    }
+                }
+                if (null == tarPath)
+                {
+                    tarPath = NullTerminatedCharArrayToString(this.name);
+                }
                 if (System.String.IsNullOrEmpty(tarPath))
                 {
                     return;
                 }
                 var path = System.IO.Path.GetFullPath(tarPath, baseDir);
-
-                var buffer = new byte[this.realSize];
-                this.stream.Read(buffer, 0, this.realSize);
-
                 var parentDir = System.IO.Path.GetDirectoryName(path);
                 if (!System.IO.Directory.Exists(parentDir))
                 {
                     System.IO.Directory.CreateDirectory(parentDir);
                 }
-                using (var writerStream = System.IO.File.OpenWrite(path))
+
+                if (this.IsSymLink)
                 {
-                    writerStream.Write(buffer, 0, this.realSize);
+                    var link = new Mono.Unix.UnixSymbolicLinkInfo(path);
+                    if (System.IO.File.Exists(path))
+                    {
+                        link.Delete(); // equivalent to ln -s -f
+                    }
+
+                    var linkPath = NullTerminatedCharArrayToString(this.linkname);
+                    var targetPath = System.IO.Path.GetFullPath(linkPath, parentDir);
+                    link.CreateSymbolicLinkTo(targetPath);
                 }
-                var padding = this.paddedSize - this.realSize;
-                this.SkipData(padding);
+                else
+                {
+                    var buffer = new byte[this.realSize];
+                    this.stream.Read(buffer, 0, this.realSize);
+
+                    using (var writerStream = System.IO.File.OpenWrite(path))
+                    {
+                        writerStream.Write(buffer, 0, this.realSize);
+                    }
+                    var pad = this.paddedSize - this.realSize;
+                    this.SkipData(pad);
+                }
             }
 
-            private string
-            TypeString()
-            {
-                if (this.IsFile)
-                {
-                    return "File";
-                }
-                else if (this.IsDir)
-                {
-                    return "Dir";
-                }
-                else if (this.IsSymLink)
-                {
-                    return "Symlink";
-                }
-                return $"Unknown {this.type}";
-            }
+            public bool IsFile => this.type == Type.File;
+            public bool IsDir => this.type == Type.Directory;
+            public bool IsSymLink => this.type == Type.Symlink;
 
-            const int REGTYPE = 0;
-            const int LINKTYPE = 1;
-            const int DIRTYPE = 5;
-            public bool IsFile => this.type == REGTYPE;
-            public bool IsDir => this.type == DIRTYPE;
-            public bool IsSymLink => this.type == LINKTYPE;
-
-            private System.IO.Stream stream;
+            private readonly System.IO.Stream stream;
             private readonly char[] name;
             private readonly char[] mode;
             private readonly char[] uid;
@@ -208,11 +277,12 @@ namespace Bam.Core
             private readonly char[] gname;
             private readonly char[] devmajor;
             private readonly char[] devminor;
+            private readonly char[] prefix;
             private readonly byte[] padding;
 
             private readonly int realSize;
             private readonly int paddedSize;
-            private readonly int type;
+            private readonly Type type;
         }
 
         public TarFile(
@@ -244,7 +314,6 @@ namespace Bam.Core
         Export(
             string baseDir)
         {
-            var header = new Header(this.tarStream);
             try
             {
                 while (true)
@@ -254,14 +323,10 @@ namespace Bam.Core
                     {
                         continue;
                     }
-                    if (entry.IsSymLink)
-                    {
-                        throw new Exception("Symlinks not yet supported");
-                    }
-                    entry.Export(baseDir);
+                    entry.WriteToDisk(baseDir);
                 }
             }
-            catch (Header.EndOfStream)
+            catch (Header.EndOfStreamException)
             {
                 // done
             }

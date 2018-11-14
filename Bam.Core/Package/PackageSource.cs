@@ -313,7 +313,14 @@ namespace Bam.Core
                     {
                         using (var tar = new TarFile(readerStream))
                         {
-                            tar.Export(this.ExtractTo);
+                            try
+                            {
+                                tar.Export(this.ExtractTo);
+                            }
+                            catch (Exception ex)
+                            {
+                                throw new Exception(ex, $"Unable to extract archive '{this.ArchivePath}'");
+                            }
                         }
                     }
                     else

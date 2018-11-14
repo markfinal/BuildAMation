@@ -33,6 +33,7 @@
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
     <PackageReference Include="SharpCompress" Version="0.22.0" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
+    <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Schema\BamPackageDefinitionV1.xsd">
