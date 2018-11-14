@@ -155,6 +155,10 @@ namespace Bam.Core
                     {
                         return 0;
                     }
+                    if (0 == (size % HEADERSIZE))
+                    {
+                        return size;
+                    }
                     var newSize = ((size + HEADERSIZE) / HEADERSIZE) * HEADERSIZE;
                     return newSize;
                 }
