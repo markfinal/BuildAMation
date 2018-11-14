@@ -311,16 +311,23 @@ namespace Bam.Core
                 {
                     if (reader.ArchiveType == SharpCompress.Common.ArchiveType.Tar)
                     {
-                        using (var tar = new TarFile(readerStream))
+                        try
                         {
-                            try
+                            using (var tar = new TarFile(readerStream))
                             {
-                                tar.Export(this.ExtractTo);
+                                try
+                                {
+                                    tar.Export(this.ExtractTo);
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Exception(ex, $"Unable to extract archive '{this.ArchivePath}' from '{this.RemotePath}'");
+                                }
                             }
-                            catch (Exception ex)
-                            {
-                                throw new Exception(ex, $"Unable to extract archive '{this.ArchivePath}'");
-                            }
+                        }
+                        catch (TarFile.CompressionMethodUnsupportedException ex)
+                        {
+                            throw new Exception(ex, $"Unable to decompress archive '{this.ArchivePath}' from '{this.RemotePath}'");
                         }
                     }
                     else

@@ -45,6 +45,16 @@ namespace Bam.Core
         const int DIRTYPE = 5;
         const string GLOBALEXTENDEDHEADER = "g";
 
+        public class CompressionMethodUnsupportedException :
+            Exception
+        {
+            public CompressionMethodUnsupportedException(
+                string message)
+                :
+                base(message)
+            { }
+        }
+
         class Header
         {
             public enum Type
@@ -292,21 +302,38 @@ namespace Bam.Core
         public TarFile(
             System.IO.FileStream stream)
         {
+            // first, look at magic numbers at the start of the file, in order
+            // to identify compression methods
             stream.Seek(0, System.IO.SeekOrigin.Begin);
-            var magicNumber = new byte[2];
-            stream.Read(magicNumber, 0, 2);
+            var magicNumber = new byte[6];
+            stream.Read(magicNumber, 0, 6);
             var gzipCompressed = false;
+            var xzCompressed = false;
             if (magicNumber[0] == 0x1f && magicNumber[1] == 0x8b)
             {
                 gzipCompressed = true;
             }
+            else if (magicNumber[0] == 0xFD &&
+                     magicNumber[1] == 0x37 &&
+                     magicNumber[2] == 0x7A &&
+                     magicNumber[3] == 0x58 &&
+                     magicNumber[4] == 0x5A &&
+                     magicNumber[5] == 0x00)
+            {
+                xzCompressed = true;
+            }
 
+            // now read from the beginning again
             stream.Seek(0, System.IO.SeekOrigin.Begin);
             if (gzipCompressed)
             {
                 var temp = System.IO.Path.GetTempFileName();
                 var decompressedStream = System.IO.File.Create(temp);
                 this.tarStream = new System.IO.Compression.GZipStream(stream, System.IO.Compression.CompressionMode.Decompress);
+            }
+            else if (xzCompressed)
+            {
+                throw new CompressionMethodUnsupportedException("Cannot decompress .xz tar files");
             }
             else
             {
