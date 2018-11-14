@@ -247,7 +247,7 @@ namespace Bam.Core
             {
                 return;
             }
-            Log.Info($"Waiting on package source download tasks to finish before build starts...");
+            Log.Info($"Waiting on package source downloads to finish before build starts...");
             System.Threading.Tasks.Task.WaitAll(this.preBuildTasks.ToArray());
             Log.DebugMessage($"*** FINISHED WAITING ON TASKS");
         }
