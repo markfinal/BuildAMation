@@ -254,35 +254,43 @@ namespace Bam.Core
                     return;
                 }
                 var path = System.IO.Path.GetFullPath(tarPath, baseDir);
+
                 var parentDir = System.IO.Path.GetDirectoryName(path);
                 if (!System.IO.Directory.Exists(parentDir))
                 {
                     System.IO.Directory.CreateDirectory(parentDir);
                 }
 
-                if (this.IsSymLink)
+                try
                 {
-                    var link = new Mono.Unix.UnixSymbolicLinkInfo(path);
-                    if (System.IO.File.Exists(path))
+                    if (this.IsSymLink)
                     {
-                        link.Delete(); // equivalent to ln -s -f
-                    }
+                        var link = new Mono.Unix.UnixSymbolicLinkInfo(path);
+                        if (System.IO.File.Exists(path))
+                        {
+                            link.Delete(); // equivalent to ln -s -f
+                        }
 
-                    var linkPath = NullTerminatedCharArrayToString(this.linkname);
-                    var targetPath = System.IO.Path.GetFullPath(linkPath, parentDir);
-                    link.CreateSymbolicLinkTo(targetPath);
+                        var linkPath = NullTerminatedCharArrayToString(this.linkname);
+                        var targetPath = System.IO.Path.GetFullPath(linkPath, parentDir);
+                        link.CreateSymbolicLinkTo(targetPath);
+                    }
+                    else
+                    {
+                        var buffer = new byte[this.realSize];
+                        this.stream.Read(buffer, 0, this.realSize);
+
+                        using (var writerStream = System.IO.File.OpenWrite(path))
+                        {
+                            writerStream.Write(buffer, 0, this.realSize);
+                        }
+                        var pad = this.paddedSize - this.realSize;
+                        this.SkipData(pad);
+                    }
                 }
-                else
+                catch (System.IO.IOException ex)
                 {
-                    var buffer = new byte[this.realSize];
-                    this.stream.Read(buffer, 0, this.realSize);
-
-                    using (var writerStream = System.IO.File.OpenWrite(path))
-                    {
-                        writerStream.Write(buffer, 0, this.realSize);
-                    }
-                    var pad = this.paddedSize - this.realSize;
-                    this.SkipData(pad);
+                    Log.Info($"Failed to write file '{path}' as {ex.Message}");
                 }
             }
 
