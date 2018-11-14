@@ -254,6 +254,11 @@ namespace Bam.Core
                     return;
                 }
                 var path = System.IO.Path.GetFullPath(tarPath, baseDir);
+                if (path.EndsWith(System.IO.Path.DirectorySeparatorChar.ToString(), System.StringComparison.Ordinal))
+                {
+                    // actually, it's a directory, give up
+                    return;
+                }
 
                 var parentDir = System.IO.Path.GetDirectoryName(path);
                 if (!System.IO.Directory.Exists(parentDir))
