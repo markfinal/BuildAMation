@@ -1,3 +1,5 @@
+15-Nov-2018 Fixes #507. Code cleanup using features of newer C# language specifications.
+
 04-Nov-2018 Fixes #506. Added TokenizedString function, @tounix(<path>), that converts Windows style directory separators to Unix.
 
 04-Nov-2018 Fixes #505. Added PreambleComment virtual property to C.ProceduralHeaderFile, in order to control the comment added to the top of generated headers. Set to null to exclude it.
