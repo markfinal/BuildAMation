@@ -1,3 +1,5 @@
+15-Nov-2018 Fixes #511. Adding Cxx14Test1 test case.
+
 15-Nov-2018 Fixes #507. Code cleanup using features of newer C# language specifications.
 
 15-Nov-2018 Fixes #159. Added support for packages to specify where to download archives containing their source.
