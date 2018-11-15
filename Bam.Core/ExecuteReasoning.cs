@@ -70,10 +70,7 @@ namespace Bam.Core
         /// Utility method to create an instance of undefined (re)build.
         /// </summary>
         public static ExecuteReasoning
-        Undefined()
-        {
-            return new ExecuteReasoning(EReason.Undefined);
-        }
+        Undefined() => new ExecuteReasoning(EReason.Undefined);
 
         /// <summary>
         /// Utility method to create an instance of file-does-not-exist (re)build, of the specified path.
@@ -82,10 +79,7 @@ namespace Bam.Core
         /// <param name="path">Module path that does not exist.</param>
         public static ExecuteReasoning
         FileDoesNotExist(
-            TokenizedString path)
-        {
-            return new ExecuteReasoning(EReason.FileDoesNotExist, path);
-        }
+            TokenizedString path) => new ExecuteReasoning(EReason.FileDoesNotExist, path);
 
         /// <summary>
         /// Utility method to create an instance of source-file-newer (re)build, of the specified source and output paths.
@@ -96,10 +90,7 @@ namespace Bam.Core
         public static ExecuteReasoning
         InputFileNewer(
             TokenizedString outputPath,
-            TokenizedString inputPath)
-        {
-            return new ExecuteReasoning(EReason.InputFileIsNewer, outputPath, inputPath);
-        }
+            TokenizedString inputPath) => new ExecuteReasoning(EReason.InputFileIsNewer, outputPath, inputPath);
 
         /// <summary>
         /// Convert the reasoning to a meaningful description. Used by the --explain command line option.
@@ -114,7 +105,7 @@ namespace Bam.Core
                     return "of undefined reasons - therefore executing the module to err on the side of caution";
 
                 case EReason.FileDoesNotExist:
-                    return System.String.Format("{0} does not exist", this.OutputFilePath.ToString());
+                    return $"{this.OutputFilePath.ToString()} does not exist";
 
                 case EReason.InputFileIsNewer:
                     {
@@ -122,11 +113,11 @@ namespace Bam.Core
                         {
                             return "member(s) of the module collection were updated";
                         }
-                        return System.String.Format("{0} is newer than {1}", this.InputFilePath.ToString(), this.OutputFilePath.ToString());
+                        return $"{this.InputFilePath.ToString()} is newer than {this.OutputFilePath.ToString()}";
                     }
 
                 default:
-                    throw new Exception("Unknown execute reasoning, {0}", this.Reason.ToString());
+                    throw new Exception($"Unknown execute reasoning, {this.Reason.ToString()}");
             }
         }
 
@@ -134,30 +125,18 @@ namespace Bam.Core
         /// Obtain the (re)build enumeration.
         /// </summary>
         /// <value>The reason.</value>
-        public EReason Reason
-        {
-            get;
-            private set;
-        }
+        public EReason Reason { get; private set; }
 
         /// <summary>
         /// Obtain the (re)build output path, if it has been specified.
         /// </summary>
         /// <value>The output file path.</value>
-        public TokenizedString OutputFilePath
-        {
-            get;
-            private set;
-        }
+        public TokenizedString OutputFilePath { get; private set; }
 
         /// <summary>
         /// Obtain the (re)build source path, if it has been specified.
         /// </summary>
         /// <value>The input file path.</value>
-        public TokenizedString InputFilePath
-        {
-            get;
-            private set;
-        }
+        public TokenizedString InputFilePath { get; private set; }
     }
 }

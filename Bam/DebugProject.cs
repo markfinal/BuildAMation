@@ -96,8 +96,10 @@ namespace Bam
             var filtered = all.Where(item =>
             {
                 var publicKeyToken = string.Empty;
-                for (int i = 0; i < item.GetPublicKeyToken().GetLength(0); i++)
+                for (var i = 0; i < item.GetPublicKeyToken().GetLength(0); i++)
+                {
                     publicKeyToken += string.Format("{0:x2}", item.GetPublicKeyToken()[i]);
+                }
 
                 // if the public key token is not that for the .NET framework, must be a NuGet
                 return !publicKeyToken.Equals("b03f5f7f11d50a3a", System.StringComparison.OrdinalIgnoreCase);

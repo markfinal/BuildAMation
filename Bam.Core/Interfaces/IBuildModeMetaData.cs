@@ -51,10 +51,7 @@ namespace Bam.Core
         /// without having to set up environment variables, vs command line builds.
         /// </summary>
         /// <value><c>true</c> if publish beside executable; otherwise, <c>false</c>.</value>
-        bool PublishBesideExecutable
-        {
-            get;
-        }
+        bool PublishBesideExecutable { get; }
 
         /// <summary>
         /// If a module is marked as a prebuilt (i.e. module output is on disk, no build step is required), and if there are
@@ -62,9 +59,6 @@ namespace Bam.Core
         /// the build system to generate that project.
         /// </summary>
         /// <value><c>true</c> if a non-buildable project can be generated for associated files; otherwise, <c>false</c>.</value>
-        bool CanCreatePrebuiltProjectForAssociatedFiles
-        {
-            get;
-        }
+        bool CanCreatePrebuiltProjectForAssociatedFiles { get; }
     }
 }

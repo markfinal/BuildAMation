@@ -33,7 +33,7 @@ namespace Publisher
     public sealed class DSymUtilTool :
         Bam.Core.PreBuiltTool
     {
-        private Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
+        private readonly Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
 
         public DSymUtilTool()
         {
@@ -44,31 +44,13 @@ namespace Publisher
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            return new DSymUtilToolSettings(module);
-        }
+            T module) => new DSymUtilToolSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("xcrun").First());
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("xcrun").First());
 
-        public override Bam.Core.TokenizedStringArray InitialArguments
-        {
-            get
-            {
-                return this.arguments;
-            }
-        }
+        public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
 
         protected override void
-        EvaluateInternal()
-        {
-            this.ReasonToExecute = null;
-        }
+        EvaluateInternal() => this.ReasonToExecute = null;
     }
 }

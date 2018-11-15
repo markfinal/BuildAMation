@@ -37,7 +37,7 @@ namespace VisualCCommon
         protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
 
         private void
-        findvswhere()
+        Findvswhere()
         {
 #if D_NUGET_NUGET_CLIENT && D_NUGET_VSWHERE
             var nugetHomeDir = NuGet.Common.NuGetEnvironment.GetFolderPath(NuGet.Common.NuGetFolderPath.NuGetHome);
@@ -56,15 +56,14 @@ namespace VisualCCommon
             var vswhere_exe_path = System.IO.Path.Combine(vswhere_tools_dir, "vswhere.exe");
             if (!System.IO.File.Exists(vswhere_exe_path))
             {
-                throw new Bam.Core.Exception("Unable to locate vswhere.exe from NuGet package at '{0}'", vswhere_exe_path);
+                throw new Bam.Core.Exception($"Unable to locate vswhere.exe from NuGet package at '{vswhere_exe_path}'");
             }
-            this.vswherePath = vswhere_exe_path;
-#else
+            this.VswherePath = vswhere_exe_path;
 #endif
         }
 
         protected string
-        vswhere_getinstallpath()
+        Vswhere_getinstallpath()
         {
             var package_version = Bam.Core.Graph.Instance.Packages.First(item => item.Name == "VisualC").Version;
             var major_version = System.Convert.ToInt32(package_version.Split('.').First());
@@ -76,30 +75,29 @@ namespace VisualCCommon
                 if (legacy)
                 {
                     // note the [] around the version to specify only that version
-                    args.AppendFormat("[{0}] -legacy", major_version);
+                    args.Append($"[{major_version}] -legacy");
                 }
                 else
                 {
                     args.Append(major_version);
                 }
                 var installpath = Bam.Core.OSUtilities.RunExecutable(
-                    this.vswherePath,
+                    this.VswherePath,
                     args.ToString()
                 ).StandardOutput;
-                Bam.Core.Log.Info("Using VisualStudio {0} installed at {1}", major_version, installpath);
+                Bam.Core.Log.Info($"Using VisualStudio {major_version} installed at {installpath}");
                 return installpath;
             }
             catch (Bam.Core.RunExecutableException)
             {
                 throw new Bam.Core.Exception(
-                    "Unable to locate installation directory for Visual Studio major version {0}",
-                    major_version
+                    $"Unable to locate installation directory for Visual Studio major version {major_version}"
                 );
             }
         }
 
         private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>
-        execute_vcvars(
+        Execute_vcvars(
             C.EBit depth,
             bool has64bithost_32bitcross,
             bool hasNative64BitTools,
@@ -107,8 +105,10 @@ namespace VisualCCommon
             System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> required_envvars
         )
         {
-            var startinfo = new System.Diagnostics.ProcessStartInfo();
-            startinfo.FileName = @"c:\Windows\System32\cmd.exe";
+            var startinfo = new System.Diagnostics.ProcessStartInfo
+            {
+                FileName = @"c:\Windows\System32\cmd.exe"
+            };
             startinfo.EnvironmentVariables.Clear();
             if (null != inherited_envvars)
             {
@@ -124,11 +124,7 @@ namespace VisualCCommon
                     if (startinfo.EnvironmentVariables.ContainsKey(required.Key))
                     {
                         var existing_value = startinfo.EnvironmentVariables[required.Key];
-                        var updated_value = System.String.Format(
-                            "{0};{1}",
-                            System.Environment.ExpandEnvironmentVariables(required.Value.ToString(';')),
-                            existing_value
-                        );
+                        var updated_value = $"{System.Environment.ExpandEnvironmentVariables(required.Value.ToString(';'))};{existing_value}";
                         startinfo.EnvironmentVariables[required.Key] = updated_value;
                     }
                     else
@@ -142,7 +138,7 @@ namespace VisualCCommon
             startinfo.RedirectStandardOutput = true;
             startinfo.RedirectStandardError = true;
 
-            System.Func<string> vcvarsall_command = () =>
+            string vcvarsall_command()
             {
                 var command_and_args = new System.Text.StringBuilder();
                 command_and_args.Append("vcvarsall.bat ");
@@ -183,27 +179,26 @@ namespace VisualCCommon
                 {
                     if (windowsSDK.Version != defaultWindowsSDKVersion)
                     {
-                        command_and_args.Append(System.String.Format("{0} ", windowsSDK.Version));
+                        command_and_args.Append($"{windowsSDK.Version} ");
                     }
                     else
                     {
                         var option_type = System.Type.GetType("WindowsSDK.Options.WindowsSDK10Version", throwOnError: false);
                         if (null != option_type)
                         {
-                            var option_type_instance = System.Activator.CreateInstance(option_type) as Bam.Core.IStringCommandLineArgument;
-                            if (null != option_type_instance)
+                            if (System.Activator.CreateInstance(option_type) is Bam.Core.IStringCommandLineArgument option_type_instance)
                             {
                                 var win10Option = Bam.Core.CommandLineProcessor.Evaluate(option_type_instance);
                                 if (null != win10Option)
                                 {
-                                    command_and_args.Append(System.String.Format("{0} ", win10Option));
+                                    command_and_args.Append($"{win10Option} ");
                                 }
                             }
                         }
                     }
                 }
                 return command_and_args.ToString();
-            };
+            }
 
             var environment_generator_cmdline = System.String.Empty;
             // allow the WindowsSDK to provide an alternative mechanism for generating
@@ -225,7 +220,7 @@ namespace VisualCCommon
             }
             else
             {
-                startinfo.WorkingDirectory = System.IO.Path.Combine(this.InstallDir.ToString(), this.subpath_to_vcvars);
+                startinfo.WorkingDirectory = System.IO.Path.Combine(this.InstallDir.ToString(), this.Subpath_to_vcvars);
                 environment_generator_cmdline = vcvarsall_command();
             }
 
@@ -237,7 +232,7 @@ namespace VisualCCommon
             }
 
             var arguments = new System.Text.StringBuilder();
-            arguments.AppendFormat("/C {0} && SET", environment_generator_cmdline);
+            arguments.Append($"/C {environment_generator_cmdline} && SET");
             startinfo.Arguments = arguments.ToString();
 
             var process = new System.Diagnostics.Process();
@@ -258,7 +253,7 @@ namespace VisualCCommon
             process.WaitForExit();
             if (process.ExitCode != 0)
             {
-                throw new Bam.Core.Exception("{0} failed: {1}", environment_generator_cmdline, stderr.ToString());
+                throw new Bam.Core.Exception($"{environment_generator_cmdline} failed: {stderr.ToString()}");
             }
 
             var env = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>();
@@ -268,7 +263,7 @@ namespace VisualCCommon
             );
             foreach (var line in lines)
             {
-                Bam.Core.Log.DebugMessage("{0}->{1}", environment_generator_cmdline, line);
+                Bam.Core.Log.DebugMessage($"{environment_generator_cmdline}->{line}");
                 var equals_index = line.IndexOf('=');
                 if (-1 == equals_index)
                 {
@@ -288,20 +283,18 @@ namespace VisualCCommon
                 }
                 env.Add(key, valueArray);
             }
-            Bam.Core.Log.Info(@"Generating {0}-bit build environment using '{1}\{2}'",
-                (int)depth,
-                startinfo.WorkingDirectory,
-                environment_generator_cmdline.TrimEnd()
+            Bam.Core.Log.Info(
+                $@"Generating {(int)depth}-bit build environment using '{startinfo.WorkingDirectory}\{environment_generator_cmdline.TrimEnd()}'"
             );
             foreach (System.Collections.Generic.KeyValuePair<string, Bam.Core.TokenizedStringArray> entry in env)
             {
-                Bam.Core.Log.DebugMessage("\t{0} = {1}", entry.Key, entry.Value.ToString(';'));
+                Bam.Core.Log.DebugMessage($"\t{entry.Key} = {entry.Value.ToString(';')}");
             }
             return env;
         }
 
         protected void
-        get_tool_environment_variables(
+        Get_tool_environment_variables(
             C.EBit depth,
             bool has64bithost_32bitcross,
             bool hasNative64BitTools,
@@ -330,7 +323,7 @@ namespace VisualCCommon
             }
             inherited_envvars.AddUnique("PROCESSOR_ARCHITECTURE");
 
-            var env = this.execute_vcvars(
+            var env = this.Execute_vcvars(
                 depth,
                 has64bithost_32bitcross,
                 hasNative64BitTools,
@@ -365,7 +358,7 @@ namespace VisualCCommon
                 case C.EBit.SixtyFour:
                     return "Environment64";
                 default:
-                    throw new Bam.Core.Exception("Unknown bit depth, {0}", depth.ToString());
+                    throw new Bam.Core.Exception($"Unknown bit depth, {depth.ToString()}");
             }
         }
 
@@ -381,11 +374,7 @@ namespace VisualCCommon
             return this.Meta[environmentKey] as System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>;
         }
 
-        private string vswherePath
-        {
-            get;
-            set;
-        }
+        private string VswherePath { get; set; }
 
         public C.ToolchainVersion ToolchainVersion
         {
@@ -400,30 +389,15 @@ namespace VisualCCommon
             }
         }
 
-        protected abstract string subpath_to_vcvars
-        {
-            get;
-        }
+        protected abstract string Subpath_to_vcvars { get; }
 
-        protected virtual bool has64bithost_32bitcross
-        {
-            get
-            {
-                return true;
-            }
-        }
+        protected virtual bool Has64bithost_32bitcross => true;
 
-        protected virtual bool hasNative64BitTools
-        {
-            get
-            {
-                return true;
-            }
-        }
+        protected virtual bool hasNative64BitTools => true;
 
         private static bool report_WindowsSDK_done = false;
         private static void
-        report_WindowsSDK(
+        Report_WindowsSDK(
             System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> env,
             C.EBit depth)
         {
@@ -441,7 +415,7 @@ namespace VisualCCommon
                 // the WindowsSDKVersion environment variable has a trailing back slash
                 var version = env["WindowsSDKVersion"].ToString();
                 version = version.TrimEnd(System.IO.Path.DirectorySeparatorChar);
-                report.AppendFormat("version {0} ", version);
+                report.Append($"version {version} ");
             }
             var winsdk_installdir = System.String.Empty;
             if (env.ContainsKey("WindowsSdkDir"))
@@ -456,18 +430,17 @@ namespace VisualCCommon
             }
             else
             {
-                throw new Bam.Core.Exception("Unable to locate WindowsSDK installation directory environment variable for {0}-bit builds", (int)depth);
+                throw new Bam.Core.Exception(
+                    $"Unable to locate WindowsSDK installation directory environment variable for {(int)depth}-bit builds"
+                );
             }
-            report.AppendFormat("installed at {0} ", winsdk_installdir);
+            report.Append($"installed at {winsdk_installdir} ");
             if (env.ContainsKey("UniversalCRTSdkDir") && env.ContainsKey("UCRTVersion"))
             {
                 var ucrt_installdir = env["UniversalCRTSdkDir"].ToString();
                 if (ucrt_installdir != winsdk_installdir)
                 {
-                    report.AppendFormat("with UniversalCRT SDK {0} installed at {1} ",
-                        env["UCRTVersion"].ToString(),
-                        ucrt_installdir
-                    );
+                    report.Append($"with UniversalCRT SDK {env["UCRTVersion"].ToString()} installed at {ucrt_installdir} ");
                 }
             }
             Bam.Core.Log.Info(report.ToString());
@@ -482,7 +455,7 @@ namespace VisualCCommon
                 System.IO.Path.Combine(
                     System.IO.Path.Combine(
                         this.InstallDir.ToString(),
-                        this.subpath_to_vcvars
+                        this.Subpath_to_vcvars
                     ),
                     "vcvarsall.bat"
                 ),
@@ -496,19 +469,17 @@ namespace VisualCCommon
         C.IToolchainDiscovery.discover(
             C.EBit? depth)
         {
-            if (null == this.vswherePath)
+            if (null == this.VswherePath)
             {
-                this.findvswhere();
+                this.Findvswhere();
             }
             if (!this.Meta.ContainsKey("InstallDir"))
             {
-                var install_dir = this.vswhere_getinstallpath();
+                var install_dir = this.Vswhere_getinstallpath();
                 if (install_dir.Contains(System.Environment.NewLine))
                 {
                     throw new Bam.Core.Exception(
-                        "Multiple install directories were detected for VisualStudio:{0}{1}",
-                        System.Environment.NewLine,
-                        install_dir
+                        $"Multiple install directories were detected for VisualStudio:{System.Environment.NewLine}{install_dir}"
                     );
                 }
                 this.InstallDir = Bam.Core.TokenizedString.CreateVerbatim(install_dir);
@@ -516,12 +487,12 @@ namespace VisualCCommon
             var bitdepth = depth.Value;
             if (!this.Meta.ContainsKey(EnvironmentKey(bitdepth)))
             {
-                this.get_tool_environment_variables(
+                this.Get_tool_environment_variables(
                     bitdepth,
-                    this.has64bithost_32bitcross,
+                    this.Has64bithost_32bitcross,
                     this.hasNative64BitTools
                 );
-                report_WindowsSDK(this.Environment(bitdepth), bitdepth);
+                Report_WindowsSDK(this.Environment(bitdepth), bitdepth);
             }
             if (!this.Meta.ContainsKey("ToolchainVersion"))
             {

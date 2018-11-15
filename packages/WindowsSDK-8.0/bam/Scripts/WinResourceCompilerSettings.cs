@@ -36,6 +36,6 @@ namespace WindowsSDK
             Bam.Core.Module module)
             :
             base(module)
-        { }
+        {}
     }
 }

@@ -37,8 +37,8 @@ namespace C
         CModule,
         IForwardedLibraries
     {
-        private Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
-        private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
+        private readonly Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
+        private readonly Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
         public const string LibraryKey = "Static Library File";
 
         protected override void
@@ -53,13 +53,7 @@ namespace C
             );
         }
 
-        public override string CustomOutputSubDirectory
-        {
-            get
-            {
-                return "lib";
-            }
-        }
+        public override string CustomOutputSubDirectory => "lib";
 
         /// <summary>
         /// Access the object files required to create this library.
@@ -104,13 +98,7 @@ namespace C
             }
         }
 
-        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
-        {
-            get
-            {
-                return this.forwardedDeps.ToReadOnlyCollection();
-            }
-        }
+        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps.ToReadOnlyCollection();
 
         public AssembledObjectFileCollection
         CreateAssemblerSourceContainer(
@@ -192,11 +180,7 @@ namespace C
             }
             foreach (var source in sources)
             {
-                if (null == source)
-                {
-                    continue;
-                }
-                source.UsePublicPatches(dependent);
+                source?.UsePublicPatches(dependent);
             }
             if (dependent is HeaderLibrary)
             {
@@ -205,11 +189,13 @@ namespace C
             // this delays the dependency until a link
             // (and recursively checks the dependent for more forwarded dependencies)
             // because there is no explicit DependsOn call, perform a cyclic dependency check here too
-            if (dependent is IForwardedLibraries)
+            if (dependent is IForwardedLibraries forwardedDep)
             {
-                if ((dependent as IForwardedLibraries).ForwardedLibraries.Contains(this))
+                if (forwardedDep.ForwardedLibraries.Contains(this))
                 {
-                    throw new Bam.Core.Exception("Cyclic dependency found between {0} and {1}", this.ToString(), dependent.ToString());
+                    throw new Bam.Core.Exception(
+                        $"Cyclic dependency found between {this.ToString()} and {dependent.ToString()}"
+                    );
                 }
             }
             this.forwardedDeps.AddUnique(dependent);
@@ -308,10 +294,7 @@ namespace C
             var libraryWriteTime = System.IO.File.GetLastWriteTime(libraryPath);
             foreach (var source in this.sourceModules)
             {
-                if (null != source.EvaluationTask)
-                {
-                    source.EvaluationTask.Wait();
-                }
+                source?.EvaluationTask.Wait();
                 if (null != source.ReasonToExecute)
                 {
                     switch (source.ReasonToExecute.Reason)

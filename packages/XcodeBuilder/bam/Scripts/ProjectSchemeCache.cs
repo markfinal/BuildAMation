@@ -39,13 +39,10 @@ namespace XcodeBuilder
             this.Project = project;
             this.SchemeDocuments = new System.Collections.Generic.Dictionary<string, System.Xml.XmlDocument>();
 
-            foreach (var target in project.getTargetList())
+            foreach (var target in project.GetTargetList())
             {
-                var schemeFilename = System.String.Format("{0}.xcscheme", target.Name);
-                var schemePathname = System.String.Format("{0}/xcuserdata/{1}.xcuserdatad/xcschemes/{2}",
-                        project.ProjectDir,
-                        System.Environment.GetEnvironmentVariable("USER"),
-                        schemeFilename);
+                var schemeFilename = $"{target.Name}.xcscheme";
+                var schemePathname = $"{project.ProjectDir}/xcuserdata/{System.Environment.GetEnvironmentVariable("USER")}.xcuserdatad/xcschemes/{schemeFilename}";
                 var doc = this.CreateSchemePlist(target);
                 this.SchemeDocuments.Add(schemePathname, doc);
             }
@@ -82,9 +79,9 @@ namespace XcodeBuilder
             {
                 buildableReference.SetAttribute("BuildableIdentifier", "primary");
                 buildableReference.SetAttribute("BlueprintIdentifier", target.GUID);
-                if (null != target.getFileReference())
+                if (null != target.GetFileReference())
                 {
-                    buildableReference.SetAttribute("BuildableName", target.getFileReference().Name);
+                    buildableReference.SetAttribute("BuildableName", target.GetFileReference().Name);
                 }
                 buildableReference.SetAttribute("BlueprintName", target.Name);
                 if (target.Project.ProjectDir == this.Project.ProjectDir)
@@ -160,10 +157,10 @@ namespace XcodeBuilder
 
                 buildableRefEl.SetAttribute("BuildableIdentifier", "primary");
 
-                if (null != target.getFileReference())
+                if (null != target.GetFileReference())
                 {
                     buildableRefEl.SetAttribute("BlueprintIdentifier", target.GUID);
-                    buildableRefEl.SetAttribute("BuildableName", target.getFileReference().Name);
+                    buildableRefEl.SetAttribute("BuildableName", target.GetFileReference().Name);
                     buildableRefEl.SetAttribute("BlueprintName", target.Name);
                 }
 
@@ -254,23 +251,9 @@ namespace XcodeBuilder
             this.ManagementDocument = doc;
         }
 
-        private System.Collections.Generic.Dictionary<string, System.Xml.XmlDocument> SchemeDocuments
-        {
-            get;
-            set;
-        }
-
-        private System.Xml.XmlDocument ManagementDocument
-        {
-            get;
-            set;
-        }
-
-        private Project Project
-        {
-            get;
-            set;
-        }
+        private System.Collections.Generic.Dictionary<string, System.Xml.XmlDocument> SchemeDocuments { get; set; }
+        private System.Xml.XmlDocument ManagementDocument { get; set; }
+        private Project Project { get; set; }
 
         private void
         Write(
@@ -305,9 +288,7 @@ namespace XcodeBuilder
                 this.Write(scheme.Value, scheme.Key);
             }
 
-            var schemePathname = System.String.Format("{0}/xcuserdata/{1}.xcuserdatad/xcschemes/xcschememanagement.plist",
-                this.Project.ProjectDir,
-                System.Environment.GetEnvironmentVariable("USER"));
+            var schemePathname = $"{this.Project.ProjectDir}/xcuserdata/{System.Environment.GetEnvironmentVariable("USER")}.xcuserdatad/xcschemes/xcschememanagement.plist";
             this.Write(this.ManagementDocument, schemePathname);
         }
     }

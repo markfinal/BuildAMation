@@ -52,109 +52,57 @@ namespace ClangCommon
         [CommandLineProcessor.EnumAttribute(C.EBit.SixtyFour, "-arch x86_64")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.ThirtyTwo, "VALID_ARCHS", "i386", "ARCHS", "$(ARCHS_STANDARD_32_BIT)")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.SixtyFour, "VALID_ARCHS", "x86_64", "ARCHS", "$(ARCHS_STANDARD_64_BIT)")]
-        C.EBit C.ICommonLinkerSettings.Bits
-        {
-            get;
-            set;
-        }
+        C.EBit C.ICommonLinkerSettings.Bits { get; set; }
 
         [CommandLineProcessor.Enum(C.ELinkerOutput.Executable, "")]
         [CommandLineProcessor.Enum(C.ELinkerOutput.DynamicLibrary, "-dynamiclib")]
         [XcodeProjectProcessor.UniqueEnum(C.ELinkerOutput.Executable, "", "", ignore: true)] // EXECUTABLE_PREFIX and EXECUTABLE_EXTENSION handled in metadata
         [XcodeProjectProcessor.UniqueEnum(C.ELinkerOutput.DynamicLibrary, "", "", ignore: true)]
-        C.ELinkerOutput C.ICommonLinkerSettings.OutputType
-        {
-            get;
-            set;
-        }
+        C.ELinkerOutput C.ICommonLinkerSettings.OutputType { get; set; }
 
         [CommandLineProcessor.PathArray("-L")]
         [XcodeProjectProcessor.PathArray("LIBRARY_SEARCH_PATHS")]
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettings.LibraryPaths { get; set; }
 
         [CommandLineProcessor.StringArray("")]
         [XcodeProjectProcessor.LibraryArray()]
-        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.ICommonLinkerSettings.Libraries { get; set; }
 
         [CommandLineProcessor.Bool("-g", "")]
         [XcodeProjectProcessor.MultiBool("OTHER_LDFLAGS", "-g", "")]
-        bool C.ICommonLinkerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
+        bool C.ICommonLinkerSettings.DebugSymbols { get; set; }
 
         [CommandLineProcessor.FrameworkArray("-framework ")]
         [XcodeProjectProcessor.FrameworkArray()]
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.Frameworks
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.Frameworks { get; set; }
 
         [CommandLineProcessor.PathArray("-F ")]
         [XcodeProjectProcessor.PathArray("FRAMEWORK_SEARCH_PATHS")]
-        Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.FrameworkSearchPaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsOSX.FrameworkSearchPaths { get; set; }
 
         [CommandLineProcessor.Path("-Wl,-dylib_install_name,")]
         [XcodeProjectProcessor.Path("LD_DYLIB_INSTALL_NAME")]
-        Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.InstallName
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.InstallName { get; set; }
 
         [CommandLineProcessor.String("-mmacosx-version-min=")]
         [XcodeProjectProcessor.String("", ignore: true)] // dealt with separately
-        string C.ICommonLinkerSettingsOSX.MacOSMinimumVersionSupported
-        {
-            get;
-            set;
-        }
+        string C.ICommonLinkerSettingsOSX.MacOSMinimumVersionSupported { get; set; }
 
         [CommandLineProcessor.Path("-current_version ")]
         [XcodeProjectProcessor.Path("DYLIB_CURRENT_VERSION")]
-        Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.CurrentVersion
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.CurrentVersion { get; set; }
 
         [CommandLineProcessor.Path("-compatibility_version ")]
         [XcodeProjectProcessor.Path("DYLIB_COMPATIBILITY_VERSION")]
-        Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.CompatibilityVersion
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsOSX.CompatibilityVersion { get; set; }
 
         [CommandLineProcessor.StringArray("")]
         [XcodeProjectProcessor.StringArray("OTHER_LDFLAGS", spacesSeparate: true)]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         [CommandLineProcessor.PathArray("-Wl,-rpath,")]
         [XcodeProjectProcessor.PathArray("LD_RUNPATH_SEARCH_PATHS", prefixWithSrcRoot: false)]
-        Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPath
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPath { get; set; }
 
         public override void
         Validate()
@@ -165,8 +113,7 @@ namespace ClangCommon
                 if (!(this.Module is C.IDynamicLibrary))
                 {
                     throw new Bam.Core.Exception(
-                        "Install name is only applicable to dynamic libraries; trying to apply to {0}",
-                        this.Module.ToString()
+                        $"Install name is only applicable to dynamic libraries; trying to apply to {this.Module.ToString()}"
                     );
                 }
             }

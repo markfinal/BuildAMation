@@ -36,28 +36,8 @@ namespace Bam.Core.Options
     public sealed class AddDependentPackage :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--adddependent";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Add a dependent package to that in the current directory.";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--adddependent";
+        string ICommandLineArgument.ContextHelp => "Add a dependent package to that in the current directory.";
     }
 }

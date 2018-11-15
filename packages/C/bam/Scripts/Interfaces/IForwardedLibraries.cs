@@ -31,9 +31,6 @@ namespace C
 {
     public interface IForwardedLibraries
     {
-        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> ForwardedLibraries
-        {
-            get;
-        }
+        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> ForwardedLibraries { get; }
     }
 }

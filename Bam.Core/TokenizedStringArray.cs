@@ -40,7 +40,7 @@ namespace Bam.Core
         /// Create an array of TokenizedStrings.
         /// </summary>
         public TokenizedStringArray()
-        { }
+        {}
 
         /// <summary>
         /// Create an array of TokenizedStrings from a single TokenizedString.
@@ -50,7 +50,7 @@ namespace Bam.Core
             TokenizedString input)
             :
             base(new [] {input})
-        { }
+        {}
 
         /// <summary>
         /// Create an array of TokenizedStrings from an enumerable of TokenizedStrings.
@@ -60,7 +60,7 @@ namespace Bam.Core
             System.Collections.Generic.IEnumerable<TokenizedString> input)
             :
             base(input)
-        { }
+        {}
 
         /// <summary>
         /// Create an array of TokenizedStrings from an array of TokenizedStrings.
@@ -71,7 +71,7 @@ namespace Bam.Core
             params TokenizedString[] input)
             :
             base(input)
-        { }
+        {}
 
         /// <summary>
         /// Add a verbatim string to the array.
@@ -79,10 +79,7 @@ namespace Bam.Core
         /// <param name="item">Item.</param>
         public void
         Add(
-            string item)
-        {
-            this.Add(Bam.Core.TokenizedString.CreateVerbatim(item));
-        }
+            string item) => this.Add(Bam.Core.TokenizedString.CreateVerbatim(item));
 
         /// <summary>
         /// Add a unique verbatim string to the array.
@@ -90,10 +87,7 @@ namespace Bam.Core
         /// <param name="item">Object to be added uniquely.</param>
         public void
         AddUnique(
-            string item)
-        {
-           this.AddUnique(Bam.Core.TokenizedString.CreateVerbatim(item));
-        }
+            string item) => this.AddUnique(Bam.Core.TokenizedString.CreateVerbatim(item));
 
         /// <summary>
         /// Find all TokenizedStrings that exist in two lists.
@@ -102,10 +96,7 @@ namespace Bam.Core
         /// <returns>The TokenizedStringArray containing just those elements in both TokenizedStringArrays.</returns>
         public TokenizedStringArray
         Intersect(
-            TokenizedStringArray other)
-        {
-            return new TokenizedStringArray(base.Intersect(other));
-        }
+            TokenizedStringArray other) => new TokenizedStringArray(base.Intersect(other));
 
         /// <summary>
         /// Find all TokenizedStrings in this but not in <paramref name="other"/>
@@ -114,10 +105,7 @@ namespace Bam.Core
         /// <returns>The TokenizedStringArray containing the complement of the two TokenizedStringArrays.</returns>
         public TokenizedStringArray
         Complement(
-            TokenizedStringArray other)
-        {
-            return new TokenizedStringArray(base.Complement(other));
-        }
+            TokenizedStringArray other) => new TokenizedStringArray(base.Complement(other));
 
         /// <summary>
         /// If strings are parsed, then compare parsed strings, otherwise fall back on the default TokenizedString comparison.
@@ -159,17 +147,11 @@ namespace Bam.Core
             bool
             System.Collections.Generic.IEqualityComparer<TokenizedString>.Equals(
                 TokenizedString x,
-                TokenizedString y)
-            {
-                return x.ToString().Equals(y.ToString(), System.StringComparison.Ordinal);
-            }
+                TokenizedString y) => x.ToString().Equals(y.ToString(), System.StringComparison.Ordinal);
 
             int
             System.Collections.Generic.IEqualityComparer<TokenizedString>.GetHashCode(
-                TokenizedString obj)
-            {
-                return obj.ToString().GetHashCode();
-            }
+                TokenizedString obj) => obj.ToString().GetHashCode();
         }
 
         /// <summary>
@@ -180,9 +162,6 @@ namespace Bam.Core
         /// </summary>
         /// <returns>Enumerable of the array without any duplicates.</returns>
         public System.Collections.Generic.IEnumerable<TokenizedString>
-        ToEnumerableWithoutDuplicates()
-        {
-            return this.list.Distinct<TokenizedString>(new ParsedTokenizedStringComparer());
-        }
+        ToEnumerableWithoutDuplicates() => this.list.Distinct<TokenizedString>(new ParsedTokenizedStringComparer());
     }
 }

@@ -59,27 +59,11 @@ namespace Bam.Core
             }
         }
 
-        private static string XmlNamespace
-        {
-            get
-            {
-                return "http://www.buildamation.com";
-            }
-        }
+        private static string XmlNamespace => "http://www.buildamation.com";
 
-        private static string RelativePathToLatestSchema
-        {
-            get
-            {
-                return "./Schema/BamPackageDefinitionV1.xsd";
-            }
-        }
+        private static string RelativePathToLatestSchema => "./Schema/BamPackageDefinitionV1.xsd";
 
-        private static System.Xml.XmlReaderSettings CommonReaderSettings
-        {
-            get;
-            set;
-        }
+        private static System.Xml.XmlReaderSettings CommonReaderSettings { get; set; }
 
         static PackageDefinition()
         {
@@ -161,10 +145,8 @@ namespace Bam.Core
         public
         PackageDefinition(
             string xmlFilename,
-            bool requiresSourceDownload)
-        {
-            this.Initialize(xmlFilename, requiresSourceDownload);
-        }
+            bool requiresSourceDownload) => this.Initialize(xmlFilename, requiresSourceDownload);
+        {}
 
         /// <summary>
         /// Create a new instance, for the specified directory, package name and version.
@@ -1006,111 +988,74 @@ namespace Bam.Core
         /// Gets the XML filename associated with the package.
         /// </summary>
         /// <value>The XML filename.</value>
-        public string XMLFilename
-        {
-            get;
-            private set;
-        }
+        public string XMLFilename { get; private set; }
 
         /// <summary>
         /// Get the package name.
         /// </summary>
         /// <value>The name.</value>
-        public string Name
-        {
-            get;
-            private set;
-        }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Get the package version.
         /// </summary>
         /// <value>The version.</value>
-        public string Version
-        {
-            get;
-            private set;
-        }
+        public string Version { get; private set; }
 
         /// <summary>
         /// Array of package name, package version, isdefaultversion, for each dependent of the package.
         /// </summary>
         /// <value>The dependents.</value>
-        public Array<System.Tuple<string, string, bool?>> Dependents
-        {
-            get;
-            private set;
-        }
+        public Array<System.Tuple<string, string, bool?>> Dependents { get; private set; }
 
         /// <summary>
         /// Array of Bam assemblies required for this package.
         /// </summary>
         /// <value>The bam assemblies.</value>
-        public Array<BamAssemblyDescription> BamAssemblies
-        {
-            get;
-            private set;
-        }
+        public Array<BamAssemblyDescription> BamAssemblies { get; private set; }
 
         /// <summary>
         /// Array of .NET assemblies required for this package.
         /// </summary>
         /// <value>The dot net assemblies.</value>
-        public Array<DotNetAssemblyDescription> DotNetAssemblies
-        {
-            get;
-            private set;
-        }
+        public Array<DotNetAssemblyDescription> DotNetAssemblies { get; private set; }
 
         /// <summary>
         /// Array of NuGet packages required for this package.
         /// </summary>
         /// <value>The NuGet packages.</value>
-        public Array<NuGetPackageDescription> NuGetPackages
-        {
-            get;
-            private set;
-        }
+        public Array<NuGetPackageDescription> NuGetPackages { get; private set; }
 
         /// <summary>
         /// Get or set the enumerations for the platforms supported by this package.
         /// </summary>
         /// <value>The supported platforms.</value>
-        public EPlatform SupportedPlatforms
-        {
-            get;
-            set;
-        }
+        public EPlatform SupportedPlatforms { get; set; }
 
         /// <summary>
         /// Get or set the preprocessor definitions used for compiling the package assembly.
         /// </summary>
         /// <value>The definitions.</value>
-        public StringArray Definitions
-        {
-            get;
-            set;
-        }
+        public StringArray Definitions { get; set; }
 
         /// <summary>
         /// Gets or sets the array of repositories to search for packages in.
         /// </summary>
         /// <value>The package repositories.</value>
-        public StringArray PackageRepositories
-        {
-            get;
-            set;
-        }
+        public StringArray PackageRepositories { get; set; }
 
         /// <summary>
         /// Gets or sets the description of the package.
         /// </summary>
         /// <value>The description.</value>
-        public string Description
-        {
-            get;
-            set;
-        }
+        public string Description { get; set; }
+
+        private bool RequiresSourceDownload { get; set; } = false;
+
+        /// <summary>
+        /// Gets the array of sources of the package.
+        /// </summary>
+        public Array<PackageSource> Sources { get; private set; }
 
         private bool RequiresSourceDownload { get; set; } = false;
 
@@ -1128,10 +1073,7 @@ namespace Bam.Core
         /// </summary>
         /// <returns>A <see cref="System.String"/> that represents the current <see cref="Bam.Core.PackageDefinition"/>.</returns>
         public override string
-        ToString()
-        {
-            return this.XMLFilename;
-        }
+        ToString() => this.XMLFilename;
 
         /// <summary>
         /// Based on the dependents lists in the XML file, resolve all dependents by reading more
@@ -1287,25 +1229,16 @@ namespace Bam.Core
             return projectPathname;
         }
 
+        // package repo/package name/bam/<definition file>.xml
         private string
-        GetBamDirectory()
-        {
-            // package repo/package name/bam/<definition file>.xml
-            var bamDir = System.IO.Path.GetDirectoryName(this.XMLFilename);
-            return bamDir;
-        }
+        GetBamDirectory() => System.IO.Path.GetDirectoryName(this.XMLFilename);
 
         /// <summary>
         /// Get the package directory, i.e. that containing the bam folder.
         /// </summary>
         /// <returns>The package directory.</returns>
         public string
-        GetPackageDirectory()
-        {
-            // package repo/package name/bam/<definition file>.xml
-            var packageDir = System.IO.Path.GetDirectoryName(this.GetBamDirectory());
-            return packageDir;
-        }
+        GetPackageDirectory() => System.IO.Path.GetDirectoryName(this.GetBamDirectory());
 
         /// <summary>
         /// Get the repository directory, if it is a formal repository structure, called 'packages'
@@ -1329,10 +1262,7 @@ namespace Bam.Core
         /// </summary>
         /// <returns>The build directory.</returns>
         public string
-        GetBuildDirectory()
-        {
-            return System.IO.Path.Combine(Graph.Instance.BuildRoot, this.FullName);
-        }
+        GetBuildDirectory() => System.IO.Path.Combine(Graph.Instance.BuildRoot, this.FullName);
 
         private void
         ShowDependencies(
@@ -1449,20 +1379,12 @@ namespace Bam.Core
         /// Get or set metadata associated with the package.
         /// </summary>
         /// <value>The meta data.</value>
-        public PackageMetaData MetaData
-        {
-            get;
-            set;
-        }
+        public PackageMetaData MetaData { get; set; }
 
         /// <summary>
         /// List of PackageDefinitions which have stated that this package is a dependency.
         /// </summary>
-        public Array<PackageDefinition> Parents
-        {
-            get;
-            set;
-        }
+        public Array<PackageDefinition> Parents { get; set; }
 
         /// <summary>
         /// For each Bam assembly required by this package, validate that the version it specifies is at least

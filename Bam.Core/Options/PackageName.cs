@@ -35,28 +35,8 @@ namespace Bam.Core.Options
     public sealed class PackageName :
         IStringCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--pkgname";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Define the package name to use in other operations";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--pkgname";
+        string ICommandLineArgument.ContextHelp => "Define the package name to use in other operations";
     }
 }

@@ -34,30 +34,9 @@ namespace WindowsSDK.Options
         Bam.Core.IStringCommandLineArgument,
         Bam.Core.ICommandLineArgumentDefault<string>
     {
-        string Bam.Core.ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--WindowsSDK10Version.override";
-            }
-        }
-
-        string Bam.Core.ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string Bam.Core.ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Specify a version, other than the latest, for the WindowsSDK 10, e.g. 10.0.16922.0. VisualC 14.0 defaults to 8.1.";
-            }
-        }
-
+        string Bam.Core.ICommandLineArgument.LongName => "--WindowsSDK10Version.override";
+        string Bam.Core.ICommandLineArgument.ShortName => null;
+        string Bam.Core.ICommandLineArgument.ContextHelp => "Specify a version, other than the latest, for the WindowsSDK 10, e.g. 10.0.16922.0. VisualC 14.0 defaults to 8.1.";
         string Bam.Core.ICommandLineArgumentDefault<string>.Default
         {
             get

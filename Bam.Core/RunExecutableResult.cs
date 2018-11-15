@@ -53,28 +53,16 @@ namespace Bam.Core
         /// <summary>
         /// Get the standard output from the executable.
         /// </summary>
-        public string StandardOutput
-        {
-            get;
-            private set;
-        }
+        public string StandardOutput { get; private set; }
 
         /// <summary>
         /// Get the standard error from the executable.
         /// </summary>
-        public string StandardError
-        {
-            get;
-            private set;
-        }
+        public string StandardError { get; private set; }
 
         /// <summary>
         /// Get the exit code from the executable.
         /// </summary>
-        public int ExitCode
-        {
-            get;
-            private set;
-        }
+        public int ExitCode { get; private set; }
     }
 }

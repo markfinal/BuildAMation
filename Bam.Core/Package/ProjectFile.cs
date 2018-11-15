@@ -35,8 +35,8 @@ namespace Bam.Core
     public sealed class ProjectFile
     {
         private System.Xml.XmlDocument Document = new System.Xml.XmlDocument();
-        private string CsProjPath;
-        private System.Xml.XmlElement Root;
+        private readonly string CsProjPath;
+        private readonly System.Xml.XmlElement Root;
 
         private System.Xml.XmlElement
         CreateElement(
@@ -78,26 +78,17 @@ namespace Bam.Core
         CreateAttribute(
             string name,
             string value,
-            System.Xml.XmlElement parent)
-        {
-            parent.SetAttribute(name, value);
-        }
+            System.Xml.XmlElement parent) => parent.SetAttribute(name, value);
 
         private System.Xml.XmlElement
         CreatePropertyGroup(
             string condition = null,
-            System.Xml.XmlElement parent = null)
-        {
-            return CreateElement("PropertyGroup", condition: condition, parent: parent);
-        }
+            System.Xml.XmlElement parent = null) => this.CreateElement("PropertyGroup", condition: condition, parent: parent);
 
         private System.Xml.XmlElement
         CreateItemGroup(
             string condition = null,
-            System.Xml.XmlElement parent = null)
-        {
-            return this.CreateElement("ItemGroup", condition: condition, parent: parent);
-        }
+            System.Xml.XmlElement parent = null) => this.CreateElement("ItemGroup", condition: condition, parent: parent);
 
         private void
         CreateCompilableSourceFile(

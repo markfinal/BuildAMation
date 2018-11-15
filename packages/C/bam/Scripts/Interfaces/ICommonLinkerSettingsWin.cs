@@ -40,20 +40,12 @@ namespace C
         /// The subsystem defines what sort of binary is generated, and which entry point to use.
         /// </summary>
         /// <value>The sub system.</value>
-        C.ESubsystem? SubSystem
-        {
-            get;
-            set;
-        }
+        C.ESubsystem? SubSystem { get; set; }
 
         /// <summary>
         /// Path to the export definition file (.def). Null by default, so that the linker auto-generates the .def file.
         /// </summary>
         /// <value>Path of the .def file, or null if the linker generates it.</value>
-        Bam.Core.TokenizedString ExportDefinitionFile
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedString ExportDefinitionFile { get; set; }
     }
 }

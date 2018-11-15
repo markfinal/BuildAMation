@@ -34,6 +34,5 @@ namespace Bam.Core
     /// read only properties) must implement this interface.
     /// </summary>
     public interface IModuleConfiguration
-    {
-    }
+    {}
 }

@@ -133,18 +133,19 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            if (Graph.Instance.VerbosityLevel >= level)
+            if (Graph.Instance.VerbosityLevel < level)
             {
-                if (args.Length > 0)
-                {
-                    var formattedMessage = new System.Text.StringBuilder();
-                    formattedMessage.AppendFormat(EscapeString(format), args);
-                    Message(formattedMessage.ToString(), false);
-                }
-                else
-                {
-                    Message(format, false);
-                }
+                return;
+            }
+            if (args.Length > 0)
+            {
+                var formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(EscapeString(format), args);
+                Message(formattedMessage.ToString(), false);
+            }
+            else
+            {
+                Message(format, false);
             }
         }
 
@@ -180,18 +181,19 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            if (Graph.Instance.VerbosityLevel >= EVerboseLevel.Info)
+            if (Graph.Instance.VerbosityLevel < EVerboseLevel.Info)
             {
-                if (args.Length > 0)
-                {
-                    var formattedMessage = new System.Text.StringBuilder();
-                    formattedMessage.AppendFormat(EscapeString(format), args);
-                    Message(formattedMessage.ToString(), false);
-                }
-                else
-                {
-                    Message(format, false);
-                }
+                return;
+            }
+            if (args.Length > 0)
+            {
+                var formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(EscapeString(format), args);
+                Message(formattedMessage.ToString(), false);
+            }
+            else
+            {
+                Message(format, false);
             }
         }
 
@@ -205,18 +207,19 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            if (Graph.Instance.VerbosityLevel >= EVerboseLevel.Detail)
+            if (Graph.Instance.VerbosityLevel < EVerboseLevel.Detail)
             {
-                if (args.Length > 0)
-                {
-                    var formattedMessage = new System.Text.StringBuilder();
-                    formattedMessage.AppendFormat(EscapeString(format), args);
-                    Message(formattedMessage.ToString(), false);
-                }
-                else
-                {
-                    Message(format, false);
-                }
+                return;
+            }
+            if (args.Length > 0)
+            {
+                var formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(EscapeString(format), args);
+                Message(formattedMessage.ToString(), false);
+            }
+            else
+            {
+                Message(format, false);
             }
         }
 
@@ -231,18 +234,19 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            if (Graph.Instance.VerbosityLevel >= EVerboseLevel.Detail)
+            if (Graph.Instance.VerbosityLevel < EVerboseLevel.Detail)
             {
-                if (args.Length > 0)
-                {
-                    var formattedMessage = new System.Text.StringBuilder();
-                    formattedMessage.AppendFormat(EscapeString(format), args);
-                    Message(formattedMessage.ToString(), false, true);
-                }
-                else
-                {
-                    Message(format, false, true);
-                }
+                return;
+            }
+            if (args.Length > 0)
+            {
+                var formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(EscapeString(format), args);
+                Message(formattedMessage.ToString(), false, true);
+            }
+            else
+            {
+                Message(format, false, true);
             }
         }
 
@@ -256,18 +260,19 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            if (EVerboseLevel.Full == Graph.Instance.VerbosityLevel)
+            if (EVerboseLevel.Full != Graph.Instance.VerbosityLevel)
             {
-                if (args.Length > 0)
-                {
-                    var formattedMessage = new System.Text.StringBuilder();
-                    formattedMessage.AppendFormat(EscapeString(format), args);
-                    Message(formattedMessage.ToString(), false);
-                }
-                else
-                {
-                    Message(format, false);
-                }
+                return;
+            }
+            if (args.Length > 0)
+            {
+                var formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(EscapeString(format), args);
+                Message(formattedMessage.ToString(), false);
+            }
+            else
+            {
+                Message(format, false);
             }
         }
 
@@ -284,7 +289,7 @@ namespace Bam.Core
             if (args.Length > 0)
             {
                 var formattedMessage = new System.Text.StringBuilder();
-                formattedMessage.AppendFormat(EscapeString("ERROR: " + format), args);
+                formattedMessage.AppendFormat(EscapeString($"ERROR: {format}"), args);
                 Message(formattedMessage.ToString(), true);
             }
             else
@@ -304,18 +309,19 @@ namespace Bam.Core
             string format,
             params object[] args)
         {
-            if (Graph.Instance.VerbosityLevel > EVerboseLevel.Detail)
+            if (Graph.Instance.VerbosityLevel <= EVerboseLevel.Detail)
             {
-                if (args.Length > 0)
-                {
-                    var formattedMessage = new System.Text.StringBuilder();
-                    formattedMessage.AppendFormat(EscapeString(format), args);
-                    Message(formattedMessage.ToString(), false);
-                }
-                else
-                {
-                    Message(format, false);
-                }
+                return;
+            }
+            if (args.Length > 0)
+            {
+                var formattedMessage = new System.Text.StringBuilder();
+                formattedMessage.AppendFormat(EscapeString(format), args);
+                Message(formattedMessage.ToString(), false);
+            }
+            else
+            {
+                Message(format, false);
             }
         }
     }

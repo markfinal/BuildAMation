@@ -43,25 +43,11 @@ namespace XcodeBuilder
             this.Configurations = new Bam.Core.Array<Configuration>();
         }
 
-        public Configuration this[int index]
-        {
-            get
-            {
-                return this.Configurations[index];
-            }
-        }
+        public Configuration this[int index] => this.Configurations[index];
 
-        public Object Parent
-        {
-            get;
-            private set;
-        }
+        public Object Parent { get; private set; }
 
-        private Bam.Core.Array<Configuration> Configurations
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<Configuration> Configurations { get; set; }
 
         public void
         AddConfiguration(
@@ -86,24 +72,18 @@ namespace XcodeBuilder
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
             var indent3 = new string('\t', indentLevel + 2);
-            text.AppendFormat("{0}{1} /* Build configuration list for {2} \"{3}\" */ = {{", indent, this.GUID, this.Parent.IsA, this.Parent.Name);
-            text.AppendLine();
-            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
-            text.AppendLine();
-            if (this.Configurations.Count > 0)
+            text.AppendLine($"{indent}{this.GUID} /* Build configuration list for {this.Parent.IsA} \"{this.Parent.Name}\" */ = {{");
+            text.AppendLine($"{indent2}isa = {this.IsA};");
+            if (this.Configurations.Any())
             {
-                text.AppendFormat("{0}buildConfigurations = (", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2}buildConfigurations = (");
                 foreach (var config in this.Configurations)
                 {
-                    text.AppendFormat("{0}{1} /* {2} */,", indent3, config.GUID, config.Name);
-                    text.AppendLine();
+                    text.AppendLine($"{indent3}{config.GUID} /* {config.Name} */,");
                 }
-                text.AppendFormat("{0});", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2});");
             }
-            text.AppendFormat("{0}}};", indent);
-            text.AppendLine();
+            text.AppendLine($"{indent}}};");
         }
 
         public System.Collections.Generic.IEnumerator<Configuration>
@@ -116,9 +96,6 @@ namespace XcodeBuilder
         }
 
         System.Collections.IEnumerator
-        System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        System.Collections.IEnumerable.GetEnumerator() => this.GetEnumerator();
     }
 }

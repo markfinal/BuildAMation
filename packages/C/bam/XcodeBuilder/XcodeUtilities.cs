@@ -90,7 +90,7 @@ namespace C
             }
             else if (module is C.DynamicLibrary || module is C.Cxx.DynamicLibrary)
             {
-                    var prefix = module.CreateTokenizedString("$(dynamicprefix)");
+                var prefix = module.CreateTokenizedString("$(dynamicprefix)");
                 if (!prefix.IsParsed)
                 {
                     prefix.Parse();
@@ -165,7 +165,7 @@ namespace C
                             objFile,
                             createDelta: true
                         );
-                        if (commandLine.Count > 0)
+                        if (commandLine.Any())
                         {
                             // Cannot set per-file-per-configuration settings, so blend them together
                             if (null == buildFile.Settings)
@@ -256,7 +256,9 @@ namespace C
                 }
                 else
                 {
-                    throw new Bam.Core.Exception("Don't know how to handle this module type, {0}", library.ToString());
+                    throw new Bam.Core.Exception(
+                        $"Don't know how to handle this module type, {library.ToString()}"
+                    );
                 }
             }
 
@@ -265,7 +267,9 @@ namespace C
                 var libAsCModule = library as C.CModule;
                 if (null == libAsCModule)
                 {
-                    throw new Bam.Core.Exception("Don't know how to handle library module of type '{0}'", library.GetType().ToString());
+                    throw new Bam.Core.Exception(
+                        $"Don't know how to handle library module of type '{library.GetType().ToString()}'"
+                    );
                 }
                 if (libAsCModule.IsPrebuilt)
                 {
@@ -279,7 +283,9 @@ namespace C
                     }
                     else
                     {
-                        throw new Bam.Core.Exception("Don't know how to handle this prebuilt module dependency, '{0}'", library.GetType().ToString());
+                        throw new Bam.Core.Exception(
+                            $"Don't know how to handle this prebuilt module dependency, '{library.GetType().ToString()}'"
+                        );
                     }
                 }
                 else

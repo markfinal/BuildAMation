@@ -35,18 +35,9 @@ namespace Publisher
     {
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            return new RsyncSettings(module);
-        }
+            T module) => new RsyncSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("bash").First());
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("bash").First());
 
         public override Bam.Core.TokenizedStringArray InitialArguments
         {
@@ -71,7 +62,7 @@ namespace Publisher
         }
 
         public override void
-        convertPaths(
+        ConvertPaths(
             CollatedObject module,
             Bam.Core.TokenizedString inSourcePath,
             Bam.Core.TokenizedString inPublishingPath,
@@ -83,10 +74,7 @@ namespace Publisher
         }
 
         public override string
-        escapePath(
-            string path)
-        {
-            return Bam.Core.IOWrapper.EscapeSpacesInPath(path);
-        }
+        EscapePath(
+            string path) => Bam.Core.IOWrapper.EscapeSpacesInPath(path);
     }
 }

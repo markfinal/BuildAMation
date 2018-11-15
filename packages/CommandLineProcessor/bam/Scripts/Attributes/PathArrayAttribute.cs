@@ -37,6 +37,6 @@ namespace CommandLineProcessor
             string command_switch)
             :
             base(command_switch)
-        { }
+        {}
     }
 }

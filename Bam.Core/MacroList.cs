@@ -46,18 +46,11 @@ namespace Bam.Core
             this.Owner = owner;
         }
 
-        private string Owner
-        {
-            get;
-            set;
-        }
+        private string Owner { get; set; }
 
         private static string
         FormattedKey(
-            string key)
-        {
-            return System.String.Format("{0}{1}{2}", TokenizedString.TokenPrefix, key, TokenizedString.TokenSuffix);
-        }
+            string key) => $"{TokenizedString.TokenPrefix}{key}{TokenizedString.TokenSuffix}";
 
         /// <summary>
         /// Get or set the macro defined by the given key.
@@ -81,13 +74,12 @@ namespace Bam.Core
                     {
                         if (macro.Value.IsParsed)
                         {
-                            message.AppendFormat("\t{0} -> '{1}'", macro.Key, macro.Value.ToString());
+                            message.AppendLine($"\t{macro.Key} -> '{macro.Value.ToString()}'");
                         }
                         else
                         {
-                            message.AppendFormat("\t{0} *", macro.Key);
+                            message.AppendLine($"\t{macro.Key} *");
                         }
-                        message.AppendLine();
                     }
                     throw new Exception(
                         message.ToString()
@@ -111,18 +103,21 @@ namespace Bam.Core
             string key,
             TokenizedString value)
         {
-            if (key.StartsWith(TokenizedString.TokenPrefix, System.StringComparison.Ordinal) || key.EndsWith(TokenizedString.TokenSuffix, System.StringComparison.Ordinal))
+            if (key.StartsWith(TokenizedString.TokenPrefix, System.StringComparison.Ordinal) ||
+                key.EndsWith(TokenizedString.TokenSuffix, System.StringComparison.Ordinal))
             {
-                throw new Exception("Invalid macro key: {0}", key);
+                throw new Exception($"Invalid macro key: {key}");
             }
             if (null == value)
             {
-                throw new Exception("Cannot assign null to macro '{0}'", key);
+                throw new Exception($"Cannot assign null to macro '{key}'");
             }
-            var tokenizedMacro = System.String.Format("{0}{1}{2}", TokenizedString.TokenPrefix, key, TokenizedString.TokenSuffix);
+            var tokenizedMacro = FormattedKey(key);
             if (value.RefersToMacro(tokenizedMacro))
             {
-                throw new Exception("Circular reference; cannnot assign macro '{0}' when it is referred to in TokenizedString or one of it's positional strings", key);
+                throw new Exception(
+                    $"Circular reference; cannnot assign macro '{key}' when it is referred to in TokenizedString or one of it's positional strings"
+                );
             }
             this.DictInternal[FormattedKey(key)] = value;
         }
@@ -135,10 +130,7 @@ namespace Bam.Core
         public void
         Add(
             string key,
-            string value)
-        {
-            this.Add(key, TokenizedString.Create(value, null));
-        }
+            string value) => this.Add(key, TokenizedString.Create(value, null));
 
         /// <summary>
         /// Add a verbatim macro.
@@ -148,10 +140,7 @@ namespace Bam.Core
         public void
         AddVerbatim(
             string key,
-            string value)
-        {
-            this.Add(key, TokenizedString.CreateVerbatim(value));
-        }
+            string value) => this.Add(key, TokenizedString.CreateVerbatim(value));
 
         /// <summary>
         /// Remove the macro associated with the provided key.
@@ -159,28 +148,15 @@ namespace Bam.Core
         /// <param name="key">Key.</param>
         public void
         Remove(
-            string key)
-        {
-            this.DictInternal.Remove(FormattedKey(key));
-        }
+            string key) => this.DictInternal.Remove(FormattedKey(key));
 
-        private System.Collections.Generic.Dictionary<string, TokenizedString> DictInternal
-        {
-            get;
-            set;
-        }
+        private System.Collections.Generic.Dictionary<string, TokenizedString> DictInternal { get; set; }
 
         /// <summary>
         /// Obtain a read-only instance of the key-value pair dictionary.
         /// </summary>
         /// <value>The dict.</value>
-        public System.Collections.ObjectModel.ReadOnlyDictionary<string, TokenizedString> Dict
-        {
-            get
-            {
-                return new System.Collections.ObjectModel.ReadOnlyDictionary<string, TokenizedString>(this.DictInternal);
-            }
-        }
+        public System.Collections.ObjectModel.ReadOnlyDictionary<string, TokenizedString> Dict => new System.Collections.ObjectModel.ReadOnlyDictionary<string, TokenizedString>(this.DictInternal);
 
         /// <summary>
         /// Query if the dictionary contains the given key-token.
@@ -188,9 +164,6 @@ namespace Bam.Core
         /// <param name="token">Token (not starting with $( nor ending with )).</param>
         public bool
         Contains(
-            string token)
-        {
-            return this.Dict.ContainsKey(FormattedKey(token));
-        }
+            string token) => this.Dict.ContainsKey(FormattedKey(token));
     }
 }

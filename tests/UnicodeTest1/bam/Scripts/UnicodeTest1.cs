@@ -32,11 +32,7 @@ namespace UnicodeTest1
     public abstract class Common :
         C.Cxx.ConsoleApplication
     {
-        protected C.Cxx.ObjectFileCollection Source
-        {
-            get;
-            private set;
-        }
+        protected C.Cxx.ObjectFileCollection Source { get; private set; }
 
         protected override void
         Init(

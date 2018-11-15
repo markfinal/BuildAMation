@@ -37,25 +37,16 @@ namespace Bam.Core
         /// <summary>
         /// Major version number of the software product, assuming semantic versioning.
         /// </summary>
-        int? MajorVersion
-        {
-            get;
-        }
+        int? MajorVersion { get; }
 
         /// <summary>
         /// Minor version number of the software product, assuming semantic versioning.
         /// </summary>
-        int? MinorVersion
-        {
-            get;
-        }
+        int? MinorVersion { get; }
 
         /// <summary>
         /// Patch version number of the software product, assuming semantic versioning.
         /// </summary>
-        int? PatchVersion
-        {
-            get;
-        }
+        int? PatchVersion { get; }
     }
 }

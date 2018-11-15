@@ -40,8 +40,8 @@ namespace Bam.Core
         /// <summary>
         /// Create an instance
         /// </summary>
-        protected PreBuiltTool()
-            : base()
+        protected PreBuiltTool() :
+            base()
         {
             this.EnvironmentVariables = new System.Collections.Generic.Dictionary<string, TokenizedStringArray>();
             this.InheritedEnvironmentVariables = new StringArray();
@@ -68,7 +68,8 @@ namespace Bam.Core
             if (!System.IO.File.Exists(executable))
             {
                 throw new Bam.Core.UnableToBuildModuleException(
-                    System.String.Format("Tool executable '{0}' does not exist", executable));
+                    $"Tool executable '{executable}' does not exist"
+                );
             }
         }
 
@@ -95,78 +96,43 @@ namespace Bam.Core
         /// Get the environment variables to be injected into the run of the tool.
         /// </summary>
         /// <value>The environment variables.</value>
-        public System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables
-        {
-            get;
-            protected set;
-        }
+        public System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables { get; protected set; }
 
         /// <summary>
         /// Get the array of environment variable names to inherit from the parent environment.
         /// </summary>
         /// <value>The inherited environment variables.</value>
-        public StringArray InheritedEnvironmentVariables
-        {
-            get;
-            private set;
-        }
+        public StringArray InheritedEnvironmentVariables { get; private set; }
 
         /// <summary>
         /// Get the executable name for the prebuilt tool.
         /// </summary>
         /// <value>The executable.</value>
-        public abstract TokenizedString Executable
-        {
-            get;
-        }
+        public abstract TokenizedString Executable { get; }
 
         /// <summary>
         /// Default to no extra initial arguments. Virtual to allow overriding.
         /// </summary>
         /// <value>The initial arguments.</value>
-        public virtual TokenizedStringArray InitialArguments
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public virtual TokenizedStringArray InitialArguments => null;
 
         /// <summary>
         /// Default to no terminating arguments. Virtual to allow overriding.
         /// </summary>
         /// <value>The terminating arguments to a command line.</value>
-        public virtual TokenizedStringArray TerminatingArguments
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public virtual TokenizedStringArray TerminatingArguments => null;
 
         /// <summary>
         /// Prebuilt tool does not support response files by default. Virtual to allow overiding.
         /// </summary>
         /// <value>The use response file option.</value>
-        public virtual string UseResponseFileOption
-        {
-            get
-            {
-                return null;
-            }
-        }
+        public virtual string UseResponseFileOption => null;
 
         /// <summary>
         /// Prebuilt tool generally has a successful exit code of 0.
         /// </summary>
         /// <value>The successful exit codes.</value>
-        public virtual Array<int> SuccessfulExitCodes
-        {
-            get
-            {
-                return new Array<int> { 0 };
-            }
-        }
+        public virtual Array<int> SuccessfulExitCodes => new Array<int> { 0 };
 
         /// <summary>
         /// No execution needed to update the prebuilt tool.
@@ -188,10 +154,11 @@ namespace Bam.Core
         {
             this.ReasonToExecute = null;
             var exePath = this.Executable.ToString();
-            var exists = System.IO.File.Exists(exePath);
-            if (!exists)
+            if (!System.IO.File.Exists(exePath))
             {
-                throw new Exception("Prebuilt tool executable '{0}' does not exist", exePath);
+                throw new Exception(
+                    $"Prebuilt tool executable '{exePath}' does not exist"
+                );
             }
         }
     }

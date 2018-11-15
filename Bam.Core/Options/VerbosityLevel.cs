@@ -35,36 +35,9 @@ namespace Bam.Core.Options
     public sealed class VerbosityLevel :
         IIntegerCommandLineArgument
     {
-        int ICommandLineArgumentDefault<int>.Default
-        {
-            get
-            {
-                return (int)EVerboseLevel.Detail;
-            }
-        }
-
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--verbosity";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Change the logging level of detail (0 for least, 3 for most).";
-            }
-        }
+        int ICommandLineArgumentDefault<int>.Default => (int)EVerboseLevel.Detail;
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--verbosity";
+        string ICommandLineArgument.ContextHelp => "Change the logging level of detail (0 for least, 3 for most).";
     }
 }

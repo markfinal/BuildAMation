@@ -27,27 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace HeaderLibraryTest
 {
     class GeneratedHeader :
         C.ProceduralHeaderFile
     {
-        protected override TokenizedString OutputPath
-        {
-            get
-            {
-                return this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/genheader.h");
-            }
-        }
-
-        protected override string Contents
-        {
-            get
-            {
-                return "#define GENERATED_HEADER";
-            }
-        }
+        protected override Bam.Core.TokenizedString OutputPath => this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/genheader.h");
+        protected override string Contents => "#define GENERATED_HEADER";
     }
 
     public sealed class HeaderLibrary :

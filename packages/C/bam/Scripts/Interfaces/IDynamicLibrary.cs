@@ -31,16 +31,7 @@ namespace C
 {
     interface IDynamicLibrary
     {
-        SharedObjectSymbolicLink
-        LinkerNameSymbolicLink
-        {
-            get;
-        }
-
-        SharedObjectSymbolicLink
-        SONameSymbolicLink
-        {
-            get;
-        }
+        SharedObjectSymbolicLink LinkerNameSymbolicLink { get; }
+        SharedObjectSymbolicLink SONameSymbolicLink { get; }
     }
 }

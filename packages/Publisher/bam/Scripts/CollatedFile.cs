@@ -46,10 +46,7 @@ namespace Publisher
             var sourceModule = (this as ICollatedObject).SourceModule;
             if (null != sourceModule)
             {
-                if (null != sourceModule.EvaluationTask)
-                {
-                    sourceModule.EvaluationTask.Wait();
-                }
+                sourceModule.EvaluationTask?.Wait();
                 if (null != sourceModule.ReasonToExecute && null != sourceModule.ReasonToExecute.OutputFilePath)
                 {
                     if (sourceModule.ReasonToExecute.OutputFilePath.ToString().Equals(this.SourcePath.ToString(), System.StringComparison.Ordinal))

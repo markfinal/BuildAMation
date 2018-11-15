@@ -38,6 +38,6 @@ namespace VisualStudioProcessor
             bool inheritExisting = false)
             :
             base(command_switch, inheritExisting, TargetGroup.Settings)
-        { }
+        {}
     }
 }

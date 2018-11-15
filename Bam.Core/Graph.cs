@@ -49,18 +49,12 @@ namespace Bam.Core
         /// Obtain the singleton instance of the Graph.
         /// </summary>
         /// <value>Singleton instance.</value>
-        public static Graph Instance
-        {
-            get;
-            private set;
-        }
+        public static Graph Instance { get; private set; }
 
         private void
         Initialize()
         {
             this.ProcessState = new BamState();
-
-            OSUtilities.SetupPlatform();
 
             this.Modules = new System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>>();
             this.ReferencedModules = new System.Collections.Generic.Dictionary<Environment, Array<Module>>();
@@ -75,14 +69,19 @@ namespace Bam.Core
             try
             {
                 var primaryPackageRepo = System.IO.Path.Combine(
-                    System.IO.Directory.GetParent(System.IO.Directory.GetParent(System.IO.Directory.GetParent(this.ProcessState.ExecutableDirectory).FullName).FullName).FullName,
+                    System.IO.Directory.GetParent(
+                        System.IO.Directory.GetParent(
+                            System.IO.Directory.GetParent(
+                                this.ProcessState.ExecutableDirectory
+                            ).FullName
+                        ).FullName
+                    ).FullName,
                     "packages"
                 );
                 if (!System.IO.Directory.Exists(primaryPackageRepo))
                 {
                     throw new Exception(
-                        "Standard BAM package directory '{0}' does not exist",
-                        primaryPackageRepo
+                        $"Standard BAM package directory '{primaryPackageRepo}' does not exist"
                     );
                 }
                 this.PackageRepositories.AddUnique(primaryPackageRepo);
@@ -103,21 +102,14 @@ namespace Bam.Core
         /// <param name="module">Module to be added</param>
         public void
         AddModule(
-            Module module)
-        {
-            this.Modules[this.BuildEnvironmentInternal].Add(module);
-        }
+            Module module) => this.Modules[this.BuildEnvironmentInternal].Add(module);
 
         /// <summary>
         /// Stack of module types, that are pushed when a new module is created, and popped post-creation.
         /// This is so that modules created as dependencies can inspect their module parental hierarchy at construction time.
         /// </summary>
         /// <value>The stack of module types</value>
-        public PeekableStack<System.Type> CommonModuleType
-        {
-            get;
-            private set;
-        }
+        public PeekableStack<System.Type> CommonModuleType { get; private set; }
 
         /// <summary>
         /// A referenced module is one that is referenced by it's class type. This is normally in use when specifying
@@ -198,12 +190,14 @@ namespace Bam.Core
             var matchedModule = referencedModules.FirstOrDefault(item => item.GetType() == typeof(T));
             if (null == matchedModule)
             {
-                throw new Exception("Unable to locate a referenced module of type {0} in the provided build environment", typeof(T).ToString());
+                throw new Exception(
+                    $"Unable to locate a referenced module of type {typeof(T).ToString()} in the provided build environment"
+                );
             }
             return matchedModule as T;
         }
 
-        private System.Collections.Generic.Dictionary<System.Type, System.Func<Module>> compiledFindRefModuleCache = new System.Collections.Generic.Dictionary<System.Type, System.Func<Module>>();
+        private readonly System.Collections.Generic.Dictionary<System.Type, System.Func<Module>> compiledFindRefModuleCache = new System.Collections.Generic.Dictionary<System.Type, System.Func<Module>>();
 
         private Module
         MakeModuleOfType(
@@ -235,7 +229,9 @@ namespace Bam.Core
             }
             catch (UnableToBuildModuleException exception)
             {
-                Log.Info("Unable to instantiate module of type {0} because {1} from {2}", moduleType.ToString(), exception.Message, exception.ModuleType.ToString());
+                Log.Info(
+                    $"Unable to instantiate module of type {moduleType.ToString()} because {exception.Message} from {exception.ModuleType.ToString()}"
+                );
                 return null;
             }
             catch (System.Reflection.TargetInvocationException ex)
@@ -246,7 +242,7 @@ namespace Bam.Core
                 {
                     realException = ex;
                 }
-                throw new Exception(realException, "Failed to create module of type {0}", exModuleType.ToString());
+                throw new Exception(realException, $"Failed to create module of type {exModuleType.ToString()}");
             }
         }
 
@@ -258,10 +254,7 @@ namespace Bam.Core
         /// <typeparam name="ModuleType">The 1st type parameter.</typeparam>
         public ModuleType
         MakeModuleOfType<ModuleType>(
-            System.Type moduleType) where ModuleType : Module
-        {
-            return this.MakeModuleOfType(moduleType) as ModuleType;
-        }
+            System.Type moduleType) where ModuleType : Module => this.MakeModuleOfType(moduleType) as ModuleType;
 
         /// <summary>
         /// Create all modules in the top level namespace, which is the namespace of the package in which Bam is invoked.
@@ -282,20 +275,22 @@ namespace Bam.Core
                 (includeTests && System.String.Equals(ns + ".tests", type.Namespace, System.StringComparison.Ordinal))) &&
                 type.IsSubclassOf(typeof(Module))
             );
-            if (0 == allModuleTypesInPackage.Count())
+            if (!allModuleTypesInPackage.Any())
             {
-                throw new Exception("No modules found in the namespace '{0}'. Please define some modules in the build scripts to use {0} as a master package.", ns);
+                throw new Exception(
+                    $"No modules found in the namespace '{ns}'. Please define some modules in the build scripts to use {ns} as a master package."
+                );
             }
             var allTopLevelModuleTypesInPackage = allModuleTypesInPackage.Where(type => type.IsSealed);
-            if (0 == allTopLevelModuleTypesInPackage.Count())
+            if (!allTopLevelModuleTypesInPackage.Any())
             {
                 var message = new System.Text.StringBuilder();
-                message.AppendFormat("No top-level modules found in the namespace '{0}'. Please mark some of the modules below as 'sealed' to identify them as top-level, and thus buildable when {0} is the master package:", ns);
-                message.AppendLine();
+                message.AppendLine(
+                    $"No top-level modules found in the namespace '{ns}'. Please mark some of the modules below as 'sealed' to identify them as top-level, and thus buildable when {ns} is the master package:"
+                );
                 foreach (var moduleType in allModuleTypesInPackage)
                 {
-                    message.AppendFormat("\t{0}", moduleType.ToString());
-                    message.AppendLine();
+                    message.AppendLine($"\t{moduleType.ToString()}");
                 }
                 throw new Exception(message.ToString());
             }
@@ -305,7 +300,7 @@ namespace Bam.Core
             }
             catch (Exception ex)
             {
-                throw new Exception(ex, "An error occurred creating top-level modules in namespace '{0}':", ns);
+                throw new Exception(ex, $"An error occurred creating top-level modules in namespace '{ns}':");
             }
         }
 
@@ -338,12 +333,10 @@ namespace Bam.Core
             if (!this.TopLevelModules.Any())
             {
                 var message = new System.Text.StringBuilder();
-                message.AppendFormat("Top-level module types detected, but none could be instantiated:");
-                message.AppendLine();
+                message.AppendLine("Top-level module types detected, but none could be instantiated:");
                 foreach (var moduleType in moduleTypes)
                 {
-                    message.AppendFormat("\t{0}", moduleType.ToString());
-                    message.AppendLine();
+                    message.AppendLine($"\t{moduleType.ToString()}");
                 }
                 throw new Exception(message.ToString());
             }
@@ -368,53 +361,29 @@ namespace Bam.Core
             }
         }
 
-        private System.Collections.Generic.List<Module> TopLevelModules
-        {
-            get;
-            set;
-        }
+        private System.Collections.Generic.List<Module> TopLevelModules { get; set; }
 
-        private System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>> Modules
-        {
-            get;
-            set;
-        }
+        private System.Collections.Generic.Dictionary<Environment, System.Collections.Generic.List<Module>> Modules { get; set; }
 
-        private System.Collections.Generic.Dictionary<Environment, Array<Module>> ReferencedModules
-        {
-            get;
-            set;
-        }
+        private System.Collections.Generic.Dictionary<Environment, Array<Module>> ReferencedModules { get; set; }
 
         /// <summary>
         /// Obtain the build mode.
         /// </summary>
         /// <value>The mode.</value>
-        public string Mode
-        {
-            get;
-            set;
-        }
+        public string Mode { get; set; }
 
         /// <summary>
         /// Obtain global macros.
         /// </summary>
         /// <value>The macros.</value>
-        public MacroList Macros
-        {
-            get;
-            private set;
-        }
+        public MacroList Macros { get; set; }
 
         /// <summary>
         /// Get or set metadata associated with the Graph. This is used for multi-threaded builds.
         /// </summary>
         /// <value>The meta data.</value>
-        public object MetaData
-        {
-            get;
-            set;
-        }
+        public object MetaData { get; set; }
 
         private Environment BuildEnvironmentInternal = null;
         /// <summary>
@@ -443,11 +412,7 @@ namespace Bam.Core
         /// Get the actual graph of module dependencies.
         /// </summary>
         /// <value>The dependency graph.</value>
-        public DependencyGraph DependencyGraph
-        {
-            get;
-            private set;
-        }
+        public DependencyGraph DependencyGraph { get; private set; }
 
         private void ApplyGroupDependenciesToChildren(
             Module module,
@@ -457,7 +422,7 @@ namespace Bam.Core
             // find all dependencies that are not children of this module
             var nonChildDependents = dependencies.Where(item =>
                 !(item is IChildModule) || (item as IChildModule).Parent != module);
-            if (0 == nonChildDependents.Count())
+            if (!nonChildDependents.Any())
             {
                 return;
             }
@@ -475,7 +440,7 @@ namespace Bam.Core
             // find all dependencies that are not children of this module
             var nonChildDependents = dependencies.Where(item =>
                 !(item is IChildModule) || (item as IChildModule).Parent != module);
-            if (0 == nonChildDependents.Count())
+            if (!nonChildDependents.Any())
             {
                 return;
             }
@@ -493,7 +458,7 @@ namespace Bam.Core
         {
             if (map.ContainsKey(module))
             {
-                throw new Exception("Module {0} rank initialized more than once", module);
+                throw new Exception($"Module {module.ToString()} rank initialized more than once");
             }
             map.Add(module, rankIndex);
         }
@@ -528,7 +493,7 @@ namespace Bam.Core
         {
             if (!map.ContainsKey(module))
             {
-                throw new Exception("Module {0} has yet to be initialized", module);
+                throw new Exception($"Module {module.ToString()} has yet to be initialized");
             }
             var currentRank = map[module];
             var rankDelta = rankIndex - currentRank;
@@ -573,7 +538,7 @@ namespace Bam.Core
                     }
                 }
             }
-            if ((0 == module.Dependents.Count) && (0 == module.Requirements.Count))
+            if (!module.Dependents.Any() && !module.Requirements.Any())
             {
                 return;
             }
@@ -641,7 +606,7 @@ namespace Bam.Core
             }
             // process all modules by initializing them to a best-guess rank
             // but then potentially moving them to a higher rank if they re-appear as dependencies
-            while (modulesToProcess.Count > 0)
+            while (modulesToProcess.Any())
             {
                 var module = modulesToProcess.Dequeue();
                 ProcessModule(moduleRanks, modulesToProcess, module, moduleRanks[module]);
@@ -690,11 +655,10 @@ namespace Bam.Core
                 return;
             }
             visited.Add(module);
-            if (module is IInputPath)
+            if (module is IInputPath inputPath)
             {
-                builder.AppendFormat(" {0}", (module as IInputPath).InputPath.ToString());
+                builder.AppendLine($" {inputPath.InputPath.ToString()}");
             }
-            builder.AppendLine();
             foreach (var req in module.Requirements)
             {
                 DumpModule(builder, depth + 1, '-', req, visited);
@@ -730,9 +694,9 @@ namespace Bam.Core
                 foreach (var m in rank.Value)
                 {
                     text.AppendLine(m.ToString());
-                    if (m is IInputPath)
+                    if (m is IInputPath inputPath)
                     {
-                        text.AppendFormat("\tInput: {0}{1}", (m as IInputPath).InputPath, System.Environment.NewLine);
+                        text.AppendFormat("\tInput: {0}{1}", inputPath.InputPath.ToString(), System.Environment.NewLine);
                     }
                     foreach (var s in m.GeneratedPaths)
                     {
@@ -783,7 +747,9 @@ namespace Bam.Core
                     var childRankIndex = childRank.Key;
                     if (childRankIndex <= parentRankIndex)
                     {
-                        throw new Exception("Dependent module {0} found at a lower rank {1} than the dependee {2}", c, childRankIndex, parentRankIndex);
+                        throw new Exception(
+                            $"Dependent module {c.ToString()} found at a lower rank {childRankIndex} than the dependee {parentRankIndex}"
+                        );
                     }
                 }
                 catch (System.InvalidOperationException)
@@ -823,10 +789,7 @@ namespace Bam.Core
         }
 
         System.Collections.IEnumerator
-        System.Collections.IEnumerable.GetEnumerator()
-        {
-            return this.GetEnumerator();
-        }
+        System.Collections.IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         /// <summary>
         /// Determines whether the specified module is referenced or unreferenced.
@@ -835,10 +798,7 @@ namespace Bam.Core
         /// <param name="module">Module to check.</param>
         public bool
         IsReferencedModule(
-            Module module)
-        {
-            return this.ReferencedModules[module.BuildEnvironment].Contains(module);
-        }
+            Module module) => this.ReferencedModules[module.BuildEnvironment].Contains(module);
 
         /// <summary>
         /// Returns a read only collection of all the named/referenced/encapsulating modules
@@ -848,40 +808,21 @@ namespace Bam.Core
         /// <param name="env">The Environment to query for named modules.</param>
         public System.Collections.ObjectModel.ReadOnlyCollection<Module>
         EncapsulatingModules(
-            Environment env)
-        {
-            return this.ReferencedModules[env].ToReadOnlyCollection();
-        }
+            Environment env) => this.ReferencedModules[env].ToReadOnlyCollection();
 
         /// <summary>
         /// Obtain the list of build environments defined for this Graph.
         /// </summary>
         /// <value>The build environments.</value>
-        public System.Collections.Generic.List<Environment> BuildEnvironments
-        {
-            get
-            {
-                return this.Modules.Keys.ToList();
-            }
-        }
+        public System.Collections.Generic.List<Environment> BuildEnvironments => this.Modules.Keys.ToList();
 
-        private Array<PackageDefinition> PackageDefinitions
-        {
-            get;
-            set;
-        }
+        private Array<PackageDefinition> PackageDefinitions { get; set; }
 
         /// <summary>
         /// Obtain the master package (the package in which Bam was invoked).
         /// </summary>
         /// <value>The master package.</value>
-        public PackageDefinition MasterPackage
-        {
-            get
-            {
-                return this.PackageDefinitions[0];
-            }
-        }
+        public PackageDefinition MasterPackage => this.PackageDefinitions[0];
 
         /// <summary>
         /// Assign the array of package definitions to the Graph.
@@ -905,7 +846,7 @@ namespace Bam.Core
                 }
                 foreach (var source in package.Sources)
                 {
-                    var fetchSourceTask = source.Fetch(package.Name);
+                    var fetchSourceTask = source.Fetch();
                     if (null == fetchSourceTask)
                     {
                         continue;
@@ -934,12 +875,7 @@ namespace Bam.Core
         /// Obtain the metadata associated with the chosen build mode.
         /// </summary>
         /// <value>The build mode meta data.</value>
-        public IBuildModeMetaData
-        BuildModeMetaData
-        {
-            get;
-            set;
-        }
+        public IBuildModeMetaData BuildModeMetaData { get; set; }
 
         static internal PackageMetaData
         InstantiatePackageMetaData(
@@ -960,10 +896,7 @@ namespace Bam.Core
         }
 
         static internal PackageMetaData
-        InstantiatePackageMetaData<MetaDataType>()
-        {
-            return InstantiatePackageMetaData(typeof(MetaDataType));
-        }
+        InstantiatePackageMetaData<MetaDataType>() => InstantiatePackageMetaData(typeof(MetaDataType));
 
         /// <summary>
         /// For a given package, obtain the metadata and cast it to MetaDataType.
@@ -1019,32 +952,19 @@ namespace Bam.Core
         /// Get or set the logging verbosity level to use across the build.
         /// </summary>
         /// <value>The verbosity level.</value>
-        public EVerboseLevel
-        VerbosityLevel
-        {
-            get;
-            set;
-        }
+        public EVerboseLevel VerbosityLevel { get; set; }
 
         /// <summary>
         /// Obtain a list of package repositories used to locate packages.
         /// </summary>
         /// <value>The package repositories.</value>
-        public StringArray PackageRepositories
-        {
-            get;
-            private set;
-        }
+        public StringArray PackageRepositories { get; private set; }
 
         /// <summary>
         /// Determine whether package definition files are automatically updated after being read.
         /// </summary>
         /// <value><c>true</c> if force definition file update; otherwise, <c>false</c>.</value>
-        public bool ForceDefinitionFileUpdate
-        {
-            get;
-            private set;
-        }
+        public bool ForceDefinitionFileUpdate { get; private set; }
 
         /// <summary>
         /// Determine whether package definition files read have their BAM assembly versions updated
@@ -1052,51 +972,31 @@ namespace Bam.Core
         /// Requires forced updates to definition files to be enabled.
         /// </summary>
         /// <value><c>true</c> to update bam assembly versions; otherwise, <c>false</c>.</value>
-        public bool UpdateBamAssemblyVersions
-        {
-            get;
-            private set;
-        }
+        public bool UpdateBamAssemblyVersions { get; private set; }
 
         /// <summary>
         /// Determine whether package assembly compilation occurs with debug symbol information.
         /// </summary>
         /// <value><c>true</c> if compile with debug symbols; otherwise, <c>false</c>.</value>
-        public bool CompileWithDebugSymbols
-        {
-            get;
-            set;
-        }
+        public bool CompileWithDebugSymbols { get; set; }
 
         /// <summary>
         /// Get or set the path of the package script assembly.
         /// </summary>
         /// <value>The script assembly pathname.</value>
-        public string ScriptAssemblyPathname
-        {
-            get;
-            set;
-        }
+        public string ScriptAssemblyPathname { get; set; }
 
         /// <summary>
         /// Get or set the compiled package script assembly.
         /// </summary>
         /// <value>The script assembly.</value>
-        public System.Reflection.Assembly ScriptAssembly
-        {
-            get;
-            set;
-        }
+        public System.Reflection.Assembly ScriptAssembly { get; set; }
 
         /// <summary>
         /// Obtain the current state of Bam.
         /// </summary>
         /// <value>The state of the process.</value>
-        public BamState ProcessState
-        {
-            get;
-            private set;
-        }
+        public BamState ProcessState { get; private set; }
 
         /// <summary>
         /// Obtain the named referenced module for a given environment and the type of the module required.
@@ -1116,7 +1016,7 @@ namespace Bam.Core
             }
             catch (System.InvalidOperationException)
             {
-                Log.ErrorMessage("Unable to locate a referenced module of type {0}", type.ToString());
+                Log.ErrorMessage($"Unable to locate a referenced module of type {type.ToString()}");
                 throw;
             }
         }
@@ -1124,19 +1024,11 @@ namespace Bam.Core
         /// <summary>
         /// Obtain the IProductDefinition instance (if it exists) from the package assembly.
         /// </summary>
-        public IProductDefinition ProductDefinition
-        {
-            get;
-            set;
-        }
+        public IProductDefinition ProductDefinition { get; set; }
 
         /// <summary>
         /// Obtain the IOverrideModuleConfiguration instance (if it exists) from the package assembly.
         /// </summary>
-        public IOverrideModuleConfiguration OverrideModuleConfiguration
-        {
-            get;
-            set;
-        }
+        public IOverrideModuleConfiguration OverrideModuleConfiguration { get; set; }
     }
 }

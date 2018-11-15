@@ -32,22 +32,8 @@ namespace VisualCCommon
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonLinkerSettings : Bam.Core.ISettingsBase
     {
-        bool NoLogo
-        {
-            get;
-            set;
-        }
-
-        bool GenerateManifest
-        {
-            get;
-            set;
-        }
-
-        bool SafeExceptionHandlers
-        {
-            get;
-            set;
-        }
+        bool NoLogo { get; set; }
+        bool GenerateManifest { get; set; }
+        bool SafeExceptionHandlers { get; set; }
     }
 }

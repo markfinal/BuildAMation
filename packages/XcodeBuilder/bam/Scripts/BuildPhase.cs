@@ -39,10 +39,7 @@ namespace XcodeBuilder
             string isa,
             params string[] hashComponents)
             :
-            base(project, name, isa, hashComponents)
-        {
-            this.BuildFiles = new Bam.Core.Array<BuildFile>();
-        }
+            base(project, name, isa, hashComponents) => this.BuildFiles = new Bam.Core.Array<BuildFile>();
 
         public void
         AddBuildFile(
@@ -59,21 +56,9 @@ namespace XcodeBuilder
             }
         }
 
-        protected abstract string BuildActionMask
-        {
-            get;
-        }
-
-        protected abstract bool RunOnlyForDeploymentPostprocessing
-        {
-            get;
-        }
-
-        public Bam.Core.Array<BuildFile> BuildFiles
-        {
-            get;
-            protected set;
-        }
+        protected abstract string BuildActionMask { get; }
+        protected abstract bool RunOnlyForDeploymentPostprocessing { get; }
+        public Bam.Core.Array<BuildFile> BuildFiles { get; protected set; }
 
         public override void
         Serialize(
@@ -83,28 +68,21 @@ namespace XcodeBuilder
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
             var indent3 = new string('\t', indentLevel + 2);
-            text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
-            text.AppendLine();
-            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
-            text.AppendLine();
-            text.AppendFormat("{0}buildActionMask = {1};", indent2, this.BuildActionMask);
-            text.AppendLine();
-            if (this.BuildFiles.Count > 0)
+            text.AppendLine($"{indent}{this.GUID} /* {this.Name} */ = {{");
+            text.AppendLine($"{indent2}isa = {this.IsA};");
+            text.AppendLine($"{indent2}buildActionMask = {this.BuildActionMask};");
+            if (this.BuildFiles.Any())
             {
-                text.AppendFormat("{0}files = (", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2}files = (");
                 foreach (var file in this.BuildFiles)
                 {
-                    text.AppendFormat("{0}{1} /* {2} in {3} */,", indent3, file.GUID, file.Name, this.Name);
-                    text.AppendLine();
+                    text.AppendLine($"{indent3}{file.GUID} /* {file.Name} in {this.Name} */,");
                 }
-                text.AppendFormat("{0});", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2});");
             }
-            text.AppendFormat("{0}runOnlyForDeploymentPostprocessing = {1};", indent2, this.RunOnlyForDeploymentPostprocessing ? "1" : "0");
-            text.AppendLine();
-            text.AppendFormat("{0}}};", indent);
-            text.AppendLine();
+            var deployment = this.RunOnlyForDeploymentPostprocessing ? "1" : "0";
+            text.AppendLine($"{indent2}runOnlyForDeploymentPostprocessing = {deployment};");
+            text.AppendLine($"{indent}}};");
         }
     }
 }

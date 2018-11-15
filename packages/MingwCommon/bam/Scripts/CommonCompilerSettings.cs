@@ -46,171 +46,84 @@ namespace MingwCommon
 
         protected CommonCompilerSettings(
             Bam.Core.Module module,
-            bool useDefaults)
-        {
-            this.InitializeAllInterfaces(module, true, useDefaults);
-        }
+            bool useDefaults) => this.InitializeAllInterfaces(module, true, useDefaults);
 
         [CommandLineProcessor.Enum(C.ECharacterSet.NotSet, "")]
         [CommandLineProcessor.Enum(C.ECharacterSet.Unicode, "-D_UNICODE")]
         [CommandLineProcessor.Enum(C.ECharacterSet.MultiByte, "-D_MBCS")]
-        C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet
-        {
-            get;
-            set;
-        }
+        C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet { get; set; }
 
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
-        C.EBit? C.ICommonCompilerSettings.Bits
-        {
-            get;
-            set;
-        }
+        C.EBit? C.ICommonCompilerSettings.Bits { get; set; }
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
-        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
+        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines { get; set; }
 
         [CommandLineProcessor.PathArray("-I")]
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths { get; set; }
 
         [CommandLineProcessor.PathArray("-I")]
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths { get; set; }
 
         [CommandLineProcessor.Bool("-g", "")]
-        bool? C.ICommonCompilerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
+        bool? C.ICommonCompilerSettings.DebugSymbols { get; set; }
 
         [CommandLineProcessor.Bool("-Werror", "-Wno-error")]
-        bool? C.ICommonCompilerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
+        bool? C.ICommonCompilerSettings.WarningsAsErrors { get; set; }
 
         [CommandLineProcessor.Enum(C.EOptimization.Off, "-O0")]
         [CommandLineProcessor.Enum(C.EOptimization.Size, "-O1")]
         [CommandLineProcessor.Enum(C.EOptimization.Speed, "-O2")]
         [CommandLineProcessor.Enum(C.EOptimization.Custom, "")] // use Mingw specific settings
-        C.EOptimization? C.ICommonCompilerSettings.Optimization
-        {
-            get;
-            set;
-        }
+        C.EOptimization? C.ICommonCompilerSettings.Optimization { get; set; }
 
         [CommandLineProcessor.Enum(C.ETargetLanguage.Default, "")]
         [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-x c")]
         [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-x c++")]
         [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveC, "-x objective-c")]
         [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveCxx, "-x objective-c++")]
-        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage
-        {
-            get;
-            set;
-        }
+        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage { get; set; }
 
         [CommandLineProcessor.Bool("-fomit-frame-pointer", "-fno-omit-frame-pointer")]
-        bool? C.ICommonCompilerSettings.OmitFramePointer
-        {
-            get;
-            set;
-        }
+        bool? C.ICommonCompilerSettings.OmitFramePointer { get; set; }
 
         [CommandLineProcessor.StringArray("-Wno-")]
-        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings { get; set; }
 
         [CommandLineProcessor.StringArray("-U")]
-        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines { get; set; }
 
         [CommandLineProcessor.StringArray("-include ")]
-        Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders { get; set; }
 
         [CommandLineProcessor.Bool("-E", "-c")]
-        bool? C.ICommonCompilerSettings.PreprocessOnly
-        {
-            get;
-            set;
-        }
+        bool? C.ICommonCompilerSettings.PreprocessOnly { get; set; }
 
         [CommandLineProcessor.StringArray("")]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         [CommandLineProcessor.Bool("-Wall", "-Wno-all")]
-        bool? ICommonCompilerSettings.AllWarnings
-        {
-            get;
-            set;
-        }
+        bool? ICommonCompilerSettings.AllWarnings { get; set; }
 
         [CommandLineProcessor.Bool("-Wextra", "-Wno-extra")]
-        bool? ICommonCompilerSettings.ExtraWarnings
-        {
-            get;
-            set;
-        }
+        bool? ICommonCompilerSettings.ExtraWarnings { get; set; }
 
         [CommandLineProcessor.Bool("-Wpedantic", "-Wno-pedantic")]
-        bool? ICommonCompilerSettings.Pedantic
-        {
-            get;
-            set;
-        }
+        bool? ICommonCompilerSettings.Pedantic { get; set; }
 
         [CommandLineProcessor.Enum(EVisibility.Default, "-fvisibility=default")]
         [CommandLineProcessor.Enum(EVisibility.Hidden, "-fvisibility=hidden")]
         [CommandLineProcessor.Enum(EVisibility.Internal, "-fvisibility=internal")]
         [CommandLineProcessor.Enum(EVisibility.Protected, "-fvisibility=protected")]
-        EVisibility? ICommonCompilerSettings.Visibility
-        {
-            get;
-            set;
-        }
+        EVisibility? ICommonCompilerSettings.Visibility { get; set; }
 
         [CommandLineProcessor.Bool("-fstrict-aliasing", "-fno-strict-aliasing")]
-        bool? ICommonCompilerSettings.StrictAliasing
-        {
-            get;
-            set;
-        }
+        bool? ICommonCompilerSettings.StrictAliasing { get; set; }
 
         [CommandLineProcessor.Enum(EOptimization.O3, "-O3")]
         [CommandLineProcessor.Enum(EOptimization.Ofast, "-Ofast")]
-        EOptimization? ICommonCompilerSettings.Optimization
-        {
-            get;
-            set;
-        }
+        EOptimization? ICommonCompilerSettings.Optimization { get; set; }
 
         public override void
         Validate()

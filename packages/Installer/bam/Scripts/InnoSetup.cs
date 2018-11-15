@@ -32,8 +32,8 @@ namespace Installer
     class InnoSetupScript :
         Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
+        private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
+        private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
 
         public const string ScriptKey = "InnoSetup script";
 
@@ -98,9 +98,9 @@ namespace Installer
                         "AppVersion={0}",
                         System.String.Format(
                             "{0}.{1}.{2}",
-                            productDef.MajorVersion.HasValue ? productDef.MajorVersion.Value : 1,
-                            productDef.MinorVersion.HasValue ? productDef.MinorVersion.Value : 0,
-                            productDef.PatchVersion.HasValue ? productDef.PatchVersion.Value : 0
+                            productDef.MajorVersion ?? 1,
+                            productDef.MinorVersion ?? 0,
+                            productDef.PatchVersion ?? 0
                         )
                     );
                 }
@@ -108,20 +108,20 @@ namespace Installer
                 {
                     scriptWriter.WriteLine("AppVersion={0}", "1.0.0");
                 }
-                scriptWriter.WriteLine("DefaultDirName={{userappdata}}\\{0}", outputName.ToString());
+                scriptWriter.WriteLine($"DefaultDirName={{userappdata}}\\{outputName.ToString()}");
                 scriptWriter.WriteLine("ArchitecturesAllowed=x64");
                 scriptWriter.WriteLine("ArchitecturesInstallIn64BitMode=x64");
                 scriptWriter.WriteLine("Uninstallable=No");
                 scriptWriter.WriteLine("[Files]");
                 foreach (var dep in this.Files)
                 {
-                    scriptWriter.Write(System.String.Format("Source: \"{0}\"; ", dep.Key.GeneratedPaths[dep.Value]));
+                    scriptWriter.Write($"Source: \"{dep.Key.GeneratedPaths[dep.Value]}\"; ");
                     scriptWriter.Write("DestDir: \"{app}\"; ");
                     scriptWriter.Write("DestName: \"Test\"");
                 }
                 foreach (var dep in this.Paths)
                 {
-                    scriptWriter.Write(System.String.Format("Source: \"{0}\\*.*\"; ", dep.Key.GeneratedPaths[dep.Value]));
+                    scriptWriter.Write($"Source: \"{dep.Key.GeneratedPaths[dep.Value]}\\*.*\"; ");
                     scriptWriter.Write("DestDir: \"{app}\"; ");
                     scriptWriter.Write("Flags: recursesubdirs");
                 }
@@ -134,10 +134,7 @@ namespace Installer
         Bam.Core.Settings
     {
         public InnoSetupCompilerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         public override void
         AssignFileLayout()
@@ -153,7 +150,14 @@ namespace Installer
         Init(
             Bam.Core.Module parent)
         {
-            this.Macros.Add("toolPath", Bam.Core.TokenizedString.Create("$(0)/Inno Setup 5/ISCC.exe", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path)));
+            this.Macros.Add(
+                "toolPath",
+                Bam.Core.TokenizedString.Create(
+                    "$(0)/Inno Setup 5/ISCC.exe",
+                    null,
+                    new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path)
+                )
+            );
             // since the toolPath macro is needed to evaluate the Executable property
             // in the check for existence
             base.Init(parent);
@@ -161,18 +165,9 @@ namespace Installer
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            return new InnoSetupCompilerSettings(module);
-        }
+            T module) => new InnoSetupCompilerSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["toolPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["toolPath"];
     }
 
     /// <summary>

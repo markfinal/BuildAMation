@@ -48,22 +48,8 @@ namespace VisualStudioProcessor
             this.EnableSideEffects = enableSideEffets;
         }
 
-        public string PathKey
-        {
-            get;
-            private set;
-        }
-
-        public bool HandledByMetaData
-        {
-            get;
-            set;
-        }
-
-        public bool EnableSideEffects
-        {
-            get;
-            set;
-        }
+        public string PathKey { get; private set; }
+        public bool HandledByMetaData { get; private set; }
+        public bool EnableSideEffects { get; private set; }
     }
 }

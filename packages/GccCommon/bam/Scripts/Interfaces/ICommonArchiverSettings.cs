@@ -33,22 +33,8 @@ namespace GccCommon
     public interface ICommonArchiverSettings :
         Bam.Core.ISettingsBase
     {
-        bool Ranlib
-        {
-            get;
-            set;
-        }
-
-        bool DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
-        }
-
-        GccCommon.EArchiverCommand Command
-        {
-            get;
-            set;
-        }
+        bool Ranlib { get; set; }
+        bool DoNotWarnIfLibraryCreated { get; set; }
+        GccCommon.EArchiverCommand Command { get; set; }
     }
 }

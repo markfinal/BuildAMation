@@ -48,22 +48,8 @@ namespace VisualStudioProcessor
             this.Target = targetGroup;
         }
 
-        public string Property
-        {
-            get;
-            private set;
-        }
-
-        public bool InheritExisting
-        {
-            get;
-            private set;
-        }
-
-        public TargetGroup Target
-        {
-            get;
-            private set;
-        }
+        public string Property { get; private set; }
+        public bool InheritExisting { get; private set; }
+        public TargetGroup Target { get; private set; }
     }
 }

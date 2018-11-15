@@ -44,15 +44,8 @@ namespace Bam.Core.Test
             TokenizedStringTest.testModule = this;
         }
 
-        protected override void EvaluateInternal()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        protected override void ExecuteInternal(ExecutionContext context)
-        {
-            throw new System.NotImplementedException();
-        }
+        protected override void EvaluateInternal() => throw new System.NotImplementedException();
+        protected override void ExecuteInternal(ExecutionContext context) => throw new System.NotImplementedException();
     }
 
     [NUnit.Framework.TestFixture(Author="Mark Final")]
@@ -72,8 +65,8 @@ namespace Bam.Core.Test
             // - BamState.WorkingDirectory (will be null)
             // - Graph.PackageRepositories (will be empty)
             this.graph = Bam.Core.Graph.Instance;
-            Bam.Core.TokenizedString.reset();
-            Bam.Core.Module.reset();
+            Bam.Core.TokenizedString.Reset();
+            Bam.Core.Module.Reset();
         }
 
         [NUnit.Framework.TearDown]

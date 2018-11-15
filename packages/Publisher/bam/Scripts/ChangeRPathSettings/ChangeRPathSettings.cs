@@ -35,17 +35,10 @@ namespace Publisher
         IChangeRPathSettings
     {
         public ChangeRPathSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.String("-r ")]
-        string IChangeRPathSettings.NewRPath
-        {
-            get;
-            set;
-        }
+        string IChangeRPathSettings.NewRPath { get; set; }
 
         public override void
         AssignFileLayout()

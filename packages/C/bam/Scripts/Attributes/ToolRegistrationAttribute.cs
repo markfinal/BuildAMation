@@ -43,22 +43,8 @@ namespace C
             this.BitDepth = bitDepth;
         }
 
-        public string ToolsetName
-        {
-            get;
-            private set;
-        }
-
-        public Bam.Core.EPlatform Platform
-        {
-            get;
-            private set;
-        }
-
-        public EBit BitDepth
-        {
-            get;
-            private set;
-        }
+        public string ToolsetName { get; private set; }
+        public Bam.Core.EPlatform Platform { get; private set; }
+        public EBit BitDepth { get; private set; }
     }
 }

@@ -111,16 +111,14 @@ namespace NativeBuilder
             if (moveFile)
             {
                 Bam.Core.Log.Info(
-                    "Generated '{0}' from the standard output of '{1}'",
-                    destPath,
-                    (module.Tool as Bam.Core.ICommandLineTool).Executable.ToString()
+                    $"Generated '{destPath}' from the standard output of '{(module.Tool as Bam.Core.ICommandLineTool).Executable.ToString()}'"
                 );
                 System.IO.File.Delete(destPath);
                 System.IO.File.Move(tempPath, destPath);
             }
             else
             {
-                Bam.Core.Log.Info("Contents of '{0}' have not changed since it was last generated", destPath);
+                Bam.Core.Log.Info($"Contents of '{destPath}' have not changed since it was last generated");
                 System.IO.File.Delete(tempPath);
             }
             context.OutputStringBuilder.Clear();

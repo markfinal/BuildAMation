@@ -52,11 +52,11 @@ namespace C
                     }
                     else if (input is OSXFramework)
                     {
-                        throw new Bam.Core.Exception("Frameworks are not supported on Windows: {0}", input.ToString());
+                        throw new Bam.Core.Exception($"Frameworks are not supported on Windows: {input.ToString()}");
                     }
                     else
                     {
-                        throw new Bam.Core.Exception("Don't know how to handle this buildable library module, {0}", input.ToString());
+                        throw new Bam.Core.Exception($"Don't know how to handle this buildable library module, {input.ToString()}");
                     }
                 }
                 else
@@ -82,11 +82,11 @@ namespace C
                     }
                     else if (input is OSXFramework)
                     {
-                        throw new Bam.Core.Exception("Frameworks are not supported on Windows: {0}", input.ToString());
+                        throw new Bam.Core.Exception($"Frameworks are not supported on Windows: {input.ToString()}");
                     }
                     else
                     {
-                        throw new Bam.Core.Exception("Don't know how to handle this prebuilt library module, {0}", input.ToString());
+                        throw new Bam.Core.Exception($"Don't know how to handle this prebuilt library module, {input.ToString()}");
                     }
                 }
             }

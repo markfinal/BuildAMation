@@ -36,7 +36,7 @@ namespace ClangCommon
         {
             try
             {
-                xcrunPath = Bam.Core.OSUtilities.GetInstallLocation("xcrun").First();
+                XcrunPath = Bam.Core.OSUtilities.GetInstallLocation("xcrun").First();
             }
             catch (Bam.Core.Exception)
             {
@@ -47,12 +47,12 @@ namespace ClangCommon
 
                 // this needs to be an executable that exists, and will return immediately
                 // as it's checked for in the PrebuiltTool code
-                xcrunPath = Bam.Core.OSUtilities.GetInstallLocation("dir").First();
+                XcrunPath = Bam.Core.OSUtilities.GetInstallLocation("dir").First();
             }
         }
 
         public static string
-        xcrunPath
+        XcrunPath
         {
             get;
             private set;
@@ -70,9 +70,9 @@ namespace ClangCommon
             {
                 if (!IsSDKValid(allSDKs, definedSDK))
                 {
-                    throw new Bam.Core.Exception("The SDK requested, {0}, is not in the available list of SDKs:\n{1}",
-                        definedSDK,
-                        allSDKs.ToString('\n'));
+                    throw new Bam.Core.Exception(
+                        $"The SDK requested, {definedSDK}, is not in the available list of SDKs:\n{allSDKs.ToString('\n')}"
+                    );
                 }
                 return definedSDK;
             }
@@ -87,8 +87,8 @@ namespace ClangCommon
             string sdkVersion)
         {
             return Bam.Core.OSUtilities.RunExecutable(
-                xcrunPath,
-                System.String.Format("--sdk {0} -show-sdk-path", sdkVersion)
+                XcrunPath,
+                $"--sdk {sdkVersion} -show-sdk-path"
             ).StandardOutput;
         }
 
@@ -132,7 +132,9 @@ namespace ClangCommon
             {
                 if (!IsSDKValid(availableSDKs, sdk))
                 {
-                    throw new Bam.Core.Exception("SDK {0} was not available in the Xcode installation on this machine.", sdk);
+                    throw new Bam.Core.Exception(
+                        $"SDK {sdk} was not available in the Xcode installation on this machine."
+                    );
                 }
             }
 
@@ -144,24 +146,18 @@ namespace ClangCommon
             string sdkType)
         {
             var defaultSDK = Bam.Core.OSUtilities.RunExecutable(
-                xcrunPath,
-                System.String.Format("--sdk {0} --show-sdk-version", sdkType)
+                XcrunPath,
+                $"--sdk {sdkType} --show-sdk-version"
             ).StandardOutput;
-            return System.String.Format("{0}{1}", sdkType, defaultSDK);
+            return $"{sdkType}{defaultSDK}";
         }
 
         private static string
-        GetDefaultMacOSXSDK()
-        {
-            return GetDefaultSDK("macosx");
-        }
+        GetDefaultMacOSXSDK() => GetDefaultSDK("macosx");
 
         private static string
         GetDefaultiPhoneSDK(
-            bool useSimulator)
-        {
-            return useSimulator ? GetDefaultSDK("iphonesimulator") : GetDefaultSDK("iphoneos");
-        }
+            bool useSimulator) => useSimulator ? GetDefaultSDK("iphonesimulator") : GetDefaultSDK("iphoneos");
 
         public static string
         GetClangVersion(
@@ -170,8 +166,8 @@ namespace ClangCommon
             try
             {
                 var versionOutput = Bam.Core.OSUtilities.RunExecutable(
-                    xcrunPath,
-                    System.String.Format("--sdk {0} clang --version", sdkType)
+                    XcrunPath,
+                    $"--sdk {sdkType} clang --version"
                 ).StandardOutput;
                 var split = versionOutput.Split(new[] { System.Environment.NewLine }, System.StringSplitOptions.RemoveEmptyEntries);
                 return split[0];

@@ -38,7 +38,6 @@ namespace C
             EBit bitDepth)
             :
             base(toolsetName, platform, bitDepth)
-        {
-        }
+        {}
     }
 }

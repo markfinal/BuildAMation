@@ -41,9 +41,8 @@ namespace C
                 if (!(module is C.CCompilableModuleContainer<ChildModuleType>))
                 {
                     throw new Bam.Core.Exception(
-                        "Group module type, '{0}', is not a compilable of type '{1}'",
-                        module.GetType().ToString(),
-                        typeof(C.CCompilableModuleContainer<ChildModuleType>).ToString());
+                        $"Group module type, '{module.GetType().ToString()}', is not a compilable of type '{typeof(C.CCompilableModuleContainer<ChildModuleType>).ToString()}'"
+                    );
                 }
             }
             else
@@ -51,9 +50,8 @@ namespace C
                 if (!(module is ChildModuleType))
                 {
                     throw new Bam.Core.Exception(
-                        "Module type, '{0}', is not a compilable of type '{1}'",
-                        module.GetType().ToString(),
-                        typeof(ChildModuleType).ToString());
+                        $"Module type, '{module.GetType().ToString()}', is not a compilable of type '{typeof(ChildModuleType).ToString()}'"
+                    );
                 }
             }
         }

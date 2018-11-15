@@ -159,7 +159,7 @@ namespace Bam.Core
                 using (var reader = new System.IO.StreamReader(hashFile))
                 {
                     var diskHash = reader.ReadToEnd().TrimEnd();
-                    Log.DebugMessage("Disk {0}: {1}, current: {2}", hashFile, diskHash, currentHash);
+                    Log.DebugMessage($"Disk {hashFile}: {diskHash}, current: {currentHash}");
                     if (diskHash.Equals(currentHash, System.StringComparison.Ordinal))
                     {
                         result = EHashCompareResult.HashesAreIdentical;

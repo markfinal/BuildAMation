@@ -36,7 +36,6 @@ namespace GccCommon.DefaultSettings
         Defaults(
             this ICommonAssemblerSettings settings,
             Bam.Core.Module module)
-        {
-        }
+        {}
     }
 }

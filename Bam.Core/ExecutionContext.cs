@@ -60,51 +60,31 @@ namespace Bam.Core
         /// Determine if the module execution requires evaluation first.
         /// </summary>
         /// <value><c>true</c> if evaluate is to occur before execution; otherwise, <c>false</c>.</value>
-        public bool Evaluate
-        {
-            get;
-            private set;
-        }
+        public bool Evaluate { get; private set; }
 
         /// <summary>
         /// Obtain the log verbosity level of any (re)build explanations.
         /// </summary>
         /// <value>The explain logging level.</value>
-        public EVerboseLevel ExplainLoggingLevel
-        {
-            get;
-            private set;
-        }
+        public EVerboseLevel ExplainLoggingLevel { get; private set; }
 
         /// <summary>
         /// Does any output from module execution get cached for a deferred display?
         /// </summary>
         /// <value><c>true</c> if use deferred output; otherwise, <c>false</c>.</value>
-        public bool UseDeferredOutput
-        {
-            get;
-            private set;
-        }
+        public bool UseDeferredOutput { get; private set; }
 
         /// <summary>
         /// If using deferred output, this is where stdout output is captured. Otherwise this is null.
         /// </summary>
         /// <value>The output string builder.</value>
-        public System.Text.StringBuilder OutputStringBuilder
-        {
-            get;
-            private set;
-        }
+        public System.Text.StringBuilder OutputStringBuilder { get; private set; }
 
         /// <summary>
         /// If using deferred output, this is where stderr output is captured. Otherwise this is null.
         /// </summary>
         /// <value>The error string builder.</value>
-        public System.Text.StringBuilder ErrorStringBuilder
-        {
-            get;
-            private set;
-        }
+        public System.Text.StringBuilder ErrorStringBuilder { get; private set; }
 
         /// <summary>
         /// Delegate for asynchronous capturing of stdout data.
@@ -126,7 +106,7 @@ namespace Bam.Core
             }
             else
             {
-                Log.MessageAll("stdout: {0}", e.Data);
+                Log.MessageAll($"stdout: {e.Data}");
             }
         }
 
@@ -150,7 +130,7 @@ namespace Bam.Core
             }
             else
             {
-                Log.ErrorMessage("stderr: {0}", e.Data);
+                Log.ErrorMessage($"stderr: {e.Data}");
             }
         }
     }

@@ -71,17 +71,17 @@ namespace XcodeBuilder
             this.TargetDependencies = new Bam.Core.Array<TargetDependency>();
             this.ProjectReferences = new System.Collections.Generic.Dictionary<Group, FileReference>();
 
-            this.appendGroup(new Group(this, null)); // main group
-            this.appendGroup(new Group(this, "Products")); // product ref group
-            this.appendGroup(new Group(this, "Frameworks")); // all frameworks
+            this.AppendGroup(new Group(this, null)); // main group
+            this.AppendGroup(new Group(this, "Products")); // product ref group
+            this.AppendGroup(new Group(this, "Frameworks")); // all frameworks
             this.MainGroup.AddChild(this.ProductRefGroup);
             this.MainGroup.AddChild(this.Frameworks);
 
             // add the project's configuration list first
-            this.appendConfigurationList(new ConfigurationList(this));
+            this.AppendConfigurationList(new ConfigurationList(this));
         }
 
-        private System.Collections.Generic.Dictionary<string, Object> ExistingGUIDs = new System.Collections.Generic.Dictionary<string, Object>();
+        private readonly System.Collections.Generic.Dictionary<string, Object> ExistingGUIDs = new System.Collections.Generic.Dictionary<string, Object>();
 
         public void
         AddGUID(
@@ -118,44 +118,12 @@ namespace XcodeBuilder
             }
         }
 
-        public string SourceRoot
-        {
-            get;
-            private set;
-        }
-
-        private string BuildRoot
-        {
-            get;
-            set;
-        }
-
-        public Bam.Core.TokenizedString ProjectDir
-        {
-            get;
-            private set;
-        }
-
-        public string ProjectPath
-        {
-            get;
-            private set;
-        }
-
-        private string BuiltProductsDir
-        {
-            get
-            {
-                return this.Module.PackageDefinition.GetBuildDirectory() + "/";
-            }
-        }
-
-        private Bam.Core.Module Module
-        {
-            get;
-            set;
-        }
-
+        public string SourceRoot { get; private set; }
+        private string BuildRoot { get; set; }
+        public Bam.Core.TokenizedString ProjectDir { get; private set; }
+        public string ProjectPath { get; private set; }
+        private string BuiltProductsDir => this.Module.PackageDefinition.GetBuildDirectory() + "/";
+        private Bam.Core.Module Module { get; set; }
         private System.Collections.Generic.Dictionary<System.Type, Target> Targets
         {
             get;
@@ -163,7 +131,7 @@ namespace XcodeBuilder
         }
 
         public void
-        appendTarget(
+        AppendTarget(
             Target target)
         {
             // Note: this lock probably not required, as it's only invoked from within another lock
@@ -174,31 +142,14 @@ namespace XcodeBuilder
         }
 
         public System.Collections.Generic.IReadOnlyList<Target>
-        getTargetList()
-        {
-            return this.Targets.Values.ToList();
-        }
+        GetTargetList() => this.Targets.Values.ToList();
 
-        private Bam.Core.Array<FileReference> FileReferences
-        {
-            get;
-            set;
-        }
-
-        private Bam.Core.Array<BuildFile> BuildFiles
-        {
-            get;
-            set;
-        }
-
-        private Bam.Core.Array<Group> Groups
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<FileReference> FileReferences { get; set; }
+        private Bam.Core.Array<BuildFile> BuildFiles { get; set; }
+        private Bam.Core.Array<Group> Groups { get; set; }
 
         public void
-        appendGroup(
+        AppendGroup(
             Group group)
         {
             lock (this.Groups)
@@ -208,20 +159,16 @@ namespace XcodeBuilder
         }
 
         public Group
-        groupWithChild(
+        GroupWithChild(
             ReferenceProxy proxy)
         {
             return this.Groups.FirstOrDefault(item => item.Children.Contains(proxy));
         }
 
-        private System.Collections.Generic.Dictionary<string, Group> GroupMap
-        {
-            get;
-            set;
-        }
+        private System.Collections.Generic.Dictionary<string, Group> GroupMap { get; set; }
 
         public void
-        assignGroupToPath(
+        AssignGroupToPath(
             Bam.Core.TokenizedString path,
             Group group)
         {
@@ -232,7 +179,7 @@ namespace XcodeBuilder
         }
 
         public Group
-        getGroupForPath(
+        GetGroupForPath(
             Bam.Core.TokenizedString path)
         {
             var match = this.GroupMap.FirstOrDefault(item => item.Key.Equals(path.ToString(), System.StringComparison.Ordinal));
@@ -243,14 +190,10 @@ namespace XcodeBuilder
             return match.Value;
         }
 
-        private Bam.Core.Array<Configuration> AllConfigurations
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<Configuration> AllConfigurations { get; set; }
 
         public void
-        appendAllConfigurations(
+        AppendAllConfigurations(
             Configuration config)
         {
             lock (this.AllConfigurations)
@@ -259,20 +202,11 @@ namespace XcodeBuilder
             }
         }
 
-        private System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, Configuration> ProjectConfigurations
-        {
-            get;
-            set;
-        }
-
-        private Bam.Core.Array<ConfigurationList> ConfigurationLists
-        {
-            get;
-            set;
-        }
+        private System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, Configuration> ProjectConfigurations { get; set; }
+        private Bam.Core.Array<ConfigurationList> ConfigurationLists { get; set; }
 
         public void
-        appendConfigurationList(
+        AppendConfigurationList(
             ConfigurationList configList)
         {
             lock (this.ConfigurationLists)
@@ -282,20 +216,12 @@ namespace XcodeBuilder
         }
 
         private ConfigurationList
-        getProjectConfiguratonList()
-        {
-            // order is implied - this is always first
-            return this.ConfigurationLists[0];
-        }
+        GetProjectConfiguratonList() => this.ConfigurationLists[0]; // order is implied - this is always first
 
-        private Bam.Core.Array<SourcesBuildPhase> SourcesBuildPhases
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<SourcesBuildPhase> SourcesBuildPhases { get; set; }
 
         public void
-        appendSourcesBuildPhase(
+        AppendSourcesBuildPhase(
             SourcesBuildPhase phase)
         {
             lock (this.SourcesBuildPhases)
@@ -304,14 +230,10 @@ namespace XcodeBuilder
             }
         }
 
-        private Bam.Core.Array<FrameworksBuildPhase> FrameworksBuildPhases
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<FrameworksBuildPhase> FrameworksBuildPhases { get; set; }
 
         public void
-        appendFrameworksBuildPhase(
+        AppendFrameworksBuildPhase(
             FrameworksBuildPhase phase)
         {
             lock (this.FrameworksBuildPhases)
@@ -320,14 +242,10 @@ namespace XcodeBuilder
             }
         }
 
-        private Bam.Core.Array<ShellScriptBuildPhase> ShellScriptsBuildPhases
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<ShellScriptBuildPhase> ShellScriptsBuildPhases { get; set; }
 
         public void
-        appendShellScriptsBuildPhase(
+        AppendShellScriptsBuildPhase(
             ShellScriptBuildPhase phase)
         {
             lock (this.ShellScriptsBuildPhases)
@@ -336,28 +254,15 @@ namespace XcodeBuilder
             }
         }
 
-        private Bam.Core.Array<CopyFilesBuildPhase> CopyFilesBuildPhases
-        {
-            get;
-            set;
-        }
-
-        private Bam.Core.Array<ContainerItemProxy> ContainerItemProxies
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<CopyFilesBuildPhase> CopyFilesBuildPhases { get; set; }
+        private Bam.Core.Array<ContainerItemProxy> ContainerItemProxies { get; set; }
 
         public void
-        appendContainerItemProxy(
-            ContainerItemProxy proxy)
-        {
-            // these are only added in a single thread
-            this.ContainerItemProxies.AddUnique(proxy);
-        }
+        AppendContainerItemProxy(
+            ContainerItemProxy proxy) => this.ContainerItemProxies.AddUnique(proxy); // these are only added in a single thread
 
         public ContainerItemProxy
-        getContainerItemProxy(
+        GetContainerItemProxy(
             Object remote,
             Object containerPortal)
         {
@@ -365,43 +270,24 @@ namespace XcodeBuilder
                 (item.ContainerPortal == containerPortal) && (item.Remote == remote));
         }
 
-        private Bam.Core.Array<ReferenceProxy> ReferenceProxies
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<ReferenceProxy> ReferenceProxies { get; set; }
 
         public void
-        appendReferenceProxy(
-            ReferenceProxy proxy)
-        {
-            // no lock required, added in serial code
-            this.ReferenceProxies.Add(proxy);
-        }
+        AppendReferenceProxy(
+            ReferenceProxy proxy) => this.ReferenceProxies.Add(proxy); // no lock required, added in serial code
 
         public ReferenceProxy
-        getReferenceProxyForRemoteRef(
-            ContainerItemProxy remoteRef)
-        {
-            return this.ReferenceProxies.FirstOrDefault(item => item.RemoteRef == remoteRef);
-        }
+        GetReferenceProxyForRemoteRef(
+            ContainerItemProxy remoteRef) => this.ReferenceProxies.FirstOrDefault(item => item.RemoteRef == remoteRef);
 
-        private Bam.Core.Array<TargetDependency> TargetDependencies
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<TargetDependency> TargetDependencies { get; set; }
 
         public void
-        appendTargetDependency(
-            TargetDependency dep)
-        {
-            // no lock required, as this is added in serial code
-            this.TargetDependencies.Add(dep);
-        }
+        AppendTargetDependency(
+            TargetDependency dep) => this.TargetDependencies.Add(dep); // // no lock required, as this is added in serial code
 
         public TargetDependency
-        getTargetDependency(
+        GetTargetDependency(
             Target target,
             ContainerItemProxy proxy)
         {
@@ -409,18 +295,14 @@ namespace XcodeBuilder
         }
 
         public TargetDependency
-        getTargetDependency(
+        GetTargetDependency(
             string name,
             ContainerItemProxy proxy)
         {
             return this.TargetDependencies.FirstOrDefault(item => item.Dependency == null && item.Name.Equals(name, System.StringComparison.Ordinal) && item.Proxy == proxy);
         }
 
-        private System.Collections.Generic.Dictionary<Group, FileReference> ProjectReferences
-        {
-            get;
-            set;
-        }
+        private System.Collections.Generic.Dictionary<Group, FileReference> ProjectReferences { get; set; }
 
         public void
         EnsureProjectReferenceExists(
@@ -435,32 +317,9 @@ namespace XcodeBuilder
             }
         }
 
-        public Group MainGroup
-        {
-            get
-            {
-                // order is assumed - added in the constructor
-                return this.Groups[0];
-            }
-        }
-
-        public Group ProductRefGroup
-        {
-            get
-            {
-                // order is assumed - added in the constructor
-                return this.Groups[1];
-            }
-        }
-
-        public Group Frameworks
-        {
-            get
-            {
-                // order is assumed - added in the constructor
-                return this.Groups[2];
-            }
-        }
+        public Group MainGroup => this.Groups[0]; // order is assumed - added in the constructor
+        public Group ProductRefGroup => this.Groups[1]; // order is assumed - added in the constructor
+        public Group Frameworks => this.Groups[2]; // order is assumed - added in the constructor
 
         public FileReference
         EnsureFileReferenceExists(
@@ -578,8 +437,8 @@ namespace XcodeBuilder
                     projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(SYMROOT)/$(CONFIGURATION)");
                 }
 
-                this.getProjectConfiguratonList().AddConfiguration(projectConfig);
-                this.appendAllConfigurations(projectConfig);
+                this.GetProjectConfiguratonList().AddConfiguration(projectConfig);
+                this.AppendAllConfigurations(projectConfig);
                 this.ProjectConfigurations.Add(config, projectConfig);
             }
         }
@@ -646,21 +505,16 @@ namespace XcodeBuilder
             var indent3 = new string('\t', indentLevel + 2);
             var indent4 = new string('\t', indentLevel + 3);
             text.AppendLine();
-            text.AppendFormat("/* Begin PBXProject section */");
-            text.AppendLine();
+            text.AppendLine("/* Begin PBXProject section */");
 
-            text.AppendFormat("{0}{1} /* Project object */ = {{", indent, this.GUID);
-            text.AppendLine();
-            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
-            text.AppendLine();
-            text.AppendFormat("{0}attributes = {{", indent2);
-            text.AppendLine();
+            text.AppendLine($"{indent}{this.GUID} /* Project object */ = {{");
+            text.AppendLine($"{indent2}isa = {this.IsA};");
+            text.AppendLine($"{indent2}attributes = {{");
 
             try
             {
                 var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
-                text.AppendFormat("{0}LastUpgradeCheck = {1};", indent3, clangMeta.LastUpgradeCheck);
-                text.AppendLine();
+                text.AppendLine($"{indent3}LastUpgradeCheck = {clangMeta.LastUpgradeCheck};");
             }
             catch (System.Collections.Generic.KeyNotFoundException)
             {
@@ -671,52 +525,35 @@ namespace XcodeBuilder
 
                 // otherwise, silently ignore
             }
-            text.AppendFormat("{0}}};", indent2);
-            text.AppendLine();
+            text.AppendLine($"{indent2}}};");
             // project configuration list is always the first
-            var projectConfigurationList = this.getProjectConfiguratonList();
-            text.AppendFormat("{0}buildConfigurationList = {1} /* Build configuration list for {2} \"{3}\" */;", indent2, projectConfigurationList.GUID, projectConfigurationList.Parent.IsA, projectConfigurationList.Parent.Name);
-            text.AppendLine();
-            text.AppendFormat("{0}compatibilityVersion = \"{1}\";", indent2, "Xcode 3.2"); // TODO
-            text.AppendLine();
-            text.AppendFormat("{0}mainGroup = {1};", indent2, this.MainGroup.GUID);
-            text.AppendLine();
-            text.AppendFormat("{0}productRefGroup = {1} /* {2} */;", indent2, this.ProductRefGroup.GUID, this.ProductRefGroup.Name);
-            text.AppendLine();
-            text.AppendFormat("{0}projectDirPath = \"\";", indent2);
-            text.AppendLine();
+            var projectConfigurationList = this.GetProjectConfiguratonList();
+            text.AppendLine($"{indent2}buildConfigurationList = {projectConfigurationList.GUID} /* Build configuration list for {projectConfigurationList.Parent.IsA} \"{projectConfigurationList.Parent.Name}\" */;");
+            text.AppendLine($"{indent2}compatibilityVersion = \"Xcode 3.2\";");
+            text.AppendLine($"{indent2}mainGroup = {this.MainGroup.GUID};");
+            text.AppendLine($"{indent2}productRefGroup = {this.ProductRefGroup.GUID} /* {this.ProductRefGroup.Name} */;");
+            text.AppendLine($"{indent2}projectDirPath = \"\";");
             if (this.ProjectReferences.Any())
             {
-                text.AppendFormat("{0}projectReferences = (", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2}projectReferences = (");
                 foreach (var projectRef in this.ProjectReferences)
                 {
-                    text.AppendFormat("{0}{{", indent3);
-                    text.AppendLine();
-                    text.AppendFormat("{0}ProductGroup = {1} /* {2} */;", indent4, projectRef.Key.GUID, projectRef.Key.Name);
-                    text.AppendLine();
-                    text.AppendFormat("{0}ProjectRef = {1} /* {2} */;", indent4, projectRef.Value.GUID, projectRef.Value.Name);
-                    text.AppendLine();
-                    text.AppendFormat("{0}}},", indent3);
-                    text.AppendLine();
+                    text.AppendLine($"{indent3}{{");
+                    text.AppendLine($"{indent4}ProductGroup = {projectRef.Key.GUID} /* {projectRef.Key.Name} */;");
+                    text.AppendLine($"{indent4}ProjectRef = {projectRef.Value.GUID} /* {projectRef.Value.Name} */;");
+                    text.AppendLine($"{indent3}}},");
                 }
-                text.AppendFormat("{0});", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2});");
             }
-            text.AppendFormat("{0}targets = (", indent2);
-            text.AppendLine();
+            text.AppendLine($"{indent2}targets = (");
             foreach (var target in this.Targets.Values)
             {
-                text.AppendFormat("{0}{1} /* {2} */,", indent3, target.GUID, target.Name);
-                text.AppendLine();
+                text.AppendLine($"{indent3}{target.GUID} /* {target.Name} */,");
             }
-            text.AppendFormat("{0});", indent2);
-            text.AppendLine();
-            text.AppendFormat("{0}}};", indent);
-            text.AppendLine();
+            text.AppendLine($"{indent2});");
+            text.AppendLine($"{indent}}};");
 
-            text.AppendFormat("/* End PBXProject section */");
-            text.AppendLine();
+            text.AppendLine("/* End PBXProject section */");
         }
 
         public override void
@@ -727,159 +564,133 @@ namespace XcodeBuilder
             if (this.BuildFiles.Any())
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin PBXBuildFile section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin PBXBuildFile section */");
                 foreach (var buildFile in this.BuildFiles.OrderBy(key => key.GUID))
                 {
                     buildFile.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End PBXBuildFile section */");
-                text.AppendLine();
+                text.AppendLine("/* End PBXBuildFile section */");
             }
             if (this.ContainerItemProxies.Any())
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin PBXContainerItemProxy section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin PBXContainerItemProxy section */");
                 foreach (var proxy in this.ContainerItemProxies.OrderBy(key => key.GUID))
                 {
                     proxy.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End PBXContainerItemProxy section */");
-                text.AppendLine();
+                text.AppendLine("/* End PBXContainerItemProxy section */");
             }
             if (this.CopyFilesBuildPhases.Any())
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin PBXCopyFilesBuildPhase section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin PBXCopyFilesBuildPhase section */");
                 foreach (var phase in this.CopyFilesBuildPhases.OrderBy(key => key.GUID))
                 {
                     phase.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End PBXCopyFilesBuildPhase section */");
-                text.AppendLine();
+                text.AppendLine("/* End PBXCopyFilesBuildPhase section */");
             }
             if (this.FileReferences.Any())
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin PBXFileReference section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin PBXFileReference section */");
                 foreach (var fileRef in this.FileReferences.OrderBy(key => key.GUID))
                 {
                     fileRef.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End PBXFileReference section */");
-                text.AppendLine();
+                text.AppendLine("/* End PBXFileReference section */");
             }
             if (this.FrameworksBuildPhases.Any())
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin PBXFrameworksBuildPhase section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin PBXFrameworksBuildPhase section */");
                 foreach (var phase in this.FrameworksBuildPhases.OrderBy(key => key.GUID))
                 {
                     phase.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End PBXFrameworksBuildPhase section */");
-                text.AppendLine();
+                text.AppendLine("/* End PBXFrameworksBuildPhase section */");
             }
             if (this.Groups.Any())
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin PBXGroup section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin PBXGroup section */");
                 foreach (var group in this.Groups.OrderBy(key => key.GUID))
                 {
                     group.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End PBXGroup section */");
-                text.AppendLine();
+                text.AppendLine("/* End PBXGroup section */");
             }
             if (this.Targets.Any()) // NativeTargets
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin PBXNativeTarget section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin PBXNativeTarget section */");
                 foreach (var target in this.Targets.Values.OrderBy(key => key.GUID))
                 {
                     target.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End PBXNativeTarget section */");
-                text.AppendLine();
+                text.AppendLine("/* End PBXNativeTarget section */");
             }
             this.InternalSerialize(text, indentLevel); //this is the PBXProject :)
             if (this.ReferenceProxies.Any())
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin PBXReferenceProxy section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin PBXReferenceProxy section */");
                 foreach (var proxy in this.ReferenceProxies.OrderBy(key => key.GUID))
                 {
                     proxy.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End PBXReferenceProxy section */");
-                text.AppendLine();
+                text.AppendLine("/* End PBXReferenceProxy section */");
             }
             if (this.ShellScriptsBuildPhases.Any())
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin PBXShellScriptBuildPhase section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin PBXShellScriptBuildPhase section */");
                 foreach (var phase in this.ShellScriptsBuildPhases.OrderBy(key => key.GUID))
                 {
                     phase.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End PBXShellScriptBuildPhase section */");
-                text.AppendLine();
+                text.AppendLine("/* End PBXShellScriptBuildPhase section */");
             }
             if (this.SourcesBuildPhases.Any())
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin PBXSourcesBuildPhase section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin PBXSourcesBuildPhase section */");
                 foreach (var phase in this.SourcesBuildPhases.OrderBy(key => key.GUID))
                 {
                     phase.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End PBXSourcesBuildPhase section */");
-                text.AppendLine();
+                text.AppendLine("/* End PBXSourcesBuildPhase section */");
             }
             if (this.TargetDependencies.Any())
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin PBXTargetDependency section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin PBXTargetDependency section */");
                 foreach (var dependency in this.TargetDependencies.OrderBy(key => key.GUID))
                 {
                     dependency.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End PBXTargetDependency section */");
-                text.AppendLine();
+                text.AppendLine("/* End PBXTargetDependency section */");
             }
             if (this.AllConfigurations.Any())
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin XCBuildConfiguration section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin XCBuildConfiguration section */");
                 foreach (var config in this.AllConfigurations.OrderBy(key => key.GUID))
                 {
                     config.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End XCBuildConfiguration section */");
-                text.AppendLine();
+                text.AppendLine("/* End XCBuildConfiguration section */");
             }
             if (this.ConfigurationLists.Any())
             {
                 text.AppendLine();
-                text.AppendFormat("/* Begin XCConfigurationList section */");
-                text.AppendLine();
+                text.AppendLine("/* Begin XCConfigurationList section */");
                 foreach (var configList in this.ConfigurationLists.OrderBy(key => key.GUID))
                 {
                     configList.Serialize(text, indentLevel);
                 }
-                text.AppendFormat("/* End XCConfigurationList section */");
-                text.AppendLine();
+                text.AppendLine("/* End XCConfigurationList section */");
             }
         }
 

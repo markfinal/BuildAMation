@@ -34,10 +34,7 @@ namespace Publisher
         Bam.Core.PreBuiltTool
     {
         protected override void
-        EvaluateInternal()
-        {
-            this.ReasonToExecute = null;
-        }
+        EvaluateInternal() => this.ReasonToExecute = null;
     }
 
     public sealed class ZipPosix :
@@ -45,18 +42,9 @@ namespace Publisher
     {
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            return new ZipSettings(module);
-        }
+            T module) => new ZipSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("bash").First());
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("bash").First());
 
         public override Bam.Core.TokenizedStringArray InitialArguments
         {
@@ -96,18 +84,9 @@ namespace Publisher
     {
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            return new SevenZipSettings(module);
-        }
+            T module) => new SevenZipSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("7z.exe").First());
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("7z.exe").First());
 
         public override Bam.Core.TokenizedStringArray TerminatingArguments
         {

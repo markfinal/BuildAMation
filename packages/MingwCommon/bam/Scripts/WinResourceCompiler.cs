@@ -37,7 +37,7 @@ namespace MingwCommon
         {
             var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("Mingw");
             var discovery = mingwMeta as C.IToolchainDiscovery;
-            discovery.discover(null);
+            discovery.discover(depth: null);
 
             this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(0)\bin\windres.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
             this.Macros.AddVerbatim("objext", ".o");
@@ -46,28 +46,12 @@ namespace MingwCommon
             this.InheritedEnvironmentVariables.Add("TEMP");
         }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["CompilerPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
-        public override string UseResponseFileOption
-        {
-            get
-            {
-                return "@";
-            }
-        }
+        public override string UseResponseFileOption => "@";
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Mingw.WinResourceCompilerSettings(module);
-            return settings;
-        }
+            T module) => new Mingw.WinResourceCompilerSettings(module);
     }
 }

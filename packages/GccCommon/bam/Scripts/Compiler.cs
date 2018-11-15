@@ -36,24 +36,14 @@ namespace GccCommon
         {
             this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
             var discovery = this.GccMetaData as C.IToolchainDiscovery;
-            discovery.discover(null);
+            discovery.discover(depth: null);
             this.Version = this.GccMetaData.ToolchainVersion;
             this.Macros.AddVerbatim("objext", ".o");
         }
 
-        protected Gcc.MetaData GccMetaData
-        {
-            get;
-            private set;
-        }
+        protected Gcc.MetaData GccMetaData { get; private set; }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["CompilerPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
@@ -91,7 +81,7 @@ namespace GccCommon
             }
             else
             {
-                throw new Bam.Core.Exception("Could not determine type of module {0}", typeof(T).ToString());
+                throw new Bam.Core.Exception($"Could not determine type of module {typeof(T).ToString()}");
             }
         }
 
@@ -113,10 +103,7 @@ namespace GccCommon
     public sealed class CCompiler :
         CompilerBase
     {
-        public CCompiler()
-        {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
-        }
+        public CCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
 
         protected override void
         OverrideDefaultSettings(
@@ -132,10 +119,7 @@ namespace GccCommon
     public sealed class CxxCompiler :
         CompilerBase
     {
-        public CxxCompiler()
-        {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
-        }
+        public CxxCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
 
         protected override void
         OverrideDefaultSettings(
@@ -151,10 +135,7 @@ namespace GccCommon
     public sealed class ObjectiveCCompiler :
         CompilerBase
     {
-        public ObjectiveCCompiler()
-        {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
-        }
+        public ObjectiveCCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
 
         protected override void
         OverrideDefaultSettings(
@@ -172,10 +153,7 @@ namespace GccCommon
     public sealed class ObjectiveCxxCompiler :
         CompilerBase
     {
-        public ObjectiveCxxCompiler()
-        {
-            this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
-        }
+        public ObjectiveCxxCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
 
         protected override void
         OverrideDefaultSettings(

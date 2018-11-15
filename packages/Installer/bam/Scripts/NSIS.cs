@@ -32,8 +32,8 @@ namespace Installer
     class NSISScript :
         Bam.Core.Module
     {
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
+        private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
+        private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
 
         public const string ScriptKey = "NSIS script";
 
@@ -82,23 +82,23 @@ namespace Installer
             var outputName = this.GetEncapsulatingReferencedModule().Macros["OutputName"];
             using (var scriptWriter = new System.IO.StreamWriter(path))
             {
-                scriptWriter.WriteLine("Name \"{0}\"", outputName.ToString());
+                scriptWriter.WriteLine($"Name \"{outputName.ToString()}\"");
                 var installedExePath = this.CreateTokenizedString("$(buildroot)/$(config)/$(0).exe", outputName);
                 installedExePath.Parse();
-                scriptWriter.WriteLine("OutFile \"{0}\"", installedExePath.ToString());
-                scriptWriter.WriteLine("InstallDir $APPDATA\\{0}", outputName.ToString());
+                scriptWriter.WriteLine($"OutFile \"{installedExePath.ToString()}\"");
+                scriptWriter.WriteLine($"InstallDir $APPDATA\\{outputName.ToString()}");
                 scriptWriter.WriteLine("Page directory");
                 scriptWriter.WriteLine("Page instfiles");
                 scriptWriter.WriteLine("Section \"\"");
                 foreach (var dep in this.Files)
                 {
                     scriptWriter.WriteLine("\tSetOutPath $INSTDIR");
-                    scriptWriter.WriteLine("\tFile {0}", dep.Key.GeneratedPaths[dep.Value].ToStringQuoteIfNecessary());
+                    scriptWriter.WriteLine($"\tFile {dep.Key.GeneratedPaths[dep.Value].ToStringQuoteIfNecessary()}");
                 }
                 foreach (var dep in this.Paths)
                 {
                     scriptWriter.WriteLine("\tSetOutPath $INSTDIR");
-                    scriptWriter.WriteLine("\tFile /r \"{0}\\*.*\"", dep.Key.GeneratedPaths[dep.Value].ToString());
+                    scriptWriter.WriteLine($"\tFile /r \"{dep.Key.GeneratedPaths[dep.Value].ToString()}\\*.*\"");
                 }
                 scriptWriter.WriteLine("SectionEnd");
             }
@@ -110,10 +110,7 @@ namespace Installer
         Bam.Core.Settings
     {
         public NSISCompilerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         public override void
         AssignFileLayout()
@@ -129,7 +126,14 @@ namespace Installer
         Init(
             Bam.Core.Module parent)
         {
-            this.Macros.Add("toolPath", Bam.Core.TokenizedString.Create("$(0)/NSIS/makensis.exe", null, new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path)));
+            this.Macros.Add(
+                "toolPath",
+                Bam.Core.TokenizedString.Create(
+                    "$(0)/NSIS/makensis.exe",
+                    null,
+                    new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path)
+                )
+            );
             // since the toolPath macro is needed to evaluate the Executable property
             // in the check for existence
             base.Init(parent);
@@ -137,18 +141,9 @@ namespace Installer
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            return new NSISCompilerSettings(module);
-        }
+            T module) => new NSISCompilerSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["toolPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["toolPath"];
     }
 
     /// <summary>

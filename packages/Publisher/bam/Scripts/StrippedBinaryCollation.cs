@@ -48,7 +48,7 @@ namespace Publisher
 
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
-        private System.Collections.Generic.Dictionary<ICollatedObject, ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<ICollatedObject, ICollatedObject>();
+        private readonly System.Collections.Generic.Dictionary<ICollatedObject, ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<ICollatedObject, ICollatedObject>();
 
         protected override void
         Init(
@@ -151,17 +151,11 @@ namespace Publisher
 
         private void
         CloneFile(
-            ICollatedObject collatedObject)
-        {
-            CloneObject<CollatedFile>(collatedObject);
-        }
+            ICollatedObject collatedObject) => CloneObject<CollatedFile>(collatedObject);
 
         private void
         CloneDirectory(
-            ICollatedObject collatedObject)
-        {
-            CloneObject<CollatedDirectory>(collatedObject);
-        }
+            ICollatedObject collatedObject) => CloneObject<CollatedDirectory>(collatedObject);
 
         private void
         CloneOSXFramework(
@@ -172,18 +166,18 @@ namespace Publisher
         }
 
         private void
-        eachAnchorDependent(
+        EachAnchorDependent(
             ICollatedObject collatedObj,
             object customData)
         {
             var sourceModule = collatedObj.SourceModule;
             if (sourceModule != null)
             {
-                Bam.Core.Log.DebugMessage("\t'{0}'", sourceModule.ToString());
+                Bam.Core.Log.DebugMessage($"\t'{sourceModule.ToString()}'");
             }
             else
             {
-                Bam.Core.Log.DebugMessage("\t'{0}'", (collatedObj as CollatedObject).SourcePath.ToString());
+                Bam.Core.Log.DebugMessage($"\t'{(collatedObj as CollatedObject).SourcePath.ToString()}'");
             }
 
             if ((collatedObj as CollatedObject).Ignore)
@@ -191,8 +185,22 @@ namespace Publisher
                 return;
             }
 
-            var cModule = sourceModule as C.CModule;
-            if (null == cModule)
+            if (sourceModule is C.CModule cModule)
+            {
+                if (cModule.IsPrebuilt)
+                {
+                    if (collatedObj is CollatedOSXFramework)
+                    {
+                        this.CloneOSXFramework(collatedObj);
+                    }
+                    else
+                    {
+                        this.CloneFile(collatedObj);
+                    }
+                    return;
+                }
+            }
+            else
             {
                 // e.g. a shared object symbolic link
                 if (collatedObj is CollatedFile)
@@ -206,19 +214,6 @@ namespace Publisher
                 return;
             }
 
-            if (cModule.IsPrebuilt)
-            {
-                if (collatedObj is CollatedOSXFramework)
-                {
-                    this.CloneOSXFramework(collatedObj);
-                }
-                else
-                {
-                    this.CloneFile(collatedObj);
-                }
-                return;
-            }
-
             if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 if (sourceModule.Tool.Macros.Contains("pdbext"))
@@ -228,8 +223,7 @@ namespace Publisher
                 else
                 {
                     var debugSymbolsCollation = customData as DebugSymbolCollation;
-                    var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as MakeDebugSymbolFile;
-                    if (null != debugSymbols)
+                    if (debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) is MakeDebugSymbolFile debugSymbols)
                     {
                         var stripped = this.StripBinary(collatedObj);
                         var linkBack = debugSymbols.LinkBackToDebugSymbols(stripped);
@@ -240,8 +234,7 @@ namespace Publisher
             else if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {
                 var debugSymbolsCollation = customData as DebugSymbolCollation;
-                var debugSymbols = debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) as MakeDebugSymbolFile;
-                if (null != debugSymbols)
+                if (debugSymbolsCollation.FindDebugSymbols(collatedObj.SourceModule) is MakeDebugSymbolFile debugSymbols)
                 {
                     var stripped = this.StripBinary(collatedObj);
                     var linkBack = debugSymbols.LinkBackToDebugSymbols(stripped);
@@ -254,7 +247,7 @@ namespace Publisher
             }
             else
             {
-                throw new Bam.Core.Exception("Unsupported platform '{0}'", sourceModule.BuildEnvironment.Platform.ToString());
+                throw new Bam.Core.Exception($"Unsupported platform '{sourceModule.BuildEnvironment.Platform.ToString()}'");
             }
         }
 
@@ -266,13 +259,13 @@ namespace Publisher
         {
             if (null != anchor.SourceModule)
             {
-                Bam.Core.Log.DebugMessage("Stripped Anchor '{0}'", anchor.SourceModule.ToString());
+                Bam.Core.Log.DebugMessage($"Stripped Anchor '{anchor.SourceModule.ToString()}'");
             }
             else
             {
-                Bam.Core.Log.DebugMessage("Pre existing Stripped Anchor '{0}'", (anchor as CollatedObject).SourcePath.ToString());
+                Bam.Core.Log.DebugMessage($"Pre existing Stripped Anchor '{(anchor as CollatedObject).SourcePath.ToString()}'");
             }
-            collation.ForEachCollatedObjectFromAnchor(anchor, eachAnchorDependent, customData);
+            collation.ForEachCollatedObjectFromAnchor(anchor, EachAnchorDependent, customData);
         }
 
         /// <summary>
@@ -317,7 +310,9 @@ namespace Publisher
                     return obj.Value as Bam.Core.Module;
                 }
             }
-            throw new Bam.Core.Exception("Unable to find stripped collation object for '{0}'", (anchor as ICollatedObject).SourceModule.ToString());
+            throw new Bam.Core.Exception(
+                $"Unable to find stripped collation object for '{(anchor as ICollatedObject).SourceModule.ToString()}'"
+            );
         }
 
         /// <summary>

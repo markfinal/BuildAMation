@@ -33,10 +33,7 @@ namespace XcodeBuilder
         Bam.Core.IBuildModeMetaData
     {
         public static void
-        PreExecution()
-        {
-            Bam.Core.Graph.Instance.MetaData = new WorkspaceMeta();
-        }
+        PreExecution() => Bam.Core.Graph.Instance.MetaData = new WorkspaceMeta();
 
         public static void
         PostExecution()
@@ -60,9 +57,7 @@ namespace XcodeBuilder
             }
 
             Bam.Core.Log.Info(
-                "Successfully created Xcode workspace for package '{0}'\n\t{1}",
-                Bam.Core.Graph.Instance.MasterPackage.Name,
-                workspaceDir
+                $"Successfully created Xcode workspace for package '{Bam.Core.Graph.Instance.MasterPackage.Name}'\n\t{workspaceDir}"
             );
         }
 
@@ -78,20 +73,7 @@ namespace XcodeBuilder
             return Bam.Core.TokenizedString.CreateVerbatim(currentModule.BuildEnvironment.Configuration.ToString());
         }
 
-        bool Bam.Core.IBuildModeMetaData.PublishBesideExecutable
-        {
-            get
-            {
-                return true;
-            }
-        }
-
-        bool Bam.Core.IBuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles
-        {
-            get
-            {
-                return false;
-            }
-        }
+        bool Bam.Core.IBuildModeMetaData.PublishBesideExecutable => true;
+        bool Bam.Core.IBuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles => false;
     }
 }

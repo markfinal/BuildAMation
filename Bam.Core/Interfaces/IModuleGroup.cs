@@ -34,6 +34,5 @@ namespace Bam.Core
     /// will implement the IChildModule interface
     /// </summary>
     public interface IModuleGroup
-    {
-    }
+    {}
 }

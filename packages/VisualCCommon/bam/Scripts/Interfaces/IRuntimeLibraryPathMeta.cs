@@ -32,7 +32,6 @@ namespace VisualCCommon
     public interface IRuntimeLibraryPathMeta
     {
         Bam.Core.TokenizedStringArray CRuntimePaths(C.EBit depth);
-
         Bam.Core.TokenizedStringArray CxxRuntimePaths(C.EBit depth);
     }
 }

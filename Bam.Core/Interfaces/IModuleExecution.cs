@@ -46,27 +46,17 @@ namespace Bam.Core
         /// Obtain the reason for the execution to occur. A null value means the module does not need to execute.
         /// </summary>
         /// <value>The reason to execute.</value>
-        ExecuteReasoning ReasonToExecute
-        {
-            get;
-        }
+        ExecuteReasoning ReasonToExecute { get; }
 
         /// <summary>
         /// If the module execution is task based, get the Task used to build the module. Otherwise this is null.
         /// </summary>
         /// <value>The execution task.</value>
-        System.Threading.Tasks.Task ExecutionTask
-        {
-            get;
-            set;
-        }
+        System.Threading.Tasks.Task ExecutionTask { get; set; }
 
         /// <summary>
         /// Has the module been executed?
         /// </summary>
-        bool Executed
-        {
-            get;
-        }
+        bool Executed { get; }
     }
 }

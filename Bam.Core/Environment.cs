@@ -48,20 +48,12 @@ namespace Bam.Core
         /// Get or set the Environment's configuration.
         /// </summary>
         /// <value>The configuration associated with the Environment.</value>
-        public EConfiguration Configuration
-        {
-            get;
-            set;
-        }
+        public EConfiguration Configuration { get; set; }
 
         /// <summary>
         /// Get the Environment's platform. It cannot be changed.
         /// </summary>
         /// <value>The platform associated with the Environment.</value>
-        public EPlatform Platform
-        {
-            get;
-            private set;
-        }
+        public EPlatform Platform { get; set; }
     }
 }

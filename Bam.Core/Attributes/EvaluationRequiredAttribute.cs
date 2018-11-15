@@ -46,19 +46,12 @@ namespace Bam.Core
         /// </summary>
         /// <param name="enabled">If set to <c>true</c>, evaluation is used on all modules.</param>
         public EvaluationRequiredAttribute(
-            bool enabled)
-        {
-            this.Enabled = enabled;
-        }
+            bool enabled) => this.Enabled = enabled;
 
         /// <summary>
         /// Return whether evaluation is required for modules.
         /// </summary>
         /// <value><c>true</c> if evaluation is used; <c>false</c> if not.</value>
-        public bool Enabled
-        {
-            get;
-            private set;
-        }
+        public bool Enabled { get; private set; }
     }
 }

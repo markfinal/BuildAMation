@@ -35,28 +35,8 @@ namespace Bam.Core.Options
     public sealed class DisableCacheAssembly :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--nocacheassembly";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Disable caching of the compiled package assembly";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--nocacheassembly";
+        string ICommandLineArgument.ContextHelp => "Disable caching of the compiled package assembly";
     }
 }

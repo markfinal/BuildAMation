@@ -105,12 +105,10 @@ namespace C.Cxx
             // graph, but just won't do anything
             foreach (var child in dependent.Children)
             {
-                var childAsObjectFile = child as ObjectFileBase;
-                if (null == childAsObjectFile)
+                if (child is ObjectFileBase childAsObjectFile)
                 {
-                    continue;
+                    childAsObjectFile.PerformCompilation = false;
                 }
-                childAsObjectFile.PerformCompilation = false;
             }
 
             affectedSource.ExtendWith(dependent);

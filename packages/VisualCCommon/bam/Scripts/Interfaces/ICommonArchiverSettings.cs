@@ -33,10 +33,6 @@ namespace VisualCCommon
     public interface ICommonArchiverSettings :
         Bam.Core.ISettingsBase
     {
-        bool NoLogo
-        {
-            get;
-            set;
-        }
+        bool NoLogo { get; set; }
     }
 }

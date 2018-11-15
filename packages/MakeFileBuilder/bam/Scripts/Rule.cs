@@ -103,7 +103,7 @@ namespace MakeFileBuilder
         {
             if (ignoreErrors)
             {
-                this.ShellCommands.Add(System.String.Format("-{0}", command));
+                this.ShellCommands.Add($"-{command}");
             }
             else
             {
@@ -126,7 +126,7 @@ namespace MakeFileBuilder
                     var name = target.VariableName;
                     if (null != name)
                     {
-                        variableNames.AddUnique("$(" + name + ")");
+                        variableNames.AddUnique($"$({name})");
                     }
                     else
                     {
@@ -164,8 +164,7 @@ namespace MakeFileBuilder
 
                     if (target.IsPhony)
                     {
-                        variables.AppendFormat(".PHONY: {0}", name);
-                        variables.AppendLine();
+                        variables.AppendLine($".PHONY: {name}");
                     }
 
                     // simply expanded variable
@@ -179,22 +178,16 @@ namespace MakeFileBuilder
                     }
                     if (MakeFileCommonMetaData.IsNMAKE)
                     {
-                        variables.AppendFormat(
-                            "{0} = {1}",
-                            name,
-                            commonMeta.UseMacrosInPath(target.Path.ToString())
+                        variables.AppendLine(
+                            $"{name} = {commonMeta.UseMacrosInPath(target.Path.ToString())}"
                         );
-                        variables.AppendLine();
                         variables.AppendLine();
                     }
                     else
                     {
-                        variables.AppendFormat(
-                            "{0}:={1}",
-                            name,
-                            commonMeta.UseMacrosInPath(target.Path.ToString())
+                        variables.AppendLine(
+                            $"{name}:={commonMeta.UseMacrosInPath(target.Path.ToString())}"
                         );
-                        variables.AppendLine();
                     }
                 }
             }
@@ -208,22 +201,20 @@ namespace MakeFileBuilder
                         name = target.Path.ToString();
                     }
 
-                    variables.AppendFormat("{0}=", name);
+                    variables.Append($"{name}=");
                     foreach (var pre in this.PrerequisiteTargets)
                     {
                         var preName = pre.VariableName;
                         if (null == preName)
                         {
-                            variables.AppendFormat(
-                                "{0} ",
-                                commonMeta.UseMacrosInPath(pre.Path.ToString())
+                            variables.Append(
+                                $"{commonMeta.UseMacrosInPath(pre.Path.ToString())} "
                             );
                         }
                         else
                         {
                             variables.AppendFormat(
-                                "$({0}) ",
-                                commonMeta.UseMacrosInPath(preName)
+                                $"$({commonMeta.UseMacrosInPath(preName)}) "
                             );
                         }
                     }
@@ -271,16 +262,15 @@ namespace MakeFileBuilder
                 var name = target.VariableName;
                 if (null != name)
                 {
-                    rules.AppendFormat("$({0}):", name);
+                    rules.Append($"$({name}):");
                 }
                 else
                 {
                     if (target.IsPhony)
                     {
-                        rules.AppendFormat(".PHONY: {0}", target.Path);
-                        rules.AppendLine();
+                        rules.AppendLine($".PHONY: {target.Path}");
                     }
-                    rules.AppendFormat("{0}:", commonMeta.UseMacrosInPath(target.Path.ToString()));
+                    rules.Append($"{commonMeta.UseMacrosInPath(target.Path.ToString())}:");
                 }
 
                 // non-first targets just require the first target to exist
@@ -290,21 +280,19 @@ namespace MakeFileBuilder
                     var firstTargetname = this.FirstTarget.VariableName;
                     if (null != firstTargetname)
                     {
-                        rules.AppendFormat("$({0})", firstTargetname);
+                        rules.AppendLine($"$({firstTargetname})");
                     }
                     else
                     {
-                        rules.AppendFormat("{0}", commonMeta.UseMacrosInPath(this.FirstTarget.Path.ToString()));
+                        rules.AppendLine($"{commonMeta.UseMacrosInPath(this.FirstTarget.Path.ToString())}");
                     }
-                    rules.AppendLine();
                     continue;
                 }
 
                 foreach (var pre in this.Prequisities)
                 {
-                    rules.AppendFormat(
-                        "{0} ",
-                        commonMeta.UseMacrosInPath(pre.Key.GeneratedPaths[pre.Value].ToStringQuoteIfNecessary())
+                    rules.Append(
+                        $"{commonMeta.UseMacrosInPath(pre.Key.GeneratedPaths[pre.Value].ToStringQuoteIfNecessary())} "
                     );
                 }
                 foreach (var pre in this.PrerequisiteTargets)
@@ -312,16 +300,14 @@ namespace MakeFileBuilder
                     var preName = pre.VariableName;
                     if (null == preName)
                     {
-                        rules.AppendFormat(
-                            "{0} ",
-                            commonMeta.UseMacrosInPath(pre.Path.ToString())
+                        rules.Append(
+                            $"{commonMeta.UseMacrosInPath(pre.Path.ToString())} "
                         );
                     }
                     else
                     {
-                        rules.AppendFormat(
-                            "$({0}) ",
-                            commonMeta.UseMacrosInPath(preName)
+                        rules.Append(
+                            $"$({commonMeta.UseMacrosInPath(preName)}) "
                         );
                     }
                 }
@@ -333,25 +319,21 @@ namespace MakeFileBuilder
                 {
                     if (this.OrderOnlyDependencies.Any())
                     {
-                        rules.AppendFormat(
-                            "| "
-                        );
+                        rules.Append("| ");
                     }
                     foreach (var ood in this.OrderOnlyDependencies)
                     {
                         var oodName = ood.VariableName;
                         if (null == oodName)
                         {
-                            rules.AppendFormat(
-                                "{0} ",
-                                commonMeta.UseMacrosInPath(ood.Path.ToString())
+                            rules.Append(
+                                $"{commonMeta.UseMacrosInPath(ood.Path.ToString())} "
                             );
                         }
                         else
                         {
-                            rules.AppendFormat(
-                                "$({0}) ",
-                                commonMeta.UseMacrosInPath(oodName)
+                            rules.Append(
+                                $"$({commonMeta.UseMacrosInPath(oodName)}) "
                             );
                         }
                     }
@@ -381,14 +363,12 @@ namespace MakeFileBuilder
                         }
                         // perform macro replacement after regex, otherwise it may match $(var)
                         escapedCommand = commonMeta.UseMacrosInPath(escapedCommand);
-                        rules.AppendFormat("\t{0}", escapedCommand);
-                        rules.AppendLine();
+                        rules.AppendLine($"\t{escapedCommand}");
                     }
                     else
                     {
                         macro_command = commonMeta.UseMacrosInPath(macro_command);
-                        rules.AppendFormat("\t{0}", macro_command);
-                        rules.AppendLine();
+                        rules.AppendLine($"\t{macro_command}");
                     }
                 }
             }
@@ -453,46 +433,12 @@ namespace MakeFileBuilder
             }
         }
 
-        private int RuleIndex
-        {
-            get;
-            set;
-        }
-
-        private Bam.Core.Module Module
-        {
-            get;
-            set;
-        }
-
-        private Bam.Core.Array<Target> Targets
-        {
-            get;
-            set;
-        }
-
-        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Prequisities
-        {
-            get;
-            set;
-        }
-
-        private Bam.Core.Array<Target> PrerequisiteTargets
-        {
-            get;
-            set;
-        }
-
-        private Bam.Core.StringArray ShellCommands
-        {
-            get;
-            set;
-        }
-
-        private Bam.Core.Array<Target> OrderOnlyDependencies
-        {
-            get;
-            set;
-        }
+        private int RuleIndex { get; set; }
+        private Bam.Core.Module Module { get; set; }
+        private Bam.Core.Array<Target> Targets { get; set; }
+        private System.Collections.Generic.Dictionary<Bam.Core.Module, string> Prequisities { get; set; }
+        private Bam.Core.Array<Target> PrerequisiteTargets { get; set; }
+        private Bam.Core.StringArray ShellCommands { get; set; }
+        private Bam.Core.Array<Target> OrderOnlyDependencies { get; set; }
     }
 }

@@ -38,20 +38,7 @@ namespace XcodeBuilder
             base(target.Project, "Frameworks", "PBXFrameworksBuildPhase", target.GUID)
         {}
 
-        protected override string BuildActionMask
-        {
-            get
-            {
-                return "2147483647";
-            }
-        }
-
-        protected override bool RunOnlyForDeploymentPostprocessing
-        {
-            get
-            {
-                return false;
-            }
-        }
+        protected override string BuildActionMask => "2147483647";
+        protected override bool RunOnlyForDeploymentPostprocessing => false;
     }
 }

@@ -33,7 +33,7 @@ namespace Publisher
     public sealed class ObjCopyTool :
         Bam.Core.PreBuiltTool
     {
-        private Bam.Core.TokenizedString ExecutablePath;
+        private readonly Bam.Core.TokenizedString ExecutablePath;
 
         public ObjCopyTool()
         {
@@ -57,23 +57,11 @@ namespace Publisher
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            return null; // expected that Modules using this will specify their own Settings classes
-        }
+            T module) => null; // expected that Modules using this will specify their own Settings classes
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.ExecutablePath;
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.ExecutablePath;
 
         protected override void
-        EvaluateInternal()
-        {
-            this.ReasonToExecute = null;
-        }
+        EvaluateInternal() => this.ReasonToExecute = null;
     }
 }

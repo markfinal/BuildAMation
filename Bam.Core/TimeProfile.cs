@@ -66,10 +66,7 @@ namespace Bam.Core
         /// Start timing.
         /// </summary>
         public void
-        StartProfile()
-        {
-            this.stopWatch.Start();
-        }
+        StartProfile() => this.stopWatch.Start();
 
         /// <summary>
         /// Stop timing.
@@ -85,22 +82,12 @@ namespace Bam.Core
         /// Which timing profile is this?
         /// </summary>
         /// <value>The profile.</value>
-        public ETimingProfiles Profile
-        {
-            get;
-            private set;
-        }
+        public ETimingProfiles Profile { get; private set; }
 
         /// <summary>
         /// Get the elapsed time for the profile.
         /// </summary>
         /// <value>The elapsed.</value>
-        public System.TimeSpan Elapsed
-        {
-            get
-            {
-                return this.stopWatch.Elapsed;
-            }
-        }
+        public System.TimeSpan Elapsed => this.stopWatch.Elapsed;
     }
 }

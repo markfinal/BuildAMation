@@ -39,26 +39,15 @@ namespace VisualCCommon
         ICommonArchiverSettings
     {
         protected CommonArchiverSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.StringArray("")]
         [VisualStudioProcessor.StringArray("AdditionalOptions")]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         [CommandLineProcessor.Bool("-NOLOGO", "")]
         [VisualStudioProcessor.Bool("SuppressStartupBanner")]
-        bool ICommonArchiverSettings.NoLogo
-        {
-            get;
-            set;
-        }
+        bool ICommonArchiverSettings.NoLogo { get; set; }
 
         public override void
         AssignFileLayout()

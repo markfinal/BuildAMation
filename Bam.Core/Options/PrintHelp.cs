@@ -37,28 +37,8 @@ namespace Bam.Core.Options
     public sealed class PrintHelp :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return "-h";
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--help";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Print this help";
-            }
-        }
+        string ICommandLineArgument.ShortName => "-h";
+        string ICommandLineArgument.LongName => "--help";
+        string ICommandLineArgument.ContextHelp => "Print this help";
     }
 }

@@ -58,7 +58,7 @@ namespace C
                     }
                     else
                     {
-                        var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+                        var macroModule = macroModuleOverride ?? this;
                         (module as SourceFileType).InputPath = macroModule.CreateTokenizedString(path);
                     }
                 });
@@ -103,10 +103,10 @@ namespace C
             // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
             var child = Bam.Core.Module.Create<ChildModuleType>(this);
 
-            if (child is IRequiresSourceModule)
+            if (child is IRequiresSourceModule requiresSourceModule)
             {
                 var source = this.CreateSourceFile<SourceFile>(path, macroModuleOverride, verbatim);
-                (child as IRequiresSourceModule).Source = source;
+                requiresSourceModule.Source = source;
             }
             else
             {
@@ -116,7 +116,7 @@ namespace C
                 }
                 else
                 {
-                    var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+                    var macroModule = macroModuleOverride ?? this;
                     child.InputPath = macroModule.CreateTokenizedString(path);
                 }
             }
@@ -140,10 +140,10 @@ namespace C
             // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
             var child = Bam.Core.Module.Create<ChildModuleType>(this);
 
-            if (child is IRequiresSourceModule)
+            if (child is IRequiresSourceModule requiresSourceModule)
             {
                 var source = this.CreateSourceFile<SourceFile>(path);
-                (child as IRequiresSourceModule).Source = source;
+                requiresSourceModule.Source = source;
             }
             else
             {
@@ -175,7 +175,7 @@ namespace C
                 throw new Bam.Core.Exception("Cannot add files from an empty path");
             }
 
-            var macroModule = (macroModuleOverride == null) ? this : macroModuleOverride;
+            var macroModule = macroModuleOverride ?? this;
             var tokenizedPath = macroModule.CreateTokenizedString(path);
             tokenizedPath.Parse();
             var wildcardPath = tokenizedPath.ToString();
@@ -183,21 +183,23 @@ namespace C
             var dir = System.IO.Path.GetDirectoryName(wildcardPath);
             if (!System.IO.Directory.Exists(dir))
             {
-                throw new Bam.Core.Exception("The directory {0} does not exist", dir);
+                throw new Bam.Core.Exception($"The directory {dir} does not exist");
             }
             var leafname = System.IO.Path.GetFileName(wildcardPath);
             var option = leafname.Contains("**") ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
             var files = System.IO.Directory.GetFiles(dir, leafname, option);
             if (0 == files.Length)
             {
-                throw new Bam.Core.Exception("No files were found that matched the pattern '{0}'", wildcardPath);
+                throw new Bam.Core.Exception($"No files were found that matched the pattern '{wildcardPath}'");
             }
             if (filter != null)
             {
                 var filteredFiles = files.Where(pathname => filter.IsMatch(pathname)).ToArray();
                 if (0 == filteredFiles.Length)
                 {
-                    throw new Bam.Core.Exception("No files were found that matched the pattern '{0}', after applying the regex filter. {1} were found prior to applying the filter.", wildcardPath, files.Count());
+                    throw new Bam.Core.Exception(
+                        $"No files were found that matched the pattern '{wildcardPath}', after applying the regex filter. {files.Count()} were found prior to applying the filter."
+                    );
                 }
                 files = filteredFiles;
             }
@@ -231,28 +233,28 @@ namespace C
                 this.DependsOn(clonedChild);
 
                 // source might be a buildable module (derived from C.SourceFile), or non-buildable module (C.SourceFile), or just a path
-                if (clonedChild is IRequiresSourceModule)
+                if (clonedChild is IRequiresSourceModule clonedChildRequiresSource)
                 {
                     var sourceOfChild = (child as IRequiresSourceModule).Source;
-                    if (sourceOfChild is Bam.Core.ICloneModule)
+                    if (sourceOfChild is Bam.Core.ICloneModule sourceOfChildIsCloned)
                     {
-                        (sourceOfChild as Bam.Core.ICloneModule).Clone(this, (newModule) =>
+                        sourceOfChildIsCloned.Clone(this, (newModule) =>
                             {
                                 // associate the cloned source, to the cloned object file
                                 // might need to happen prior to type-specific post-cloning ops
-                                (clonedChild as IRequiresSourceModule).Source = newModule as SourceFile;
+                                clonedChildRequiresSource.Source = newModule as SourceFile;
                             });
                     }
                     else
                     {
-                        (clonedChild as IRequiresSourceModule).Source = sourceOfChild;
+                        clonedChildRequiresSource.Source = sourceOfChild;
                     }
                 }
                 else
                 {
                     throw new Bam.Core.Exception(
                         new System.NotImplementedException(),
-                        "Container does not include objects implementing the interface '{0}'", typeof(IRequiresSourceModule).ToString());
+                        $"Container does not include objects implementing the interface '{typeof(IRequiresSourceModule).ToString()}'");
                 }
             }
         }
@@ -262,13 +264,7 @@ namespace C
         /// <summary>
         /// Return a read-only collection of the children of this container, using the ChildModuleType generic type for each module in the collection.
         /// </summary>
-        public new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType> Children
-        {
-            get
-            {
-                return new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType>(base.Children.Select(item => item as ChildModuleType).ToList());
-            }
-        }
+        public new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType> Children => new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType>(base.Children.Select(item => item as ChildModuleType).ToList());
 
         /// <summary>
         /// Return a list of all child modules whose input path contains the specified filename.
@@ -295,8 +291,7 @@ namespace C
                     var list_of_valid_source = new System.Text.StringBuilder();
                     foreach (var child in this.children)
                     {
-                        list_of_valid_source.AppendFormat("\t{0}", child.InputPath.ToString());
-                        list_of_valid_source.AppendLine();
+                        list_of_valid_source.AppendLine($"\t{child.InputPath.ToString()}");
                     }
                     if (!filename.Equals(truePath, System.StringComparison.Ordinal))
                     {
@@ -336,10 +331,7 @@ namespace C
             {
                 foreach (var child in this.children)
                 {
-                    if (null != child.EvaluationTask)
-                    {
-                        child.EvaluationTask.Wait();
-                    }
+                    child.EvaluationTask?.Wait();
                     if (null != child.ReasonToExecute)
                     {
                         switch (child.ReasonToExecute.Reason)
@@ -352,7 +344,7 @@ namespace C
                                 }
 
                             default:
-                                throw new Bam.Core.Exception("Unknown reason, {0}", child.ReasonToExecute.Reason.ToString());
+                                throw new Bam.Core.Exception($"Unknown reason, {child.ReasonToExecute.Reason.ToString()}");
                         }
                     }
                 }

@@ -40,10 +40,6 @@ namespace C
         /// The C++ standard library to link against.
         /// </summary>
         /// <value>The standard library.</value>
-        C.Cxx.EStandardLibrary StandardLibrary
-        {
-            get;
-            set;
-        }
+        C.Cxx.EStandardLibrary StandardLibrary { get; set; }
     }
 }

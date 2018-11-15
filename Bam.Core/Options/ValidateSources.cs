@@ -36,28 +36,8 @@ namespace Bam.Core.Options
     public sealed class ValidateSources :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--validatesources";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Before a build starts, validate that downloaded package sources are still valid. This is a slow operation. Any invalid source trees will throw an exception.";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--validatesources";
+        string ICommandLineArgument.ContextHelp => "Before a build starts, validate that downloaded package sources are still valid. This is a slow operation. Any invalid source trees will throw an exception.";
     }
 }

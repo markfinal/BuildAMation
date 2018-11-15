@@ -47,18 +47,11 @@ namespace Bam.Core
             string format,
             params string[] args)
             :
-            base(format, args)
-        {
-            this.Result = result;
-        }
+            base(format, args) => this.Result = result;
 
         /// <summary>
         /// Access the result of running the executable that failed.
         /// </summary>
-        public RunExecutableResult Result
-        {
-            get;
-            private set;
-        }
+        public RunExecutableResult Result { get; private set; }
     }
 }

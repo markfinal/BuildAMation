@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace ProceduralHeaderTest2
 {
     public sealed class GenerateHeaderTool :
@@ -45,61 +44,14 @@ namespace ProceduralHeaderTest2
 
         public Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module) where T : Bam.Core.Module
-        {
-            return null;
-        }
+            T module) where T : Bam.Core.Module => null;
 
-        public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> EnvironmentVariables
-        {
-            get;
-            private set;
-        }
-
-        public Bam.Core.StringArray InheritedEnvironmentVariables
-        {
-            get;
-            private set;
-        }
-
-        public Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.GeneratedPaths[C.ConsoleApplication.ExecutableKey];
-            }
-        }
-
-        public Bam.Core.TokenizedStringArray InitialArguments
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        public Bam.Core.TokenizedStringArray TerminatingArguments
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        public string UseResponseFileOption
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        Bam.Core.Array<int> Bam.Core.ICommandLineTool.SuccessfulExitCodes
-        {
-            get
-            {
-                return new Bam.Core.Array<int>(0);
-            }
-        }
+        public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> EnvironmentVariables { get; private set; }
+        public Bam.Core.StringArray InheritedEnvironmentVariables { get; private set; }
+        public Bam.Core.TokenizedString Executable => this.GeneratedPaths[C.ConsoleApplication.ExecutableKey];
+        public Bam.Core.TokenizedStringArray InitialArguments => null;
+        public Bam.Core.TokenizedStringArray TerminatingArguments => null;
+        public string UseResponseFileOption => null;
+        Bam.Core.Array<int> Bam.Core.ICommandLineTool.SuccessfulExitCodes => new Bam.Core.Array<int>(0);
     }
 }

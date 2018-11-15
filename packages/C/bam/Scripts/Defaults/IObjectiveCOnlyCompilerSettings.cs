@@ -34,35 +34,30 @@ namespace C.ObjC.DefaultSettings
         public static void Defaults(
             this C.IObjectiveCOnlyCompilerSettings settings,
             Bam.Core.Module module)
-        {
-        }
+        {}
 
         public static void
         Empty(
             this C.IObjectiveCOnlyCompilerSettings settings)
-        {
-        }
+        {}
 
         public static void
         Intersect(
             this C.IObjectiveCOnlyCompilerSettings shared,
             C.IObjectiveCOnlyCompilerSettings other)
-        {
-        }
+        {}
 
         public static void
         Delta(
             this C.IObjectiveCOnlyCompilerSettings delta,
             C.IObjectiveCOnlyCompilerSettings lhs,
             C.IObjectiveCOnlyCompilerSettings rhs)
-        {
-        }
+        {}
 
         public static void
         Clone(
             this C.IObjectiveCOnlyCompilerSettings settings,
             C.IObjectiveCOnlyCompilerSettings other)
-        {
-        }
+        {}
     }
 }

@@ -43,20 +43,12 @@ namespace C
         /// <summary>
         /// Override this function to specify the path of the version script to be written to.
         /// </summary>
-        public abstract Bam.Core.TokenizedString
-        OutputPath
-        {
-            get;
-        }
+        public abstract Bam.Core.TokenizedString OutputPath { get; }
 
         /// <summary>
         /// Override this function to specify the contents of the version script to be written.
         /// </summary>
-        protected abstract string
-        Contents
-        {
-            get;
-        }
+        protected abstract string Contents { get; }
 
         protected override void
         Init(
@@ -112,7 +104,7 @@ namespace C
                 writeFile.NewLine = "\n";
                 writeFile.WriteLine(this.Contents);
             }
-            Bam.Core.Log.Info("Written procedurally generated version script : {0}", destPath);
+            Bam.Core.Log.Info($"Written procedurally generated version script : {destPath}");
         }
     }
 }

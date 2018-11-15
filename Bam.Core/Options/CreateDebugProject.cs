@@ -35,28 +35,8 @@ namespace Bam.Core.Options
     public sealed class CreateDebugProject :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return "-p";
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--createdebugproject";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Create a standalone VisualStudio project to debug a Bam package build";
-            }
-        }
+        string ICommandLineArgument.ShortName => "-p";
+        string ICommandLineArgument.LongName => "--createdebugproject";
+        string ICommandLineArgument.ContextHelp => "Create a standalone VisualStudio project to debug a Bam package build";
     }
 }

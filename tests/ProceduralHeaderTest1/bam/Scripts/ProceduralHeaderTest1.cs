@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace ProceduralHeaderTest1
 {
     sealed class TestApp :
@@ -41,7 +40,7 @@ namespace ProceduralHeaderTest1
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
 
-            var genHeader = Graph.Instance.FindReferencedModule<GenHeader>();
+            var genHeader = Bam.Core.Graph.Instance.FindReferencedModule<GenHeader>();
             source.DependsOn(genHeader);
             source.UsePublicPatches(genHeader);
         }
@@ -50,7 +49,7 @@ namespace ProceduralHeaderTest1
     class GenHeader :
         C.ProceduralHeaderFile
     {
-        protected override TokenizedString OutputPath
+        protected override Bam.Core.TokenizedString OutputPath
         {
             get
             {

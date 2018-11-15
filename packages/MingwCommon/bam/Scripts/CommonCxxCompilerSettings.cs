@@ -50,18 +50,10 @@ namespace MingwCommon
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Asynchronous, "-fexceptions")]
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Synchronous, "-fexceptions")]
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.SyncWithCExternFunctions, "-fexceptions")]
-        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler
-        {
-            get;
-            set;
-        }
+        C.Cxx.EExceptionHandler? C.ICxxOnlyCompilerSettings.ExceptionHandler { get; set; }
 
         [CommandLineProcessor.Bool("-frtti", "-fno-rtti")]
-        bool? C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo
-        {
-            get;
-            set;
-        }
+        bool? C.ICxxOnlyCompilerSettings.EnableRunTimeTypeInfo { get; set; }
 
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.NotSet, "")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.Cxx98, "-std=c++98")]
@@ -72,19 +64,11 @@ namespace MingwCommon
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx11, "-std=gnu++11")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.Cxx14, "-std=c++14")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx14, "-std=gnu++14")]
-        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
+        C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard { get; set; }
 
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.NotSet, "")]
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libstdcxx, "")]
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libcxx, "")]
-        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary
-        {
-            get;
-            set;
-        }
+        C.Cxx.EStandardLibrary? C.ICxxOnlyCompilerSettings.StandardLibrary { get; set; }
     }
 }

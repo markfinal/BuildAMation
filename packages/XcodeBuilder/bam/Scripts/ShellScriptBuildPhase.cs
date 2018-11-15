@@ -50,53 +50,18 @@ namespace XcodeBuilder
             this.GenerateScript = generateScript;
         }
 
-        private GenerateScriptDelegate GenerateScript;
+        private readonly GenerateScriptDelegate GenerateScript;
 
-        protected override string BuildActionMask
-        {
-            get
-            {
-                return "2147483647";
-            }
-        }
+        protected override string BuildActionMask => "2147483647";
+        protected override bool RunOnlyForDeploymentPostprocessing => false;
 
-        protected override bool RunOnlyForDeploymentPostprocessing
-        {
-            get
-            {
-                return false;
-            }
-        }
+        public string ShellPath { get; private set; }
+        public bool ShowEnvironmentInLog { get; private set; }
 
-        public string ShellPath
-        {
-            get;
-            private set;
-        }
+        private Bam.Core.TokenizedStringArray InputPaths { get; set; }
+        private Bam.Core.TokenizedStringArray OutputPaths { get; set; }
 
-        public bool ShowEnvironmentInLog
-        {
-            get;
-            set;
-        }
-
-        private Bam.Core.TokenizedStringArray InputPaths
-        {
-            get;
-            set;
-        }
-
-        private Bam.Core.TokenizedStringArray OutputPaths
-        {
-            get;
-            set;
-        }
-
-        public Target AssociatedTarget
-        {
-            get;
-            private set;
-        }
+        public Target AssociatedTarget { get; private set; }
 
         public void
         AddOutputPaths(
@@ -116,67 +81,50 @@ namespace XcodeBuilder
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
             var indent3 = new string('\t', indentLevel + 2);
-            text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
-            text.AppendLine();
-            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
-            text.AppendLine();
-            text.AppendFormat("{0}buildActionMask = {1};", indent2, this.BuildActionMask);
-            text.AppendLine();
-            if (this.BuildFiles.Count > 0)
+            text.AppendLine($"{indent}{this.GUID} /* {this.Name} */ = {{");
+            text.AppendLine($"{indent2}isa = {this.IsA};");
+            text.AppendLine($"{indent2}buildActionMask = {this.BuildActionMask};");
+            if (this.BuildFiles.Any())
             {
-                text.AppendFormat("{0}files = (", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2}files = (");
                 foreach (var file in this.BuildFiles)
                 {
-                    text.AppendFormat("{0}{1} /* FILLMEIN */,", indent3, file.GUID);
-                    text.AppendLine();
+                    text.AppendLine($"{indent3}{file.GUID} /* FILLMEIN */,");
                 }
-                text.AppendFormat("{0});", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2});");
             }
             if (this.InputPaths.Any())
             {
-                text.AppendFormat("{0}inputPaths = (", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2}inputPaths = (");
                 foreach (var path in this.InputPaths)
                 {
-                    text.AppendFormat("{0}\"{1}\",", indent3, path.ToString());
-                    text.AppendLine();
+                    text.AppendLine($"{indent3}\"{path.ToString()}\",");
                 }
-                text.AppendFormat("{0});", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2});");
             }
-            text.AppendFormat("{0}name = \"{1}\";", indent2, this.Name);
-            text.AppendLine();
+            text.AppendLine($"{indent2}name = \"{this.Name}\";");
             if (this.OutputPaths.Any())
             {
-                text.AppendFormat("{0}outputPaths = (", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2}outputPaths = (");
                 foreach (var path in this.OutputPaths)
                 {
-                    text.AppendFormat("{0}\"{1}\",", indent3, path.ToString());
-                    text.AppendLine();
+                    text.AppendLine($"{indent3}\"{path.ToString()}\",");
                 }
-                text.AppendFormat("{0});", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2});");
             }
-            text.AppendFormat("{0}runOnlyForDeploymentPostprocessing = {1};", indent2, this.RunOnlyForDeploymentPostprocessing ? "1" : "0");
-            text.AppendLine();
-            text.AppendFormat("{0}shellPath = {1};", indent2, this.ShellPath);
-            text.AppendLine();
+            var runOnly = this.RunOnlyForDeploymentPostprocessing ? "1" : "0";
+            text.AppendLine($"{indent2}runOnlyForDeploymentPostprocessing = {runOnly};");
+            text.AppendLine($"{indent2}shellPath = {this.ShellPath};");
             var scriptContent = new System.Text.StringBuilder();
             scriptContent.AppendLine("set -e"); // set -e on bash will fail the script if any command returns a non-zero exit code
             scriptContent.AppendLine("set -x"); // set -x on bash will trace the commands
             scriptContent.AppendLine(this.GenerateScript(this.AssociatedTarget));
-            text.AppendFormat("{0}shellScript = \"{1}\";", indent2, scriptContent.ToString());
-            text.AppendLine();
+            text.AppendLine($"{indent2}shellScript = \"{scriptContent.ToString()}\";");
             if (!this.ShowEnvironmentInLog)
             {
-                text.AppendFormat("{0}showEnvVarsInLog = 0;", indent2);
-                text.AppendLine();
+                text.AppendLine($"{indent2}showEnvVarsInLog = 0;");
             }
-            text.AppendFormat("{0}}};", indent);
-            text.AppendLine();
+            text.AppendLine($"{indent}}};");
         }
     }
 }

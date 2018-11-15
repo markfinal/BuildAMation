@@ -92,7 +92,7 @@ namespace XcodeBuilder
                 return "sourcecode.metal";
 
             default:
-                throw new Bam.Core.Exception("Unrecognized file type {0}", type.ToString());
+                throw new Bam.Core.Exception($"Unrecognized file type {type.ToString()}");
             }
         }
 
@@ -124,7 +124,7 @@ namespace XcodeBuilder
                 return "SDKROOT";
 
             default:
-                throw new Bam.Core.Exception("Unknown source tree, {0}", sourceTree);
+                throw new Bam.Core.Exception($"Unknown source tree, {sourceTree}");
             }
         }
     }
@@ -199,35 +199,11 @@ namespace XcodeBuilder
                 sourceTree: ESourceTree.Group);
         }
 
-        public Bam.Core.TokenizedString Path
-        {
-            get;
-            private set;
-        }
-
-        public EFileType Type
-        {
-            get;
-            private set;
-        }
-
-        private bool ExplicitType
-        {
-            get;
-            set;
-        }
-
-        public ESourceTree SourceTree
-        {
-            get;
-            private set;
-        }
-
-        private string RelativePath
-        {
-            get;
-            set;
-        }
+        public Bam.Core.TokenizedString Path { get; private set; }
+        public EFileType Type { get; private set; }
+        private bool ExplicitType { get; set; }
+        public ESourceTree SourceTree { get; private set; }
+        private string RelativePath { get; set; }
 
         public void
         MakeApplicationBundle()
@@ -251,17 +227,17 @@ namespace XcodeBuilder
             var leafname = System.IO.Path.GetFileName(this.Path.ToString());
 
             var indent = new string('\t', indentLevel);
-            text.AppendFormat("{0}{1} /* {2} */ = {{isa = {3}; ", indent, this.GUID, leafname, this.IsA);
+            text.Append($"{indent}{this.GUID} /* {leafname} */ = {{isa = {this.IsA}; ");
             if (this.ExplicitType)
             {
-                text.AppendFormat("explicitFileType = {0}; ", this.Type.AsString());
+                text.Append($"explicitFileType = {this.Type.AsString()}; ");
             }
             else
             {
-                text.AppendFormat("lastKnownFileType = {0}; ", this.Type.AsString());
+                text.Append($"lastKnownFileType = {this.Type.AsString()}; ");
             }
 
-            text.AppendFormat("name = \"{0}\"; ", leafname);
+            text.Append($"name = \"{leafname}\"; ");
 
             string path = null;
             switch (this.SourceTree)
@@ -284,11 +260,10 @@ namespace XcodeBuilder
                 default:
                     throw new Bam.Core.Exception("Other source trees not handled yet");
             }
-            text.AppendFormat("path = \"{0}\"; ", path);
+            text.Append($"path = \"{path}\"; ");
 
-            text.AppendFormat("sourceTree = {0}; ", this.SourceTree.AsString());
-            text.AppendFormat("}};");
-            text.AppendLine();
+            text.Append($"sourceTree = {this.SourceTree.AsString()}; ");
+            text.AppendLine("};");
         }
     }
 }

@@ -48,9 +48,9 @@ namespace Bam
 
             foreach (var arg in options.OrderBy(key => key.LongName))
             {
-                if (arg is Core.ICustomHelpText)
+                if (arg is Core.ICustomHelpText helpText)
                 {
-                    Core.Log.Info("{0}: {1}", (arg as Core.ICustomHelpText).OptionHelp, arg.ContextHelp);
+                    Core.Log.Info("{0}: {1}", helpText.OptionHelp, arg.ContextHelp);
                 }
                 else
                 {
@@ -82,7 +82,9 @@ namespace Bam
             Core.Log.Info("");
 
             var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
-            var argumentTypes = assemblies.SelectMany(s => s.GetTypes()).Where(p => typeof(Core.ICommandLineArgument).IsAssignableFrom(p) && !p.IsAbstract);
+            var argumentTypes = assemblies.SelectMany(s =>
+                s.GetTypes()).Where(p => typeof(Core.ICommandLineArgument).IsAssignableFrom(p) && !p.IsAbstract
+            );
             try
             {
                 if (Core.PackageUtilities.IsPackageDirectory(Core.Graph.Instance.ProcessState.WorkingDirectory))
@@ -135,7 +137,11 @@ namespace Bam
         public static void
         PrintInstallationDirectory()
         {
-            Core.Log.Info(System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location));
+            Core.Log.Info(
+                System.IO.Path.GetDirectoryName(
+                    System.Reflection.Assembly.GetExecutingAssembly().Location
+                )
+            );
         }
     }
 }

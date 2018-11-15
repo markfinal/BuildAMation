@@ -35,7 +35,6 @@ namespace Publisher.DefaultSettings
         Defaults(
             this IDSymUtilToolSettings settings,
             Bam.Core.Module module)
-        {
-        }
+        {}
     }
 }

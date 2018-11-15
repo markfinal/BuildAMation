@@ -64,7 +64,9 @@ namespace XcodeProjectProcessor
                         var potential_framework_path = System.IO.Path.Combine(searchPath.ToString(), framework_path);
                         if (System.IO.Directory.Exists(potential_framework_path))
                         {
-                            Bam.Core.Log.MessageAll("Found framework at {0}", potential_framework_path);
+                            Bam.Core.Log.MessageAll(
+                                $"Found framework at {potential_framework_path}"
+                            );
                             found = true;
                             throw new System.NotImplementedException();
                         }
@@ -144,7 +146,7 @@ namespace XcodeProjectProcessor
             foreach (var library in libraries)
             {
                 var stripped_library_name = library.Replace("-l", System.String.Empty);
-                var proposed_library_filename = "lib" + stripped_library_name + ".dylib";
+                var proposed_library_filename = $"lib{stripped_library_name}.dylib";
                 if (FindLibrary(
                         stripped_library_name,
                         proposed_library_filename,
@@ -155,7 +157,7 @@ namespace XcodeProjectProcessor
                 {
                     continue;
                 }
-                proposed_library_filename = "lib" + stripped_library_name + ".a";
+                proposed_library_filename = $"lib{stripped_library_name}.a";
                 if (FindLibrary(
                         stripped_library_name,
                         proposed_library_filename,
@@ -167,8 +169,7 @@ namespace XcodeProjectProcessor
                     continue;
                 }
                 throw new Bam.Core.Exception(
-                    "Unable to locate library on any system or user search path: {0}",
-                    stripped_library_name
+                    $"Unable to locate library on any system or user search path: {stripped_library_name}"
                 );
             }
         }
@@ -207,9 +208,7 @@ namespace XcodeProjectProcessor
                     if (!attributeArray.Any())
                     {
                         throw new Bam.Core.Exception(
-                            "No XcodeProcessor attributes for property {0} in module {1}",
-                            full_property_interface_name,
-                            module.ToString()
+                            $"No XcodeProcessor attributes for property {full_property_interface_name} in module {module.ToString()}"
                         );
                     }
                     if (attributeArray.First() is EnumAttribute)
@@ -245,8 +244,7 @@ namespace XcodeProjectProcessor
 
                             default:
                                 throw new Bam.Core.Exception(
-                                    "Unknown Xcode configuration value type, {0}",
-                                    associated_attribute.Type.ToString()
+                                    $"Unknown Xcode configuration value type, {associated_attribute.Type.ToString()}"
                                 );
                         }
                     }
@@ -298,7 +296,7 @@ namespace XcodeProjectProcessor
                                 }
                                 if (associated_attr.PrefixWithSrcRoot)
                                 {
-                                    paths.Add(System.String.Format("$(SRCROOT)/{0}", relPath));
+                                    paths.Add($"$(SRCROOT)/{relPath}");
                                 }
                                 else
                                 {
@@ -345,12 +343,12 @@ namespace XcodeProjectProcessor
                             {
                                 foreach (var split_item in item.Split(' '))
                                 {
-                                    values.Add(System.String.Format("{0}{1}", prefix, item));
+                                    values.Add($"{prefix}{item}");
                                 }
                             }
                             else
                             {
-                                values.Add(System.String.Format("{0}{1}", prefix, item));
+                                values.Add($"{prefix}{item}");
                             }
                         }
                         configuration[associated_attr.Property] = values;
@@ -395,7 +393,7 @@ namespace XcodeProjectProcessor
                         }
                         else
                         {
-                            throw new Bam.Core.Exception("Unrecognised value type, {0}", associated_attr.Type.ToString());
+                            throw new Bam.Core.Exception($"Unrecognised value type, {associated_attr.Type.ToString()}");
                         }
                     }
                     else if (attributeArray.First() is PreprocessorDefinesAttribute)
@@ -425,7 +423,7 @@ namespace XcodeProjectProcessor
                                     // required to get \\\" for each " in the original value
                                     defineValue = defineValue.Replace("\"", "\\\\\\\"");
                                 }
-                                defines.Add(System.String.Format("{0}={1}", define.Key, defineValue));
+                                defines.Add($"{define.Key}={defineValue}");
                             }
                         }
                         configuration[associated_attr.Property] = defines;
@@ -433,10 +431,7 @@ namespace XcodeProjectProcessor
                     else
                     {
                         throw new Bam.Core.Exception(
-                            "Unhandled attribute {0} for property {1} in {2}",
-                            attributeArray.First().ToString(),
-                            attribute_settings_property.Name,
-                            module.ToString()
+                            $"Unhandled attribute {attributeArray.First().ToString()} for property {attribute_settings_property.Name} in {module.ToString()}"
                         );
                     }
                 }

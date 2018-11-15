@@ -74,9 +74,7 @@ namespace Publisher
                     else
                     {
                         throw new Bam.Core.Exception(
-                            "No anchor set on '{0}' with source path '{1}'",
-                            module.GetType().ToString(),
-                            module.SourcePath
+                            $"No anchor set on '{module.GetType().ToString()}' with source path '{module.SourcePath}'"
                         );
                     }
                 }

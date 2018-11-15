@@ -34,22 +34,8 @@ namespace VisualCCommon
     public interface ICommonAssemblerSettings :
         Bam.Core.ISettingsBase
     {
-        bool NoLogo
-        {
-            get;
-            set;
-        }
-
-        EAssemblerWarningLevel WarningLevel
-        {
-            get;
-            set;
-        }
-
-        bool SafeExceptionHandlers
-        {
-            get;
-            set;
-        }
+        bool NoLogo { get; set; }
+        EAssemblerWarningLevel WarningLevel { get; set; }
+        bool SafeExceptionHandlers { get; set; }
     }
 }

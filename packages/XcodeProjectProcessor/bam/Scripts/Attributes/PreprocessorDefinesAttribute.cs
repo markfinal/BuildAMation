@@ -39,6 +39,6 @@ namespace XcodeProjectProcessor
         )
             :
             base(property, ValueType.MultiValued, ignore: ignore)
-        { }
+        {}
     }
 }

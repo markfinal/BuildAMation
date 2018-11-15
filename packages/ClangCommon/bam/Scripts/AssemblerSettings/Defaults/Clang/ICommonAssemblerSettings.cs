@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using C;
 namespace ClangCommon.DefaultSettings
 {
     public static partial class DefaultSettingsExtensions
@@ -36,7 +35,6 @@ namespace ClangCommon.DefaultSettings
         Defaults(
             this ICommonAssemblerSettings settings,
             Bam.Core.Module module)
-        {
-        }
+        {}
     }
 }

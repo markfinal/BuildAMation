@@ -33,32 +33,13 @@ namespace Publisher
     public sealed class ChangeRPathTool :
         Bam.Core.PreBuiltTool
     {
-        protected override void
-        Init(
-            Bam.Core.Module parent)
-        {
-            base.Init(parent);
-        }
-
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            return new ChangeRPathSettings(module);
-        }
+            T module) => new ChangeRPathSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("chrpath").First());
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("chrpath").First());
 
         protected override void
-        EvaluateInternal()
-        {
-            this.ReasonToExecute = null;
-        }
+        EvaluateInternal() => this.ReasonToExecute = null;
     }
 }

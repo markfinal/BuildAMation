@@ -120,10 +120,7 @@ namespace Bam.Core
         /// </summary>
         public BamState()
         {
-            System.Version assemblyVersion;
-            string productVersion;
-            string targetFrameworkName;
-            GetAssemblyVersionData(out assemblyVersion, out productVersion, out targetFrameworkName);
+            GetAssemblyVersionData(out System.Version assemblyVersion, out string productVersion, out string targetFrameworkName);
 
             this.ExecutableDirectory = GetBamDirectory();
             this.WorkingDirectory = GetWorkingDirectory();
@@ -141,83 +138,90 @@ namespace Bam.Core
         /// Obtains the directory containing the Bam assemblies.
         /// </summary>
         /// <value>Bam assembly directory path</value>
-        public string ExecutableDirectory
-        {
-            get;
-            private set;
-        }
+        public string ExecutableDirectory { get; private set; }
 
         /// <summary>
         /// Obtains the version of Bam in use.
         /// </summary>
         /// <value>System.Version representation of the Bam version.</value>
-        public System.Version Version
-        {
-            get;
-            private set;
-        }
+        public System.Version Version { get; private set; }
 
         /// <summary>
         /// Obtains a string representation of the version of Bam in use.
         /// </summary>
         /// <value>The version string.</value>
-        public string VersionString
-        {
-            get;
-            private set;
-        }
+        public string VersionString { get; private set; }
 
         /// <summary>
         /// Obtains the working directory in which Bam is being executed.
         /// </summary>
         /// <value>The working directory.</value>
-        public string WorkingDirectory
-        {
-            get;
-            private set;
-        }
+        public string WorkingDirectory { get; private set; }
 
         /// <summary>
         /// Retrieves the .NET framework version being targeted for package builds.
         /// </summary>
         /// <value>The target framework version.</value>
-        public string TargetFrameworkVersion
-        {
-            get;
-            private set;
-        }
+        public string TargetFrameworkVersion { get; private set; }
 
         /// <summary>
         /// Retrieve the time that bam was launched.
         /// </summary>
-        public System.DateTime BuildStartTime
-        {
-            get;
-            private set;
-        }
+        public System.DateTime BuildStartTime { get; private set; }
 
-        int? ISemanticVersion.MajorVersion
+        int? ISemanticVersion.MajorVersion => Version.Major;
+
+        int? ISemanticVersion.MinorVersion => Version.Minor;
+
+        int? ISemanticVersion.PatchVersion => Version.Build;
+
+        private readonly Array<System.Threading.Tasks.Task> preBuildTasks;
+
+        /// <summary>
+        /// Append a task from an async method that must be completed before builds start.
+        /// </summary>
+        /// <param name="task"></param>
+        public void
+        AppendPreBuildTask(
+            System.Threading.Tasks.Task task)
         {
-            get
+            lock (this.preBuildTasks)
             {
-                return this.Version.Major;
+                Log.DebugMessage($"Adding task {task.ToString()}");
+                this.preBuildTasks.Add(task);
             }
         }
 
-        int? ISemanticVersion.MinorVersion
+        private async System.Threading.Tasks.Task
+        InternalWaitOnAllPreBuildTasks()
         {
-            get
+            var total = this.preBuildTasks.Count;
+            var all = System.Threading.Tasks.Task.WhenAll(this.preBuildTasks.ToArray());
+            for (; ; )
             {
-                return this.Version.Minor;
+                var timer = System.Threading.Tasks.Task.Delay(1000); // every second
+                await System.Threading.Tasks.Task.WhenAny(all, timer);
+                if (all.IsCompleted)
+                {
+                    return;
+                }
+                Log.DetailProgress($"{100 * this.preBuildTasks.Count(task => task.IsCompleted) / total}%");
             }
         }
 
-        int? ISemanticVersion.PatchVersion
+        /// <summary>
+        /// Wait on all prebuild tasks to complete. This is a blocking function.
+        /// </summary>
+        public void
+        WaitOnAllPreBuildTasks()
         {
-            get
+            if (!this.preBuildTasks.Any())
             {
-                return this.Version.Build;
+                return;
             }
+            Log.Info($"Waiting on package source downloads to finish before the build starts...");
+            var all = this.InternalWaitOnAllPreBuildTasks();
+            all.Wait(); // safety
         }
 
         private readonly Array<System.Threading.Tasks.Task> preBuildTasks;

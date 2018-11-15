@@ -32,21 +32,12 @@ namespace WindowsSDK
     public sealed class MetaData :
         Bam.Core.PackageMetaData
     {
-        private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
+        private readonly System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
 
-        public override object this[string index]
-        {
-            get
-            {
-                return this.Meta[index];
-            }
-        }
+        public override object this[string index] => this.Meta[index];
 
         public override bool
         Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
-        }
+            string index) => this.Meta.ContainsKey(index);
     }
 }

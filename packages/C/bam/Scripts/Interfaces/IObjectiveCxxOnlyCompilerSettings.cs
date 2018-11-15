@@ -35,6 +35,5 @@ namespace C
     [Bam.Core.SettingsExtensions(typeof(C.ObjCxx.DefaultSettings.DefaultSettingsExtensions))]
     public interface IObjectiveCxxOnlyCompilerSettings :
         Bam.Core.ISettingsBase
-    {
-    }
+    {}
 }

@@ -27,26 +27,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 using System.Linq;
 namespace C
 {
     public sealed class SharedObjectSymbolicLinkTool :
         Bam.Core.PreBuiltTool
     {
-        public override Settings
+        public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            return new SharedObjectSymbolicLinkSettings(module);
-        }
+            T module) => new SharedObjectSymbolicLinkSettings(module);
 
-        public override TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("ln").First());
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("ln").First());
     }
 }

@@ -47,20 +47,7 @@ namespace NativeBuilder
             return Bam.Core.TokenizedString.CreateVerbatim(outputDir);
         }
 
-        bool Bam.Core.IBuildModeMetaData.PublishBesideExecutable
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        bool Bam.Core.IBuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles
-        {
-            get
-            {
-                return false;
-            }
-        }
+        bool Bam.Core.IBuildModeMetaData.PublishBesideExecutable => false;
+        bool Bam.Core.IBuildModeMetaData.CanCreatePrebuiltProjectForAssociatedFiles => false;
     }
 }

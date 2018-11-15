@@ -36,7 +36,6 @@ namespace MingwCommon.DefaultSettings
         Defaults(
             this ICommonAssemblerSettings settings,
             Bam.Core.Module module)
-        {
-        }
+        {}
     }
 }

@@ -39,7 +39,7 @@ namespace ClangCommon
             var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
             var discovery = clangMeta as C.IToolchainDiscovery;
             discovery.discover(null);
-            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim($"--sdk {clangMeta.SDK}"));
 
             this.Macros.AddVerbatim("exeext", string.Empty);
             this.Macros.AddVerbatim("dynamicprefix", "lib");
@@ -55,7 +55,7 @@ namespace ClangCommon
         {
             var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
             libName = libName.Substring(3); // trim off lib prefix
-            return System.String.Format("-l{0}", libName);
+            return $"-l{libName}";
         }
 
         public override Bam.Core.TokenizedString
@@ -76,7 +76,9 @@ namespace ClangCommon
             {
                 return null;
             }
-            throw new Bam.Core.Exception("Unsupported library type, {0}", library.GetType().ToString());
+            throw new Bam.Core.Exception(
+                $"Unsupported library type, {library.GetType().ToString()}"
+            );
         }
 
         public override void
@@ -109,21 +111,8 @@ namespace ClangCommon
             }
         }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.xcrunPath);
-            }
-        }
-
-        public override Bam.Core.TokenizedStringArray InitialArguments
-        {
-            get
-            {
-                return this.arguments;
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.XcrunPath);
+        public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
     }
 
     [C.RegisterCLinker("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
@@ -131,18 +120,11 @@ namespace ClangCommon
     public sealed class Linker :
         LinkerBase
     {
-        public Linker()
-        {
-            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
-        }
+        public Linker() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Clang.CLinkerSettings(module);
-            return settings;
-        }
+            T module) => new Clang.CLinkerSettings(module);
     }
 
     [C.RegisterCxxLinker("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
@@ -150,17 +132,10 @@ namespace ClangCommon
     public sealed class LinkerCxx :
         LinkerBase
     {
-        public LinkerCxx()
-        {
-            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));
-        }
+        public LinkerCxx() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Clang.CxxLinkerSettings(module);
-            return settings;
-        }
+            T module) => new Clang.CxxLinkerSettings(module);
     }
 }

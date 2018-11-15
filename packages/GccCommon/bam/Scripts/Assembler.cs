@@ -38,18 +38,12 @@ namespace GccCommon
         {
             var metaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
             var discovery = metaData as C.IToolchainDiscovery;
-            discovery.discover(null);
+            discovery.discover(depth: null);
             this.Macros.AddVerbatim("objext", ".o");
             this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(metaData.GccPath));
         }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["AssemblerPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["AssemblerPath"];
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
@@ -63,7 +57,7 @@ namespace GccCommon
             }
             else
             {
-                throw new Bam.Core.Exception("Could not determine type of module {0}", typeof(T).ToString());
+                throw new Bam.Core.Exception($"Could not determine type of module {typeof(T).ToString()}");
             }
         }
     }

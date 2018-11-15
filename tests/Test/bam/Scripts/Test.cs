@@ -34,9 +34,9 @@ namespace Test
         Bam.Core.ISitePolicy
     {
         void
-        ISitePolicy.DefineLocalSettings(
-            Settings settings,
-            Module module)
+        Bam.Core.ISitePolicy.DefineLocalSettings(
+            Bam.Core.Settings settings,
+            Bam.Core.Module module)
         {
             if (settings is C.ICommonCompilerSettings compiler)
             {
@@ -81,7 +81,10 @@ namespace Test
             }
             catch (Bam.Core.UnableToBuildModuleException exception)
             {
-                Bam.Core.Exception.DisplayException(exception, "Continuing to build module {0} with default compiler", this.GetType().ToString());
+                Bam.Core.Exception.DisplayException(
+                    exception,
+                    $"Continuing to build module {this.GetType().ToString()} with default compiler"
+                );
             }
         }
     }

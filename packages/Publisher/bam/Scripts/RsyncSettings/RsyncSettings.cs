@@ -40,45 +40,22 @@ namespace Publisher
         { }
 
         public RsyncSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("-v", "")]
-        bool IRsyncSettings.Verbose
-        {
-            get;
-            set;
-        }
+        bool IRsyncSettings.Verbose { get; set; }
 
         [CommandLineProcessor.Bool("-r", "")]
-        bool IRsyncSettings.Recursive
-        {
-            get;
-            set;
-        }
+        bool IRsyncSettings.Recursive { get; set; }
 
         [CommandLineProcessor.Bool("-a", "")]
-        bool IRsyncSettings.PreserveAllAttributes
-        {
-            get;
-            set;
-        }
+        bool IRsyncSettings.PreserveAllAttributes { get; set; }
 
         [CommandLineProcessor.Bool("-c", "")]
-        bool IRsyncSettings.UseChecksums
-        {
-            get;
-            set;
-        }
+        bool IRsyncSettings.UseChecksums { get; set; }
 
         [CommandLineProcessor.PathArray("--exclude ")]
-        Bam.Core.TokenizedStringArray IRsyncSettings.Exclusions
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray IRsyncSettings.Exclusions { get; set; }
 
         public override void
         AssignFileLayout()

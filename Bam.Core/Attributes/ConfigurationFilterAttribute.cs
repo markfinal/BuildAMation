@@ -41,10 +41,7 @@ namespace Bam.Core
         /// </summary>
         /// <param name="config">The configuration(s) for which the module can be built.</param>
         public ConfigurationFilterAttribute(
-            EConfiguration config)
-        {
-            this.Configuration = config;
-        }
+            EConfiguration config) => this.Configuration = config;
 
         /// <summary>
         /// Is the configuration in <paramref name="other" /> included in those specified at construction.
@@ -52,15 +49,8 @@ namespace Bam.Core
         /// <param name="other">Configuration to compare against.</param>
         public bool
         Includes(
-            EConfiguration other)
-        {
-            return (other == (this.Configuration & other));
-        }
+            EConfiguration other) => other == (this.Configuration & other);
 
-        private EConfiguration Configuration
-        {
-            get;
-            set;
-        }
+        private EConfiguration Configuration { get; set; }
     }
 }

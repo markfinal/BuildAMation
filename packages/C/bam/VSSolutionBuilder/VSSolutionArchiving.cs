@@ -35,13 +35,10 @@ namespace C
         Archive(
             StaticLibrary module)
         {
-            VSSolutionBuilder.VSSolution solution;
-            VSSolutionBuilder.VSProjectConfiguration config;
-
             // add headers, source, compiler settings
             LinkOrArchive(
-                out solution,
-                out config,
+                out VSSolutionBuilder.VSSolution solution,
+                out VSSolutionBuilder.VSProjectConfiguration config,
                 module,
                 VSSolutionBuilder.VSProjectConfiguration.EType.StaticLibrary,
                 module.HeaderFiles

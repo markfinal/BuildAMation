@@ -39,38 +39,26 @@ namespace Bam.Core
         /// Obtain the dictionary of custom environment variables (name, array of values) to set when the tool is executed.
         /// </summary>
         /// <value>The environment variables.</value>
-        System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables
-        {
-            get;
-        }
+        System.Collections.Generic.Dictionary<string, TokenizedStringArray> EnvironmentVariables { get; }
 
         /// <summary>
         /// Obtain the list of environment variable names to inherit from the current environment when the tool is executed.
         /// </summary>
         /// <value>The inherited environment variables.</value>
-        StringArray InheritedEnvironmentVariables
-        {
-            get;
-        }
+        StringArray InheritedEnvironmentVariables { get; }
 
         /// <summary>
         /// Obtain the path to the executable to run. This could be a literal string, or the output from a module build.
         /// </summary>
         /// <value>The executable.</value>
-        TokenizedString Executable
-        {
-            get;
-        }
+        TokenizedString Executable { get; }
 
         /// <summary>
         /// Define any arguments that must appear directly after the executable, e.g. on Windows, any DOS commands must use
         /// an executable of CMD, and the command itself comes after, followed by the arguments to that command.
         /// </summary>
         /// <value>The initial arguments.</value>
-        TokenizedStringArray InitialArguments
-        {
-            get;
-        }
+        TokenizedStringArray InitialArguments { get; }
 
         /// <summary>
         /// Define any arguments that must appear directly after all other arguments, e.g. on Linux, commands that
@@ -79,28 +67,19 @@ namespace Bam.Core
         /// The TerminatingArguments can be used to add that last quote.
         /// </summary>
         /// <value>The terminating arguments to a command line.</value>
-        TokenizedStringArray TerminatingArguments
-        {
-            get;
-        }
+        TokenizedStringArray TerminatingArguments { get; }
 
         /// <summary>
         /// Get the option to use a response file, or null if this is not supported.
         /// </summary>
         /// <value>The use response file option.</value>
-        string UseResponseFileOption
-        {
-            get;
-        }
+        string UseResponseFileOption { get; }
 
         /// <summary>
         /// Array of integers identifying successful exit codes.
         /// Some tools may have more than a single exit code indicating success.
         /// </summary>
         /// <value>The successful exit codes.</value>
-        Array<int> SuccessfulExitCodes
-        {
-            get;
-        }
+        Array<int> SuccessfulExitCodes { get; }
     }
 }

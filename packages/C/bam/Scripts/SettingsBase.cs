@@ -51,8 +51,9 @@ namespace C
                 var attributeArray = i.GetCustomAttributes(attributeType, false);
                 if (0 == attributeArray.Length)
                 {
-                    throw new Bam.Core.Exception("Settings interface {0} is missing attribute {1}",
-                        i.ToString(), attributeType.ToString());
+                    throw new Bam.Core.Exception(
+                        $"Settings interface {i.ToString()} is missing attribute {attributeType.ToString()}"
+                    );
                 }
 
                 var attribute = attributeArray[0] as Bam.Core.SettingsExtensionsAttribute;
@@ -64,13 +65,14 @@ namespace C
                     var deltaMethod = attribute.GetMethod("Delta", new[] { i, i, i });
                     if (null != deltaMethod)
                     {
-                        Bam.Core.Log.DebugMessage("Executing {0}", deltaMethod.Name);
+                        Bam.Core.Log.DebugMessage($"Executing {deltaMethod.Name}");
                         deltaMethod.Invoke(null, new[] { moduleSpecificSettings, this, sharedSettings });
                     }
                     else
                     {
-                        throw new Bam.Core.Exception("Unable to find method {0}.Delta(this {1}, {1}, {1)",
-                            attribute.ExtensionsClassName, i.ToString());
+                        throw new Bam.Core.Exception(
+                            $"Unable to find method {attribute.ExtensionsClassName}.Delta(this {i.ToString()}, {i.ToString()}, {i.ToString()})"
+                        );
                     }
                 }
                 else
@@ -78,13 +80,14 @@ namespace C
                     var cloneMethod = attribute.GetMethod("Clone", new[] { i, i });
                     if (null != cloneMethod)
                     {
-                        Bam.Core.Log.DebugMessage("Executing {0}", cloneMethod.Name);
+                        Bam.Core.Log.DebugMessage($"Executing {cloneMethod.Name}");
                         cloneMethod.Invoke(null, new[] { moduleSpecificSettings, this });
                     }
                     else
                     {
-                        throw new Bam.Core.Exception("Unable to find method {0}.Clone(this {1}, {1})",
-                            attribute.ExtensionsClassName, i.ToString());
+                        throw new Bam.Core.Exception(
+                            $"Unable to find method {attribute.ExtensionsClassName}.Clone(this {i.ToString()}, {i.ToString()})"
+                        );
                     }
                 }
             }
@@ -208,7 +211,9 @@ namespace C
                 var attributeArray = i.GetCustomAttributes(attributeType, false);
                 if (0 == attributeArray.Length)
                 {
-                    throw new Bam.Core.Exception("Settings interface {0} is missing attribute {1}", i.ToString(), attributeType.ToString());
+                    throw new Bam.Core.Exception(
+                        $"Settings interface {i.ToString()} is missing attribute {attributeType.ToString()}"
+                    );
                 }
 
                 var attribute = attributeArray[0] as Bam.Core.SettingsExtensionsAttribute;
@@ -216,17 +221,17 @@ namespace C
                 var cloneSettingsMethod = attribute.GetMethod("Clone", new[] { i, i });
                 if (null == cloneSettingsMethod)
                 {
-                    throw new Bam.Core.Exception("Unable to find extension method {0}.Clone(this {1}, {1}, {1}, {1})",
-                        attribute.ExtensionsClassName,
-                        i.ToString());
+                    throw new Bam.Core.Exception(
+                        $"Unable to find extension method {attribute.ExtensionsClassName}.Clone(this {i.ToString()}, {i.ToString()}, {i.ToString()}, {i.ToString()})"
+                    );
                 }
 
                 var intersectSettingsMethod = attribute.GetMethod("Intersect", new[] { i, i });
                 if (null == intersectSettingsMethod)
                 {
-                    throw new Bam.Core.Exception("Unable to find extension method {0}.Intersect(this {1}, {1})",
-                        attribute.ExtensionsClassName,
-                        i.ToString());
+                    throw new Bam.Core.Exception(
+                        $"Unable to find extension method {attribute.ExtensionsClassName}.Intersect(this {i.ToString()}, {i.ToString()})"
+                    );
                 }
 
                 var objectFileCount = objectFiles.Count();

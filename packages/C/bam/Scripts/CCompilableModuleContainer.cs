@@ -52,7 +52,9 @@ namespace C
             var requiresSource = child as IRequiresSourceModule;
             if (null == requiresSource)
             {
-                throw new Bam.Core.Exception("Module type {0} does not implement the interface {1}", typeof(ChildModuleType).FullName, typeof(IRequiresSourceModule).FullName);
+                throw new Bam.Core.Exception(
+                    $"Module type {typeof(ChildModuleType).FullName} does not implement the interface {typeof(IRequiresSourceModule).FullName}"
+                );
             }
             requiresSource.Source = sourceModule;
             (child as Bam.Core.IChildModule).Parent = this;
@@ -61,23 +63,10 @@ namespace C
             return child;
         }
 
-        public CompilerTool Compiler
-        {
-            get
-            {
-                return this.Tool as CompilerTool;
-            }
-        }
+        public CompilerTool Compiler => this.Tool as CompilerTool;
 
         public void
         SuppressWarningsDelegate(
-            SuppressWarningsDelegate suppresor)
-        {
-            if (null == suppresor)
-            {
-                return;
-            }
-            suppresor.Execute(this);
-        }
+            SuppressWarningsDelegate suppresor) => suppresor?.Execute(this);
     }
 }

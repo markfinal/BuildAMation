@@ -83,29 +83,10 @@ namespace XcodeBuilder
             return guid;
         }
 
-        public Project Project
-        {
-            get;
-            private set;
-        }
-
-        public string GUID
-        {
-            get;
-            private set;
-        }
-
-        public string Name
-        {
-            get;
-            private set;
-        }
-
-        public string IsA
-        {
-            get;
-            private set;
-        }
+        public Project Project { get; private set; }
+        public string GUID { get; private set; }
+        public string Name { get; private set; }
+        public string IsA { get; private set; }
 
         public abstract void
         Serialize(

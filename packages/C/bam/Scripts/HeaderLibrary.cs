@@ -36,7 +36,7 @@ namespace C
         CModule,
         IForwardedLibraries
     {
-        private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
+        private readonly Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
 
         protected override void
         EvaluateInternal()
@@ -79,13 +79,7 @@ namespace C
             }
         }
 
-        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
-        {
-            get
-            {
-                return this.forwardedDeps.ToReadOnlyCollection();
-            }
-        }
+        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps.ToReadOnlyCollection();
 
         /// <summary>
         /// Compile against DependentModule.

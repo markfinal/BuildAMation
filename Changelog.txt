@@ -1,3 +1,5 @@
+15-Nov-2018 Fixes #507. Code cleanup using features of newer C# language specifications.
+
 15-Nov-2018 Fixes #159. Added support for packages to specify where to download archives containing their source.
 In package definition files, you may now specify one or more Source elements to download. Zip, tar and gzipped tar files are supported over http.
 Upon downloading and extracting these, packages have their $(packagedir) token automatically redirected to the download location.

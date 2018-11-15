@@ -40,50 +40,27 @@ namespace WindowsSDKCommon
         ICommonWinResourceCompilerSettings
     {
         public CommonWinResourceCompilerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("-v", "")]
         [VisualStudioProcessor.Bool("ShowProgress")]
-        bool? C.ICommonWinResourceCompilerSettings.Verbose
-        {
-            get;
-            set;
-        }
+        bool? C.ICommonWinResourceCompilerSettings.Verbose { get; set; }
 
         [CommandLineProcessor.PathArray("-i")]
         [VisualStudioProcessor.PathArray("AdditionalIncludeDirectories", inheritExisting: true)]
-        Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonWinResourceCompilerSettings.IncludePaths { get; set; }
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
         [VisualStudioProcessor.PreprocessorDefines("PreprocessorDefinitions", inheritExisting: true)]
-        C.PreprocessorDefinitions C.ICommonWinResourceCompilerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
+        C.PreprocessorDefinitions C.ICommonWinResourceCompilerSettings.PreprocessorDefines { get; set; }
 
         [CommandLineProcessor.StringArray("")]
         [VisualStudioProcessor.StringArray("AdditionalOptions")]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         [CommandLineProcessor.Bool("-NOLOGO", "")]
         [VisualStudioProcessor.Bool("SuppressStartupBanner")]
-        bool? ICommonWinResourceCompilerSettings.NoLogo
-        {
-            get;
-            set;
-        }
+        bool? ICommonWinResourceCompilerSettings.NoLogo { get; set; }
 
         public override void AssignFileLayout()
         {

@@ -40,24 +40,13 @@ namespace Publisher
         {}
 
         public MakeDebugSymbolFileSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("--only-keep-debug", "")]
-        bool IObjCopyToolSettings.OnlyKeepDebug
-        {
-            get;
-            set;
-        }
+        bool IObjCopyToolSettings.OnlyKeepDebug { get; set; }
 
         [CommandLineProcessor.Bool("-v", "")]
-        bool IObjCopyToolSettings.Verbose
-        {
-            get;
-            set;
-        }
+        bool IObjCopyToolSettings.Verbose { get; set; }
 
         public override void AssignFileLayout ()
         {
@@ -75,24 +64,13 @@ namespace Publisher
         {}
 
         public LinkBackDebugSymbolFileSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("--only-keep-debug", "")]
-        bool IObjCopyToolSettings.OnlyKeepDebug
-        {
-            get;
-            set;
-        }
+        bool IObjCopyToolSettings.OnlyKeepDebug { get; set; }
 
         [CommandLineProcessor.Bool("-v", "")]
-        bool IObjCopyToolSettings.Verbose
-        {
-            get;
-            set;
-        }
+        bool IObjCopyToolSettings.Verbose { get; set; }
 
         public override void AssignFileLayout ()
         {

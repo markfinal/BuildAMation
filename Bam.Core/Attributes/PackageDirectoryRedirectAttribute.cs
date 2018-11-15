@@ -72,28 +72,16 @@ namespace Bam.Core
         /// <summary>
         /// Get the name of the package.
         /// </summary>
-        public string Name
-        {
-            get;
-            private set;
-        }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Get the version of the package.
         /// </summary>
-        public string Version
-        {
-            get;
-            private set;
-        }
+        public string Version { get; private set; }
 
         /// <summary>
         /// Get the redirected path.
         /// </summary>
-        public string RedirectedPath
-        {
-            get;
-            private set;
-        }
+        public string RedirectedPath { get; private set; }
     }
 }

@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace C
 {
     public static partial class XcodeSupport
@@ -40,14 +39,10 @@ namespace C
             var toolTarget = (tool as Bam.Core.Module).MetaData as XcodeBuilder.Target;
             var toolConfiguration = toolTarget.GetConfiguration(tool as Bam.Core.Module);
 
-            var commands = new Bam.Core.StringArray();
-            commands.Add(
-                System.String.Format(
-                    "{0} > {1}",
-                    CommandLineProcessor.Processor.StringifyTool(tool),
-                    module.GeneratedPaths[ProceduralHeaderFileFromToolOutput.HeaderFileKey].ToString()
-                )
-            );
+            var commands = new Bam.Core.StringArray
+            {
+                $"{CommandLineProcessor.Processor.StringifyTool(tool)} > {module.GeneratedPaths[ProceduralHeaderFileFromToolOutput.HeaderFileKey].ToString()}"
+            };
 
             XcodeBuilder.Support.AddPostBuildCommands(
                 module,

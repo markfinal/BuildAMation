@@ -41,50 +41,30 @@ namespace C
         /// This value is generally automatically set by the module.
         /// </summary>
         /// <value>The bits.</value>
-        EBit? Bits
-        {
-            get;
-            set;
-        }
+        EBit? Bits { get; set; }
 
         /// <summary>
         /// Assemble with debug symbols.
         /// </summary>
         /// <value>The debug symbols.</value>
-        bool DebugSymbols
-        {
-            get;
-            set;
-        }
+        bool DebugSymbols { get; set; }
 
         /// <summary>
         /// Assemble with all warnings as errors.
         /// </summary>
         /// <value>The warnings as errors.</value>
-        bool WarningsAsErrors
-        {
-            get;
-            set;
-        }
+        bool WarningsAsErrors { get; set; }
 
         /// <summary>
         /// List of paths to search for user headers, i.e. those quoted with double quotes.
         /// </summary>
         /// <value>The include paths.</value>
-        Bam.Core.TokenizedStringArray IncludePaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray IncludePaths { get; set; }
 
         /// <summary>
         /// List of preprocessor defines, of the form key or key=value.
         /// </summary>
         /// <value>The preprocessor defines.</value>
-        C.PreprocessorDefinitions PreprocessorDefines
-        {
-            get;
-            set;
-        }
+        C.PreprocessorDefinitions PreprocessorDefines { get; set; }
     }
 }

@@ -35,36 +35,9 @@ namespace Bam.Core.Options
     public sealed class PackageDefaultVersion :
         IRegExCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return @"--([A-Za-z0-9]+)\.version=([A-Za-z0-9\.]+)";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Define the default version of a package";
-            }
-        }
-
-        string ICustomHelpText.OptionHelp
-        {
-            get
-            {
-                return "--<packagename>.version=<packageversion>";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => @"--([A-Za-z0-9]+)\.version=([A-Za-z0-9\.]+)";
+        string ICommandLineArgument.ContextHelp => "Define the default version of a package";
+        string ICustomHelpText.OptionHelp => "--<packagename>.version=<packageversion>";
     }
 }

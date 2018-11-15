@@ -33,22 +33,8 @@ namespace MingwCommon
     public interface ICommonArchiverSettings :
         Bam.Core.ISettingsBase
     {
-        bool Ranlib
-        {
-            get;
-            set;
-        }
-
-        bool DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
-        }
-
-        MingwCommon.EArchiverCommand Command
-        {
-            get;
-            set;
-        }
+        bool Ranlib { get; set; }
+        bool DoNotWarnIfLibraryCreated { get; set; }
+        MingwCommon.EArchiverCommand Command { get; set; }
     }
 }

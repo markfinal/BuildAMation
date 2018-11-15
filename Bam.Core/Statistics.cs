@@ -37,10 +37,7 @@ namespace Bam.Core
     {
         private static double
         BytesToMegaBytes(
-            long bytes)
-        {
-            return bytes / 1024.0 / 1024.0;
-        }
+            long bytes) => bytes / 1024.0 / 1024.0;
 
         /// <summary>
         /// Display the statistics for the build.

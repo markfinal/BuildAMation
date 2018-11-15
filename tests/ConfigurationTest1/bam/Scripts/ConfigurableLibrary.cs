@@ -35,10 +35,7 @@ namespace ConfigurationTest1
     interface IConfigureLibrary :
         Bam.Core.IModuleConfiguration
     {
-        bool UseFunkyNewFeature
-        {
-            get;
-        }
+        bool UseFunkyNewFeature { get; }
     }
 
     // this class is not abstract, and implements the interface above, additionally implementing a setter for the
@@ -49,37 +46,17 @@ namespace ConfigurationTest1
         IConfigureLibrary
     {
         public ConfigureLibrary(
-            Bam.Core.Environment buildEnv)
-        {
-            this.UseFunkyNewFeature = false;
-        }
+            Bam.Core.Environment buildEnv) => this.UseFunkyNewFeature = false;
 
-        public bool UseFunkyNewFeature
-        {
-            get;
-            set;
-        }
+        public bool UseFunkyNewFeature { get; set; }
     }
 
     class ConfigurableLibrary :
         C.StaticLibrary,
         Bam.Core.IHasModuleConfiguration
     {
-        System.Type IHasModuleConfiguration.ReadOnlyInterfaceType
-        {
-            get
-            {
-                return typeof(IConfigureLibrary);
-            }
-        }
-
-        System.Type IHasModuleConfiguration.WriteableClassType
-        {
-            get
-            {
-                return typeof(ConfigureLibrary);
-            }
-        }
+        System.Type IHasModuleConfiguration.ReadOnlyInterfaceType => typeof(IConfigureLibrary);
+        System.Type IHasModuleConfiguration.WriteableClassType => typeof(ConfigureLibrary);
 
         protected override void
         Init(
@@ -98,8 +75,7 @@ namespace ConfigurationTest1
                     }
                 });
 
-            var config = this.Configuration as IConfigureLibrary;
-            if (null != config)
+            if (this.Configuration is IConfigureLibrary config)
             {
                 if (config.UseFunkyNewFeature)
                 {

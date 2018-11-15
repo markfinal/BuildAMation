@@ -92,8 +92,7 @@ namespace C.Cxx
 
             this.PrivatePatch(settings =>
             {
-                var linker = settings as C.ICommonLinkerSettings;
-                if (null != linker)
+                if (settings is C.ICommonLinkerSettings linker)
                 {
                     linker.OutputType = ELinkerOutput.DynamicLibrary;
                 }
@@ -173,11 +172,7 @@ namespace C.Cxx
             }
             foreach (var source in sources)
             {
-                if (null == source)
-                {
-                    continue;
-                }
-                source.UsePublicPatches(dependent);
+                source?.UsePublicPatches(dependent);
             }
             this.UsePublicPatches(dependent);
         }
@@ -221,8 +216,8 @@ namespace C.Cxx
             {
                 return;
             }
-            this.addLinkDependency(dependent);
-            this.addRuntimeDependency(dependent);
+            this.AddLinkDependency(dependent);
+            this.AddRuntimeDependency(dependent);
             if (dependent is C.DynamicLibrary || dependent is C.Cxx.DynamicLibrary)
             {
                 this.forwardedDeps.AddUnique(dependent);
@@ -263,21 +258,9 @@ namespace C.Cxx
             base.ExecuteInternal(context);
         }
 
-        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries
-        {
-            get
-            {
-                return this.forwardedDeps.ToReadOnlyCollection();
-            }
-        }
+        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps.ToReadOnlyCollection();
 
-        SharedObjectSymbolicLink IDynamicLibrary.LinkerNameSymbolicLink
-        {
-            get
-            {
-                return this.linkerNameSymLink;
-            }
-        }
+        SharedObjectSymbolicLink IDynamicLibrary.LinkerNameSymbolicLink => this.linkerNameSymLink;
         protected SharedObjectSymbolicLink LinkerNameSymbolicLink
         {
             set
@@ -286,13 +269,7 @@ namespace C.Cxx
             }
         }
 
-        SharedObjectSymbolicLink IDynamicLibrary.SONameSymbolicLink
-        {
-            get
-            {
-                return this.soNameSymLink;
-            }
-        }
+        SharedObjectSymbolicLink IDynamicLibrary.SONameSymbolicLink => this.soNameSymLink;
         protected SharedObjectSymbolicLink SONameSymbolicLink
         {
             set

@@ -40,21 +40,13 @@ namespace C
         /// Search paths for frameworks.
         /// </summary>
         /// <value>The framework search paths.</value>
-        Bam.Core.TokenizedStringArray FrameworkSearchPaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray FrameworkSearchPaths { get; set; }
 
         /// <summary>
         /// Minimum version of macOSX supported, which will report deprecated messages if features of
         /// the operating system are used but should not be.
         /// </summary>
         /// <value>The minimum version supported.</value>
-        string MacOSXMinimumVersionSupported
-        {
-            get;
-            set;
-        }
+        string MacOSXMinimumVersionSupported { get; set; }
     }
 }

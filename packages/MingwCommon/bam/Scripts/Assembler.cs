@@ -50,21 +50,8 @@ namespace MingwCommon
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["AssemblerPath"];
-            }
-        }
-
-        public override string UseResponseFileOption
-        {
-            get
-            {
-                return "@";
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["AssemblerPath"];
+        public override string UseResponseFileOption => "@";
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
@@ -78,7 +65,7 @@ namespace MingwCommon
             }
             else
             {
-                throw new Bam.Core.Exception("Could not determine type of module {0}", typeof(T).ToString());
+                throw new Bam.Core.Exception($"Could not determine type of module {typeof(T).ToString()}");
             }
         }
     }

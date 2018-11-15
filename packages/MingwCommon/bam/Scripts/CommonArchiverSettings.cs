@@ -37,37 +37,18 @@ namespace MingwCommon
         ICommonArchiverSettings
     {
         protected CommonArchiverSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("-s", "")]
-        bool ICommonArchiverSettings.Ranlib
-        {
-            get;
-            set;
-        }
+        bool ICommonArchiverSettings.Ranlib { get; set; }
 
         [CommandLineProcessor.Bool("-c", "")]
-        bool ICommonArchiverSettings.DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
-        }
+        bool ICommonArchiverSettings.DoNotWarnIfLibraryCreated { get; set; }
 
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         [CommandLineProcessor.Enum(EArchiverCommand.Replace, "-r")]
-        EArchiverCommand ICommonArchiverSettings.Command
-        {
-            get;
-            set;
-        }
+        EArchiverCommand ICommonArchiverSettings.Command { get; set; }
 
         public override void
         AssignFileLayout()

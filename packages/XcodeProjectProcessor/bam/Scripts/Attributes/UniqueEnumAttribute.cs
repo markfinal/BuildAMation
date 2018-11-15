@@ -40,7 +40,7 @@ namespace XcodeProjectProcessor
         )
             :
             base(key, property, value, ValueType.Unique, ignore: ignore)
-        { }
+        {}
 
         public UniqueEnumAttribute(
             object key,
@@ -56,16 +56,7 @@ namespace XcodeProjectProcessor
             this.Value2 = value2;
         }
 
-        public string Property2
-        {
-            get;
-            private set;
-        }
-
-        public string Value2
-        {
-            get;
-            private set;
-        }
+        public string Property2 { get; private set; }
+        public string Value2 { get; private set; }
     }
 }

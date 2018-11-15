@@ -57,10 +57,6 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(C.ELanguageStandard.GNU89, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.ELanguageStandard.C99, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.ELanguageStandard.GNU99, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
-        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
+        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard { get; set; }
     }
 }

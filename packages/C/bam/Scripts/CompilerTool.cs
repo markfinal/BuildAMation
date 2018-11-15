@@ -38,10 +38,6 @@ namespace C
             Bam.Core.Settings settings)
         {}
 
-        public ToolchainVersion Version
-        {
-            get;
-            protected set;
-        }
+        public ToolchainVersion Version { get; protected set; }
     }
 }

@@ -36,36 +36,9 @@ namespace Bam.Core.Options
         IStringCommandLineArgument,
         ICommandLineArgumentDefault<string>
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return "-o";
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--output";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Set the output directory (build root) for all build artifacts.";
-            }
-        }
-
-        string ICommandLineArgumentDefault<string>.Default
-        {
-            get
-            {
-                return "build";
-            }
-        }
+        string ICommandLineArgument.ShortName => "-o";
+        string ICommandLineArgument.LongName =>"--output";
+        string ICommandLineArgument.ContextHelp => "Set the output directory (build root) for all build artifacts.";
+        string ICommandLineArgumentDefault<string>.Default => "build";
     }
 }

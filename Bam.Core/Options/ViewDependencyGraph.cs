@@ -35,28 +35,8 @@ namespace Bam.Core.Options
     public sealed class ViewDependencyGraph :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--viewgraph";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "View the dependency graph once constructed (before the build starts)";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--viewgraph";
+        string ICommandLineArgument.ContextHelp => "View the dependency graph once constructed (before the build starts)";
     }
 }

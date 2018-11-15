@@ -52,12 +52,10 @@ namespace VisualCCommon
                 }
             }
             var message = new System.Text.StringBuilder();
-            message.AppendFormat("Unable to locate {0} for {1}-bit on these search locations:", executable, (int)depth);
-            message.AppendLine();
+            message.AppendLine($"Unable to locate {executable} for {(int)depth}-bit on these search locations:");
             foreach (var path in this.EnvironmentVariables["PATH"])
             {
-                message.AppendFormat("\t{0}", path.ToString());
-                message.AppendLine();
+                message.AppendLine($"\t{path.ToString()}");
             }
             throw new Bam.Core.Exception(message.ToString());
         }
@@ -76,21 +74,9 @@ namespace VisualCCommon
             this.Macros.AddVerbatim("objext", ".obj");
         }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["AssemblerPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["AssemblerPath"];
 
-        public override string UseResponseFileOption
-        {
-            get
-            {
-                return "@";
-            }
-        }
+        public override string UseResponseFileOption => "@";
 
         public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
         {
@@ -102,7 +88,7 @@ namespace VisualCCommon
             }
             else
             {
-                throw new Bam.Core.Exception("Could not determine type of module {0}", typeof(T).ToString());
+                throw new Bam.Core.Exception($"Could not determine type of module {typeof(T).ToString()}");
             }
         }
     }

@@ -35,28 +35,8 @@ namespace Bam.Core.Options
     public sealed class BuildMode :
         IStringCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return "-b";
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--buildmode";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Specify the build mode to use";
-            }
-        }
+        string ICommandLineArgument.ShortName => "-b";
+        string ICommandLineArgument.LongName => "--buildmode";
+        string ICommandLineArgument.ContextHelp => "Specify the build mode to use";
     }
 }

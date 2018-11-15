@@ -44,21 +44,8 @@ namespace ClangCommon
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
         }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.xcrunPath);
-            }
-        }
-
-        public override Bam.Core.TokenizedStringArray InitialArguments
-        {
-            get
-            {
-                return this.arguments;
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.XcrunPath);
+        public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
     }
 
     [C.RegisterAssembler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
@@ -66,17 +53,10 @@ namespace ClangCommon
     public class Assembler :
         AssemblerBase
     {
-        public Assembler()
-        {
-            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
-        }
+        public Assembler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Clang.AssemblerSettings(module);
-            return settings;
-        }
+            T module) => new Clang.AssemblerSettings(module);
     }
 }

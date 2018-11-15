@@ -46,22 +46,8 @@ namespace CommandLineProcessor
             this.Ignore = ignore;
         }
 
-        public string PathKey
-        {
-            get;
-            private set;
-        }
-
-        public string PathModifier
-        {
-            get;
-            private set;
-        }
-
-        public bool Ignore
-        {
-            get;
-            private set;
-        }
+        public string PathKey { get; private set; }
+        public string PathModifier { get; private set; }
+        public bool Ignore { get; private set; }
     }
 }

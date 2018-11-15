@@ -40,69 +40,38 @@ namespace VisualCCommon
         ICommonAssemblerSettings
     {
         protected CommonAssemblerSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         // defined in the executable used
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "")]
         [VisualStudioProcessor.Enum(C.EBit.ThirtyTwo, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.EBit.SixtyFour, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
-        C.EBit? C.ICommonAssemblerSettings.Bits
-        {
-            get;
-            set;
-        }
+        C.EBit? C.ICommonAssemblerSettings.Bits { get; set; }
 
         [CommandLineProcessor.Bool("-Zi", "")]
         [VisualStudioProcessor.Bool("GenerateDebugInformation")]
-        bool C.ICommonAssemblerSettings.DebugSymbols
-        {
-            get;
-            set;
-        }
+        bool C.ICommonAssemblerSettings.DebugSymbols { get; set; }
 
         [CommandLineProcessor.Bool("-WX", "-WX-")]
         [VisualStudioProcessor.Bool("TreatWarningsAsErrors")]
-        bool C.ICommonAssemblerSettings.WarningsAsErrors
-        {
-            get;
-            set;
-        }
+        bool C.ICommonAssemblerSettings.WarningsAsErrors { get; set; }
 
         [CommandLineProcessor.PathArray("-I")]
         [VisualStudioProcessor.PathArray("IncludePaths", inheritExisting: true)]
-        Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray C.ICommonAssemblerSettings.IncludePaths { get; set; }
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
         [VisualStudioProcessor.PreprocessorDefines("PreprocessorDefinitions", inheritExisting: true)]
-        C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines
-        {
-            get;
-            set;
-        }
+        C.PreprocessorDefinitions C.ICommonAssemblerSettings.PreprocessorDefines { get; set; }
 
         [CommandLineProcessor.StringArray("")]
         [VisualStudioProcessor.StringArray("AdditionalOptions")]
-        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings
-        {
-            get;
-            set;
-        }
+        Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
         [CommandLineProcessor.Bool("-nologo", "")]
         [VisualStudioProcessor.Bool("NoLogo")]
-        bool ICommonAssemblerSettings.NoLogo
-        {
-            get;
-            set;
-        }
+        bool ICommonAssemblerSettings.NoLogo { get; set; }
 
         [CommandLineProcessor.Enum(EAssemblerWarningLevel.Level0, "-W0")]
         [CommandLineProcessor.Enum(EAssemblerWarningLevel.Level1, "-W1")]
@@ -112,19 +81,11 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level1, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
         [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level2, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
         [VisualStudioProcessor.Enum(EAssemblerWarningLevel.Level3, "WarningLevel", VisualStudioProcessor.EnumAttribute.EMode.AsInteger)]
-        EAssemblerWarningLevel ICommonAssemblerSettings.WarningLevel
-        {
-            get;
-            set;
-        }
+        EAssemblerWarningLevel ICommonAssemblerSettings.WarningLevel { get; set; }
 
         [CommandLineProcessor.Bool("-safeseh", "")]
         [VisualStudioProcessor.Bool("UseSafeExceptionHandlers")]
-        bool ICommonAssemblerSettings.SafeExceptionHandlers
-        {
-            get;
-            set;
-        }
+        bool ICommonAssemblerSettings.SafeExceptionHandlers { get; set; }
 
         public override void
         Validate()

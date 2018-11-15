@@ -39,6 +39,6 @@ namespace VisualStudioProcessor
             TargetGroup target = TargetGroup.Settings)
             :
             base(command_switch, inheritExisting, target)
-        { }
+        {}
     }
 }

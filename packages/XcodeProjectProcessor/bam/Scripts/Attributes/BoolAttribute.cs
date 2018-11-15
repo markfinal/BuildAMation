@@ -47,16 +47,7 @@ namespace XcodeProjectProcessor
             this.Falisy = false_value;
         }
 
-        public string Truth
-        {
-            get;
-            private set;
-        }
-
-        public string Falisy
-        {
-            get;
-            private set;
-        }
+        public string Truth { get; private set; }
+        public string Falisy { get; private set; }
     }
 }

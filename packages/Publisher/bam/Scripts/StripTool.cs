@@ -33,7 +33,7 @@ namespace Publisher
     public sealed class StripTool :
         Bam.Core.PreBuiltTool
     {
-        private Bam.Core.TokenizedString ExecutablePath;
+        private readonly Bam.Core.TokenizedString ExecutablePath;
 
         public StripTool()
         {
@@ -54,23 +54,11 @@ namespace Publisher
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            return new StripToolSettings(module);
-        }
+            T module) => new StripToolSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.ExecutablePath;
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.ExecutablePath;
 
         protected override void
-        EvaluateInternal()
-        {
-            this.ReasonToExecute = null;
-        }
+        EvaluateInternal() => this.ReasonToExecute = null;
     }
 }

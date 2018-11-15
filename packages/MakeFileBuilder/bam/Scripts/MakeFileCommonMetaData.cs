@@ -63,23 +63,9 @@ namespace MakeFileBuilder
             }
         }
 
-        private Bam.Core.StringArray Directories
-        {
-            get;
-            set;
-        }
-
-        private System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> Environment
-        {
-            get;
-            set;
-        }
-
-        private System.Collections.Generic.Dictionary<string, string> PackageVariables
-        {
-            get;
-            set;
-        }
+        private Bam.Core.StringArray Directories { get; set; }
+        private System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> Environment { get; set; }
+        private System.Collections.Generic.Dictionary<string, string> PackageVariables { get; set; }
 
         /// <summary>
         /// Add key-value pairs (using strings and TokenizedStringArrays) which represent
@@ -139,12 +125,9 @@ namespace MakeFileBuilder
             System.Diagnostics.Debug.Assert(!MakeFileCommonMetaData.IsNMAKE);
             foreach (var env in this.Environment)
             {
-                output.AppendFormat(
-                    "{0}:={1}",
-                    env.Key,
-                    this.UseMacrosInPath(env.Value.ToString(System.IO.Path.PathSeparator))
+                output.AppendLine(
+                    $"{env.Key}:={this.UseMacrosInPath(env.Value.ToString(System.IO.Path.PathSeparator))}"
                 );
-                output.AppendLine();
             }
         }
 
@@ -163,8 +146,7 @@ namespace MakeFileBuilder
             foreach (var env in this.Environment)
             {
                 // trim the end of 'continuation" characters
-                output.AppendFormat("\t@set {0}={1}", env.Key, env.Value.ToString(System.IO.Path.PathSeparator).TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar }));
-                output.AppendLine();
+                output.AppendLine($"\t@set {env.Key}={env.Value.ToString(System.IO.Path.PathSeparator).TrimEnd(new[] { System.IO.Path.DirectorySeparatorChar })}");
             }
             output.AppendLine();
         }
@@ -225,10 +207,7 @@ namespace MakeFileBuilder
             }
             foreach (var dir in this.Directories)
             {
-                output.AppendFormat(
-                    "{0} ",
-                    this.UseMacrosInPath(dir)
-                );
+                output.Append($"{this.UseMacrosInPath(dir)} ");
             }
             output.AppendLine();
             if (IsNMAKE)
@@ -240,10 +219,7 @@ namespace MakeFileBuilder
 
         public static string
         VariableForPackageDir(
-            string packageName)
-        {
-            return packageName + "_DIR";
-        }
+            string packageName) => $"{packageName}_DIR";
 
         private void
         AppendVariable(
@@ -263,30 +239,21 @@ namespace MakeFileBuilder
                     return;
                 }
                 throw new Bam.Core.Exception(
-                    "Path '{0}' is already registered with macro '{1}'. Cannot re-register it with macro '{2}'",
-                    path,
-                    this.PackageVariables[path],
-                    variableName
+                    $"Path '{path}' is already registered with macro '{this.PackageVariables[path]}'. Cannot re-register it with macro '{variableName}'"
                 );
             }
             if (IsNMAKE)
             {
-                output.AppendFormat(
-                    "{0} = {1}",
-                    variableName,
-                    path
-                );
+                output.Append($"{variableName} = {path}");
             }
             else
             {
-                output.AppendFormat(
-                    "{0} := {1}",
-                    variableName,
-                    path
+                output.Append(
+                    $"{variableName} := {path}"
                 );
             }
             output.AppendLine();
-            this.PackageVariables.Add(path, System.String.Format("$({0})", variableName));
+            this.PackageVariables.Add(path, $"$({variableName})");
         }
 
         public void

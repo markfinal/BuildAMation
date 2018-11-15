@@ -41,44 +41,15 @@ namespace VisualC
             this.VCXProjFiltersToolsVersion = "4.0";
         }
 
-        protected override string subpath_to_vcvars
-        {
-            get
-            {
-                return "VC";
-            }
-        }
+        protected override string Subpath_to_vcvars => "VC";
+        protected override bool Has64bithost_32bitcross => false;
+        protected override bool HasNative64BitTools => false;
 
-        protected override bool has64bithost_32bitcross
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        protected override bool hasNative64BitTools
-        {
-            get
-            {
-                return false;
-            }
-        }
-
-        public override object this[string index]
-        {
-            get
-            {
-                return this.Meta[index];
-            }
-        }
+        public override object this[string index] => this.Meta[index];
 
         public override bool
         Contains(
-            string index)
-        {
-            return this.Meta.ContainsKey(index);
-        }
+            string index) => this.Meta.ContainsKey(index);
 
         public string
         SolutionFormatVersion
@@ -152,7 +123,7 @@ namespace VisualC
                     break;
 
                 default:
-                    throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+                    throw new Bam.Core.Exception($"Unrecognized bit depth, {depth}");
             }
             return dynamicLibPaths;
         }
@@ -173,7 +144,7 @@ namespace VisualC
                     break;
 
                 default:
-                    throw new Bam.Core.Exception("Unrecognized bit depth, {0}", depth);
+                    throw new Bam.Core.Exception($"Unrecognized bit depth, {depth}");
             }
             return dynamicLibPaths;
         }

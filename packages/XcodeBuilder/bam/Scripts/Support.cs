@@ -63,7 +63,7 @@ namespace XcodeBuilder
             foreach (var output in module.GeneratedPaths.Values)
             {
                 var output_path = Bam.Core.IOWrapper.EscapeSpacesInPath(output.ToString());
-                condition_text.AppendFormat("! -e {0} ", output_path);
+                condition_text.Append($"! -e {output_path} ");
                 foreach (var input in module.InputModules)
                 {
                     if (!input.Value.GeneratedPaths.Any())
@@ -71,11 +71,11 @@ namespace XcodeBuilder
                         continue;
                     }
                     var input_path = Bam.Core.IOWrapper.EscapeSpacesInPath(input.Value.GeneratedPaths[input.Key].ToString());
-                    condition_text.AppendFormat("|| {1} -nt {0} ", output_path, input_path);
+                    condition_text.Append($"|| {input_path} -nt {output_path} ");
                 }
                 if (output != last_output)
                 {
-                    condition_text.AppendFormat("|| ");
+                    condition_text.Append("|| ");
                 }
             }
             condition_text.AppendLine("]]");
@@ -104,8 +104,7 @@ namespace XcodeBuilder
             if (null == module.Tool)
             {
                 throw new Bam.Core.Exception(
-                    "Command line tool passed with module '{0}' is invalid",
-                    module.ToString()
+                    $"Command line tool passed with module '{module.ToString()}' is invalid"
                 );
             }
             System.Diagnostics.Debug.Assert(module.Tool is Bam.Core.ICommandLineTool);
@@ -114,10 +113,7 @@ namespace XcodeBuilder
             if (module.WorkingDirectory != null)
             {
                 args.Add(
-                    System.String.Format(
-                        "cd {0} &&",
-                        module.WorkingDirectory.ToStringQuoteIfNecessary()
-                    )
+                    $"cd {module.WorkingDirectory.ToStringQuoteIfNecessary()} &&"
                 );
             }
             var tool = module.Tool as Bam.Core.ICommandLineTool;
@@ -144,9 +140,9 @@ namespace XcodeBuilder
         {
             var encapsulating = module.GetEncapsulatingReferencedModule();
 #if D_PACKAGE_PUBLISHER
-            if (encapsulating is Publisher.Collation)
+            if (encapsulating is Publisher.Collation asCollation)
             {
-                (encapsulating as Publisher.Collation).ForEachAnchor(
+                asCollation.ForEachAnchor(
                     (collation, anchor, customData) =>
                     {
                         encapsulating = anchor.SourceModule;
@@ -172,8 +168,8 @@ namespace XcodeBuilder
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
             AddNewerThanPreamble(module, shellCommandLines);
-            shellCommandLines.Add(System.String.Format("\techo {0}", commandLine));
-            shellCommandLines.Add(System.String.Format("\t{0}", commandLine));
+            shellCommandLines.Add($"\techo {commandLine}");
+            shellCommandLines.Add($"\t{commandLine}");
             AddNewerThanPostamble(module, shellCommandLines);
 
             target.AddPreBuildCommands(
@@ -232,8 +228,7 @@ namespace XcodeBuilder
                     tool = (tool as Publisher.ICollatedObject).SourceModule;
                 }
 #endif
-                var toolTarget = tool.MetaData as Target;
-                if (null != toolTarget)
+                if (tool.MetaData is Target toolTarget)
                 {
                     target.Requires(toolTarget);
                 }

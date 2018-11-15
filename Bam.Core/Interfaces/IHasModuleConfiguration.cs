@@ -38,19 +38,13 @@ namespace Bam.Core
         /// <summary>
         /// Specify the interface type that defines the read-only properties for the module's configuration
         /// </summary>
-        System.Type ReadOnlyInterfaceType
-        {
-            get;
-        }
+        System.Type ReadOnlyInterfaceType { get; }
 
         /// <summary>
         /// Specify the class type that defines the writeable properties (and defaults) for the module's configuration.
         /// The class must have a non-default public constructor accepting a single Bam.Core.Environment argument, and
         /// must implement the read-only configuration interface.
         /// </summary>
-        System.Type WriteableClassType
-        {
-            get;
-        }
+        System.Type WriteableClassType { get; }
     }
 }

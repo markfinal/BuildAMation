@@ -34,7 +34,7 @@ namespace VisualCCommon
         C.LibrarianTool
     {
         private string
-        getLibrarianPath(
+        GetLibrarianPath(
             C.EBit depth)
         {
             const string executable = "lib.exe";
@@ -52,12 +52,10 @@ namespace VisualCCommon
                 }
             }
             var message = new System.Text.StringBuilder();
-            message.AppendFormat("Unable to locate {0} for {1}-bit on these search locations:", executable, (int)depth);
-            message.AppendLine();
+            message.AppendLine($"Unable to locate {executable} for {(int)depth}-bit on these search locations:");
             foreach (var path in this.EnvironmentVariables["PATH"])
             {
-                message.AppendFormat("\t{0}", path.ToString());
-                message.AppendLine();
+                message.AppendLine($"\t{path.ToString()}");
             }
             throw new Bam.Core.Exception(message.ToString());
         }
@@ -70,7 +68,7 @@ namespace VisualCCommon
             discovery.discover(depth);
             this.Macros.Add("InstallPath", meta.InstallDir);
             this.EnvironmentVariables = meta.Environment(depth);
-            var fullLibExePath = this.getLibrarianPath(depth);
+            var fullLibExePath = this.GetLibrarianPath(depth);
             this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.CreateVerbatim(fullLibExePath));
             this.Macros.AddVerbatim("libprefix", string.Empty);
             this.Macros.AddVerbatim("libext", ".lib");
@@ -78,27 +76,11 @@ namespace VisualCCommon
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new VisualC.ArchiverSettings(module);
-            return settings;
-        }
+            T module) => new VisualC.ArchiverSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["ArchiverPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["ArchiverPath"];
 
-        public override string UseResponseFileOption
-        {
-            get
-            {
-                return "@";
-            }
-        }
+        public override string UseResponseFileOption => "@";
     }
 
     [C.RegisterLibrarian("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]

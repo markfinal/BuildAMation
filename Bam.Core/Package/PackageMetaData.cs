@@ -57,10 +57,7 @@ namespace Bam.Core
         /// Obtain data stored in the metadata at a string based index.
         /// </summary>
         /// <param name="index">Index.</param>
-        public abstract object this[string index]
-        {
-            get;
-        }
+        public abstract object this[string index] { get; }
 
         /// <summary>
         /// Determine whether an index is present in the metadata.

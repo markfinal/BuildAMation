@@ -34,7 +34,7 @@ namespace VisualCCommon
         C.LinkerTool
     {
         private string
-        getLinkerPath(
+        GetLinkerPath(
             C.EBit depth)
         {
             const string executable = "link.exe";
@@ -52,12 +52,10 @@ namespace VisualCCommon
                 }
             }
             var message = new System.Text.StringBuilder();
-            message.AppendFormat("Unable to locate {0} for {1}-bit on these search locations:", executable, (int)depth);
-            message.AppendLine();
+            message.AppendLine($"Unable to locate {executable} for {(int)depth}-bit on these search locations:");
             foreach (var path in this.EnvironmentVariables["PATH"])
             {
-                message.AppendFormat("\t{0}", path.ToString());
-                message.AppendLine();
+                message.AppendLine($"\t{path.ToString()}");
             }
             throw new Bam.Core.Exception(message.ToString());
         }
@@ -70,7 +68,7 @@ namespace VisualCCommon
             discovery.discover(depth);
             this.Macros.Add("InstallPath", meta.InstallDir);
             this.EnvironmentVariables = meta.Environment(depth);
-            var fullLinkExePath = this.getLinkerPath(depth);
+            var fullLinkExePath = this.GetLinkerPath(depth);
             this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(fullLinkExePath));
 
             this.Macros.AddVerbatim("exeext", ".exe");
@@ -88,27 +86,11 @@ namespace VisualCCommon
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new VisualC.LinkerSettings(module);
-            return settings;
-        }
+            T module) => new VisualC.LinkerSettings(module);
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["LinkerPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["LinkerPath"];
 
-        public override string UseResponseFileOption
-        {
-            get
-            {
-                return "@";
-            }
-        }
+        public override string UseResponseFileOption => "@";
 
         public override Bam.Core.TokenizedString
         GetLibraryPath(
@@ -128,7 +110,7 @@ namespace VisualCCommon
             {
                 return null;
             }
-            throw new Bam.Core.Exception("Unsupported library type, {0}", library.GetType().ToString());
+            throw new Bam.Core.Exception($"Unsupported library type, {library.GetType().ToString()}");
         }
 
         public override void
@@ -177,6 +159,6 @@ namespace VisualCCommon
         public Linker64()
             :
             base(C.EBit.SixtyFour)
-        { }
+        {}
     }
 }

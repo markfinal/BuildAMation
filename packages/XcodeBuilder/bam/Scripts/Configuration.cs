@@ -33,7 +33,7 @@ namespace XcodeBuilder
     public sealed class Configuration :
         Object
     {
-        private System.Collections.Generic.Dictionary<string, ConfigurationValue> Settings = new System.Collections.Generic.Dictionary<string, ConfigurationValue>();
+        private readonly System.Collections.Generic.Dictionary<string, ConfigurationValue> Settings = new System.Collections.Generic.Dictionary<string, ConfigurationValue>();
 
         public Configuration(
             Bam.Core.EConfiguration config,
@@ -48,20 +48,11 @@ namespace XcodeBuilder
             this.BuildFiles = new Bam.Core.Array<BuildFile>();
         }
 
-        public Bam.Core.EConfiguration Config
-        {
-            get;
-            private set;
-        }
-
-        private Bam.Core.StringArray PreBuildCommands
-        {
-            get;
-            set;
-        }
+        public Bam.Core.EConfiguration Config { get; private set; }
+        private Bam.Core.StringArray PreBuildCommands { get; set; }
 
         public void
-        appendPreBuildCommands(
+        AppendPreBuildCommands(
             Bam.Core.StringArray commands)
         {
             lock (this.PreBuildCommands)
@@ -70,14 +61,10 @@ namespace XcodeBuilder
             }
         }
 
-        private Bam.Core.StringArray PostBuildCommands
-        {
-            get;
-            set;
-        }
+        private Bam.Core.StringArray PostBuildCommands { get; set; }
 
         public void
-        appendPostBuildCommands(
+        AppendPostBuildCommands(
             Bam.Core.StringArray commands)
         {
             lock (this.PostBuildCommands)
@@ -86,11 +73,7 @@ namespace XcodeBuilder
             }
         }
 
-        public Bam.Core.Array<BuildFile> BuildFiles
-        {
-            get;
-            private set;
-        }
+        public Bam.Core.Array<BuildFile> BuildFiles { get; private set; }
 
         public ConfigurationValue this[string key]
         {
@@ -127,12 +110,9 @@ namespace XcodeBuilder
             var indent = new string('\t', indentLevel);
             var indent2 = new string('\t', indentLevel + 1);
             var indent3 = new string('\t', indentLevel + 2);
-            text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
-            text.AppendLine();
-            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
-            text.AppendLine();
-            text.AppendFormat("{0}buildSettings = {{", indent2);
-            text.AppendLine();
+            text.AppendLine($"{indent}{this.GUID} /* {this.Name} */ = {{");
+            text.AppendLine($"{indent2}isa = {this.IsA};");
+            text.AppendLine($"{indent2}buildSettings = {{");
             foreach (var setting in this.Settings.OrderBy(key => key.Key))
             {
                 var value = setting.Value.ToString();
@@ -140,15 +120,11 @@ namespace XcodeBuilder
                 {
                     continue;
                 }
-                text.AppendFormat("{0}{1} = {2};", indent3, setting.Key, value);
-                text.AppendLine();
+                text.AppendLine($"{indent3}{setting.Key} = {value};");
             }
-            text.AppendFormat("{0}}};", indent2);
-            text.AppendLine();
-            text.AppendFormat("{0}name = {1};", indent2, this.Name);
-            text.AppendLine();
-            text.AppendFormat("{0}}};", indent);
-            text.AppendLine();
+            text.AppendLine($"{indent2}}};");
+            text.AppendLine($"{indent2}name = {this.Name};");
+            text.AppendLine($"{indent}}};");
         }
 
         private void
@@ -160,7 +136,7 @@ namespace XcodeBuilder
             var indent = new string(' ', 2 * indentLevel);
             foreach (var line in commandList)
             {
-                text.AppendFormat("{0}{1}\\n", indent, line.Replace("\\", "\\\\").Replace("\"", "\\\""));
+                text.Append($"{indent}{line.Replace("\\", "\\\\").Replace("\"", "\\\"")}\\n");
             }
         }
 

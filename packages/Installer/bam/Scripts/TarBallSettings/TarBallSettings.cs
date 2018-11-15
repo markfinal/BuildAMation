@@ -38,17 +38,10 @@ namespace Installer
         ITarBallSettings
     {
         public TarBallSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Enum(ETarOperation.Create, "-c")]
-        ETarOperation ITarBallSettings.Operation
-        {
-            get;
-            set;
-        }
+        ETarOperation ITarBallSettings.Operation { get; set; }
 
         private ETarCompressionType _compression;
         [CommandLineProcessor.Enum(ETarCompressionType.None, "")]
@@ -89,19 +82,10 @@ namespace Installer
         }
 
         [CommandLineProcessor.String("--transform=")]
-        string ITarBallSettings.TransformRegEx
-        {
-            get;
-            set;
-        }
-
+        string ITarBallSettings.TransformRegEx { get; set; }
 
         [CommandLineProcessor.Bool("-v", "")]
-        bool ITarBallSettings.Verbose
-        {
-            get;
-            set;
-        }
+        bool ITarBallSettings.Verbose { get; set; }
 
         public override void AssignFileLayout ()
         {

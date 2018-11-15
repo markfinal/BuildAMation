@@ -63,8 +63,7 @@ namespace C
             else
             {
                 throw new Bam.Core.Exception(
-                    "Unknown object file type, {0}",
-                    module.GetType().ToString()
+                    $"Unknown object file type, {module.GetType().ToString()}"
                 );
             }
             module.MetaData = target.EnsureSourceBuildFileExists(
@@ -97,8 +96,7 @@ namespace C
                 {
                     continue;
                 }
-                var dependentTarget = dependent.MetaData as XcodeBuilder.Target;
-                if (null != dependentTarget)
+                if (dependent.MetaData is XcodeBuilder.Target dependentTarget)
                 {
                     target.Requires(dependentTarget);
                 }

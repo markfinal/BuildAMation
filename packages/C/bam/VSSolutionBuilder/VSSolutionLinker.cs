@@ -35,16 +35,13 @@ namespace C
         Link(
             ConsoleApplication module)
         {
-            VSSolutionBuilder.VSSolution solution;
-            VSSolutionBuilder.VSProjectConfiguration config;
-
             var type = (module is IDynamicLibrary) ?
                 VSSolutionBuilder.VSProjectConfiguration.EType.DynamicLibrary :
                 VSSolutionBuilder.VSProjectConfiguration.EType.Application;
             // add headers, source, compiler settings
             LinkOrArchive(
-                out solution,
-                out config,
+                out VSSolutionBuilder.VSSolution solution,
+                out VSSolutionBuilder.VSProjectConfiguration config,
                 module,
                 type,
                 module.HeaderFiles

@@ -49,17 +49,9 @@ namespace XcodeBuilder
         protected abstract void
         CreatePlist();
 
-        protected string Path
-        {
-            get;
-            set;
-        }
+        protected string Path { get; set; }
 
-        protected System.Xml.XmlDocument Document
-        {
-            get;
-            set;
-        }
+        protected System.Xml.XmlDocument Document { get; set; }
 
         public void
         Serialize()

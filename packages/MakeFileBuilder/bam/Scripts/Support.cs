@@ -76,9 +76,11 @@ namespace MakeFileBuilder
                 }
             }
 
-            var commands = new Bam.Core.StringArray();
-            commands.Add(executable.ToString());
-            commands.Add(arguments.ToString(' '));
+            var commands = new Bam.Core.StringArray
+            {
+                executable.ToString(),
+                arguments.ToString(' ')
+            };
             rule.AddShellCommand(commands.ToString(' '));
         }
 
@@ -93,16 +95,14 @@ namespace MakeFileBuilder
                 message.AppendLine("A checkpoint must have no outputs");
                 foreach (var genPath in module.GeneratedPaths)
                 {
-                    message.AppendFormat("\t{0} [{1}]", genPath.Value.ToString(), genPath.Key);
-                    message.AppendLine();
+                    message.AppendLine($"\t{genPath.Value.ToString()} [{genPath.Key}]");
                 }
                 throw new Bam.Core.Exception(message.ToString());
             }
             if (!Bam.Core.Graph.Instance.IsReferencedModule(module))
             {
                 throw new Bam.Core.Exception(
-                    "A checkpoint must be a referenced module, {0} is not",
-                    module.ToString()
+                    $"A checkpoint must be a referenced module, {module.ToString()} is not"
                 );
             }
             var meta = new MakeFileBuilder.MakeFileMeta(module);
@@ -220,11 +220,11 @@ namespace MakeFileBuilder
             {
                 if (MakeFileBuilder.MakeFileCommonMetaData.IsNMAKE)
                 {
-                    shellCommands.Add(System.String.Format("cd /D {0} &&", module.WorkingDirectory.ToStringQuoteIfNecessary()));
+                    shellCommands.Add($"cd /D {module.WorkingDirectory.ToStringQuoteIfNecessary()} &&");
                 }
                 else
                 {
-                    shellCommands.Add(System.String.Format("cd {0} &&", module.WorkingDirectory.ToString()));
+                    shellCommands.Add($"cd {module.WorkingDirectory.ToString()} &&");
                 }
             }
             shellCommands.Add(CommandLineProcessor.Processor.StringifyTool(tool));

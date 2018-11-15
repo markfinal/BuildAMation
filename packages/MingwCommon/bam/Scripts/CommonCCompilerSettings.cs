@@ -51,10 +51,6 @@ namespace MingwCommon
         [CommandLineProcessor.Enum(C.ELanguageStandard.GNU89, "-std=gnu89")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.C99, "-std=c99")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.GNU99, "-std=gnu99")]
-        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard
-        {
-            get;
-            set;
-        }
+        C.ELanguageStandard? C.ICOnlyCompilerSettings.LanguageStandard { get; set; }
     }
 }

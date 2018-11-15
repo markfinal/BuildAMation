@@ -42,29 +42,10 @@ namespace XcodeBuilder
             this.OwningTarget = target;
         }
 
-        public Target OwningTarget
-        {
-            get;
-            private set;
-        }
-
-        public FileReference FileRef
-        {
-            get;
-            private set;
-        }
-
-        public Bam.Core.StringArray Settings
-        {
-            get;
-            set;
-        }
-
-        public Object Parent
-        {
-            get;
-            set;
-        }
+        public Target OwningTarget { get; private set; }
+        public FileReference FileRef { get; private set; }
+        public Bam.Core.StringArray Settings { get; set; }
+        public Object Parent { get; set; }
 
         public override void
         Serialize(
@@ -72,19 +53,20 @@ namespace XcodeBuilder
             int indentLevel)
         {
             var indent = new string('\t', indentLevel);
-            text.AppendFormat("{0}{1} /* {3} in {4} */ = {{isa = {5}; fileRef = {2} /* {3} */; ",
+            text.AppendFormat(
+                "{0}{1} /* {3} in {4} */ = {{isa = {5}; fileRef = {2} /* {3} */; ",
                 indent, this.GUID, this.FileRef.GUID,
                 this.Name,
                 (null != this.Parent) ? this.Parent.Name : "Unknown",
-                this.IsA);
+                this.IsA
+            );
             if (this.Settings != null)
             {
                 // any requirements for extra escape characters for escaped quotes are handled
                 // in the native command line translation, by detecting the build mode is Xcode
-                text.AppendFormat("settings = {{COMPILER_FLAGS = \"{0}\"; }}; ", this.Settings.ToString(' '));
+                text.Append($"settings = {{COMPILER_FLAGS = \"{this.Settings.ToString(' ')}\"; }}; ");
             }
-            text.AppendFormat("{0}}};", indent);
-            text.AppendLine();
+            text.AppendLine($"{indent}}};");
         }
     }
 }

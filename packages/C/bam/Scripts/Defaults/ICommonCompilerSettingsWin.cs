@@ -42,8 +42,7 @@ namespace C.DefaultSettings
         public static void
         Empty(
             this C.ICommonCompilerSettingsWin settings)
-        {
-        }
+        {}
 
         public static void
         Intersect(

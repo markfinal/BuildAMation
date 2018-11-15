@@ -36,28 +36,8 @@ namespace Bam.Core.Options
     public sealed class ForceDefinitionFileUpdate :
         IBooleanCommandLineArgument
     {
-        string ICommandLineArgument.ShortName
-        {
-            get
-            {
-                return null;
-            }
-        }
-
-        string ICommandLineArgument.LongName
-        {
-            get
-            {
-                return "--forceupdates";
-            }
-        }
-
-        string ICommandLineArgument.ContextHelp
-        {
-            get
-            {
-                return "Force an update of all package definition files read";
-            }
-        }
+        string ICommandLineArgument.ShortName => null;
+        string ICommandLineArgument.LongName => "--forceupdates";
+        string ICommandLineArgument.ContextHelp => "Force an update of all package definition files read";
     }
 }

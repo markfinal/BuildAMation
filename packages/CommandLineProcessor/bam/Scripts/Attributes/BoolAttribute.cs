@@ -37,23 +37,10 @@ namespace CommandLineProcessor
             string true_command_switch,
             string false_command_switch)
             :
-            base(true_command_switch)
-        {
-            this.FalseCommandSwitch = false_command_switch;
-        }
+            base(true_command_switch) => this.FalseCommandSwitch = false_command_switch;
 
-        public string TrueCommandSwitch
-        {
-            get
-            {
-                return this.CommandSwitch;
-            }
-        }
+        public string TrueCommandSwitch => this.CommandSwitch;
 
-        public string FalseCommandSwitch
-        {
-            get;
-            private set;
-        }
+        public string FalseCommandSwitch { get; private set; }
     }
 }

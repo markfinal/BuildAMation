@@ -46,32 +46,13 @@ namespace XcodeBuilder
             this.RemoteRef = remoteRef;
             this.SourceTree = sourceTree;
 
-            project.appendReferenceProxy(this);
+            project.AppendReferenceProxy(this);
         }
 
-        public FileReference.EFileType FileType
-        {
-            get;
-            private set;
-        }
-
-        public Bam.Core.TokenizedString Path
-        {
-            get;
-            private set;
-        }
-
-        public Object RemoteRef
-        {
-            get;
-            private set;
-        }
-
-        public FileReference.ESourceTree SourceTree
-        {
-            get;
-            private set;
-        }
+        public FileReference.EFileType FileType { get; private set; }
+        public Bam.Core.TokenizedString Path { get; private set; }
+        public Object RemoteRef { get; private set; }
+        public FileReference.ESourceTree SourceTree { get; private set; }
 
         public override void
         Serialize(
@@ -82,25 +63,18 @@ namespace XcodeBuilder
             var indent2 = new string('\t', indentLevel + 1);
             if (null != this.Name)
             {
-                text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
+                text.AppendLine($"{indent}{this.GUID} /* {this.Name} */ = {{");
             }
             else
             {
-                text.AppendFormat("{0}{1} = {{", indent, this.GUID);
+                text.AppendLine($"{indent}{this.GUID} = {{");
             }
-            text.AppendLine();
-            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
-            text.AppendLine();
-            text.AppendFormat("{0}fileType = {1};", indent2, this.FileType.AsString());
-            text.AppendLine();
-            text.AppendFormat("{0}path = {1};", indent2, this.Path.ToStringQuoteIfNecessary());
-            text.AppendLine();
-            text.AppendFormat("{0}remoteRef = {1} /* {2} */;", indent2, this.RemoteRef.GUID, this.RemoteRef.Name);
-            text.AppendLine();
-            text.AppendFormat("{0}sourceTree = {1};", indent2, this.SourceTree.AsString());
-            text.AppendLine();
-            text.AppendFormat("{0}}};", indent);
-            text.AppendLine();
+            text.AppendLine($"{indent2}isa = {this.IsA};");
+            text.AppendLine($"{indent2}fileType = {this.FileType.AsString()};");
+            text.AppendLine($"{indent2}path = {this.Path.ToStringQuoteIfNecessary()};");
+            text.AppendLine($"{indent2}remoteRef = {this.RemoteRef.GUID} /* {this.RemoteRef.Name} */;");
+            text.AppendLine($"{indent2}sourceTree = {this.SourceTree.AsString()};");
+            text.AppendLine($"{indent}}};");
         }
     }
 }

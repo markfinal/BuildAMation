@@ -32,24 +32,9 @@ namespace Publisher
 {
     public interface ICollatedObject
     {
-        Bam.Core.Module SourceModule
-        {
-            get;
-        }
-
-        string SourcePathKey
-        {
-            get;
-        }
-
-        Bam.Core.TokenizedString PublishingDirectory
-        {
-            get;
-        }
-
-        ICollatedObject Anchor
-        {
-            get;
-        }
+        Bam.Core.Module SourceModule { get; }
+        string SourcePathKey { get; }
+        Bam.Core.TokenizedString PublishingDirectory { get; }
+        ICollatedObject Anchor { get; }
     }
 }

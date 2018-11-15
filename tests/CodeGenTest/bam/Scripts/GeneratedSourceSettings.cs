@@ -47,11 +47,7 @@ namespace CodeGenTest
     public interface IGeneratedSourceSettings :
         Bam.Core.ISettingsBase
     {
-        string Keyword
-        {
-            get;
-            set;
-        }
+        string Keyword { get; set; }
     }
 
     [CommandLineProcessor.OutputPath(GeneratedSourceModule.SourceFileKey, " ")]
@@ -66,16 +62,9 @@ namespace CodeGenTest
         }
 
         [CommandLineProcessor.String("")]
-        string IGeneratedSourceSettings.Keyword
-        {
-            get;
-            set;
-        }
+        string IGeneratedSourceSettings.Keyword { get; set; }
 
         public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Inputs_Outputs_Cmds;
-        }
+        AssignFileLayout() => this.FileLayout = ELayout.Inputs_Outputs_Cmds;
     }
 }

@@ -48,22 +48,8 @@ namespace VisualStudioProcessor
             this.HandledByMetaData = handledByMetaData;
         }
 
-        public string PathKey
-        {
-            get;
-            private set;
-        }
-
-        public int MaxFileCount
-        {
-            get;
-            set;
-        }
-
-        public bool HandledByMetaData
-        {
-            get;
-            set;
-        }
+        public string PathKey { get; private set; }
+        public int MaxFileCount { get; private set; }
+        public bool HandledByMetaData { get; private set; }
     }
 }

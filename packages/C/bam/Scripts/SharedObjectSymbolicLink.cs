@@ -39,11 +39,7 @@ namespace C
         /// <summary>
         /// Query whether the module has the C.Prebuilt attribute assigned to it.
         /// </summary>
-        public bool IsPrebuilt
-        {
-            get;
-            private set;
-        }
+        public bool IsPrebuilt { get; private set; }
 
         protected override void
         Init(
@@ -146,12 +142,6 @@ namespace C
             }
         }
 
-        public override Bam.Core.TokenizedString WorkingDirectory
-        {
-            get
-            {
-                return this.OutputDirectories.First();
-            }
-        }
+        public override Bam.Core.TokenizedString WorkingDirectory => this.OutputDirectories.First(); // since ln needs this for relative paths
     }
 }

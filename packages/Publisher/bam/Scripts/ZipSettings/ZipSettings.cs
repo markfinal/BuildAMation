@@ -35,31 +35,16 @@ namespace Publisher
         IZipSettings
     {
         public SevenZipSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("-bb3", "")]
-        bool IZipSettings.Verbose
-        {
-            get;
-            set;
-        }
+        bool IZipSettings.Verbose { get; set; }
 
         [CommandLineProcessor.Bool("-r", "")]
-        bool IZipSettings.RecursivePaths
-        {
-            get;
-            set;
-        }
+        bool IZipSettings.RecursivePaths { get; set; }
 
         [CommandLineProcessor.Bool("u", "a")]
-        bool IZipSettings.Update
-        {
-            get;
-            set;
-        }
+        bool IZipSettings.Update { get; set; }
 
         public override void
         AssignFileLayout()
@@ -77,31 +62,16 @@ namespace Publisher
         {}
 
         public ZipSettings(
-            Bam.Core.Module module)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
         [CommandLineProcessor.Bool("-v", "")]
-        bool IZipSettings.Verbose
-        {
-            get;
-            set;
-        }
+        bool IZipSettings.Verbose { get; set; }
 
         [CommandLineProcessor.Bool("-r", "")]
-        bool IZipSettings.RecursivePaths
-        {
-            get;
-            set;
-        }
+        bool IZipSettings.RecursivePaths { get; set; }
 
         [CommandLineProcessor.Bool("-u", "")]
-        bool IZipSettings.Update
-        {
-            get;
-            set;
-        }
+        bool IZipSettings.Update { get; set; }
 
         public override void
         AssignFileLayout()

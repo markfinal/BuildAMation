@@ -42,7 +42,7 @@ namespace XcodeBuilder
             this.Dependency = dependency;
             this.Proxy = proxy;
 
-            project.appendTargetDependency(this);
+            project.AppendTargetDependency(this);
         }
 
         public TargetDependency(
@@ -55,20 +55,11 @@ namespace XcodeBuilder
             this.Dependency = null;
             this.Proxy = proxy;
 
-            project.appendTargetDependency(this);
+            project.AppendTargetDependency(this);
         }
 
-        public Target Dependency
-        {
-            get;
-            private set;
-        }
-
-        public ContainerItemProxy Proxy
-        {
-            get;
-            private set;
-        }
+        public Target Dependency { get; private set; }
+        public ContainerItemProxy Proxy { get; private set; }
 
         public override void
         Serialize(
@@ -79,29 +70,23 @@ namespace XcodeBuilder
             var indent2 = new string('\t', indentLevel + 1);
             if (null != this.Name)
             {
-                text.AppendFormat("{0}{1} /* {2} */ = {{", indent, this.GUID, this.Name);
+                text.AppendLine($"{indent}{this.GUID} /* {this.Name} */ = {{");
             }
             else
             {
-                text.AppendFormat("{0}{1} = {{", indent, this.GUID);
+                text.AppendLine($"{indent}{this.GUID} = {{");
             }
-            text.AppendLine();
-            text.AppendFormat("{0}isa = {1};", indent2, this.IsA);
-            text.AppendLine();
+            text.AppendLine($"{indent2}isa = {this.IsA};");
             if (null != this.Dependency)
             {
-                text.AppendFormat("{0}target = {1} /* {2} */;", indent2, this.Dependency.GUID, this.Dependency.Name);
-                text.AppendLine();
+                text.AppendLine($"{indent2}target = {this.Dependency.GUID} /* {this.Dependency.Name} */;");
             }
             else
             {
-                text.AppendFormat("{0}name = {1};", indent2, this.Name);
-                text.AppendLine();
+                text.AppendLine($"{indent2}name = {this.Name};");
             }
-            text.AppendFormat("{0}targetProxy = {1} /* {2} */;", indent2, this.Proxy.GUID, this.Proxy.Name);
-            text.AppendLine();
-            text.AppendFormat("{0}}};", indent);
-            text.AppendLine();
+            text.AppendLine($"{indent2}targetProxy = {this.Proxy.GUID} /* {this.Proxy.Name} */;");
+            text.AppendLine($"{indent}}};");
         }
     }
 }

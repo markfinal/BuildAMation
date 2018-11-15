@@ -33,10 +33,6 @@ namespace ClangCommon
     public interface ICommonLinkerSettings :
         Bam.Core.ISettingsBase
     {
-        Bam.Core.TokenizedStringArray RPath
-        {
-            get;
-            set;
-        }
+        Bam.Core.TokenizedStringArray RPath { get; set; }
     }
 }

@@ -46,11 +46,9 @@ namespace C
                 productName = module.Macros["OutputName"];
             }
 
-            XcodeBuilder.Target target;
-            XcodeBuilder.Configuration configuration;
             LinkOrArchive(
-                out target,
-                out configuration,
+                out XcodeBuilder.Target target,
+                out XcodeBuilder.Configuration configuration,
                 module,
                 XcodeBuilder.FileReference.EFileType.Archive,
                 XcodeBuilder.Target.EProductType.StaticLibrary,

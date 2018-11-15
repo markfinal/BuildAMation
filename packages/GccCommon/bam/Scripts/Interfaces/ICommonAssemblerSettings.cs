@@ -32,6 +32,5 @@ namespace GccCommon
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonAssemblerSettings :
         Bam.Core.ISettingsBase
-    {
-    }
+    {}
 }

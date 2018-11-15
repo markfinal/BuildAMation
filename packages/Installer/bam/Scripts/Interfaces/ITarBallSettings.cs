@@ -38,28 +38,9 @@ namespace Installer
     public interface ITarBallSettings :
         Bam.Core.ISettingsBase
     {
-        ETarOperation Operation
-        {
-            get;
-            set;
-        }
-
-        ETarCompressionType CompressionType
-        {
-            get;
-            set;
-        }
-
-        string TransformRegEx
-        {
-            get;
-            set;
-        }
-
-        bool Verbose
-        {
-            get;
-            set;
-        }
+        ETarOperation Operation { get; set; }
+        ETarCompressionType CompressionType { get; set; }
+        string TransformRegEx { get; set; }
+        bool Verbose { get; set; }
     }
 }

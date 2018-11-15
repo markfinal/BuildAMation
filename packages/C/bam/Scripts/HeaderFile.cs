@@ -65,10 +65,6 @@ namespace C
             }
         }
 
-        Bam.Core.Module Bam.Core.IChildModule.Parent
-        {
-            get;
-            set;
-        }
+        Bam.Core.Module Bam.Core.IChildModule.Parent { get; set; }
     }
 }

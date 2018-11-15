@@ -37,7 +37,7 @@ namespace MingwCommon
         {
             var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("Mingw");
             var discovery = mingwMeta as C.IToolchainDiscovery;
-            discovery.discover(null);
+            discovery.discover(depth: null);
 
             this.Macros.Add("ArchiverPath", this.CreateTokenizedString(@"$(0)\bin\ar.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
             this.Macros.AddVerbatim("libprefix", "lib");
@@ -47,28 +47,12 @@ namespace MingwCommon
             this.InheritedEnvironmentVariables.Add("SYSTEMROOT");
         }
 
-        public override Bam.Core.TokenizedString Executable
-        {
-            get
-            {
-                return this.Macros["ArchiverPath"];
-            }
-        }
+        public override Bam.Core.TokenizedString Executable => this.Macros["ArchiverPath"];
 
-        public override string UseResponseFileOption
-        {
-            get
-            {
-                return "@";
-            }
-        }
+        public override string UseResponseFileOption => "@";
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
-            T module)
-        {
-            var settings = new Mingw.ArchiverSettings(module);
-            return settings;
-        }
+            T module) => new Mingw.ArchiverSettings(module);
     }
 }

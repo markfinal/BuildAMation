@@ -33,22 +33,8 @@ namespace ClangCommon
     public interface ICommonArchiverSettings :
         Bam.Core.ISettingsBase
     {
-        bool Ranlib
-        {
-            get;
-            set;
-        }
-
-        bool DoNotWarnIfLibraryCreated
-        {
-            get;
-            set;
-        }
-
-        EArchiverCommand Command
-        {
-            get;
-            set;
-        }
+        bool Ranlib { get; set; }
+        bool DoNotWarnIfLibraryCreated { get; set; }
+        EArchiverCommand Command { get; set; }
     }
 }

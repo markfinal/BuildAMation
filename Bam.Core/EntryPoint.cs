@@ -44,9 +44,7 @@ namespace Bam.Core
             EVerboseLevel level)
         {
             var message = new System.Text.StringBuilder();
-            message.AppendFormat("BuildAMation (Bam) v{0} (c) Mark Final, 2010-2018. Licensed under BSD 3-clause. See License.md.",
-                Core.Graph.Instance.ProcessState.VersionString);
-            message.AppendLine();
+            message.AppendLine($"BuildAMation (Bam) v{Core.Graph.Instance.ProcessState.VersionString} (c) Mark Final, 2010-2018. Licensed under BSD 3-clause. See License.md.");
             message.Append("Parts of this software are licensed under the Microsoft Limited Public License (MS-PL). See MS-PL.md.");
             Core.Log.Message(level, message.ToString());
         }
@@ -55,10 +53,7 @@ namespace Bam.Core
         /// Log the Bam version number, at the current log level.
         /// </summary>
         public static void
-        PrintVersion()
-        {
-            PrintVersion(Graph.Instance.VerbosityLevel);
-        }
+        PrintVersion() => PrintVersion(Graph.Instance.VerbosityLevel);
 
         /// <summary>
         /// Bam execution
@@ -86,7 +81,7 @@ namespace Bam.Core
         {
             PrintVersion();
 
-            if (0 == environments.Count)
+            if (!environments.Any())
             {
                 throw new Exception("No build configurations were specified");
             }
@@ -127,8 +122,7 @@ namespace Bam.Core
                         message.AppendLine("Too many site policies exist in the package assembly:");
                         foreach (var policy in localPolicies)
                         {
-                            message.AppendFormat("\t{0}", policy.ToString());
-                            message.AppendLine();
+                            message.AppendLine($"\t{policy.ToString()}");
                         }
                         throw new Exception(message.ToString());
                     }
@@ -149,8 +143,7 @@ namespace Bam.Core
                         message.AppendLine("Too many product definitions exist in the package assembly:");
                         foreach (var def in productDefinitions)
                         {
-                            message.AppendFormat("\t{0}", def.ToString());
-                            message.AppendLine();
+                            message.AppendLine($"\t{def.ToString()}");
                         }
                         throw new Exception(message.ToString());
                     }
@@ -160,16 +153,20 @@ namespace Bam.Core
             }
 
             // get the metadata from the build mode package
-            var metaName = System.String.Format("{0}Builder.{0}Meta", graph.Mode);
+            var metaName = $"{graph.Mode}Builder.{graph.Mode}Meta";
             var metaDataType = graph.ScriptAssembly.GetType(metaName);
             if (null == metaDataType)
             {
-                throw new Exception("No build mode {0} meta data type {1}", graph.Mode, metaName);
+                throw new Exception(
+                    $"No build mode {graph.Mode} meta data type {metaName}"
+                );
             }
 
             if (!typeof(IBuildModeMetaData).IsAssignableFrom(metaDataType))
             {
-                throw new Exception("Build mode package meta data type {0} does not implement the interface {1}", metaDataType.ToString(), typeof(IBuildModeMetaData).ToString());
+                throw new Exception(
+                    $"Build mode package meta data type {metaDataType.ToString()} does not implement the interface {typeof(IBuildModeMetaData).ToString()}"
+                );
             }
             graph.BuildModeMetaData = System.Activator.CreateInstance(metaDataType) as IBuildModeMetaData;
 
@@ -213,12 +210,10 @@ namespace Bam.Core
                         if (nonTestNamespaces.Count() > 1 || testNamespaces.Count() > 1)
                         {
                             var message = new System.Text.StringBuilder();
-                            message.AppendFormat("Too many implementations of {0}", typeof(IOverrideModuleConfiguration).ToString());
-                            message.AppendLine();
+                            message.AppendLine($"Too many implementations of {typeof(IOverrideModuleConfiguration).ToString()}");
                             foreach (var oride in overrides)
                             {
-                                message.AppendFormat("\t{0}", oride.ToString());
-                                message.AppendLine();
+                                message.AppendLine($"\t{oride.ToString()}");
                             }
                             throw new Exception(message.ToString());
                         }

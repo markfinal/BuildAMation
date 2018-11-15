@@ -155,14 +155,7 @@ namespace Bam.Core
         /// Get the preprocessor define specifying the host OS.
         /// </summary>
         /// <value>The host platform define for compiler.</value>
-        public static string HostPlatformDefineForCompiler
-        {
-            get
-            {
-                var platformString = Platform.ToString(OSUtilities.CurrentPlatform, '\0', "BAM_HOST_", true);
-                return platformString;
-            }
-        }
+        public static string HostPlatformDefineForCompiler => Platform.ToString(OSUtilities.CurrentPlatform, '\0', "BAM_HOST_", true);
 
         /// <summary>
         /// Determine if a path is configured as a package.

@@ -91,13 +91,7 @@ namespace VersionScriptTest1
     class VersionScript :
         C.VersionScript
     {
-        public override Bam.Core.TokenizedString OutputPath
-        {
-            get
-            {
-                return this.CreateTokenizedString("$(packagebuilddir)/$(config)/verscript.map");
-            }
-        }
+        public override Bam.Core.TokenizedString OutputPath => this.CreateTokenizedString("$(packagebuilddir)/$(config)/verscript.map");
 
         protected override string Contents
         {

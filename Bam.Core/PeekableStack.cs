@@ -36,7 +36,7 @@ namespace Bam.Core
     /// <typeparam name="T"></typeparam>
     public sealed class PeekableStack<T>
     {
-        private System.Collections.Generic.List<T> list = new System.Collections.Generic.List<T>();
+        private readonly System.Collections.Generic.List<T> list = new System.Collections.Generic.List<T>();
 
         /// <summary>
         /// Push a new object of type T onto the end of the stack.
@@ -44,10 +44,7 @@ namespace Bam.Core
         /// <param name="obj">Object to push onto stack.</param>
         public void
         Push(
-            T obj)
-        {
-            this.list.Add(obj);
-        }
+            T obj) => this.list.Add(obj);
 
         /// <summary>
         /// Return the object on the end of the stack, and remove it from the stack.
@@ -67,10 +64,7 @@ namespace Bam.Core
         /// </summary>
         /// <returns>Object that remains on the end of the stack.</returns>
         public T
-        Peek()
-        {
-            return Peek(0);
-        }
+        Peek() => this.Peek(0);
 
         /// <summary>
         /// More generalised peeking.
@@ -81,21 +75,11 @@ namespace Bam.Core
         /// <returns>Object, index elements from the end of the stack, but which remains on the stack.</returns>
         public T
         Peek(
-            int index)
-        {
-            return this.list.ElementAt(this.list.Count - index - 1);
-        }
+            int index) => this.list.ElementAt(this.list.Count - index - 1);
 
         /// <summary>
         /// Returns the number of elements on the stack (read only).
         /// </summary>
-        public int
-        Count
-        {
-            get
-            {
-                return this.list.Count;
-            }
-        }
+        public int Count => this.list.Count;
     }
 }
