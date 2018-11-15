@@ -1,3 +1,14 @@
+15-Nov-2018 Fixes #159. Added support for packages to specify where to download archives containing their source.
+In package definition files, you may now specify one or more Source elements to download. Zip, tar and gzipped tar files are supported over http.
+Upon downloading and extracting these, packages have their $(packagedir) token automatically redirected to the download location.
+Package sources are downloaded to a central location. This defaults to a .bam.package.sources folder in your home directory, but may be overridden by specifying a
+buildamation.ini in your home directory, containing
+[Packages]
+SourceDir=<path>
+or by specifying an environment variable BAMPackages__SourceDir=<path>.
+Extracted package source is MD5 hashed after initial extraction and saved beside the archive file. On subsequent build runs, the hash is not recalculated, since it can be expensive.
+In order to do a hash comparison, pass --validatesources to the bam command line. This will be slow.
+
 04-Nov-2018 Fixes #506. Added TokenizedString function, @tounix(<path>), that converts Windows style directory separators to Unix.
 
 04-Nov-2018 Fixes #505. Added PreambleComment virtual property to C.ProceduralHeaderFile, in order to control the comment added to the top of generated headers. Set to null to exclude it.
