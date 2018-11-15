@@ -69,6 +69,8 @@ namespace VisualCCommon
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx11, "")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.Cxx14, "-std:c++14")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx14, "-std:c++14")]
+        [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.Cxx17, "-std:c++17")]
+        [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx17, "-std:c++17")]
         [VisualStudioProcessor.Enum(C.Cxx.ELanguageStandard.NotSet, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.Cxx.ELanguageStandard.Cxx98, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx98, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
@@ -78,6 +80,8 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx11, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.Cxx.ELanguageStandard.Cxx14, "LanguageStandard", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "stdcpp14")]
         [VisualStudioProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx14, "LanguageStandard", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "stdcpp14")]
+        [VisualStudioProcessor.Enum(C.Cxx.ELanguageStandard.Cxx17, "LanguageStandard", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "stdcpp17")]
+        [VisualStudioProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx17, "LanguageStandard", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "stdcpp17")]
         C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard { get; set; }
 
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.NotSet, "")]

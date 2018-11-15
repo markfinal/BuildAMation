@@ -105,6 +105,16 @@ namespace C.Cxx
         /// Compile against the GNU C++ 14 standard.
         /// </summary>
         GnuCxx14,
+
+        /// <summary>
+        /// Compile against the C++ 17 standard.
+        /// </summary>
+        Cxx17,
+
+        /// <summary>
+        /// Compile against the GNU C++ 17 standard.
+        /// </summary>
+        GnuCxx17,
     }
 
     /// <summary>

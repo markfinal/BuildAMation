@@ -64,6 +64,8 @@ namespace GccCommon
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx11, "-std=gnu++11")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.Cxx14, "-std=c++14")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx14, "-std=gnu++14")]
+        [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.Cxx17, "-std=c++17")]
+        [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx17, "-std=gnu++17")]
         C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard { get; set; }
 
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.NotSet, "")]

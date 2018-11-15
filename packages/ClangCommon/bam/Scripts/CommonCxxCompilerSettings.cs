@@ -73,6 +73,8 @@ namespace ClangCommon
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx11, "-std=gnu++11")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.Cxx14, "-std=c++14")]
         [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx14, "-std=gnu++14")]
+        [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.Cxx17, "-std=c++17")]
+        [CommandLineProcessor.Enum(C.Cxx.ELanguageStandard.GnuCxx17, "-std=gnu++17")]
         [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.NotSet, "CLANG_CXX_LANGUAGE_STANDARD", "", ignore: true)]
         [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.Cxx98, "CLANG_CXX_LANGUAGE_STANDARD", "c++98")]
         [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.GnuCxx98, "CLANG_CXX_LANGUAGE_STANDARD", "gnu++98")]
@@ -82,6 +84,8 @@ namespace ClangCommon
         [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.GnuCxx11, "CLANG_CXX_LANGUAGE_STANDARD", "gnu++11")]
         [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.Cxx14, "CLANG_CXX_LANGUAGE_STANDARD", "c++14")]
         [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.GnuCxx14, "CLANG_CXX_LANGUAGE_STANDARD", "gnu++14")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.Cxx17, "CLANG_CXX_LANGUAGE_STANDARD", "c++17")]
+        [XcodeProjectProcessor.UniqueEnum(C.Cxx.ELanguageStandard.GnuCxx17, "CLANG_CXX_LANGUAGE_STANDARD", "gnu++17")]
         C.Cxx.ELanguageStandard? C.ICxxOnlyCompilerSettings.LanguageStandard { get; set; }
 
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.NotSet, "")]

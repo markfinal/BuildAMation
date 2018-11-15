@@ -1,3 +1,5 @@
+15-Nov-2018 Fixes #512. Added C.Cxx.ELanguageStandard.Cxx17 and C.Cxx.ELanguageStandard.GnuCxx17. Added Cxx17Test1 test case.
+
 15-Nov-2018 Fixes #511. Adding Cxx14Test1 test case.
 
 15-Nov-2018 Fixes #507. Code cleanup using features of newer C# language specifications.
