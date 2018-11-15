@@ -223,37 +223,5 @@ namespace Bam.Core
             var all = this.InternalWaitOnAllPreBuildTasks();
             all.Wait(); // safety
         }
-
-        private readonly Array<System.Threading.Tasks.Task> preBuildTasks;
-
-        /// <summary>
-        /// Append a task from an async method that must be completed before builds start.
-        /// </summary>
-        /// <param name="task"></param>
-        public void
-        AppendPreBuildTask(
-            System.Threading.Tasks.Task task)
-        {
-            lock (this.preBuildTasks)
-            {
-                Log.DebugMessage($"Adding task {task.ToString()}");
-                this.preBuildTasks.Add(task);
-            }
-        }
-
-        /// <summary>
-        /// Wait on all prebuild tasks to complete. This is a blocking function.
-        /// </summary>
-        public void
-        WaitOnAllPreBuildTasks()
-        {
-            if (!this.preBuildTasks.Any())
-            {
-                return;
-            }
-            Log.Info($"Waiting on package source downloads to finish before the build starts...");
-            System.Threading.Tasks.Task.WaitAll(this.preBuildTasks.ToArray());
-            Log.DebugMessage($"*** FINISHED WAITING ON TASKS");
-        }
     }
 }

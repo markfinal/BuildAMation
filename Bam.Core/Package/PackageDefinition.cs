@@ -146,7 +146,6 @@ namespace Bam.Core
         PackageDefinition(
             string xmlFilename,
             bool requiresSourceDownload) => this.Initialize(xmlFilename, requiresSourceDownload);
-        {}
 
         /// <summary>
         /// Create a new instance, for the specified directory, package name and version.
@@ -1056,17 +1055,6 @@ namespace Bam.Core
         /// Gets the array of sources of the package.
         /// </summary>
         public Array<PackageSource> Sources { get; private set; }
-
-        private bool RequiresSourceDownload { get; set; } = false;
-
-        /// <summary>
-        /// Gets the array of sources of the package.
-        /// </summary>
-        public Array<PackageSource> Sources
-        {
-            get;
-            private set;
-        }
 
         /// <summary>
         /// String representation is the XML filename
