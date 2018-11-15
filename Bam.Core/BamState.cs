@@ -192,6 +192,23 @@ namespace Bam.Core
             }
         }
 
+        private async System.Threading.Tasks.Task
+        InternalWaitOnAllPreBuildTasks()
+        {
+            var total = this.preBuildTasks.Count;
+            var all = System.Threading.Tasks.Task.WhenAll(this.preBuildTasks.ToArray());
+            for (; ; )
+            {
+                var timer = System.Threading.Tasks.Task.Delay(1000); // every second
+                await System.Threading.Tasks.Task.WhenAny(all, timer);
+                if (all.IsCompleted)
+                {
+                    return;
+                }
+                Log.DetailProgress($"{100 * this.preBuildTasks.Count(task => task.IsCompleted) / total}%");
+            }
+        }
+
         /// <summary>
         /// Wait on all prebuild tasks to complete. This is a blocking function.
         /// </summary>
@@ -203,8 +220,8 @@ namespace Bam.Core
                 return;
             }
             Log.Info($"Waiting on package source downloads to finish before the build starts...");
-            System.Threading.Tasks.Task.WaitAll(this.preBuildTasks.ToArray());
-            Log.DebugMessage($"*** FINISHED WAITING ON TASKS");
+            var all = this.InternalWaitOnAllPreBuildTasks();
+            all.Wait(); // safety
         }
     }
 }
