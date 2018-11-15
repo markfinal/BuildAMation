@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Bam
 {
     /// <summary>
@@ -86,17 +87,44 @@ namespace Bam
             }
         }
 
+        private static System.Collections.Generic.List<(string, string)>
+        GetBamCoreNuGetReferences()
+        {
+            var loadedAssemblies = System.AppDomain.CurrentDomain.GetAssemblies();
+            var core = loadedAssemblies.First(item => item.GetName().Name.Equals("Bam.Core"));
+            var all = core.GetReferencedAssemblies();
+            var filtered = all.Where(item =>
+            {
+                var publicKeyToken = string.Empty;
+                for (int i = 0; i < item.GetPublicKeyToken().GetLength(0); i++)
+                    publicKeyToken += string.Format("{0:x2}", item.GetPublicKeyToken()[i]);
+
+                // if the public key token is not that for the .NET framework, must be a NuGet
+                return !publicKeyToken.Equals("b03f5f7f11d50a3a", System.StringComparison.OrdinalIgnoreCase);
+            });
+            var coreNuGetReferences = new System.Collections.Generic.List<(string, string)>();
+            foreach (var nuget in filtered)
+            {
+                coreNuGetReferences.Add((nuget.Name, nuget.Version.ToString()));
+            }
+            return coreNuGetReferences;
+        }
+
         /// <summary>
         /// Create the debuggable project.
         /// </summary>
         public static void
         Create()
         {
-            Core.PackageUtilities.IdentifyAllPackages();
+            Core.PackageUtilities.IdentifyAllPackages(false);
 
             var masterPackage = Core.Graph.Instance.MasterPackage;
             var projectPathname = masterPackage.GetDebugPackageProjectPathname();
-            var project = new Core.ProjectFile(true, projectPathname);
+            var project = new Core.ProjectFile(
+                true,
+                projectPathname,
+                additionalNuGetReferences: GetBamCoreNuGetReferences()
+            );
             project.AddEntryPoint("main.cs", WriteEntryPoint);
             project.AddEmbeddedResource(Core.PackageListResourceFile.WriteResXFile);
             project.Write();

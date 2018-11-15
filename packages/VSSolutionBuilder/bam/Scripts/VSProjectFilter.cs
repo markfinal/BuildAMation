@@ -73,34 +73,47 @@ namespace VSSolutionBuilder
             VSSettingsGroup sourceGroup,
             VSProjectConfiguration config)
         {
-            var path = sourceGroup.RelativeDirectory.ToString();
-            this.AddFilters(sourceGroup.Module, path);
-            var filter = this.Filters[path];
-            if (filter.Any(item =>
-                {
-                    lock (item.Include)
-                    {
-                        if (!item.Include.IsParsed)
-                        {
-                            item.Include.Parse();
-                        }
-                    }
-                    return item.Include.ToString().Equals(sourceGroup.Include.ToString(), System.StringComparison.Ordinal);
-                }))
+            if (null != sourceGroup.RelativeDirectory)
             {
-                return;
+                var path = sourceGroup.RelativeDirectory.ToString();
+                this.AddFilters(sourceGroup.Module, path);
+                var filter = this.Filters[path];
+                if (filter.Any(item =>
+                    {
+                        lock (item.Include)
+                        {
+                            if (!item.Include.IsParsed)
+                            {
+                                item.Include.Parse();
+                            }
+                        }
+                        return item.Include.ToString().Equals(sourceGroup.Include.ToString(), System.StringComparison.Ordinal);
+                    }))
+                {
+                    return;
+                }
+                var newGroup = new VSSettingsGroup(
+                    this.Project,
+                    sourceGroup.Module,
+                    sourceGroup.Group,
+                    sourceGroup.Include
+                );
+                newGroup.AddSetting(
+                    "Filter",
+                    sourceGroup.RelativeDirectory
+                );
+                filter.AddUnique(newGroup);
             }
-            var newGroup = new VSSettingsGroup(
-                this.Project,
-                sourceGroup.Module,
-                sourceGroup.Group,
-                sourceGroup.Include
-            );
-            newGroup.AddSetting(
-                "Filter",
-                sourceGroup.RelativeDirectory
-            );
-            filter.AddUnique(newGroup);
+            else
+            {
+                // this codepath is followed when source files are in the package directory directly
+                new VSSettingsGroup(
+                    this.Project,
+                    sourceGroup.Module,
+                    sourceGroup.Group,
+                    sourceGroup.Include
+                );
+            }
         }
 
         public System.Xml.XmlDocument

@@ -55,6 +55,7 @@ namespace Bam.Core
     /// <item><description><code>@changeextension(path,ext)</code></description> Change the extension of the file in path, to ext.</item>
     /// <item><description><code>@removetrailingseparator(path)</code></description> Remove any directory separator characters from the end of path.</item>
     /// <item><description><code>@relativeto(path,baseDir)</code></description> Return the relative path from baseDir. If there is no common root between them, path is returned.</item>
+    /// <item><description><code>@isrelative(path,fallback)</code></description> If path is relative, use it, otherwise use the fallback.</item>
     /// <item><description><code>@trimstart(path,totrim)</code></description> Trim string from the start of path.</item>
     /// <item><description><code>@escapedquotes(path)</code></description> Ensure that the path is double quoted, suitable for use with preprocessor definitions.</item>
     /// <item><description><code>@ifnotempty(path,whennotempty,whenempty)</code></description> If path is not empty, replace the expression with that in whennotempty, otherwise use whenempty.</item>
@@ -103,6 +104,7 @@ namespace Bam.Core
             "changeextension",
             "removetrailingseparator",
             "relativeto",
+            "isrelative",
             "trimstart",
             "escapedquotes",
             "ifnotempty",
@@ -882,6 +884,29 @@ namespace Bam.Core
                         var root = split[1] + System.IO.Path.DirectorySeparatorChar;
                         var relative = System.IO.Path.GetRelativePath(root, path);
                         return relative;
+                    }
+
+                case "isrelative":
+                    {
+                        var split = argument.Split(',');
+                        if (split.Length != 2)
+                        {
+                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
+                                split.Length,
+                                functionName,
+                                argument,
+                                this.OriginalString);
+                        }
+                        var path = split[0];
+                        var fallback = split[1];
+                        if (System.IO.Path.IsPathRooted(path))
+                        {
+                            return fallback;
+                        }
+                        else
+                        {
+                            return path;
+                        }
                     }
 
                 case "trimstart":

@@ -94,25 +94,26 @@ namespace Bam.Core
         /// <summary>
         /// Utility method to display an exception message, and any details from any inner exceptions.
         /// </summary>
-        /// <returns><c>true</c>, if the exception is non-null, <c>false</c> otherwise, allowing a recursive invocation for inner exceptions.</returns>
         /// <param name="exception">Exception to display information about.</param>
-        public static bool
+        public static void
         DisplayException(
             System.Exception exception)
         {
             if (null == exception)
             {
-                return false;
+                return;
             }
 
-            Log.ErrorMessage("({0}) {1}", exception.GetType().ToString(), exception.Message);
-            var anyInnerExceptions = DisplayException(exception.InnerException);
-            if (!anyInnerExceptions)
+            DisplayException(exception.InnerException);
+            Log.ErrorMessage($"({exception.GetType().ToString()}) {exception.Message}");
+            if (null != exception.StackTrace)
             {
-                Log.ErrorMessage("{0}{1}", System.Environment.NewLine, exception.StackTrace.ToString());
+                Log.ErrorMessage($"{System.Environment.NewLine}{exception.StackTrace.ToString()}{System.Environment.NewLine}");
             }
-
-            return true;
+            else
+            {
+                Log.ErrorMessage($"<no stack trace available>{System.Environment.NewLine}");
+            }
         }
 
         /// <summary>
@@ -122,14 +123,14 @@ namespace Bam.Core
         /// <param name="exception">Exception to display.</param>
         /// <param name="prefix">Prefix format string to display</param>
         /// <param name="args">Arguments to the prefix format string</param>
-        public static bool
+        public static void
         DisplayException(
             System.Exception exception,
             string prefix,
             params object[] args)
         {
             Log.ErrorMessage(prefix, args);
-            return DisplayException(exception);
+            DisplayException(exception);
         }
     }
 }

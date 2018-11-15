@@ -134,6 +134,14 @@ namespace Bam.Core
         AddRedirectedPackageDirectory(
             Module moduleWithAttributes)
         {
+            // if there are multiple sources, they all extract to the same place
+            var downloadedPackageSource = this.PackageDefinition.Sources?.First().ExtractedPackageDir;
+            if (null != downloadedPackageSource)
+            {
+                this.Macros.AddVerbatim("packagedir", downloadedPackageSource);
+                return;
+            }
+
             var allModulePackageDirRedirection = moduleWithAttributes.GetType().GetCustomAttributes(typeof(ModulePackageDirectoryRedirectAttribute), false);
             if (allModulePackageDirRedirection.Length > 0)
             {

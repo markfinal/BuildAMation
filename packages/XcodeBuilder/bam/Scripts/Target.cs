@@ -335,7 +335,10 @@ namespace XcodeBuilder
         AddFileRefToGroup(
             FileReference fileRef)
         {
-            var relDir = this.Module.CreateTokenizedString("@trimstart(@relativeto(@dir($(0)),$(packagedir)),../)", fileRef.Path);
+            var relDir = this.Module.CreateTokenizedString(
+                "@isrelative(@trimstart(@relativeto(@dir($(0)),$(packagedir)),../),@dir($(0)))",
+                fileRef.Path
+            );
             lock (relDir)
             {
                 if (!relDir.IsParsed)
@@ -343,18 +346,26 @@ namespace XcodeBuilder
                     relDir.Parse();
                 }
             }
-            var newGroup = this.CreateGroupHierarchy(relDir);
-            var parentGroup = newGroup;
-            while (parentGroup.Parent != null)
+            if (relDir.ToString().Equals(".", System.StringComparison.Ordinal))
             {
-                parentGroup = parentGroup.Parent;
-                if (parentGroup == this.Project.MainGroup)
-                {
-                    break;
-                }
+                // this can happen if the source file is directly in the package directory
+                this.Project.MainGroup.AddChild(fileRef);
             }
-            this.Project.MainGroup.AddChild(parentGroup);
-            newGroup.AddChild(fileRef);
+            else
+            {
+                var newGroup = this.CreateGroupHierarchy(relDir);
+                var parentGroup = newGroup;
+                while (parentGroup.Parent != null)
+                {
+                    parentGroup = parentGroup.Parent;
+                    if (parentGroup == this.Project.MainGroup)
+                    {
+                        break;
+                    }
+                }
+                this.Project.MainGroup.AddChild(parentGroup);
+                newGroup.AddChild(fileRef);
+            }
         }
 
         public BuildFile

@@ -132,7 +132,8 @@ namespace Bam.Core
 
         private void
         Initialize(
-            string xmlFilename)
+            string xmlFilename,
+            bool requiresSourceDownload)
         {
             this.XMLFilename = xmlFilename;
             this.Dependents = new Array<System.Tuple<string, string, bool?>>();
@@ -149,17 +150,20 @@ namespace Bam.Core
             }
             this.Description = string.Empty;
             this.Parents = new Array<PackageDefinition>();
+            this.RequiresSourceDownload = requiresSourceDownload;
         }
 
         /// <summary>
         /// Construct a new instance, based from an existing XML filename.
         /// </summary>
         /// <param name="xmlFilename">Xml filename.</param>
+        /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
         public
         PackageDefinition(
-            string xmlFilename)
+            string xmlFilename,
+            bool requiresSourceDownload)
         {
-            this.Initialize(xmlFilename);
+            this.Initialize(xmlFilename, requiresSourceDownload);
         }
 
         /// <summary>
@@ -168,15 +172,17 @@ namespace Bam.Core
         /// <param name="bamDirectory">Bam directory.</param>
         /// <param name="name">Name.</param>
         /// <param name="version">Version.</param>
+        /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
         public
         PackageDefinition(
             string bamDirectory,
             string name,
-            string version)
+            string version,
+            bool requiresSourceDownload)
         {
             var definitionName = (null != version) ? System.String.Format("{0}-{1}.xml", name, version) : name + ".xml";
             var xmlFilename = System.IO.Path.Combine(bamDirectory, definitionName);
-            this.Initialize(xmlFilename);
+            this.Initialize(xmlFilename, requiresSourceDownload);
             this.Name = name;
             this.Version = version;
             if (null != version)
@@ -781,23 +787,7 @@ namespace Bam.Core
                 }
 
                 var name = xmlReader.GetAttribute("name");
-                switch (name)
-                {
-                    case "Windows":
-                        platforms |= EPlatform.Windows;
-                        break;
-
-                    case "Linux":
-                        platforms |= EPlatform.Linux;
-                        break;
-
-                    case "OSX":
-                        platforms |= EPlatform.OSX;
-                        break;
-
-                    default:
-                        throw new Exception("Unexpected platform '{0}'", name);
-                }
+                platforms |= Platform.FromString(name);
             }
 
             return platforms;
@@ -823,7 +813,7 @@ namespace Bam.Core
             System.Xml.XmlReader xmlReader)
         {
             var rootName = "Definitions";
-            if (!rootName.Equals(xmlReader.Name,  System.StringComparison.Ordinal))
+            if (!rootName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
             {
                 return false;
             }
@@ -844,6 +834,67 @@ namespace Bam.Core
 
                 var definition = xmlReader.GetAttribute("name");
                 this.Definitions.AddUnique(definition);
+            }
+
+            return true;
+        }
+
+        private bool
+        ReadSources(
+            System.Xml.XmlReader xmlReader)
+        {
+            var rootName = "Sources";
+            if (rootName != xmlReader.Name)
+            {
+                return false;
+            }
+
+            var extractto = xmlReader.GetAttribute("extractto");
+
+            var elName = "Source";
+            while (xmlReader.Read())
+            {
+                if (xmlReader.Name.Equals(rootName, System.StringComparison.Ordinal) &&
+                    (xmlReader.NodeType == System.Xml.XmlNodeType.EndElement))
+                {
+                    break;
+                }
+
+                if (!xmlReader.Name.Equals(elName, System.StringComparison.Ordinal))
+                {
+                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'. Expected '{2}'", rootName, xmlReader.Name, elName);
+                }
+
+                var platform = xmlReader.GetAttribute("platform");
+                if (null != platform)
+                {
+                    var platformEnum = Platform.FromString(platform);
+                    if (!OSUtilities.IsCurrentPlatformSupported(platformEnum))
+                    {
+                        // skip Source elements not applicable to the current platform
+                        continue;
+                    }
+                }
+
+                var type = xmlReader.GetAttribute("type");
+                var path = xmlReader.GetAttribute("path");
+                var subdir = xmlReader.GetAttribute("subdir");
+
+                if (null == this.Sources)
+                {
+                    this.Sources = new Array<PackageSource>();
+                }
+                this.Sources.Add(
+                    new PackageSource(
+                        this.Name,
+                        this.Version,
+                        type,
+                        path,
+                        subdir,
+                        extractto,
+                        this.RequiresSourceDownload
+                    )
+                );
             }
 
             return true;
@@ -901,6 +952,10 @@ namespace Bam.Core
                             // all done
                         }
                         else if (ReadDefinitions(xmlReader))
+                        {
+                            // all done
+                        }
+                        else if (ReadSources(xmlReader))
                         {
                             // all done
                         }
@@ -1055,6 +1110,17 @@ namespace Bam.Core
         {
             get;
             set;
+        }
+
+        private bool RequiresSourceDownload { get; set; } = false;
+
+        /// <summary>
+        /// Gets the array of sources of the package.
+        /// </summary>
+        public Array<PackageSource> Sources
+        {
+            get;
+            private set;
         }
 
         /// <summary>
@@ -1277,7 +1343,9 @@ namespace Bam.Core
             visitedPackages.Add(this);
             foreach (var dependent in this.Dependents)
             {
-                var dep = Graph.Instance.Packages.First(item => item.Name.Equals(dependent.Item1, System.StringComparison.Ordinal) && item.Version.Equals(dependent.Item2, System.StringComparison.Ordinal));
+                var dep = Graph.Instance.Packages.First(item =>
+                    System.String.Equals(item.Name, dependent.Item1, System.StringComparison.Ordinal) && System.String.Equals(item.Version, dependent.Item2, System.StringComparison.Ordinal)
+                );
                 if (visitedPackages.Contains(dep))
                 {
                     continue;

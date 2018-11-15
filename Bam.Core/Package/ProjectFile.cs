@@ -208,9 +208,11 @@ namespace Bam.Core
         /// </summary>
         /// <param name="isExecutable">true if the output is an executable, rather than a dynamic library assembly.</param>
         /// <param name="csprojPath">Path of the .csproj to write.</param>
+        /// <param name="additionalNuGetReferences">Optional: list of name-version tuples for additional NuGet references.</param>
         public ProjectFile(
             bool isExecutable,
-            string csprojPath)
+            string csprojPath,
+            System.Collections.Generic.List<(string,string)> additionalNuGetReferences = null)
         {
             this.CsProjPath = csprojPath;
 
@@ -259,6 +261,13 @@ namespace Bam.Core
                         continue;
                     }
                     this.CreateNugetReference(nuget.Identifier, nuget.Version, nugetReferences);
+                }
+            }
+            if (null != additionalNuGetReferences)
+            {
+                foreach (var nuget in additionalNuGetReferences)
+                {
+                    this.CreateNugetReference(nuget.Item1, nuget.Item2, nugetReferences);
                 }
             }
 

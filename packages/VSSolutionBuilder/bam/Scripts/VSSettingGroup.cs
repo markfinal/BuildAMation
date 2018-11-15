@@ -57,13 +57,24 @@ namespace VSSolutionBuilder
             this.Include = include;
             if (null != include)
             {
-                this.RelativeDirectory = module.CreateTokenizedString("@trimstart(@relativeto(@dir($(0)),$(packagedir)),../)", include);
+                this.RelativeDirectory = module.CreateTokenizedString(
+                    "@isrelative(@trimstart(@relativeto(@dir($(0)),$(packagedir)),../),@dir($(0)))",
+                    include
+                );
                 lock (this.RelativeDirectory)
                 {
                     if (!this.RelativeDirectory.IsParsed)
                     {
                         // may have been parsed already, e.g. a common header
                         this.RelativeDirectory.Parse();
+                    }
+
+                    // this can happen if the source file lies directly in the package directory
+                    // rather than in subdirectories
+                    // project filters called '.' look weird
+                    if (this.RelativeDirectory.ToString().Equals(".", System.StringComparison.Ordinal))
+                    {
+                        this.RelativeDirectory = null;
                     }
                 }
             }
