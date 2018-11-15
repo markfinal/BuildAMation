@@ -31,28 +31,50 @@ using Microsoft.Extensions.Configuration;
 namespace Bam.Core
 {
     /// <summary>
-    /// TODO
+    /// Users may configure BuildAMation operations by several methods. These take this order of precendece:
+    ///  - Environment variables prefixed with 'BAM'. The configuration names use colons, :, as scoping, which are invalid
+    ///  for environment variables, so a double underscore __ may be safely used instead, e.g.
+    ///  configuration = Packages:SourceDir aka environment variable = BAMPackages__SourceDir
+    ///  - An .ini file in your home directory called buildamation.ini
+    ///  - Defaults
+    ///
+    /// Configuration variables defined:
+    ///  Packages:SourceDir
     /// </summary>
     public static class UserConfiguration
     {
         /// <summary>
-        /// TODO
+        /// Configuration option
+        /// This is the directory in which package sources are downloaded to. (default = $HOME/.bam.package.sources)
         /// </summary>
-        public const string SourcesDir = "Sources";
+        public const string SourcesDir = "Packages:SourceDir";
+
+        private static Microsoft.Extensions.Configuration.IConfiguration InternalConfiguration;
+
+        static UserConfiguration()
+        {
+            InternalConfiguration = new Microsoft.Extensions.Configuration.ConfigurationBuilder()
+                .SetBasePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile))
+                .AddInMemoryCollection(
+                    new System.Collections.Generic.Dictionary<string, string>
+                    {
+                        { SourcesDir, System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), ".bam.package.sources") }
+                    }
+                )
+                .AddIniFile("buildamation.ini", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables("BAM")
+                .Build();
+        }
 
         /// <summary>
-        /// TODO
+        /// Get the configuration interface to query.
         /// </summary>
-        public static Microsoft.Extensions.Configuration.IConfiguration Configuration { get; } =
-            new Microsoft.Extensions.Configuration.ConfigurationBuilder()
-            .SetBasePath(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile))
-            .AddIniFile(".buildamation.ini", optional: true, reloadOnChange: true)
-            .AddInMemoryCollection(
-                new System.Collections.Generic.Dictionary<string, string>
-                {
-                    { SourcesDir, System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), ".bam.package.sources") }
-                }
-            )
-            .Build();
+        public static Microsoft.Extensions.Configuration.IConfiguration Configuration
+        {
+            get
+            {
+                return InternalConfiguration;
+            }
+        }
     }
 }
