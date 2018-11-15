@@ -32,20 +32,21 @@ using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
-    /// TODO
+    /// Representation of a single archive file used as part of package download,
+    /// specified in the package's definition file.
     /// </summary>
     public class PackageSource
     {
         /// <summary>
-        /// TODO
+        /// Create a new package source
         /// </summary>
-        /// <param name="name">TODO</param>
-        /// <param name="version">TODO</param>
-        /// <param name="type">TODO</param>
-        /// <param name="path">TODO</param>
-        /// <param name="subdir">TODO</param>
-        /// <param name="extractto">TODO</param>
-        /// <param name="downloadRequired">TODO</param>
+        /// <param name="name">Name of the package</param>
+        /// <param name="version">Version of the package</param>
+        /// <param name="type">Type of the source download. Currently only 'http'.</param>
+        /// <param name="path">Path of the source download. Usually a URL.</param>
+        /// <param name="subdir">Name of a subdirectory in the source, that should be used as the package directory.</param>
+        /// <param name="extractto">Path of where to extract the source to.</param>
+        /// <param name="downloadRequired">True if a download is actually required.</param>
         public PackageSource(
             string name,
             string version,
@@ -129,12 +130,10 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// TODO
+        /// Begin the fetch of the package source if it's not already fetched.
         /// </summary>
-        /// <param name="packageName"></param>
         public System.Threading.Tasks.Task
-        Fetch(
-            string packageName)
+        Fetch()
         {
             if (this.AlreadyFetched)
             {
@@ -143,13 +142,13 @@ namespace Bam.Core
             switch (this.Type)
             {
                 case PackageSource.EType.Http:
-                    return this.DownloadAndExtractPackageViaHTTP(packageName);
+                    return this.DownloadAndExtractPackageViaHTTP();
             }
             throw new Exception($"Unhandled package source type, '{this.Type.ToString()}'");
         }
 
         /// <summary>
-        ///
+        /// Path of the source archive. Usually a remote URL.
         /// </summary>
         public string ArchivePath
         {
@@ -158,7 +157,7 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// TODO
+        /// Path that the archive has extracted to, including a subdirectory in the archive.
         /// </summary>
         public string ExtractedPackageDir
         {
@@ -262,8 +261,7 @@ namespace Bam.Core
         }
 
         private System.Threading.Tasks.Task
-        DownloadAndExtractPackageViaHTTP(
-            string packageName)
+        DownloadAndExtractPackageViaHTTP()
         {
             var client = new System.Net.Http.HttpClient
             {

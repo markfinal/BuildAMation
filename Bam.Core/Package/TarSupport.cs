@@ -53,7 +53,7 @@ namespace Bam.Core
                 string message)
                 :
                 base(message)
-            { }
+            {}
         }
 
         class Header

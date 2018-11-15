@@ -847,7 +847,7 @@ namespace Bam.Core
                 }
                 foreach (var source in package.Sources)
                 {
-                    var fetchSourceTask = source.Fetch(package.Name);
+                    var fetchSourceTask = source.Fetch();
                     if (null == fetchSourceTask)
                     {
                         continue;
