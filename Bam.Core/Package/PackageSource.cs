@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Microsoft.Extensions.Configuration;
 using SharpCompress.Readers;
 using System.Linq;
 namespace Bam.Core
@@ -231,6 +230,7 @@ namespace Bam.Core
             }
 
             var hash = System.Security.Cryptography.MD5.Create();
+            var anyFileExists = false;
             for (int i = 0; i < filelist.Count; ++i)
             {
                 var filepath = filelist[i];
@@ -238,24 +238,26 @@ namespace Bam.Core
                 {
                     continue;
                 }
+                anyFileExists = true;
                 try
                 {
                     var bytes = System.IO.File.ReadAllBytes(filepath); // TODO: ouch
-                    if (i < filelist.Count - 1)
-                    {
-                        hash.TransformBlock(bytes, 0, bytes.Length, bytes, 0);
-                    }
-                    else
-                    {
-                        hash.TransformFinalBlock(bytes, 0, bytes.Length);
-                    }
+                    hash.TransformBlock(bytes, 0, bytes.Length, bytes, 0);
                 }
                 catch (System.IO.FileNotFoundException)
                 {
                     continue; // some archives have symlinks that go to nowhere
                 }
             }
-            Log.DebugMessage($"MD5 hash of {this.PackageName} is '{string.Concat(hash.Hash.Select(x => x.ToString("X2")))}'");
+            if (anyFileExists)
+            {
+                hash.TransformFinalBlock(new byte[0], 0, 0);
+                Log.DebugMessage($"MD5 hash of {this.PackageName} is '{string.Concat(hash.Hash.Select(x => x.ToString("X2")))}'");
+            }
+            else
+            {
+                throw new Exception("No unarchived files were found to hash");
+            }
             return hash;
         }
 
@@ -307,18 +309,42 @@ namespace Bam.Core
                 using (var readerStream = System.IO.File.OpenRead(this.ArchivePath))
                 using (var reader = SharpCompress.Readers.ReaderFactory.Open(readerStream))
                 {
-                    while (reader.MoveToNextEntry())
+                    if (reader.ArchiveType == SharpCompress.Common.ArchiveType.Tar)
                     {
-                        if (reader.Entry.IsDirectory)
+                        try
                         {
-                            continue;
+                            using (var tar = new TarFile(readerStream))
+                            {
+                                try
+                                {
+                                    tar.Export(this.ExtractTo);
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Exception(ex, $"Unable to extract archive '{this.ArchivePath}' from '{this.RemotePath}'");
+                                }
+                            }
                         }
-
-                        reader.WriteEntryToDirectory(this.ExtractTo, new SharpCompress.Common.ExtractionOptions()
+                        catch (TarFile.CompressionMethodUnsupportedException ex)
                         {
-                            ExtractFullPath = true,
-                            Overwrite = true
-                        });
+                            throw new Exception(ex, $"Unable to decompress archive '{this.ArchivePath}' from '{this.RemotePath}'");
+                        }
+                    }
+                    else
+                    {
+                        while (reader.MoveToNextEntry())
+                        {
+                            if (reader.Entry.IsDirectory)
+                            {
+                                continue;
+                            }
+
+                            reader.WriteEntryToDirectory(this.ExtractTo, new SharpCompress.Common.ExtractionOptions()
+                            {
+                                ExtractFullPath = true,
+                                Overwrite = true
+                            });
+                        }
                     }
                 }
 
