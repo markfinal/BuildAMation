@@ -10,6 +10,7 @@ SourceDir=<path>
 or by specifying an environment variable BAMPackages__SourceDir=<path>.
 Extracted package source is MD5 hashed after initial extraction and saved beside the archive file. On subsequent build runs, the hash is not recalculated, since it can be expensive.
 In order to do a hash comparison, pass --validatesources to the bam command line. This will be slow.
+The Nuget SharpCompress is used to perform most of the archive decompression, except for tar files, since there is hand rolled code to cope with symbolic links.
 
 04-Nov-2018 Fixes #506. Added TokenizedString function, @tounix(<path>), that converts Windows style directory separators to Unix.
 

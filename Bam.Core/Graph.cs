@@ -840,7 +840,6 @@ namespace Bam.Core
 
             foreach (var package in packages)
             {
-                // TODO: Only do this on a real build - not debug project generation
                 if (null == package.Sources)
                 {
                     continue;
