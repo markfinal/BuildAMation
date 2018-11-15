@@ -266,36 +266,37 @@ namespace Bam.Core
                     System.IO.Directory.CreateDirectory(parentDir);
                 }
 
-                try
+                if (this.IsSymLink)
                 {
-                    if (this.IsSymLink)
+                    var link = new Mono.Unix.UnixSymbolicLinkInfo(path);
+                    if (System.IO.File.Exists(path))
                     {
-                        var link = new Mono.Unix.UnixSymbolicLinkInfo(path);
-                        if (System.IO.File.Exists(path))
-                        {
-                            link.Delete(); // equivalent to ln -s -f
-                        }
-
-                        var linkPath = NullTerminatedCharArrayToString(this.linkname);
-                        var targetPath = System.IO.Path.GetFullPath(linkPath, parentDir);
-                        link.CreateSymbolicLinkTo(targetPath);
+                        link.Delete(); // equivalent to ln -s -f
                     }
-                    else
-                    {
-                        var buffer = new byte[this.realSize];
-                        this.stream.Read(buffer, 0, this.realSize);
 
+                    var linkPath = NullTerminatedCharArrayToString(this.linkname);
+                    var targetPath = System.IO.Path.GetFullPath(linkPath, parentDir);
+                    link.CreateSymbolicLinkTo(targetPath);
+                    this.SkipData(this.paddedSize);
+                }
+                else
+                {
+                    try
+                    {
                         using (var writerStream = System.IO.File.OpenWrite(path))
                         {
+                            var buffer = new byte[this.realSize];
+                            this.stream.Read(buffer, 0, this.realSize);
                             writerStream.Write(buffer, 0, this.realSize);
                         }
                         var pad = this.paddedSize - this.realSize;
                         this.SkipData(pad);
                     }
-                }
-                catch (System.IO.IOException ex)
-                {
-                    Log.Info($"Failed to write file '{path}' as {ex.Message}");
+                    catch (System.IO.IOException ex)
+                    {
+                        Log.Info($"Failed to write file '{path}' as {ex.Message}");
+                        this.SkipData(this.paddedSize);
+                    }
                 }
             }
 
