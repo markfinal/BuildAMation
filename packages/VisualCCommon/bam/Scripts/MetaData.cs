@@ -393,7 +393,7 @@ namespace VisualCCommon
 
         protected virtual bool Has64bithost_32bitcross => true;
 
-        protected virtual bool hasNative64BitTools => true;
+        protected virtual bool HasNative64BitTools => true;
 
         private static bool report_WindowsSDK_done = false;
         private static void
@@ -490,7 +490,7 @@ namespace VisualCCommon
                 this.Get_tool_environment_variables(
                     bitdepth,
                     this.Has64bithost_32bitcross,
-                    this.hasNative64BitTools
+                    this.HasNative64BitTools
                 );
                 Report_WindowsSDK(this.Environment(bitdepth), bitdepth);
             }
