@@ -537,7 +537,7 @@ namespace C
             var binaryWriteTime = System.IO.File.GetLastWriteTime(binaryPath);
             foreach (var source in this.linkedModules)
             {
-                source?.EvaluationTask.Wait();
+                source.EvaluationTask?.Wait();
                 if (null != source.ReasonToExecute)
                 {
                     switch (source.ReasonToExecute.Reason)
@@ -561,7 +561,7 @@ namespace C
             }
             foreach (var source in this.sourceModules)
             {
-                source?.EvaluationTask.Wait();
+                source.EvaluationTask?.Wait();
                 if (null != source.ReasonToExecute)
                 {
                     switch (source.ReasonToExecute.Reason)

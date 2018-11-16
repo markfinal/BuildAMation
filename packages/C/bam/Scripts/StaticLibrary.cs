@@ -294,7 +294,7 @@ namespace C
             var libraryWriteTime = System.IO.File.GetLastWriteTime(libraryPath);
             foreach (var source in this.sourceModules)
             {
-                source?.EvaluationTask.Wait();
+                source.EvaluationTask?.Wait();
                 if (null != source.ReasonToExecute)
                 {
                     switch (source.ReasonToExecute.Reason)
