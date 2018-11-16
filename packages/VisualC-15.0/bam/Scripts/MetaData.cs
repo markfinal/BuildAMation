@@ -116,6 +116,7 @@ namespace VisualC
             var env = this.Environment(depth);
             var redistdir = new Bam.Core.TokenizedStringArray(env["VCToolsRedistDir"]);
             var winsdkdir = env["UniversalCRTSdkDir"];
+            var ucrtVersion = env["UCRTVersion"];
             var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
             switch (depth)
             {
@@ -128,11 +129,14 @@ namespace VisualC
                                 redistdir
                             )
                         );
+                        var paths = new Bam.Core.TokenizedStringArray();
+                        paths.AddRangeUnique(winsdkdir);
+                        paths.AddRangeUnique(ucrtVersion);
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
-                                "$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll",
+                                "#valid($(0)/Redist/$(1)/ucrt/DLLs/x86/ucrtbase.dll,$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll)",
                                 null,
-                                new Bam.Core.TokenizedStringArray(winsdkdir)
+                                paths
                             )
                         );
                     }
@@ -147,11 +151,14 @@ namespace VisualC
                                 redistdir
                             )
                         );
+                        var paths = new Bam.Core.TokenizedStringArray();
+                        paths.AddRangeUnique(winsdkdir);
+                        paths.AddRangeUnique(ucrtVersion);
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
-                                "$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll",
+                                "#valid($(0)/Redist/$(1)/ucrt/DLLs/x64/ucrtbase.dll,$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll)",
                                 null,
-                                new Bam.Core.TokenizedStringArray(winsdkdir)
+                                paths
                             )
                         );
                     }
