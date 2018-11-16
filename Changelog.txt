@@ -1,3 +1,5 @@
+16-Nov-2018 Fixes #494. Detecting a VisualC version that is not installed now gives a sensible exception message.
+
 16-Nov-2018 Fixes #510. Adding 3rdPartyLicenses.md to the distributable, and also mentioned in the bam preamble.
 
 15-Nov-2018 Fixes #512. Added C.Cxx.ELanguageStandard.Cxx17 and C.Cxx.ELanguageStandard.GnuCxx17. Added Cxx17Test1 test case.

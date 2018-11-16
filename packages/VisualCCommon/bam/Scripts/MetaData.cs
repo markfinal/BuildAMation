@@ -85,6 +85,12 @@ namespace VisualCCommon
                     this.VswherePath,
                     args.ToString()
                 ).StandardOutput;
+                if (System.String.IsNullOrEmpty(installpath))
+                {
+                    throw new Bam.Core.Exception(
+                        $"Unable to locate installation directory for Visual Studio major version {major_version}"
+                    );
+                }
                 Bam.Core.Log.Info($"Using VisualStudio {major_version} installed at {installpath}");
                 return installpath;
             }
