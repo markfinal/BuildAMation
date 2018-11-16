@@ -50,6 +50,10 @@ namespace C
             {
                 return;
             }
+            if (module.IsPrebuilt)
+            {
+                return;
+            }
 
             // link against libraries
             ProcessLibraryDependencies(

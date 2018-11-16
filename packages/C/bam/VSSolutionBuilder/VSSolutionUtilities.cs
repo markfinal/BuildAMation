@@ -100,8 +100,17 @@ namespace C
             VSSolutionBuilder.VSProjectConfiguration.EType type,
             System.Collections.Generic.IEnumerable<Bam.Core.Module> headerFiles)
         {
+            // prebuilt modules may have headers, but do not build anything
+            if (module.IsPrebuilt)
+            {
+                solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+                var prebuiltProject = solution.EnsureProjectExists(module);
+                config = prebuiltProject.GetConfiguration(module);
+                config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
+                return;
+            }
             // early out
-            if (module.IsPrebuilt || !module.InputModules.Any())
+            if (!module.InputModules.Any())
             {
                 solution = null;
                 config = null;

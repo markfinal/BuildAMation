@@ -1,3 +1,5 @@
+16-Nov-2018 Fixes #488. Fixed regression that prebuilt libraries with headers were no longer appearing in VisualStudio solutions.
+
 16-Nov-2018 Fixes #493. Renamed package Gcc-5.4 to Gcc-5, as it can represent any of the minor versions.
 
 16-Nov-2018 Fixes #494. Detecting a VisualC version that is not installed now gives a sensible exception message.
