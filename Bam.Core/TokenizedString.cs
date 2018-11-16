@@ -60,6 +60,7 @@ namespace Bam.Core
     /// <item><description><code>@escapedquotes(path)</code></description> Ensure that the path is double quoted, suitable for use with preprocessor definitions.</item>
     /// <item><description><code>@ifnotempty(path,whennotempty,whenempty)</code></description> If path is not empty, replace the expression with that in whennotempty, otherwise use whenempty.</item>
     /// <item><description><code>@tounix(path)</code></description> Convert any Windows paths (using back slashes) to Unix paths (using forward slashes).</item>
+    /// <item><description><code>@exists(path,fallback)</code></description> If the path exists, use it, otherwise use the fallback.</item>
     /// </list>
     /// Custom unary post-functions can be registered using <code>registerPostUnaryFunction</code>.
     /// </remarks>
@@ -108,7 +109,8 @@ namespace Bam.Core
             "trimstart",
             "escapedquotes",
             "ifnotempty",
-            "tounix"
+            "tounix",
+            "exists"
         };
 
         // static fields, initialised in reset()
@@ -927,6 +929,26 @@ namespace Bam.Core
                     {
                         argument = argument.Replace("\\", "/");
                         return argument;
+                    }
+
+                case "exists":
+                    {
+                        var split = argument.Split(',');
+                        if (split.Length != 2)
+                        {
+                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
+                                split.Length,
+                                functionName,
+                                argument,
+                                this.OriginalString);
+                        }
+                        var path = split[0];
+                        var fallback = split[1];
+                        if (System.IO.File.Exists(path) || System.IO.Directory.Exists(path))
+                        {
+                            return path;
+                        }
+                        return fallback;
                     }
 
                 default:

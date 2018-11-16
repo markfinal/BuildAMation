@@ -134,7 +134,7 @@ namespace VisualC
                         paths.AddRangeUnique(ucrtVersion);
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
-                                "#valid($(0)/Redist/$(1)/ucrt/DLLs/x86/ucrtbase.dll,$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll)",
+                                "@exists($(0)/Redist/$(1)/ucrt/DLLs/x86/ucrtbase.dll,$(0)/Redist/ucrt/DLLs/x86/ucrtbase.dll)",
                                 null,
                                 paths
                             )
@@ -156,7 +156,7 @@ namespace VisualC
                         paths.AddRangeUnique(ucrtVersion);
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
-                                "#valid($(0)/Redist/$(1)/ucrt/DLLs/x64/ucrtbase.dll,$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll)",
+                                "@exists($(0)/Redist/$(1)/ucrt/DLLs/x64/ucrtbase.dll,$(0)/Redist/ucrt/DLLs/x64/ucrtbase.dll)",
                                 null,
                                 paths
                             )

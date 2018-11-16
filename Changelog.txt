@@ -1,4 +1,5 @@
 16-Nov-2018 Fixes #502. WindowsSDK 10.0.17763 and above now have redists in a UCRT versioned folder.
+To support this, a new TokenizedString function has been added: @exists(path,fallback). If path exists, use it, otherwise use fallback.
 
 16-Nov-2018 Fixes #488. Fixed regression that prebuilt libraries with headers were no longer appearing in VisualStudio solutions.
 
