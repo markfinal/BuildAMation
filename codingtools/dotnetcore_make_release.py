@@ -110,6 +110,7 @@ def copy_support_files(output_dir):
         copy_file_to_directory('Changelog.txt', output_dir)
         copy_file_to_directory('License.md', output_dir)
         copy_file_to_directory('MS-PL.md', output_dir)
+        copy_file_to_directory('3rdPartyLicenses.md', output_dir)
     finally:
         os.chdir(cur_dir)
 

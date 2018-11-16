@@ -45,7 +45,8 @@ namespace Bam.Core
         {
             var message = new System.Text.StringBuilder();
             message.AppendLine($"BuildAMation (Bam) v{Core.Graph.Instance.ProcessState.VersionString} (c) Mark Final, 2010-2018. Licensed under BSD 3-clause. See License.md.");
-            message.Append("Parts of this software are licensed under the Microsoft Limited Public License (MS-PL). See MS-PL.md.");
+            message.AppendLine("Parts of this software are licensed under the Microsoft Limited Public License (MS-PL). See MS-PL.md.");
+            message.Append("Parts of this software use thirdparty licensed open source software. See 3rdPartyLicenses.md.");
             Core.Log.Message(level, message.ToString());
         }
 
