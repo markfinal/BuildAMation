@@ -4,7 +4,7 @@
   <Dependents>
     <Package name="C" />
     <Package name="Gcc" version="4.8" default="true" />
-    <Package name="Gcc" version="5.4" />
+    <Package name="Gcc" version="5" />
     <Package name="Gcc" version="7" />
     <Package name="MakeFileBuilder" />
     <Package name="NativeBuilder" />

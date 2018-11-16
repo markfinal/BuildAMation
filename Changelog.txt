@@ -1,3 +1,5 @@
+16-Nov-2018 Fixes #493. Renamed package Gcc-5.4 to Gcc-5, as it can represent any of the minor versions.
+
 16-Nov-2018 Fixes #494. Detecting a VisualC version that is not installed now gives a sensible exception message.
 
 16-Nov-2018 Fixes #510. Adding 3rdPartyLicenses.md to the distributable, and also mentioned in the bam preamble.
