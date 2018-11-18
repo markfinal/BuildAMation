@@ -10,6 +10,7 @@ import subprocess
 import sys
 import tarfile
 import tempfile
+import traceback
 import zipfile
 
 
@@ -242,6 +243,7 @@ if __name__ == '__main__':
         main(options, root_dir)
     except Exception, e:
         log('*** Failure reason: %s' % str(e))
+        log(traceback.format_exc())
     finally:
         pass
     log('Done')
