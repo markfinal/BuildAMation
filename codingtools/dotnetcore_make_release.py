@@ -45,10 +45,10 @@ def get_hash():
     return _run_git(['rev-parse', '--short', 'HEAD'])
 
 
-def run_dotnet(target, project_path, output_dir, configuration='Release', framework='netcoreapp2.1', force=True, standalone_platform=None, verbosity='normal', extra_properties=None):
+def run_dotnet(target, project_path, source_dir, output_dir, configuration='Release', framework='netcoreapp2.1', force=True, standalone_platform=None, verbosity='normal', extra_properties=None):
     output_dir = os.path.join(output_dir, 'bin', configuration, framework)
     cur_dir = os.getcwd()
-    os.chdir(g_bam_dir)
+    os.chdir(source_dir)
     try:
         args = []
         args.append('dotnet')
@@ -81,12 +81,12 @@ def delete_directory(dir):
         shutil.rmtree(dir)
 
 
-def run_dotnet_publish(output_dir, configuration='Release', framework='netcoreapp2.1', force=True, standalone_platform=None, verbosity='normal'):
-    delete_directory(output_dir)
-    os.makedirs(output_dir)
-    project = os.path.join('Bam', 'Bam.csproj') # specifically build the Bam executable, so that the unit test dependencies don't get dragged in
-    run_dotnet('clean', project, output_dir, configuration=configuration, framework=framework, force=False, standalone_platform=None, verbosity=verbosity)
-    run_dotnet('publish', project, output_dir, configuration=configuration, framework=framework, force=force, standalone_platform=standalone_platform, verbosity=verbosity, extra_properties='/p:DebugType=None')
+def run_dotnet_publish(source_dir, build_dir, configuration='Release', framework='netcoreapp2.1', force=True, standalone_platform=None, verbosity='normal'):
+    delete_directory(build_dir)
+    os.makedirs(build_dir)
+    project = os.path.join(source_dir, 'Bam', 'Bam.csproj') # specifically build the Bam executable, so that the unit test dependencies don't get dragged in
+    run_dotnet('clean', project, source_dir, build_dir, configuration=configuration, framework=framework, force=False, standalone_platform=None, verbosity=verbosity)
+    run_dotnet('publish', project, source_dir, build_dir, configuration=configuration, framework=framework, force=force, standalone_platform=standalone_platform, verbosity=verbosity, extra_properties='/p:DebugType=None')
 
 
 def copy_directory_to_directory(srcdir,destdir):
@@ -99,19 +99,19 @@ def copy_file_to_directory(srcfile,destdir):
     shutil.copy(srcfile, destdir)
 
 
-def copy_support_files(output_dir):
+def copy_support_files(source_dir, build_dir):
     cur_dir = os.getcwd()
-    os.chdir(g_bam_dir)
+    os.chdir(source_dir)
     log('Copying support files...')
     try:
-        copy_directory_to_directory('packages', os.path.join(output_dir, 'packages'))
-        copy_directory_to_directory('tests', os.path.join(output_dir, 'tests'))
-        copy_file_to_directory('env.sh', output_dir)
-        copy_file_to_directory('env.bat', output_dir)
-        copy_file_to_directory('Changelog.txt', output_dir)
-        copy_file_to_directory('License.md', output_dir)
-        copy_file_to_directory('MS-PL.md', output_dir)
-        copy_file_to_directory('3rdPartyLicenses.md', output_dir)
+        copy_directory_to_directory('packages', os.path.join(build_dir, 'packages'))
+        copy_directory_to_directory('tests', os.path.join(build_dir, 'tests'))
+        copy_file_to_directory('env.sh', build_dir)
+        copy_file_to_directory('env.bat', build_dir)
+        copy_file_to_directory('Changelog.txt', build_dir)
+        copy_file_to_directory('License.md', build_dir)
+        copy_file_to_directory('MS-PL.md', build_dir)
+        copy_file_to_directory('3rdPartyLicenses.md', build_dir)
     finally:
         os.chdir(cur_dir)
 
@@ -163,29 +163,30 @@ def tar_dir(tar_path, dir):
         os.chdir(cwd)
 
 
-def main(options, root_dir):
-    _,bam_version_dir = os.path.split(root_dir)
+def main(options, build_dir, source_dir):
+    _,bam_version_dir = os.path.split(build_dir)
 
     if options.doxygen:
-        generated_docs_dir = os.path.join(g_bam_dir, 'docs')
+        generated_docs_dir = os.path.join(source_dir, 'docs')
         delete_directory(generated_docs_dir)
-        build_documentation(g_bam_dir, options.doxygen)
+        build_documentation(source_dir, options.doxygen)
         if options.make_distribution:
-            zip_dir(os.path.join(g_bam_dir, '%s-docs' % bam_version_dir) + '.zip', generated_docs_dir)
-            tar_dir(os.path.join(g_bam_dir, '%s-docs' % bam_version_dir) + '.tgz', generated_docs_dir)
+            zip_dir(os.path.realpath(os.path.join(build_dir, '..', '%s-docs' % bam_version_dir) + '.zip'), generated_docs_dir)
+            tar_dir(os.path.realpath(os.path.join(build_dir, '..', '%s-docs' % bam_version_dir) + '.tgz'), generated_docs_dir)
 
     run_dotnet_publish(
-        root_dir,
+        source_dir,
+        build_dir,
         configuration='Release',
         framework='netcoreapp2.1',
         force=True,
         verbosity='Minimal'
     )
-    copy_support_files(root_dir)
-    #list_files(root_dir)
+    copy_support_files(source_dir, build_dir)
+    #list_files(build_dir)
     if options.make_distribution:
-        zip_dir(os.path.join(g_bam_dir, '%s-AnyCPU' % bam_version_dir) + '.zip', root_dir)
-        tar_dir(os.path.join(g_bam_dir, '%s-AnyCPU' % bam_version_dir) + '.tgz', root_dir)
+        zip_dir(os.path.realpath(os.path.join(build_dir, '..', '%s-AnyCPU' % bam_version_dir) + '.zip'), build_dir)
+        tar_dir(os.path.realpath(os.path.join(build_dir, '..', '%s-AnyCPU' % bam_version_dir) + '.tgz'), build_dir)
 
     if options.standalone:
         platforms = []
@@ -193,9 +194,10 @@ def main(options, root_dir):
         platforms.append('osx-x64')
         platforms.append('linux-x64')
         for platform in platforms:
-            platform_output_dir = root_dir + '-' + platform
+            platform_build_dir = build_dir + '-' + platform
             run_dotnet_publish(
-                platform_output_dir,
+                source_dir,
+                platform_build_dir,
                 configuration='Release',
                 framework='netcoreapp2.1',
                 force=True,
@@ -231,16 +233,19 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
 
     if options.gittag:
-        root_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s" % options.gittag)
-        clone_repo(root_dir, options.gittag)
+        source_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s-src" % options.gittag)
+        build_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s" % options.gittag)
+        clone_repo(source_dir, options.gittag)
     elif options.local:
-        root_dir = os.path.join(g_bam_dir, 'bam_publish')
+        source_dir = g_bam_dir
+        build_dir = os.path.join(source_dir, 'bam_publish')
     else:
+        source_dir = g_bam_dir
         branch = get_branch_name()
         hash = get_hash()
-        root_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s-%s" % (hash,branch))
+        build_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s-%s" % (hash,branch))
     try:
-        main(options, root_dir)
+        main(options, build_dir, source_dir)
     except Exception, e:
         log('*** Failure reason: %s' % str(e))
         log(traceback.format_exc())
