@@ -8,6 +8,8 @@ import sys
 def build_documentation(build_dir, doxygenpath):
     if not doxygenpath:
         raise RuntimeError("Path to doxygen is required")
+    if not os.path.isfile(doxygenpath):
+        raise RuntimeError("Path to doxygen, '%s', is not a valid file" % doxygenpath)
     args = [doxygenpath, "docsrc/BuildAMationDoxy"]
     print "Running: %s" % ' '.join(args)
     current_dir = os.getcwd()
