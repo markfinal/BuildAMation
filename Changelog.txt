@@ -107,6 +107,23 @@ Associated changes
 - bam --installdir will now display the installation directory.
 - bam --updatebamassemblyversions will update all package definition files read to the current BAM assembly version.
 
+======== End of v1.2 releases ========
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 27-Jul-2018 ======== Version 1.2.0 Release ========
 
 11-Jul-2018 Fixes #476. -bigobj is no longer unconditionally set in generated .vcxprojs.
