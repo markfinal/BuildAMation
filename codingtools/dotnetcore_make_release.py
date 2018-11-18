@@ -222,11 +222,11 @@ def clone_repo(checkout_dir, gittag):
 
 if __name__ == '__main__':
     parser = OptionParser()
-    parser.add_option('-s', '--standalone', action='store_true', dest='standalone')
-    parser.add_option('-d', '--doxygen', dest='doxygen', default=None)
-    parser.add_option('-t', '--tag', dest='gittag', default=None)
-    parser.add_option('-x', '--distribution', action='store_true', dest='make_distribution')
-    parser.add_option('-l', '--local', action='store_true', dest='local')
+    parser.add_option('-s', '--standalone', action='store_true', dest='standalone', help='Make builds specific to the current platform and standalone.')
+    parser.add_option('-d', '--doxygen', dest='doxygen', default=None, help='Location of the doxygen executable in order to generate documentation.')
+    parser.add_option('-t', '--tag', dest='gittag', default=None, help='Create a release from a named git tag. Clones at depth 1 from the named tag into a temporary directory.')
+    parser.add_option('-x', '--distribution', action='store_true', dest='make_distribution', help='Generate zip and tar archives for the build to distribute.')
+    parser.add_option('-l', '--local', action='store_true', dest='local', help='Builds the local checkout into a bam_publish subdirectory')
     (options, args) = parser.parse_args()
 
     if options.gittag:
