@@ -234,6 +234,9 @@ if __name__ == '__main__':
 
     temp_dir = tempfile.mkdtemp()
     if options.gittag:
+        # for some reason, cloning into a temporary folder (at least on macOS), causes the build
+        # not to fail, but to generate an invalid set of assemblies
+        # the Bam.dll won't run with dotnet, and the schema is in the wrong place, for starters
         source_dir = os.path.realpath(os.path.join(g_bam_dir, '..', "BuildAMation-%s-src" % options.gittag))
         build_dir = os.path.join(temp_dir, "BuildAMation-%s" % options.gittag)
         clone_repo(source_dir, options.gittag)
