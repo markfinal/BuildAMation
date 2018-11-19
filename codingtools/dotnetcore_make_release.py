@@ -102,7 +102,7 @@ def copy_file_to_directory(srcfile,destdir):
 def copy_support_files(source_dir, build_dir):
     cur_dir = os.getcwd()
     os.chdir(source_dir)
-    log('Copying support files from %s to %s...' % (source_dir, build_dir))
+    log('Copying support files from %s to %s ...' % (source_dir, build_dir))
     try:
         copy_directory_to_directory('packages', os.path.join(build_dir, 'packages'))
         copy_directory_to_directory('tests', os.path.join(build_dir, 'tests'))
