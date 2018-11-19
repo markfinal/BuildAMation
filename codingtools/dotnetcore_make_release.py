@@ -235,7 +235,8 @@ if __name__ == '__main__':
     temp_dir = tempfile.mkdtemp()
     if options.gittag:
         source_dir = os.path.join(temp_dir, "BuildAMation-%s-src" % options.gittag)
-        build_dir = os.path.join(temp_dir, "BuildAMation-%s" % options.gittag)
+        #build_dir = os.path.join(temp_dir, "BuildAMation-%s" % options.gittag)
+        build_dir = os.path.join(source_dir, 'bam_publish')
         clone_repo(source_dir, options.gittag)
     elif options.local:
         source_dir = g_bam_dir
