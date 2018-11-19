@@ -102,7 +102,7 @@ def copy_file_to_directory(srcfile,destdir):
 def copy_support_files(source_dir, build_dir):
     cur_dir = os.getcwd()
     os.chdir(source_dir)
-    log('Copying support files from %s...' % source_dir)
+    log('Copying support files from %s to %s...' % (source_dir, build_dir))
     try:
         copy_directory_to_directory('packages', os.path.join(build_dir, 'packages'))
         copy_directory_to_directory('tests', os.path.join(build_dir, 'tests'))
@@ -180,7 +180,7 @@ def main(options, build_dir, source_dir):
         configuration='Release',
         framework='netcoreapp2.1',
         force=True,
-        verbosity='Minimal'
+        verbosity='normal'
     )
     copy_support_files(source_dir, build_dir)
     #list_files(build_dir)
@@ -215,7 +215,7 @@ def clone_repo(checkout_dir, gittag):
         "1",
         "--branch",
         gittag,
-        "https://github.com/markfinal/BuildAMation",
+        "https://github.com/markfinal/BuildAMation.git",
         checkout_dir
     ]
     log('Running: %s' % ' '.join(args))
