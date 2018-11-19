@@ -230,6 +230,7 @@ if __name__ == '__main__':
     parser.add_option('-t', '--tag', dest='gittag', default=None, help='Create a release from a named git tag. Clones at depth 1 from the named tag into a temporary directory.')
     parser.add_option('-x', '--distribution', action='store_true', dest='make_distribution', help='Generate zip and tar archives for the build to distribute.')
     parser.add_option('-l', '--local', action='store_true', dest='local', help='Builds the local checkout into a bam_publish subdirectory')
+    parser.add_option('-c', '--clean', action='store_true', dest='cleanup', help='Clean up any intermediate temporary folders created at the end of a successful build.')
     (options, args) = parser.parse_args()
 
     temp_dir = tempfile.mkdtemp()
@@ -250,6 +251,10 @@ if __name__ == '__main__':
         build_dir = os.path.join(temp_dir, "BuildAMation-%s-%s" % (hash,branch))
     try:
         main(options, build_dir, source_dir)
+
+        # remove cloned checkout directory
+        if options.gittag and options.cleanup:
+            delete_directory(source_dir)
     except Exception, e:
         log('*** Failure reason: %s' % str(e))
         log(traceback.format_exc())
