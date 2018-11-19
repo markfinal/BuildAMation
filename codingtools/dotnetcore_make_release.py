@@ -232,9 +232,10 @@ if __name__ == '__main__':
     parser.add_option('-l', '--local', action='store_true', dest='local', help='Builds the local checkout into a bam_publish subdirectory')
     (options, args) = parser.parse_args()
 
+    temp_dir = tempfile.mkdtemp()
     if options.gittag:
-        source_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s-src" % options.gittag)
-        build_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s" % options.gittag)
+        source_dir = os.path.join(temp_dir, "BuildAMation-%s-src" % options.gittag)
+        build_dir = os.path.join(temp_dir, "BuildAMation-%s" % options.gittag)
         clone_repo(source_dir, options.gittag)
     elif options.local:
         source_dir = g_bam_dir
@@ -243,7 +244,7 @@ if __name__ == '__main__':
         source_dir = g_bam_dir
         branch = get_branch_name()
         hash = get_hash()
-        build_dir = os.path.join(tempfile.mkdtemp(), "BuildAMation-%s-%s" % (hash,branch))
+        build_dir = os.path.join(temp_dir, "BuildAMation-%s-%s" % (hash,branch))
     try:
         main(options, build_dir, source_dir)
     except Exception, e:
