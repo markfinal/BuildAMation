@@ -34,6 +34,8 @@ namespace Bam.Core
     /// </summary>
     public static class IOWrapper
     {
+        private static readonly object DirectoryCreationGuard = new object();
+
         /// <summary>
         /// Wrapper around System.IO.Directory.CreateDirectory, catching exceptions thrown
         /// and embedding them into a Bam.Core.Exception with more semantic detail.
@@ -44,22 +46,33 @@ namespace Bam.Core
         CreateDirectory(
             string directoryPath)
         {
-            try
+            lock (DirectoryCreationGuard)
             {
+                // double check - in case this came from CreateDirectoryIfNotExists
+                if (System.IO.Directory.Exists(directoryPath))
+                {
+                    return;
+                }
+
                 try
                 {
-                    System.IO.Directory.CreateDirectory(directoryPath);
+                    try
+                    {
+                        System.IO.Directory.CreateDirectory(directoryPath);
+                        Log.MessageAll($"{System.Threading.Thread.CurrentThread.ManagedThreadId} dir: '{directoryPath}");
+                    }
+                    catch (System.ArgumentException)
+                    {
+                        // this can happen, say, if there are enclosing quotes
+                        directoryPath = directoryPath.Trim(System.IO.Path.GetInvalidPathChars());
+                        System.IO.Directory.CreateDirectory(directoryPath);
+                        Log.MessageAll($"{System.Threading.Thread.CurrentThread.ManagedThreadId} dir: '{directoryPath}");
+                    }
                 }
-                catch (System.ArgumentException)
+                catch (System.Exception ex)
                 {
-                    // this can happen, say, if there are enclosing quotes
-                    directoryPath = directoryPath.Trim(System.IO.Path.GetInvalidPathChars());
-                    System.IO.Directory.CreateDirectory(directoryPath);
+                    throw new Exception(ex, $"Unable to create directory, {directoryPath}");
                 }
-            }
-            catch (System.Exception ex)
-            {
-                throw new Exception(ex, $"Unable to create directory, {directoryPath}");
             }
         }
 
