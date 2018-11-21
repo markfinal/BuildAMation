@@ -24,8 +24,11 @@ def log(msg):
 
 
 def run_process(args):
-    log('Running: %s' % ' '.join(args))
-    subprocess.check_call(args)
+    try:
+        log('Running: %s' % ' '.join(args))
+        subprocess.check_call(args)
+    except OSError, e:
+        raise RuntimeError('Unable to run process "%s" because "%s"' % (' '.join(args), str(e)))
 
 
 def _run_git(arguments):
