@@ -107,6 +107,13 @@ namespace C
                 var prebuiltProject = solution.EnsureProjectExists(module);
                 config = prebuiltProject.GetConfiguration(module);
                 config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
+                config.EnableIntermediatePath();
+
+                foreach (var header in headerFiles)
+                {
+                    config.AddHeaderFile(header as HeaderFile);
+                }
+
                 return;
             }
             // early out
