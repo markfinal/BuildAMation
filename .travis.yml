@@ -1,5 +1,5 @@
 git:
-  depth: 1
+  depth: 10
 notifications:
   email:
      on_success: always

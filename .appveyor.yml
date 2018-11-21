@@ -2,7 +2,7 @@ image:
   - Visual Studio 2017
   - Ubuntu
   - Ubuntu1804
-clone_depth: 1
+clone_depth: 10
 configuration: Release
 platform: AnyCPU
 for:
