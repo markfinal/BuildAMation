@@ -1292,26 +1292,26 @@ namespace Bam.Core
         Show()
         {
             var packageName = this.FullName;
-            var formatString = "Definition of package '{0}'";
-            int dashLength = formatString.Length - 3 + packageName.Length;
-            Log.MessageAll("Definition of package '{0}'", packageName);
+            var formatString = "Definition of package ''";
+            int dashLength = formatString.Length + packageName.Length;
+            Log.MessageAll($"Definition of package '{packageName}'");
             Log.MessageAll(new string('-', dashLength));
             if (!string.IsNullOrEmpty(this.Description))
             {
-                Log.MessageAll("Description: {0}", this.Description);
+                Log.MessageAll($"Description: {this.Description}");
             }
-            Log.MessageAll("\nSupported on: {0}", Platform.ToString(this.SupportedPlatforms, ' '));
+            Log.MessageAll($"\nSupported on: {Platform.ToString(this.SupportedPlatforms, ' ')}");
             Log.MessageAll("\nBuildAMation assemblies:");
             foreach (var assembly in this.BamAssemblies)
             {
                 var minVersionNumber = assembly.MinimumVersionNumber();
                 if (null != minVersionNumber)
                 {
-                    Log.MessageAll("\t{0} (requires version {1})", assembly.Name, minVersionNumber);
+                    Log.MessageAll($"\t{assembly.Name} (requires version {minVersionNumber})");
                 }
                 else
                 {
-                    Log.MessageAll("\t{0}", assembly.Name);
+                    Log.MessageAll($"\t{assembly.Name}");
                 }
             }
             Log.MessageAll("\nDotNet assemblies:");
@@ -1319,11 +1319,11 @@ namespace Bam.Core
             {
                 if (null == desc.RequiredTargetFramework)
                 {
-                    Log.MessageAll("\t{0}", desc.Name);
+                    Log.MessageAll($"\t{desc.Name}");
                 }
                 else
                 {
-                    Log.MessageAll("\t{0} (version {1})", desc.Name, desc.RequiredTargetFramework);
+                    Log.MessageAll($"\t{desc.Name} (version {desc.RequiredTargetFramework})");
                 }
             }
             if (null != this.Sources && this.Sources.Any())
@@ -1334,16 +1334,16 @@ namespace Bam.Core
                     Log.MessageAll($"\t{source.ArchivePath}");
                 }
             }
-            if (this.Definitions.Count > 0)
+            if (this.Definitions.Any())
             {
                 Log.MessageAll("\n#defines:");
                 foreach (var definition in this.Definitions)
                 {
-                    Log.MessageAll("\t{0}", definition);
+                    Log.MessageAll($"\t{definition}");
                 }
             }
 
-            if (this.PackageRepositories.Count > 0)
+            if (this.PackageRepositories.Any())
             {
                 Log.MessageAll("\nPackage repositories to search:");
                 foreach (var repo in this.PackageRepositories)
@@ -1353,13 +1353,13 @@ namespace Bam.Core
                         repo
                     );
 
-                    Log.MessageAll("\t'{0}'\t(absolute path '{1}')", repo, absoluteRepo);
+                    Log.MessageAll($"\t'{repo}'\t(absolute path '{absoluteRepo}')");
                 }
             }
 
-            if (this.Dependents.Count > 0)
+            if (this.Dependents.Any())
             {
-                Log.MessageAll("\nDependent packages (* = default version):", packageName);
+                Log.MessageAll("\nDependent packages (* = default version):");
                 var packageFormatting = System.String.Format("{{0, -48}} {{1, 32}}");
                 Log.MessageAll(packageFormatting, "Package Name", "From Repository");
                 var visitedPackages = new Array<PackageDefinition>();
