@@ -1,3 +1,5 @@
+23-Nov-2018 Fixes #515. bam --showdefinition did not show source archive URLs.
+
 22-Nov-2018 ======== Version 2.0.0 alpha 1 Release ========
 
 16-Nov-2018 Fixes #502. WindowsSDK 10.0.17763 and above now have redists in a UCRT versioned folder.

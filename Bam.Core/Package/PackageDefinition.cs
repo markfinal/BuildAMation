@@ -1326,6 +1326,14 @@ namespace Bam.Core
                     Log.MessageAll("\t{0} (version {1})", desc.Name, desc.RequiredTargetFramework);
                 }
             }
+            if (null != this.Sources && this.Sources.Any())
+            {
+                Log.MessageAll("\nSource archives:");
+                foreach (var source in this.Sources)
+                {
+                    Log.MessageAll($"\t{source.ArchivePath}");
+                }
+            }
             if (this.Definitions.Count > 0)
             {
                 Log.MessageAll("\n#defines:");
