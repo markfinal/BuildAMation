@@ -179,9 +179,22 @@ namespace CommandLineProcessor
                 );
             }
             var command_switch = (attributeArray.First() as BaseAttribute).CommandSwitch;
-            commandLine.Add(
-                $"{command_switch}{propertyValue as string}"
-            );
+            if (command_switch.EndsWith("=", System.StringComparison.Ordinal) &&
+                (propertyValue as string).Contains("=", System.StringComparison.Ordinal))
+            {
+                // the double quotes are needed for MakeFiles.
+                // escaping the equals sign in the value did not work
+                // and single quotes worked in MakeFiles but didn't in Native builds
+                commandLine.Add(
+                    $"{command_switch}\"{propertyValue as string}\""
+                );
+            }
+            else
+            {
+                commandLine.Add(
+                    $"{command_switch}{propertyValue as string}"
+                );
+            }
         }
 
         private static void
