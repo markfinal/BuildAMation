@@ -183,6 +183,12 @@ namespace C
             {
                 return toolModule;
             }
+            if (!DisambiguousToolchainToUse.Any() && !collection.Any())
+            {
+                throw new Bam.Core.Exception(
+                    "No toolchain packages were detected for this platform"
+                );
+            }
             if (!DisambiguousToolchainToUse.ContainsKey(bitDepth))
             {
                 var candidates = collection[bitDepth];
