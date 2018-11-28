@@ -50,6 +50,7 @@ namespace Bam.Core
     /// <list type="bullet">
     /// <item><description><code>@basename(path)</code></description> Return the filename excluding extension in the path.</item>
     /// <item><description><code>@filename(path)</code></description> Return the filename including extension in the path.</item>
+    /// <item><description><code>@extension(path)</code></description> Return the extension of the file path. Leading periods are not included.</item>
     /// <item><description><code>@dir_(path)</code></description> Return the parent directory of path. (Remove the underscore from the name)</item>
     /// <item><description><code>@normalize(path)</code></description> Return the full path of path, without any special directories.</item>
     /// <item><description><code>@changeextension(path,ext)</code></description> Change the extension of the file in path, to ext.</item>
@@ -100,6 +101,7 @@ namespace Bam.Core
         {
             "basename",
             "filename",
+            "extension",
             "dir",
             "normalize",
             "changeextension",
@@ -803,6 +805,9 @@ namespace Bam.Core
 
                 case "filename":
                     return System.IO.Path.GetFileName(argument);
+
+                case "extension":
+                    return System.IO.Path.GetExtension(argument).TrimStart('.');
 
                 case "dir":
                     return System.IO.Path.GetDirectoryName(argument);

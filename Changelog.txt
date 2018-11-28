@@ -1,3 +1,5 @@
+28-Nov-2018 Fixes #516. Added TokenizedString function @extension(path), that returns the extension of the file path, without a leading period.
+
 26-Nov-2018 Fixes #491. Provided a more useful error message when no toolchain packages for the current platform were included in the build, and yet a tool was requested.
 
 24-Nov-2018 Fixes #514. Adding quotes around any string value on the command line that contains an equals sign, and has the long form of the command switch ending with an equals sign. This fixes MakeFile tar transforms that contain 'flags='.
