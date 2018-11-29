@@ -91,6 +91,9 @@ namespace XcodeBuilder
             case FileReference.EFileType.MetalShaderSource:
                 return "sourcecode.metal";
 
+            case FileReference.EFileType.GLSLShaderSource:
+                return "sourcecode.glsl";
+
             default:
                 throw new Bam.Core.Exception($"Unrecognized file type {type.ToString()}");
             }
@@ -151,7 +154,8 @@ namespace XcodeBuilder
             TextFile,
             Assembler,
             ZipArchive,
-            MetalShaderSource
+            MetalShaderSource,
+            GLSLShaderSource
         }
 
         public enum ESourceTree
