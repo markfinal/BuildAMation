@@ -81,7 +81,7 @@ namespace GccCommon
             }
             else
             {
-                throw new Bam.Core.Exception($"Could not determine type of module {typeof(T).ToString()}");
+                throw new Bam.Core.Exception($"Could not determine settings to compile this type of module: {module.GetType().ToString()}");
             }
         }
 

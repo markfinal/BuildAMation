@@ -78,7 +78,9 @@ namespace VisualCCommon
 
         public override string UseResponseFileOption => "@";
 
-        public override Bam.Core.Settings CreateDefaultSettings<T>(T module)
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module)
         {
             if (typeof(C.AssembledObjectFile).IsInstanceOfType(module) ||
                 typeof(C.AssembledObjectFileCollection).IsInstanceOfType(module))
@@ -88,7 +90,7 @@ namespace VisualCCommon
             }
             else
             {
-                throw new Bam.Core.Exception($"Could not determine type of module {typeof(T).ToString()}");
+                throw new Bam.Core.Exception($"Could not determine settings to assemnble this type of module: {module.GetType().ToString()}");
             }
         }
     }
