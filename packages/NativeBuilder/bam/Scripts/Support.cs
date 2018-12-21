@@ -36,7 +36,10 @@ namespace NativeBuilder
             Bam.Core.Module module,
             Bam.Core.ExecutionContext context)
         {
-            System.Diagnostics.Debug.Assert(module.Tool is Bam.Core.ICommandLineTool);
+            if (!(module.Tool is Bam.Core.ICommandLineTool))
+            {
+                throw new Bam.Core.Exception($"Module {module.ToString()} has a tool '{module.Tool?.ToString() ?? "null"}' that is not a Bam.Core.ICommandLineTool");
+            }
 
             foreach (var dir in module.OutputDirectories)
             {
