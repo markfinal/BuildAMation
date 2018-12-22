@@ -38,14 +38,18 @@ namespace VisualCCommon
             Bam.Core.Module module)
             :
             base(module)
-        {}
+        {
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.C;
+        }
 
         protected CommonCCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
             :
             base(module, useDefaults)
-        {}
+        {
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.C;
+        }
 
         [CommandLineProcessor.Enum(C.ELanguageStandard.NotSet, "")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.C89, "")]

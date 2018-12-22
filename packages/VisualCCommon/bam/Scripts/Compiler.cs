@@ -63,6 +63,8 @@ namespace VisualCCommon
         protected CompilerBase(
             C.EBit depth)
         {
+            this.Macros.AddVerbatim("objext", ".obj");
+
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             var discovery = meta as C.IToolchainDiscovery;
             discovery.discover(depth);
@@ -71,7 +73,6 @@ namespace VisualCCommon
             this.EnvironmentVariables = meta.Environment(depth);
             var fullCompilerExePath = this.GetCompilerPath(depth);
             this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(fullCompilerExePath));
-            this.Macros.AddVerbatim("objext", ".obj");
 
             this.InheritedEnvironmentVariables.Add("SystemRoot");
             // temp environment variables avoid generation of _CL_<hex> temporary files in the current directory
@@ -82,34 +83,6 @@ namespace VisualCCommon
         public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
         public override string UseResponseFileOption => "@";
-
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            if (typeof(C.Cxx.ObjectFile).IsInstanceOfType(module) ||
-                typeof(C.Cxx.ObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new VisualC.CxxCompilerSettings(module);
-                this.OverrideDefaultSettings(settings);
-                return settings;
-            }
-            else if (typeof(C.ObjectFile).IsInstanceOfType(module) ||
-                     typeof(C.CObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new VisualC.CCompilerSettings(module);
-                this.OverrideDefaultSettings(settings);
-                return settings;
-            }
-            else
-            {
-                throw new Bam.Core.Exception($"Could not determine settings to compile this type of module: {module.GetType().ToString()}");
-            }
-        }
-
-        protected abstract void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings);
     }
 
     [C.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
@@ -121,13 +94,9 @@ namespace VisualCCommon
             base(C.EBit.ThirtyTwo)
         {}
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
-        {
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.Bits = C.EBit.ThirtyTwo;
-        }
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new VisualC.CCompilerSettings(module);
     }
 
     [C.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
@@ -137,14 +106,9 @@ namespace VisualCCommon
         public CxxCompiler32()
         {}
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
-        {
-            base.OverrideDefaultSettings(settings);
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
-        }
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new VisualC.CxxCompilerSettings(module);
     }
 
     [C.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
@@ -156,13 +120,9 @@ namespace VisualCCommon
             base(C.EBit.SixtyFour)
         { }
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
-        {
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.Bits = C.EBit.SixtyFour;
-        }
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new VisualC.CCompilerSettings(module);
     }
 
     [C.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
@@ -172,13 +132,8 @@ namespace VisualCCommon
         public CxxCompiler64()
         {}
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
-        {
-            base.OverrideDefaultSettings(settings);
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
-        }
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new VisualC.CxxCompilerSettings(module);
     }
 }

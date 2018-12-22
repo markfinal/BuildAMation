@@ -64,6 +64,8 @@ namespace VisualCCommon
             C.EBit depth,
             string basename)
         {
+            this.Macros.AddVerbatim("objext", ".obj");
+
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             var discovery = meta as C.IToolchainDiscovery;
             discovery.discover(depth);
@@ -71,28 +73,11 @@ namespace VisualCCommon
             this.Macros.Add("InstallPath", meta.InstallDir);
             var fullAsmExePath = this.getAssemblerPath(basename, depth);
             this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(fullAsmExePath));
-            this.Macros.AddVerbatim("objext", ".obj");
         }
 
         public override Bam.Core.TokenizedString Executable => this.Macros["AssemblerPath"];
 
         public override string UseResponseFileOption => "@";
-
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            if (typeof(C.AssembledObjectFile).IsInstanceOfType(module) ||
-                typeof(C.AssembledObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new VisualC.AssemblerSettings(module);
-                return settings;
-            }
-            else
-            {
-                throw new Bam.Core.Exception($"Could not determine settings to assemnble this type of module: {module.GetType().ToString()}");
-            }
-        }
     }
 
     [C.RegisterAssembler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
@@ -103,6 +88,10 @@ namespace VisualCCommon
             :
             base(C.EBit.ThirtyTwo, "ml.exe")
         {}
+
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new VisualC.AssemblerSettings(module);
     }
 
     [C.RegisterAssembler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
@@ -112,5 +101,9 @@ namespace VisualCCommon
         public Assembler64()
             : base(C.EBit.SixtyFour, "ml64.exe")
         {}
+
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new VisualC.AssemblerSettings(module);
     }
 }
