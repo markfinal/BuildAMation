@@ -34,56 +34,17 @@ namespace GccCommon
     {
         protected CompilerBase()
         {
+            this.Macros.AddVerbatim("objext", ".o");
+
             this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
             var discovery = this.GccMetaData as C.IToolchainDiscovery;
             discovery.discover(depth: null);
             this.Version = this.GccMetaData.ToolchainVersion;
-            this.Macros.AddVerbatim("objext", ".o");
         }
 
         protected Gcc.MetaData GccMetaData { get; private set; }
 
         public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
-
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            // NOTE: note that super classes need to be checked last in order to
-            // honour the class hierarchy
-            if (typeof(C.ObjCxx.ObjectFile).IsInstanceOfType(module) ||
-                typeof(C.ObjCxx.ObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new Gcc.ObjectiveCxxCompilerSettings(module);
-                this.OverrideDefaultSettings(settings);
-                return settings;
-            }
-            else if (typeof(C.ObjC.ObjectFile).IsInstanceOfType(module) ||
-                     typeof(C.ObjC.ObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new Gcc.ObjectiveCCompilerSettings(module);
-                this.OverrideDefaultSettings(settings);
-                return settings;
-            }
-            else if (typeof(C.Cxx.ObjectFile).IsInstanceOfType(module) ||
-                     typeof(C.Cxx.ObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new Gcc.CxxCompilerSettings(module);
-                this.OverrideDefaultSettings(settings);
-                return settings;
-            }
-            else if (typeof(C.ObjectFile).IsInstanceOfType(module) ||
-                     typeof(C.CObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new Gcc.CCompilerSettings(module);
-                this.OverrideDefaultSettings(settings);
-                return settings;
-            }
-            else
-            {
-                throw new Bam.Core.Exception($"Could not determine settings to compile this type of module: {module.GetType().ToString()}");
-            }
-        }
 
         public override void
         CompileAsShared(
@@ -92,10 +53,6 @@ namespace GccCommon
             var gccCompiler = settings as GccCommon.ICommonCompilerSettings;
             gccCompiler.PositionIndependentCode = true;
         }
-
-        protected abstract void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings);
     }
 
     [C.RegisterCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
@@ -105,13 +62,9 @@ namespace GccCommon
     {
         public CCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
-        {
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.TargetLanguage = C.ETargetLanguage.C;
-        }
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new Gcc.CCompilerSettings(module);
     }
 
     [C.RegisterCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
@@ -121,13 +74,9 @@ namespace GccCommon
     {
         public CxxCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
-        {
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
-        }
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new Gcc.CxxCompilerSettings(module);
     }
 
     [C.RegisterObjectiveCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
@@ -137,15 +86,9 @@ namespace GccCommon
     {
         public ObjectiveCCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
-        {
-            var compiler = settings as C.ICommonCompilerSettings;
-            compiler.TargetLanguage = C.ETargetLanguage.ObjectiveC;
-            var cCompiler = settings as C.ICOnlyCompilerSettings;
-            cCompiler.LanguageStandard = C.ELanguageStandard.C99;
-        }
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new Gcc.ObjectiveCCompilerSettings(module);
     }
 
     [C.RegisterObjectiveCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
@@ -155,12 +98,8 @@ namespace GccCommon
     {
         public ObjectiveCxxCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
-        {
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
-        }
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new Gcc.ObjectiveCxxCompilerSettings(module);
     }
 }

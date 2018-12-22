@@ -37,7 +37,10 @@ namespace GccCommon
             Bam.Core.Module module)
             :
             base(module)
-        {}
+        {
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
+            (this as C.ICOnlyCompilerSettings).LanguageStandard = C.ELanguageStandard.C99; // implied by the language use in GNUStep headers
+        }
 
         protected
         CommonObjectiveCCompilerSettings(
@@ -45,7 +48,9 @@ namespace GccCommon
             bool useDefaults)
             :
             base(module, useDefaults)
-        {}
+        {
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
+        }
 
         [CommandLineProcessor.String("-fconstant-string-class=")]
         string C.IObjectiveCOnlyCompilerSettings.ConstantStringClass { get; set; }

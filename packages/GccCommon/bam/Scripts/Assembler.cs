@@ -36,30 +36,15 @@ namespace GccCommon
 
         protected AssemblerBase()
         {
+            this.Macros.AddVerbatim("objext", ".o");
+
             var metaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
             var discovery = metaData as C.IToolchainDiscovery;
             discovery.discover(depth: null);
-            this.Macros.AddVerbatim("objext", ".o");
             this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(metaData.GccPath));
         }
 
         public override Bam.Core.TokenizedString Executable => this.Macros["AssemblerPath"];
-
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            if (typeof(C.AssembledObjectFile).IsInstanceOfType(module) ||
-                typeof(C.AssembledObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new Gcc.AssemblerSettings(module);
-                return settings;
-            }
-            else
-            {
-                throw new Bam.Core.Exception($"Could not determine settings to assemble this type of module: {module.GetType().ToString()}");
-            }
-        }
     }
 
     [C.RegisterAssembler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
@@ -69,5 +54,9 @@ namespace GccCommon
     {
         public Assembler()
         {}
+
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new Gcc.AssemblerSettings(module);
     }
 }

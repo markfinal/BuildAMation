@@ -37,14 +37,18 @@ namespace GccCommon
             Bam.Core.Module module)
             :
             base(module)
-        {}
+        {
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
+        }
 
         protected CommonCxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
             :
             base(module, useDefaults)
-        {}
+        {
+            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
+        }
 
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Disabled, "-fno-exceptions")]
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Asynchronous, "-fexceptions")]
