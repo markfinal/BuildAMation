@@ -1,3 +1,5 @@
+22-Dec-2018 Fixes #518. Added ICommonLinkerSettings.ExportedSymbolList to provide a path to a list of symbols to export from a dynamic library.
+
 29-Nov-2018 Added XcodeBuilder.FileReference.EFileType.GLSLShaderSource.
 
 28-Nov-2018 Fixes #516. Added TokenizedString function @extension(path), that returns the extension of the file path, without a leading period.

@@ -104,6 +104,10 @@ namespace ClangCommon
         [XcodeProjectProcessor.PathArray("LD_RUNPATH_SEARCH_PATHS", prefixWithSrcRoot: false)]
         Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPath { get; set; }
 
+        [CommandLineProcessor.Path("-Wl,-exported_symbols_list,")]
+        [XcodeProjectProcessor.Path("EXPORTED_SYMBOLS_FILE")]
+        Bam.Core.TokenizedString ICommonLinkerSettings.ExportedSymbolList { get; set; }
+
         public override void
         Validate()
         {

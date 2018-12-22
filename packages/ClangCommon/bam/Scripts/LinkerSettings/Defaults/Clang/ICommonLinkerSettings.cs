@@ -43,6 +43,7 @@ namespace ClangCommon.DefaultSettings
                 // note the trailing slash - required for OSX < 10.10
                 settings.RPath.AddUnique("@executable_path/");
             }
+            settings.ExportedSymbolList = null;
         }
     }
 }

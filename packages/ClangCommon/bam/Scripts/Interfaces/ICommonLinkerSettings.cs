@@ -34,5 +34,6 @@ namespace ClangCommon
         Bam.Core.ISettingsBase
     {
         Bam.Core.TokenizedStringArray RPath { get; set; }
+        Bam.Core.TokenizedString ExportedSymbolList { get; set; }
     }
 }
