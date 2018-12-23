@@ -187,10 +187,16 @@ namespace C
             {
                 return toolModule;
             }
-            if (!DisambiguousToolchainToUse.Any() && !collection.Any())
+            if (!collection.Any())
             {
+                if (!DisambiguousToolchainToUse.Any())
+                {
+                    throw new Bam.Core.Exception(
+                        "No toolchain packages were detected for this platform"
+                    );
+                }
                 throw new Bam.Core.Exception(
-                    "No toolchain packages were detected for this platform"
+                    $"Platform contains toolchains, but no registrations of a '{toolDescription}' were found"
                 );
             }
             if (!DisambiguousToolchainToUse.ContainsKey(bitDepth))
