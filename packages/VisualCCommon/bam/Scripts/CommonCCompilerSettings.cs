@@ -39,7 +39,7 @@ namespace VisualCCommon
             :
             base(module)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.C;
+            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.C;
         }
 
         protected CommonCCompilerSettings(
@@ -48,7 +48,7 @@ namespace VisualCCommon
             :
             base(module, useDefaults)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.C;
+            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.C;
         }
 
         [CommandLineProcessor.Enum(C.ELanguageStandard.NotSet, "")]

@@ -27,27 +27,35 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace ClangCommon
 {
-    public abstract class CommonObjectiveCxxCompilerSettings :
-        CommonCxxCompilerSettings,
-        C.IObjectiveCxxOnlyCompilerSettings
+    public abstract class PreprocessorBase :
+        C.PreprocessorTool
     {
-        protected CommonObjectiveCxxCompilerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
+        protected Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
+
+        protected PreprocessorBase()
         {
-            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
+            var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
+            var discovery = clangMeta as C.IToolchainDiscovery;
+            discovery.discover(null);
+            this.Version = clangMeta.ToolchainVersion;
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
         }
 
-        protected CommonObjectiveCxxCompilerSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
-            :
-            base(module, useDefaults)
-        {
-            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
-        }
+        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.XcrunPath);
+        public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
+    }
+
+    [C.RegisterPreprocessor("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
+    [C.RegisterPreprocessor("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
+    public sealed class Preprocessor :
+        PreprocessorBase
+    {
+        public Preprocessor() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
+
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new Clang.PreprocessorSettings(module);
     }
 }

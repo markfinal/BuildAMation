@@ -27,27 +27,17 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace C
 {
-    public abstract class CommonObjectiveCxxCompilerSettings :
-        CommonCxxCompilerSettings,
-        C.IObjectiveCxxOnlyCompilerSettings
+    public sealed class RegisterPreprocessorAttribute :
+        ToolRegistrationAttribute
     {
-        protected CommonObjectiveCxxCompilerSettings(
-            Bam.Core.Module module)
+        public RegisterPreprocessorAttribute(
+            string toolsetName,
+            Bam.Core.EPlatform platform,
+            EBit bitDepth)
             :
-            base(module)
-        {
-            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
-        }
-
-        protected CommonObjectiveCxxCompilerSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
-            :
-            base(module, useDefaults)
-        {
-            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
-        }
+            base(toolsetName, platform, bitDepth)
+        {}
     }
 }

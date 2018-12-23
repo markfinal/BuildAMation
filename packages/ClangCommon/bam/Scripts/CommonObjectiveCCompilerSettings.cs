@@ -38,7 +38,7 @@ namespace ClangCommon
             :
             base(module)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
+            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
         }
 
         protected CommonObjectiveCCompilerSettings(
@@ -47,7 +47,7 @@ namespace ClangCommon
             :
             base(module, useDefaults)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
+            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
         }
 
         [CommandLineProcessor.String("-fconstant-string-class=")]

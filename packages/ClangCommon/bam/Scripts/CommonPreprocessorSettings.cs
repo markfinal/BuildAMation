@@ -27,27 +27,50 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace ClangCommon
 {
-    public abstract class CommonObjectiveCxxCompilerSettings :
-        CommonCxxCompilerSettings,
-        C.IObjectiveCxxOnlyCompilerSettings
+    [CommandLineProcessor.OutputPath(tbb.PreprocessExportFile.PreprocessedFileKey, "", ignore: true)]
+    [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-E ", max_file_count: 1)]
+    public abstract class CommonPreprocessorSettings :
+        C.SettingsBase,
+        C.ICommonPreprocessorSettings
     {
-        protected CommonObjectiveCxxCompilerSettings(
+        protected CommonPreprocessorSettings(
             Bam.Core.Module module)
             :
-            base(module)
-        {
-            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
-        }
+            this(module, true)
+        { }
 
-        protected CommonObjectiveCxxCompilerSettings(
+        protected CommonPreprocessorSettings(
             Bam.Core.Module module,
             bool useDefaults)
-            :
-            base(module, useDefaults)
         {
-            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
+            this.InitializeAllInterfaces(module, true, useDefaults);
+        }
+
+        [CommandLineProcessor.PreprocessorDefines("-D")]
+        C.PreprocessorDefinitions C.ICommonPreprocessorSettings.PreprocessorDefines { get; set; }
+
+        [CommandLineProcessor.PathArray("-I")]
+        Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.IncludePaths { get; set; }
+
+        [CommandLineProcessor.PathArray("-I")]
+        Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.SystemIncludePaths { get; set; }
+
+        [CommandLineProcessor.StringArray("-U")]
+        Bam.Core.StringArray C.ICommonPreprocessorSettings.PreprocessorUndefines { get; set; }
+
+        [CommandLineProcessor.Enum(C.ETargetLanguage.Default, "")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-x c")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-x c++")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveC, "-x objective-c")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveCxx, "-x objective-c++")]
+        C.ETargetLanguage? C.ICommonPreprocessorSettings.TargetLanguage { get; set; }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
         }
     }
 }

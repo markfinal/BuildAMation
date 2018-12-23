@@ -54,9 +54,9 @@ namespace C.Cxx
 
         protected Bam.Core.Module.PrivatePatchDelegate WindowsPreprocessor = settings =>
         {
-            var compiler = settings as C.ICommonCompilerSettings;
-            compiler.PreprocessorDefines.Remove("_CONSOLE");
-            compiler.PreprocessorDefines.Add("_WINDOWS");
+            var preprocessor = settings as C.ICommonPreprocessorSettings;
+            preprocessor.PreprocessorDefines.Remove("_CONSOLE");
+            preprocessor.PreprocessorDefines.Add("_WINDOWS");
         };
 
         /// <summary>

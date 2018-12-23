@@ -33,6 +33,7 @@ namespace GccCommon
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     public abstract class CommonCompilerSettings :
         C.SettingsBase,
+        C.ICommonPreprocessorSettings,
         C.ICommonCompilerSettings,
         C.IAdditionalSettings,
         ICommonCompilerSettings
@@ -47,18 +48,27 @@ namespace GccCommon
             Bam.Core.Module module,
             bool useDefaults) => this.InitializeAllInterfaces(module, true, useDefaults);
 
+        [CommandLineProcessor.PreprocessorDefines("-D")]
+        C.PreprocessorDefinitions C.ICommonPreprocessorSettings.PreprocessorDefines { get; set; }
+
+        [CommandLineProcessor.PathArray("-I")]
+        Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.IncludePaths { get; set; }
+
+        [CommandLineProcessor.PathArray("-I")]
+        Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.SystemIncludePaths { get; set; }
+
+        [CommandLineProcessor.StringArray("-U")]
+        Bam.Core.StringArray C.ICommonPreprocessorSettings.PreprocessorUndefines { get; set; }
+
+        [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-x c")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-x c++")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveC, "-x objective-c")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveCxx, "-x objective-c++")]
+        C.ETargetLanguage? C.ICommonPreprocessorSettings.TargetLanguage { get; set; }
+
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
         C.EBit? C.ICommonCompilerSettings.Bits { get; set; }
-
-        [CommandLineProcessor.PreprocessorDefines("-D")]
-        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines { get; set; }
-
-        [CommandLineProcessor.PathArray("-I")]
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths { get; set; }
-
-        [CommandLineProcessor.PathArray("-I")]
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths { get; set; }
 
         [CommandLineProcessor.Bool("-g", "")]
         bool? C.ICommonCompilerSettings.DebugSymbols { get; set; }
@@ -72,20 +82,11 @@ namespace GccCommon
         [CommandLineProcessor.Enum(C.EOptimization.Custom, "")] // Gcc specific optimisation
         C.EOptimization? C.ICommonCompilerSettings.Optimization { get; set; }
 
-        [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-x c")]
-        [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-x c++")]
-        [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveC, "-x objective-c")]
-        [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveCxx, "-x objective-c++")]
-        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage { get; set; }
-
         [CommandLineProcessor.Bool("-fomit-frame-pointer", "-fno-omit-frame-pointer")]
         bool? C.ICommonCompilerSettings.OmitFramePointer { get; set; }
 
         [CommandLineProcessor.StringArray("-Wno-")]
         Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings { get; set; }
-
-        [CommandLineProcessor.StringArray("-include ")]
-        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines { get; set; }
 
         [CommandLineProcessor.StringArray("-include ")]
         Bam.Core.StringArray C.ICommonCompilerSettings.NamedHeaders { get; set; }

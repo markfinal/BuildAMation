@@ -36,6 +36,7 @@ namespace VisualCCommon
     [VisualStudioProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1, handledByMetaData: true)]
     public abstract class CommonCompilerSettings :
         C.SettingsBase,
+        C.ICommonPreprocessorSettings,
         C.ICommonCompilerSettingsWin,
         C.ICommonCompilerSettings,
         C.IAdditionalSettings,
@@ -51,6 +52,29 @@ namespace VisualCCommon
             Bam.Core.Module module,
             bool useDefaults) => this.InitializeAllInterfaces(module, true, useDefaults);
 
+        [CommandLineProcessor.PreprocessorDefines("-D")]
+        [VisualStudioProcessor.PreprocessorDefines("PreprocessorDefinitions", inheritExisting: true)]
+        C.PreprocessorDefinitions C.ICommonPreprocessorSettings.PreprocessorDefines { get; set; }
+
+        [CommandLineProcessor.PathArray("-I")]
+        [VisualStudioProcessor.PathArray("AdditionalIncludeDirectories", inheritExisting: true)]
+        Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.IncludePaths { get; set; }
+
+        [CommandLineProcessor.PathArray("-I")]
+        [VisualStudioProcessor.PathArray("AdditionalIncludeDirectories", inheritExisting: true)]
+        Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.SystemIncludePaths { get; set; }
+
+        [CommandLineProcessor.StringArray("-U")]
+        [VisualStudioProcessor.StringArray("UndefinePreprocessorDefinitions", inheritExisting: true)]
+        Bam.Core.StringArray C.ICommonPreprocessorSettings.PreprocessorUndefines { get; set; }
+
+        // dialects other than C and C++ not supported
+        [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-TC")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-TP")]
+        [VisualStudioProcessor.Enum(C.ETargetLanguage.C, "CompileAs", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "CompileAsC")]
+        [VisualStudioProcessor.Enum(C.ETargetLanguage.Cxx, "CompileAs", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "CompileAsCpp")]
+        C.ETargetLanguage? C.ICommonPreprocessorSettings.TargetLanguage { get; set; }
+
         [CommandLineProcessor.Enum(C.ECharacterSet.NotSet, "")]
         [CommandLineProcessor.Enum(C.ECharacterSet.Unicode, "-DUNICODE -D_UNICODE")]
         [CommandLineProcessor.Enum(C.ECharacterSet.MultiByte, "-D_MBCS")]
@@ -65,18 +89,6 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(C.EBit.ThirtyTwo, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         [VisualStudioProcessor.Enum(C.EBit.SixtyFour, "", VisualStudioProcessor.EnumAttribute.EMode.NoOp)]
         C.EBit? C.ICommonCompilerSettings.Bits { get; set; }
-
-        [CommandLineProcessor.PreprocessorDefines("-D")]
-        [VisualStudioProcessor.PreprocessorDefines("PreprocessorDefinitions", inheritExisting: true)]
-        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines { get; set; }
-
-        [CommandLineProcessor.PathArray("-I")]
-        [VisualStudioProcessor.PathArray("AdditionalIncludeDirectories", inheritExisting: true)]
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths { get; set; }
-
-        [CommandLineProcessor.PathArray("-I")]
-        [VisualStudioProcessor.PathArray("AdditionalIncludeDirectories", inheritExisting: true)]
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths { get; set; }
 
         [CommandLineProcessor.Bool("-Z7", "")]
         [VisualStudioProcessor.Bool("DebugInformationFormat", "OldStyle", "None")]
@@ -96,13 +108,6 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(C.EOptimization.Custom, "Optimization", VisualStudioProcessor.EnumAttribute.EMode.NoOp)] // compiler specific setting
         C.EOptimization? C.ICommonCompilerSettings.Optimization { get; set; }
 
-        // dialects other than C and C++ not supported
-        [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-TC")]
-        [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-TP")]
-        [VisualStudioProcessor.Enum(C.ETargetLanguage.C, "CompileAs", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "CompileAsC")]
-        [VisualStudioProcessor.Enum(C.ETargetLanguage.Cxx, "CompileAs", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "CompileAsCpp")]
-        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage { get; set; }
-
         [CommandLineProcessor.Bool("-Oy", "-Oy-")]
         [VisualStudioProcessor.Bool("OmitFramePointers")]
         bool? C.ICommonCompilerSettings.OmitFramePointer { get; set; }
@@ -110,10 +115,6 @@ namespace VisualCCommon
         [CommandLineProcessor.StringArray("-wd")]
         [VisualStudioProcessor.StringArray("DisableSpecificWarnings", inheritExisting: true)]
         Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings { get; set; }
-
-        [CommandLineProcessor.StringArray("-U")]
-        [VisualStudioProcessor.StringArray("UndefinePreprocessorDefinitions", inheritExisting: true)]
-        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines { get; set; }
 
         [CommandLineProcessor.StringArray("-FI")]
         [VisualStudioProcessor.StringArray("ForcedIncludeFiles", inheritExisting: true)]

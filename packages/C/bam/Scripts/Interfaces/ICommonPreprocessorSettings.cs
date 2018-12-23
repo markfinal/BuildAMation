@@ -27,27 +27,43 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace C
 {
-    public abstract class CommonObjectiveCxxCompilerSettings :
-        CommonCxxCompilerSettings,
-        C.IObjectiveCxxOnlyCompilerSettings
+    /// <summary>
+    /// Common preprocessor settings available on all toolchains
+    /// </summary>
+    [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
+    public interface ICommonPreprocessorSettings :
+        Bam.Core.ISettingsBase
     {
-        protected CommonObjectiveCxxCompilerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {
-            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
-        }
+        /// <summary>
+        /// List of preprocessor defines, of the form key or key=value.
+        /// </summary>
+        /// <value>The preprocessor defines.</value>
+        C.PreprocessorDefinitions PreprocessorDefines { get; set; }
 
-        protected CommonObjectiveCxxCompilerSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
-            :
-            base(module, useDefaults)
-        {
-            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
-        }
+        /// <summary>
+        /// List of paths to search for user headers, i.e. those quoted with double quotes.
+        /// </summary>
+        /// <value>The include paths.</value>
+        Bam.Core.TokenizedStringArray IncludePaths { get; set; }
+
+        /// <summary>
+        /// List of paths to search for system headers, i.e. those quoted with angle brackets.
+        /// </summary>
+        /// <value>The system include paths.</value>
+        Bam.Core.TokenizedStringArray SystemIncludePaths { get; set; }
+
+        /// <summary>
+        /// List of preprocessor definitions to undefine during compilation.
+        /// </summary>
+        /// <value>The preprocessor undefines.</value>
+        Bam.Core.StringArray PreprocessorUndefines { get; set; }
+
+        /// <summary>
+        /// Compile for a particular language, C, C++, ObjectiveC or ObjectiveC++.
+        /// </summary>
+        /// <value>The target language.</value>
+        C.ETargetLanguage? TargetLanguage { get; set; }
     }
 }

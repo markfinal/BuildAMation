@@ -32,8 +32,9 @@ namespace C
     public static partial class VSSolutionSupport
     {
         public static void
-        GenerateHeader(
-            ProceduralHeaderFileFromToolOutput module)
+        GenerateFileFromToolStandardOutput(
+            Bam.Core.Module module,
+            string outputKey)
         {
             var tool = module.Tool as Bam.Core.ICommandLineTool;
             var toolProject = (tool as Bam.Core.Module).MetaData as VSSolutionBuilder.VSProject;
@@ -41,7 +42,7 @@ namespace C
 
             var commands = new Bam.Core.StringArray();
             commands.Add(
-                $"{CommandLineProcessor.Processor.StringifyTool(tool)} > {module.GeneratedPaths[ProceduralHeaderFileFromToolOutput.HeaderFileKey].ToString()}"
+                $"{CommandLineProcessor.Processor.StringifyTool(tool)} > {module.GeneratedPaths[outputKey].ToString()}"
             );
 
             VSSolutionBuilder.Support.AddCustomPostBuildStep(

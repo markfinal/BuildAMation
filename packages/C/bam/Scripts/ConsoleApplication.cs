@@ -160,8 +160,8 @@ namespace C
 
         protected Bam.Core.Module.PrivatePatchDelegate ConsolePreprocessor = settings =>
             {
-                var compiler = settings as C.ICommonCompilerSettings;
-                compiler.PreprocessorDefines.Add("_CONSOLE");
+                var preprocessor = settings as C.ICommonPreprocessorSettings;
+                preprocessor.PreprocessorDefines.Add("_CONSOLE");
             };
 
         /// <summary>

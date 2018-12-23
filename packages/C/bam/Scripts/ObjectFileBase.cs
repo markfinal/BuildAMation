@@ -263,7 +263,7 @@ namespace C
                 }
             }
 
-            var includeSearchPaths = (this.Settings as C.ICommonCompilerSettings).IncludePaths;
+            var includeSearchPaths = (this.Settings as C.ICommonPreprocessorSettings).IncludePaths;
             // implicitly search the same directory as the source path, as this is not needed to be explicitly on the include path list
             var currentDir = this.CreateTokenizedString("@dir($(0))", this.InputPath);
             currentDir.Parse();
