@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from generate_docs import build_documentation
+from generate_docs import NoDoxygenError
 from optparse import OptionParser
 import os
 import platform
@@ -172,10 +173,13 @@ def main(options, build_dir, source_dir):
     if options.doxygen:
         generated_docs_dir = os.path.join(source_dir, 'docs')
         delete_directory(generated_docs_dir)
-        build_documentation(source_dir, options.doxygen)
-        if options.make_distribution:
-            zip_dir(os.path.realpath(os.path.join(build_dir, '..', '%s-docs' % bam_version_dir) + '.zip'), generated_docs_dir)
-            tar_dir(os.path.realpath(os.path.join(build_dir, '..', '%s-docs' % bam_version_dir) + '.tgz'), generated_docs_dir)
+        try:
+            build_documentation(source_dir, options.doxygen)
+            if options.make_distribution:
+                zip_dir(os.path.realpath(os.path.join(build_dir, '..', '%s-docs' % bam_version_dir) + '.zip'), generated_docs_dir)
+                tar_dir(os.path.realpath(os.path.join(build_dir, '..', '%s-docs' % bam_version_dir) + '.tgz'), generated_docs_dir)
+        except NoDoxygenError, e:
+            log(str(e)) # not fatal, but do complain
 
     run_dotnet_publish(
         source_dir,

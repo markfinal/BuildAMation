@@ -5,6 +5,11 @@ import os
 import subprocess
 import sys
 
+
+def NoDoxygenError(Exception):
+    pass
+
+
 def build_documentation(source_dir, doxygenpath):
     if not doxygenpath:
         raise RuntimeError("Path to doxygen is required")
@@ -15,7 +20,7 @@ def build_documentation(source_dir, doxygenpath):
         os.chdir(source_dir)
         subprocess.check_call(args)
     except OSError:
-        raise RuntimeError('Unable to run doxygen executable "%s"' % doxygenpath)
+        raise NoDoxygenError('Unable to run doxygen executable "%s"' % doxygenpath)
     finally:
         os.chdir(current_dir)
 
