@@ -108,8 +108,8 @@ namespace MingwCommon
             Bam.Core.Settings settings)
         {
             base.OverrideDefaultSettings(settings);
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.TargetLanguage = C.ETargetLanguage.Cxx;
+            var preprocessor = settings as C.ICommonPreprocessorSettings;
+            preprocessor.TargetLanguage = C.ETargetLanguage.Cxx;
         }
     }
 }
