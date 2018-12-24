@@ -42,24 +42,24 @@ namespace PreprocessorStringTest1
             var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.PreprocessorDefines.Add("D_COMMON_STRING", "\"Hello1\"");
-                    compiler.PreprocessorDefines.Add("D_COMMON_STRING2", this.CreateTokenizedString("@escapedquotes(Hello2)"));
-                    compiler.PreprocessorDefines.Add("D_SOURCE_PATH", this.CreateTokenizedString("@escapedquotes($(packagedir))"));
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.PreprocessorDefines.Add("D_COMMON_STRING", "\"Hello1\"");
+                    preprocessor.PreprocessorDefines.Add("D_COMMON_STRING2", this.CreateTokenizedString("@escapedquotes(Hello2)"));
+                    preprocessor.PreprocessorDefines.Add("D_SOURCE_PATH", this.CreateTokenizedString("@escapedquotes($(packagedir))"));
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
                         if (this.Linker is VisualCCommon.LinkerBase)
                         {
-                            compiler.PreprocessorDefines.Add("D_MESSAGE_PRAGMA", "message(\"Compile-time-message\")");
+                            preprocessor.PreprocessorDefines.Add("D_MESSAGE_PRAGMA", "message(\"Compile-time-message\")");
                         }
                         else
                         {
-                            compiler.PreprocessorDefines.Add("D_MESSAGE_PRAGMA", "message\"Compile-time-message\"");
+                            preprocessor.PreprocessorDefines.Add("D_MESSAGE_PRAGMA", "message\"Compile-time-message\"");
                         }
                     }
                     else
                     {
-                        compiler.PreprocessorDefines.Add("D_MESSAGE_PRAGMA", "message\"Compile-time-message\"");
+                        preprocessor.PreprocessorDefines.Add("D_MESSAGE_PRAGMA", "message\"Compile-time-message\"");
                     }
                 });
 
@@ -67,8 +67,8 @@ namespace PreprocessorStringTest1
                 {
                     item.PrivatePatch(settings =>
                         {
-                            var compiler = settings as C.ICommonCompilerSettings;
-                            compiler.PreprocessorDefines.Add("D_FILE_STRING", "\"Hello3\"");
+                            var preprocessor = settings as C.ICommonPreprocessorSettings;
+                            preprocessor.PreprocessorDefines.Add("D_FILE_STRING", "\"Hello3\"");
                         });
                 });
         }

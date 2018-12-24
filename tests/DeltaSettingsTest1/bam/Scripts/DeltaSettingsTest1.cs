@@ -41,8 +41,8 @@ namespace DeltaSettingsTest1
             var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.PreprocessorDefines.Add("D_COMMON");
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.PreprocessorDefines.Add("D_COMMON");
                 });
 
             source["c.c"].ForEach(item =>
@@ -54,7 +54,8 @@ namespace DeltaSettingsTest1
                         compiler.WarningsAsErrors = false;
 
                         // delta a custom class setting
-                        compiler.PreprocessorDefines.Remove("D_COMMON");
+                        var preprocessor = settings as C.ICommonPreprocessorSettings;
+                        preprocessor.PreprocessorDefines.Remove("D_COMMON");
                     }));
 
             source["d.c"].ForEach(item =>

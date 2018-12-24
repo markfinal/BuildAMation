@@ -42,20 +42,20 @@ namespace EmbedStaticIntoDynamicLibrary
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/static"));
+                        preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/static"));
                     }
                 });
 
             this.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.PreprocessorDefines.Add("STATICLIB_SOURCE");
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.PreprocessorDefines.Add("STATICLIB_SOURCE");
 
                     // the source files are shared for both C and C++ compilation
                     // but this option will only be set when compiled as C - the preprocessor checks this
-                    compiler.PreprocessorDefines.Add("COMPILE_AS_C");
+                    preprocessor.PreprocessorDefines.Add("COMPILE_AS_C");
                 });
         }
     }
@@ -73,20 +73,20 @@ namespace EmbedStaticIntoDynamicLibrary
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/static"));
+                        preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/static"));
                     }
                 });
 
             this.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.PreprocessorDefines.Add("STATICLIB_SOURCE");
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.PreprocessorDefines.Add("STATICLIB_SOURCE");
 
                     // the source files are shared for both C and C++ compilation
                     // but this option will only be set when compiled as C++ - the preprocessor checks this
-                    compiler.PreprocessorDefines.Add("COMPILE_AS_CXX");
+                    preprocessor.PreprocessorDefines.Add("COMPILE_AS_CXX");
                 });
         }
     }
@@ -106,8 +106,8 @@ namespace EmbedStaticIntoDynamicLibrary
             var source = this.CreateCSourceContainer("$(packagedir)/source/dynamic/*.c");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.PreprocessorDefines.Add("DYNAMICLIB_SOURCE");
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.PreprocessorDefines.Add("DYNAMICLIB_SOURCE");
                 });
 
             // publicly because the app requires the include path from the dependent
@@ -115,9 +115,9 @@ namespace EmbedStaticIntoDynamicLibrary
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/dynamic"));
+                        preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/dynamic"));
                     }
                 });
         }
@@ -138,8 +138,8 @@ namespace EmbedStaticIntoDynamicLibrary
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/dynamic/*.c");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.PreprocessorDefines.Add("DYNAMICLIB_SOURCE");
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.PreprocessorDefines.Add("DYNAMICLIB_SOURCE");
                 });
 
             // publicly because the app requires the include path from the dependent
@@ -147,9 +147,9 @@ namespace EmbedStaticIntoDynamicLibrary
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/dynamic"));
+                        preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/dynamic"));
                     }
                 });
         }

@@ -43,9 +43,9 @@ namespace HeaderLibraryTest2
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/baselib"));
+                        preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/baselib"));
                     }
                 });
         }
@@ -66,9 +66,9 @@ namespace HeaderLibraryTest2
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/headerlib"));
+                        preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/headerlib"));
                     }
                 });
         }
@@ -90,9 +90,9 @@ namespace HeaderLibraryTest2
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                if (settings is C.ICommonCompilerSettings compiler)
+                if (settings is C.ICommonPreprocessorSettings preprocessor)
                 {
-                    compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/middlelib"));
+                    preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/middlelib"));
                 }
             });
         }

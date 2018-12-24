@@ -47,8 +47,8 @@ namespace ObjectiveCTest1
             {
                 source.PrivatePatch(settings =>
                     {
-                        var compiler = settings as C.ICommonCompilerSettings;
-                        compiler.IncludePaths.Add(Bam.Core.TokenizedString.CreateVerbatim("/usr/include/GNUstep"));
+                        var preprocessor = settings as C.ICommonPreprocessorSettings;
+                        preprocessor.IncludePaths.Add(Bam.Core.TokenizedString.CreateVerbatim("/usr/include/GNUstep"));
 
                         var objcCompiler = settings as C.IObjectiveCOnlyCompilerSettings;
                         objcCompiler.ConstantStringClass = "NSConstantString";

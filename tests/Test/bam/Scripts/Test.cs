@@ -38,9 +38,9 @@ namespace Test
             Bam.Core.Settings settings,
             Bam.Core.Module module)
         {
-            if (settings is C.ICommonCompilerSettings compiler)
+            if (settings is C.ICommonPreprocessorSettings preprocessor)
             {
-                compiler.PreprocessorDefines.Add("GLOBALOVERRIDE");
+                preprocessor.PreprocessorDefines.Add("GLOBALOVERRIDE");
             }
 
             if (settings is C.ICxxOnlyCompilerSettings cxxCompiler)

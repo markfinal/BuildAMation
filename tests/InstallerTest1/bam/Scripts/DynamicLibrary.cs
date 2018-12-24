@@ -46,9 +46,9 @@ namespace InstallerTest1
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                if (settings is C.ICommonCompilerSettings compiler)
+                if (settings is C.ICommonPreprocessorSettings preprocessor)
                 {
-                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/source/dynamiclib"));
+                    preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/source/dynamiclib"));
                 }
             });
         }
@@ -71,9 +71,9 @@ namespace InstallerTest1
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                if (settings is C.ICommonCompilerSettings compiler)
+                if (settings is C.ICommonPreprocessorSettings preprocessor)
                 {
-                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/source/dynamiclib"));
+                    preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/source/dynamiclib"));
                 }
             });
         }

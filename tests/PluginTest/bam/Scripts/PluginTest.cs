@@ -74,8 +74,8 @@ namespace PluginTest
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/plugin/pluginmain.cpp");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.PreprocessorDefines.Add("DYNAMICLIB_SOURCE");
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.PreprocessorDefines.Add("DYNAMICLIB_SOURCE");
                 });
         }
     }
