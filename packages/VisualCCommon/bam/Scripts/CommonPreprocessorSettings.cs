@@ -29,7 +29,7 @@
 #endregion // License
 namespace VisualCCommon
 {
-    [CommandLineProcessor.OutputPath(tbb.PreprocessExportFile.PreprocessedFileKey, "", ignore: true)]
+    [CommandLineProcessor.OutputPath(C.PreprocessedFile.PreprocessedFileKey, "", ignore: true)]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-EP ", max_file_count: 1)]
     public abstract class CommonPreprocessorSettings :
         C.SettingsBase,
