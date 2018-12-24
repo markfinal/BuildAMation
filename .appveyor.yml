@@ -17,7 +17,7 @@ for:
     environment:
       GCC_VERSION: 7
 install:
-  - cmd: powershell choco install doxygen.portable --version 1.8.11
+  - cmd: powershell choco install doxygen.portable --version 1.8.11 --ignorepackagecodes
   - sh: ./codingtools/install_ubuntu_dependencies.sh
 before_build:
   - dotnet --version
