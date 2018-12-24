@@ -42,9 +42,9 @@ namespace Test15
             var source = this.CreateCSourceContainer("$(packagedir)/source/staticlibrary2.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
+                        preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }
                 });
 
@@ -68,10 +68,10 @@ namespace Test15
             var source = this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary2.c");
             this.PublicPatch((settings, appliedTo) =>
             {
-                if (settings is C.ICommonCompilerSettings compiler)
+                if (settings is C.ICommonPreprocessorSettings preprocessor)
                 {
-                    compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
-                    compiler.PreprocessorDefines.Add("D_PUBLIC_FORWARDING");
+                    preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
+                    preprocessor.PreprocessorDefines.Add("D_PUBLIC_FORWARDING");
                 }
             });
 
@@ -97,9 +97,9 @@ namespace Test15
             var source = this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary2.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
+                        preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }
                 });
 
