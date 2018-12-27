@@ -95,6 +95,17 @@ namespace XcodeBuilder
             shellCommandLines.Add("fi");
         }
 
+        private static void
+        AddRedirectToFile(
+            Bam.Core.TokenizedString outputFile,
+            Bam.Core.StringArray shellCommandLines)
+        {
+            var command = shellCommandLines.Last();
+            shellCommandLines.Remove(command);
+            var redirectedCommand = command + $" > {outputFile.ToString()}";
+            shellCommandLines.Add(redirectedCommand);
+        }
+
         static private void
         AddModuleCommandLineShellCommand(
             Bam.Core.Module module,
@@ -187,7 +198,8 @@ namespace XcodeBuilder
             bool checkForNewer,
             bool allowNonZeroSuccessfulExitCodes,
             bool addOrderOnlyDependencyOnTool = false,
-            Bam.Core.TokenizedStringArray outputPaths = null)
+            Bam.Core.TokenizedStringArray outputPaths = null,
+            Bam.Core.TokenizedString redirectToFile = null)
         {
             GetTargetAndConfiguration(
                 module,
@@ -206,6 +218,10 @@ namespace XcodeBuilder
                 shellCommandLines,
                 allowNonZeroSuccessfulExitCodes
             );
+            if (null != redirectToFile)
+            {
+                AddRedirectToFile(redirectToFile, shellCommandLines);
+            }
             if (checkForNewer)
             {
                 AddNewerThanPostamble(module, shellCommandLines);
@@ -286,7 +302,8 @@ namespace XcodeBuilder
             Bam.Core.Module module,
             Bam.Core.Module moduleToAddBuildStepTo,
             out Target target,
-            out Configuration configuration)
+            out Configuration configuration,
+            Bam.Core.TokenizedString redirectToFile = null)
         {
             GetTargetAndConfiguration(
                 moduleToAddBuildStepTo,
@@ -302,6 +319,10 @@ namespace XcodeBuilder
                 shellCommandLines,
                 false
             );
+            if (null != redirectToFile)
+            {
+                AddRedirectToFile(redirectToFile, shellCommandLines);
+            }
             AddNewerThanPostamble(module, shellCommandLines);
 
             target.AddPostBuildCommands(

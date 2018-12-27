@@ -37,23 +37,46 @@ namespace C
             string outputKey)
         {
             var tool = module.Tool as Bam.Core.ICommandLineTool;
-            var toolTarget = (tool as Bam.Core.Module).MetaData as XcodeBuilder.Target;
-            var toolConfiguration = toolTarget.GetConfiguration(tool as Bam.Core.Module);
-
-            var commands = new Bam.Core.StringArray
+            var toolMeta = (tool as Bam.Core.Module).MetaData;
+            var postBuildTarget = true;
+            if (null == toolMeta)
             {
-                $"{CommandLineProcessor.Processor.StringifyTool(tool)} > {module.GeneratedPaths[outputKey].ToString()}"
-            };
+                // tool was not buildable
+                postBuildTarget = false;
+                toolMeta = module.GetEncapsulatingReferencedModule().MetaData;
+                if (null == toolMeta)
+                {
+                    throw new Bam.Core.Exception(
+                        $"Unable to determine where to add commands for generating a file from tool standard output, for module {module.ToString()}"
+                    );
+                }
+            }
 
-            XcodeBuilder.Support.AddPostBuildCommands(
-                module,
-                toolTarget,
-                toolConfiguration,
-                commands
-            );
+            if (postBuildTarget)
+            {
+                XcodeBuilder.Support.AddPostBuildStepForCommandLineTool(
+                    module,
+                    tool as Bam.Core.Module,
+                    out XcodeBuilder.Target target,
+                    out XcodeBuilder.Configuration targetConfiguration,
+                    redirectToFile: module.GeneratedPaths[outputKey]
+                );
+            }
+            else
+            {
+                XcodeBuilder.Support.AddPreBuildStepForCommandLineTool(
+                    module,
+                    out XcodeBuilder.Target target,
+                    out XcodeBuilder.Configuration targetConfiguration,
+                    true,
+                    false,
+                    outputPaths: new Bam.Core.TokenizedStringArray { module.GeneratedPaths[outputKey] },
+                    redirectToFile: module.GeneratedPaths[outputKey]
+                );
+            }
 
             // alias the tool's target so that inter-target dependencies can be set up
-            module.MetaData = toolTarget;
+            module.MetaData = toolMeta;
         }
     }
 }
