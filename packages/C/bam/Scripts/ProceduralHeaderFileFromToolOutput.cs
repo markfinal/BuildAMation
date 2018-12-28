@@ -110,7 +110,8 @@ namespace C
                 case "VSSolution":
                     VSSolutionSupport.GenerateFileFromToolStandardOutput(
                         this,
-                        ProceduralHeaderFileFromToolOutput.HeaderFileKey
+                        ProceduralHeaderFileFromToolOutput.HeaderFileKey,
+                        includeEnvironmentVariables: true
                     );
                     break;
 #endif

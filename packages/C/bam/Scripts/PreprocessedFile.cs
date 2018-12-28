@@ -88,7 +88,8 @@ namespace C
                 case "VSSolution":
                     VSSolutionSupport.GenerateFileFromToolStandardOutput(
                         this,
-                        PreprocessedFileKey
+                        PreprocessedFileKey,
+                        includeEnvironmentVariables: true
                     );
                     break;
 #endif

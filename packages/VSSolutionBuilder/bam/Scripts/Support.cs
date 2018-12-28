@@ -51,7 +51,8 @@ namespace VSSolutionBuilder
         static private void
         AddModuleCommandLineShellCommand(
             Bam.Core.Module module,
-            Bam.Core.StringArray shellCommandLines)
+            Bam.Core.StringArray shellCommandLines,
+            bool includeEnvironmentVariables)
         {
             if (null == module.Tool)
             {
@@ -73,7 +74,7 @@ namespace VSSolutionBuilder
                 );
             }
             var tool = module.Tool as Bam.Core.ICommandLineTool;
-            if (tool.EnvironmentVariables != null)
+            if (tool.EnvironmentVariables != null && includeEnvironmentVariables)
             {
                 foreach (var envVar in tool.EnvironmentVariables)
                 {
@@ -118,6 +119,17 @@ namespace VSSolutionBuilder
             }
 #endif
             return projectModule;
+        }
+
+        private static void
+        AddRedirectToFile(
+            Bam.Core.TokenizedString outputFile,
+            Bam.Core.StringArray shellCommandLines)
+        {
+            var command = shellCommandLines.Last();
+            shellCommandLines.Remove(command);
+            var redirectedCommand = command + $" > {outputFile.ToString()}";
+            shellCommandLines.Add(redirectedCommand);
         }
 
         static public void
@@ -168,7 +180,7 @@ namespace VSSolutionBuilder
         {
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
-            AddModuleCommandLineShellCommand(module, shellCommandLines);
+            AddModuleCommandLineShellCommand(module, shellCommandLines, includeEnvironmentVariables: true);
 
             System.Diagnostics.Debug.Assert(1 == module.InputModules.Count());
             var firstInput = module.InputModules.First();
@@ -205,7 +217,7 @@ namespace VSSolutionBuilder
 
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
-            AddModuleCommandLineShellCommand(module, shellCommandLines);
+            AddModuleCommandLineShellCommand(module, shellCommandLines, includeEnvironmentVariables: true);
             config.AddPreBuildCommands(shellCommandLines);
 
             if (addOrderOnlyDependencyOnTool)
@@ -240,7 +252,7 @@ namespace VSSolutionBuilder
 
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
-            AddModuleCommandLineShellCommand(module, shellCommandLines);
+            AddModuleCommandLineShellCommand(module, shellCommandLines, includeEnvironmentVariables: true);
             config.AddPostBuildCommands(shellCommandLines);
 
             if (addOrderOnlyDependencyOnTool)
@@ -269,6 +281,52 @@ namespace VSSolutionBuilder
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
             shellCommandLines.AddRange(commands);
             config.AddPostBuildCommands(shellCommandLines);
+        }
+
+        static public void
+        AddPostBuildStepForCommandLineTool(
+            Bam.Core.Module module,
+            Bam.Core.Module moduleToAddBuildStepTo,
+            out VSProject project,
+            out VSProjectConfiguration configuration,
+            Bam.Core.TokenizedString redirectToFile = null,
+            bool includeEnvironmentVariables = true)
+        {
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
+            project = solution.EnsureProjectExists(moduleToAddBuildStepTo);
+            configuration = project.GetConfiguration(moduleToAddBuildStepTo);
+
+            var shellCommandLines = new Bam.Core.StringArray();
+            AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
+            AddModuleCommandLineShellCommand(module, shellCommandLines, includeEnvironmentVariables: includeEnvironmentVariables);
+            if (null != redirectToFile)
+            {
+                AddRedirectToFile(redirectToFile, shellCommandLines);
+            }
+            configuration.AddPostBuildCommands(shellCommandLines);
+        }
+
+        static public void
+        AddPreBuildStepForCommandLineTool(
+            Bam.Core.Module module,
+            out VSProject project,
+            out VSProjectConfiguration configuration,
+            Bam.Core.TokenizedString redirectToFile = null,
+            bool includeEnvironmentVariables = true)
+        {
+            var moduleToAddBuildStepTo = GetModuleForProject(module);
+            var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
+            project = solution.EnsureProjectExists(moduleToAddBuildStepTo);
+            configuration = project.GetConfiguration(moduleToAddBuildStepTo);
+
+            var shellCommandLines = new Bam.Core.StringArray();
+            AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
+            AddModuleCommandLineShellCommand(module, shellCommandLines, includeEnvironmentVariables: includeEnvironmentVariables);
+            if (null != redirectToFile)
+            {
+                AddRedirectToFile(redirectToFile, shellCommandLines);
+            }
+            configuration.AddPreBuildCommands(shellCommandLines);
         }
     }
 }

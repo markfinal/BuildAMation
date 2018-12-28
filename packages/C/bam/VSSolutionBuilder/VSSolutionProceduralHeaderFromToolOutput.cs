@@ -34,25 +34,49 @@ namespace C
         public static void
         GenerateFileFromToolStandardOutput(
             Bam.Core.Module module,
-            string outputKey)
+            string outputKey,
+            bool includeEnvironmentVariables)
         {
             var tool = module.Tool as Bam.Core.ICommandLineTool;
-            var toolProject = (tool as Bam.Core.Module).MetaData as VSSolutionBuilder.VSProject;
-            var toolConfig = toolProject.GetConfiguration(tool as Bam.Core.Module);
+            var toolMeta = (tool as Bam.Core.Module).MetaData;
+            var postBuildTarget = true;
+            if (null == toolMeta)
+            {
+                // tool was not buildable
+                postBuildTarget = false;
+                toolMeta = module.GetEncapsulatingReferencedModule().MetaData;
+                if (null == toolMeta)
+                {
+                    throw new Bam.Core.Exception(
+                        $"Unable to determine where to add commands for generating a file from tool standard output, for module {module.ToString()}"
+                    );
+                }
+            }
 
-            var commands = new Bam.Core.StringArray();
-            commands.Add(
-                $"{CommandLineProcessor.Processor.StringifyTool(tool)} > {module.GeneratedPaths[outputKey].ToString()}"
-            );
-
-            VSSolutionBuilder.Support.AddCustomPostBuildStep(
-                toolConfig,
-                module,
-                commands
-            );
+            if (postBuildTarget)
+            {
+                VSSolutionBuilder.Support.AddPostBuildStepForCommandLineTool(
+                    module,
+                    tool as Bam.Core.Module,
+                    out VSSolutionBuilder.VSProject project,
+                    out VSSolutionBuilder.VSProjectConfiguration configuration,
+                    redirectToFile: module.GeneratedPaths[outputKey],
+                    includeEnvironmentVariables: includeEnvironmentVariables
+                );
+            }
+            else
+            {
+                VSSolutionBuilder.Support.AddPreBuildStepForCommandLineTool(
+                    module,
+                    out VSSolutionBuilder.VSProject project,
+                    out VSSolutionBuilder.VSProjectConfiguration configuration,
+                    redirectToFile: module.GeneratedPaths[outputKey],
+                    includeEnvironmentVariables: includeEnvironmentVariables
+                );
+            }
 
             // alias the tool's project so that inter-project dependencies can be set up
-            module.MetaData = toolProject;
+            module.MetaData = toolMeta;
         }
     }
 }
