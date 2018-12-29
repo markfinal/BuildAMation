@@ -89,7 +89,7 @@ namespace C
                     VSSolutionSupport.GenerateFileFromToolStandardOutput(
                         this,
                         PreprocessedFileKey,
-                        includeEnvironmentVariables: true
+                        includeEnvironmentVariables: false // since it's running the preprocessor in the IDE, no environment variables necessary
                     );
                     break;
 #endif
