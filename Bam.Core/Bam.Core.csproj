@@ -37,6 +37,9 @@
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="licenseheader.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Schema\BamPackageDefinitionV1.xsd">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

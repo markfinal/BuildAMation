@@ -3,16 +3,30 @@
 from distutils.spawn import find_executable
 from convert_line_endings import convert_line_endings
 import os
+import platform
+import subprocess
 import sys
 
 licenseText = []
 
 
+def check_bam_available():
+    """
+    Check if BAM is available on the PATH, and return its root directory.
+    """
+    system = platform.system()
+    if system == 'Windows':
+        bam_shell = 'bam.bat'
+    else:
+        bam_shell = 'bam'
+    try:
+        return subprocess.check_output([bam_shell, '--installdir']).rstrip()
+    except WindowsError:
+        raise RuntimeError('Unable to locate BAM on the PATH')
+
+
 def read_license_text():
-    bam_path = find_executable('bam')
-    if not bam_path:
-        raise RuntimeError('Unable to locate bam')
-    bam_dir = os.path.dirname(bam_path)
+    bam_dir = check_bam_available()
     license_header_file = os.path.join(bam_dir, 'licenseheader.txt')
     with open(license_header_file, 'rt') as licenseFile:
         original_license_text = licenseFile.readlines()
