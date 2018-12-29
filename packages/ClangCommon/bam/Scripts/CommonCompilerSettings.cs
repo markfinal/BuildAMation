@@ -85,7 +85,7 @@ namespace ClangCommon
         C.ETargetLanguage? C.ICommonPreprocessorSettings.TargetLanguage { get; set; }
 
         [CommandLineProcessor.Bool("-P", "")]
-        [XcodeProjectProcessor.UniqueBool("OTHER_CFLAGS", "-P", "")]
+        [XcodeProjectProcessor.MultiBool("OTHER_CFLAGS", "-P", "")]
         bool? C.ICommonPreprocessorSettings.SuppressLineMarkers { get; set; }
 
         [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-arch i386")]

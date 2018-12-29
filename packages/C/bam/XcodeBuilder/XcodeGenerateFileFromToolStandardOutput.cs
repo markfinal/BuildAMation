@@ -43,7 +43,13 @@ namespace C
             {
                 // tool was not buildable
                 postBuildTarget = false;
-                toolMeta = module.GetEncapsulatingReferencedModule().MetaData;
+                var encapsulating = module.GetEncapsulatingReferencedModule();
+                if (null == encapsulating.MetaData)
+                {
+                    var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+                    var target = workspace.EnsureTargetExists(encapsulating);
+                }
+                toolMeta = encapsulating.MetaData;
                 if (null == toolMeta)
                 {
                     throw new Bam.Core.Exception(
