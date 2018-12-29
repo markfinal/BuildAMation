@@ -44,10 +44,6 @@ namespace C
         {
             base.Init(parent);
             this.Tool = C.DefaultToolchain.Preprocessor(this.BitDepth);
-            this.RegisterGeneratedFile(
-                PreprocessedFileKey,
-                this.CreateTokenizedString("$(packagebuilddir)/$(config)/tbb.def") // TODO: fix me as a default
-            );
         }
 
         protected override void
@@ -121,7 +117,7 @@ namespace C
                 {
                     this.SourceModule.InputPath.Parse();
                     throw new Bam.Core.Exception(
-                        $"Source module already set on this object file, to '{this.SourceModule.InputPath.ToString()}'"
+                        $"Source module already set on this preprocessed file, to '{this.SourceModule.InputPath.ToString()}'"
                     );
                 }
                 this.SourceModule = value;
@@ -129,7 +125,7 @@ namespace C
                 this.RegisterGeneratedFile(
                     PreprocessedFileKey,
                     this.CreateTokenizedString(
-                        "$(packagebuilddir)/$(moduleoutputdir)/@changeextension(@isrelative(@trimstart(@relativeto($(0),$(packagedir)),../),@filename($(0))),$(objext))",
+                        "$(packagebuilddir)/$(moduleoutputdir)/@changeextension(@isrelative(@trimstart(@relativeto($(0),$(packagedir)),../),@filename($(0))),.c)",
                         value.GeneratedPaths[SourceFile.SourceFileKey]
                     )
                 );
@@ -142,7 +138,7 @@ namespace C
             {
                 if (null == this.SourceModule)
                 {
-                    throw new Bam.Core.Exception("Source module not yet set on this object file");
+                    throw new Bam.Core.Exception("Source module not yet set on this preprocessed file");
                 }
                 return this.SourceModule.InputPath;
             }
@@ -152,7 +148,7 @@ namespace C
                 {
                     this.SourceModule.InputPath.Parse();
                     throw new Bam.Core.Exception(
-                        $"Source module already set on this object file, to '{this.SourceModule.InputPath.ToString()}'"
+                        $"Source module already set on this preprocessed file, to '{this.SourceModule.InputPath.ToString()}'"
                     );
                 }
 
