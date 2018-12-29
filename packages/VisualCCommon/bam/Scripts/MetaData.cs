@@ -105,7 +105,6 @@ namespace VisualCCommon
         private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>
         Execute_vcvars(
             C.EBit depth,
-            bool has64bithost_32bitcross,
             bool hasNative64BitTools,
             Bam.Core.StringArray inherited_envvars,
             System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> required_envvars
@@ -151,16 +150,8 @@ namespace VisualCCommon
                 switch (depth)
                 {
                     case C.EBit.ThirtyTwo:
-                        {
-                            if (Bam.Core.OSUtilities.Is64BitHosting && has64bithost_32bitcross)
-                            {
-                                command_and_args.Append("amd64_x86 ");
-                            }
-                            else
-                            {
-                                command_and_args.Append("x86 ");
-                            }
-                        }
+                        // amd64_x86 seems to be troublesome in terms of finding dependent DLLs, so ignore it
+                        command_and_args.Append("x86 ");
                         break;
 
                     case C.EBit.SixtyFour:
@@ -302,7 +293,6 @@ namespace VisualCCommon
         protected void
         Get_tool_environment_variables(
             C.EBit depth,
-            bool has64bithost_32bitcross,
             bool hasNative64BitTools,
             Bam.Core.StringArray inherited_envvars = null,
             System.Collections.Generic.Dictionary<string, Bam.Core.StringArray> required_envvars = null)
@@ -331,7 +321,6 @@ namespace VisualCCommon
 
             var env = this.Execute_vcvars(
                 depth,
-                has64bithost_32bitcross,
                 hasNative64BitTools,
                 inherited_envvars,
                 required_envvars
@@ -396,8 +385,6 @@ namespace VisualCCommon
         }
 
         protected abstract string Subpath_to_vcvars { get; }
-
-        protected virtual bool Has64bithost_32bitcross => true;
 
         protected virtual bool HasNative64BitTools => true;
 
@@ -495,7 +482,6 @@ namespace VisualCCommon
             {
                 this.Get_tool_environment_variables(
                     bitdepth,
-                    this.Has64bithost_32bitcross,
                     this.HasNative64BitTools
                 );
                 Report_WindowsSDK(this.Environment(bitdepth), bitdepth);
