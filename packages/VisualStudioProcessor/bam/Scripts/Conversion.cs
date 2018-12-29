@@ -222,8 +222,12 @@ namespace VisualStudioProcessor
                     }
                     else if (attributeArray.First() is BoolAttribute)
                     {
-                        var value = (bool)property_value;
                         var associated_attribute = attributeArray.First() as BoolAttribute;
+                        if (associated_attribute.Ignore)
+                        {
+                            continue;
+                        }
+                        var value = (bool)property_value;
                         if (associated_attribute.Inverted)
                         {
                             value = !value;

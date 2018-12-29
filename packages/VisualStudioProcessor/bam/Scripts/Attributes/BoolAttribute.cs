@@ -37,11 +37,13 @@ namespace VisualStudioProcessor
             string property,
             bool inheritExisting = false,
             bool inverted = false,
-            TargetGroup target = TargetGroup.Settings)
+            TargetGroup target = TargetGroup.Settings,
+            bool ignore = false)
             :
             base(property, inheritExisting, target)
         {
             this.Inverted = inverted;
+            this.Ignore = ignore;
         }
 
         public BoolAttribute(
@@ -49,17 +51,20 @@ namespace VisualStudioProcessor
             string truth,
             string falisy,
             bool inheritExisting = false,
-            TargetGroup target = TargetGroup.Settings)
+            TargetGroup target = TargetGroup.Settings,
+            bool ignore = false)
             :
             base(property, inheritExisting, target)
         {
             this.Inverted = false;
             this.Truth = truth;
             this.Falisy = falisy;
+            this.Ignore = ignore;
         }
 
         public bool Inverted { get; private set; }
         public string Truth { get; private set; }
         public string Falisy { get; private set; }
+        public bool Ignore { get; private set; }
     }
 }
