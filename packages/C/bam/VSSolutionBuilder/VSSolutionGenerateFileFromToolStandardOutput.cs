@@ -44,7 +44,14 @@ namespace C
             {
                 // tool was not buildable
                 postBuildTarget = false;
-                toolMeta = module.GetEncapsulatingReferencedModule().MetaData;
+                var encapsulating = module.GetEncapsulatingReferencedModule();
+                if (null == encapsulating.MetaData)
+                {
+                    var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+                    var project = solution.EnsureProjectExists(encapsulating);
+                    var config = project.GetConfiguration(encapsulating);
+                }
+                toolMeta = encapsulating.MetaData;
                 if (null == toolMeta)
                 {
                     throw new Bam.Core.Exception(
