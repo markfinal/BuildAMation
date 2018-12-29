@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
 namespace VisualCCommon
 {
     [CommandLineProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "-Fo")]
@@ -74,6 +73,9 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(C.ETargetLanguage.C, "CompileAs", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "CompileAsC")]
         [VisualStudioProcessor.Enum(C.ETargetLanguage.Cxx, "CompileAs", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "CompileAsCpp")]
         C.ETargetLanguage? C.ICommonPreprocessorSettings.TargetLanguage { get; set; }
+
+        [CommandLineProcessor.Bool("", "-P")]
+        bool? C.ICommonPreprocessorSettings.SuppressLineMarkers { get; set; }
 
         [CommandLineProcessor.Enum(C.ECharacterSet.NotSet, "")]
         [CommandLineProcessor.Enum(C.ECharacterSet.Unicode, "-DUNICODE -D_UNICODE")]

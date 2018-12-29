@@ -61,6 +61,9 @@ namespace VisualCCommon
         [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-TP")]
         C.ETargetLanguage? C.ICommonPreprocessorSettings.TargetLanguage { get; set; }
 
+        [CommandLineProcessor.Bool("-P", "")]
+        bool? C.ICommonPreprocessorSettings.SuppressLineMarkers { get; set; }
+
         public override void AssignFileLayout()
         {
             this.FileLayout = ELayout.Cmds_Inputs_Outputs;

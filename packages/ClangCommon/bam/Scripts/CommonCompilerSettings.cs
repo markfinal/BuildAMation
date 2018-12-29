@@ -84,6 +84,10 @@ namespace ClangCommon
         [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.ObjectiveCxx, "GCC_INPUT_FILETYPE", "sourcecode.cpp.objcpp")]
         C.ETargetLanguage? C.ICommonPreprocessorSettings.TargetLanguage { get; set; }
 
+        [CommandLineProcessor.Bool("-P", "")]
+        [XcodeProjectProcessor.UniqueBool("OTHER_CFLAGS", "-P", "")]
+        bool? C.ICommonPreprocessorSettings.SuppressLineMarkers { get; set; }
+
         [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-arch i386")]
         [CommandLineProcessor.EnumAttribute(C.EBit.SixtyFour, "-arch x86_64")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.ThirtyTwo, "VALID_ARCHS", "i386", "ARCHS", "$(ARCHS_STANDARD_32_BIT)")]

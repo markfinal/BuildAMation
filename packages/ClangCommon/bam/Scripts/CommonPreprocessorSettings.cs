@@ -67,6 +67,9 @@ namespace ClangCommon
         [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveCxx, "-x objective-c++")]
         C.ETargetLanguage? C.ICommonPreprocessorSettings.TargetLanguage { get; set; }
 
+        [CommandLineProcessor.Bool("-P", "")]
+        bool? C.ICommonPreprocessorSettings.SuppressLineMarkers { get; set; }
+
         public override void
         AssignFileLayout()
         {

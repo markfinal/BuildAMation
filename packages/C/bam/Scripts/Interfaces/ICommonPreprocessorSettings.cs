@@ -65,5 +65,11 @@ namespace C
         /// </summary>
         /// <value>The target language.</value>
         C.ETargetLanguage? TargetLanguage { get; set; }
+
+        /// <summary>
+        /// Suppress line markers generated into the preprocessed output.
+        /// </summary>
+        /// <value>Whether line markers are generated or not.</value>
+        bool? SuppressLineMarkers { get; set; }
     }
 }

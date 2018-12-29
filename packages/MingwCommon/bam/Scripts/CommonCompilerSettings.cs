@@ -68,6 +68,9 @@ namespace MingwCommon
         [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveCxx, "-x objective-c++")]
         C.ETargetLanguage? C.ICommonPreprocessorSettings.TargetLanguage { get; set; }
 
+        [CommandLineProcessor.Bool("-P", "")]
+        bool? C.ICommonPreprocessorSettings.SuppressLineMarkers { get; set; }
+
         [CommandLineProcessor.Enum(C.ECharacterSet.NotSet, "")]
         [CommandLineProcessor.Enum(C.ECharacterSet.Unicode, "-D_UNICODE")]
         [CommandLineProcessor.Enum(C.ECharacterSet.MultiByte, "-D_MBCS")]

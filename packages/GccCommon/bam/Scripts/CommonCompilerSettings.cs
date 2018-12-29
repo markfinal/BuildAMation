@@ -66,6 +66,9 @@ namespace GccCommon
         [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveCxx, "-x objective-c++")]
         C.ETargetLanguage? C.ICommonPreprocessorSettings.TargetLanguage { get; set; }
 
+        [CommandLineProcessor.Bool("", "-P")]
+        bool? C.ICommonPreprocessorSettings.SuppressLineMarkers { get; set; }
+
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
         C.EBit? C.ICommonCompilerSettings.Bits { get; set; }

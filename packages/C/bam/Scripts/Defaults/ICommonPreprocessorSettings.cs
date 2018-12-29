@@ -71,6 +71,7 @@ namespace C.DefaultSettings
                 }
             }
             settings.TargetLanguage = ETargetLanguage.C;
+            settings.SuppressLineMarkers = false;
         }
 
         public static void
@@ -93,6 +94,7 @@ namespace C.DefaultSettings
             shared.SystemIncludePaths = shared.SystemIncludePaths.Intersect(other.SystemIncludePaths);
             shared.PreprocessorUndefines = shared.PreprocessorUndefines.Intersect(other.PreprocessorUndefines);
             shared.TargetLanguage = shared.TargetLanguage.Intersect(other.TargetLanguage);
+            shared.SuppressLineMarkers = shared.SuppressLineMarkers.Intersect(other.SuppressLineMarkers);
         }
 
         public static void
@@ -106,6 +108,7 @@ namespace C.DefaultSettings
             delta.SystemIncludePaths = lhs.SystemIncludePaths.Complement(rhs.SystemIncludePaths);
             delta.PreprocessorUndefines = lhs.PreprocessorUndefines.Complement(rhs.PreprocessorUndefines);
             delta.TargetLanguage = lhs.TargetLanguage.Complement(rhs.TargetLanguage);
+            delta.SuppressLineMarkers = lhs.SuppressLineMarkers.Complement(rhs.SuppressLineMarkers);
         }
 
         public static void
@@ -130,6 +133,7 @@ namespace C.DefaultSettings
                 settings.PreprocessorUndefines.AddUnique(path);
             }
             settings.TargetLanguage = other.TargetLanguage;
+            settings.SuppressLineMarkers = other.SuppressLineMarkers;
         }
     }
 }

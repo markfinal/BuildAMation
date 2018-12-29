@@ -72,6 +72,7 @@ namespace PreprocessFile1
             {
                 var preprocessor = settings as C.ICommonPreprocessorSettings;
                 preprocessor.PreprocessorDefines.Add("CUSTOM");
+                preprocessor.SuppressLineMarkers = true; // GCC at least complains if you keep the line markers
             });
             source.DependsOn(preprocessedFile);
             source.UsePublicPatchesPrivately(preprocessedFile);
