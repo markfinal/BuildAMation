@@ -44,22 +44,22 @@ namespace Test6
             var source = this.CreateCSourceContainer();
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                 });
 
             var main = source.AddFile("$(packagedir)/source/main.c");
             main.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.PreprocessorDefines.Add("MAIN_C");
-                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/platform"));
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.PreprocessorDefines.Add("MAIN_C");
+                    preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/platform"));
                 });
             source["source/main.c"].ForEach(item =>
                 item.PrivatePatch(settings =>
                     {
-                        var compiler = settings as C.ICommonCompilerSettings;
-                        compiler.PreprocessorDefines.Add("MAIN_C_EX");
+                        var preprocessor = settings as C.ICommonPreprocessorSettings;
+                        preprocessor.PreprocessorDefines.Add("MAIN_C_EX");
                     }));
 
             var platformPath = (this.BuildEnvironment.Configuration == Bam.Core.EConfiguration.Debug) ?

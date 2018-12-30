@@ -38,7 +38,7 @@ namespace GccCommon
             :
             base(module)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
+            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
             (this as C.ICOnlyCompilerSettings).LanguageStandard = C.ELanguageStandard.C99; // implied by the language use in GNUStep headers
         }
 
@@ -49,7 +49,7 @@ namespace GccCommon
             :
             base(module, useDefaults)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
+            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
         }
 
         [CommandLineProcessor.String("-fconstant-string-class=")]

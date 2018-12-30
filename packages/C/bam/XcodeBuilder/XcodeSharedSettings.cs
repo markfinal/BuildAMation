@@ -60,7 +60,7 @@ namespace C
             // otherwise the assembly is attempted to be used as that common target language
             if (assemblerSourcesPresent)
             {
-                (settings as C.ICommonCompilerSettings).TargetLanguage = ETargetLanguage.Default;
+                (settings as C.ICommonPreprocessorSettings).TargetLanguage = ETargetLanguage.Default;
             }
         }
     }

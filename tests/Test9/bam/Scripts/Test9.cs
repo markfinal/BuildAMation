@@ -88,8 +88,8 @@ namespace Test9
             var cSource = this.CreateCSourceContainer("$(packagedir)/source/library_c.c");
             cSource.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                 });
 
             var cxxSource = this.CreateCxxSourceContainer();
@@ -97,8 +97,8 @@ namespace Test9
             cxxSource.AddFile("$(packagedir)/source/appmain_cpp.c");
             cxxSource.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                     var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                     cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
                 });
@@ -119,8 +119,8 @@ namespace Test9
             var source = this.CreateCSourceContainer("$(packagedir)/source/library_c.c");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                 });
         }
     }
@@ -139,8 +139,8 @@ namespace Test9
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/library_cpp.c");
             source.PrivatePatch(settings =>
             {
-                var compiler = settings as C.ICommonCompilerSettings;
-                compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
+                var preprocessor = settings as C.ICommonPreprocessorSettings;
+                preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
 
                 var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;
@@ -165,8 +165,8 @@ namespace Test9
             var source = this.CreateCSourceContainer("$(packagedir)/source/library_c.c");
             source.PrivatePatch(settings =>
                 {
-                    var compiler = settings as C.ICommonCompilerSettings;
-                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
+                    var preprocessor = settings as C.ICommonPreprocessorSettings;
+                    preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                 });
         }
     }
@@ -188,8 +188,8 @@ namespace Test9
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/library_cpp.c");
             source.PrivatePatch(settings =>
             {
-                var compiler = settings as C.ICommonCompilerSettings;
-                compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
+                var preprocessor = settings as C.ICommonPreprocessorSettings;
+                preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
 
                 var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
                 cxxCompiler.ExceptionHandler = C.Cxx.EExceptionHandler.Synchronous;

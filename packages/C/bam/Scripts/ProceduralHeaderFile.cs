@@ -89,9 +89,9 @@ namespace C
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.AddUnique(this.IncludeDirectory);
+                        preprocessor.IncludePaths.AddUnique(this.IncludeDirectory);
                     }
 
                     if (settings is C.ICommonAssemblerSettings assembler)

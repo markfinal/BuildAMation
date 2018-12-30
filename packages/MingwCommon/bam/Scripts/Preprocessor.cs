@@ -27,32 +27,41 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C
+namespace MingwCommon
 {
-    public static partial class XcodeSupport
+    public abstract class PreprocessorBase :
+        C.PreprocessorTool
     {
-        public static void
-        GenerateHeader(
-            ProceduralHeaderFileFromToolOutput module)
+        protected PreprocessorBase()
         {
-            var tool = module.Tool as Bam.Core.ICommandLineTool;
-            var toolTarget = (tool as Bam.Core.Module).MetaData as XcodeBuilder.Target;
-            var toolConfiguration = toolTarget.GetConfiguration(tool as Bam.Core.Module);
+            this.InheritedEnvironmentVariables.Add("TEMP");
 
-            var commands = new Bam.Core.StringArray
-            {
-                $"{CommandLineProcessor.Processor.StringifyTool(tool)} > {module.GeneratedPaths[ProceduralHeaderFileFromToolOutput.HeaderFileKey].ToString()}"
-            };
+            var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
+            var discovery = mingwMeta as C.IToolchainDiscovery;
+            discovery.discover(depth: null);
 
-            XcodeBuilder.Support.AddPostBuildCommands(
-                module,
-                toolTarget,
-                toolConfiguration,
-                commands
-            );
+            this.Version = null; // TODO
 
-            // alias the tool's target so that inter-target dependencies can be set up
-            module.MetaData = toolTarget;
+            this.Macros.AddVerbatim("CompilerSuffix", mingwMeta.ToolSuffix);
+
+            this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(0)\bin", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
+            this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-gcc$(CompilerSuffix).exe"));
+            this.Macros.AddVerbatim("objext", ".o");
+
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }
+
+        public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
+
+        public override string UseResponseFileOption => "@";
+    }
+
+    [C.RegisterPreprocessor("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
+    public class Preprocessor32 :
+        PreprocessorBase
+    {
+        public override Bam.Core.Settings
+        CreateDefaultSettings<T>(
+            T module) => new Mingw.PreprocessorSettings(module);
     }
 }

@@ -38,7 +38,7 @@ namespace VisualCCommon
             :
             base(module, true)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
+            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.Cxx;
         }
 
         protected CommonCxxCompilerSettings(
@@ -47,7 +47,7 @@ namespace VisualCCommon
             :
             base(module, useDefaults)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
+            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.Cxx;
         }
 
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Disabled, "")]

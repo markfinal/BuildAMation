@@ -42,7 +42,6 @@ namespace VisualC
         }
 
         protected override string Subpath_to_vcvars => "VC";
-        protected override bool Has64bithost_32bitcross => false;
         protected override bool HasNative64BitTools => false;
 
         public override object this[string index] => this.Meta[index];

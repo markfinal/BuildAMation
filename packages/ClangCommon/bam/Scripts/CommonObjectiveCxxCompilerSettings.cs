@@ -38,7 +38,7 @@ namespace ClangCommon
             :
             base(module)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
+            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
         }
 
         protected CommonObjectiveCxxCompilerSettings(
@@ -47,7 +47,7 @@ namespace ClangCommon
             :
             base(module, useDefaults)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
+            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
         }
     }
 }

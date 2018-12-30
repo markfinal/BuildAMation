@@ -43,9 +43,9 @@ namespace InstallNameToolChangeTest1
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                if (settings is C.ICommonCompilerSettings compiler)
+                if (settings is C.ICommonPreprocessorSettings preprocessor)
                 {
-                    compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/source/lib"));
+                    preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/source/lib"));
                 }
             });
         }

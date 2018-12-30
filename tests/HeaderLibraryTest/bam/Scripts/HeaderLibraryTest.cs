@@ -53,9 +53,9 @@ namespace HeaderLibraryTest
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
+                        preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                     }
                 });
         }
@@ -90,9 +90,9 @@ namespace HeaderLibraryTest
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                if (settings is C.ICommonCompilerSettings compiler)
+                if (settings is C.ICommonPreprocessorSettings preprocessor)
                 {
-                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/lib1"));
+                    preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/lib1"));
                 }
             });
         }
@@ -114,9 +114,9 @@ namespace HeaderLibraryTest
 
             this.PublicPatch((settings, appliedTo) =>
             {
-                if (settings is C.ICommonCompilerSettings compiler)
+                if (settings is C.ICommonPreprocessorSettings preprocessor)
                 {
-                    compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/lib2"));
+                    preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/lib2"));
                 }
             });
         }
@@ -151,9 +151,9 @@ namespace HeaderLibraryTest
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/level1"));
+                        preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include/level1"));
                     }
                 });
         }

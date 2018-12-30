@@ -115,8 +115,8 @@ namespace C.Cxx
             var collection = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
             collection.PrivatePatch(settings =>
             {
-                var compiler = settings as C.ICommonCompilerSettings;
-                compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
+                var preprocessor = settings as C.ICommonPreprocessorSettings;
+                preprocessor.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
                 (collection.Tool as C.CompilerTool).CompileAsShared(settings);
             });
             return collection;
@@ -138,8 +138,8 @@ namespace C.Cxx
             var collection = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
             collection.PrivatePatch(settings =>
             {
-                var compiler = settings as C.ICommonCompilerSettings;
-                compiler.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
+                var preprocessor = settings as C.ICommonPreprocessorSettings;
+                preprocessor.PreprocessorDefines.Add("D_BAM_DYNAMICLIBRARY_BUILD");
                 (collection.Tool as C.CompilerTool).CompileAsShared(settings);
             });
             return collection;

@@ -33,6 +33,7 @@ namespace ClangCommon
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     public abstract class CommonCompilerSettings :
         C.SettingsBase,
+        C.ICommonPreprocessorSettings,
         C.ICommonCompilerSettings,
         C.ICommonCompilerSettingsOSX,
         C.IAdditionalSettings,
@@ -55,23 +56,43 @@ namespace ClangCommon
                 Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MacOSXMinimumVersionSupported;
         }
 
+        [CommandLineProcessor.PreprocessorDefines("-D")]
+        [XcodeProjectProcessor.PreprocessorDefines("GCC_PREPROCESSOR_DEFINITIONS")]
+        C.PreprocessorDefinitions C.ICommonPreprocessorSettings.PreprocessorDefines { get; set; }
+
+        [CommandLineProcessor.PathArray("-I")]
+        [XcodeProjectProcessor.PathArray("USER_HEADER_SEARCH_PATHS")]
+        Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.IncludePaths { get; set; }
+
+        [CommandLineProcessor.PathArray("-I")]
+        [XcodeProjectProcessor.PathArray("HEADER_SEARCH_PATHS")]
+        Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.SystemIncludePaths { get; set; }
+
+        [CommandLineProcessor.StringArray("-U")]
+        [XcodeProjectProcessor.StringArray("OTHER_CFLAGS", prefix: "-U")]
+        Bam.Core.StringArray C.ICommonPreprocessorSettings.PreprocessorUndefines { get; set; }
+
+        [CommandLineProcessor.Enum(C.ETargetLanguage.Default, "")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-x c")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-x c++")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveC, "-x objective-c")]
+        [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveCxx, "-x objective-c++")]
+        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.Default, "GCC_INPUT_FILETYPE", "automatic")]
+        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.C, "GCC_INPUT_FILETYPE", "sourcecode.c.c")]
+        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.Cxx, "GCC_INPUT_FILETYPE", "sourcecode.cpp.cpp")]
+        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.ObjectiveC, "GCC_INPUT_FILETYPE", "sourcecode.c.objc")]
+        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.ObjectiveCxx, "GCC_INPUT_FILETYPE", "sourcecode.cpp.objcpp")]
+        C.ETargetLanguage? C.ICommonPreprocessorSettings.TargetLanguage { get; set; }
+
+        [CommandLineProcessor.Bool("-P", "")]
+        [XcodeProjectProcessor.MultiBool("OTHER_CFLAGS", "-P", "")]
+        bool? C.ICommonPreprocessorSettings.SuppressLineMarkers { get; set; }
+
         [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-arch i386")]
         [CommandLineProcessor.EnumAttribute(C.EBit.SixtyFour, "-arch x86_64")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.ThirtyTwo, "VALID_ARCHS", "i386", "ARCHS", "$(ARCHS_STANDARD_32_BIT)")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.SixtyFour, "VALID_ARCHS", "x86_64", "ARCHS", "$(ARCHS_STANDARD_64_BIT)")]
         C.EBit? C.ICommonCompilerSettings.Bits { get; set; }
-
-        [CommandLineProcessor.PreprocessorDefines("-D")]
-        [XcodeProjectProcessor.PreprocessorDefines("GCC_PREPROCESSOR_DEFINITIONS")]
-        C.PreprocessorDefinitions C.ICommonCompilerSettings.PreprocessorDefines { get; set; }
-
-        [CommandLineProcessor.PathArray("-I")]
-        [XcodeProjectProcessor.PathArray("USER_HEADER_SEARCH_PATHS")]
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.IncludePaths { get; set; }
-
-        [CommandLineProcessor.PathArray("-I")]
-        [XcodeProjectProcessor.PathArray("HEADER_SEARCH_PATHS")]
-        Bam.Core.TokenizedStringArray C.ICommonCompilerSettings.SystemIncludePaths { get; set; }
 
         [CommandLineProcessor.Bool("-g", "")]
         [XcodeProjectProcessor.UniqueBool("GCC_GENERATE_DEBUGGING_SYMBOLS", "YES", "NO")]
@@ -91,18 +112,6 @@ namespace ClangCommon
         [XcodeProjectProcessor.UniqueEnum(C.EOptimization.Custom, "GCC_OPTIMIZATION_LEVEL", "", ignore: true)]
         C.EOptimization? C.ICommonCompilerSettings.Optimization { get; set; }
 
-        [CommandLineProcessor.Enum(C.ETargetLanguage.Default, "")]
-        [CommandLineProcessor.Enum(C.ETargetLanguage.C, "-x c")]
-        [CommandLineProcessor.Enum(C.ETargetLanguage.Cxx, "-x c++")]
-        [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveC, "-x objective-c")]
-        [CommandLineProcessor.Enum(C.ETargetLanguage.ObjectiveCxx, "-x objective-c++")]
-        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.Default, "GCC_INPUT_FILETYPE", "automatic")]
-        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.C, "GCC_INPUT_FILETYPE", "sourcecode.c.c")]
-        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.Cxx, "GCC_INPUT_FILETYPE", "sourcecode.cpp.cpp")]
-        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.ObjectiveC, "GCC_INPUT_FILETYPE", "sourcecode.c.objc")]
-        [XcodeProjectProcessor.UniqueEnum(C.ETargetLanguage.ObjectiveCxx, "GCC_INPUT_FILETYPE", "sourcecode.cpp.objcpp")]
-        C.ETargetLanguage? C.ICommonCompilerSettings.TargetLanguage { get; set; }
-
         [CommandLineProcessor.Bool("-fomit-frame-pointer", "-fno-omit-frame-pointer")]
         [XcodeProjectProcessor.MultiBool("OTHER_CFLAGS", "-fomit-frame-pointer", "-fno-omit-frame-pointer")]
         bool? C.ICommonCompilerSettings.OmitFramePointer { get; set; }
@@ -110,10 +119,6 @@ namespace ClangCommon
         [CommandLineProcessor.StringArray("-Wno-")]
         [XcodeProjectProcessor.StringArray("WARNING_CFLAGS", prefix: "-Wno-")]
         Bam.Core.StringArray C.ICommonCompilerSettings.DisableWarnings { get; set; }
-
-        [CommandLineProcessor.StringArray("-U")]
-        [XcodeProjectProcessor.StringArray("OTHER_CFLAGS", prefix: "-U")]
-        Bam.Core.StringArray C.ICommonCompilerSettings.PreprocessorUndefines { get; set; }
 
         [CommandLineProcessor.StringArray("-include ")]
         [XcodeProjectProcessor.StringArray("OTHER_CFLAGS", prefix: "-include ")]

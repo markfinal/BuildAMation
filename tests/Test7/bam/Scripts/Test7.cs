@@ -47,9 +47,9 @@ namespace Test7
             this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
+                        preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
                     }
                 });
         }

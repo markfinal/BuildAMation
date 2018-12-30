@@ -38,7 +38,7 @@ namespace GccCommon
             :
             base(module)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
+            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.Cxx;
         }
 
         protected CommonCxxCompilerSettings(
@@ -47,7 +47,7 @@ namespace GccCommon
             :
             base(module, useDefaults)
         {
-            (this as C.ICommonCompilerSettings).TargetLanguage = C.ETargetLanguage.Cxx;
+            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.Cxx;
         }
 
         [CommandLineProcessor.Enum(C.Cxx.EExceptionHandler.Disabled, "-fno-exceptions")]

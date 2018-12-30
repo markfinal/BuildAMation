@@ -17,7 +17,7 @@ for:
     environment:
       GCC_VERSION: 7
 install:
-  - cmd: powershell choco install doxygen.install
+  - cmd: powershell choco install doxygen.portable --version 1.8.11 || exit 0
   - sh: ./codingtools/install_ubuntu_dependencies.sh
 before_build:
   - dotnet --version
@@ -28,7 +28,7 @@ build_script:
   - sh: python codingtools/dotnetcore_make_release.py --local
 after_build:
   - cmd: 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish
-  - cmd: 7z a bam_docs.zip %APPVEYOR_BUILD_FOLDER%\docs
+  - cmd: 7z a bam_docs.zip %APPVEYOR_BUILD_FOLDER%\docs || exit 0
 artifacts:
   - path: bam.zip
     name: Bam

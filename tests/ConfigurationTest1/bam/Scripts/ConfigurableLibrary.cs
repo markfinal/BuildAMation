@@ -69,9 +69,9 @@ namespace ConfigurationTest1
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/configurablelibrary"));
+                        preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include/configurablelibrary"));
                     }
                 });
 
@@ -81,8 +81,8 @@ namespace ConfigurationTest1
                 {
                     source.PrivatePatch(settings =>
                         {
-                            var compiler = settings as C.ICommonCompilerSettings;
-                            compiler.PreprocessorDefines.Add("D_ENABLE_FUNKY_NEW_FEATURE");
+                            var preprocessor = settings as C.ICommonPreprocessorSettings;
+                            preprocessor.PreprocessorDefines.Add("D_ENABLE_FUNKY_NEW_FEATURE");
                         });
                     this.CompileAgainst<FunkyFeatureLibrary>(source);
                 }

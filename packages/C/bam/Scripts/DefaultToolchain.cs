@@ -42,6 +42,7 @@ namespace C
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> ObjectiveCxx_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> WinResourceCompilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> Assemblers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
+        private static System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> Preprocessors = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();
         private static readonly string UserToolchainOverride = null;
 
         // name of the toolchain to use, after disambiguation
@@ -59,6 +60,7 @@ namespace C
             public CompilerTool            objcxx_compiler = null;
             public WinResourceCompilerTool winres_compiler = null;
             public AssemblerTool           assembler = null;
+            public PreprocessorTool        preprocessor = null;
         };
         private static System.Collections.Generic.Dictionary<EBit, ToolModules> Default = new System.Collections.Generic.Dictionary<EBit, ToolModules>();
 
@@ -118,6 +120,7 @@ namespace C
             FindTools<RegisterObjectiveCxxCompilerAttribute, CompilerTool>(ObjectiveCxx_Compilers);
             FindTools<RegisterWinResourceCompilerAttribute, WinResourceCompilerTool>(WinResourceCompilers);
             FindTools<RegisterAssemblerAttribute, AssemblerTool>(Assemblers);
+            FindTools<RegisterPreprocessorAttribute, PreprocessorTool>(Preprocessors);
 
             // disambiguate any bitdepths with multiple tool types
             // any bit depths that remain ambiguous have no entry in DisambiguousToolchainToUse
@@ -144,7 +147,8 @@ namespace C
                     (ObjectiveC_Compilers.ContainsKey(bitDepth) && ObjectiveC_Compilers[bitDepth].Skip(1).Any()) ||
                     (ObjectiveCxx_Compilers.ContainsKey(bitDepth) && ObjectiveCxx_Compilers[bitDepth].Skip(1).Any()) ||
                     (WinResourceCompilers.ContainsKey(bitDepth) && WinResourceCompilers[bitDepth].Skip(1).Any()) ||
-                    (Assemblers.ContainsKey(bitDepth) && Assemblers[bitDepth].Skip(1).Any());
+                    (Assemblers.ContainsKey(bitDepth) && Assemblers[bitDepth].Skip(1).Any()) ||
+                    (Preprocessors.ContainsKey(bitDepth) && Preprocessors[bitDepth].Skip(1).Any());
                 if (ambiguous_toolchain)
                 {
                     if (UserToolchainOverride != null)
@@ -183,10 +187,16 @@ namespace C
             {
                 return toolModule;
             }
-            if (!DisambiguousToolchainToUse.Any() && !collection.Any())
+            if (!collection.Any())
             {
+                if (!DisambiguousToolchainToUse.Any())
+                {
+                    throw new Bam.Core.Exception(
+                        "No toolchain packages were detected for this platform"
+                    );
+                }
                 throw new Bam.Core.Exception(
-                    "No toolchain packages were detected for this platform"
+                    $"Platform contains toolchains, but no registrations of a '{toolDescription}' were found"
                 );
             }
             if (!DisambiguousToolchainToUse.ContainsKey(bitDepth))
@@ -254,5 +264,9 @@ namespace C
         public static AssemblerTool
         Assembler(
             EBit bitDepth) => GetTool<AssemblerTool>(Assemblers, bitDepth, "Assembler", ref Default[bitDepth].assembler);
+
+        public static PreprocessorTool
+        Preprocessor(
+            EBit bitDepth) => GetTool<PreprocessorTool>(Preprocessors, bitDepth, "Preprocessor", ref Default[bitDepth].preprocessor);
     }
 }

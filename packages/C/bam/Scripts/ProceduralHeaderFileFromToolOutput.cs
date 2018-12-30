@@ -53,9 +53,9 @@ namespace C
 
             this.PublicPatch((settings, appliedTo) =>
                 {
-                    if (settings is C.ICommonCompilerSettings compiler)
+                    if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        compiler.IncludePaths.AddUnique(this.IncludeDirectory);
+                        preprocessor.IncludePaths.AddUnique(this.IncludeDirectory);
                     }
 
                     if (settings is C.ICommonAssemblerSettings assembler)
@@ -108,13 +108,20 @@ namespace C
 
 #if D_PACKAGE_VSSOLUTIONBUILDER
                 case "VSSolution":
-                    VSSolutionSupport.GenerateHeader(this);
+                    VSSolutionSupport.GenerateFileFromToolStandardOutput(
+                        this,
+                        ProceduralHeaderFileFromToolOutput.HeaderFileKey,
+                        includeEnvironmentVariables: true
+                    );
                     break;
 #endif
 
 #if D_PACKAGE_XCODEBUILDER
                 case "Xcode":
-                    XcodeSupport.GenerateHeader(this);
+                    XcodeSupport.GenerateFileFromToolStandardOutput(
+                        this,
+                        ProceduralHeaderFileFromToolOutput.HeaderFileKey
+                    );
                     break;
 #endif
 

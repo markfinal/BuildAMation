@@ -41,40 +41,6 @@ namespace C.DefaultSettings
             settings.DebugSymbols = (0 != (module.BuildEnvironment.Configuration & (Bam.Core.EConfiguration.Debug | Bam.Core.EConfiguration.Profile)));
             settings.Optimization = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug)) ? EOptimization.Speed : EOptimization.Off;
             settings.OmitFramePointer = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug));
-            settings.PreprocessorDefines.Add(System.String.Format("D_BAM_CONFIGURATION_{0}", module.BuildEnvironment.Configuration.ToString().ToUpper()));
-            if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-            {
-                settings.PreprocessorDefines.Add("D_BAM_PLATFORM_WINDOWS");
-            }
-            else if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-            {
-                settings.PreprocessorDefines.Add("D_BAM_PLATFORM_LINUX");
-            }
-            else if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
-            {
-                settings.PreprocessorDefines.Add("D_BAM_PLATFORM_OSX");
-            }
-            else
-            {
-                throw new Bam.Core.Exception("Unknown platform");
-            }
-            {
-                var is64bit = Bam.Core.OSUtilities.Is64Bit(module.BuildEnvironment.Platform);
-                var bits = (is64bit) ? 64 : 32;
-                settings.PreprocessorDefines.Add("D_BAM_PLATFORM_BITS", bits.ToString());
-            }
-            {
-                var isLittleEndian = Bam.Core.OSUtilities.IsLittleEndian;
-                if (isLittleEndian)
-                {
-                    settings.PreprocessorDefines.Add("D_BAM_PLATFORM_LITTLEENDIAN");
-                }
-                else
-                {
-                    settings.PreprocessorDefines.Add("D_BAM_PLATFORM_BIGENDIAN");
-                }
-            }
-            settings.TargetLanguage = ETargetLanguage.C;
             settings.WarningsAsErrors = true;
             settings.PreprocessOnly = false;
         }
@@ -84,10 +50,6 @@ namespace C.DefaultSettings
             this C.ICommonCompilerSettings settings)
         {
             settings.DisableWarnings = new Bam.Core.StringArray();
-            settings.IncludePaths = new Bam.Core.TokenizedStringArray();
-            settings.PreprocessorDefines = new PreprocessorDefinitions();
-            settings.PreprocessorUndefines = new Bam.Core.StringArray();
-            settings.SystemIncludePaths = new Bam.Core.TokenizedStringArray();
             settings.NamedHeaders = new Bam.Core.StringArray();
         }
 
@@ -97,16 +59,11 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettings other)
         {
             shared.Bits = shared.Bits.Intersect(other.Bits);
-            shared.PreprocessorDefines = shared.PreprocessorDefines.Intersect(other.PreprocessorDefines);
-            shared.IncludePaths = shared.IncludePaths.Intersect(other.IncludePaths);
-            shared.SystemIncludePaths = shared.SystemIncludePaths.Intersect(other.SystemIncludePaths);
             shared.DebugSymbols = shared.DebugSymbols.Intersect(other.DebugSymbols);
             shared.WarningsAsErrors = shared.WarningsAsErrors.Intersect(other.WarningsAsErrors);
             shared.Optimization = shared.Optimization.Intersect(other.Optimization);
-            shared.TargetLanguage = shared.TargetLanguage.Intersect(other.TargetLanguage);
             shared.OmitFramePointer = shared.OmitFramePointer.Intersect(other.OmitFramePointer);
             shared.DisableWarnings = shared.DisableWarnings.Intersect(other.DisableWarnings);
-            shared.PreprocessorUndefines = shared.PreprocessorUndefines.Intersect(other.PreprocessorUndefines);
             shared.NamedHeaders = shared.NamedHeaders.Intersect(other.NamedHeaders);
             shared.PreprocessOnly = shared.PreprocessOnly.Intersect(other.PreprocessOnly);
         }
@@ -118,16 +75,11 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettings rhs)
         {
             delta.Bits = lhs.Bits.Complement(rhs.Bits);
-            delta.PreprocessorDefines = lhs.PreprocessorDefines.Complement(rhs.PreprocessorDefines);
-            delta.IncludePaths = lhs.IncludePaths.Complement(rhs.IncludePaths);
-            delta.SystemIncludePaths = lhs.SystemIncludePaths.Complement(rhs.SystemIncludePaths);
             delta.DebugSymbols = lhs.DebugSymbols.Complement(rhs.DebugSymbols);
             delta.WarningsAsErrors = lhs.WarningsAsErrors.Complement(rhs.WarningsAsErrors);
             delta.Optimization = lhs.Optimization.Complement(rhs.Optimization);
-            delta.TargetLanguage = lhs.TargetLanguage.Complement(rhs.TargetLanguage);
             delta.OmitFramePointer = lhs.OmitFramePointer.Complement(rhs.OmitFramePointer);
             delta.DisableWarnings = lhs.DisableWarnings.Complement(rhs.DisableWarnings);
-            delta.PreprocessorUndefines = lhs.PreprocessorUndefines.Complement(rhs.PreprocessorUndefines);
             delta.NamedHeaders = lhs.NamedHeaders.Complement(rhs.NamedHeaders);
             delta.PreprocessOnly = lhs.PreprocessOnly.Complement(rhs.PreprocessOnly);
         }
@@ -138,30 +90,13 @@ namespace C.DefaultSettings
             C.ICommonCompilerSettings other)
         {
             settings.Bits = other.Bits;
-            foreach (var define in other.PreprocessorDefines)
-            {
-                settings.PreprocessorDefines.Add(define.Key, define.Value);
-            }
-            foreach (var path in other.IncludePaths)
-            {
-                settings.IncludePaths.AddUnique(path);
-            }
-            foreach (var path in other.SystemIncludePaths)
-            {
-                settings.SystemIncludePaths.AddUnique(path);
-            }
             settings.DebugSymbols = other.DebugSymbols;
             settings.WarningsAsErrors = other.WarningsAsErrors;
             settings.Optimization = other.Optimization;
-            settings.TargetLanguage = other.TargetLanguage;
             settings.OmitFramePointer = other.OmitFramePointer;
             foreach (var path in other.DisableWarnings)
             {
                 settings.DisableWarnings.AddUnique(path);
-            }
-            foreach (var path in other.PreprocessorUndefines)
-            {
-                settings.PreprocessorUndefines.AddUnique(path);
             }
             foreach (var header in other.NamedHeaders)
             {
