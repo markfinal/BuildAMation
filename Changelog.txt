@@ -5,7 +5,7 @@ In order to better support standalone preprocessor invocations, the preprocessor
 This will break a great number of settings patches, that use the PreprocessorDefinition and IncludePath properties, since the interface will need to change.
 Added a new test, PreprocessFile1, in order to exercise the preprocessor.
 
-22-Dec-2018 Fixes #518. Added ICommonLinkerSettings.ExportedSymbolList to provide a path to a list of symbols to export from a dynamic library.
+22-Dec-2018 Fixes #518. Added ClangCommon.ICommonLinkerSettings.ExportedSymbolList to provide a path to a list of symbols to export from a dynamic library.
 
 29-Nov-2018 Added XcodeBuilder.FileReference.EFileType.GLSLShaderSource.
 
