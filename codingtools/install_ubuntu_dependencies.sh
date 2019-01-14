@@ -35,4 +35,5 @@ gnustep-devel \
 libx11-dev \
 libx11-dev:i386 \
 chrpath \
-doxygen
+doxygen \
+python
