@@ -200,7 +200,11 @@ namespace Bam.Core
             for (; ; )
             {
                 var timer = System.Threading.Tasks.Task.Delay(1000); // every second
-                await System.Threading.Tasks.Task.WhenAny(all, timer);
+                var finishedTask = await System.Threading.Tasks.Task.WhenAny(all, timer);
+                if (finishedTask.IsFaulted)
+                {
+                    throw finishedTask.Exception;
+                }
                 if (all.IsCompleted)
                 {
                     return;
