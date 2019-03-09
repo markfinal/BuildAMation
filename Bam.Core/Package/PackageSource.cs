@@ -304,31 +304,26 @@ namespace Bam.Core
                     throw t.Exception;
                 }
                 Log.DebugMessage($"Extracting {this.ArchivePath} to {this.ExtractTo}...");
-                using (var readerStream = System.IO.File.OpenRead(this.ArchivePath))
-                using (var reader = SharpCompress.Readers.ReaderFactory.Open(readerStream))
+
+                var options = new SharpCompress.Common.ExtractionOptions()
                 {
-                    if (reader.ArchiveType == SharpCompress.Common.ArchiveType.Tar)
+                    ExtractFullPath = true,
+                    Overwrite = true,
+                    WriteSymbolicLink = (sourcePath, targetPath) =>
                     {
-                        try
+                        var link = new Mono.Unix.UnixSymbolicLinkInfo(sourcePath);
+                        if (System.IO.File.Exists(sourcePath))
                         {
-                            using (var tar = new TarFile(readerStream))
-                            {
-                                try
-                                {
-                                    tar.Export(this.ExtractTo);
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Exception(ex, $"Unable to extract archive '{this.ArchivePath}' from '{this.RemotePath}'");
-                                }
-                            }
+                            link.Delete(); // equivalent to ln -s -f
                         }
-                        catch (TarFile.CompressionMethodUnsupportedException ex)
-                        {
-                            throw new Exception(ex, $"Unable to decompress archive '{this.ArchivePath}' from '{this.RemotePath}'");
-                        }
+                        link.CreateSymbolicLinkTo(targetPath);
                     }
-                    else
+                };
+
+                try
+                {
+                    using (var readerStream = System.IO.File.OpenRead(this.ArchivePath))
+                    using (var reader = SharpCompress.Readers.ReaderFactory.Open(readerStream))
                     {
                         while (reader.MoveToNextEntry())
                         {
@@ -336,14 +331,13 @@ namespace Bam.Core
                             {
                                 continue;
                             }
-
-                            reader.WriteEntryToDirectory(this.ExtractTo, new SharpCompress.Common.ExtractionOptions()
-                            {
-                                ExtractFullPath = true,
-                                Overwrite = true
-                            });
+                            reader.WriteEntryToDirectory(this.ExtractTo, options);
                         }
                     }
+                }
+                catch (SharpCompress.Common.ExtractionException e)
+                {
+                    throw new Exception(e, $"Unable to extract {this.ArchivePath}");
                 }
 
                 // write the MD5 checksum to disk

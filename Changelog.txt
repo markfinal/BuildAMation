@@ -1,3 +1,14 @@
+09-Mar-2019 Fixes #524. Upgraded NuGet dependencies:
+ GitInfo from 2.0.15 to 2.0.20
+ Microsoft.NET.Test.Sdk from 15.8.0 to 16.0.1
+ NUnit from 3.10.1 to 3.11.0
+ NUnit3TestAdapter from 3.10.0 to 3.13.0
+ Microsoft.Extensions.Configuration.EnvironmentVariables from 2.1.1 to 2.2.0
+ Microsoft.Extensions.Configuration.Ini from 2.1.1 to 2.2.0
+ SharpCompress from 0.22 to 0.23
+
+ With the upgrade to the latest SharpCompress, the handrolled tar symlink support in BAM Core has been deleted. All tar extraction operations now go through SharpCompress.
+
 08-Mar-2019 Fixes #523. Exceptions thrown during package archive download or extraction are now propagated to the calling application.
 
 16-Jan-2019 Updated copyright notices to 2019.
