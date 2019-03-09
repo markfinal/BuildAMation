@@ -1,3 +1,5 @@
+09-Mar-2019 Fixes #525. Resolving a package, when there is both an unversioned and (many) versioned candidates no longer fails with a null dereference. I believe this is a rare situation - usually all candidates for a package will be versioned when there is more than one.
+
 09-Mar-2019 Fixes #524. Upgraded NuGet dependencies:
  GitInfo from 2.0.15 to 2.0.20
  Microsoft.NET.Test.Sdk from 15.8.0 to 16.0.1

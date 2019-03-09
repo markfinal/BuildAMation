@@ -1099,7 +1099,8 @@ namespace Bam.Core
                 var candidates = candidatePackageDefinitions.Where(item => item.Name.Equals(depName, System.StringComparison.Ordinal));
                 if (depVersion != null)
                 {
-                    candidates = candidates.Where(item => item.Version.Equals(depVersion, System.StringComparison.Ordinal));
+                    // the item.Version check is in case the candidates list has both versioned and an unversioned package
+                    candidates = candidates.Where(item => item.Version != null && item.Version.Equals(depVersion, System.StringComparison.Ordinal));
                 }
                 var candidateCount = candidates.Count();
                 if (0 == candidateCount)
