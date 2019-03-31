@@ -101,7 +101,6 @@ namespace Bam.Core
                     }
                 }
                 this.PackageDefinition = packageDefinition;
-                this.PackageDefinition.AddCreatedModule(this.GetType().Name);
                 this.Macros.AddVerbatim("bampackagedir", packageDefinition.GetPackageDirectory());
                 this.AddRedirectedPackageDirectory(this);
                 this.Macros.AddVerbatim("packagename", packageDefinition.Name);
@@ -123,6 +122,15 @@ namespace Bam.Core
             this.ReasonToExecute = ExecuteReasoning.Undefined();
             this.ExecutionTask = null;
             this.EvaluationTask = null;
+
+            this.PackageDefinition.AddCreatedModule(this.GetType().Name);
+            if (null != this.PackageDefinition.Sources)
+            {
+                foreach (var source in this.PackageDefinition.Sources)
+                {
+                    source.Fetch();
+                }
+            }
         }
 
         private void

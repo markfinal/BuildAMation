@@ -851,23 +851,6 @@ namespace Bam.Core
         {
             this.PackageDefinitions = packages;
             this.Macros.AddVerbatim("masterpackagename", this.MasterPackage.Name);
-
-            foreach (var package in packages)
-            {
-                if (null == package.Sources)
-                {
-                    continue;
-                }
-                foreach (var source in package.Sources)
-                {
-                    var fetchSourceTask = source.Fetch();
-                    if (null == fetchSourceTask)
-                    {
-                        continue;
-                    }
-                    this.ProcessState.AppendPreBuildTask(fetchSourceTask);
-                }
-            }
         }
 
         /// <summary>

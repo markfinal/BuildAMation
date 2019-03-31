@@ -132,17 +132,19 @@ namespace Bam.Core
         /// <summary>
         /// Begin the fetch of the package source if it's not already fetched.
         /// </summary>
-        public System.Threading.Tasks.Task
+        public void
         Fetch()
         {
             if (this.AlreadyFetched)
             {
-                return null;
+                return;
             }
             switch (this.Type)
             {
                 case PackageSource.EType.Http:
-                    return this.DownloadAndExtractPackageViaHTTP();
+                    this.DownloadAndExtractPackageViaHTTP().Wait();
+                    this.AlreadyFetched = true;
+                    return;
             }
             throw new Exception($"Unhandled package source type, '{this.Type.ToString()}'");
         }
