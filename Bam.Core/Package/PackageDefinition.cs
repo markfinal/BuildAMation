@@ -65,6 +65,33 @@ namespace Bam.Core
 
         private static System.Xml.XmlReaderSettings CommonReaderSettings { get; set; }
 
+        private System.Collections.Generic.HashSet<string> ModulesCreated = new System.Collections.Generic.HashSet<string>();
+
+        /// <summary>
+        /// Enumerated unique list of module names created from this package definition.
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<string> CreatedModules()
+        {
+            foreach (var m in this.ModulesCreated)
+            {
+                yield return m;
+            }
+        }
+
+        /// <summary>
+        /// Add the name of another module to the unique list.
+        /// </summary>
+        /// <param name="name"></param>
+        public void
+        AddCreatedModule(
+            string name)
+        {
+            lock (this.ModulesCreated)
+            {
+                this.ModulesCreated.Add(name);
+            }
+        }
+
         static PackageDefinition()
         {
             var xmlReaderSettings = new System.Xml.XmlReaderSettings();

@@ -101,6 +101,7 @@ namespace Bam.Core
                     }
                 }
                 this.PackageDefinition = packageDefinition;
+                this.PackageDefinition.AddCreatedModule(this.GetType().Name);
                 this.Macros.AddVerbatim("bampackagedir", packageDefinition.GetPackageDirectory());
                 this.AddRedirectedPackageDirectory(this);
                 this.Macros.AddVerbatim("packagename", packageDefinition.Name);

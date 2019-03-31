@@ -339,6 +339,12 @@ namespace Bam.Core
                 {
                     throw new Exception(e, $"Unable to extract {this.ArchivePath}");
                 }
+                // TODO: this needs removing
+                catch (System.EntryPointNotFoundException)
+                {
+                    Log.MessageAll("Symlinks not supported on Windows");
+                    return;
+                }
 
                 // write the MD5 checksum to disk
                 var checksum = this.GenerateMD5Hash();
