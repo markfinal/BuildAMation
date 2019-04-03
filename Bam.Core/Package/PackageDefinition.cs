@@ -81,7 +81,7 @@ namespace Bam.Core
         /// <summary>
         /// Add the name of another module to the unique list.
         /// </summary>
-        /// <param name="name"></param>
+        /// <param name="name">String name of the module to add.</param>
         public void
         AddCreatedModule(
             string name)
