@@ -773,19 +773,19 @@ namespace Bam.Core
                     this.InternalValidateGraph(rank.Key, m.Requirements);
                 }
             }
-            Log.MessageAll("Used packages:");
+            Log.DebugMessage("Used packages:");
             foreach (var package in this.PackageDefinitions.Where(item => item.CreatedModules().Any()))
             {
-                Log.MessageAll($"\t{package.Name}");
+                Log.DebugMessage($"\t{package.Name}");
                 foreach (var module in package.CreatedModules())
                 {
-                    Log.MessageAll($"\t\t{module.ToString()}");
+                    Log.DebugMessage($"\t\t{module.ToString()}");
                 }
             }
-            Log.MessageAll("Unused packages:");
+            Log.DebugMessage("Unused packages:");
             foreach (var package in this.PackageDefinitions.Where(item => !item.CreatedModules().Any()))
             {
-                Log.MessageAll($"\t{package.Name}");
+                Log.DebugMessage($"\t{package.Name}");
             }
         }
 
