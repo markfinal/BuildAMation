@@ -79,7 +79,8 @@ namespace VisualCCommon
                 }
                 else
                 {
-                    args.Append(major_version);
+                    // note the [) around the version and version+1 to consider only the minor-releases of that version
+                    args.Append($"[{major_version},{major_version + 1})");
                 }
                 var installpath = Bam.Core.OSUtilities.RunExecutable(
                     this.VswherePath,
