@@ -1,3 +1,5 @@
+03-Apr-2019 Fixes #526. Downloading and extracting package source archives now requires that a Module from the Package has been used in the build. This means that there may be packages with source archives that don't get downloaded on some platforms.
+
 09-Mar-2019 Fixes #525. Resolving a package, when there is both an unversioned and (many) versioned candidates no longer fails with a null dereference. I believe this is a rare situation - usually all candidates for a package will be versioned when there is more than one.
 
 09-Mar-2019 Fixes #524. Upgraded NuGet dependencies:

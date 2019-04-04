@@ -122,6 +122,15 @@ namespace Bam.Core
             this.ReasonToExecute = ExecuteReasoning.Undefined();
             this.ExecutionTask = null;
             this.EvaluationTask = null;
+
+            this.PackageDefinition.AddCreatedModule(this.GetType().Name);
+            if (null != this.PackageDefinition.Sources)
+            {
+                foreach (var source in this.PackageDefinition.Sources)
+                {
+                    source.Fetch();
+                }
+            }
         }
 
         private void

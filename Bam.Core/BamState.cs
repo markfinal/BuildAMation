@@ -129,8 +129,6 @@ namespace Bam.Core
             this.VersionString = productVersion;
             this.TargetFrameworkVersion = targetFrameworkName;
 
-            this.preBuildTasks = new Array<System.Threading.Tasks.Task>();
-
             this.BuildStartTime = System.Diagnostics.Process.GetCurrentProcess().StartTime;
         }
 
@@ -174,58 +172,5 @@ namespace Bam.Core
         int? ISemanticVersion.MinorVersion => Version.Minor;
 
         int? ISemanticVersion.PatchVersion => Version.Build;
-
-        private readonly Array<System.Threading.Tasks.Task> preBuildTasks;
-
-        /// <summary>
-        /// Append a task from an async method that must be completed before builds start.
-        /// </summary>
-        /// <param name="task"></param>
-        public void
-        AppendPreBuildTask(
-            System.Threading.Tasks.Task task)
-        {
-            lock (this.preBuildTasks)
-            {
-                Log.DebugMessage($"Adding task {task.ToString()}");
-                this.preBuildTasks.Add(task);
-            }
-        }
-
-        private async System.Threading.Tasks.Task
-        InternalWaitOnAllPreBuildTasks()
-        {
-            var total = this.preBuildTasks.Count;
-            var all = System.Threading.Tasks.Task.WhenAll(this.preBuildTasks.ToArray());
-            for (; ; )
-            {
-                var timer = System.Threading.Tasks.Task.Delay(1000); // every second
-                var finishedTask = await System.Threading.Tasks.Task.WhenAny(all, timer);
-                if (finishedTask.IsFaulted)
-                {
-                    throw finishedTask.Exception;
-                }
-                if (all.IsCompleted)
-                {
-                    return;
-                }
-                Log.DetailProgress($"{100 * this.preBuildTasks.Count(task => task.IsCompleted) / total}%");
-            }
-        }
-
-        /// <summary>
-        /// Wait on all prebuild tasks to complete. This is a blocking function.
-        /// </summary>
-        public void
-        WaitOnAllPreBuildTasks()
-        {
-            if (!this.preBuildTasks.Any())
-            {
-                return;
-            }
-            Log.Info($"Waiting on package source downloads to finish before the build starts...");
-            var all = this.InternalWaitOnAllPreBuildTasks();
-            all.Wait(); // safety
-        }
     }
 }
