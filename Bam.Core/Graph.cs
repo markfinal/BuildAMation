@@ -773,6 +773,20 @@ namespace Bam.Core
                     this.InternalValidateGraph(rank.Key, m.Requirements);
                 }
             }
+            Log.DebugMessage("Used packages:");
+            foreach (var package in this.PackageDefinitions.Where(item => item.CreatedModules().Any()))
+            {
+                Log.DebugMessage($"\t{package.Name}");
+                foreach (var module in package.CreatedModules())
+                {
+                    Log.DebugMessage($"\t\t{module.ToString()}");
+                }
+            }
+            Log.DebugMessage("Unused packages:");
+            foreach (var package in this.PackageDefinitions.Where(item => !item.CreatedModules().Any()))
+            {
+                Log.DebugMessage($"\t{package.Name}");
+            }
         }
 
         /// <summary>
@@ -837,23 +851,6 @@ namespace Bam.Core
         {
             this.PackageDefinitions = packages;
             this.Macros.AddVerbatim("masterpackagename", this.MasterPackage.Name);
-
-            foreach (var package in packages)
-            {
-                if (null == package.Sources)
-                {
-                    continue;
-                }
-                foreach (var source in package.Sources)
-                {
-                    var fetchSourceTask = source.Fetch();
-                    if (null == fetchSourceTask)
-                    {
-                        continue;
-                    }
-                    this.ProcessState.AppendPreBuildTask(fetchSourceTask);
-                }
-            }
         }
 
         /// <summary>
