@@ -14,7 +14,7 @@
     <DotNetAssembly name="System.Core" requiredTargetFramework="4.0.30319" />
   </DotNetAssemblies>
   <NuGetPackages>
-    <NuGetPackage id="vswhere" version="2.5.2">
+    <NuGetPackage id="vswhere" version="2.6.7">
       <Platform name="Windows" />
     </NuGetPackage>
     <NuGetPackage id="NuGet.Client" version="4.2.0">
