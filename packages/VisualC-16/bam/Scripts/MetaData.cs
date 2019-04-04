@@ -37,7 +37,7 @@ namespace VisualC
         {
             this.SolutionFormatVersion = "12.00"; // same as VS2015, VS2017
             this.PlatformToolset = "v142";
-            this.VCXProjToolsVersion = "15.0"; // TODO: ????
+            this.VCXProjToolsVersion = "15.0";
             this.VCXProjFiltersToolsVersion = "4.0"; // same as VS2015, VS2017
         }
 
