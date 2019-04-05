@@ -95,14 +95,18 @@ class VSSolutionBuilder(Builder):
                 for platform in flavour.platforms():
                     this_arg_list = copy.deepcopy(arg_list)
                     this_arg_list.append("/p:Platform=%s" % platform)
-                    print "Running '%s'\n" % ' '.join(this_arg_list)
-                    p = subprocess.Popen(this_arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    (output_stream, error_stream) = p.communicate()  # this should WAIT
-                    exit_code |= p.returncode
-                    if output_stream:
-                        output_messages.write(output_stream)
-                    if error_stream:
-                        error_messages.write(error_stream)
+                    output_messages.write("Running '%s'\n" % ' '.join(this_arg_list))
+                    try:
+                        p = subprocess.Popen(this_arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        (output_stream, error_stream) = p.communicate()  # this should WAIT
+                        exit_code |= p.returncode
+                        if output_stream:
+                            output_messages.write(output_stream)
+                        if error_stream:
+                            error_messages.write(error_stream)
+                    except WindowsError:
+                        error_messages.write("Failed to run '%s'" % ' '.join(this_arg_list))
+                        raise
         except Exception, e:
             import traceback
             error_messages.write(str(e) + '\n' + traceback.format_exc())
