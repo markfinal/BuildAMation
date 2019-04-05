@@ -32,7 +32,7 @@ namespace C.Options
     public sealed class DiscoverAllToolchains :
         Bam.Core.IBooleanCommandLineArgument
     {
-        string Bam.Core.ICommandLineArgument.ContextHelp => "All all toolchains to be discovered (no platform filtering)";
+        string Bam.Core.ICommandLineArgument.ContextHelp => "Allow all toolchains to be discovered (no platform filtering)";
         string Bam.Core.ICommandLineArgument.LongName => "--C.discoveralltoolchains";
         string Bam.Core.ICommandLineArgument.ShortName => null;
     }
