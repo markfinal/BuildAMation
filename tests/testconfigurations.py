@@ -50,23 +50,36 @@ class TestSetup:
 
 
 def test_option_setup(opt_parser):
-    def store_option(option, opt_str, value, parser):
+    def store_value_option(option, opt_str, value, parser):
         if not parser.values.Flavours:
             parser.values.Flavours = []
         parser.values.Flavours.append("%s=%s" % (opt_str, value))
-    for opt, help_text in ConfigOptions.get_options():
+    def store_bool_option(option, opt_str, value, parser):
+        if not parser.values.Flavours:
+            parser.values.Flavours = []
+        parser.values.Flavours.append(opt_str)
+    for opt, help_text in ConfigOptions.get_value_options():
         option_name = "--%s" % opt
         opt_parser.add_option(option_name,
                               dest="Flavours",
                               type="string",
                               action="callback",
-                              callback=store_option,
+                              callback=store_value_option,
+                              default=None,
+                              help=help_text)
+    for opt, help_text in ConfigOptions.get_bool_options():
+        option_name = "--%s" % opt
+        opt_parser.add_option(option_name,
+                              dest="Flavours",
+                              action="callback",
+                              callback=store_bool_option,
                               default=None,
                               help=help_text)
 
 
 class ConfigOptions(object):
-    _allOptions = {}
+    _valueOptions = {}
+    _boolOptions = {}
 
     def __init__(self, name, arch):
         self._name = name
@@ -92,14 +105,24 @@ class ConfigOptions(object):
         return self._name
 
     @staticmethod
-    def register_option(platform, option_tuple):
-        if platform not in ConfigOptions._allOptions:
-            ConfigOptions._allOptions[platform] = set()
-        ConfigOptions._allOptions[platform].add(option_tuple)
+    def register_value_option(platform, option_tuple):
+        if platform not in ConfigOptions._valueOptions:
+            ConfigOptions._valueOptions[platform] = set()
+        ConfigOptions._valueOptions[platform].add(option_tuple)
 
     @staticmethod
-    def get_options():
-        return ConfigOptions._allOptions.get(platform.system(), [])
+    def register_bool_option(platform, option_tuple):
+        if platform not in ConfigOptions._boolOptions:
+            ConfigOptions._boolOptions[platform] = set()
+        ConfigOptions._boolOptions[platform].add(option_tuple)
+
+    @staticmethod
+    def get_value_options():
+        return ConfigOptions._valueOptions.get(platform.system(), [])
+
+    @staticmethod
+    def get_bool_options():
+        return ConfigOptions._boolOptions.get(platform.system(), [])
 
 
 class VisualCCommon(ConfigOptions):
@@ -115,9 +138,10 @@ class VisualCCommon(ConfigOptions):
             self._platforms.extend(["Win32","x64"])
         else:
             raise RuntimeError("Unrecognized arch: %s" % arch)
-        ConfigOptions.register_option("Windows", ("VisualC.version", "Set the VisualC version"))
-        ConfigOptions.register_option("Windows", ("WindowsSDK.version", "Set the WindowsSDK version"))
-        ConfigOptions.register_option("Windows", ("MakeFile.format", "Choose the format of MakeFiles generated"))
+        ConfigOptions.register_value_option("Windows", ("VisualC.version", "Set the VisualC version"))
+        ConfigOptions.register_value_option("Windows", ("WindowsSDK.version", "Set the WindowsSDK version"))
+        ConfigOptions.register_value_option("Windows", ("MakeFile.format", "Choose the format of MakeFiles generated"))
+        ConfigOptions.register_bool_option("Windows", ("VisualC.discoverprereleases", "Discover prerelease versions of VisualC"))
 
 
 class VisualC64(VisualCCommon):
@@ -134,13 +158,13 @@ class Mingw32(ConfigOptions):
     def __init__(self):
         super(Mingw32, self).__init__("Mingw", "32")
         self._argList.append("--C.toolchain=Mingw")
-        ConfigOptions.register_option("Windows", ("Mingw.version", "Set the Mingw version"))
+        ConfigOptions.register_value_option("Windows", ("Mingw.version", "Set the Mingw version"))
 
 
 class GccCommon(ConfigOptions):
     def __init__(self, arch):
         super(GccCommon, self).__init__("Gcc", arch)
-        ConfigOptions.register_option("Linux", ("Gcc.version", "Set the Gcc version"))
+        ConfigOptions.register_value_option("Linux", ("Gcc.version", "Set the Gcc version"))
 
 
 class Gcc64(GccCommon):
@@ -156,7 +180,7 @@ class Gcc32(GccCommon):
 class ClangCommon(ConfigOptions):
     def __init__(self, arch):
         super(ClangCommon, self).__init__("Clang", arch)
-        ConfigOptions.register_option("Darwin", ("Clang.version", "Set the Clang version"))
+        ConfigOptions.register_value_option("Darwin", ("Clang.version", "Set the Clang version"))
 
 
 class Clang32(ClangCommon):
