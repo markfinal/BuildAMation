@@ -49,9 +49,9 @@ test_script:
   - cd bam_publish
   - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
   - cmd: env.bat
-  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b Native -c debug -c profile -j0 -d
-  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b VSSolution -c debug -c profile -j0 -d
-  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
+  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% --VisualC.discoverprereleases -b Native -c debug -c profile -j0 -d
+  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% --VisualC.discoverprereleases -b VSSolution -c debug -c profile -j0 -d
+  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% --VisualC.discoverprereleases -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
   - sh: source env.sh
   - sh: python tests/runtests.py --Gcc.version=$GCC_VERSION -b Native -c debug -c profile -j0 -d
   - sh: python tests/runtests.py --Gcc.version=$GCC_VERSION -b MakeFile -c debug -c profile -j0 -d
