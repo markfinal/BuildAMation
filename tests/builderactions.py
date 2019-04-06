@@ -50,7 +50,7 @@ class VSSolutionBuilder(Builder):
         super(VSSolutionBuilder, self).__init__(False)
         self._ms_build_path = None
 
-    def init(self, options):
+    def _get_visualc_version(self, options):
         try:
             for f in options.Flavours:
                 if f.startswith("--VisualC.version"):
@@ -63,6 +63,10 @@ class VSSolutionBuilder(Builder):
         except UnboundLocalError:
             visualc_version = defaultVCVersion
             visualc_version_split = visualc_version.split('.')
+        return visualc_version, visualc_version_split
+
+    def init(self, options):
+        visualc_version, visualc_version_split = self._get_visualc_version(options)
         visualc_major_version = int(visualc_version_split[0])
         # location of MSBuild changed in VS2013, and VS2017
         if visualc_major_version >= 15:
