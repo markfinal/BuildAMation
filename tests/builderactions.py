@@ -115,7 +115,7 @@ class VSSolutionBuilder(Builder):
                 for platform in flavour.platforms():
                     this_arg_list = copy.deepcopy(arg_list)
                     this_arg_list.append("/p:Platform=%s" % platform)
-                    output_messages.write("Running '%s'\n" % ' '.join(this_arg_list))
+                    print "Running '%s'\n" % ' '.join(arg_list)
                     try:
                         p = subprocess.Popen(this_arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         (output_stream, error_stream) = p.communicate()  # this should WAIT
