@@ -65,6 +65,14 @@ class VSSolutionBuilder(Builder):
             visualc_version_split = visualc_version.split('.')
         return visualc_version, visualc_version_split
 
+    def _get_visualc_ispreview(self, options):
+        try:
+            for f in options.Flavours:
+                if f.startswith("--VisualC.discoverprereleases"):
+                    return True
+        except:
+            return False
+
     def init(self, options):
         visualc_version, visualc_version_split = self._get_visualc_version(options)
         visualc_major_version = int(visualc_version_split[0])
@@ -72,10 +80,11 @@ class VSSolutionBuilder(Builder):
         if visualc_major_version >= 15:
             visualStudioVersion = visualStudioVersionMapping[visualc_version]
             msbuild_version = msBuildVersionToNetMapping[visualc_version]
+            edition = "Preview" if self._get_visualc_ispreview(options) else "Community"
             if os.environ.has_key("ProgramFiles(x86)"):
-                self._ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\%s\Community\MSBuild\%s\Bin\MSBuild.exe" % (visualStudioVersion, msbuild_version)
+                self._ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\%s\%s\MSBuild\%s\Bin\MSBuild.exe" % (visualStudioVersion, edition, msbuild_version)
             else:
-                self._ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\%s\Community\MSBuild\%s\Bin\amd64\MSBuild.exe" % (visualStudioVersion, msbuild_version)
+                self._ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\%s\%s\MSBuild\%s\Bin\amd64\MSBuild.exe" % (visualStudioVersion, edition, msbuild_version)
         elif visualc_major_version >= 12:
             # VS2013 onwards path for MSBuild
             if os.environ.has_key("ProgramFiles(x86)"):
