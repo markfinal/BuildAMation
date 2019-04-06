@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="VisualCCommon" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
-  <Description>Common features for all VisualC versions</Description>
+<PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="VisualC" version="16" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
+  <Description>Microsoft VisualC 2019 support (Community edition)</Description>
   <Dependents>
-    <Package name="C" />
-    <Package name="VisualStudioProcessor" />
+    <Package name="VisualCCommon" />
+    <Package name="WindowsSDK" version="10" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="2" minor="0" patch="0" />
@@ -13,14 +13,6 @@
     <DotNetAssembly name="System.Xml" requiredTargetFramework="4.0.30319" />
     <DotNetAssembly name="System.Core" requiredTargetFramework="4.0.30319" />
   </DotNetAssemblies>
-  <NuGetPackages>
-    <NuGetPackage id="vswhere" version="2.6.7">
-      <Platform name="Windows" />
-    </NuGetPackage>
-    <NuGetPackage id="NuGet.Client" version="4.2.0">
-      <Platform name="Windows" />
-    </NuGetPackage>
-  </NuGetPackages>
   <SupportedPlatforms>
     <Platform name="Windows" />
     <Platform name="Linux" />

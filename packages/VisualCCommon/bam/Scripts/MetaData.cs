@@ -71,6 +71,10 @@ namespace VisualCCommon
             {
                 var args = new System.Text.StringBuilder();
                 var legacy = major_version < 15;
+                if (Bam.Core.CommandLineProcessor.Evaluate(new Options.DiscoverPrereleases()))
+                {
+                    args.Append("-prerelease ");
+                }
                 args.Append("-property installationPath -version ");
                 if (legacy)
                 {
@@ -79,7 +83,8 @@ namespace VisualCCommon
                 }
                 else
                 {
-                    args.Append(major_version);
+                    // note the [) around the version and version+1 to consider only the minor-releases of that version
+                    args.Append($"[{major_version},{major_version + 1})");
                 }
                 var installpath = Bam.Core.OSUtilities.RunExecutable(
                     this.VswherePath,
@@ -88,7 +93,7 @@ namespace VisualCCommon
                 if (System.String.IsNullOrEmpty(installpath))
                 {
                     throw new Bam.Core.Exception(
-                        $"Unable to locate installation directory for Visual Studio major version {major_version}"
+                        $"Unable to locate installation directory for Visual Studio major version {major_version} using '{this.VswherePath} {args.ToString()}'"
                     );
                 }
                 Bam.Core.Log.Info($"Using VisualStudio {major_version} installed at {installpath}");

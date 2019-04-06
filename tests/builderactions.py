@@ -31,7 +31,12 @@ msBuildVersionToNetMapping = {
     "11.0": "v4.0.30319",
     "12.0": "v4.0.30319",
     "14.0": "14.0",
-    "15.0": "15.0"
+    "15.0": "15.0",
+    "16"  : "Current"
+}
+visualStudioVersionMapping = {
+    "15.0": "2017",
+    "16"  : "2019"
 }
 
 
@@ -45,7 +50,7 @@ class VSSolutionBuilder(Builder):
         super(VSSolutionBuilder, self).__init__(False)
         self._ms_build_path = None
 
-    def init(self, options):
+    def _get_visualc_version(self, options):
         try:
             for f in options.Flavours:
                 if f.startswith("--VisualC.version"):
@@ -58,13 +63,28 @@ class VSSolutionBuilder(Builder):
         except UnboundLocalError:
             visualc_version = defaultVCVersion
             visualc_version_split = visualc_version.split('.')
+        return visualc_version, visualc_version_split
+
+    def _get_visualc_ispreview(self, options):
+        try:
+            for f in options.Flavours:
+                if f.startswith("--VisualC.discoverprereleases"):
+                    return True
+        except:
+            return False
+
+    def init(self, options):
+        visualc_version, visualc_version_split = self._get_visualc_version(options)
         visualc_major_version = int(visualc_version_split[0])
         # location of MSBuild changed in VS2013, and VS2017
         if visualc_major_version >= 15:
+            visualStudioVersion = visualStudioVersionMapping[visualc_version]
+            msbuild_version = msBuildVersionToNetMapping[visualc_version]
+            edition = "Preview" if self._get_visualc_ispreview(options) else "Community"
             if os.environ.has_key("ProgramFiles(x86)"):
-                self._ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\%s\Bin\MSBuild.exe" % visualc_version
+                self._ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\%s\%s\MSBuild\%s\Bin\MSBuild.exe" % (visualStudioVersion, edition, msbuild_version)
             else:
-                self._ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\%s\Bin\amd64\MSBuild.exe" % visualc_version
+                self._ms_build_path = r"C:\Program Files (x86)\Microsoft Visual Studio\%s\%s\MSBuild\%s\Bin\amd64\MSBuild.exe" % (visualStudioVersion, edition, msbuild_version)
         elif visualc_major_version >= 12:
             # VS2013 onwards path for MSBuild
             if os.environ.has_key("ProgramFiles(x86)"):
@@ -95,14 +115,18 @@ class VSSolutionBuilder(Builder):
                 for platform in flavour.platforms():
                     this_arg_list = copy.deepcopy(arg_list)
                     this_arg_list.append("/p:Platform=%s" % platform)
-                    print "Running '%s'\n" % ' '.join(this_arg_list)
-                    p = subprocess.Popen(this_arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    (output_stream, error_stream) = p.communicate()  # this should WAIT
-                    exit_code |= p.returncode
-                    if output_stream:
-                        output_messages.write(output_stream)
-                    if error_stream:
-                        error_messages.write(error_stream)
+                    print "Running '%s'\n" % ' '.join(arg_list)
+                    try:
+                        p = subprocess.Popen(this_arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                        (output_stream, error_stream) = p.communicate()  # this should WAIT
+                        exit_code |= p.returncode
+                        if output_stream:
+                            output_messages.write(output_stream)
+                        if error_stream:
+                            error_messages.write(error_stream)
+                    except WindowsError:
+                        error_messages.write("Failed to run '%s'" % ' '.join(this_arg_list))
+                        raise
         except Exception, e:
             import traceback
             error_messages.write(str(e) + '\n' + traceback.format_exc())

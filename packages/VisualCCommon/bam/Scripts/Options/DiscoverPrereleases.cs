@@ -27,13 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace C.Options
+namespace VisualCCommon.Options
 {
-    public sealed class DiscoverAllToolchains :
+    public sealed class DiscoverPrereleases :
         Bam.Core.IBooleanCommandLineArgument
     {
-        string Bam.Core.ICommandLineArgument.ContextHelp => "Allow all toolchains to be discovered (no platform filtering)";
-        string Bam.Core.ICommandLineArgument.LongName => "--C.discoveralltoolchains";
+        string Bam.Core.ICommandLineArgument.ContextHelp => "Allow discovery to find prerelease VisualStudio version";
+        string Bam.Core.ICommandLineArgument.LongName => "--VisualC.discoverprereleases";
         string Bam.Core.ICommandLineArgument.ShortName => null;
     }
 }

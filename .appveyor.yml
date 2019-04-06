@@ -1,4 +1,5 @@
 image:
+  - Visual Studio 2019 Preview
   - Visual Studio 2017
   - Ubuntu
   - Ubuntu1804
@@ -16,6 +17,18 @@ for:
         - image: Ubuntu1804
     environment:
       GCC_VERSION: 7
+  - matrix:
+      only:
+        - image: Visual Studio 2017
+    environment:
+        VC_VERSION: 15.0
+        VC_PRERELEASE_ARGS:
+  - matrix:
+      only:
+        - image: Visual Studio 2019 Preview
+    environment:
+        VC_VERSION: 16
+        VC_PRERELEASE_ARGS: "--VisualC.discoverprereleases"
 install:
   - cmd: powershell choco install doxygen.portable --version 1.8.11 || exit 0
   - sh: ./codingtools/install_ubuntu_dependencies.sh
@@ -38,9 +51,9 @@ test_script:
   - cd bam_publish
   - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
   - cmd: env.bat
-  - cmd: python tests\runtests.py -x Mingw --VisualC.version=15.0 -b Native -c debug -c profile -j0 -d
-  - cmd: python tests\runtests.py -x Mingw --VisualC.version=15.0 -b VSSolution -c debug -c profile -j0 -d
-  - cmd: python tests\runtests.py -x Mingw --VisualC.version=15.0 -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
+  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b Native -c debug -c profile -j0 -d
+  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b VSSolution -c debug -c profile -j0 -d
+  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
   - sh: source env.sh
   - sh: python tests/runtests.py --Gcc.version=$GCC_VERSION -b Native -c debug -c profile -j0 -d
   - sh: python tests/runtests.py --Gcc.version=$GCC_VERSION -b MakeFile -c debug -c profile -j0 -d

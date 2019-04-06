@@ -1,3 +1,11 @@
+06-Apr-2019 Fixes #527. Added VisualStudio 2019 support.
+- Added package VisualC-16 (note, no .0 suffix now, since it is intended to support all minor releases)
+- AppVeyor CI updated to test against the latest VisualStudio 2019 support they provide
+- Add new command line option, --VisualC.discoverprereleases, which allows vswhere to inspect prerelease editions too.
+- Updated vswhere NuGet to version 2.6.7.
+- Updated tests package definitions to include VisualC-16.
+- Various fixes to scripts to support VisualStudio 2019.
+
 03-Apr-2019 Fixes #526. Downloading and extracting package source archives now requires that a Module from the Package has been used in the build. This means that there may be packages with source archives that don't get downloaded on some platforms.
 
 09-Mar-2019 Fixes #525. Resolving a package, when there is both an unversioned and (many) versioned candidates no longer fails with a null dereference. I believe this is a rare situation - usually all candidates for a package will be versioned when there is more than one.

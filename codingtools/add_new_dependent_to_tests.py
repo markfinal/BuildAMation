@@ -2,14 +2,27 @@
 
 from optparse import OptionParser
 import os
+import platform
 import subprocess
 import sys
 
+system = platform.system()
+if system == 'Windows':
+    bam_shell = 'bam.bat'
+else:
+    bam_shell = 'bam'
+
+
+def _log(message):
+    print >>sys.stdout, message
+    sys.stdout.flush()
+
 
 def get_bam_installdir():
-    args = ['bam', '--installdir']
-    install_dir = subprocess.check_output(args)
-    return install_dir
+    try:
+        return subprocess.check_output([bam_shell, '--installdir']).rstrip()
+    except WindowsError:
+        raise RuntimeError('Unable to locate BAM on the PATH')
 
 
 def get_bam_rootdir():
@@ -27,10 +40,9 @@ def get_bam_testsdir():
 def add_dependent(package_dir, name, version):
     current_dir = os.getcwd()
     try:
-        print >>sys.stdout, "Updating '%s'" % package_dir
-        sys.stdout.flush()
+        _log("Updating '%s'" % package_dir)
         os.chdir(package_dir)
-        args = ['bam', '--adddependent', '--pkgname=%s' % name]
+        args = [bam_shell, '--adddependent', '--pkgname=%s' % name]
         if version:
             args.append('--pkgversion=%s' % version)
         process = subprocess.Popen(args)
@@ -54,4 +66,3 @@ if __name__ == "__main__":
         parser.error('Package name is required')
     tests_dir = get_bam_testsdir()
     process_path(tests_dir, options.name, options.version)
-
