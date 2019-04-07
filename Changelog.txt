@@ -1,3 +1,5 @@
+07-Apr-2019 ======== Version 2.0.0 alpha 3 Release ========
+
 06-Apr-2019 Fixes #527. Added VisualStudio 2019 support.
 - Added package VisualC-16 (note, no .0 suffix now, since it is intended to support all minor releases)
 - AppVeyor CI updated to test against the latest VisualStudio 2019 support they provide
