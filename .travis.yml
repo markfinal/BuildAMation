@@ -5,6 +5,7 @@ notifications:
      on_success: always
      on_failure: always
 language: csharp
+python: '2.7'
 install:
   - if [ $TRAVIS_OS_NAME = linux ]; then ./codingtools/install_ubuntu_dependencies.sh; fi
 before_script:
