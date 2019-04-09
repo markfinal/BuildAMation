@@ -82,11 +82,43 @@ namespace Publisher
     public sealed class ZipWin :
         ZipTool
     {
+        private Bam.Core.TokenizedString sevenZipExePath;
+
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+#if D_NUGET_7_ZIP_COMMANDLINE
+            var nugetHomeDir = NuGet.Common.NuGetEnvironment.GetFolderPath(NuGet.Common.NuGetFolderPath.NuGetHome);
+            var nugetPackageDir = System.IO.Path.Combine(nugetHomeDir, "packages");
+            var repo = new NuGet.Repositories.NuGetv3LocalRepository(nugetPackageDir);
+            var sevenZipInstalls = repo.FindPackagesById("7-Zip.CommandLine");
+            if (!sevenZipInstalls.Any())
+            {
+                // this should not happen as package restoration should handle this
+                throw new Bam.Core.Exception("Unable to locate any NuGet package for 7-zip");
+            }
+            var thisPackage = Bam.Core.Graph.Instance.Packages.First(item => item.Name.Equals("Publisher", System.StringComparison.Ordinal));
+            var required7Zip = thisPackage.NuGetPackages.First(item => item.Identifier.Equals("7-Zip.CommandLine", System.StringComparison.Ordinal));
+            var requested7Zip = sevenZipInstalls.First(item => item.Version.ToNormalizedString().Equals(required7Zip.Version, System.StringComparison.Ordinal));
+            var sevenzip_tools_dir = System.IO.Path.Combine(requested7Zip.ExpandedPath, "tools");
+            var sevenzipa_exe_path = System.IO.Path.Combine(sevenzip_tools_dir, "7za.exe");
+            if (!System.IO.File.Exists(sevenzipa_exe_path))
+            {
+                throw new Bam.Core.Exception($"Unable to locate 7za.exe from NuGet package at '{sevenzipa_exe_path}'");
+            }
+            this.sevenZipExePath = Bam.Core.TokenizedString.CreateVerbatim(sevenzipa_exe_path);
+#else
+#error 7Zip command line NuGet is missing
+#endif
+            base.Init(parent);
+        }
+
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new SevenZipSettings(module);
 
-        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("7z.exe").First());
+        public override Bam.Core.TokenizedString Executable => this.sevenZipExePath;
 
         public override Bam.Core.TokenizedStringArray TerminatingArguments
         {
