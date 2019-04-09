@@ -88,7 +88,7 @@ namespace Publisher
         Init(
             Bam.Core.Module parent)
         {
-#if D_NUGET_7_ZIP_COMMANDLINE
+#if D_NUGET_NUGET_CLIENT && D_NUGET_7_ZIP_COMMANDLINE
             var nugetHomeDir = NuGet.Common.NuGetEnvironment.GetFolderPath(NuGet.Common.NuGetFolderPath.NuGetHome);
             var nugetPackageDir = System.IO.Path.Combine(nugetHomeDir, "packages");
             var repo = new NuGet.Repositories.NuGetv3LocalRepository(nugetPackageDir);
@@ -108,9 +108,10 @@ namespace Publisher
                 throw new Bam.Core.Exception($"Unable to locate 7za.exe from NuGet package at '{sevenzipa_exe_path}'");
             }
             this.sevenZipExePath = Bam.Core.TokenizedString.CreateVerbatim(sevenzipa_exe_path);
-#else
-#error 7Zip command line NuGet is missing
 #endif
+
+            // since the toolPath macro is needed to evaluate the Executable property
+            // in the check for existence
             base.Init(parent);
         }
 
