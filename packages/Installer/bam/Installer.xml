@@ -9,6 +9,17 @@
     <DotNetAssembly name="System.Xml" requiredTargetFramework="4.0.30319" />
     <DotNetAssembly name="System.Core" requiredTargetFramework="4.0.30319" />
   </DotNetAssemblies>
+  <NuGetPackages>
+    <NuGetPackage id="NuGet.Client" version="4.2.0">
+      <Platform name="Windows" />
+    </NuGetPackage>
+    <NuGetPackage id="innosetup" version="5.6.1">
+      <Platform name="Windows" />
+    </NuGetPackage>
+    <NuGetPackage id="NSIS" version="2.51.0">
+      <Platform name="Windows" />
+    </NuGetPackage>
+  </NuGetPackages>
   <SupportedPlatforms>
     <Platform name="Windows" />
     <Platform name="Linux" />

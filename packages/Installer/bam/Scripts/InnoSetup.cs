@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Installer
 {
     class InnoSetupScript :
@@ -150,14 +151,27 @@ namespace Installer
         Init(
             Bam.Core.Module parent)
         {
-            this.Macros.Add(
-                "toolPath",
-                Bam.Core.TokenizedString.Create(
-                    "$(0)/Inno Setup 5/ISCC.exe",
-                    null,
-                    new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path)
-                )
-            );
+#if D_NUGET_NUGET_CLIENT && D_NUGET_INNOSETUP
+            var nugetHomeDir = NuGet.Common.NuGetEnvironment.GetFolderPath(NuGet.Common.NuGetFolderPath.NuGetHome);
+            var nugetPackageDir = System.IO.Path.Combine(nugetHomeDir, "packages");
+            var repo = new NuGet.Repositories.NuGetv3LocalRepository(nugetPackageDir);
+            var innosetupInstalls = repo.FindPackagesById("innosetup");
+            if (!innosetupInstalls.Any())
+            {
+                // this should not happen as package restoration should handle this
+                throw new Bam.Core.Exception("Unable to locate any NuGet package for InnoSetup");
+            }
+            var thisPackage = Bam.Core.Graph.Instance.Packages.First(item => item.Name.Equals("Installer", System.StringComparison.Ordinal));
+            var requiredInnoSetup = thisPackage.NuGetPackages.First(item => item.Identifier.Equals("innosetup", System.StringComparison.Ordinal));
+            var requestedInnoSetup = innosetupInstalls.First(item => item.Version.ToNormalizedString().Equals(requiredInnoSetup.Version, System.StringComparison.Ordinal));
+            var innosetup_tools_dir = System.IO.Path.Combine(requestedInnoSetup.ExpandedPath, "tools");
+            var iscc_exe_path = System.IO.Path.Combine(innosetup_tools_dir, "ISCC.exe");
+            if (!System.IO.File.Exists(iscc_exe_path))
+            {
+                throw new Bam.Core.Exception($"Unable to locate ISCC.exe from NuGet package at '{iscc_exe_path}'");
+            }
+            this.Macros.AddVerbatim("toolPath", iscc_exe_path);
+#endif
             // since the toolPath macro is needed to evaluate the Executable property
             // in the check for existence
             base.Init(parent);
