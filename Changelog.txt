@@ -1,3 +1,5 @@
+09-Apr-2019 Fixes #529. 7Zip, InnoSetup and NSIS, used from the Publisher and Installer packages, respectively, now install via NuGets, rather than assuming the user has installed them.
+
 07-Apr-2019 ======== Version 2.0.0 alpha 3 Release ========
 
 06-Apr-2019 Fixes #527. Added VisualStudio 2019 support.
