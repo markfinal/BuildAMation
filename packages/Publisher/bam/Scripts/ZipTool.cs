@@ -82,8 +82,6 @@ namespace Publisher
     public sealed class ZipWin :
         ZipTool
     {
-        private Bam.Core.TokenizedString sevenZipExePath;
-
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -107,7 +105,7 @@ namespace Publisher
             {
                 throw new Bam.Core.Exception($"Unable to locate 7za.exe from NuGet package at '{sevenzipa_exe_path}'");
             }
-            this.sevenZipExePath = Bam.Core.TokenizedString.CreateVerbatim(sevenzipa_exe_path);
+            this.Macros.AddVerbatim("toolPath", sevenzipa_exe_path);
 #endif
 
             // since the toolPath macro is needed to evaluate the Executable property
@@ -119,7 +117,7 @@ namespace Publisher
         CreateDefaultSettings<T>(
             T module) => new SevenZipSettings(module);
 
-        public override Bam.Core.TokenizedString Executable => this.sevenZipExePath;
+        public override Bam.Core.TokenizedString Executable => this.Macros["toolPath"];
 
         public override Bam.Core.TokenizedStringArray TerminatingArguments
         {
