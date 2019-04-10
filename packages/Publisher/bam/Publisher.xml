@@ -13,9 +13,6 @@
     <DotNetAssembly name="System.Core" requiredTargetFramework="4.0.30319" />
   </DotNetAssemblies>
   <NuGetPackages>
-    <NuGetPackage id="NuGet.Client" version="4.2.0">
-      <Platform name="Windows" />
-    </NuGetPackage>
     <NuGetPackage id="7-Zip.CommandLine" version="18.1.0">
       <Platform name="Windows" />
     </NuGetPackage>

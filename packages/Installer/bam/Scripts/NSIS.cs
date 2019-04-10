@@ -127,26 +127,11 @@ namespace Installer
         Init(
             Bam.Core.Module parent)
         {
-#if D_NUGET_NUGET_CLIENT && D_NUGET_NSIS
-            var nugetHomeDir = NuGet.Common.NuGetEnvironment.GetFolderPath(NuGet.Common.NuGetFolderPath.NuGetHome);
-            var nugetPackageDir = System.IO.Path.Combine(nugetHomeDir, "packages");
-            var repo = new NuGet.Repositories.NuGetv3LocalRepository(nugetPackageDir);
-            var nsisInstalls = repo.FindPackagesById("NSIS");
-            if (!nsisInstalls.Any())
-            {
-                // this should not happen as package restoration should handle this
-                throw new Bam.Core.Exception("Unable to locate any NuGet package for NSIS");
-            }
-            var thisPackage = Bam.Core.Graph.Instance.Packages.First(item => item.Name.Equals("Installer", System.StringComparison.Ordinal));
-            var requiredNSIS = thisPackage.NuGetPackages.First(item => item.Identifier.Equals("NSIS", System.StringComparison.Ordinal));
-            var requestedNSIS = nsisInstalls.First(item => item.Version.ToNormalizedString().Equals(requiredNSIS.Version, System.StringComparison.Ordinal));
-            var NSIS_tools_dir = System.IO.Path.Combine(requestedNSIS.ExpandedPath, "tools");
-            var makensis_exe_path = System.IO.Path.Combine(NSIS_tools_dir, "makensis.exe");
-            if (!System.IO.File.Exists(makensis_exe_path))
-            {
-                throw new Bam.Core.Exception($"Unable to locate makensis.exe from NuGet package at '{makensis_exe_path}'");
-            }
-            this.Macros.AddVerbatim("toolPath", makensis_exe_path);
+#if D_NUGET_NSIS
+            this.Macros.AddVerbatim(
+                "toolPath",
+                Bam.Core.NuGetUtilities.GetToolExecutablePath("NSIS", this.GetType().Namespace, "makensis.exe")
+            );
 #endif
             // since the toolPath macro is needed to evaluate the Executable property
             // in the check for existence

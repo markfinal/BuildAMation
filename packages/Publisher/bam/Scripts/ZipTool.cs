@@ -86,26 +86,11 @@ namespace Publisher
         Init(
             Bam.Core.Module parent)
         {
-#if D_NUGET_NUGET_CLIENT && D_NUGET_7_ZIP_COMMANDLINE
-            var nugetHomeDir = NuGet.Common.NuGetEnvironment.GetFolderPath(NuGet.Common.NuGetFolderPath.NuGetHome);
-            var nugetPackageDir = System.IO.Path.Combine(nugetHomeDir, "packages");
-            var repo = new NuGet.Repositories.NuGetv3LocalRepository(nugetPackageDir);
-            var sevenZipInstalls = repo.FindPackagesById("7-Zip.CommandLine");
-            if (!sevenZipInstalls.Any())
-            {
-                // this should not happen as package restoration should handle this
-                throw new Bam.Core.Exception("Unable to locate any NuGet package for 7-zip");
-            }
-            var thisPackage = Bam.Core.Graph.Instance.Packages.First(item => item.Name.Equals("Publisher", System.StringComparison.Ordinal));
-            var required7Zip = thisPackage.NuGetPackages.First(item => item.Identifier.Equals("7-Zip.CommandLine", System.StringComparison.Ordinal));
-            var requested7Zip = sevenZipInstalls.First(item => item.Version.ToNormalizedString().Equals(required7Zip.Version, System.StringComparison.Ordinal));
-            var sevenzip_tools_dir = System.IO.Path.Combine(requested7Zip.ExpandedPath, "tools");
-            var sevenzipa_exe_path = System.IO.Path.Combine(sevenzip_tools_dir, "7za.exe");
-            if (!System.IO.File.Exists(sevenzipa_exe_path))
-            {
-                throw new Bam.Core.Exception($"Unable to locate 7za.exe from NuGet package at '{sevenzipa_exe_path}'");
-            }
-            this.Macros.AddVerbatim("toolPath", sevenzipa_exe_path);
+#if D_NUGET_7_ZIP_COMMANDLINE
+            this.Macros.AddVerbatim(
+                "toolPath",
+                Bam.Core.NuGetUtilities.GetToolExecutablePath("7-Zip.CommandLine", this.GetType().Namespace, "7za.exe")
+            );
 #endif
 
             // since the toolPath macro is needed to evaluate the Executable property
