@@ -82,11 +82,27 @@ namespace Publisher
     public sealed class ZipWin :
         ZipTool
     {
+        protected override void
+        Init(
+            Bam.Core.Module parent)
+        {
+#if D_NUGET_7_ZIP_COMMANDLINE
+            this.Macros.AddVerbatim(
+                "toolPath",
+                Bam.Core.NuGetUtilities.GetToolExecutablePath("7-Zip.CommandLine", this.GetType().Namespace, "7za.exe")
+            );
+#endif
+
+            // since the toolPath macro is needed to evaluate the Executable property
+            // in the check for existence
+            base.Init(parent);
+        }
+
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new SevenZipSettings(module);
 
-        public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("7z.exe").First());
+        public override Bam.Core.TokenizedString Executable => this.Macros["toolPath"];
 
         public override Bam.Core.TokenizedStringArray TerminatingArguments
         {

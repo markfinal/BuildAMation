@@ -95,14 +95,6 @@ namespace Bam
             var all = core.GetReferencedAssemblies();
             var filtered = all.Where(item =>
             {
-                if (item.Name == "System.IO.Compression")
-                {
-                    // SharpCompress depends on this assembly, but it's out of date (v4.2.1)
-                    // and will generate an error for each BAM debug project generated
-                    // so just don't include it - we're never going to step into it
-                    return false;
-                }
-
                 var publicKeyToken = string.Empty;
                 for (var i = 0; i < item.GetPublicKeyToken().GetLength(0); i++)
                 {

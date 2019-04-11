@@ -32,6 +32,7 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Ini" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="2.1.0" />
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.5.0" />
+    <PackageReference Include="NuGet.Client" Version="4.2.0" />
     <PackageReference Include="SharpCompress" Version="0.23.0" />
     <PackageReference Include="System.Runtime.Loader" Version="4.3.0" />
     <PackageReference Include="Mono.Posix.NETStandard" Version="1.0.0" />

@@ -126,14 +126,12 @@ namespace Installer
         Init(
             Bam.Core.Module parent)
         {
-            this.Macros.Add(
+#if D_NUGET_NSIS
+            this.Macros.AddVerbatim(
                 "toolPath",
-                Bam.Core.TokenizedString.Create(
-                    "$(0)/NSIS/makensis.exe",
-                    null,
-                    new Bam.Core.TokenizedStringArray(Bam.Core.OSUtilities.WindowsProgramFilesx86Path)
-                )
+                Bam.Core.NuGetUtilities.GetToolExecutablePath("NSIS", this.GetType().Namespace, "makensis.exe")
             );
+#endif
             // since the toolPath macro is needed to evaluate the Executable property
             // in the check for existence
             base.Init(parent);
