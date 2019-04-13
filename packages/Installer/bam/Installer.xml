@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PackageDefinition xsi:schemaLocation="http://www.buildamation.com ./Schema/BamPackageDefinitionV1.xsd" name="Installer" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.buildamation.com">
-  <Description>Support for generating installers, from InnoSetup, NSIS, OSX disk images, and tar balls</Description>
+  <Description>Support for generating installers, from InnoSetup, NSIS, OSX disk images, zip and tar archives</Description>
+  <Dependents>
+    <Package name="Publisher" />
+  </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="2" minor="0" patch="0" />
   </BamAssemblies>
@@ -14,6 +17,9 @@
       <Platform name="Windows" />
     </NuGetPackage>
     <NuGetPackage id="NSIS" version="2.51.0">
+      <Platform name="Windows" />
+    </NuGetPackage>
+    <NuGetPackage id="7-Zip.CommandLine" version="18.1.0">
       <Platform name="Windows" />
     </NuGetPackage>
   </NuGetPackages>

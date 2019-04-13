@@ -30,7 +30,7 @@
 namespace ZipTest1
 {
     public sealed class ZippedDirectory :
-        Publisher.ZipModule
+        Installer.ZipModule
     {
         protected override void
         Init(
@@ -51,7 +51,7 @@ namespace ZipTest1
 
             this.PrivatePatch(settings =>
                 {
-                    var zipSettings = settings as Publisher.IZipSettings;
+                    var zipSettings = settings as Installer.IZipSettings;
                     zipSettings.RecursivePaths = true;
                     zipSettings.Update = true;
                 }

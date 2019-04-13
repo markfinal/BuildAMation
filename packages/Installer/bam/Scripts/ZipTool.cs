@@ -28,7 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
-namespace Publisher
+namespace Installer
 {
     public abstract class ZipTool :
         Bam.Core.PreBuiltTool

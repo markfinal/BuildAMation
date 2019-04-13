@@ -28,7 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using Bam.Core;
-namespace Publisher
+namespace Installer
 {
     public class ZipModule :
         Bam.Core.Module

@@ -27,14 +27,56 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Publisher
+namespace Installer
 {
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface IZipSettings :
-        Bam.Core.ISettingsBase
+    [CommandLineProcessor.OutputPath(ZipModule.ZipKey, "")]
+    public sealed class SevenZipSettings :
+        Bam.Core.Settings,
+        IZipSettings
     {
-        bool Verbose { get; set; }
-        bool RecursivePaths { get; set; }
-        bool Update { get; set; }
+        public SevenZipSettings(
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+
+        [CommandLineProcessor.Bool("-bb3", "")]
+        bool IZipSettings.Verbose { get; set; }
+
+        [CommandLineProcessor.Bool("-r", "")]
+        bool IZipSettings.RecursivePaths { get; set; }
+
+        [CommandLineProcessor.Bool("u", "a")]
+        bool IZipSettings.Update { get; set; }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
+        }
+    }
+
+    [CommandLineProcessor.OutputPath(ZipModule.ZipKey, "")]
+    public sealed class ZipSettings :
+        Bam.Core.Settings,
+        IZipSettings
+    {
+        public ZipSettings()
+        {}
+
+        public ZipSettings(
+            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+
+        [CommandLineProcessor.Bool("-v", "")]
+        bool IZipSettings.Verbose { get; set; }
+
+        [CommandLineProcessor.Bool("-r", "")]
+        bool IZipSettings.RecursivePaths { get; set; }
+
+        [CommandLineProcessor.Bool("-u", "")]
+        bool IZipSettings.Update { get; set; }
+
+        public override void
+        AssignFileLayout()
+        {
+            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
+        }
     }
 }

@@ -27,18 +27,14 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Publisher.DefaultSettings
+namespace Installer
 {
-    public static partial class DefaultSettingsExtensions
+    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
+    public interface IZipSettings :
+        Bam.Core.ISettingsBase
     {
-        public static void
-        Defaults(
-            this IZipSettings settings,
-            Bam.Core.Module module)
-        {
-            settings.Verbose = false;
-            settings.RecursivePaths = false;
-            settings.Update = false;
-        }
+        bool Verbose { get; set; }
+        bool RecursivePaths { get; set; }
+        bool Update { get; set; }
     }
 }
