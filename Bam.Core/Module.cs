@@ -124,12 +124,37 @@ namespace Bam.Core
             this.EvaluationTask = null;
 
             this.PackageDefinition.AddCreatedModule(this.GetType().Name);
+
+            // download the primary package source archive if needed
             if (null != this.PackageDefinition.Sources)
             {
                 foreach (var source in this.PackageDefinition.Sources)
                 {
                     source.Fetch();
                 }
+            }
+
+            // there may also be derived modules from other packages, so download their source archives too
+            var parentType = this.GetType().BaseType;
+            while (parentType != null)
+            {
+                if (parentType == typeof(Module))
+                {
+                    break;
+                }
+                var packageDefinition = graph.Packages.FirstOrDefault(item => item.Name.Equals(parentType.Namespace, System.StringComparison.Ordinal));
+                if (null == packageDefinition)
+                {
+                    break;
+                }
+                if (null != packageDefinition.Sources)
+                {
+                    foreach (var source in packageDefinition.Sources)
+                    {
+                        source.Fetch();
+                    }
+                }
+                parentType = parentType.BaseType;
             }
         }
 
@@ -161,7 +186,16 @@ namespace Bam.Core
                 {
                     throw new Exception($"Unable to find package definition for module type {attr.SourceModuleType.FullName}");
                 }
-                this.Macros.AddVerbatim("packagedir", redirectedPackageDefinition.GetPackageDirectory());
+
+                var downloadedRedirectedPackageSource = redirectedPackageDefinition.Sources?.First().ExtractedPackageDir;
+                if (null != downloadedRedirectedPackageSource)
+                {
+                    this.Macros.AddVerbatim("packagedir", downloadedRedirectedPackageSource);
+                }
+                else
+                {
+                    this.Macros.AddVerbatim("packagedir", redirectedPackageDefinition.GetPackageDirectory());
+                }
                 return;
             }
 

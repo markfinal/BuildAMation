@@ -1,3 +1,5 @@
+13-Apr-2019 Fixes #532. Modules using the Bam.Core.ModulePackageDirectoryRedirect attribute, and inheriting from a Module in a Package that has downloadable source archives, now correctly forward the correct paths to package files from the extracted archives.
+
 13-Apr-2019 Fixes #479. Zip module has been moved from Publisher to Installer package, to be in a consistent location with tar.
 
 11-Apr-2019 Fixes #529. 7Zip, InnoSetup and NSIS, used from the Publisher and Installer packages, respectively, now install via NuGets, rather than assuming the user has installed them.
