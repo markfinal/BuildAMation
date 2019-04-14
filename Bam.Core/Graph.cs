@@ -281,7 +281,21 @@ namespace Bam.Core
                     $"No modules found in the namespace '{ns}'. Please define some modules in the build scripts to use {ns} as a master package."
                 );
             }
-            var allTopLevelModuleTypesInPackage = allModuleTypesInPackage.Where(type => type.IsSealed);
+            System.Collections.Generic.IEnumerable<System.Type> allTopLevelModuleTypesInPackage;
+            var commandLineTopLevelModules = CommandLineProcessor.Evaluate(new Options.SetTopLevelModules());
+            if (null != commandLineTopLevelModules && commandLineTopLevelModules.Any())
+            {
+                Log.MessageAll(commandLineTopLevelModules.Count().ToString());
+                allTopLevelModuleTypesInPackage = allModuleTypesInPackage.Where(
+                    allItem => commandLineTopLevelModules.First().Any(
+                        cmdModuleName => allItem.Name.Contains(cmdModuleName, System.StringComparison.Ordinal)
+                    )
+                );
+            }
+            else
+            {
+                allTopLevelModuleTypesInPackage = allModuleTypesInPackage.Where(type => type.IsSealed);
+            }
             if (!allTopLevelModuleTypesInPackage.Any())
             {
                 var message = new System.Text.StringBuilder();
