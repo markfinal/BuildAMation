@@ -93,7 +93,12 @@ namespace Bam.Core
 
                 if (UsesName(realArg, splitArg))
                 {
-                    return splitArg[1];
+                    var value = splitArg[1];
+                    if (realArg is IValidateCommandLineArgumentValue validatingRealArg)
+                    {
+                        validatingRealArg.Validate(value);
+                    }
+                    return value;
                 }
             }
             return (realArg is ICommandLineArgumentDefault<string>) ? (realArg as ICommandLineArgumentDefault<string>).Default : null;
@@ -120,7 +125,12 @@ namespace Bam.Core
                 {
                     try
                     {
-                        return System.Convert.ToInt32(splitArg[1]);
+                        var value = System.Convert.ToInt32(splitArg[1]);
+                        if (realArg is IValidateCommandLineArgumentValue validatingRealArg)
+                        {
+                            validatingRealArg.Validate(value);
+                        }
+                        return value;
                     }
                     catch (System.FormatException exception)
                     {

@@ -33,10 +33,28 @@ namespace Bam.Core.Options
     /// Command line option to specify a package name, used in conjunction with other commands.
     /// </summary>
     public sealed class PackageName :
-        IStringCommandLineArgument
+        IStringCommandLineArgument,
+        IValidateCommandLineArgumentValue
     {
         string ICommandLineArgument.ShortName => null;
         string ICommandLineArgument.LongName => "--pkgname";
         string ICommandLineArgument.ContextHelp => "Define the package name to use in other operations";
+
+        void
+        IValidateCommandLineArgumentValue.Validate<T>(
+            T value)
+        {
+            if (value is string stringValue)
+            {
+                if (stringValue.Contains('-'))
+                {
+                    throw new Core.Exception($"Package name cannot contain a hyphen. Please try again.");
+                }
+            }
+            else
+            {
+                throw new Core.Exception($"Expected a string value for the package name; found {value.GetType().ToString()} instead.");
+            }
+        }
     }
 }

@@ -1,3 +1,5 @@
+14-Apr-2019 Fixes #453. Added Bam.Core.IValidateCommandLineArgumentValue, and used it to prohibit hyphens appearing in new package names (which would be confused internally with a versioned package).
+
 14-Apr-2019 Fixes #533. The debug project entry point, main.cs, is no longer overwritten if it exists previously. This honours any edits made to it previously. Please remove the file from disk if a fresh version is needed.
 
 14-Apr-2019 Fixes #472. Debug project files for packages now also inherit the command line arguments used to create them. This avoids any ambiguity between running from the command line or debugging in an IDE.

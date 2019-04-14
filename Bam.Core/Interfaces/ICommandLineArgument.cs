@@ -101,4 +101,17 @@ namespace Bam.Core
     /// </summary>
     public interface IIntegerCommandLineArgument : ICommandLineArgument, ICommandLineArgumentDefault<int>
     {}
+
+    /// <summary>
+    /// Interface for validating the values captured from command line arguments.
+    /// </summary>
+    public interface IValidateCommandLineArgumentValue
+    {
+        /// <summary>
+        /// Validate the value supplied
+        /// </summary>
+        /// <typeparam name="T">Type of the value will depend on which option class it is applied to.</typeparam>
+        /// <param name="value">Value to be verified.</param>
+        void Validate<T>(T value);
+    }
 }
