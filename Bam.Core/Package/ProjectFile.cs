@@ -292,6 +292,7 @@ namespace Bam.Core
 
         /// <summary>
         /// Specify the entry point used by the assembly.
+        /// The .cs file will only write if it does not exist, in order to honour any local edits.
         /// </summary>
         /// <param name="filename">Path of the .cs file to write for the entry point.</param>
         /// <param name="writer">Action that writes the .csproj to disk.</param>
@@ -304,7 +305,10 @@ namespace Bam.Core
             IOWrapper.CreateDirectoryIfNotExists(projectDir);
 
             var filePath = System.IO.Path.Combine(projectDir, filename);
-            writer(filePath);
+            if (!System.IO.File.Exists(filePath))
+            {
+                writer(filePath);
+            }
 
             var mainSource = CreateItemGroup(parent: this.Root);
             CreateCompilableSourceFile(filename, null, mainSource);
