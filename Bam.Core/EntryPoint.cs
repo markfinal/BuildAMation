@@ -108,26 +108,45 @@ namespace Bam.Core
             // validate that there is at most one local policy
             // if test mode is enabled, then the '.tests' sub-namespaces are also checked
             {
-                var localPolicies = graph.ScriptAssembly.GetTypes().Where(t => typeof(ISitePolicy).IsAssignableFrom(t));
+                var localPolicyTypes = graph.ScriptAssembly.GetTypes().Where(t => typeof(ISitePolicy).IsAssignableFrom(t));
                 if (!testModeEnabled)
                 {
-                    localPolicies = localPolicies.Where(item => !item.Namespace.EndsWith(".tests", System.StringComparison.Ordinal));
+                    localPolicyTypes = localPolicyTypes.Where(item => !item.Namespace.EndsWith(".tests", System.StringComparison.Ordinal));
                 }
-                var numLocalPolicies = localPolicies.Count();
+                var numLocalPolicies = localPolicyTypes.Count();
                 if (numLocalPolicies > 0)
                 {
                     if (numLocalPolicies > 1)
                     {
-                        var message = new System.Text.StringBuilder();
-                        message.AppendLine("Too many site policies exist in the package assembly:");
-                        foreach (var policy in localPolicies)
+                        Log.MessageAll(graph.MasterPackage.Name);
+                        var masterPolicyType = localPolicyTypes.FirstOrDefault(item => item.Namespace.StartsWith(graph.MasterPackage.Name, System.StringComparison.Ordinal));
+                        if (null != masterPolicyType)
                         {
-                            message.AppendLine($"\t{policy.ToString()}");
+                            var message = new System.Text.StringBuilder();
+                            message.AppendLine("More than one site policies exist in the package assembly:");
+                            foreach (var policy in localPolicyTypes)
+                            {
+                                message.AppendLine($"\t{policy.ToString()}");
+                            }
+                            message.AppendLine($"Choosing master policy type: {masterPolicyType.ToString()}");
+                            Log.DebugMessage(message.ToString());
+                            Settings.LocalPolicy = System.Activator.CreateInstance(masterPolicyType) as ISitePolicy;
                         }
-                        throw new Exception(message.ToString());
+                        else
+                        {
+                            var message = new System.Text.StringBuilder();
+                            message.AppendLine("Too many site policies exist in the package assembly:");
+                            foreach (var policy in localPolicyTypes)
+                            {
+                                message.AppendLine($"\t{policy.ToString()}");
+                            }
+                            throw new Exception(message.ToString());
+                        }
                     }
-
-                    Settings.LocalPolicy = System.Activator.CreateInstance(localPolicies.First()) as ISitePolicy;
+                    else
+                    {
+                        Settings.LocalPolicy = System.Activator.CreateInstance(localPolicyTypes.First()) as ISitePolicy;
+                    }
                 }
             }
 
