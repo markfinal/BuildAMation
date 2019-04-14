@@ -90,6 +90,12 @@ namespace Bam.Core
         private static string
         GetWorkingDirectory()
         {
+            var masterPackageDirectory = Core.CommandLineProcessor.Evaluate(new Core.Options.SetMasterPackageDirectory());
+            if (null != masterPackageDirectory)
+            {
+                return masterPackageDirectory;
+            }
+
             // must check the ENTRY assembly
             // - in normal runs, this is bam!
             // - in debug runs, this is the procedurally generated app

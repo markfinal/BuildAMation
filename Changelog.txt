@@ -1,3 +1,5 @@
+14-Apr-2019 Fixes #477. Added command line option, --mpd=<directory>, to set the master package directory. This overrides the current working directory as BAM's choice of where the master package resides.
+
 13-Apr-2019 Fixes #532. Modules using the Bam.Core.ModulePackageDirectoryRedirect attribute, and inheriting from a Module in a Package that has downloadable source archives, now correctly forward the correct paths to package files from the extracted archives.
 
 13-Apr-2019 Fixes #479. Zip module has been moved from Publisher to Installer package, to be in a consistent location with tar.
