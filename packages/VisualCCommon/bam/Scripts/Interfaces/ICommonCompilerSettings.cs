@@ -40,5 +40,6 @@ namespace VisualCCommon
         bool? EnableLanguageExtensions { get; set; }
         EOptimization? Optimization { get; set; }
         bool? IncreaseObjectFileSectionCount { get; set; }
+        bool? WholeProgramOptimization { get; set; }
     }
 }

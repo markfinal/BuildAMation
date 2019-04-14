@@ -49,6 +49,10 @@ namespace VisualCCommon
         [VisualStudioProcessor.Bool("SuppressStartupBanner")]
         bool ICommonArchiverSettings.NoLogo { get; set; }
 
+        [CommandLineProcessor.Bool("-LTCG", "")]
+        [VisualStudioProcessor.Bool("LinkTimeCodeGeneration")]
+        bool ICommonArchiverSettings.LinkTimeCodeGeneration { get; set; }
+
         public override void
         AssignFileLayout()
         {

@@ -27,19 +27,12 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace VisualCCommon.DefaultSettings
+namespace VisualCCommon
 {
-    public static partial class DefaultSettingsExtensions
+    public enum ELinkTimeCodeGeneration
     {
-        public static void
-        Defaults(
-            this VisualCCommon.ICommonLinkerSettings settings,
-            Bam.Core.Module module)
-        {
-            settings.NoLogo = true;
-            settings.GenerateManifest = true;
-            settings.SafeExceptionHandlers = false;
-            settings.LinkTimeCodeGeneration = ELinkTimeCodeGeneration.Off;
-        }
+        Off,
+        On,
+        Incremental
     }
 }

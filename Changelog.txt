@@ -1,3 +1,8 @@
+14-Apr-2019 Fixes #78. Added Link Time Code Generation support.
+Added VisualCCommon.ICommonCompilerSettings.WholeProgramOptimization (bool, default=false), VisualCCommon.ICommonLinkerSettings.LinkTimeCodeGeneration (type ELinkTimeCodeGeneration, default=Off), and VisualCCommon.ICommonArchiverSettings.LinkTimeCodeGeneration (bool, default=false).
+There is no automating enabling of LTCG through BAM configurations.
+There is no PGO support yet.
+
 14-Apr-2019 Fixes #343. Added command line option, --toplevelmodule=<name>, which can be used to specify a Module class that wasn't sealed as the top-level Module to build.
 
 14-Apr-2019 Fixes #387. Builds containing multiple Bam.Core.ISitePolicy implementations will choose that policy from the master policy. If it does not exist, then the previous behaviour of throwing an exception is used. This allows individual packages to define their site policies, say, in the tests namespace for particular requirements, and still have dependents also with site policies.

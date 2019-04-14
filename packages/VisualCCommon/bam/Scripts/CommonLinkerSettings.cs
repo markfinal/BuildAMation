@@ -99,6 +99,14 @@ namespace VisualCCommon
         [VisualStudioProcessor.Bool("ImageHasSafeExceptionHandlers")]
         bool ICommonLinkerSettings.SafeExceptionHandlers { get; set; }
 
+        [CommandLineProcessor.Enum(ELinkTimeCodeGeneration.Off, "-LTCG:OFF")]
+        [CommandLineProcessor.Enum(ELinkTimeCodeGeneration.On, "-LTCG")]
+        [CommandLineProcessor.Enum(ELinkTimeCodeGeneration.Incremental, "-LTCG:incremental")]
+        [VisualStudioProcessor.Enum(ELinkTimeCodeGeneration.Off, "LinkTimeCodeGeneration", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString:"Default")]
+        [VisualStudioProcessor.Enum(ELinkTimeCodeGeneration.On, "LinkTimeCodeGeneration", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "UseLinkTimeCodeGeneration")]
+        [VisualStudioProcessor.Enum(ELinkTimeCodeGeneration.Incremental, "LinkTimeCodeGeneration", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "UseFastLinkTimeCodeGeneration")]
+        ELinkTimeCodeGeneration ICommonLinkerSettings.LinkTimeCodeGeneration { get; set; }
+
         public override void AssignFileLayout()
         {
             this.FileLayout = ELayout.Cmds_Outputs_Inputs;

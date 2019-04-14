@@ -43,6 +43,7 @@ namespace VisualCCommon.DefaultSettings
             settings.EnableLanguageExtensions = true; // only because Windows.h does not compile without this, even with WIN32_LEAN_AND_MEAN
             settings.Optimization = null; // assume that the setting in C.ICommonCompilerSettings is sufficient
             settings.IncreaseObjectFileSectionCount = false; // don't use large section counts by default
+            settings.WholeProgramOptimization = false;
         }
 
         public static void
@@ -56,6 +57,7 @@ namespace VisualCCommon.DefaultSettings
             shared.EnableLanguageExtensions = shared.EnableLanguageExtensions.Intersect(other.EnableLanguageExtensions);
             shared.Optimization = shared.Optimization.Intersect(other.Optimization);
             shared.IncreaseObjectFileSectionCount = shared.IncreaseObjectFileSectionCount.Intersect(other.IncreaseObjectFileSectionCount);
+            shared.WholeProgramOptimization = shared.WholeProgramOptimization.Intersect(other.WholeProgramOptimization);
         }
 
         public static void
@@ -70,6 +72,7 @@ namespace VisualCCommon.DefaultSettings
             delta.EnableLanguageExtensions = lhs.EnableLanguageExtensions.Complement(rhs.EnableLanguageExtensions);
             delta.Optimization = lhs.Optimization.Complement(rhs.Optimization);
             delta.IncreaseObjectFileSectionCount = lhs.IncreaseObjectFileSectionCount.Complement(rhs.IncreaseObjectFileSectionCount);
+            delta.WholeProgramOptimization = lhs.WholeProgramOptimization.Complement(rhs.WholeProgramOptimization);
         }
 
         public static void
@@ -83,6 +86,7 @@ namespace VisualCCommon.DefaultSettings
             settings.EnableLanguageExtensions = other.EnableLanguageExtensions;
             settings.Optimization = other.Optimization;
             settings.IncreaseObjectFileSectionCount = other.IncreaseObjectFileSectionCount;
+            settings.WholeProgramOptimization = other.WholeProgramOptimization;
         }
     }
 }

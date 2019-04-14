@@ -35,5 +35,6 @@ namespace VisualCCommon
         bool NoLogo { get; set; }
         bool GenerateManifest { get; set; }
         bool SafeExceptionHandlers { get; set; }
+        ELinkTimeCodeGeneration LinkTimeCodeGeneration { get; set; }
     }
 }

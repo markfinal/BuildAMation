@@ -34,5 +34,6 @@ namespace VisualCCommon
         Bam.Core.ISettingsBase
     {
         bool NoLogo { get; set; }
+        bool LinkTimeCodeGeneration { get; set; }
     }
 }

@@ -169,6 +169,10 @@ namespace VisualCCommon
         [VisualStudioProcessor.Bool("AdditionalOptions", "-bigobj", "")]
         bool ? ICommonCompilerSettings.IncreaseObjectFileSectionCount { get; set; }
 
+        [CommandLineProcessor.Bool("-GL", "")]
+        [VisualStudioProcessor.Bool("WholeProgramOptimization")]
+        bool? ICommonCompilerSettings.WholeProgramOptimization { get; set; }
+
         public override void
         Validate()
         {
