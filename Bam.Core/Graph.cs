@@ -285,7 +285,6 @@ namespace Bam.Core
             var commandLineTopLevelModules = CommandLineProcessor.Evaluate(new Options.SetTopLevelModules());
             if (null != commandLineTopLevelModules && commandLineTopLevelModules.Any())
             {
-                Log.MessageAll(commandLineTopLevelModules.Count().ToString());
                 allTopLevelModuleTypesInPackage = allModuleTypesInPackage.Where(
                     allItem => commandLineTopLevelModules.First().Any(
                         cmdModuleName => allItem.Name.Contains(cmdModuleName, System.StringComparison.Ordinal)
