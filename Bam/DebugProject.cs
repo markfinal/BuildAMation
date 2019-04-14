@@ -87,6 +87,35 @@ namespace Bam
             }
         }
 
+        private static void
+        WriteLaunchSettings(
+            string path,
+            string projectName,
+            string commandLineArgs)
+        {
+            System.Func<int, string> indent = (level) =>
+            {
+                if (0 == level)
+                {
+                    return string.Empty;
+                }
+                return new string(' ', level * 4);
+            };
+
+            using (System.IO.TextWriter writer = new System.IO.StreamWriter(path))
+            {
+                writer.NewLine = "\n";
+                writer.WriteLine($"{indent(0)}{{");
+                writer.WriteLine($"{indent(1)}\"profiles\": {{");
+                writer.WriteLine($"{indent(2)}\"{projectName}\": {{");
+                writer.WriteLine($"{indent(3)}\"commandName\": \"Project\",");
+                writer.WriteLine($"{indent(3)}\"commandLineArgs\": \"{commandLineArgs}\"");
+                writer.WriteLine($"{indent(2)}}}");
+                writer.WriteLine($"{indent(1)}}}");
+                writer.WriteLine($"{indent(0)}}}");
+            }
+        }
+
         private static System.Collections.Generic.List<(string, string)>
         GetBamCoreNuGetReferences()
         {
@@ -129,6 +158,11 @@ namespace Bam
             );
             project.AddEntryPoint("main.cs", WriteEntryPoint);
             project.AddEmbeddedResource(Core.PackageListResourceFile.WriteResXFile);
+            project.AddLaunchSettings(
+                System.IO.Path.Combine("Properties", "launchSettings.json"),
+                projectPathname,
+                System.Environment.GetCommandLineArgs().Skip(1).SkipWhile(item => item == "-p" || item == "--createdebugproject"), // skip assembly name and the option to create the debug project
+                WriteLaunchSettings);
             project.Write();
 
             Core.Log.Info("Successfully created debug project for package '{0}'", masterPackage.FullName);

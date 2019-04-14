@@ -311,6 +311,28 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// Specify the launch settings used by the VisualStudio project while debugging.
+        /// </summary>
+        /// <param name="filename">Path of the .cs file to write for the launch settings.</param>
+        /// <param name="projectPath">Path of the debug project being written.</param>
+        /// <param name="commandLineArgs">Enumerable of command line arguments passed when the debug project was created.</param>
+        /// <param name="writer">Action that writes the json file to disk.</param>
+        public void
+        AddLaunchSettings(
+            string filename,
+            string projectPath,
+            System.Collections.Generic.IEnumerable<string> commandLineArgs,
+            System.Action<string, string, string> writer)
+        {
+            var projectDir = System.IO.Path.GetDirectoryName(this.CsProjPath);
+            IOWrapper.CreateDirectoryIfNotExists(projectDir);
+
+            var filePath = System.IO.Path.Combine(projectDir, filename);
+            IOWrapper.CreateDirectoryIfNotExists(System.IO.Path.GetDirectoryName(filePath));
+            writer(filePath, System.IO.Path.GetFileNameWithoutExtension(projectPath), string.Join(' ', commandLineArgs));
+        }
+
+        /// <summary>
         /// Add an embedded resource to the project file.
         /// </summary>
         /// <param name="writer">Action that writes the resource to disk.</param>
