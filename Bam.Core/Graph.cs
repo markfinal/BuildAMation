@@ -874,6 +874,10 @@ namespace Bam.Core
         {
             get
             {
+                if (null == this.PackageDefinitions)
+                {
+                    throw new Exception("No packages were defined in the build");
+                }
                 foreach (var package in this.PackageDefinitions)
                 {
                     yield return package;
