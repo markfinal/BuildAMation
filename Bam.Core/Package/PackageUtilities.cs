@@ -330,7 +330,7 @@ namespace Bam.Core
             if (null != sourcePackageDefinition)
             {
                 // visited already? ignore
-                if (Graph.Instance.PackageRepositories.Contains(repoPath))
+                if (Graph.Instance.PackageRepositories.Any(item => item.RootPath.Equals(repoPath, System.StringComparison.Ordinal)))
                 {
                     return;
                 }
@@ -342,6 +342,28 @@ namespace Bam.Core
             }
             reposToVisit.AddLast(System.Tuple.Create<string, PackageDefinition>(repoPath, sourcePackageDefinition));
             ++reposAdded;
+        }
+
+        private static void
+        InjectExtraModules(
+            PackageDefinition intoPackage)
+        {
+            var injectPackages = CommandLineProcessor.Evaluate(new Options.InjectDefaultPackage());
+            if (null != injectPackages)
+            {
+                foreach (var injected in injectPackages)
+                {
+                    var name = injected[0];
+                    string version = null;
+                    if (injected.Count > 1)
+                    {
+                        version = injected[1].TrimStart(new[] { '-' }); // see regex in InjectDefaultPackage
+                    }
+                    var is_default = true;
+                    var dependent = new System.Tuple<string, string, bool?>(name, version, is_default);
+                    intoPackage.Dependents.AddUnique(dependent);
+                }
+            }
         }
 
         /// <summary>
@@ -358,6 +380,45 @@ namespace Bam.Core
             bool allowDuplicates = false,
             bool enforceBamAssemblyVersions = true)
         {
+#if true
+            // TODO
+            // needs to be multi-pass
+            // PackageRepositories should be a first class citizen, and they scan the filesystem for candidate packages
+            // package repo is responsible for resolving duplicates
+            // is it reasonable to assume that all package overloads are in the same repo? (probably not)
+
+
+            var masterDefinitionFile = GetMasterPackage(requiresSourceDownload);
+
+            // inject any packages from the command line into the master definition file
+            // and these will be defaults
+            InjectExtraModules(masterDefinitionFile);
+
+            // load up all the dependents required
+            var packagesRequired = new System.Collections.Generic.Queue<System.Tuple<string, string, bool?>>();
+            foreach (var dep in masterDefinitionFile.Dependents)
+            {
+                packagesRequired.Enqueue(dep);
+            }
+
+            var packageDefinitions = new Array<PackageDefinition>(
+                masterDefinitionFile
+            );
+
+            // loop until all packages have been found
+            while (packagesRequired.Count() > 0)
+            {
+                var nextPackage = packagesRequired.Dequeue();
+                if (null != nextPackage.Item2)
+                {
+                    Log.MessageAll($"Looking for package {nextPackage.Item1}-{nextPackage.Item2} ...");
+                }
+                else
+                {
+                    Log.MessageAll($"Looking for package {nextPackage.Item1} ...");
+                }
+            }
+#else
             var packageRepos = new System.Collections.Generic.LinkedList<System.Tuple<string,PackageDefinition>>();
             int reposHWM = 0;
             foreach (var repo in Graph.Instance.PackageRepositories)
@@ -563,6 +624,7 @@ namespace Bam.Core
             }
 
             Graph.Instance.SetPackageDefinitions(packageDefinitions);
+#endif
         }
 
         /// <summary>

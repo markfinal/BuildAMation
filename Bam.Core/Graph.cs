@@ -65,7 +65,7 @@ namespace Bam.Core
             this.DependencyGraph = new DependencyGraph();
             this.MetaData = null;
 
-            this.InternalPackageRepositories = new StringArray();
+            this.InternalPackageRepositories = new Array<PackageRepository>();
             try
             {
                 var primaryPackageRepo = System.IO.Path.Combine(
@@ -968,7 +968,7 @@ namespace Bam.Core
         /// <value>The verbosity level.</value>
         public EVerboseLevel VerbosityLevel { get; set; }
 
-        private StringArray InternalPackageRepositories { get; set; }
+        private Array<PackageRepository> InternalPackageRepositories { get; set; }
 
         /// <summary>
         /// Adds a new package repository.
@@ -978,14 +978,14 @@ namespace Bam.Core
         AddPackageRepository(
             string repoPath)
         {
-            this.InternalPackageRepositories.AddUnique(repoPath);
+            this.InternalPackageRepositories.AddUnique(new PackageRepository(repoPath));
         }
 
         /// <summary>
         /// Enumerates the package repositories known about in the build.
         /// </summary>
         /// <value>Each package repository path.</value>
-        public System.Collections.Generic.IEnumerable<string> PackageRepositories
+        public System.Collections.Generic.IEnumerable<PackageRepository> PackageRepositories
         {
             get
             {
