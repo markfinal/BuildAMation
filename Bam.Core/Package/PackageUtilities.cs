@@ -422,7 +422,7 @@ namespace Bam.Core
                     }
                 }
 
-                Graph.Instance.PackageRepositories.Add(repo);
+                Graph.Instance.AddPackageRepository(repo);
 
                 foreach (var packageDir in candidatePackageDirs)
                 {
@@ -438,6 +438,7 @@ namespace Bam.Core
                     definitionFile.Read();
                     candidatePackageDefinitions.Add(definitionFile);
 
+                    // TODO: this is adding repos for packages we are not interested in
                     foreach (var newRepo in definitionFile.PackageRepositories)
                     {
                         EnqueuePackageRepositoryToVisit(packageRepos, ref reposHWM, newRepo, definitionFile);

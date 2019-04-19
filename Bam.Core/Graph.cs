@@ -65,7 +65,7 @@ namespace Bam.Core
             this.DependencyGraph = new DependencyGraph();
             this.MetaData = null;
 
-            this.PackageRepositories = new StringArray();
+            this.InternalPackageRepositories = new StringArray();
             try
             {
                 var primaryPackageRepo = System.IO.Path.Combine(
@@ -84,7 +84,7 @@ namespace Bam.Core
                         $"Standard BAM package directory '{primaryPackageRepo}' does not exist"
                     );
                 }
-                this.PackageRepositories.AddUnique(primaryPackageRepo);
+                this.AddPackageRepository(primaryPackageRepo);
             }
             catch (System.ArgumentNullException)
             {
@@ -964,11 +964,33 @@ namespace Bam.Core
         /// <value>The verbosity level.</value>
         public EVerboseLevel VerbosityLevel { get; set; }
 
+        private StringArray InternalPackageRepositories { get; set; }
+
         /// <summary>
-        /// Obtain a list of package repositories used to locate packages.
+        /// Adds a new package repository.
         /// </summary>
-        /// <value>The package repositories.</value>
-        public StringArray PackageRepositories { get; private set; }
+        /// <param name="repoPath">Path to the new package repository.</param>
+        public void
+        AddPackageRepository(
+            string repoPath)
+        {
+            this.InternalPackageRepositories.AddUnique(repoPath);
+        }
+
+        /// <summary>
+        /// Enumerates the package repositories known about in the build.
+        /// </summary>
+        /// <value>Each package repository path.</value>
+        public System.Collections.Generic.IEnumerable<string> PackageRepositories
+        {
+            get
+            {
+                foreach (var pkgRepo in this.InternalPackageRepositories)
+                {
+                    yield return pkgRepo;
+                }
+            }
+        }
 
         /// <summary>
         /// Determine whether package definition files are automatically updated after being read.

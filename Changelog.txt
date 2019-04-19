@@ -1,3 +1,6 @@
+xx-Apr-2019 Fixes #350. Cleaner way of adding and processing package repositories
+- Added Bam.Core.Graph.AddPackageRepository(<path>) and Bam.Core.Graph.PackageRepositories (enumerator of paths).
+
 14-Apr-2019 Fixes #78. Added Link Time Code Generation support.
 Added VisualCCommon.ICommonCompilerSettings.WholeProgramOptimization (bool, default=false), VisualCCommon.ICommonLinkerSettings.LinkTimeCodeGeneration (type ELinkTimeCodeGeneration, default=Off), and VisualCCommon.ICommonArchiverSettings.LinkTimeCodeGeneration (bool, default=false).
 There is no automating enabling of LTCG through BAM configurations.
