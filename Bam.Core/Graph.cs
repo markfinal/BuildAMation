@@ -84,7 +84,7 @@ namespace Bam.Core
                         $"Standard BAM package directory '{primaryPackageRepo}' does not exist"
                     );
                 }
-                this.AddPackageRepository(primaryPackageRepo);
+                this.AddPackageRepository(primaryPackageRepo, false);
             }
             catch (System.ArgumentNullException)
             {
@@ -971,14 +971,20 @@ namespace Bam.Core
         private Array<PackageRepository> InternalPackageRepositories { get; set; }
 
         /// <summary>
-        /// Adds a new package repository.
+        /// Adds a new package repository, if not already added.
         /// </summary>
         /// <param name="repoPath">Path to the new package repository.</param>
+        /// <param name="requiresSourceDownload">Requires a source download?</param>
         public void
         AddPackageRepository(
-            string repoPath)
+            string repoPath,
+            bool requiresSourceDownload)
         {
-            this.InternalPackageRepositories.AddUnique(new PackageRepository(repoPath));
+            if (this.InternalPackageRepositories.Any(item => item.RootPath == repoPath))
+            {
+                return;
+            }
+            this.InternalPackageRepositories.Add(new PackageRepository(repoPath, requiresSourceDownload));
         }
 
         /// <summary>

@@ -389,25 +389,93 @@ namespace Bam.Core
 
 
             var masterDefinitionFile = GetMasterPackage(requiresSourceDownload);
+            foreach (var repo in masterDefinitionFile.PackageRepositories)
+            {
+                Graph.Instance.AddPackageRepository(repo, requiresSourceDownload);
+            }
 
             // inject any packages from the command line into the master definition file
             // and these will be defaults
             InjectExtraModules(masterDefinitionFile);
 
+            void
+            enqueueDependentPackages(
+                System.Collections.Generic.Queue<System.Tuple<string, string, bool?>> queue,
+                Array<PackageDefinition> foundPackageList,
+                PackageDefinition packageDef)
+            {
+                foreach (var dep in packageDef.Dependents)
+                {
+                    if (dep.Item2 != null)
+                    {
+                        if (queue.Any(item => item.Item1 == dep.Item1 && item.Item2 == dep.Item2))
+                        {
+                            continue;
+                        }
+                        if (foundPackageList.Any(item => item.Name == dep.Item1 && item.Version == dep.Item2))
+                        {
+                            continue;
+                        }
+                        Log.MessageAll($"** Adding '{dep.Item1}-{dep.Item2}' to search for");
+                    }
+                    else
+                    {
+                        if (queue.Any(item => item.Item1 == dep.Item1))
+                        {
+                            continue;
+                        }
+                        if (foundPackageList.Any(item => item.Name == dep.Item1))
+                        {
+                            continue;
+                        }
+                        Log.MessageAll($"** Adding '{dep.Item1}' to search for");
+                    }
+                    queue.Enqueue(dep);
+                }
+            }
+
+            void
+            findPackage(
+                Array<System.Tuple<string, string, bool?>> morePackages,
+                System.Collections.Generic.Queue<System.Tuple<string, string, bool?>> queue,
+                Array<PackageDefinition> foundPackageList,
+                System.Tuple<string, string, bool?> packageDesc)
+            {
+                foreach (var repo in Graph.Instance.PackageRepositories)
+                {
+                    var definition = repo.FindPackage(packageDesc);
+                    if (null != definition)
+                    {
+                        Log.MessageAll($"\tFound package");
+                        foundPackageList.Add(definition);
+                        enqueueDependentPackages(queue, foundPackageList, definition);
+                        return;
+                    }
+                }
+                Log.MessageAll($"\tNot found package");
+                morePackages.Add(packageDesc);
+            }
+
             // load up all the dependents required
             var packagesRequired = new System.Collections.Generic.Queue<System.Tuple<string, string, bool?>>();
-            foreach (var dep in masterDefinitionFile.Dependents)
-            {
-                packagesRequired.Enqueue(dep);
-            }
+            var foundPackages = new Array<PackageDefinition>();
+            enqueueDependentPackages(packagesRequired, foundPackages, masterDefinitionFile);
 
             var packageDefinitions = new Array<PackageDefinition>(
                 masterDefinitionFile
             );
 
             // loop until all packages have been found
+            var outstandingPackages = new Array<System.Tuple<string, string, bool?>>();
             while (packagesRequired.Count() > 0)
             {
+                Log.MessageAll($"------------------------");
+                Log.MessageAll($"{packagesRequired.Count()} packages to find in {Graph.Instance.PackageRepositories.Count()} repositories known about");
+                foreach (var repo in Graph.Instance.PackageRepositories)
+                {
+                    Log.MessageAll($"\t{repo.RootPath}");
+                }
+
                 var nextPackage = packagesRequired.Dequeue();
                 if (null != nextPackage.Item2)
                 {
@@ -417,6 +485,31 @@ namespace Bam.Core
                 {
                     Log.MessageAll($"Looking for package {nextPackage.Item1} ...");
                 }
+
+                findPackage(outstandingPackages, packagesRequired, foundPackages, nextPackage);
+            }
+
+            if (outstandingPackages.Any())
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendLine("Some packages were not found in any repository:");
+                foreach (var package in outstandingPackages)
+                {
+                    if (package.Item2 != null)
+                    {
+                        message.AppendLine($"\t{package.Item1}-{package.Item2}");
+                    }
+                    else
+                    {
+                        message.AppendLine($"\t{package.Item1}");
+                    }
+                }
+                message.AppendLine("Searched for in the following repositories:");
+                foreach (var repo in Graph.Instance.PackageRepositories)
+                {
+                    message.AppendLine($"\t{repo.RootPath}");
+                }
+                throw new Exception(message.ToString());
             }
 #else
             var packageRepos = new System.Collections.Generic.LinkedList<System.Tuple<string,PackageDefinition>>();
