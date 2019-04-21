@@ -436,7 +436,7 @@ namespace Bam.Core
 
             void
             findPackage(
-                Array<System.Tuple<string, string, bool?>> morePackages,
+                System.Collections.Generic.Queue<System.Tuple<string, string, bool?>> morePackages,
                 System.Collections.Generic.Queue<System.Tuple<string, string, bool?>> queue,
                 Array<PackageDefinition> foundPackageList,
                 System.Tuple<string, string, bool?> packageDesc)
@@ -453,7 +453,7 @@ namespace Bam.Core
                     }
                 }
                 Log.MessageAll($"\tNot found package");
-                morePackages.Add(packageDesc);
+                morePackages.Enqueue(packageDesc);
             }
 
             // load up all the dependents required
@@ -466,8 +466,8 @@ namespace Bam.Core
             );
 
             // loop until all packages have been found
-            var outstandingPackages = new Array<System.Tuple<string, string, bool?>>();
-            while (packagesRequired.Count() > 0)
+            var outstandingPackages = new System.Collections.Generic.Queue<System.Tuple<string, string, bool?>>();
+            while (packagesRequired.Any())
             {
                 Log.MessageAll($"------------------------");
                 Log.MessageAll($"{packagesRequired.Count()} packages to find in {Graph.Instance.PackageRepositories.Count()} repositories known about");
@@ -487,6 +487,85 @@ namespace Bam.Core
                 }
 
                 findPackage(outstandingPackages, packagesRequired, foundPackages, nextPackage);
+            }
+
+            // do any found packages need resolving?
+            var packagesToResolve = foundPackages.GroupBy(item => item.Name).Where(item => item.Count() > 1);
+            if (packagesToResolve.Any())
+            {
+                var packagesToRemove = new Array<PackageDefinition>();
+                foreach (var package in packagesToResolve)
+                {
+                    var defaultPackageVersion = masterDefinitionFile.Dependents.FirstOrDefault(item => item.Item1 == package.Key);
+                    if (null != defaultPackageVersion)
+                    {
+                        packagesToRemove.AddRangeUnique(foundPackages.Where(item => item.Name == package.Key && item.Version != defaultPackageVersion.Item2));
+                    }
+                }
+
+                if (packagesToRemove.Any())
+                {
+                    Log.MessageAll("Removing these unwanted packages");
+                    foreach (var package in packagesToRemove)
+                    {
+                        Log.MessageAll($"\t{package.FullName}");
+                    }
+                    foundPackages.RemoveAll(packagesToRemove);
+                }
+
+                packagesToResolve = foundPackages.GroupBy(item => item.Name).Where(item => item.Count() > 1);
+                if (packagesToResolve.Any())
+                {
+                    var message = new System.Text.StringBuilder();
+                    message.AppendLine("Some packages need resolving:");
+                    foreach (var package in packagesToResolve)
+                    {
+                        message.AppendLine($"\t{package.Key}");
+                    }
+                    throw new Exception(message.ToString());
+                }
+            }
+
+            if (outstandingPackages.Any())
+            {
+                Log.MessageAll("Outstanding packages found. Adding implicit repositories to search");
+                // add in implicit package repositories, and look again
+                foreach (var package in foundPackages)
+                {
+                    Log.MessageAll($"From package '{package.FullName}'");
+                    foreach (var repo in package.PackageRepositories)
+                    {
+                        Graph.Instance.AddPackageRepository(repo, requiresSourceDownload);
+                    }
+                }
+
+                var outstandingPackages2 = new System.Collections.Generic.Queue<System.Tuple<string, string, bool?>>();
+                while (outstandingPackages.Any())
+                {
+                    Log.MessageAll($"------------------------");
+                    Log.MessageAll($"{outstandingPackages.Count()} packages to find in {Graph.Instance.PackageRepositories.Count()} repositories known about");
+                    foreach (var repo in Graph.Instance.PackageRepositories)
+                    {
+                        Log.MessageAll($"\t{repo.RootPath}");
+                    }
+
+                    var nextPackage = outstandingPackages.Dequeue();
+                    if (null != nextPackage.Item2)
+                    {
+                        Log.MessageAll($"Looking for package {nextPackage.Item1}-{nextPackage.Item2} ...");
+                    }
+                    else
+                    {
+                        Log.MessageAll($"Looking for package {nextPackage.Item1} ...");
+                    }
+
+                    findPackage(outstandingPackages2, outstandingPackages, foundPackages, nextPackage);
+                }
+
+                if (outstandingPackages2.Any())
+                {
+                    outstandingPackages = outstandingPackages2;
+                }
             }
 
             if (outstandingPackages.Any())
@@ -511,6 +590,8 @@ namespace Bam.Core
                 }
                 throw new Exception(message.ToString());
             }
+
+            Log.MessageAll("Found all packages!! Yay");
 #else
             var packageRepos = new System.Collections.Generic.LinkedList<System.Tuple<string,PackageDefinition>>();
             int reposHWM = 0;
