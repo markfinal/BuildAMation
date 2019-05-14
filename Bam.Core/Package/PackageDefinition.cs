@@ -147,7 +147,7 @@ namespace Bam.Core
             bool requiresSourceDownload)
         {
             this.XMLFilename = xmlFilename;
-            this.Dependents = new Array<System.Tuple<string, string, bool?>>();
+            this.Dependents = new Array<(string name, string version, bool? isDefault)>();
             this.BamAssemblies = new Array<BamAssemblyDescription>();
             this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
             this.NuGetPackages = new Array<NuGetPackageDescription>();
@@ -494,6 +494,8 @@ namespace Bam.Core
 
         /// <summary>
         /// Read an existing XML file into the instance.
+        /// This is not treated as a master package, so any 'default' dependents
+        /// are not honoured.
         /// </summary>
         public void
         Read()
@@ -505,15 +507,29 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// Read an existing XML file into the instance, treating it specially as
+        /// the master package, which means that 'default' dependents are honoured.
+        /// </summary>
+        public void
+        ReadAsMaster()
+        {
+            this.ReadInternal(isMaster: true);
+
+            var packageDefinition = this.GetPackageDefinitionName();
+            this.Definitions.AddUnique(packageDefinition);
+        }
+
+        /// <summary>
         /// Read an existing XML file into the instance.
         /// </summary>
         private void
-        ReadInternal()
+        ReadInternal(
+            bool isMaster = false)
         {
             Log.DebugMessage("Reading package definition file: {0}", this.XMLFilename);
 
             // try reading the current schema version first
-            if (this.ReadCurrent())
+            if (this.ReadCurrent(isMaster))
             {
                 if (Graph.Instance.ForceDefinitionFileUpdate)
                 {
@@ -598,7 +614,8 @@ namespace Bam.Core
 
         private bool
         ReadDependents(
-            System.Xml.XmlReader xmlReader)
+            System.Xml.XmlReader xmlReader,
+            bool isMaster)
         {
             var rootName = "Dependents";
             if (rootName != xmlReader.Name)
@@ -624,7 +641,13 @@ namespace Bam.Core
                 var version = xmlReader.GetAttribute("version");
                 var isDefault = xmlReader.GetAttribute("default");
 
-                this.Dependents.Add(new System.Tuple<string, string, bool?>(name, version, (isDefault != null) ? System.Xml.XmlConvert.ToBoolean(isDefault) as bool? : null));
+                this.Dependents.Add(
+                    (
+                        name,
+                        version,
+                        (isMaster && (isDefault != null)) ? System.Xml.XmlConvert.ToBoolean(isDefault) as bool? : null
+                    )
+                );
             }
 
             foreach (var duplicateDepName in this.Dependents.GroupBy(item => item.Item1).Where(item => item.Count() > 1).Select(item => item.Key))
@@ -908,12 +931,9 @@ namespace Bam.Core
             return true;
         }
 
-        /// <summary>
-        /// Read the XML file using the current schema.
-        /// </summary>
-        /// <returns><c>true</c>, if current was  read, <c>false</c> otherwise.</returns>
-        protected bool
-        ReadCurrent()
+        private bool
+        ReadCurrent(
+            bool isMaster)
         {
             try
             {
@@ -939,7 +959,7 @@ namespace Bam.Core
                         {
                             // all done
                         }
-                        else if (ReadDependents(xmlReader))
+                        else if (ReadDependents(xmlReader, isMaster))
                         {
                             // all done
                         }
@@ -1032,7 +1052,7 @@ namespace Bam.Core
         /// Array of package name, package version, isdefaultversion, for each dependent of the package.
         /// </summary>
         /// <value>The dependents.</value>
-        public Array<System.Tuple<string, string, bool?>> Dependents { get; private set; }
+        public Array<(string name, string version, bool? isDefault)> Dependents { get; private set; }
 
         /// <summary>
         /// Array of Bam assemblies required for this package.

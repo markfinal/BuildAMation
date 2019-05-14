@@ -849,7 +849,17 @@ namespace Bam.Core
         /// Obtain the master package (the package in which Bam was invoked).
         /// </summary>
         /// <value>The master package.</value>
-        public PackageDefinition MasterPackage => this.PackageDefinitions[0];
+        public PackageDefinition MasterPackage
+        {
+            get
+            {
+                if (null == this.PackageDefinitions)
+                {
+                    throw new Exception("No master package was detected");
+                }
+                return this.PackageDefinitions[0];
+            }
+        }
 
         /// <summary>
         /// Assign the array of package definitions to the Graph.
@@ -975,16 +985,19 @@ namespace Bam.Core
         /// </summary>
         /// <param name="repoPath">Path to the new package repository.</param>
         /// <param name="requiresSourceDownload">Requires a source download?</param>
+        /// <param name="insertedDefinitionFiles">Optional array of PackageDefinitions to insert at the front.</param>
         public void
         AddPackageRepository(
             string repoPath,
-            bool requiresSourceDownload)
+            bool requiresSourceDownload,
+            params PackageDefinition[] insertedDefinitionFiles)
         {
-            if (this.InternalPackageRepositories.Any(item => item.RootPath == repoPath))
+            if (null != this.InternalPackageRepositories.FirstOrDefault(item => item.RootPath == repoPath))
             {
                 return;
             }
-            this.InternalPackageRepositories.Add(new PackageRepository(repoPath, requiresSourceDownload));
+            var repo = new PackageRepository(repoPath, requiresSourceDownload, insertedDefinitionFiles);
+            this.InternalPackageRepositories.Add(repo);
         }
 
         /// <summary>

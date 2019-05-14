@@ -30,6 +30,43 @@
 using System.Linq;
 namespace Bam.Core
 {
+    internal class PackageTreeNode
+    {
+        private Array<PackageTreeNode> Parents { get; set; } = new Array<PackageTreeNode>();
+        private Array<PackageTreeNode> InternalChildren { get; set; } = new Array<PackageTreeNode>();
+
+        public PackageTreeNode(
+            PackageDefinition definition)
+        {
+            this.Definition = definition;
+        }
+
+        public PackageDefinition Definition
+        {
+            get;
+            private set;
+        }
+
+        public void
+        AddChild(
+            PackageTreeNode child)
+        {
+            this.InternalChildren.Add(child);
+            child.Parents.Add(this);
+        }
+
+        public System.Collections.Generic.IEnumerable<PackageTreeNode> Children
+        {
+            get
+            {
+                foreach (var child in this.InternalChildren)
+                {
+                    yield return child;
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// A package repository is a collection of packages and optionally tests.
     /// The structure on disk is
@@ -46,18 +83,26 @@ namespace Bam.Core
 
         /// <summary>
         /// Create a package repository rooted at specified path.
+        /// Optionally insert some definition files first.
         /// </summary>
         /// <param name="rootPath"></param>
         /// <param name="requiresSourceDownload"></param>
+        /// <param name="insertedDefinitionFiles"></param>
         public PackageRepository(
             string rootPath,
-            bool requiresSourceDownload)
+            bool requiresSourceDownload,
+            params PackageDefinition[] insertedDefinitionFiles)
         {
             if (!System.IO.Directory.Exists(rootPath))
             {
                 throw new Exception($"Package repository directory '{rootPath}' does not exist");
             }
             this.RootPath = rootPath;
+
+            foreach (var defn in insertedDefinitionFiles)
+            {
+                this.packages.Add(defn);
+            }
 
             Log.MessageAll("Adding package repository rooted at '{0}'", rootPath);
             this.candidatePackageDirs = new StringArray();
@@ -77,11 +122,28 @@ namespace Bam.Core
                 Log.MessageAll($"\t{packageDir}");
                 this.candidatePackageDirs.Add(packageDir);
 
+                if (this.packages.Any(item => item.XMLFilename == packageDefinitionPath))
+                {
+                    continue;
+                }
+
                 var definitionFile = new PackageDefinition(packageDefinitionPath, requiresSourceDownload);
                 definitionFile.Read();
                 this.packages.Add(definitionFile);
             }
         }
+
+        /// <summary>
+        /// Create a package repository rooted at specified path.
+        /// </summary>
+        /// <param name="rootPath"></param>
+        /// <param name="requiresSourceDownload"></param>
+        public PackageRepository(
+            string rootPath,
+            bool requiresSourceDownload)
+            :
+            this(rootPath, requiresSourceDownload, System.Linq.Enumerable.Empty<PackageDefinition>().ToArray())
+        {}
 
         /// <summary>
         /// Returns the root path of the repository.
@@ -93,21 +155,21 @@ namespace Bam.Core
         }
 
         /// <summary>
-        ///
+        /// Find the package by its description in this repository.
         /// </summary>
-        /// <param name="packageDescription"></param>
-        /// <returns></returns>
+        /// <param name="packageDescription">Description of the package to find.</param>
+        /// <returns>Returns the PackageDefinition if found, or null if not.</returns>
         public PackageDefinition
         FindPackage(
-            System.Tuple<string, string, bool?> packageDescription)
+            (string name, string version) packageDescription)
         {
-            if (packageDescription.Item2 != null)
+            if (packageDescription.version != null)
             {
-                return this.packages.FirstOrDefault(item => item.Name == packageDescription.Item1 && item.Version == packageDescription.Item2);
+                return this.packages.FirstOrDefault(item => item.Name == packageDescription.name && item.Version == packageDescription.version);
             }
             else
             {
-                return this.packages.FirstOrDefault(item => item.Name == packageDescription.Item1);
+                return this.packages.FirstOrDefault(item => item.Name == packageDescription.name);
             }
         }
 
