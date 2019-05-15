@@ -546,17 +546,50 @@ namespace Bam.Core
             dumpTree(rootNode);
             Log.MessageAll("-- Dumping the package tree... DONE");
 
-            // resolve duplicates
+            // resolve duplicates before trying to find packages that weren't found
+            // otherwise you may use package roots for packages that will be discarded
             var duplicatePackageNames = packageMap.Keys.GroupBy(item => item.name).Where(item => item.Count() > 1).Select(item => item.Key);
             if (duplicatePackageNames.Any())
             {
+                var packageVersionSpecifiers = CommandLineProcessor.Evaluate(new Options.PackageDefaultVersion());
+
                 Log.MessageAll("Duplicate packages found");
                 foreach (var name in duplicatePackageNames)
                 {
-                    Log.MessageAll($"\t{name}");
+                    Log.MessageAll($"\tResolving duplicates for {name}...");
                     var duplicates = packageMap.Where(item => item.Key.name.Equals(name, System.StringComparison.Ordinal)).Select(item => item.Value);
+
+                    // package version specifiers take precedence
+                    var specifierMatch = packageVersionSpecifiers.FirstOrDefault(item => item.First().Equals(name));
+                    if (null != specifierMatch)
+                    {
+                        Log.MessageAll($"\t\tCommand line package specifier wants version {specifierMatch.Last()}");
+                        var duplicatesToRemove = duplicates.Where(item => item.Definition.Version != specifierMatch.Last());
+                        foreach (var toRemove in duplicatesToRemove)
+                        {
+                            toRemove.RemoveFromParents();
+                        }
+                        continue;
+                    }
+
+                    // does the master package specify a default for this package?
+                    var masterPackageMatch = masterDefinitionFile.Dependents.FirstOrDefault(item => item.name == name && item.isDefault.HasValue && item.isDefault.Value);
+                    if (!default((string name, string version, bool? isDefault)).Equals(masterPackageMatch))
+                    {
+                        Log.MessageAll($"\t\tMaster package specifies version {masterPackageMatch.version} is default");
+                        var duplicatesToRemove = duplicates.Where(item => item.Definition.Version != masterPackageMatch.version);
+                        foreach (var toRemove in duplicatesToRemove)
+                        {
+                            toRemove.RemoveFromParents();
+                        }
+                        continue;
+                    }
                 }
             }
+
+            Log.MessageAll("-- Dumping the package tree 2");
+            dumpTree(rootNode);
+            Log.MessageAll("-- Dumping the package tree 2... DONE");
 
             if (notfound.Any())
             {

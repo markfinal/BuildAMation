@@ -55,6 +55,16 @@ namespace Bam.Core
             child.Parents.Add(this);
         }
 
+        public void
+        RemoveFromParents()
+        {
+            foreach (var parent in this.Parents)
+            {
+                parent.InternalChildren.Remove(this);
+            }
+            this.Parents.Clear();
+        }
+
         public System.Collections.Generic.IEnumerable<PackageTreeNode> Children
         {
             get
