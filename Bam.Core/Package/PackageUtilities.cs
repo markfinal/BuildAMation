@@ -249,7 +249,7 @@ namespace Bam.Core
 
                 PackageDefinition defFile;
                 PackageTreeNode packageNode;
-                if (packageMap.ContainsKey(defnKey))
+                if (packageMap.ContainsKey(defnKey) && packageMap[defnKey].Definition != null)
                 {
                     packageNode = packageMap[defnKey];
                     defFile = packageNode.Definition;
@@ -282,6 +282,13 @@ namespace Bam.Core
                         packageNode = new PackageTreeNode(defnKey.name, defnKey.version);
                     }
 
+                    if (packageMap.ContainsKey(defnKey))
+                    {
+                        // since a placeholder is being replaced
+                        System.Diagnostics.Debug.Assert(null == packageMap[defnKey].Definition);
+                        packageMap[defnKey].RemoveFromParents();
+                        packageMap.Remove(defnKey);
+                    }
                     packageMap.Add(defnKey, packageNode);
                     if (defn.parents != null)
                     {
@@ -642,7 +649,6 @@ namespace Bam.Core
             ProcessPackagesIntoTree(queue, packageMap);
 
             var rootNode = packageMap.First(item => item.Key == masterDefn).Value;
-            packageMap = null; // do not use this any more
             DumpTree(rootNode);
 
             // resolve duplicates before trying to find packages that weren't found
@@ -658,6 +664,46 @@ namespace Bam.Core
                 foreach (var package in unresolved)
                 {
                     Log.MessageAll($"\t{package.Name}-{package.Version}");
+                }
+                var repoPaths = rootNode.PackageRepositoryPaths;
+                Log.MessageAll($"Implicit repo paths to add:");
+                foreach (var path in repoPaths)
+                {
+                    Log.MessageAll($"\t{path}");
+                    Graph.Instance.AddPackageRepository(path, requiresSourceDownload, masterDefinitionFile);
+                }
+
+                foreach (var package in unresolved)
+                {
+                    queue.Enqueue((package.Name, package.Version, new Array<PackageTreeNode>(package.Parents)));
+                }
+
+                ProcessPackagesIntoTree(queue, packageMap);
+                ResolveDuplicatePackages(rootNode, masterDefinitionFile);
+                DumpTree(rootNode);
+
+                unresolved = rootNode.UnresolvedPackages;
+                if (unresolved.Any())
+                {
+                    var message = new System.Text.StringBuilder();
+                    message.AppendLine("Some packages were not found in any repository:");
+                    foreach (var package in unresolved)
+                    {
+                        if (null != package.Version)
+                        {
+                            message.AppendLine($"\t{package.Name}-{package.Version}");
+                        }
+                        else
+                        {
+                            message.AppendLine($"\t{package.Name}");
+                        }
+                    }
+                    message.AppendLine("Searched for in the following repositories:");
+                    foreach (var repo in Graph.Instance.PackageRepositories)
+                    {
+                        message.AppendLine($"\t{repo.RootPath}");
+                    }
+                    throw new Exception(message.ToString());
                 }
             }
 

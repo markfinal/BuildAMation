@@ -32,7 +32,7 @@ namespace Bam.Core
 {
     internal class PackageTreeNode
     {
-        private Array<PackageTreeNode> Parents { get; set; } = new Array<PackageTreeNode>();
+        private Array<PackageTreeNode> InternalParents { get; set; } = new Array<PackageTreeNode>();
         private Array<PackageTreeNode> InternalChildren { get; set; } = new Array<PackageTreeNode>();
 
         public override string
@@ -81,17 +81,17 @@ namespace Bam.Core
             PackageTreeNode child)
         {
             this.InternalChildren.Add(child);
-            child.Parents.Add(this);
+            child.InternalParents.Add(this);
         }
 
         public void
         RemoveFromParents()
         {
-            foreach (var parent in this.Parents)
+            foreach (var parent in this.InternalParents)
             {
                 parent.InternalChildren.Remove(this);
             }
-            this.Parents.Clear();
+            this.InternalParents.Clear();
         }
 
         public System.Collections.Generic.IEnumerable<PackageTreeNode> Children
@@ -101,6 +101,17 @@ namespace Bam.Core
                 foreach (var child in this.InternalChildren)
                 {
                     yield return child;
+                }
+            }
+        }
+
+        public System.Collections.Generic.IEnumerable<PackageTreeNode> Parents
+        {
+            get
+            {
+                foreach (var parent in this.InternalParents)
+                {
+                    yield return parent;
                 }
             }
         }
@@ -203,6 +214,41 @@ namespace Bam.Core
 
                 getPackageWithNoDefinition(new Array<PackageTreeNode>(), this);
                 return packages;
+            }
+        }
+
+        public System.Collections.Generic.IEnumerable<string> PackageRepositoryPaths
+        {
+            get
+            {
+                var repositoryPaths = new StringArray();
+
+                void getRepositoryPaths(
+                    Array<PackageTreeNode> parents,
+                    PackageTreeNode node)
+                {
+                    if (null != node.Definition)
+                    {
+                        repositoryPaths.AddRangeUnique(node.Definition.PackageRepositories);
+                    }
+                    foreach (var child in node.InternalChildren)
+                    {
+                        // check for cyclic dependencies
+                        if (parents.Contains(child))
+                        {
+                            continue;
+                        }
+                        parents.Add(node);
+                        getRepositoryPaths(parents, child);
+                    }
+                    if (parents.Any())
+                    {
+                        parents.Remove(parents.Last());
+                    }
+                }
+
+                getRepositoryPaths(new Array<PackageTreeNode>(), this);
+                return repositoryPaths;
             }
         }
     }
