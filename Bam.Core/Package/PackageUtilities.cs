@@ -321,6 +321,65 @@ namespace Bam.Core
                 }
             }
         }
+
+        // this is breadth-first traversal, so that the details of packages are explored
+        // at the highest level, not on the first encounter in a depth-first search
+        private static void
+        DumpTreeInternal(
+            PackageTreeNode node,
+            int depth,
+            System.Collections.Generic.Dictionary<PackageTreeNode, int> encountered,
+            Array<PackageTreeNode> displayed)
+        {
+            if (!encountered.ContainsKey(node))
+            {
+                encountered.Add(node, depth);
+            }
+            foreach (var child in node.Children)
+            {
+                if (!encountered.ContainsKey(child))
+                {
+                    encountered.Add(child, depth + 1);
+                }
+            }
+
+            var indent = new string('\t', depth);
+            if (null != node.Definition)
+            {
+                Log.MessageAll($"{indent}{node.Definition.FullName}");
+            }
+            else
+            {
+                Log.MessageAll($"{indent}{node.Name}-{node.Version} ***** unresolved *****");
+            }
+            if (encountered[node] < depth)
+            {
+                return;
+            }
+            if (displayed.Contains(node))
+            {
+                return;
+            }
+            else
+            {
+                displayed.Add(node);
+            }
+            foreach (var child in node.Children)
+            {
+                DumpTreeInternal(child, depth + 1, encountered, displayed);
+            }
+        }
+
+        private static void
+        DumpTree(
+            PackageTreeNode node)
+        {
+            Log.MessageAll("-- Dumping the package tree");
+            var encountered = new System.Collections.Generic.Dictionary<PackageTreeNode, int>();
+            var displayed = new Array<PackageTreeNode>();
+            DumpTreeInternal(node, 0, encountered, displayed);
+            Log.MessageAll("-- Dumping the package tree - DONE");
+        }
 #else
         private static PackageDefinition
         TryToResolveDuplicate(
@@ -496,68 +555,9 @@ namespace Bam.Core
 
             ProcessPackagesIntoTree(queue, packageMap);
 
-            // this is breadth-first traversal, so that the details of packages are explored
-            // at the highest level, not on the first encounter in a depth-first search
-            void
-            dumpTreeInternal(
-                PackageTreeNode node,
-                int depth,
-                System.Collections.Generic.Dictionary<PackageTreeNode, int> encountered,
-                Array<PackageTreeNode> displayed)
-            {
-                if (!encountered.ContainsKey(node))
-                {
-                    encountered.Add(node, depth);
-                }
-                foreach (var child in node.Children)
-                {
-                    if (!encountered.ContainsKey(child))
-                    {
-                        encountered.Add(child, depth + 1);
-                    }
-                }
-
-                var indent = new string('\t', depth);
-                if (null != node.Definition)
-                {
-                    Log.MessageAll($"{indent}{node.Definition.FullName}");
-                }
-                else
-                {
-                    Log.MessageAll($"{indent}{node.Name}-{node.Version} ***** unresolved *****");
-                }
-                if (encountered[node] < depth)
-                {
-                    return;
-                }
-                if (displayed.Contains(node))
-                {
-                    return;
-                }
-                else
-                {
-                    displayed.Add(node);
-                }
-                foreach (var child in node.Children)
-                {
-                    dumpTreeInternal(child, depth + 1, encountered, displayed);
-                }
-            }
-
-            void
-            dumpTree(
-                PackageTreeNode node)
-            {
-                var encountered = new System.Collections.Generic.Dictionary<PackageTreeNode, int>();
-                var displayed = new Array<PackageTreeNode>();
-                dumpTreeInternal(node, 0, encountered, displayed);
-            }
-
             var rootNode = packageMap.First(item => item.Key == masterDefn).Value;
             packageMap = null; // do not use this any more
-            Log.MessageAll("-- Dumping the package tree");
-            dumpTree(rootNode);
-            Log.MessageAll("-- Dumping the package tree... DONE");
+            DumpTree(rootNode);
 
             // resolve duplicates before trying to find packages that weren't found
             // otherwise you may use package roots for packages that will be discarded
@@ -641,9 +641,7 @@ namespace Bam.Core
                 }
             }
 
-            Log.MessageAll("-- Dumping the package tree 2");
-            dumpTree(rootNode);
-            Log.MessageAll("-- Dumping the package tree 2... DONE");
+            DumpTree(rootNode);
 
             var unresolved = rootNode.UnresolvedPackages;
             if (unresolved.Any())
