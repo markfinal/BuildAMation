@@ -406,8 +406,6 @@ namespace Bam.Core
 
             Log.MessageAll("-- Starting package dependency evaluation... --");
 
-            System.Collections.Generic.Queue<(string name, string version)> notfound = new System.Collections.Generic.Queue<(string name, string version)>();
-
             while (queue.Any())
             {
                 var defn = queue.Dequeue();
@@ -443,31 +441,26 @@ namespace Bam.Core
                     if (null != defFile)
                     {
                         packageNode = new PackageTreeNode(defFile);
-                        packageMap.Add(defnKey, packageNode);
-                        if (defn.parents != null)
-                        {
-                            foreach (var parent in defn.parents)
-                            {
-                                parent.AddChild(packageNode);
-                            }
-                        }
                     }
                     else
                     {
-                        // add a placeholder
-                        packageNode = null;
-                        packageMap.Add(defnKey, packageNode);
-
-                        // record missing to return to later
-                        if (!notfound.Contains(defnKey))
-                        {
-                            Log.MessageAll($"\t** Package {defn.name}-{defn.version} not found in any known repository, deferring...");
-                            notfound.Enqueue(defnKey);
-                        }
-
-                        // don't progress further, as we cannot inspect defFile or packageNode
-                        continue;
+                        packageNode = new PackageTreeNode(defnKey.name, defnKey.version);
                     }
+
+                    packageMap.Add(defnKey, packageNode);
+                    if (defn.parents != null)
+                    {
+                        foreach (var parent in defn.parents)
+                        {
+                            parent.AddChild(packageNode);
+                        }
+                    }
+                }
+
+                if (null == defFile)
+                {
+                    // package not found, defer this for later
+                    continue;
                 }
 
                 foreach (var (name,version,isDefault) in defFile.Dependents)
@@ -515,7 +508,14 @@ namespace Bam.Core
                 }
 
                 var indent = new string('\t', depth);
-                Log.MessageAll($"{indent}{node.Definition.FullName}");
+                if (null != node.Definition)
+                {
+                    Log.MessageAll($"{indent}{node.Definition.FullName}");
+                }
+                else
+                {
+                    Log.MessageAll($"{indent}{node.Name}-{node.Version} ***** unresolved *****");
+                }
                 if (encountered[node] < depth)
                 {
                     return;
@@ -635,12 +635,13 @@ namespace Bam.Core
             dumpTree(rootNode);
             Log.MessageAll("-- Dumping the package tree 2... DONE");
 
-            if (notfound.Any())
+            var unresolved = rootNode.UnresolvedPackages;
+            if (unresolved.Any())
             {
-                Log.MessageAll($"{notfound.Count} packages not found");
-                foreach (var (name, version) in notfound)
+                Log.MessageAll($"{unresolved.Count()} packages not found");
+                foreach (var package in unresolved)
                 {
-                    Log.MessageAll($"\t{name}-{version}");
+                    Log.MessageAll($"\t{package.Name}-{package.Version}");
                 }
             }
 

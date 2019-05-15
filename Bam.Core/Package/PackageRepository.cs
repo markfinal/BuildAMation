@@ -45,6 +45,29 @@ namespace Bam.Core
             PackageDefinition definition)
         {
             this.Definition = definition;
+            this.Name = definition.Name;
+            this.Version = definition.Version;
+        }
+
+        public PackageTreeNode(
+            string name,
+            string version)
+        {
+            this.Definition = null;
+            this.Name = name;
+            this.Version = version;
+        }
+
+        public string Name
+        {
+            get;
+            private set;
+        }
+
+        public string Version
+        {
+            get;
+            private set;
         }
 
         public PackageDefinition Definition
@@ -92,7 +115,7 @@ namespace Bam.Core
                     Array<PackageTreeNode> parents,
                     PackageTreeNode node)
                 {
-                    packageNames.AddUnique((node.Definition.Name, node.Definition.Version));
+                    packageNames.AddUnique((node.Name, node.Version));
                     foreach (var child in node.InternalChildren)
                     {
                         // check for cyclic dependencies
@@ -124,7 +147,7 @@ namespace Bam.Core
                 Array<PackageTreeNode> parents,
                 PackageTreeNode node)
             {
-                if (node.Definition.Name.Equals(packageName, System.StringComparison.Ordinal))
+                if (node.Name.Equals(packageName, System.StringComparison.Ordinal))
                 {
                     packages.AddUnique(node);
                 }
@@ -146,6 +169,41 @@ namespace Bam.Core
 
             getPackageByName(new Array<PackageTreeNode>(), this);
             return packages;
+        }
+
+        public System.Collections.Generic.IEnumerable<PackageTreeNode> UnresolvedPackages
+        {
+            get
+            {
+                var packages = new Array<PackageTreeNode>();
+
+                void getPackageWithNoDefinition(
+                    Array<PackageTreeNode> parents,
+                    PackageTreeNode node)
+                {
+                    if (null == node.Definition)
+                    {
+                        packages.AddUnique(node);
+                    }
+                    foreach (var child in node.InternalChildren)
+                    {
+                        // check for cyclic dependencies
+                        if (parents.Contains(child))
+                        {
+                            continue;
+                        }
+                        parents.Add(node);
+                        getPackageWithNoDefinition(parents, child);
+                    }
+                    if (parents.Any())
+                    {
+                        parents.Remove(parents.Last());
+                    }
+                }
+
+                getPackageWithNoDefinition(new Array<PackageTreeNode>(), this);
+                return packages;
+            }
         }
     }
 
