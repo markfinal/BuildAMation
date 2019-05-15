@@ -235,6 +235,93 @@ namespace Bam.Core
             return masterDefinitionFile;
         }
 
+#if true
+        private static void
+        ProcessPackagesIntoTree(
+            System.Collections.Generic.Queue<(string name, string version, Array<PackageTreeNode> parents)> queue,
+            System.Collections.Generic.Dictionary<(string name, string version), PackageTreeNode> packageMap)
+        {
+            while (queue.Any())
+            {
+                var defn = queue.Dequeue();
+                var defnKey = (defn.name, defn.version);
+                Log.MessageAll($"Considering package {defn.name}-{defn.version} and its dependents");
+
+                PackageDefinition defFile;
+                PackageTreeNode packageNode;
+                if (packageMap.ContainsKey(defnKey))
+                {
+                    packageNode = packageMap[defnKey];
+                    defFile = packageNode.Definition;
+                }
+                else
+                {
+                    PackageDefinition
+                    findPackageInRepositories(
+                        (string name, string version) packageDesc)
+                    {
+                        foreach (var repo in Graph.Instance.PackageRepositories)
+                        {
+                            var definition = repo.FindPackage(packageDesc);
+                            if (null != definition)
+                            {
+                                Log.MessageAll($"\tFound {packageDesc.name}-{packageDesc.version} in repo {repo.RootPath}");
+                                return definition;
+                            }
+                        }
+                        return null;
+                    }
+
+                    defFile = findPackageInRepositories(defnKey);
+                    if (null != defFile)
+                    {
+                        packageNode = new PackageTreeNode(defFile);
+                    }
+                    else
+                    {
+                        packageNode = new PackageTreeNode(defnKey.name, defnKey.version);
+                    }
+
+                    packageMap.Add(defnKey, packageNode);
+                    if (defn.parents != null)
+                    {
+                        foreach (var parent in defn.parents)
+                        {
+                            parent.AddChild(packageNode);
+                        }
+                    }
+                }
+
+                if (null == defFile)
+                {
+                    // package not found, defer this for later
+                    continue;
+                }
+
+                foreach (var (name, version, isDefault) in defFile.Dependents)
+                {
+                    var key = (name, version);
+                    if (!packageMap.ContainsKey(key))
+                    {
+                        var match = queue.FirstOrDefault(item => item.name == key.name && item.version == key.version);
+                        if (default((string name, string version, Array<PackageTreeNode> parents)).Equals(match))
+                        {
+                            Log.MessageAll($"\tQueuing up {name}-{version}...");
+                            queue.Enqueue((key.name, key.version, new Array<PackageTreeNode>(packageNode)));
+                        }
+                        else
+                        {
+                            match.parents.Add(packageNode);
+                        }
+                        continue;
+                    }
+                    Log.MessageAll($"\tPackage {name}-{version} already encountered");
+                    var depNode = packageMap[key];
+                    packageNode.AddChild(depNode);
+                }
+            }
+        }
+#else
         private static PackageDefinition
         TryToResolveDuplicate(
             PackageDefinition masterDefinitionFile,
@@ -343,6 +430,7 @@ namespace Bam.Core
             reposToVisit.AddLast(System.Tuple.Create<string, PackageDefinition>(repoPath, sourcePackageDefinition));
             ++reposAdded;
         }
+#endif
 
         private static void
         InjectExtraModules(
@@ -406,85 +494,7 @@ namespace Bam.Core
 
             Log.MessageAll("-- Starting package dependency evaluation... --");
 
-            while (queue.Any())
-            {
-                var defn = queue.Dequeue();
-                var defnKey = (defn.name, defn.version);
-                Log.MessageAll($"Considering package {defn.name}-{defn.version} and its dependents");
-
-                PackageDefinition defFile;
-                PackageTreeNode packageNode;
-                if (packageMap.ContainsKey(defnKey))
-                {
-                    packageNode = packageMap[defnKey];
-                    defFile = packageNode.Definition;
-                }
-                else
-                {
-                    PackageDefinition
-                    findPackageInRepositories(
-                        (string name, string version) packageDesc)
-                    {
-                        foreach (var repo in Graph.Instance.PackageRepositories)
-                        {
-                            var definition = repo.FindPackage(packageDesc);
-                            if (null != definition)
-                            {
-                                Log.MessageAll($"\tFound {packageDesc.name}-{packageDesc.version} in repo {repo.RootPath}");
-                                return definition;
-                            }
-                        }
-                        return null;
-                    }
-
-                    defFile = findPackageInRepositories(defnKey);
-                    if (null != defFile)
-                    {
-                        packageNode = new PackageTreeNode(defFile);
-                    }
-                    else
-                    {
-                        packageNode = new PackageTreeNode(defnKey.name, defnKey.version);
-                    }
-
-                    packageMap.Add(defnKey, packageNode);
-                    if (defn.parents != null)
-                    {
-                        foreach (var parent in defn.parents)
-                        {
-                            parent.AddChild(packageNode);
-                        }
-                    }
-                }
-
-                if (null == defFile)
-                {
-                    // package not found, defer this for later
-                    continue;
-                }
-
-                foreach (var (name,version,isDefault) in defFile.Dependents)
-                {
-                    var key = (name, version);
-                    if (!packageMap.ContainsKey(key))
-                    {
-                        var match = queue.FirstOrDefault(item => item.name == key.name && item.version == key.version);
-                        if (default((string name, string version, Array<PackageTreeNode> parents)).Equals(match))
-                        {
-                            Log.MessageAll($"\tQueuing up {name}-{version}...");
-                            queue.Enqueue((key.name, key.version, new Array<PackageTreeNode>(packageNode)));
-                        }
-                        else
-                        {
-                            match.parents.Add(packageNode);
-                        }
-                        continue;
-                    }
-                    Log.MessageAll($"\tPackage {name}-{version} already encountered");
-                    var depNode = packageMap[key];
-                    packageNode.AddChild(depNode);
-                }
-            }
+            ProcessPackagesIntoTree(queue, packageMap);
 
             // this is breadth-first traversal, so that the details of packages are explored
             // at the highest level, not on the first encounter in a depth-first search
