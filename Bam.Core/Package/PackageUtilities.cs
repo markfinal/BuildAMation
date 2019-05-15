@@ -245,7 +245,7 @@ namespace Bam.Core
             {
                 var defn = queue.Dequeue();
                 var defnKey = (defn.name, defn.version);
-                Log.MessageAll($"Considering package {defn.name}-{defn.version} and its dependents");
+                Log.DebugMessage($"Considering package {defn.name}-{defn.version} and its dependents");
 
                 PackageDefinition defFile;
                 PackageTreeNode packageNode;
@@ -265,7 +265,7 @@ namespace Bam.Core
                             var definition = repo.FindPackage(packageDesc);
                             if (null != definition)
                             {
-                                Log.MessageAll($"\tFound {packageDesc.name}-{packageDesc.version} in repo {repo.RootPath}");
+                                Log.DebugMessage($"\tFound {packageDesc.name}-{packageDesc.version} in repo {repo.RootPath}");
                                 return definition;
                             }
                         }
@@ -313,7 +313,7 @@ namespace Bam.Core
                         var match = queue.FirstOrDefault(item => item.name == key.name && item.version == key.version);
                         if (default((string name, string version, Array<PackageTreeNode> parents)).Equals(match))
                         {
-                            Log.MessageAll($"\tQueuing up {name}-{version}...");
+                            Log.DebugMessage($"\tQueuing up {name}-{version}...");
                             queue.Enqueue((key.name, key.version, new Array<PackageTreeNode>(packageNode)));
                         }
                         else
@@ -322,7 +322,7 @@ namespace Bam.Core
                         }
                         continue;
                     }
-                    Log.MessageAll($"\tPackage {name}-{version} already encountered");
+                    Log.DebugMessage($"\tPackage {name}-{version} already encountered");
                     var depNode = packageMap[key];
                     packageNode.AddChild(depNode);
                 }
@@ -353,11 +353,11 @@ namespace Bam.Core
             var indent = new string('\t', depth);
             if (null != node.Definition)
             {
-                Log.MessageAll($"{indent}{node.Definition.FullName}");
+                Log.DebugMessage($"{indent}{node.Definition.FullName}");
             }
             else
             {
-                Log.MessageAll($"{indent}{node.Name}-{node.Version} ***** unresolved *****");
+                Log.DebugMessage($"{indent}{node.Name}-{node.Version} ***** unresolved *****");
             }
             if (encountered[node] < depth)
             {
@@ -381,11 +381,11 @@ namespace Bam.Core
         DumpTree(
             PackageTreeNode node)
         {
-            Log.MessageAll("-- Dumping the package tree");
+            Log.DebugMessage("-- Dumping the package tree");
             var encountered = new System.Collections.Generic.Dictionary<PackageTreeNode, int>();
             var displayed = new Array<PackageTreeNode>();
             DumpTreeInternal(node, 0, encountered, displayed);
-            Log.MessageAll("-- Dumping the package tree - DONE");
+            Log.DebugMessage("-- Dumping the package tree - DONE");
         }
 
         private static void
@@ -398,10 +398,10 @@ namespace Bam.Core
             {
                 var packageVersionSpecifiers = CommandLineProcessor.Evaluate(new Options.PackageDefaultVersion());
 
-                Log.MessageAll("Duplicate packages found");
+                Log.DebugMessage("Duplicate packages found");
                 foreach (var name in duplicatePackageNames)
                 {
-                    Log.MessageAll($"\tResolving duplicates for {name}...");
+                    Log.DebugMessage($"\tResolving duplicates for {name}...");
                     var duplicates = rootNode.DuplicatePackages(name);
 
                     // package version specifiers take precedence
@@ -409,7 +409,7 @@ namespace Bam.Core
                     System.Collections.Generic.IEnumerable<PackageTreeNode> duplicatesToRemove = null;
                     if (null != specifierMatch)
                     {
-                        Log.MessageAll($"\t\tCommand line package specifier wants version {specifierMatch.Last()}");
+                        Log.DebugMessage($"\t\tCommand line package specifier wants version {specifierMatch.Last()}");
                         duplicatesToRemove = duplicates.Where(item => item.Definition.Version != specifierMatch.Last());
                         foreach (var toRemove in duplicatesToRemove)
                         {
@@ -422,7 +422,7 @@ namespace Bam.Core
                         var masterPackageMatch = masterDefinitionFile.Dependents.FirstOrDefault(item => item.name == name && item.isDefault.HasValue && item.isDefault.Value);
                         if (!default((string name, string version, bool? isDefault)).Equals(masterPackageMatch))
                         {
-                            Log.MessageAll($"\t\tMaster package specifies version {masterPackageMatch.version} is default");
+                            Log.DebugMessage($"\t\tMaster package specifies version {masterPackageMatch.version} is default");
                             duplicatesToRemove = duplicates.Where(item => item.Definition.Version != masterPackageMatch.version);
                             foreach (var toRemove in duplicatesToRemove.ToList())
                             {
@@ -644,7 +644,7 @@ namespace Bam.Core
             System.Collections.Generic.Queue<(string name, string version, Array<PackageTreeNode> parents)> queue = new System.Collections.Generic.Queue<(string name, string version, Array<PackageTreeNode> parents)>();
             queue.Enqueue((masterDefn.name, masterDefn.version, null));
 
-            Log.MessageAll("-- Starting package dependency evaluation... --");
+            Log.DebugMessage("-- Starting package dependency evaluation... --");
 
             ProcessPackagesIntoTree(queue, packageMap);
 
@@ -660,16 +660,16 @@ namespace Bam.Core
             var unresolved = rootNode.UnresolvedPackages;
             if (unresolved.Any())
             {
-                Log.MessageAll($"{unresolved.Count()} packages not found");
+                Log.DebugMessage($"{unresolved.Count()} packages not found:");
                 foreach (var package in unresolved)
                 {
-                    Log.MessageAll($"\t{package.Name}-{package.Version}");
+                    Log.DebugMessage($"\t{package.Name}-{package.Version}");
                 }
                 var repoPaths = rootNode.PackageRepositoryPaths;
-                Log.MessageAll($"Implicit repo paths to add:");
+                Log.DebugMessage($"Implicit repo paths to add:");
                 foreach (var path in repoPaths)
                 {
-                    Log.MessageAll($"\t{path}");
+                    Log.DebugMessage($"\t{path}");
                     Graph.Instance.AddPackageRepository(path, requiresSourceDownload, masterDefinitionFile);
                 }
 
@@ -707,7 +707,7 @@ namespace Bam.Core
                 }
             }
 
-            Log.MessageAll("-- Completed package dependency evaluation --");
+            Log.DebugMessage("-- Completed package dependency evaluation --");
 
             var packageDefinitions = rootNode.UniquePackageDefinitions;
             if (enforceBamAssemblyVersions)

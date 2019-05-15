@@ -67,7 +67,7 @@ namespace Bam.Core
                 this.packages.Add(defn);
             }
 
-            Log.MessageAll("Adding package repository rooted at '{0}'", rootPath);
+            Log.DebugMessage("Adding package repository rooted at '{0}'", rootPath);
             this.candidatePackageDirs = new StringArray();
             var possiblePackages = System.IO.Directory.GetDirectories(rootPath, "*", System.IO.SearchOption.TopDirectoryOnly);
             foreach (var packageDir in possiblePackages)
@@ -82,7 +82,7 @@ namespace Bam.Core
                 {
                     continue;
                 }
-                Log.MessageAll($"\t{packageDir}");
+                Log.DebugMessage($"\t{packageDir}");
                 this.candidatePackageDirs.Add(packageDir);
 
                 if (this.packages.Any(item => item.XMLFilename == packageDefinitionPath))
