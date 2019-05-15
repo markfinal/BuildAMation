@@ -35,6 +35,12 @@ namespace Bam.Core
         private Array<PackageTreeNode> Parents { get; set; } = new Array<PackageTreeNode>();
         private Array<PackageTreeNode> InternalChildren { get; set; } = new Array<PackageTreeNode>();
 
+        public override string
+        ToString()
+        {
+            return this.Definition.FullName;
+        }
+
         public PackageTreeNode(
             PackageDefinition definition)
         {
@@ -74,6 +80,72 @@ namespace Bam.Core
                     yield return child;
                 }
             }
+        }
+
+        public System.Collections.Generic.IEnumerable<string> DuplicatePackageNames
+        {
+            get
+            {
+                var packageNames = new Array<(string name, string version)>();
+
+                void getPackageNames(
+                    Array<PackageTreeNode> parents,
+                    PackageTreeNode node)
+                {
+                    packageNames.AddUnique((node.Definition.Name, node.Definition.Version));
+                    foreach (var child in node.InternalChildren)
+                    {
+                        // check for cyclic dependencies
+                        if (parents.Contains(child))
+                        {
+                            continue;
+                        }
+                        parents.Add(node);
+                        getPackageNames(parents, child);
+                    }
+                    if (parents.Any())
+                    {
+                        parents.Remove(parents.Last());
+                    }
+                }
+
+                getPackageNames(new Array<PackageTreeNode>(), this);
+                return packageNames.GroupBy(item => item.name).Where(item => item.Count() > 1).Select(item => item.Key);
+            }
+        }
+
+        public System.Collections.Generic.IEnumerable<PackageTreeNode>
+        DuplicatePackages(
+            string packageName)
+        {
+            var packages = new Array<PackageTreeNode>();
+
+            void getPackageByName(
+                Array<PackageTreeNode> parents,
+                PackageTreeNode node)
+            {
+                if (node.Definition.Name.Equals(packageName, System.StringComparison.Ordinal))
+                {
+                    packages.AddUnique(node);
+                }
+                foreach (var child in node.InternalChildren)
+                {
+                    // check for cyclic dependencies
+                    if (parents.Contains(child))
+                    {
+                        continue;
+                    }
+                    parents.Add(node);
+                    getPackageByName(parents, child);
+                }
+                if (parents.Any())
+                {
+                    parents.Remove(parents.Last());
+                }
+            }
+
+            getPackageByName(new Array<PackageTreeNode>(), this);
+            return packages;
         }
     }
 

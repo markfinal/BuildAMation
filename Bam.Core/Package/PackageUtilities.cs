@@ -493,6 +493,8 @@ namespace Bam.Core
                 }
             }
 
+            // this is breadth-first traversal, so that the details of packages are explored
+            // at the highest level, not on the first encounter in a depth-first search
             void
             dumpTreeInternal(
                 PackageTreeNode node,
@@ -542,13 +544,14 @@ namespace Bam.Core
             }
 
             var rootNode = packageMap.First(item => item.Key == masterDefn).Value;
+            packageMap = null; // do not use this any more
             Log.MessageAll("-- Dumping the package tree");
             dumpTree(rootNode);
             Log.MessageAll("-- Dumping the package tree... DONE");
 
             // resolve duplicates before trying to find packages that weren't found
             // otherwise you may use package roots for packages that will be discarded
-            var duplicatePackageNames = packageMap.Keys.GroupBy(item => item.name).Where(item => item.Count() > 1).Select(item => item.Key);
+            var duplicatePackageNames = rootNode.DuplicatePackageNames;
             if (duplicatePackageNames.Any())
             {
                 var packageVersionSpecifiers = CommandLineProcessor.Evaluate(new Options.PackageDefaultVersion());
@@ -557,33 +560,74 @@ namespace Bam.Core
                 foreach (var name in duplicatePackageNames)
                 {
                     Log.MessageAll($"\tResolving duplicates for {name}...");
-                    var duplicates = packageMap.Where(item => item.Key.name.Equals(name, System.StringComparison.Ordinal)).Select(item => item.Value);
+                    var duplicates = rootNode.DuplicatePackages(name);
 
                     // package version specifiers take precedence
                     var specifierMatch = packageVersionSpecifiers.FirstOrDefault(item => item.First().Equals(name));
+                    System.Collections.Generic.IEnumerable<PackageTreeNode> duplicatesToRemove = null;
                     if (null != specifierMatch)
                     {
                         Log.MessageAll($"\t\tCommand line package specifier wants version {specifierMatch.Last()}");
-                        var duplicatesToRemove = duplicates.Where(item => item.Definition.Version != specifierMatch.Last());
+                        duplicatesToRemove = duplicates.Where(item => item.Definition.Version != specifierMatch.Last());
                         foreach (var toRemove in duplicatesToRemove)
                         {
                             toRemove.RemoveFromParents();
                         }
+                    }
+                    else
+                    {
+                        // does the master package specify a default for this package?
+                        var masterPackageMatch = masterDefinitionFile.Dependents.FirstOrDefault(item => item.name == name && item.isDefault.HasValue && item.isDefault.Value);
+                        if (!default((string name, string version, bool? isDefault)).Equals(masterPackageMatch))
+                        {
+                            Log.MessageAll($"\t\tMaster package specifies version {masterPackageMatch.version} is default");
+                            duplicatesToRemove = duplicates.Where(item => item.Definition.Version != masterPackageMatch.version);
+                            foreach (var toRemove in duplicatesToRemove.ToList())
+                            {
+                                toRemove.RemoveFromParents();
+                            }
+                        }
+                    }
+
+                    // and if that has reduced the duplicates for this package down to a single version, we're good to carry on
+                    duplicates = rootNode.DuplicatePackages(name);
+                    var numDuplicates = duplicates.Count();
+                    if (1 == numDuplicates)
+                    {
                         continue;
                     }
 
-                    // does the master package specify a default for this package?
-                    var masterPackageMatch = masterDefinitionFile.Dependents.FirstOrDefault(item => item.name == name && item.isDefault.HasValue && item.isDefault.Value);
-                    if (!default((string name, string version, bool? isDefault)).Equals(masterPackageMatch))
+                    // otherwise, error
+                    var resolveErrorMessage = new System.Text.StringBuilder();
+                    if (numDuplicates > 0)
                     {
-                        Log.MessageAll($"\t\tMaster package specifies version {masterPackageMatch.version} is default");
-                        var duplicatesToRemove = duplicates.Where(item => item.Definition.Version != masterPackageMatch.version);
-                        foreach (var toRemove in duplicatesToRemove)
+                        resolveErrorMessage.AppendFormat("Unable to resolve to a single version of package {0}. Use --{0}.version=<version> to resolve.", name);
+                        resolveErrorMessage.AppendLine();
+                        resolveErrorMessage.AppendLine("Available versions of the package are:");
+                        foreach (var dup in duplicates)
                         {
-                            toRemove.RemoveFromParents();
+                            resolveErrorMessage.AppendFormat("\t{0}", dup.Definition.Version);
+                            resolveErrorMessage.AppendLine();
                         }
-                        continue;
                     }
+                    else
+                    {
+                        resolveErrorMessage.AppendFormat("No version of package {0} has been determined to be available.", name);
+                        resolveErrorMessage.AppendLine();
+                        if (duplicatesToRemove != null && duplicatesToRemove.Any())
+                        {
+                            resolveErrorMessage.AppendFormat("If there were any references to {0}, they may have been removed from consideration by the following packages being discarded:", name);
+                            resolveErrorMessage.AppendLine();
+                            foreach (var removed in duplicatesToRemove)
+                            {
+                                resolveErrorMessage.AppendFormat("\t{0}", removed.Definition.FullName);
+                                resolveErrorMessage.AppendLine();
+                            }
+                        }
+                        resolveErrorMessage.AppendFormat("Please add an explicit dependency to (a version of) the {0} package either in your master package or one of its dependencies.", name);
+                        resolveErrorMessage.AppendLine();
+                    }
+                    throw new Exception(resolveErrorMessage.ToString());
                 }
             }
 
