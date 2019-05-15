@@ -251,5 +251,37 @@ namespace Bam.Core
                 return repositoryPaths;
             }
         }
+
+        public System.Collections.Generic.IEnumerable<PackageDefinition> UniquePackageDefinitions
+        {
+            get
+            {
+                var definitions = new Array<PackageDefinition>();
+
+                void getUniquePackageDefinitions(
+                    Array<PackageTreeNode> parents,
+                    PackageTreeNode node)
+                {
+                    definitions.AddUnique(node.Definition);
+                    foreach (var child in node.InternalChildren)
+                    {
+                        // check for cyclic dependencies
+                        if (parents.Contains(child))
+                        {
+                            continue;
+                        }
+                        parents.Add(node);
+                        getUniquePackageDefinitions(parents, child);
+                    }
+                    if (parents.Any())
+                    {
+                        parents.Remove(parents.Last());
+                    }
+                }
+
+                getUniquePackageDefinitions(new Array<PackageTreeNode>(), this);
+                return definitions;
+            }
+        }
     }
 }

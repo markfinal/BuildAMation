@@ -708,6 +708,19 @@ namespace Bam.Core
             }
 
             Log.MessageAll("-- Completed package dependency evaluation --");
+
+            var packageDefinitions = rootNode.UniquePackageDefinitions;
+            if (enforceBamAssemblyVersions)
+            {
+                // for all packages that make up this assembly, ensure that their requirements on the version of the Bam
+                // assemblies are upheld, prior to compiling the code
+                foreach (var pkgDefn in packageDefinitions)
+                {
+                    pkgDefn.ValidateBamAssemblyRequirements();
+                }
+            }
+
+            Graph.Instance.SetPackageDefinitions(packageDefinitions);
 #else
             void
             enqueueDependentPackages(

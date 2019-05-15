@@ -843,7 +843,7 @@ namespace Bam.Core
         /// <value>The build environments.</value>
         public System.Collections.Generic.List<Environment> BuildEnvironments => this.Modules.Keys.ToList();
 
-        private Array<PackageDefinition> PackageDefinitions { get; set; }
+        private System.Collections.Generic.IEnumerable<PackageDefinition> PackageDefinitions { get; set; }
 
         /// <summary>
         /// Obtain the master package (the package in which Bam was invoked).
@@ -857,7 +857,7 @@ namespace Bam.Core
                 {
                     throw new Exception("No master package was detected");
                 }
-                return this.PackageDefinitions[0];
+                return this.PackageDefinitions.First();
             }
         }
 
@@ -870,7 +870,7 @@ namespace Bam.Core
         /// <param name="packages">Array of package definitions.</param>
         public void
         SetPackageDefinitions(
-            Array<PackageDefinition> packages)
+            System.Collections.Generic.IEnumerable<PackageDefinition> packages)
         {
             this.PackageDefinitions = packages;
             this.Macros.AddVerbatim("masterpackagename", this.MasterPackage.Name);
