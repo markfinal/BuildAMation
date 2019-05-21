@@ -1,8 +1,8 @@
 image:
-  - Visual Studio 2019 Preview
-  - Visual Studio 2017
   - Ubuntu
   - Ubuntu1804
+  - Visual Studio 2019 Preview
+  - Visual Studio 2017
 clone_depth: 10
 configuration: Release
 platform: AnyCPU
@@ -40,13 +40,16 @@ build_script:
   - sh: python codingtools/dotnetcore_run_unittests.py
   - sh: python codingtools/dotnetcore_make_release.py --local
 after_build:
-  - cmd: 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish
+  - cmd: 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish\*
+  - cmd: 7z a bam.tar %APPVEYOR_BUILD_FOLDER%\bam_publish\*
   - cmd: 7z a bam_docs.zip %APPVEYOR_BUILD_FOLDER%\docs || exit 0
 artifacts:
   - path: bam.zip
-    name: Bam
+    name: Bam Zip Archive
+  - path: bam.tar
+    name: Bam Tar Archive
   - path: bam_docs.zip
-    name: Bam Documentation
+    name: Bam Documentation Zip Archive
 test_script:
   - cd bam_publish
   - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
@@ -61,4 +64,4 @@ test_script:
 on_finish:
   - ps: |
       $wc = New-Object 'System.Net.WebClient'
-      $wc.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$env:APPVEYOR_JOB_ID", (Resolve-Path .\bam_unittests\bin\Release\netcoreapp2.1\TestResults.trx))
+      $wc.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$env:APPVEYOR_JOB_ID", (Resolve-Path .\bam_unittests\bin\Release\netcoreapp2.1\TestResults*.trx))
