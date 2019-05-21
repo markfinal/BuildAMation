@@ -1,8 +1,8 @@
 image:
-  - Visual Studio 2019 Preview
-  - Visual Studio 2017
   - Ubuntu
   - Ubuntu1804
+  - Visual Studio 2019 Preview
+  - Visual Studio 2017
 clone_depth: 10
 configuration: Release
 platform: AnyCPU
