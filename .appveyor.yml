@@ -50,17 +50,17 @@ artifacts:
     name: Bam Tar Archive
   - path: bam_docs.zip
     name: Bam Documentation Zip Archive
-test_script:
-  - cd bam_publish
-  - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
-  - cmd: env.bat
-  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b Native -c debug -c profile -j0 -d
-  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b VSSolution -c debug -c profile -j0 -d
-  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
-  - sh: source env.sh
-  - sh: python tests/runtests.py --Gcc.version=$GCC_VERSION -b Native -c debug -c profile -j0 -d
-  - sh: python tests/runtests.py --Gcc.version=$GCC_VERSION -b MakeFile -c debug -c profile -j0 -d
-  - cd ..
+#test_script:
+#  - cd bam_publish
+#  - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
+#  - cmd: env.bat
+#  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b Native -c debug -c profile -j0 -d
+#  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b VSSolution -c debug -c profile -j0 -d
+#  - cmd: python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
+#  - sh: source env.sh
+#  - sh: python tests/runtests.py --Gcc.version=$GCC_VERSION -b Native -c debug -c profile -j0 -d
+#  - sh: python tests/runtests.py --Gcc.version=$GCC_VERSION -b MakeFile -c debug -c profile -j0 -d
+#  - cd ..
 on_finish:
   - ps: |
       $wc = New-Object 'System.Net.WebClient'
