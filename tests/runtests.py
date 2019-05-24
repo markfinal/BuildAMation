@@ -298,6 +298,8 @@ if __name__ == "__main__":
 
     exit_code = 0
     for repo in options.repos:
+        if not os.path.isabs(repo):
+            repo = os.path.join(os.getcwd(), repo)
         repoTestDir = os.path.join(repo, "tests")
         bamTestsConfigPathname = os.path.join(repoTestDir, 'bamtests.py')
         if not os.path.isfile(bamTestsConfigPathname):
