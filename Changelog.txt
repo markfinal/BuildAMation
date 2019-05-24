@@ -1,3 +1,5 @@
+24-May-2019 Fixes #536. Xcode runs of the Python test harness did not work when specifying relative paths to package repositories.
+
 14-Apr-2019 Fixes #78. Added Link Time Code Generation support.
 Added VisualCCommon.ICommonCompilerSettings.WholeProgramOptimization (bool, default=false), VisualCCommon.ICommonLinkerSettings.LinkTimeCodeGeneration (type ELinkTimeCodeGeneration, default=Off), and VisualCCommon.ICommonArchiverSettings.LinkTimeCodeGeneration (bool, default=false).
 There is no automating enabling of LTCG through BAM configurations.
