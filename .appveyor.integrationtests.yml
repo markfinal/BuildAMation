@@ -1,0 +1,47 @@
+image:
+  - Ubuntu
+  - Ubuntu1804
+  - Visual Studio 2019 Preview
+  - Visual Studio 2017
+clone_depth: 10
+configuration: Release
+platform: AnyCPU
+for:
+  - matrix:
+      only:
+        - image: Ubuntu
+    environment:
+      GCC_VERSION: 5
+  - matrix:
+      only:
+        - image: Ubuntu1804
+    environment:
+      GCC_VERSION: 7
+  - matrix:
+      only:
+        - image: Visual Studio 2017
+    environment:
+        VC_VERSION: 15.0
+        VC_PRERELEASE_ARGS:
+  - matrix:
+      only:
+        - image: Visual Studio 2019 Preview
+    environment:
+        VC_VERSION: 16
+        VC_PRERELEASE_ARGS: "--VisualC.discoverprereleases"
+install:
+  - sh: ./codingtools/install_ubuntu_dependencies.sh
+  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=master&job=Image%3A%20Visual%20Studio%202017'
+  - cmd: 7z x bam.tar -oc:\BuildAMation
+  - sh: mkdir ~/BuildAMation
+  - sh: tar xf bam.tar -C ~/BuildAMation
+build: off
+test_script:
+  - cmd: c:\BuildAMation\env.bat
+  - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
+  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b Native -c debug -c profile -j0 -d -t Test9
+  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b VSSolution -c debug -c profile -j0 -d -t Test9
+  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE -t Test9
+  - sh: source ~/BuildAMation/env.sh
+  - sh: python ~/BuildAMation/tests/runtests.py --Gcc.version=$GCC_VERSION -b Native -c debug -c profile -j0 -d -t Test9
+  - sh: python ~/BuildAMation/tests/runtests.py --Gcc.version=$GCC_VERSION -b MakeFile -c debug -c profile -j0 -d -t Test9
