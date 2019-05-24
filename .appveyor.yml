@@ -31,7 +31,7 @@ for:
         VC_PRERELEASE_ARGS: "--VisualC.discoverprereleases"
 install:
   - cmd: powershell choco install doxygen.portable --version 1.8.11 || exit 0
-  - sh: ./codingtools/install_ubuntu_dependencies.sh
+#  - sh: ./codingtools/install_ubuntu_dependencies.sh
 before_build:
   - dotnet --version
 build_script:
