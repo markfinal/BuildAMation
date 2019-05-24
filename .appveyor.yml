@@ -1,34 +1,34 @@
 image:
-  - Ubuntu
-  - Ubuntu1804
-  - Visual Studio 2019 Preview
+#  - Ubuntu
+#  - Ubuntu1804
+#  - Visual Studio 2019 Preview
   - Visual Studio 2017
 clone_depth: 10
 configuration: Release
 platform: AnyCPU
-for:
-  - matrix:
-      only:
-        - image: Ubuntu
-    environment:
-      GCC_VERSION: 5
-  - matrix:
-      only:
-        - image: Ubuntu1804
-    environment:
-      GCC_VERSION: 7
-  - matrix:
-      only:
-        - image: Visual Studio 2017
-    environment:
-        VC_VERSION: 15.0
-        VC_PRERELEASE_ARGS:
-  - matrix:
-      only:
-        - image: Visual Studio 2019 Preview
-    environment:
-        VC_VERSION: 16
-        VC_PRERELEASE_ARGS: "--VisualC.discoverprereleases"
+#for:
+#  - matrix:
+#      only:
+#        - image: Ubuntu
+#    environment:
+#      GCC_VERSION: 5
+#  - matrix:
+#      only:
+#        - image: Ubuntu1804
+#    environment:
+#      GCC_VERSION: 7
+#  - matrix:
+#      only:
+#        - image: Visual Studio 2017
+#    environment:
+#        VC_VERSION: 15.0
+#        VC_PRERELEASE_ARGS:
+#  - matrix:
+#      only:
+#        - image: Visual Studio 2019 Preview
+#    environment:
+#        VC_VERSION: 16
+#        VC_PRERELEASE_ARGS: "--VisualC.discoverprereleases"
 install:
   - cmd: powershell choco install doxygen.portable --version 1.8.11 || exit 0
 #  - sh: ./codingtools/install_ubuntu_dependencies.sh
@@ -37,8 +37,8 @@ before_build:
 build_script:
   - cmd: python codingtools\dotnetcore_run_unittests.py
   - cmd: python codingtools\dotnetcore_make_release.py --local --doxygen doxygen.exe
-  - sh: python codingtools/dotnetcore_run_unittests.py
-  - sh: python codingtools/dotnetcore_make_release.py --local
+#  - sh: python codingtools/dotnetcore_run_unittests.py
+#  - sh: python codingtools/dotnetcore_make_release.py --local
 after_build:
   - cmd: 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish\*
   - cmd: 7z a bam.tar %APPVEYOR_BUILD_FOLDER%\bam_publish\*
