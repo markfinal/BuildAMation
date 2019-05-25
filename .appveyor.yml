@@ -22,9 +22,7 @@ artifacts:
   - path: bam_docs.zip
     name: Bam Documentation Zip Archive
 on_success:
-    ps: Start-AppveyorBuild -ApiKey $env:ACCOUNT_API_KEY -ProjectSlug 'bam-imageformats' -EnvironmentVariables @{
-       BAM_branch = $env:APPVEYOR_REPO_BRANCH
-    }
+    ps: Start-AppveyorBuild -ApiKey $env:ACCOUNT_API_KEY -ProjectSlug 'bam-imageformats' -EnvironmentVariables @{ BAM_branch = $env:APPVEYOR_REPO_BRANCH }
 on_finish:
   - ps: |
       $wc = New-Object 'System.Net.WebClient'
