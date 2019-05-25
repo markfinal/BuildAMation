@@ -12,6 +12,8 @@ For more details, tutorials and help, please visit [buildamation.com](http://bui
 
 # Continuous Integration
 
+## Build
+
 [![Travis Build Status](https://travis-ci.org/markfinal/BuildAMation.svg?branch=master)](https://travis-ci.org/markfinal/BuildAMation)
 
 [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/nxcltu54ug7cu1pk/branch/master?svg=true)](https://ci.appveyor.com/project/markfinal/buildamation/branch/master)
