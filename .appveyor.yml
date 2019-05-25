@@ -23,8 +23,8 @@ artifacts:
   - path: bam_docs.zip
     name: Bam Documentation Zip Archive
 on_success:
-    ps: CI\appveyor_jobs.ps1
     cmd: CI\travisci_jobs.bat
+    ps: CI\appveyor_jobs.ps1
 on_finish:
   - ps: |
       $wc = New-Object 'System.Net.WebClient'
