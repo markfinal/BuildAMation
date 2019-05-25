@@ -5,6 +5,7 @@ configuration: Release
 platform: AnyCPU
 install:
   - cmd: powershell choco install doxygen.portable --version 1.8.11 || exit 0
+  - ps: choco install curl
 before_build:
   - dotnet --version
 build_script:
@@ -23,6 +24,7 @@ artifacts:
     name: Bam Documentation Zip Archive
 on_success:
     ps: Start-AppveyorBuild -ApiKey $env:ACCOUNT_API_KEY -ProjectSlug 'bam-imageformats' -EnvironmentVariables @{ BAM_branch = $env:APPVEYOR_REPO_BRANCH }
+    cmd: curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token $env:TRAVIS_API_TOKEN" -d '{"request": {"branch":"master"}}' https://api.travis-ci.com/repo/markfinal%2Fbam-imageformats/requests
 on_finish:
   - ps: |
       $wc = New-Object 'System.Net.WebClient'
