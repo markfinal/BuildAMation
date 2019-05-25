@@ -23,6 +23,11 @@ For more details, tutorials and help, please visit [buildamation.com](http://bui
        src="https://scan.coverity.com/projects/8526/badge.svg"/>
 </a>
 
+## Integration tests
+
+[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/dtyqg4dpwb285d1r/branch/master?svg=true
+)](https://ci.appveyor.com/project/markfinal/buildamation-102vh/branch/master)
+
 # License
 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
