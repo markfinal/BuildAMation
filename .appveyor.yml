@@ -24,7 +24,7 @@ artifacts:
     name: Bam Documentation Zip Archive
 on_success:
     ps: CI\appveyor_jobs.ps1
-    #cmd: curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token $env:TRAVIS_API_TOKEN" https://api.travis-ci.com/repo/markfinal%2Fbam-imageformats/requests
+    cmd: CI\travisci_jobs.bat
 on_finish:
   - ps: |
       $wc = New-Object 'System.Net.WebClient'
