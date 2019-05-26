@@ -5,7 +5,6 @@ configuration: Release
 platform: AnyCPU
 install:
   - cmd: powershell choco install doxygen.portable --version 1.8.11 || exit 0
-  - ps: choco install curl
 before_build:
   - dotnet --version
 build_script:
@@ -24,7 +23,7 @@ artifacts:
     name: Bam Documentation Zip Archive
 on_success:
     cmd: dir && CI\travisci_jobs.bat
-    ps: CI\appveyor_jobs.ps1
+    #ps: CI\appveyor_jobs.ps1
 on_finish:
   - ps: |
       $wc = New-Object 'System.Net.WebClient'
