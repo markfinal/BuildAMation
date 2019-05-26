@@ -23,6 +23,7 @@ artifacts:
   - path: bam_docs.zip
     name: Bam Documentation Zip Archive
 on_success:
+    cmd: dir
     cmd: CI\travisci_jobs.bat
     ps: CI\appveyor_jobs.ps1
 on_finish:
