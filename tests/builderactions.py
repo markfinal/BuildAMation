@@ -40,6 +40,12 @@ visualStudioVersionMapping = {
 }
 
 
+def locallog(message):
+    sys.stdout.write(message)
+    sys.stdout.write('\n')
+    sys.stdout.flush()
+
+
 class NativeBuilder(Builder):
     def __init__(self):
         super(NativeBuilder, self).__init__(True)
@@ -115,7 +121,7 @@ class VSSolutionBuilder(Builder):
                 for platform in flavour.platforms():
                     this_arg_list = copy.deepcopy(arg_list)
                     this_arg_list.append("/p:Platform=%s" % platform)
-                    print "Running '%s'\n" % ' '.join(arg_list)
+                    locallog("Running '%s'\n" % ' '.join(arg_list))
                     try:
                         p = subprocess.Popen(this_arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         (output_stream, error_stream) = p.communicate()  # this should WAIT
@@ -168,7 +174,7 @@ class MakeFileBuilder(Builder):
                 self._make_executable
             ]
             arg_list.extend(self._make_args)
-            print "Running '%s' in %s\n" % (' '.join(arg_list), makefile_dir)
+            locallog("Running '%s' in %s\n" % (' '.join(arg_list), makefile_dir))
             p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=makefile_dir)
             (output_stream, error_stream) = p.communicate()  # this should WAIT
             exit_code |= p.returncode
@@ -188,6 +194,8 @@ class XcodeBuilder(Builder):
 
     def post_action(self, package, options, flavour, output_messages, error_messages):
         exit_code = 0
+        locallog("package.get_path() = '%s'" % package.get_path())
+        locallog("options.buildRoot  = '%s'" % options.buildRoot)
         build_root = os.path.join(package.get_path(), options.buildRoot)
         xcode_workspace_path = os.path.join(build_root, "*.xcworkspace")
         import glob
@@ -207,7 +215,7 @@ class XcodeBuilder(Builder):
                 workspaces[0],
                 "-list"
             ]
-            print "Running '%s'\n" % ' '.join(arg_list)
+            locallog("Running '%s'\n" % ' '.join(arg_list))
             p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             (output_stream, error_stream) = p.communicate()  # this should WAIT
             output_messages.write(output_stream)
@@ -243,8 +251,8 @@ class XcodeBuilder(Builder):
                     # capitalize the first letter of the configuration
                     config = config[0].upper() + config[1:]
                     arg_list.append(config)
-                    print "Running '%s' in %s" % (" ".join(arg_list), build_root)
-                    output_messages.write("Running '%s' in %s" % (" ".join(arg_list), build_root))
+                    locallog("Running '%s' in '%s'" % (" ".join(arg_list), build_root))
+                    output_messages.write("Running '%s' in '%s'" % (" ".join(arg_list), build_root))
                     p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_root)
                     (output_stream, error_stream) = p.communicate()  # this should WAIT
                     exit_code |= p.returncode
