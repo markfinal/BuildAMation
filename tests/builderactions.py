@@ -197,6 +197,17 @@ class XcodeBuilder(Builder):
         locallog("package.get_path() = '%s'" % package.get_path())
         locallog("options.buildRoot  = '%s'" % options.buildRoot)
         build_root = os.path.join(package.get_path(), options.buildRoot)
+        xcode_project_path = os.path.join(build_root, "*.xcodeproj")
+        import glob
+        projects = glob.glob(xcode_project_path)
+        for project in projects:
+            path = os.path.join(project, 'project.pbxproj')
+            f = open(path, 'r')
+            file_contents = f.read()
+            f.close()
+            locallog("------------------------------")
+            locallog("Xcode project '%s': " % path)
+            locallog(file_contents)
         xcode_workspace_path = os.path.join(build_root, "*.xcworkspace")
         import glob
         workspaces = glob.glob(xcode_workspace_path)
