@@ -394,7 +394,7 @@ namespace XcodeBuilder
 
                     // sadly, an absolute path, but cannot find another variable to make this relative to
                     // and BAM pbxproj files are not in the source tree
-                    projectConfig["SRCROOT"] = new UniqueConfigurationValue(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.ProjectDir.ToString())));
+                    projectConfig["SRCROOT"] = new UniqueConfigurationValue(this.SourceRoot);
 
                     // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
                     // needed so that built products are no longer 'red' in the IDE
