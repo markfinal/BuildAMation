@@ -139,6 +139,8 @@ def _run_buildamation(options, package, extra_args, output_messages, error_messa
 
 
 def _post_execute(builder, options, flavour, package, output_messages, error_messages):
+    if options.dumpprojects:
+        builder.dump_generated_files(package, options)
     exit_code = builder.post_action(package, options, flavour, output_messages, error_messages)
     return exit_code
 
@@ -275,6 +277,7 @@ if __name__ == "__main__":
     optParser.add_option("--repo", "-r", dest="repos", action="append", default=[bam_dir], help="Add a package repository to test")
     optParser.add_option("--nodefaultrepo", dest="nodefaultrepo", action="store_true", default=False, help="Do not test the default repository")
     optParser.add_option("--injectdefaultpackage", dest="injected", action="append", default=None, help="Inject default packages, specify packagename or packagename-packageversion")
+    optParser.add_option("--dumpprojects", dest="dumpprojects", action="store_true", default=False, help="Dump generated project files to stdout")
     test_option_setup(optParser)
     (options, args) = optParser.parse_args()
 

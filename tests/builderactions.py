@@ -20,6 +20,9 @@ class Builder(object):
     def post_action(self, package, options, flavour, output_messages, error_messages):
         return 0
 
+    def dump_generated_files(self, package, options):
+        pass
+
 
 # the version of MSBuild.exe to use, depends on which version of VisualStudio
 # was used to build the solution and projects
@@ -139,6 +142,19 @@ class VSSolutionBuilder(Builder):
             return -1
         return exit_code
 
+    def dump_generated_files(self, package, options):
+        build_root = os.path.join(package.get_path(), options.buildRoot)
+        vcxproj_project_path = os.path.join(build_root, "*.vcxproj")
+        import glob
+        projects = glob.glob(xcode_project_path)
+        for project in projects:
+            f = open(project, 'r')
+            file_contents = f.read()
+            f.close()
+            locallog("------------------------------")
+            locallog("VisualStudio project '%s': " % path)
+            locallog(file_contents)
+
 
 class MakeFileBuilder(Builder):
     def __init__(self):
@@ -187,6 +203,16 @@ class MakeFileBuilder(Builder):
             return -1
         return exit_code
 
+    def dump_generated_files(self, package, options):
+        makefile_dir = os.path.join(package.get_path(), options.buildRoot)
+        path = os.path.join(makefile_dir, 'Makefile')
+        f = open(path, 'r')
+        file_contents = f.read()
+        f.close()
+        locallog("------------------------------")
+        locallog("Makefile '%s': " % path)
+        locallog(file_contents)
+
 
 class XcodeBuilder(Builder):
     def __init__(self):
@@ -194,20 +220,7 @@ class XcodeBuilder(Builder):
 
     def post_action(self, package, options, flavour, output_messages, error_messages):
         exit_code = 0
-        locallog("package.get_path() = '%s'" % package.get_path())
-        locallog("options.buildRoot  = '%s'" % options.buildRoot)
         build_root = os.path.join(package.get_path(), options.buildRoot)
-        xcode_project_path = os.path.join(build_root, "*.xcodeproj")
-        import glob
-        projects = glob.glob(xcode_project_path)
-        for project in projects:
-            path = os.path.join(project, 'project.pbxproj')
-            f = open(path, 'r')
-            file_contents = f.read()
-            f.close()
-            locallog("------------------------------")
-            locallog("Xcode project '%s': " % path)
-            locallog(file_contents)
         xcode_workspace_path = os.path.join(build_root, "*.xcworkspace")
         import glob
         workspaces = glob.glob(xcode_workspace_path)
@@ -276,6 +289,20 @@ class XcodeBuilder(Builder):
             error_messages.write(traceback.format_exc())
             return -1
         return exit_code
+
+    def dump_generated_files(self, package, options):
+        build_root = os.path.join(package.get_path(), options.buildRoot)
+        xcode_project_path = os.path.join(build_root, "*.xcodeproj")
+        import glob
+        projects = glob.glob(xcode_project_path)
+        for project in projects:
+            path = os.path.join(project, 'project.pbxproj')
+            f = open(path, 'r')
+            file_contents = f.read()
+            f.close()
+            locallog("------------------------------")
+            locallog("Xcode project '%s': " % path)
+            locallog(file_contents)
 
 
 builder = {

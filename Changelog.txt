@@ -1,3 +1,5 @@
+29-May-2019 Fixes #538. Added option --dumpprojects to the Python test harness, to dump generated project files to the log for inspection.
+
 29-May-2019 Fixes #537. Xcode 10 builds did not work when package sources were downloaded, due to the source files residing in a different location to the package directory.
 
 24-May-2019 Fixes #536. Xcode runs of the Python test harness did not work when specifying relative paths to package repositories.
