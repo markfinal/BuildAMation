@@ -63,7 +63,7 @@ matrix:
       #- python tests/runtests.py --Clang.version=Xcode9 -b Xcode -c debug -c profile -j0 -d
       - cd ..
   - os: osx
-    osx_image: xcode10
+    osx_image: xcode10.2
     mono: none
     dotnet: 2.1.401
     script:
