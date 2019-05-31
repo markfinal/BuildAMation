@@ -1,3 +1,5 @@
+31-May-2019 Fixes #539 C.SuppressWarningsDelegate now allows specification of a C.EBitDepth parameter to limit suppressions to 32- or 64-bit builds only.
+
 29-May-2019 Fixes #538. Added option --dumpprojects to the Python test harness, to dump generated project files to the log for inspection.
 
 29-May-2019 Fixes #537. Xcode 10 builds did not work when package sources were downloaded, due to the source files residing in a different location to the package directory.
