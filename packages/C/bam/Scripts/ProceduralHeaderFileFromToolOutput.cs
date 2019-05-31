@@ -41,6 +41,11 @@ namespace C
         protected abstract Bam.Core.ICommandLineTool SourceTool { get; }
         protected virtual Bam.Core.TokenizedString IncludeDirectory => this.CreateTokenizedString("@dir($(0))", this.InputPath);
 
+        /// <summary>
+        /// Set to true to add search paths to the system includes, rather than user includes.
+        /// </summary>
+        protected virtual bool UseSystemIncludeSearchPaths => false;
+
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -55,7 +60,14 @@ namespace C
                 {
                     if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        preprocessor.IncludePaths.AddUnique(this.IncludeDirectory);
+                        if (this.UseSystemIncludeSearchPaths)
+                        {
+                            preprocessor.SystemIncludePaths.AddUnique(this.IncludeDirectory);
+                        }
+                        else
+                        {
+                            preprocessor.IncludePaths.AddUnique(this.IncludeDirectory);
+                        }
                     }
 
                     if (settings is C.ICommonAssemblerSettings assembler)

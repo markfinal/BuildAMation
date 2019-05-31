@@ -42,6 +42,11 @@ namespace C
         public const string HashFileKey = "Hash of generated header contents";
 
         /// <summary>
+        /// Set to true to add search paths to the system includes, rather than user includes.
+        /// </summary>
+        protected virtual bool UseSystemIncludeSearchPaths => false;
+
+        /// <summary>
         /// Override this function to specify the path of the header to be written to.
         /// </summary>
         protected abstract Bam.Core.TokenizedString OutputPath { get; }
@@ -91,7 +96,14 @@ namespace C
                 {
                     if (settings is C.ICommonPreprocessorSettings preprocessor)
                     {
-                        preprocessor.IncludePaths.AddUnique(this.IncludeDirectory);
+                        if (this.UseSystemIncludeSearchPaths)
+                        {
+                            preprocessor.SystemIncludePaths.AddUnique(this.IncludeDirectory);
+                        }
+                        else
+                        {
+                            preprocessor.IncludePaths.AddUnique(this.IncludeDirectory);
+                        }
                     }
 
                     if (settings is C.ICommonAssemblerSettings assembler)
