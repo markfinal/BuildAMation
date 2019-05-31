@@ -60,12 +60,12 @@ namespace ClangCommon
         [XcodeProjectProcessor.PreprocessorDefines("GCC_PREPROCESSOR_DEFINITIONS")]
         C.PreprocessorDefinitions C.ICommonPreprocessorSettings.PreprocessorDefines { get; set; }
 
-        [CommandLineProcessor.PathArray("-I")]
-        [XcodeProjectProcessor.PathArray("USER_HEADER_SEARCH_PATHS")]
+        [CommandLineProcessor.PathArray("-iquote")]
+        [XcodeProjectProcessor.PathArray("HEADER_SEARCH_PATHS")]
         Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.IncludePaths { get; set; }
 
-        [CommandLineProcessor.PathArray("-I")]
-        [XcodeProjectProcessor.PathArray("HEADER_SEARCH_PATHS")]
+        [CommandLineProcessor.PathArray("-isystem")]
+        [XcodeProjectProcessor.PathArray("SYSTEM_HEADER_SEARCH_PATHS")]
         Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.SystemIncludePaths { get; set; }
 
         [CommandLineProcessor.StringArray("-U")]

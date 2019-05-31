@@ -1,3 +1,5 @@
+31-May-2019 Fixes #541. Clang now uses -isystem and -iquote instead of -I to distinguish between system and non-system include search paths. Similar, Xcode projects now use SYSTEM_HEADER_SEARCH_PATHS and HEADER_SEARCH_PATHS. Use of USER_HEADER_SEARCH_PATHS has been removed.
+
 31-May-2019 Fixes #540 C.ProceduralHeaderFile and C.ProceduralHeaderFileFromToolOutput both have a new virtual Boolean property, UseSystemIncludeSearchPaths, defaulting to false. In Modules deriving from these classes, set this to true in order to override the default behaviour and add directories to system includes search paths.
  
 31-May-2019 Fixes #539 C.SuppressWarningsDelegate now allows specification of a C.EBitDepth parameter to limit suppressions to 32- or 64-bit builds only.
