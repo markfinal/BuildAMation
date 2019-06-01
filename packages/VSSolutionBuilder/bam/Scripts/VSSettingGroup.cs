@@ -134,7 +134,11 @@ namespace VSSolutionBuilder
             lock (this.Settings)
             {
                 var stringValue = value.ToString().ToLower();
-                if (this.Settings.Any(item => item.Name.Equals(name, System.StringComparison.Ordinal) && System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal) && !item.Value.Equals(stringValue, System.StringComparison.Ordinal)))
+                if (this.Settings.Any(item =>
+                        item.Name.Equals(name, System.StringComparison.Ordinal) &&
+                        System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal) &&
+                        !item.Value.Equals(stringValue, System.StringComparison.Ordinal))
+                    )
                 {
                     throw new Bam.Core.Exception("Cannot change the value of existing boolean option {0} to {1}", name, value);
                 }
@@ -144,6 +148,7 @@ namespace VSSolutionBuilder
                         name,
                         stringValue,
                         false,
+                        inheritValue: false,
                         condition: condition
                     )
                 );
@@ -158,7 +163,11 @@ namespace VSSolutionBuilder
         {
             lock (this.Settings)
             {
-                if (this.Settings.Any(item => item.Name.Equals(name, System.StringComparison.Ordinal) && System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal) && !item.Value.Equals(value, System.StringComparison.Ordinal)))
+                if (this.Settings.Any(item =>
+                        item.Name.Equals(name, System.StringComparison.Ordinal) &&
+                        System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal) &&
+                        !item.Value.Equals(value, System.StringComparison.Ordinal))
+                    )
                 {
                     throw new Bam.Core.Exception("Cannot change the value of existing string option {0} to {1}", name, value);
                 }
@@ -168,6 +177,7 @@ namespace VSSolutionBuilder
                         name,
                         value,
                         false,
+                        inheritValue: false,
                         condition: condition
                     )
                 );
@@ -185,7 +195,11 @@ namespace VSSolutionBuilder
             lock (this.Settings)
             {
                 var stringValue = path.ToString();
-                if (this.Settings.Any(item => item.Name.Equals(name, System.StringComparison.Ordinal) && System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal) && !item.Value.Equals(stringValue, System.StringComparison.Ordinal)))
+                if (this.Settings.Any(item =>
+                        item.Name.Equals(name, System.StringComparison.Ordinal) &&
+                        System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal) &&
+                        !item.Value.Equals(stringValue, System.StringComparison.Ordinal))
+                    )
                 {
                     throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, path.ToString());
                 }
@@ -195,6 +209,7 @@ namespace VSSolutionBuilder
                         name,
                         stringValue,
                         isPath: isPath,
+                        inheritValue: false,
                         condition: condition
                     )
                 );
@@ -240,18 +255,16 @@ namespace VSSolutionBuilder
                     {
                         return;
                     }
-                    throw new Bam.Core.Exception("Cannot append {3}, to the option {0} as it already exists for condition {1}: {2}",
-                        name,
-                        condition,
-                        settingOption.Value.ToString(),
-                        linearized);
+                    settingOption.Append(linearized, separator: ";");
+                    return;
                 }
 
                 this.Settings.AddUnique(
                     new VSSetting(
                         name,
-                        inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized,
+                        linearized,
                         arePaths,
+                        inheritValue: inheritExisting,
                         condition
                     )
                 );
@@ -279,18 +292,16 @@ namespace VSSolutionBuilder
                     {
                         return;
                     }
-                    throw new Bam.Core.Exception("Cannot append {3}, to the option {0} as it already exists for condition {1}: {2}",
-                        name,
-                        condition,
-                        settingOption.Value.ToString(),
-                        linearized);
+                    settingOption.Append(linearized, separator: ";");
+                    return;
                 }
 
                 this.Settings.AddUnique(
                     new VSSetting(
                         name,
-                        inheritExisting ? System.String.Format("{0};%({1})", linearized, name) : linearized,
+                        linearized,
                         false,
+                        inheritValue: inheritExisting,
                         condition
                     )
                 );
@@ -319,8 +330,9 @@ namespace VSSolutionBuilder
                 this.Settings.AddUnique(
                     new VSSetting(
                         name,
-                        inheritExisting ? System.String.Format("{0}%({1})", defString, name) : defString,
+                        defString,
                         false,
+                        inheritValue: inheritExisting,
                         condition
                     )
                 );
@@ -385,7 +397,7 @@ namespace VSSolutionBuilder
                 {
                     document.CreateVSElement(
                         setting.Name,
-                        value: this.Configuration.ToRelativePath(setting.Value),
+                        value: this.Configuration.ToRelativePath(setting.Serialize()),
                         condition: setting.Condition,
                         parentEl: group
                     );
@@ -394,7 +406,7 @@ namespace VSSolutionBuilder
                 {
                     document.CreateVSElement(
                         setting.Name,
-                        value: setting.Value,
+                        value: setting.Serialize(),
                         condition: setting.Condition,
                         parentEl: group
                     );

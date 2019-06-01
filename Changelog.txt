@@ -1,4 +1,4 @@
-01-Jun-2019 Fixes #542. VisualStudio project generation now guards against null reference exceptions when comparing conditions for settings.
+01-Jun-2019 Fixes #542. VisualStudio project generation now guards against null reference exceptions when comparing conditions for settings. Mergable VisualStudio settings are now possible, in order to support both system and user include paths in a project.
 
 31-May-2019 Fixes #541. Clang now uses -isystem and -iquote instead of -I to distinguish between system and non-system include search paths. Similar, Xcode projects now use SYSTEM_HEADER_SEARCH_PATHS and HEADER_SEARCH_PATHS. Use of USER_HEADER_SEARCH_PATHS has been removed.
 
