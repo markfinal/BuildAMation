@@ -158,7 +158,7 @@ namespace VSSolutionBuilder
         {
             lock (this.Settings)
             {
-                if (this.Settings.Any(item => item.Name.Equals(name, System.StringComparison.Ordinal) && item.Condition.Equals(condition, System.StringComparison.Ordinal) && !item.Value.Equals(value, System.StringComparison.Ordinal)))
+                if (this.Settings.Any(item => item.Name.Equals(name, System.StringComparison.Ordinal) && System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal) && !item.Value.Equals(value, System.StringComparison.Ordinal)))
                 {
                     throw new Bam.Core.Exception("Cannot change the value of existing string option {0} to {1}", name, value);
                 }
@@ -185,7 +185,7 @@ namespace VSSolutionBuilder
             lock (this.Settings)
             {
                 var stringValue = path.ToString();
-                if (this.Settings.Any(item => item.Name.Equals(name, System.StringComparison.Ordinal) && item.Condition.Equals(condition, System.StringComparison.Ordinal) && !item.Value.Equals(stringValue, System.StringComparison.Ordinal)))
+                if (this.Settings.Any(item => item.Name.Equals(name, System.StringComparison.Ordinal) && System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal) && !item.Value.Equals(stringValue, System.StringComparison.Ordinal)))
                 {
                     throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, path.ToString());
                 }
@@ -233,9 +233,9 @@ namespace VSSolutionBuilder
                     return;
                 }
                 var linearized = new Bam.Core.TokenizedStringArray(value.Distinct()).ToString(';');
-                if (this.Settings.Any(item => item.Name.Equals(name, System.StringComparison.Ordinal) && item.Condition.Equals(condition, System.StringComparison.Ordinal)))
+                if (this.Settings.Any(item => item.Name.Equals(name, System.StringComparison.Ordinal) && System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal)))
                 {
-                    var settingOption = this.Settings.First(item => item.Name.Equals(name, System.StringComparison.Ordinal) && item.Condition.Equals(condition, System.StringComparison.Ordinal));
+                    var settingOption = this.Settings.First(item => item.Name.Equals(name, System.StringComparison.Ordinal) && System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal));
                     if (settingOption.Value.Contains(linearized))
                     {
                         return;
@@ -272,9 +272,9 @@ namespace VSSolutionBuilder
                     return;
                 }
                 var linearized = value.ToString(';');
-                if (this.Settings.Any(item => item.Name.Equals(name, System.StringComparison.Ordinal) && item.Condition.Equals(condition, System.StringComparison.Ordinal)))
+                if (this.Settings.Any(item => item.Name.Equals(name, System.StringComparison.Ordinal) && System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal)))
                 {
-                    var settingOption = this.Settings.First(item => item.Name.Equals(name, System.StringComparison.Ordinal) && item.Condition.Equals(condition, System.StringComparison.Ordinal));
+                    var settingOption = this.Settings.First(item => item.Name.Equals(name, System.StringComparison.Ordinal) && System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal));
                     if (settingOption.Value.Contains(linearized))
                     {
                         return;
@@ -310,7 +310,7 @@ namespace VSSolutionBuilder
             }
             lock (this.Settings)
             {
-                if (this.Settings.Any(item => item.Name.Equals(name) && item.Condition.Equals(condition, System.StringComparison.Ordinal)))
+                if (this.Settings.Any(item => item.Name.Equals(name) && System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal)))
                 {
                     throw new Bam.Core.Exception("Cannot append to the preprocessor define list {0}", name);
                 }
