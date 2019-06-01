@@ -386,6 +386,10 @@ namespace XcodeBuilder
 
                 // add configuration to project
                 var projectConfig = new Configuration(config, this, null);
+
+                // headermaps confuse multi-configuration projects, so disable
+                projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
+
                 var isXcode10 = clangMeta.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
                 if (isXcode10)
                 {
@@ -406,7 +410,6 @@ namespace XcodeBuilder
                 }
                 else
                 {
-                    projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
                     projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
 
                     // reset SRCROOT, or it is taken to be where the workspace is
