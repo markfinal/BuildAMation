@@ -64,10 +64,14 @@ namespace Bam
                 writer.WriteLine("{0}Core.Graph.Instance.CompileWithDebugSymbols = true;", indent(3));
                 writer.WriteLine("{0}Core.Graph.Instance.BuildRoot = \"debug_build\";", indent(3));
                 writer.WriteLine("{0}Core.Graph.Instance.Mode = \"Native\";", indent(3));
-                writer.WriteLine("{0}var debug = new Core.Environment();", indent(3));
-                writer.WriteLine("{0}debug.Configuration = Core.EConfiguration.Debug;", indent(3));
-                writer.WriteLine("{0}var optimized = new Core.Environment();", indent(3));
-                writer.WriteLine("{0}optimized.Configuration = Core.EConfiguration.Optimized;", indent(3));
+                writer.WriteLine("{0}var debug = new Core.Environment", indent(3));
+                writer.WriteLine("{0}{{", indent(3));
+                writer.WriteLine("{0}Configuration = Core.EConfiguration.Debug", indent(4));
+                writer.WriteLine("{0}}};", indent(3));
+                writer.WriteLine("{0}var optimized = new Core.Environment", indent(3));
+                writer.WriteLine("{0}{{", indent(3));
+                writer.WriteLine("{0}Configuration = Core.EConfiguration.Optimized", indent(4));
+                writer.WriteLine("{0}}};", indent(3));
                 writer.WriteLine("{0}var activeConfigs = new Core.Array<Core.Environment>(debug, optimized);", indent(3));
                 writer.WriteLine("{0}// execute", indent(3));
                 writer.WriteLine("{0}try", indent(3));
