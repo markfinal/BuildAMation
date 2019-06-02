@@ -1,3 +1,5 @@
+02-Jun-2019 Fixes #545. MakeFile variables that map to the same path don't need to create aliases, since any variable replacement in recipes will just use the original variable. This removes an exception that was thrown in these circumstances.
+
 01-Jun-2019 Fixes #543. Xcode 10 projects forcible disable header maps, as they confuse matters in multi-configuration projects. This was already disabled pre-Xcode 10.
 
 01-Jun-2019 Fixes #542. VisualStudio project generation now guards against null reference exceptions when comparing conditions for settings. Mergable VisualStudio settings are now possible, in order to support both system and user include paths in a project.
