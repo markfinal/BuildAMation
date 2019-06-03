@@ -268,7 +268,7 @@ namespace XcodeBuilder
                 out configuration,
                 checkForNewer,
                 allowNonZeroSuccessfulExitCodes,
-                addOrderOnlyDependencyOnTool: allowNonZeroSuccessfulExitCodes,
+                addOrderOnlyDependencyOnTool: addOrderOnlyDependencyOnTool,
                 outputPaths: outputPaths
             );
             foreach (var input in module.InputModules)

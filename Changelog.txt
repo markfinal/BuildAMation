@@ -1,3 +1,5 @@
+03-Jun-2019 Fixes #546. Xcode projects with non-C modules were not adding target dependencies (order only dependencies).
+
 02-Jun-2019 Fixes #544. Format update to the procedurally generated main.cs for debug projects for packages.
 
 02-Jun-2019 Fixes #545. MakeFile variables that map to the same path don't need to create aliases, since any variable replacement in recipes will just use the original variable. This removes an exception that was thrown in these circumstances.
