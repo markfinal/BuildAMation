@@ -183,6 +183,7 @@ def execute_test_instance(instance, options, output_buffer, stats, the_builder):
         try:
             output_messages = StringIO.StringIO()
             error_messages = StringIO.StringIO()
+            start_time = os.times()
             _pre_execute(the_builder)
             returncode, arg_list = _run_buildamation(options, instance, extra_args, output_messages, error_messages)
             if returncode == 0:
@@ -192,6 +193,7 @@ def execute_test_instance(instance, options, output_buffer, stats, the_builder):
                     returncode, _ = _run_buildamation(no_clean_options, instance, extra_args, output_messages, error_messages)
                 if returncode == 0:
                     returncode = _post_execute(the_builder, options, variation, instance, output_messages, error_messages)
+            end_time = os.times()
         except Exception, e:
             print_message("Popen exception: '%s'" % str(e))
             raise
@@ -199,6 +201,14 @@ def execute_test_instance(instance, options, output_buffer, stats, the_builder):
             message = "Test instance '%s'" % str(instance)
             if extra_args:
                 message += " with extra arguments '%s'" % " ".join(extra_args)
+            message += " executed in (%f,%f,%f,%f,%f) seconds" %\
+                (
+                    end_time[0] - start_time[0],
+                    end_time[1] - start_time[1],
+                    end_time[2] - start_time[2],
+                    end_time[3] - start_time[3],
+                    end_time[4] - start_time[4]
+                )
             try:
                 if returncode == 0:
                     stats._success += 1
