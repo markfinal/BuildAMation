@@ -1,6 +1,6 @@
 image:
-  - Ubuntu
   - Ubuntu1804
+  - Ubuntu
   - Visual Studio 2019 Preview
   - Visual Studio 2017
 clone_depth: 10

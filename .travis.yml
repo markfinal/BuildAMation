@@ -13,18 +13,6 @@ before_script:
 matrix:
   include:
   - os: linux
-    dist: trusty
-    mono: none
-    dotnet: 2.1.401
-    script:
-      - python codingtools/dotnetcore_run_unittests.py
-      - python codingtools/dotnetcore_make_release.py --local --doxygen doxygen
-      - cd bam_publish
-      - source env.sh
-      - python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d
-      - python tests/runtests.py --Gcc.version=4.8 -b MakeFile -c debug -c profile -j0 -d
-      - cd ..
-  - os: linux
     dist: xenial
     mono: none
     dotnet: 2.1.401
@@ -36,8 +24,20 @@ matrix:
       - python tests/runtests.py --Gcc.version=5 -b Native -c debug -c profile -j0 -d
       - python tests/runtests.py --Gcc.version=5 -b MakeFile -c debug -c profile -j0 -d
       - cd ..
+  - os: linux
+    dist: trusty
+    mono: none
+    dotnet: 2.1.401
+    script:
+      - python codingtools/dotnetcore_run_unittests.py
+      - python codingtools/dotnetcore_make_release.py --local --doxygen doxygen
+      - cd bam_publish
+      - source env.sh
+      - python tests/runtests.py --Gcc.version=4.8 -b Native -c debug -c profile -j0 -d
+      - python tests/runtests.py --Gcc.version=4.8 -b MakeFile -c debug -c profile -j0 -d
+      - cd ..
   - os: osx
-    osx_image: xcode8.3
+    osx_image: xcode10.2
     mono: none
     dotnet: 2.1.401
     script:
@@ -45,9 +45,9 @@ matrix:
       - python codingtools/dotnetcore_make_release.py --local
       - cd bam_publish
       - source env.sh
-      - python tests/runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d
-      #- python tests/runtests.py --Clang.version=Xcode8 -b MakeFile -c debug -c profile -j0 -d
-      - python tests/runtests.py --Clang.version=Xcode8 -b Xcode -c debug -c profile -j0 -d
+      - python tests/runtests.py --Clang.version=Xcode10 -b Native -c debug -c profile -j0 -d --C.bitdepth=64
+      - python tests/runtests.py --Clang.version=Xcode10 -b Xcode -c debug -c profile -j0 -d --C.bitdepth=64
+      - python tests/runtests.py --Clang.version=Xcode10 -b MakeFile -c debug -c profile -j0 -d --C.bitdepth=64
       - cd ..
   - os: osx
     osx_image: xcode9.4
@@ -63,7 +63,7 @@ matrix:
       #- python tests/runtests.py --Clang.version=Xcode9 -b Xcode -c debug -c profile -j0 -d
       - cd ..
   - os: osx
-    osx_image: xcode10.2
+    osx_image: xcode8.3
     mono: none
     dotnet: 2.1.401
     script:
@@ -71,9 +71,9 @@ matrix:
       - python codingtools/dotnetcore_make_release.py --local
       - cd bam_publish
       - source env.sh
-      - python tests/runtests.py --Clang.version=Xcode10 -b Native -c debug -c profile -j0 -d --C.bitdepth=64
-      - python tests/runtests.py --Clang.version=Xcode10 -b Xcode -c debug -c profile -j0 -d --C.bitdepth=64
-      - python tests/runtests.py --Clang.version=Xcode10 -b MakeFile -c debug -c profile -j0 -d --C.bitdepth=64
+      - python tests/runtests.py --Clang.version=Xcode8 -b Native -c debug -c profile -j0 -d
+      #- python tests/runtests.py --Clang.version=Xcode8 -b MakeFile -c debug -c profile -j0 -d
+      - python tests/runtests.py --Clang.version=Xcode8 -b Xcode -c debug -c profile -j0 -d
       - cd ..
 # Xcode 6 is obsolete on TravisCI
 # Xcode 7 is too old for .NET Core
