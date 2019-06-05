@@ -10,6 +10,7 @@ import StringIO
 import subprocess
 import sys
 from testconfigurations import test_option_setup
+from testinstance import TestInstance
 import time
 import xml.etree.ElementTree as ET
 
@@ -104,7 +105,7 @@ def _pre_execute(builder):
     builder.pre_action()
 
 
-def _run_buildamation(options, package, extra_args, output_messages, error_messages):
+def _run_buildamation(options, instance, extra_args, output_messages, error_messages):
     arg_list = [
         bam_shell,
         "-o=%s" % options.buildRoot,
@@ -129,7 +130,7 @@ def _run_buildamation(options, package, extra_args, output_messages, error_messa
         for inject in options.injected:
             arg_list.append("--injectdefaultpackage=%s" % inject)
     print_message(" ".join(arg_list))
-    p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=package.get_path())
+    p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=instance.package_path())
     (output_stream, error_stream) = p.communicate()  # this should WAIT
     if output_stream:
         output_messages.write(output_stream)
@@ -138,10 +139,10 @@ def _run_buildamation(options, package, extra_args, output_messages, error_messa
     return p.returncode, arg_list
 
 
-def _post_execute(builder, options, flavour, package, output_messages, error_messages):
+def _post_execute(builder, options, flavour, instance, output_messages, error_messages):
     if options.dumpprojects:
-        builder.dump_generated_files(package, options)
-    exit_code = builder.post_action(package, options, flavour, output_messages, error_messages)
+        builder.dump_generated_files(instance, options)
+    exit_code = builder.post_action(instance, options, flavour, output_messages, error_messages)
     return exit_code
 
 
@@ -152,87 +153,78 @@ class Stats(object):
         self._fail = []
         self._ignore = []
 
-def execute_tests(package, configuration, options, output_buffer, stats, the_builder):
-    print_message("Package           : %s" % package.get_id())
-    if options.verbose:
-        print_message("Description          : %s" % package.get_description())
-        print_message("Available build modes: %s" % configuration.get_build_modes())
-    if options.buildmode not in configuration.get_build_modes():
-        output_buffer.write("IGNORED: Package '%s' does not support build mode '%s' in the test configuration\n" %
-                            (package.get_description(), options.buildmode))
-        print_message("\tIgnored")
-        stats._total += 1
-        stats._ignore.append(package.get_id())
-        return 0
-    variation_args = configuration.get_variations(options.buildmode, options.excludedVariations, options.bitDepth)
-    if len(variation_args) == 0:
-        output_buffer.write("IGNORED: Package '%s' has no configuration with the current options\n" %
-                            package.get_description())
-        print_message("\tIgnored")
-        stats._total += 1
-        stats._ignore.append(package.get_id())
-        return 0
-    if options.verbose:
-        print_message("Test configurations: %s" % variation_args)
+
+def execute_test_instance(instance, options, output_buffer, stats, the_builder):
+    print_message(128 * '=')
+    if instance.runnable():
+        print_message("* Running  %s\t%s\t%s" % (instance.package_name(), instance.flavour(), ' '.join(instance.variation_arguments())))
         if options.excludedVariations:
             print_message(" (excluding %s)" % options.excludedVariations)
+    else:
+        print_message("* Ignoring %s\t%s" % (instance.package_name(), instance.flavour()))
+        output_buffer.write("IGNORED: Test instance '%s' is not runnable in this configuration\n" % str(instance))
+        stats._total += 1
+        stats._ignore.append(str(instance))
+        return 0
+
+    if options.verbose:
+        print_message("\tPackage Description : %s" % instance.package_description())
+
     non_kwargs = []
     exit_code = 0
-    for variation in variation_args:
-        stats._total += 1
-        iterations = 1
+    stats._total += 1
+    iterations = 1
 
-        for it in range(0, iterations):
-            extra_args = non_kwargs[:]
-            if options.Flavours:
-                extra_args.extend(options.Flavours)
-            if variation:
-                extra_args.extend(variation.get_arguments())
-            try:
-                output_messages = StringIO.StringIO()
-                error_messages = StringIO.StringIO()
-                _pre_execute(the_builder)
-                returncode, arg_list = _run_buildamation(options, package, extra_args, output_messages, error_messages)
+    for it in range(0, iterations):
+        extra_args = non_kwargs[:]
+        if options.Flavours:
+            extra_args.extend(options.Flavours)
+        extra_args.extend(instance.variation_arguments())
+        try:
+            output_messages = StringIO.StringIO()
+            error_messages = StringIO.StringIO()
+            _pre_execute(the_builder)
+            returncode, arg_list = _run_buildamation(options, instance, extra_args, output_messages, error_messages)
+            if returncode == 0:
+                if the_builder.repeat_no_clean:
+                    no_clean_options = copy.deepcopy(options)
+                    no_clean_options.noInitialClean = True
+                    returncode, _ = _run_buildamation(no_clean_options, instance, extra_args, output_messages, error_messages)
                 if returncode == 0:
-                    if the_builder.repeat_no_clean:
-                        no_clean_options = copy.deepcopy(options)
-                        no_clean_options.noInitialClean = True
-                        returncode, _ = _run_buildamation(no_clean_options, package, extra_args, output_messages, error_messages)
-                    if returncode == 0:
-                        returncode = _post_execute(the_builder, options, variation, package, output_messages, error_messages)
-            except Exception, e:
-                print_message("Popen exception: '%s'" % str(e))
-                raise
-            finally:
-                message = "Package '%s'" % package.get_description()
-                if extra_args:
-                    message += " with extra arguments '%s'" % " ".join(extra_args)
-                try:
-                    if returncode == 0:
-                        stats._success += 1
-                        output_buffer.write("SUCCESS: %s\n" % message)
-                        if options.verbose:
-                            if len(output_messages.getvalue()) > 0:
-                                output_buffer.write("Messages:\n")
-                                output_buffer.write(output_messages.getvalue())
-                            if len(error_messages.getvalue()) > 0:
-                                output_buffer.write("Errors:\n")
-                                output_buffer.write(error_messages.getvalue())
-                    else:
-                        stats._fail.append(package.get_id())
-                        output_buffer.write("* FAILURE *: %s\n" % message)
-                        output_buffer.write("Command was: %s\n" % " ".join(arg_list))
-                        output_buffer.write("Executed in: %s\n" % package.get_path())
+                    returncode = _post_execute(the_builder, options, variation, instance, output_messages, error_messages)
+        except Exception, e:
+            print_message("Popen exception: '%s'" % str(e))
+            raise
+        finally:
+            message = "Test instance '%s'" % str(instance)
+            if extra_args:
+                message += " with extra arguments '%s'" % " ".join(extra_args)
+            try:
+                if returncode == 0:
+                    stats._success += 1
+                    output_buffer.write("SUCCESS: %s\n" % message)
+                    if options.verbose:
                         if len(output_messages.getvalue()) > 0:
                             output_buffer.write("Messages:\n")
                             output_buffer.write(output_messages.getvalue())
                         if len(error_messages.getvalue()) > 0:
                             output_buffer.write("Errors:\n")
                             output_buffer.write(error_messages.getvalue())
-                        output_buffer.write("\n")
-                        exit_code -= 1
-                except UnboundLocalError:  # for returncode
-                    message += "... did not complete due to earlier errors"
+                else:
+                    stats._fail.append(str(instance))
+                    output_buffer.write("* FAILURE *: %s\n" % message)
+                    output_buffer.write("Command was: %s\n" % " ".join(arg_list))
+                    output_buffer.write("Executed in: %s\n" % instance.package_path())
+                    if len(output_messages.getvalue()) > 0:
+                        output_buffer.write("Messages:\n")
+                        output_buffer.write(output_messages.getvalue())
+                    if len(error_messages.getvalue()) > 0:
+                        output_buffer.write("Errors:\n")
+                        output_buffer.write(error_messages.getvalue())
+                    output_buffer.write("\n")
+                    exit_code -= 1
+            except UnboundLocalError:  # for returncode
+                message += "... did not complete due to earlier errors"
     return exit_code
 
 
@@ -264,6 +256,7 @@ if __name__ == "__main__":
     # optParser.add_option("--platform", "-p", dest="platforms", action="append", default=None, help="Platforms to test")
     optParser.add_option("--configuration", "-c", dest="configurations", type="choice", choices=["debug","profile","optimized"], action="append", default=None, help="Configurations to test")
     optParser.add_option("--test", "-t", dest="tests", action="append", default=None, help="Tests to run")
+    optParser.add_option("--excludetest", "-T", dest="xtests", action="append", default=None, help="Tests to not run")
     optParser.add_option("--buildroot", "-o", dest="buildRoot", action="store", default="build", help="BuildAMation build root")
     optParser.add_option("--buildmode", "-b", dest="buildmode", type="choice", choices=["Native", "VSSolution", "MakeFile", "Xcode"], action="store", default="Native", help="BuildAMation build mode to test")
     optParser.add_option("--keepfiles", "-k", dest="keepFiles", action="store_true", default=False, help="Keep the BuildAMation build files around")
@@ -311,10 +304,7 @@ if __name__ == "__main__":
         bamtests = imp.load_source('bamtests', bamTestsConfigPathname)
         testConfigs = bamtests.configure_repository()
         tests = find_all_packages_to_test(repoTestDir, options)
-        if not options.tests:
-            if options.verbose:
-                print_message("All tests will run")
-        else:
+        if options.tests:
             if options.verbose:
                 print_message("Tests to run are: %s" % options.tests)
             filteredTests = []
@@ -328,21 +318,38 @@ if __name__ == "__main__":
                 if not found:
                     raise RuntimeError("Unrecognized package '%s'" % test)
             tests = filteredTests
+        if options.xtests:
+            if options.verbose:
+                print_message("Tests to not run are: %s" % options.xtests)
+            tests = [t for t in tests if not t.get_id() in options.xtests]
+
+        test_instances = set()
+        stats = Stats()
+        for test in tests:
+            try:
+                configs = testConfigs[test.get_name()]
+            except KeyError, e:
+                if options.verbose:
+                    print_message("No configuration for package %s: %s" % (test.get_name(), str(e)))
+                continue
+            try:
+                variations = configs.get_variations(options.buildmode, options.excludedVariations, options.bitDepth)
+            except KeyError:
+                variations = [None]
+            for variation in variations:
+                test_instances.add(TestInstance(test, '+'.join(set(options.configurations)), variation))
+        if options.verbose:
+            print "Test instances are:"
+            for instance in sorted(test_instances, key=lambda instance: str(instance)):
+                print "\t%s" % str(instance)
 
         # builder gets constructed once, for all packages
         the_builder = get_builder_details(options.buildmode)
         _init_builder(the_builder, options)
 
-        stats = Stats()
         output_buffer = StringIO.StringIO()
-        for package in tests:
-            try:
-                config = testConfigs[package.get_id()]
-            except KeyError, e:
-                if options.verbose:
-                    print_message("No configuration for package: '%s'" % str(e))
-                continue
-            exit_code += execute_tests(package, config, options, output_buffer, stats, the_builder)
+        for test in sorted(test_instances, key=lambda instance: str(instance)):
+            exit_code += execute_test_instance(test, options, output_buffer, stats, the_builder)
 
         if not options.keepFiles:
             # TODO: consider keeping track of all directories created instead

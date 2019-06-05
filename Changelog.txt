@@ -1,3 +1,6 @@
+05-Jun-2019 Fixes #548. Test harness now has a -T (--excludetest) option for removing a test of the given package name from the test run. This option can be repeated many times.
+Test harness internals have been given an overhaul, so that instances of tests are gathered up front, filtered easily, and then each run in turn. Reporting now gives more semantics in the log on each test instance.
+
 03-Jun-2019 Fixes #546. Xcode projects with non-C modules were not adding target dependencies (order only dependencies).
 
 02-Jun-2019 Fixes #544. Format update to the procedurally generated main.cs for debug projects for packages.

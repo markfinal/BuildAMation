@@ -17,10 +17,10 @@ class Builder(object):
     def pre_action(self):
         pass
 
-    def post_action(self, package, options, flavour, output_messages, error_messages):
+    def post_action(self, instance, options, flavour, output_messages, error_messages):
         return 0
 
-    def dump_generated_files(self, package, options):
+    def dump_generated_files(self, instance, options):
         pass
 
 
@@ -103,10 +103,10 @@ class VSSolutionBuilder(Builder):
         else:
             self._ms_build_path = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe" % msBuildVersionToNetMapping[visualc_version]
 
-    def post_action(self, package, options, flavour, output_messages, error_messages):
+    def post_action(self, instance, options, flavour, output_messages, error_messages):
         exit_code = 0
-        build_root = os.path.join(package.get_path(), options.buildRoot)
-        solution_path = os.path.join(build_root, package.get_id() + ".sln")
+        build_root = os.path.join(instance.package_path(), options.buildRoot)
+        solution_path = os.path.join(build_root, instance.package_name() + ".sln")
         if not os.path.exists(solution_path):
             # TODO: really need something different here - an invalid test result, rather than a failure
             output_messages.write("VisualStudio solution expected at %s did not exist" % solution_path)
@@ -142,8 +142,8 @@ class VSSolutionBuilder(Builder):
             return -1
         return exit_code
 
-    def dump_generated_files(self, package, options):
-        build_root = os.path.join(package.get_path(), options.buildRoot)
+    def dump_generated_files(self, instance, options):
+        build_root = os.path.join(instance.package_path(), options.buildRoot)
         vcxproj_project_path = os.path.join(build_root, "*.vcxproj")
         import glob
         projects = glob.glob(xcode_project_path)
@@ -177,9 +177,9 @@ class MakeFileBuilder(Builder):
                 self._make_executable = split[0].strip()
                 self._make_args.append('-NOLOGO')
 
-    def post_action(self, package, options, flavour, output_messages, error_messages):
+    def post_action(self, instance, options, flavour, output_messages, error_messages):
         exit_code = 0
-        makefile_dir = os.path.join(package.get_path(), options.buildRoot)
+        makefile_dir = os.path.join(instance.package_path(), options.buildRoot)
         if not os.path.exists(makefile_dir):
             # TODO: really need something different here - an invalid test result, rather than a failure
             output_messages.write("Expected folder containing MakeFile %s did not exist" % makefile_dir)
@@ -203,8 +203,8 @@ class MakeFileBuilder(Builder):
             return -1
         return exit_code
 
-    def dump_generated_files(self, package, options):
-        makefile_dir = os.path.join(package.get_path(), options.buildRoot)
+    def dump_generated_files(self, instance, options):
+        makefile_dir = os.path.join(instance.package_path(), options.buildRoot)
         path = os.path.join(makefile_dir, 'Makefile')
         f = open(path, 'r')
         file_contents = f.read()
@@ -218,9 +218,9 @@ class XcodeBuilder(Builder):
     def __init__(self):
         super(XcodeBuilder, self).__init__(False)
 
-    def post_action(self, package, options, flavour, output_messages, error_messages):
+    def post_action(self, instance, options, flavour, output_messages, error_messages):
         exit_code = 0
-        build_root = os.path.join(package.get_path(), options.buildRoot)
+        build_root = os.path.join(instance.package_path(), options.buildRoot)
         xcode_workspace_path = os.path.join(build_root, "*.xcworkspace")
         import glob
         workspaces = glob.glob(xcode_workspace_path)
@@ -290,8 +290,8 @@ class XcodeBuilder(Builder):
             return -1
         return exit_code
 
-    def dump_generated_files(self, package, options):
-        build_root = os.path.join(package.get_path(), options.buildRoot)
+    def dump_generated_files(self, instance, options):
+        build_root = os.path.join(instance.package_path(), options.buildRoot)
         xcode_project_path = os.path.join(build_root, "*.xcodeproj")
         import glob
         projects = glob.glob(xcode_project_path)
