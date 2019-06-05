@@ -139,10 +139,10 @@ def _run_buildamation(options, instance, extra_args, output_messages, error_mess
     return p.returncode, arg_list
 
 
-def _post_execute(builder, options, flavour, instance, output_messages, error_messages):
+def _post_execute(builder, options, instance, output_messages, error_messages):
     if options.dumpprojects:
         builder.dump_generated_files(instance, options)
-    exit_code = builder.post_action(instance, options, flavour, output_messages, error_messages)
+    exit_code = builder.post_action(instance, options, output_messages, error_messages)
     return exit_code
 
 
@@ -192,7 +192,7 @@ def execute_test_instance(instance, options, output_buffer, stats, the_builder):
                     no_clean_options.noInitialClean = True
                     returncode, _ = _run_buildamation(no_clean_options, instance, extra_args, output_messages, error_messages)
                 if returncode == 0:
-                    returncode = _post_execute(the_builder, options, variation, instance, output_messages, error_messages)
+                    returncode = _post_execute(the_builder, options, instance, output_messages, error_messages)
             end_time = os.times()
         except Exception, e:
             print_message("Popen exception: '%s'" % str(e))

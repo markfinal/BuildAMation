@@ -17,7 +17,7 @@ class Builder(object):
     def pre_action(self):
         pass
 
-    def post_action(self, instance, options, flavour, output_messages, error_messages):
+    def post_action(self, instance, options, output_messages, error_messages):
         return 0
 
     def dump_generated_files(self, instance, options):
@@ -103,7 +103,7 @@ class VSSolutionBuilder(Builder):
         else:
             self._ms_build_path = r"C:\Windows\Microsoft.NET\Framework\%s\MSBuild.exe" % msBuildVersionToNetMapping[visualc_version]
 
-    def post_action(self, instance, options, flavour, output_messages, error_messages):
+    def post_action(self, instance, options, output_messages, error_messages):
         exit_code = 0
         build_root = os.path.join(instance.package_path(), options.buildRoot)
         solution_path = os.path.join(build_root, instance.package_name() + ".sln")
@@ -121,10 +121,10 @@ class VSSolutionBuilder(Builder):
                 # capitalize the first letter of the configuration
                 config = config[0].upper() + config[1:]
                 arg_list.append("/p:Configuration=%s" % config)
-                for platform in flavour.platforms():
+                for platform in instance.platforms():
                     this_arg_list = copy.deepcopy(arg_list)
                     this_arg_list.append("/p:Platform=%s" % platform)
-                    locallog("Running '%s'\n" % ' '.join(arg_list))
+                    locallog("Running '%s'\n" % ' '.join(this_arg_list))
                     try:
                         p = subprocess.Popen(this_arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                         (output_stream, error_stream) = p.communicate()  # this should WAIT
@@ -177,7 +177,7 @@ class MakeFileBuilder(Builder):
                 self._make_executable = split[0].strip()
                 self._make_args.append('-NOLOGO')
 
-    def post_action(self, instance, options, flavour, output_messages, error_messages):
+    def post_action(self, instance, options, output_messages, error_messages):
         exit_code = 0
         makefile_dir = os.path.join(instance.package_path(), options.buildRoot)
         if not os.path.exists(makefile_dir):
@@ -218,7 +218,7 @@ class XcodeBuilder(Builder):
     def __init__(self):
         super(XcodeBuilder, self).__init__(False)
 
-    def post_action(self, instance, options, flavour, output_messages, error_messages):
+    def post_action(self, instance, options, output_messages, error_messages):
         exit_code = 0
         build_root = os.path.join(instance.package_path(), options.buildRoot)
         xcode_workspace_path = os.path.join(build_root, "*.xcworkspace")

@@ -28,7 +28,10 @@ class TestInstance:
         return self._variation.get_arguments()
 
     def runnable(self):
-        return self._variation
+        return self._variation is not None
+
+    def platforms(self):
+        return self._variation.platforms()
 
     def __repr__(self):
         return "%s-%s-%s" % (self._package.get_name(), self._flavour, str(self._variation))
