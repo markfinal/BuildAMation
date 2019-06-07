@@ -1,3 +1,5 @@
+07-Jun-2019 Fixes #550. MakeFile generation was throwing an exception if an input module depenency didn't have correctly generated path keys for its own built files (that are dependents).
+
 05-Jun-2019 Fixes #548. Test harness now has a -T (--excludetest) option for removing a test of the given package name from the test run. This option can be repeated many times.
 Test harness internals have been given an overhaul, so that instances of tests are gathered up front, filtered easily, and then each run in turn. Reporting now gives more semantics in the log on each test instance.
 

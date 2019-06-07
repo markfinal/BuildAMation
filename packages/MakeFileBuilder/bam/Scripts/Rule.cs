@@ -291,6 +291,10 @@ namespace MakeFileBuilder
 
                 foreach (var pre in this.Prequisities)
                 {
+                    if (!pre.Key.GeneratedPaths.ContainsKey(pre.Value))
+                    {
+                        continue;
+                    }
                     rules.Append(
                         $"{commonMeta.UseMacrosInPath(pre.Key.GeneratedPaths[pre.Value].ToStringQuoteIfNecessary())} "
                     );
@@ -412,6 +416,10 @@ namespace MakeFileBuilder
                     }
                     else
                     {
+                        if (!first.Key.GeneratedPaths.ContainsKey(first.Value))
+                        {
+                            return null;
+                        }
                         return first.Key.GeneratedPaths[first.Value];
                     }
                 }
