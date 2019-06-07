@@ -1185,7 +1185,10 @@ namespace Bam.Core
             {
                 foreach (var module in this.DependentsList)
                 {
-                    yield return new System.Collections.Generic.KeyValuePair<string, Module>("unspecified path key", module);
+                    yield return new System.Collections.Generic.KeyValuePair<string, Module>(
+                        $"Input module path key not overridden in module {this.ToString()} from dependent {module.ToString()}",
+                        module
+                    );
                 }
             }
         }
