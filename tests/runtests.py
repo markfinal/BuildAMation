@@ -130,12 +130,16 @@ def _run_buildamation(options, instance, extra_args, output_messages, error_mess
         for inject in options.injected:
             arg_list.append("--injectdefaultpackage=%s" % inject)
     print_message(" ".join(arg_list))
-    p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=instance.package_path())
-    (output_stream, error_stream) = p.communicate()  # this should WAIT
-    if output_stream:
-        output_messages.write(output_stream)
-    if error_stream:
-        error_messages.write(error_stream)
+    if options.verbose:
+        p = subprocess.Popen(arg_list, cwd=instance.package_path())
+        p.wait()
+    else:
+        p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=instance.package_path())
+        (output_stream, error_stream) = p.communicate()  # this should WAIT
+        if output_stream:
+            output_messages.write(output_stream)
+        if error_stream:
+            error_messages.write(error_stream)
     return p.returncode, arg_list
 
 
