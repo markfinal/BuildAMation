@@ -137,7 +137,7 @@ namespace VisualC
                     {
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
-                                $"$(0)/x86/Microsoft.VC{crtVersion}.CRT/vcruntime140.dll",
+                                $"$(0)/x86/Microsoft.VC{crtVersion}.CRT/vcruntime140*.dll",
                                 null,
                                 redistdir
                             )
@@ -159,7 +159,7 @@ namespace VisualC
                     {
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
-                                $"$(0)/x64/Microsoft.VC{crtVersion}.CRT/vcruntime140.dll",
+                                $"$(0)/x64/Microsoft.VC{crtVersion}.CRT/vcruntime140*.dll",
                                 null,
                                 redistdir
                             )
@@ -195,7 +195,7 @@ namespace VisualC
                 case C.EBit.ThirtyTwo:
                     dynamicLibPaths.Add(
                         Bam.Core.TokenizedString.Create(
-                            $"$(0)/x86/Microsoft.VC{crtVersion}.CRT/msvcp140.dll",
+                            $"$(0)/x86/Microsoft.VC{crtVersion}.CRT/msvcp140*.dll",
                             null,
                             redistdir
                         )
@@ -205,7 +205,7 @@ namespace VisualC
                 case C.EBit.SixtyFour:
                     dynamicLibPaths.Add(
                         Bam.Core.TokenizedString.Create(
-                            $"$(0)/x64/Microsoft.VC{crtVersion}.CRT/msvcp140.dll",
+                            $"$(0)/x64/Microsoft.VC{crtVersion}.CRT/msvcp140*.dll",
                             null,
                             redistdir
                         )
