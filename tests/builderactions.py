@@ -1,5 +1,6 @@
 #!/usr/bin/python
 import copy
+import multiprocessing
 import os
 import subprocess
 import sys
@@ -10,6 +11,7 @@ class Builder(object):
     """Class that represents the actions for a builder"""
     def __init__(self, repeat_no_clean):
         self.repeat_no_clean = repeat_no_clean
+        self.num_threads = multiprocessing.cpu_count()
 
     def init(self, options):
         pass
@@ -115,6 +117,7 @@ class VSSolutionBuilder(Builder):
             for config in options.configurations:
                 arg_list = [
                     self._ms_build_path,
+                    "/m:%d" % self.num_threads,
                     "/verbosity:normal",
                     solution_path
                 ]
@@ -176,6 +179,9 @@ class MakeFileBuilder(Builder):
                 split = output_stream.splitlines()
                 self._make_executable = split[0].strip()
                 self._make_args.append('-NOLOGO')
+        else:
+            self._make_args.append("-j")
+            self._make_args.append(str(self.num_threads))
 
     def post_action(self, instance, options, output_messages, error_messages):
         exit_code = 0
@@ -266,6 +272,8 @@ class XcodeBuilder(Builder):
                 for config in options.configurations:
                     arg_list = [
                         "xcodebuild",
+                        "-jobs",
+                        str(self.num_threads),
                         "-workspace",
                         workspaces[0],
                         "-scheme",
