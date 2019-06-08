@@ -1,3 +1,5 @@
+08-Jun-2019 Fixes #552. Added Gcc-8 package, and included it in tests.
+
 08-Jun-2019 Fixes #551. msbuild, Make and xcodebuild now use the number of available cores to run in the test harness.
 
 07-Jun-2019 Fixes #550. MakeFile generation was throwing an exception if an input module depenency didn't have correctly generated path keys for its own built files (that are dependents).
