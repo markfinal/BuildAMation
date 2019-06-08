@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace VisualC
 {
     public class MetaData :
@@ -104,6 +105,17 @@ namespace VisualC
             }
         }
 
+        private string
+        GetCRTVersion(
+            C.EBit depth)
+        {
+            var env = this.Environment(depth);
+            var vcToolsVersion = env["VCToolsVersion"].First().ToString();
+            vcToolsVersion = vcToolsVersion.Replace(".", string.Empty);
+            var crtVersion = new string(vcToolsVersion.Take(3).ToArray());
+            return crtVersion;
+        }
+
         Bam.Core.TokenizedStringArray
         VisualCCommon.IRuntimeLibraryPathMeta.CRuntimePaths(
             C.EBit depth)
@@ -118,13 +130,14 @@ namespace VisualC
             var winsdkdir = env["UniversalCRTSdkDir"];
             var ucrtVersion = env["UCRTVersion"];
             var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
+            var crtVersion = this.GetCRTVersion(depth);
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
                     {
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
-                                "$(0)/x86/Microsoft.VC141.CRT/vcruntime140.dll",
+                                $"$(0)/x86/Microsoft.VC{crtVersion}.CRT/vcruntime140.dll",
                                 null,
                                 redistdir
                             )
@@ -146,7 +159,7 @@ namespace VisualC
                     {
                         dynamicLibPaths.Add(
                             Bam.Core.TokenizedString.Create(
-                                "$(0)/x64/Microsoft.VC141.CRT/vcruntime140.dll",
+                                $"$(0)/x64/Microsoft.VC{crtVersion}.CRT/vcruntime140.dll",
                                 null,
                                 redistdir
                             )
@@ -176,12 +189,13 @@ namespace VisualC
         {
             var redistdir = new Bam.Core.TokenizedStringArray(this.Environment(depth)["VCToolsRedistDir"]);
             var dynamicLibPaths = new Bam.Core.TokenizedStringArray();
+            var crtVersion = this.GetCRTVersion(depth);
             switch (depth)
             {
                 case C.EBit.ThirtyTwo:
                     dynamicLibPaths.Add(
                         Bam.Core.TokenizedString.Create(
-                            "$(0)/x86/Microsoft.VC141.CRT/msvcp140.dll",
+                            $"$(0)/x86/Microsoft.VC{crtVersion}.CRT/msvcp140.dll",
                             null,
                             redistdir
                         )
@@ -191,7 +205,7 @@ namespace VisualC
                 case C.EBit.SixtyFour:
                     dynamicLibPaths.Add(
                         Bam.Core.TokenizedString.Create(
-                            "$(0)/x64/Microsoft.VC141.CRT/msvcp140.dll",
+                            $"$(0)/x64/Microsoft.VC{crtVersion}.CRT/msvcp140.dll",
                             null,
                             redistdir
                         )
