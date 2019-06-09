@@ -39,7 +39,16 @@ namespace VisualCCommon.DefaultSettings
             settings.NoLogo = true;
             settings.GenerateManifest = true;
             settings.SafeExceptionHandlers = false;
-            settings.LinkTimeCodeGeneration = ELinkTimeCodeGeneration.Off;
+            var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+            if (vcMeta.ToolchainVersion.AtLeast(VisualCCommon.ToolchainVersion.VC2015))
+            {
+                settings.LinkTimeCodeGeneration = ELinkTimeCodeGeneration.Off;
+            }
+            else
+            {
+                // not supported
+                settings.LinkTimeCodeGeneration = null;
+            }
         }
     }
 }

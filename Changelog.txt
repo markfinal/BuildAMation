@@ -1,3 +1,5 @@
+09-Jun-2019 Fixes #556. Link time code generation (LTCG) was introduced in VisualStudio 2015, so make sure it's not enabled for older VisualStudio versions.
+
 09-Jun-2019 Fixes #555. Added Gcc-6 package, and included it in tests.
 
 08-Jun-2019 Fixes #554. All versions of vcruntime140*.dll and msvcp140*.dll are now included in redists. There are _1 and _2 suffixed versions which offer additional standard library support features.
