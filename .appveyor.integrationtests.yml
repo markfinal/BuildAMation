@@ -29,7 +29,7 @@ for:
         - image: Visual Studio 2019 Preview
     environment:
         VC_VERSION: 16
-        ADDITIONAL_TEST_ARGS: --VisualC.discoverprereleases -T InstallerTest1 -T Test5 # Currently fail with CRT versioning, but pass on 16.16
+        ADDITIONAL_TEST_ARGS: --VisualC.discoverprereleases -T InstallerTest1 -T Test5 # Currently fail with CRT versioning, but pass on 16.1
 install:
   - sh: ./codingtools/install_ubuntu_dependencies.sh
   - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=master&job=Image%3A%20Visual%20Studio%202017'
