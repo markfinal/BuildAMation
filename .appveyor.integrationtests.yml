@@ -6,6 +6,8 @@ image:
 clone_depth: 10
 configuration: Release
 platform: AnyCPU
+environment:
+  ADDITIONAL_TEST_ARGS: ""
 for:
   - matrix:
       only:
@@ -22,13 +24,12 @@ for:
         - image: Visual Studio 2017
     environment:
         VC_VERSION: 15.0
-        VC_PRERELEASE_ARGS:
   - matrix:
       only:
         - image: Visual Studio 2019 Preview
     environment:
         VC_VERSION: 16
-        VC_PRERELEASE_ARGS: "--VisualC.discoverprereleases"
+        ADDITIONAL_TEST_ARGS: --VisualC.discoverprereleases -T InstallerTest1 -T Test5 # Currently fail with CRT versioning, but pass on 16.16
 install:
   - sh: ./codingtools/install_ubuntu_dependencies.sh
   - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=master&job=Image%3A%20Visual%20Studio%202017'
@@ -39,9 +40,9 @@ build: off
 test_script:
   - cmd: c:\BuildAMation\env.bat
   - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
-  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b Native -c debug -c profile -j0 -d
-  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b VSSolution -c debug -c profile -j0 -d
-  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% %VC_PRERELEASE_ARGS% -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE
+  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b Native -c debug -c profile -j0 -d %ADDITIONAL_TEST_ARGS%
+  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b VSSolution -c debug -c profile -j0 -d %ADDITIONAL_TEST_ARGS%
+  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE %ADDITIONAL_TEST_ARGS%
   - sh: source ~/BuildAMation/env.sh
-  - sh: python ~/BuildAMation/tests/runtests.py --Gcc.version=$GCC_VERSION -b Native -c debug -c profile -j0 -d
-  - sh: python ~/BuildAMation/tests/runtests.py --Gcc.version=$GCC_VERSION -b MakeFile -c debug -c profile -j0 -d
+  - sh: python ~/BuildAMation/tests/runtests.py --Gcc.version=$GCC_VERSION -b Native -c debug -c profile -j0 -d $ADDITIONAL_TEST_ARGS
+  - sh: python ~/BuildAMation/tests/runtests.py --Gcc.version=$GCC_VERSION -b MakeFile -c debug -c profile -j0 -d $ADDITIONAL_TEST_ARGS
