@@ -457,7 +457,7 @@ namespace VisualCCommon
                     ),
                     "vcvarsall.bat"
                 ),
-                $"amd64 && cl /EP /nologo {temp_file}"
+                $"x86 && cl /EP /nologo {temp_file}"
             );
             var mscver = result.StandardOutput.Split(System.Environment.NewLine.ToCharArray()).Reverse().First();
             return VisualCCommon.ToolchainVersion.FromMSCVer(System.Convert.ToInt32(mscver));

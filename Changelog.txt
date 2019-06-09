@@ -1,3 +1,5 @@
+09-Jun-2019 Fixes #557. VisualStudio compiler version determination doesn't need native 64-bit support; 32-bit will suffice, and is available for all versions of VS.
+
 09-Jun-2019 Fixes #556. Link time code generation (LTCG) was introduced in VisualStudio 2015, so make sure it's not enabled for older VisualStudio versions.
 
 09-Jun-2019 Fixes #555. Added Gcc-6 package, and included it in tests.
