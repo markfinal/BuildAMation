@@ -52,9 +52,24 @@ namespace GccCommon
         public static readonly C.ToolchainVersion GCC_5_4 = FromComponentVersions(5, 4, 0);
 
         /// <summary>
+        /// Gcc 6
+        /// </summary>
+        public static readonly C.ToolchainVersion GCC_6 = FromComponentVersions(6, 0, 0);
+
+        /// <summary>
         /// Gcc 7
         /// </summary>
         public static readonly C.ToolchainVersion GCC_7 = FromComponentVersions(7, 0, 0);
+
+        /// <summary>
+        /// Gcc 8
+        /// </summary>
+        public static readonly C.ToolchainVersion GCC_8 = FromComponentVersions(8, 0, 0);
+
+        /// <summary>
+        /// Gcc 9
+        /// </summary>
+        public static readonly C.ToolchainVersion GCC_9 = FromComponentVersions(9, 0, 0);
 
         private ToolchainVersion(
             int major_version,

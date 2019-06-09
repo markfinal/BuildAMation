@@ -5,6 +5,7 @@
     <Package name="C" />
     <Package name="Gcc" version="4.8" default="true" />
     <Package name="Gcc" version="5" />
+    <Package name="Gcc" version="6" />
     <Package name="Gcc" version="7" />
     <Package name="Gcc" version="8" />
     <Package name="Gcc" version="9" />

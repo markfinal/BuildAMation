@@ -1,3 +1,5 @@
+09-Jun-2019 Fixes #555. Added Gcc-6 package, and included it in tests.
+
 08-Jun-2019 Fixes #554. All versions of vcruntime140*.dll and msvcp140*.dll are now included in redists. There are _1 and _2 suffixed versions which offer additional standard library support features.
 
 08-Jun-2019 Fixes #549. VisualStudio 2017 & 2019 CRT version numbers for redist are now generated from the VCToolsVersion environment variable, e.g. 14.16.27023 -> 141, 14.21.27702 -> 142.
