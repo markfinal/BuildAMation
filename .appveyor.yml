@@ -14,6 +14,7 @@ after_build:
   - cmd: 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish\*
   - cmd: 7z a bam.tar %APPVEYOR_BUILD_FOLDER%\bam_publish\*
   - cmd: 7z a bam_docs.zip %APPVEYOR_BUILD_FOLDER%\docs || exit 0
+  - cmd: 7z a ubuntu_install_scripts.tar CI\ubuntu_install_scripts\*
 artifacts:
   - path: bam.zip
     name: Bam Zip Archive
@@ -21,6 +22,8 @@ artifacts:
     name: Bam Tar Archive
   - path: bam_docs.zip
     name: Bam Documentation Zip Archive
+  - path: ubuntu_install_scripts.tar
+    name: Ubuntu install scripts for continuous integration
 on_success:
     cmd: CI\remote_jobs.bat
 on_finish:
