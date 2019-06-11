@@ -1,48 +1,279 @@
-image:
-  - Ubuntu1804
-  - Ubuntu
-  - Visual Studio 2019 Preview
-  - Visual Studio 2017
 clone_depth: 10
 configuration: Release
 platform: AnyCPU
-environment:
-  ADDITIONAL_TEST_ARGS: ""
-for:
-  - matrix:
-      only:
-        - image: Ubuntu
-    environment:
-      GCC_VERSION: 5
-  - matrix:
-      only:
-        - image: Ubuntu1804
-    environment:
-      GCC_VERSION: 7
-  - matrix:
-      only:
-        - image: Visual Studio 2017
-    environment:
-        VC_VERSION: 15.0
-  - matrix:
-      only:
-        - image: Visual Studio 2019 Preview
-    environment:
-        VC_VERSION: 16
-        ADDITIONAL_TEST_ARGS: --VisualC.discoverprereleases -T InstallerTest1 -T Test5 # Currently fail with CRT versioning, but pass on 16.1
 install:
-  - sh: ./codingtools/install_ubuntu_dependencies.sh
   - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=master&job=Image%3A%20Visual%20Studio%202017'
+  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/ubuntu_install_scripts.tar?branch=master&job=Image%3A%20Visual%20Studio%202017'
   - cmd: 7z x bam.tar -oc:\BuildAMation
   - sh: mkdir ~/BuildAMation
   - sh: tar xf bam.tar -C ~/BuildAMation
+  - sh: tar xf ubuntu_install_scripts.tar -C ~
+environment:
+  matrix:
+  - job_name: Ubuntu 18 (GCC 9) Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+  - job_name: Ubuntu 18 (GCC 9) MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+  - job_name: Ubuntu 18 (GCC 8) Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+  - job_name: Ubuntu 18 (GCC 8) MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+  - job_name: Ubuntu 18 (GCC 7) Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+  - job_name: Ubuntu 18 (GCC 7) MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+  - job_name: Ubuntu 18 (GCC 6) Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+  - job_name: Ubuntu 18 (GCC 6) MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+  - job_name: Ubuntu 16 (GCC 5) Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
+  - job_name: Ubuntu 16 (GCC 5) MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
+  - job_name: Visual Studio 2019 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+  - job_name: Visual Studio 2019 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+  - job_name: Visual Studio 2019 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+  - job_name: Visual Studio 2017 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  - job_name: Visual Studio 2017 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  - job_name: Visual Studio 2017 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  - job_name: Visual Studio 2015 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2015 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2015 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2013 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2013 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2013 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2012 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2012 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2012 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2010 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2010 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2010 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+for:
+  - matrix:
+      only:
+        - job_name: Ubuntu 18 (GCC 9) Native
+    environment:
+      BAM_BUILD_MODE: Native
+      GCC_VERSION: 9
+    before_test:
+      - sh: ~/CI/ubuntu_install_scripts/gcc9.sh
+  - matrix:
+      only:
+        - job_name: Ubuntu 18 (GCC 9) MakeFile
+    environment:
+      BAM_BUILD_MODE: MakeFile
+      GCC_VERSION: 9
+    before_test:
+      - sh: ~/CI/ubuntu_install_scripts/gcc9.sh
+  - matrix:
+      only:
+        - job_name: Ubuntu 18 (GCC 8) Native
+    environment:
+      BAM_BUILD_MODE: Native
+      GCC_VERSION: 8
+    before_test:
+      - sh: ~/CI/ubuntu_install_scripts/gcc8.sh
+  - matrix:
+      only:
+        - job_name: Ubuntu 18 (GCC 8) MakeFile
+    environment:
+      BAM_BUILD_MODE: MakeFile
+      GCC_VERSION: 8
+    before_test:
+      - sh: ~/CI/ubuntu_install_scripts/gcc8.sh
+  - matrix:
+      only:
+        - job_name: Ubuntu 18 (GCC 7) Native
+    environment:
+      BAM_BUILD_MODE: Native
+      GCC_VERSION: 7
+    before_test:
+      - sh: ~/CI/ubuntu_install_scripts/gcc7.sh
+  - matrix:
+      only:
+        - job_name: Ubuntu 18 (GCC 7) MakeFile
+    environment:
+      BAM_BUILD_MODE: MakeFile
+      GCC_VERSION: 7
+    before_test:
+      - sh: ~/CI/ubuntu_install_scripts/gcc7.sh
+  - matrix:
+      only:
+        - job_name: Ubuntu 18 (GCC 6) Native
+    environment:
+      BAM_BUILD_MODE: Native
+      GCC_VERSION: 6
+    before_test:
+      - sh: ~/CI/ubuntu_install_scripts/gcc6.sh
+  - matrix:
+      only:
+        - job_name: Ubuntu 18 (GCC 6) MakeFile
+    environment:
+      BAM_BUILD_MODE: MakeFile
+      GCC_VERSION: 6
+    before_test:
+      - sh: ~/CI/ubuntu_install_scripts/gcc6.sh
+  - matrix:
+      only:
+        - job_name: Ubuntu 16 (GCC 5) Native
+    environment:
+      BAM_BUILD_MODE: Native
+      GCC_VERSION: 5
+    before_test:
+      - sh: ~/CI/ubuntu_install_scripts/gcc5.sh
+  - matrix:
+      only:
+        - job_name: Ubuntu 16 (GCC 5) MakeFile
+    environment:
+      BAM_BUILD_MODE: MakeFile
+      GCC_VERSION: 5
+    before_test:
+      - sh: ~/CI/ubuntu_install_scripts/gcc5.sh
+  - matrix:
+      only:
+        - job_name: Visual Studio 2019 Native
+    environment:
+      BAM_BUILD_MODE: Native
+      VC_VERSION: 16
+  - matrix:
+      only:
+        - job_name: Visual Studio 2019 MakeFile
+    environment:
+      BAM_BUILD_MODE: MakeFile --MakeFile.format=NMAKE
+      VC_VERSION: 16
+  - matrix:
+      only:
+        - job_name: Visual Studio 2019 VSSolution
+    environment:
+      BAM_BUILD_MODE: VSSolution
+      VC_VERSION: 16
+  - matrix:
+      only:
+        - job_name: Visual Studio 2017 Native
+    environment:
+      BAM_BUILD_MODE: Native
+      VC_VERSION: 15.0
+      EXTRA_TEST_ARGS:
+  - matrix:
+      only:
+        - job_name: Visual Studio 2017 MakeFile
+    environment:
+      BAM_BUILD_MODE: MakeFile --MakeFile.format=NMAKE
+      VC_VERSION: 15.0
+      EXTRA_TEST_ARGS:
+  - matrix:
+      only:
+        - job_name: Visual Studio 2017 VSSolution
+    environment:
+      BAM_BUILD_MODE: VSSolution
+      VC_VERSION: 15.0
+      EXTRA_TEST_ARGS:
+  - matrix:
+      only:
+        - job_name: Visual Studio 2015 Native
+    environment:
+      BAM_BUILD_MODE: Native
+      VC_VERSION: 14.0
+      EXTRA_TEST_ARGS:
+  - matrix:
+      only:
+        - job_name: Visual Studio 2015 MakeFile
+    environment:
+      BAM_BUILD_MODE: MakeFile --MakeFile.format=NMAKE
+      VC_VERSION: 14.0
+      EXTRA_TEST_ARGS:
+  - matrix:
+      only:
+        - job_name: Visual Studio 2015 VSSolution
+    environment:
+      BAM_BUILD_MODE: VSSolution
+      VC_VERSION: 14.0
+      EXTRA_TEST_ARGS:
+  - matrix:
+      only:
+        - job_name: Visual Studio 2013 Native
+    environment:
+      BAM_BUILD_MODE: Native
+      VC_VERSION: 12.0
+      EXTRA_TEST_ARGS:
+  - matrix:
+      only:
+        - job_name: Visual Studio 2013 MakeFile
+    environment:
+      BAM_BUILD_MODE: MakeFile --MakeFile.format=NMAKE
+      VC_VERSION: 12.0
+      EXTRA_TEST_ARGS:
+  - matrix:
+      only:
+        - job_name: Visual Studio 2013 VSSolution
+    environment:
+      BAM_BUILD_MODE: VSSolution
+      VC_VERSION: 12.0
+      EXTRA_TEST_ARGS:
+  - matrix:
+      only:
+        - job_name: Visual Studio 2012 Native
+    environment:
+      BAM_BUILD_MODE: Native
+      VC_VERSION: 11.0
+      EXTRA_TEST_ARGS:
+  - matrix:
+      only:
+        - job_name: Visual Studio 2012 MakeFile
+    environment:
+      BAM_BUILD_MODE: MakeFile --MakeFile.format=NMAKE
+      VC_VERSION: 11.0
+      EXTRA_TEST_ARGS:
+  - matrix:
+      only:
+        - job_name: Visual Studio 2012 VSSolution
+    environment:
+      BAM_BUILD_MODE: VSSolution
+      VC_VERSION: 11.0
+      EXTRA_TEST_ARGS:
+  - matrix:
+      only:
+        - job_name: Visual Studio 2010 Native
+    environment:
+      BAM_BUILD_MODE: Native
+      VC_VERSION: 10.0
+      EXTRA_TEST_ARGS: --C.bitdepth=32
+  - matrix:
+      only:
+        - job_name: Visual Studio 2010 MakeFile
+    environment:
+      BAM_BUILD_MODE: MakeFile --MakeFile.format=NMAKE
+      VC_VERSION: 10.0
+      EXTRA_TEST_ARGS: --C.bitdepth=32
+  - matrix:
+      only:
+        - job_name: Visual Studio 2010 VSSolution
+    environment:
+      BAM_BUILD_MODE: VSSolution
+      VC_VERSION: 10.0
+      EXTRA_TEST_ARGS: --C.bitdepth=32
 build: off
 test_script:
   - cmd: c:\BuildAMation\env.bat
   - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
-  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b Native -c debug -c profile -j0 -d %ADDITIONAL_TEST_ARGS%
-  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b VSSolution -c debug -c profile -j0 -d %ADDITIONAL_TEST_ARGS%
-  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b MakeFile -c debug -c profile -j0 -d --MakeFile.format=NMAKE %ADDITIONAL_TEST_ARGS%
+  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b %BAM_BUILD_MODE% -c debug -c profile -j0 -d --nodefaultrepo -r . %EXTRA_TEST_ARGS%
   - sh: source ~/BuildAMation/env.sh
-  - sh: python ~/BuildAMation/tests/runtests.py --Gcc.version=$GCC_VERSION -b Native -c debug -c profile -j0 -d $ADDITIONAL_TEST_ARGS
-  - sh: python ~/BuildAMation/tests/runtests.py --Gcc.version=$GCC_VERSION -b MakeFile -c debug -c profile -j0 -d $ADDITIONAL_TEST_ARGS
+  - sh: python ~/BuildAMation/tests/runtests.py --Gcc.version=$GCC_VERSION -b $BAM_BUILD_MODE -c debug -c profile -j0 -d --nodefaultrepo -r . $EXTRA_TEST_ARGS
