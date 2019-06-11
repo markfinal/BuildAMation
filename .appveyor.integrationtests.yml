@@ -172,105 +172,99 @@ for:
     environment:
       BAM_BUILD_MODE: Native
       VC_VERSION: 15.0
-      EXTRA_TEST_ARGS:
   - matrix:
       only:
         - job_name: Visual Studio 2017 MakeFile
     environment:
       BAM_BUILD_MODE: MakeFile --MakeFile.format=NMAKE
       VC_VERSION: 15.0
-      EXTRA_TEST_ARGS:
   - matrix:
       only:
         - job_name: Visual Studio 2017 VSSolution
     environment:
       BAM_BUILD_MODE: VSSolution
       VC_VERSION: 15.0
-      EXTRA_TEST_ARGS:
   - matrix:
       only:
         - job_name: Visual Studio 2015 Native
     environment:
       BAM_BUILD_MODE: Native
       VC_VERSION: 14.0
-      EXTRA_TEST_ARGS:
   - matrix:
       only:
         - job_name: Visual Studio 2015 MakeFile
     environment:
       BAM_BUILD_MODE: MakeFile --MakeFile.format=NMAKE
       VC_VERSION: 14.0
-      EXTRA_TEST_ARGS:
   - matrix:
       only:
         - job_name: Visual Studio 2015 VSSolution
     environment:
       BAM_BUILD_MODE: VSSolution
       VC_VERSION: 14.0
-      EXTRA_TEST_ARGS:
   - matrix:
       only:
         - job_name: Visual Studio 2013 Native
     environment:
       BAM_BUILD_MODE: Native
       VC_VERSION: 12.0
-      EXTRA_TEST_ARGS:
+      EXTRA_TEST_ARGS: -T Cxx11Test1 -T Cxx14Test1 -T Cxx17Test1
   - matrix:
       only:
         - job_name: Visual Studio 2013 MakeFile
     environment:
       BAM_BUILD_MODE: MakeFile --MakeFile.format=NMAKE
       VC_VERSION: 12.0
-      EXTRA_TEST_ARGS:
+      EXTRA_TEST_ARGS: -T Cxx11Test1 -T Cxx14Test1 -T Cxx17Test1
   - matrix:
       only:
         - job_name: Visual Studio 2013 VSSolution
     environment:
       BAM_BUILD_MODE: VSSolution
       VC_VERSION: 12.0
-      EXTRA_TEST_ARGS:
+      EXTRA_TEST_ARGS: -T Cxx11Test1 -T Cxx14Test1 -T Cxx17Test1
   - matrix:
       only:
         - job_name: Visual Studio 2012 Native
     environment:
       BAM_BUILD_MODE: Native
       VC_VERSION: 11.0
-      EXTRA_TEST_ARGS:
+      EXTRA_TEST_ARGS: -T Cxx11Test1 -T Cxx14Test1 -T Cxx17Test1
   - matrix:
       only:
         - job_name: Visual Studio 2012 MakeFile
     environment:
       BAM_BUILD_MODE: MakeFile --MakeFile.format=NMAKE
       VC_VERSION: 11.0
-      EXTRA_TEST_ARGS:
+      EXTRA_TEST_ARGS: -T Cxx11Test1 -T Cxx14Test1 -T Cxx17Test1
   - matrix:
       only:
         - job_name: Visual Studio 2012 VSSolution
     environment:
       BAM_BUILD_MODE: VSSolution
       VC_VERSION: 11.0
-      EXTRA_TEST_ARGS:
+      EXTRA_TEST_ARGS: -T Cxx11Test1 -T Cxx14Test1 -T Cxx17Test1
   - matrix:
       only:
         - job_name: Visual Studio 2010 Native
     environment:
       BAM_BUILD_MODE: Native
       VC_VERSION: 10.0
-      EXTRA_TEST_ARGS: --C.bitdepth=32
+      EXTRA_TEST_ARGS: --C.bitdepth=32 -T Cxx11Test1 -T Cxx14Test1 -T Cxx17Test1
   - matrix:
       only:
         - job_name: Visual Studio 2010 MakeFile
     environment:
       BAM_BUILD_MODE: MakeFile --MakeFile.format=NMAKE
       VC_VERSION: 10.0
-      EXTRA_TEST_ARGS: --C.bitdepth=32
+      EXTRA_TEST_ARGS: --C.bitdepth=32 -T Cxx11Test1 -T Cxx14Test1 -T Cxx17Test1
   - matrix:
       only:
         - job_name: Visual Studio 2010 VSSolution
     environment:
       BAM_BUILD_MODE: VSSolution
       VC_VERSION: 10.0
-      EXTRA_TEST_ARGS: --C.bitdepth=32
+      EXTRA_TEST_ARGS: --C.bitdepth=32 -T Cxx11Test1 -T Cxx14Test1 -T Cxx17Test1
 build: off
 test_script:
   - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
