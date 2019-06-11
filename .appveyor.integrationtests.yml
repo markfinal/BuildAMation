@@ -73,6 +73,7 @@ for:
     environment:
       BAM_BUILD_MODE: Native
       GCC_VERSION: 9
+      EXTRA_TEST_ARGS: "-t Test2"
     before_test:
       - sh: ~/CI/ubuntu_install_scripts/gcc9.sh
   - matrix:
