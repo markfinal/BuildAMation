@@ -1,3 +1,5 @@
+11-Jun-2019 Fixes #558. Xcode project generation now uses the correct file type for source files. Also, mixed language projects (e.g. C++ and ObjectiveC++) no longer need to specify the target compilation language per source file (since it's encoded in the file type).
+
 09-Jun-2019 Fixes #557. VisualStudio compiler version determination doesn't need native 64-bit support; 32-bit will suffice, and is available for all versions of VS.
 
 09-Jun-2019 Fixes #556. Link time code generation (LTCG) was introduced in VisualStudio 2015, so make sure it's not enabled for older VisualStudio versions.

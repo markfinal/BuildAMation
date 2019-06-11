@@ -160,6 +160,14 @@ namespace C
                     var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                     if (null != deltaSettings)
                     {
+                        if (deltaSettings is C.ICommonPreprocessorSettings preprocessor)
+                        {
+                            // this happens for mixed C language source files, e.g. C++ and ObjC++,
+                            // 1) the target language is already encoded in the file type
+                            // 2) Xcode 10's build system seems to ignore some C++ language settings if -x c++ appears on C++ source files
+                            preprocessor.TargetLanguage = null;
+                        }
+
                         var commandLine = CommandLineProcessor.NativeConversion.Convert(
                             deltaSettings,
                             objFile,
