@@ -77,7 +77,7 @@ for:
       GCC_VERSION: 9
       EXTRA_TEST_ARGS: "-t Test2"
     before_test:
-      - sh: ~/CI/ubuntu_install_scripts/gcc9.sh
+      - sh: sudo ~/CI/ubuntu_install_scripts/gcc9.sh
   - matrix:
       only:
         - job_name: Ubuntu 18 (GCC 9) MakeFile
@@ -85,7 +85,7 @@ for:
       BAM_BUILD_MODE: MakeFile
       GCC_VERSION: 9
     before_test:
-      - sh: ~/CI/ubuntu_install_scripts/gcc9.sh
+      - sh: sudo ~/CI/ubuntu_install_scripts/gcc9.sh
   - matrix:
       only:
         - job_name: Ubuntu 18 (GCC 8) Native
@@ -93,7 +93,7 @@ for:
       BAM_BUILD_MODE: Native
       GCC_VERSION: 8
     before_test:
-      - sh: ~/CI/ubuntu_install_scripts/gcc8.sh
+      - sh: sudo ~/CI/ubuntu_install_scripts/gcc8.sh
   - matrix:
       only:
         - job_name: Ubuntu 18 (GCC 8) MakeFile
@@ -101,7 +101,7 @@ for:
       BAM_BUILD_MODE: MakeFile
       GCC_VERSION: 8
     before_test:
-      - sh: ~/CI/ubuntu_install_scripts/gcc8.sh
+      - sh: sudo ~/CI/ubuntu_install_scripts/gcc8.sh
   - matrix:
       only:
         - job_name: Ubuntu 18 (GCC 7) Native
@@ -109,7 +109,7 @@ for:
       BAM_BUILD_MODE: Native
       GCC_VERSION: 7
     before_test:
-      - sh: ~/CI/ubuntu_install_scripts/gcc7.sh
+      - sh: sudo ~/CI/ubuntu_install_scripts/gcc7.sh
   - matrix:
       only:
         - job_name: Ubuntu 18 (GCC 7) MakeFile
@@ -117,7 +117,7 @@ for:
       BAM_BUILD_MODE: MakeFile
       GCC_VERSION: 7
     before_test:
-      - sh: ~/CI/ubuntu_install_scripts/gcc7.sh
+      - sh: sudo ~/CI/ubuntu_install_scripts/gcc7.sh
   - matrix:
       only:
         - job_name: Ubuntu 18 (GCC 6) Native
@@ -125,7 +125,7 @@ for:
       BAM_BUILD_MODE: Native
       GCC_VERSION: 6
     before_test:
-      - sh: ~/CI/ubuntu_install_scripts/gcc6.sh
+      - sh: sudo ~/CI/ubuntu_install_scripts/gcc6.sh
   - matrix:
       only:
         - job_name: Ubuntu 18 (GCC 6) MakeFile
@@ -133,7 +133,7 @@ for:
       BAM_BUILD_MODE: MakeFile
       GCC_VERSION: 6
     before_test:
-      - sh: ~/CI/ubuntu_install_scripts/gcc6.sh
+      - sh: sudo ~/CI/ubuntu_install_scripts/gcc6.sh
   - matrix:
       only:
         - job_name: Ubuntu 16 (GCC 5) Native
@@ -141,7 +141,7 @@ for:
       BAM_BUILD_MODE: Native
       GCC_VERSION: 5
     before_test:
-      - sh: ~/CI/ubuntu_install_scripts/gcc5.sh
+      - sh: sudo ~/CI/ubuntu_install_scripts/gcc5.sh
   - matrix:
       only:
         - job_name: Ubuntu 16 (GCC 5) MakeFile
@@ -149,7 +149,7 @@ for:
       BAM_BUILD_MODE: MakeFile
       GCC_VERSION: 5
     before_test:
-      - sh: ~/CI/ubuntu_install_scripts/gcc5.sh
+      - sh: sudo ~/CI/ubuntu_install_scripts/gcc5.sh
   - matrix:
       only:
         - job_name: Visual Studio 2019 Native
