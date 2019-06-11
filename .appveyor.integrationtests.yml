@@ -2,6 +2,7 @@ clone_depth: 10
 configuration: Release
 platform: AnyCPU
 install:
+  - sh: sudo apt-get -q -y --no-install-recommends install gobjc gnustep-devel libx11-dev libx11-dev:i386 chrpath > /dev/null
   - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=master&job=Image%3A%20Visual%20Studio%202017'
   - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/ubuntu_install_scripts.tar?branch=master&job=Image%3A%20Visual%20Studio%202017'
   - cmd: 7z x bam.tar -oc:\BuildAMation
@@ -73,7 +74,6 @@ for:
     environment:
       BAM_BUILD_MODE: Native
       GCC_VERSION: 9
-      EXTRA_TEST_ARGS: "-t Test2"
     before_test:
       - sh: sudo ~/CI/ubuntu_install_scripts/gcc9.sh
   - matrix:
