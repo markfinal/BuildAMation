@@ -124,7 +124,11 @@ namespace AssemblerTest2
                     {
                         var linker = settings as C.ICommonLinkerSettings;
                         linker.Libraries.AddUnique("kernel32.lib");
-                        linker.Libraries.AddUnique("ucrt.lib");
+                        var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+                        if (vcMeta.ToolchainVersion.AtLeast(VisualCCommon.ToolchainVersion.VC2015))
+                        {
+                            linker.Libraries.AddUnique("ucrt.lib");
+                        }
 
                         var additional = settings as C.IAdditionalSettings;
                         additional.AdditionalSettings.AddUnique("-entry:main");
