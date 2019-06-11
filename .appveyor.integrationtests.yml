@@ -275,9 +275,6 @@ for:
       EXTRA_TEST_ARGS: --C.bitdepth=32
 build: off
 test_script:
-  - cmd: c:\BuildAMation\env.bat
   - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
-  - cmd: python c:\BuildAMation\tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b %BAM_BUILD_MODE% -c debug -c profile -j0 -d --nodefaultrepo -r . %EXTRA_TEST_ARGS%
-  - sh: pwd
-  - sh: source ~/BuildAMation/env.sh
-  - sh: python ~/BuildAMation/tests/runtests.py --Gcc.version=$GCC_VERSION -b $BAM_BUILD_MODE -c debug -c profile -j0 -d --nodefaultrepo -r . $EXTRA_TEST_ARGS
+  - cmd: cd c:\BuildAMation && env.bat && python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b %BAM_BUILD_MODE% -c debug -c profile -j0 -d --nodefaultrepo -r . %EXTRA_TEST_ARGS%
+  - sh: cd ~/BuildAMation && source env.sh && python tests/runtests.py --Gcc.version=$GCC_VERSION -b $BAM_BUILD_MODE -c debug -c profile -j0 -d --nodefaultrepo -r . $EXTRA_TEST_ARGS

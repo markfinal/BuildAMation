@@ -11,7 +11,6 @@ install:
   - wget 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=master&job=Image%3A%20Visual%20Studio%202017' -O /tmp/bam.tar
   - mkdir -p /tmp/BuildAMation
   - tar xf /tmp/bam.tar -C /tmp/BuildAMation
-  - source /tmp/BuildAMation/env.sh
 before_script:
   - dotnet --version
 matrix:
@@ -116,4 +115,4 @@ matrix:
       - BAM_TOOLCHAIN_NAME=Clang
       - BAM_TOOLCHAIN_VERSION=Xcode8
 script:
-  - python /tmp/BuildAMation/tests/runtests.py --${BAM_TOOLCHAIN_NAME}.version=${BAM_TOOLCHAIN_VERSION} -c debug -c profile -j0 -d --nodefaultrepo -r . -b $BAM_BUILD_MODE $EXTRA_TEST_ARGS
+  - cd /tmp/BuildAMation && source env.sh && python tests/runtests.py --${BAM_TOOLCHAIN_NAME}.version=${BAM_TOOLCHAIN_VERSION} -c debug -c profile -j0 -d --nodefaultrepo -r . -b $BAM_BUILD_MODE $EXTRA_TEST_ARGS
