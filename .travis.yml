@@ -7,7 +7,7 @@ notifications:
 language: csharp
 python: '2.7'
 install:
-  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -q update && sudo apt-get -q -y --no-install-recommends install g++ g++-multilib; fi
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -q update && sudo apt-get -q -y --no-install-recommends install g++ g++-multilib gobjc++ gobjc++-multilib; fi
   - wget 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=master&job=Image%3A%20Visual%20Studio%202017' -O /tmp/bam.tar
   - mkdir -p /tmp/BuildAMation
   - tar xf /tmp/bam.tar -C /tmp/BuildAMation
