@@ -120,7 +120,7 @@ namespace XcodeBuilder
                 {
                     continue;
                 }
-                text.AppendLine($"{indent3}{setting.Key} = {value};");
+                text.AppendLine($"{indent3}{setting.Key} = {this.CleansePaths(value)};");
             }
             text.AppendLine($"{indent2}}};");
             text.AppendLine($"{indent2}name = {this.Name};");

@@ -483,8 +483,7 @@ namespace XcodeBuilder
                             }
                             else
                             {
-                                var excluded_path = System.IO.Path.GetFileName(fullPath);
-                                excluded.Add(excluded_path);
+                                excluded.Add(fullPath);
                             }
                         }
                         config["EXCLUDED_SOURCE_FILE_NAMES"] = excluded;

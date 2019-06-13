@@ -98,7 +98,7 @@ namespace XcodeBuilder
                 text.AppendLine($"{indent2}inputPaths = (");
                 foreach (var path in this.InputPaths)
                 {
-                    text.AppendLine($"{indent3}\"{path.ToString()}\",");
+                    text.AppendLine($"{indent3}\"{this.CleansePaths(path.ToString())}\",");
                 }
                 text.AppendLine($"{indent2});");
             }
@@ -108,7 +108,7 @@ namespace XcodeBuilder
                 text.AppendLine($"{indent2}outputPaths = (");
                 foreach (var path in this.OutputPaths)
                 {
-                    text.AppendLine($"{indent3}\"{path.ToString()}\",");
+                    text.AppendLine($"{indent3}\"{this.CleansePaths(path.ToString())}\",");
                 }
                 text.AppendLine($"{indent2});");
             }
@@ -119,7 +119,7 @@ namespace XcodeBuilder
             scriptContent.AppendLine("set -e"); // set -e on bash will fail the script if any command returns a non-zero exit code
             scriptContent.AppendLine("set -x"); // set -x on bash will trace the commands
             scriptContent.AppendLine(this.GenerateScript(this.AssociatedTarget));
-            text.AppendLine($"{indent2}shellScript = \"{scriptContent.ToString()}\";");
+            text.AppendLine($"{indent2}shellScript = \"{this.CleansePaths(scriptContent.ToString())}\";");
             if (!this.ShowEnvironmentInLog)
             {
                 text.AppendLine($"{indent2}showEnvVarsInLog = 0;");

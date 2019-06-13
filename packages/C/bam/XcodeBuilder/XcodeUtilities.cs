@@ -151,9 +151,7 @@ namespace C
                     var asObjFileBase = objFile as C.ObjectFileBase;
                     if (!asObjFileBase.PerformCompilation)
                     {
-                        var fullPath = asObjFileBase.InputPath.ToString();
-                        var filename = System.IO.Path.GetFileName(fullPath);
-                        excludedSource.Add(filename);
+                        excludedSource.Add(asObjFileBase.InputPath.ToString());
                     }
 
                     var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
@@ -210,9 +208,7 @@ namespace C
                     var asObjFileBase = objFile as C.ObjectFileBase;
                     if (!asObjFileBase.PerformCompilation)
                     {
-                        var fullPath = asObjFileBase.InputPath.ToString();
-                        var filename = System.IO.Path.GetFileName(fullPath);
-                        excludedSource.Add(filename);
+                        excludedSource.Add(asObjFileBase.InputPath.ToString());
                     }
 
                     var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;

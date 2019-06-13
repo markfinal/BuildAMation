@@ -124,7 +124,7 @@ namespace XcodeBuilder
                 text.AppendLine($"{indent2}children = (");
                 foreach (var child in this.Children.OrderBy(item => item.Name))
                 {
-                    text.AppendLine($"{indent3}{child.GUID} /* {child.Name} */,");
+                    text.AppendLine($"{indent3}{child.GUID} /* {this.CleansePaths(child.Name)} */,");
                 }
                 text.AppendLine($"{indent2});");
             }
