@@ -31,5 +31,7 @@ namespace C
 {
     public abstract class LibrarianTool :
         Bam.Core.PreBuiltTool
-    {}
+    {
+        public ToolchainVersion Version { get; protected set; }
+    }
 }

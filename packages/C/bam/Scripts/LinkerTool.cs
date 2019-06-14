@@ -38,5 +38,7 @@ namespace C
         public abstract void ProcessLibraryDependency(
             CModule executable,
             CModule library);
+
+        public ToolchainVersion Version { get; protected set; }
     }
 }
