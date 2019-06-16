@@ -495,6 +495,48 @@ namespace VisualCCommon
             {
                 this.ToolchainVersion = this.GetCompilerVersion();
             }
+            var runtimeChoice = Bam.Core.CommandLineProcessor.Evaluate(new Options.Runtime());
+            if (runtimeChoice.Any())
+            {
+                switch (runtimeChoice.First().First())
+                {
+                    case "MD":
+                        this.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
+                        break;
+
+                    case "MDd":
+                        this.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDebugDLL;
+                        break;
+
+                    case "MT":
+                        this.RuntimeLibrary = ERuntimeLibrary.MultiThreaded;
+                        break;
+
+                    case "MTd":
+                        this.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDebug;
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception($"Unknown runtime library type: {runtimeChoice.First().First()}");
+                }
+            }
+            if (!this.Meta.ContainsKey("RuntimeLibrary"))
+            {
+                this.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
+            }
+        }
+
+        public ERuntimeLibrary RuntimeLibrary
+        {
+            get
+            {
+                return (ERuntimeLibrary)this.Meta["RuntimeLibrary"];
+            }
+
+            set
+            {
+                this.Meta["RuntimeLibrary"] = value;
+            }
         }
     }
 }

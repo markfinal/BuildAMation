@@ -1,3 +1,5 @@
+16-Jun-2019 Fixes #560. Added VisualC.MetaData.RuntimeLibrary property, used to initialise the compiler setting. This can be overridden with a Bam.Core.IPackageMetaDataConfigure subclass. Also a command line switch, --VisualC.runtime, is also provided, accepting either MD, MDd, MT, MTd, the usual designations for the runtime library.
+
 14-Jun-2019 Fixes #559. Added Version read-only property of C.LinkerTool, C.LibrarianTool and C.AssemblerTool, identical to the C.CompilerTool property.
 
 13-Jun-2019 Fixes #108. Reopened. If a package resides in /private/tmp on macOS, an Xcode project will be generated with paths with /private/tmp, but Xcode treats these as /tmp (a symlink to /private/tmp). This causes problems for excluded source files (paths don't match, by string comparison), and some operations in Xcode 10 such as shell script build phases that have output files, such as generated source files, again as paths not matching. Generated Xcode projects are now post-processed to replace /private/tmp with /tmp.
