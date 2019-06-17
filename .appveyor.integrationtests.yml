@@ -12,25 +12,25 @@ install:
 environment:
   matrix:
   - job_name: Ubuntu 18 (GCC 9) Native
-    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
   - job_name: Ubuntu 18 (GCC 9) MakeFile
-    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
   - job_name: Ubuntu 18 (GCC 8) Native
-    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
   - job_name: Ubuntu 18 (GCC 8) MakeFile
-    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
   - job_name: Ubuntu 18 (GCC 7) Native
-    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
   - job_name: Ubuntu 18 (GCC 7) MakeFile
-    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
   - job_name: Ubuntu 18 (GCC 6) Native
-    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
   - job_name: Ubuntu 18 (GCC 6) MakeFile
-    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1804
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
   - job_name: Ubuntu 16 (GCC 5) Native
-    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1604
   - job_name: Ubuntu 16 (GCC 5) MakeFile
-    APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu1604
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1604
   - job_name: Visual Studio 2019 Native
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
   - job_name: Visual Studio 2019 MakeFile
