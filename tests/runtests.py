@@ -107,11 +107,14 @@ def _pre_execute(builder):
 
 
 def _run_buildamation(options, instance, extra_args, output_messages, error_messages):
-    arg_list = [
+    arg_list = []
+    if options.prefix:
+        arg_list.append(options.prefix)
+    arg_list.extend([
         bam_shell,
         "-o=%s" % options.buildRoot,
         "-b=%s" % options.buildmode
-    ]
+    ])
     for config in options.configurations:
         arg_list.append("--config=%s" % config)
     arg_list.append("-j=" + str(options.numJobs))
@@ -286,6 +289,7 @@ if __name__ == "__main__":
     optParser.add_option("--nodefaultrepo", dest="nodefaultrepo", action="store_true", default=False, help="Do not test the default repository")
     optParser.add_option("--injectdefaultpackage", dest="injected", action="append", default=None, help="Inject default packages, specify packagename or packagename-packageversion")
     optParser.add_option("--dumpprojects", dest="dumpprojects", action="store_true", default=False, help="Dump generated project files to stdout")
+    optParser.add_option("--prefix", dest="prefix", action="store", default=None, help="Prefix command to each bam process")
     test_option_setup(optParser)
     (options, args) = optParser.parse_args()
 
