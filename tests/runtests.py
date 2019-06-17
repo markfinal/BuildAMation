@@ -209,14 +209,17 @@ def execute_test_instance(instance, options, output_buffer, stats, the_builder):
             message = "Test instance '%s'" % str(instance)
             if extra_args:
                 message += " with extra arguments '%s'" % " ".join(extra_args)
-            message += " executed in (%f,%f,%f,%f,%f) seconds" %\
-                (
-                    end_time[0] - start_time[0],
-                    end_time[1] - start_time[1],
-                    end_time[2] - start_time[2],
-                    end_time[3] - start_time[3],
-                    end_time[4] - start_time[4]
-                )
+            try:
+                message += " executed in (%f,%f,%f,%f,%f) seconds" %\
+                    (
+                        end_time[0] - start_time[0],
+                        end_time[1] - start_time[1],
+                        end_time[2] - start_time[2],
+                        end_time[3] - start_time[3],
+                        end_time[4] - start_time[4]
+                    )
+            except UnboundLocalError: # for end_time
+                pass
             try:
                 if returncode == 0:
                     stats._success += 1
