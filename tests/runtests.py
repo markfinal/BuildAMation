@@ -13,6 +13,7 @@ import sys
 from testconfigurations import test_option_setup
 from testinstance import TestInstance
 import time
+import tempfile
 import xml.etree.ElementTree as ET
 
 # ----------
@@ -138,12 +139,27 @@ def _run_buildamation(options, instance, extra_args, output_messages, error_mess
         p = subprocess.Popen(arg_list, cwd=instance.package_path())
         p.wait()
     else:
-        p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=instance.package_path())
-        (output_stream, error_stream) = p.communicate()  # this should WAIT
-        if output_stream:
-            output_messages.write(output_stream)
-        if error_stream:
-            error_messages.write(error_stream)
+        out_fd, out_path = tempfile.mkstemp()
+        err_fd, err_path = tempfile.mkstemp()
+        try:
+            with os.fdopen(out_fd, 'w') as out:
+                with os.fdopen(err_fd, 'w') as err:
+                    p = subprocess.Popen(arg_list, stdout=out, stderr=err, cwd=instance.package_path())
+                    while p.poll() is None:
+                        sys.stdout.write('.') # keep something alive on the console
+                        sys.stdout.flush()
+                        time.sleep(1)
+                    p.wait()
+                    print_message('')
+        except Exception, e:
+            print_message(str(e))
+        finally:
+            with open(out_path) as out:
+                output_messages.write(out.read())
+            with open(err_path) as err:
+                error_messages.write(err.read())
+            os.remove(out_path)
+            os.remove(err_path)
     return p.returncode, arg_list
 
 
