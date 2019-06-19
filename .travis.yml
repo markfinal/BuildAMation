@@ -7,10 +7,12 @@ notifications:
 language: csharp
 python: '2.7'
 install:
-  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -q update && sudo apt-get -q -y --no-install-recommends install g++ g++-multilib gobjc++ gobjc++-multilib gnustep-devel libx11-dev libx11-dev:i386 chrpath; fi
   - wget 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=master&job=Image%3A%20Visual%20Studio%202017' -O /tmp/bam.tar
   - mkdir -p /tmp/BuildAMation
   - tar xf /tmp/bam.tar -C /tmp/BuildAMation
+  - if [ $TRAVIS_OS_NAME = linux ]; then wget 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/ubuntu_install_scripts.tar?branch=master&job=Image%3A%20Visual%20Studio%202017' -O /tmp/ubuntu_install_scripts.tar; fi
+  - if [ $TRAVIS_OS_NAME = linux ]; then tar xf /tmp/ubuntu_install_scripts.tar -C /tmp; fi
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -q update && sudo apt-get -q -y --no-install-recommends install gnustep-devel libx11-dev libx11-dev:i386 chrpath; fi
 before_script:
   - dotnet --version
 matrix:
@@ -24,103 +26,105 @@ matrix:
       - BAM_BUILD_MODE=Native
       - BAM_TOOLCHAIN_NAME=Gcc
       - BAM_TOOLCHAIN_VERSION=4.8
-      - EXTRA_TEST_ARGS="-T Cxx14Test1 -T Cxx17Test1" # C++14 and C++17 not available in Gcc 4.8
-  - os: linux
-    dist: trusty
-    mono: none
-    dotnet: 2.1.401
-    name: Ubuntu 14 (GCC 4.8) MakeFile
-    env:
-      - BAM_BUILD_MODE=MakeFile
-      - BAM_TOOLCHAIN_NAME=Gcc
-      - BAM_TOOLCHAIN_VERSION=4.8
-      - EXTRA_TEST_ARGS="-T Cxx14Test1 -T Cxx17Test1" # C++14 and C++17 not available in Gcc 4.8
-  - os: osx
-    osx_image: xcode10.2
-    mono: none
-    dotnet: 2.1.401
-    name: MacOS (Xcode 10.2) Native
-    env:
-      - BAM_BUILD_MODE=Native
-      - BAM_TOOLCHAIN_NAME=Clang
-      - BAM_TOOLCHAIN_VERSION=Xcode10
-      - EXTRA_TEST_ARGS=--C.bitdepth=64 # Xcode 10 no longer builds 32-bit targets
-  - os: osx
-    osx_image: xcode10.2
-    mono: none
-    dotnet: 2.1.401
-    name: MacOS (Xcode 10.2) MakeFile
-    env:
-      - BAM_BUILD_MODE=MakeFile
-      - BAM_TOOLCHAIN_NAME=Clang
-      - BAM_TOOLCHAIN_VERSION=Xcode10
-      - EXTRA_TEST_ARGS=--C.bitdepth=64 # Xcode 10 no longer builds 32-bit targets
-  - os: osx
-    osx_image: xcode10.2
-    mono: none
-    dotnet: 2.1.401
-    name: MacOS (Xcode 10.2) Xcode
-    env:
-      - BAM_BUILD_MODE=Xcode
-      - BAM_TOOLCHAIN_NAME=Clang
-      - BAM_TOOLCHAIN_VERSION=Xcode10
-      - EXTRA_TEST_ARGS=--C.bitdepth=64 # Xcode 10 no longer builds 32-bit targets
-  - os: osx
-    osx_image: xcode9.4
-    mono: none
-    dotnet: 2.1.401
-    name: MacOS (Xcode 9.4) Native
-    env:
-      - BAM_BUILD_MODE=Native
-      - BAM_TOOLCHAIN_NAME=Clang
-      - BAM_TOOLCHAIN_VERSION=Xcode9
-  - os: osx
-    osx_image: xcode9.4
-    mono: none
-    dotnet: 2.1.401
-    name: MacOS (Xcode 9.4) MakeFile
-    env:
-      - BAM_BUILD_MODE=MakeFile
-      - BAM_TOOLCHAIN_NAME=Clang
-      - BAM_TOOLCHAIN_VERSION=Xcode9
-  - os: osx
-    osx_image: xcode9.4
-    mono: none
-    dotnet: 2.1.401
-    name: MacOS (Xcode 9.4) Xcode
-    env:
-      - BAM_BUILD_MODE=Xcode
-      - BAM_TOOLCHAIN_NAME=Clang
-      - BAM_TOOLCHAIN_VERSION=Xcode9
-  - os: osx
-    osx_image: xcode8.3
-    mono: none
-    dotnet: 2.1.401
-    name: MacOS (Xcode 8.3) Native
-    env:
-      - BAM_BUILD_MODE=Native
-      - BAM_TOOLCHAIN_NAME=Clang
-      - BAM_TOOLCHAIN_VERSION=Xcode8
-      - EXTRA_TEST_ARGS="-T Cxx17Test1"
-  - os: osx
-    osx_image: xcode8.3
-    mono: none
-    dotnet: 2.1.401
-    name: MacOS (Xcode 8.3) MakeFile
-    env:
-      - BAM_BUILD_MODE=MakeFile
-      - BAM_TOOLCHAIN_NAME=Clang
-      - BAM_TOOLCHAIN_VERSION=Xcode8
-      - EXTRA_TEST_ARGS="-T Cxx17Test1"
-  - os: osx
-    osx_image: xcode8.3
-    mono: none
-    dotnet: 2.1.401
-    name: MacOS (Xcode 8.3) Xcode
-    env:
-      - BAM_BUILD_MODE=Xcode
-      - BAM_TOOLCHAIN_NAME=Clang
-      - BAM_TOOLCHAIN_VERSION=Xcode8
-      - EXTRA_TEST_ARGS="-T Cxx17Test1"
+      #- EXTRA_TEST_ARGS="-T Cxx14Test1 -T Cxx17Test1" # C++14 and C++17 not available in Gcc 4.8
+      - EXTRA_TEST_ARGS="-t Test2"
+  #- os: linux
+  #  dist: trusty
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: Ubuntu 14 (GCC 4.8) MakeFile
+  #  env:
+  #    - BAM_BUILD_MODE=MakeFile
+  #    - BAM_TOOLCHAIN_NAME=Gcc
+  #    - BAM_TOOLCHAIN_VERSION=4.8
+  #    - EXTRA_TEST_ARGS="-T Cxx14Test1 -T Cxx17Test1" # C++14 and C++17 not available in Gcc 4.8
+  #- os: osx
+  #  osx_image: xcode10.2
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: MacOS (Xcode 10.2) Native
+  #  env:
+  #    - BAM_BUILD_MODE=Native
+  #    - BAM_TOOLCHAIN_NAME=Clang
+  #    - BAM_TOOLCHAIN_VERSION=Xcode10
+  #    - EXTRA_TEST_ARGS=--C.bitdepth=64 # Xcode 10 no longer builds 32-bit targets
+  #- os: osx
+  #  osx_image: xcode10.2
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: MacOS (Xcode 10.2) MakeFile
+  #  env:
+  #    - BAM_BUILD_MODE=MakeFile
+  #    - BAM_TOOLCHAIN_NAME=Clang
+  #    - BAM_TOOLCHAIN_VERSION=Xcode10
+  #    - EXTRA_TEST_ARGS=--C.bitdepth=64 # Xcode 10 no longer builds 32-bit targets
+  #- os: osx
+  #  osx_image: xcode10.2
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: MacOS (Xcode 10.2) Xcode
+  #  env:
+  #    - BAM_BUILD_MODE=Xcode
+  #    - BAM_TOOLCHAIN_NAME=Clang
+  #    - BAM_TOOLCHAIN_VERSION=Xcode10
+  #    - EXTRA_TEST_ARGS=--C.bitdepth=64 # Xcode 10 no longer builds 32-bit targets
+  #- os: osx
+  #  osx_image: xcode9.4
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: MacOS (Xcode 9.4) Native
+  #  env:
+  #    - BAM_BUILD_MODE=Native
+  #    - BAM_TOOLCHAIN_NAME=Clang
+  #    - BAM_TOOLCHAIN_VERSION=Xcode9
+  #- os: osx
+  #  osx_image: xcode9.4
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: MacOS (Xcode 9.4) MakeFile
+  #  env:
+  #    - BAM_BUILD_MODE=MakeFile
+  #    - BAM_TOOLCHAIN_NAME=Clang
+  #    - BAM_TOOLCHAIN_VERSION=Xcode9
+  #- os: osx
+  #  osx_image: xcode9.4
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: MacOS (Xcode 9.4) Xcode
+  #  env:
+  #    - BAM_BUILD_MODE=Xcode
+  #    - BAM_TOOLCHAIN_NAME=Clang
+  #    - BAM_TOOLCHAIN_VERSION=Xcode9
+  #- os: osx
+  #  osx_image: xcode8.3
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: MacOS (Xcode 8.3) Native
+  #  env:
+  #    - BAM_BUILD_MODE=Native
+  #    - BAM_TOOLCHAIN_NAME=Clang
+  #    - BAM_TOOLCHAIN_VERSION=Xcode8
+  #    - EXTRA_TEST_ARGS="-T Cxx17Test1"
+  #- os: osx
+  #  osx_image: xcode8.3
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: MacOS (Xcode 8.3) MakeFile
+  #  env:
+  #    - BAM_BUILD_MODE=MakeFile
+  #    - BAM_TOOLCHAIN_NAME=Clang
+  #    - BAM_TOOLCHAIN_VERSION=Xcode8
+  #    - EXTRA_TEST_ARGS="-T Cxx17Test1"
+  #- os: osx
+  #  osx_image: xcode8.3
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: MacOS (Xcode 8.3) Xcode
+  #  env:
+  #    - BAM_BUILD_MODE=Xcode
+  #    - BAM_TOOLCHAIN_NAME=Clang
+  #    - BAM_TOOLCHAIN_VERSION=Xcode8
+  #    - EXTRA_TEST_ARGS="-T Cxx17Test1"
 script:
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo /tmp/CI/ubuntu_install_scripts/install-gcc.sh ${BAM_TOOLCHAIN_VERSION} && sudo /tmp/CI/ubuntu_install_scripts/enable_gcc.sh ${BAM_TOOLCHAIN_VERSION}; fi
   - cd /tmp/BuildAMation && source env.sh && python tests/runtests.py --${BAM_TOOLCHAIN_NAME}.version=${BAM_TOOLCHAIN_VERSION} -b $BAM_BUILD_MODE -c debug -c profile -j0 -d $EXTRA_TEST_ARGS
