@@ -38,6 +38,63 @@ matrix:
   #    - BAM_TOOLCHAIN_NAME=Gcc
   #    - BAM_TOOLCHAIN_VERSION=4.8
   #    - EXTRA_TEST_ARGS="-T Cxx14Test1 -T Cxx17Test1" # C++14 and C++17 not available in Gcc 4.8
+  - os: linux
+    dist: xenial
+    mono: none
+    dotnet: 2.1.401
+    name: Ubuntu 16 (GCC 5) Native
+    env:
+      - BAM_BUILD_MODE=Native
+      - BAM_TOOLCHAIN_NAME=Gcc
+      - BAM_TOOLCHAIN_VERSION=5
+      - EXTRA_TEST_ARGS="-t Test2"
+  #- os: linux
+  #  dist: xenial
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: Ubuntu 16 (GCC 5) MakeFile
+  #  env:
+  #    - BAM_BUILD_MODE=MakeFile
+  #    - BAM_TOOLCHAIN_NAME=Gcc
+  #    - BAM_TOOLCHAIN_VERSION=5
+  - os: linux
+    dist: xenial
+    mono: none
+    dotnet: 2.1.401
+    name: Ubuntu 16 (GCC 6) Native
+    env:
+      - BAM_BUILD_MODE=Native
+      - BAM_TOOLCHAIN_NAME=Gcc
+      - BAM_TOOLCHAIN_VERSION=6
+      - EXTRA_TEST_ARGS="-t Test2"
+  #- os: linux
+  #  dist: xenial
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: Ubuntu 16 (GCC 6) MakeFile
+  #  env:
+  #    - BAM_BUILD_MODE=MakeFile
+  #    - BAM_TOOLCHAIN_NAME=Gcc
+  #    - BAM_TOOLCHAIN_VERSION=6
+  - os: linux
+    dist: xenial
+    mono: none
+    dotnet: 2.1.401
+    name: Ubuntu 16 (GCC 7) Native
+    env:
+      - BAM_BUILD_MODE=Native
+      - BAM_TOOLCHAIN_NAME=Gcc
+      - BAM_TOOLCHAIN_VERSION=7
+      - EXTRA_TEST_ARGS="-t Test2"
+  #- os: linux
+  #  dist: xenial
+  #  mono: none
+  #  dotnet: 2.1.401
+  #  name: Ubuntu 16 (GCC 7) MakeFile
+  #  env:
+  #    - BAM_BUILD_MODE=MakeFile
+  #    - BAM_TOOLCHAIN_NAME=Gcc
+  #    - BAM_TOOLCHAIN_VERSION=7
   #- os: osx
   #  osx_image: xcode10.2
   #  mono: none
