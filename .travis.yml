@@ -126,5 +126,5 @@ matrix:
   #    - BAM_TOOLCHAIN_VERSION=Xcode8
   #    - EXTRA_TEST_ARGS="-T Cxx17Test1"
 script:
-  - if [ $TRAVIS_OS_NAME = linux ]; then sudo /tmp/CI/ubuntu_install_scripts/install-gcc.sh ${BAM_TOOLCHAIN_VERSION} && sudo /tmp/CI/ubuntu_install_scripts/enable_gcc.sh ${BAM_TOOLCHAIN_VERSION}; fi
+  - if [ $TRAVIS_OS_NAME = linux ]; then sudo /tmp/CI/ubuntu_install_scripts/install_gcc.sh ${BAM_TOOLCHAIN_VERSION} && sudo /tmp/CI/ubuntu_install_scripts/enable_gcc.sh ${BAM_TOOLCHAIN_VERSION}; fi
   - cd /tmp/BuildAMation && source env.sh && python tests/runtests.py --${BAM_TOOLCHAIN_NAME}.version=${BAM_TOOLCHAIN_VERSION} -b $BAM_BUILD_MODE -c debug -c profile -j0 -d $EXTRA_TEST_ARGS
