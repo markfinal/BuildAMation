@@ -280,9 +280,12 @@ def clean_up(options):
 
 
 def find_bam_default_repository():
-    bam_install_dir = subprocess.check_output([bam_shell, '--installdir']).rstrip()
-    repo_dir = os.path.realpath(os.path.join(bam_install_dir, os.pardir, os.pardir, os.pardir))
-    return repo_dir
+    try:
+        bam_install_dir = subprocess.check_output([bam_shell, '--installdir']).rstrip()
+        repo_dir = os.path.realpath(os.path.join(bam_install_dir, os.pardir, os.pardir, os.pardir))
+        return repo_dir
+    except:
+        raise RuntimeError("Unable to locate BAM on the PATH")
 
 # ----------
 
