@@ -13,49 +13,48 @@ environment:
   matrix:
   - job_name: Ubuntu 18 (GCC 9) Native
     APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
-  #- job_name: Ubuntu 18 (GCC 9) MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
-  #- job_name: Ubuntu 18 (GCC 8) Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
-  #- job_name: Ubuntu 18 (GCC 8) MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1604
-  #- job_name: Visual Studio 2019 Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-  #- job_name: Visual Studio 2019 MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-  #- job_name: Visual Studio 2019 VSSolution
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-  #- job_name: Visual Studio 2017 Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-  #- job_name: Visual Studio 2017 MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-  #- job_name: Visual Studio 2017 VSSolution
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-  #- job_name: Visual Studio 2015 Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2015 MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2015 VSSolution
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2013 Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2013 MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2013 VSSolution
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2012 Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2012 MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2012 VSSolution
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2010 Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2010 MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2010 VSSolution
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Ubuntu 18 (GCC 9) MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
+  - job_name: Ubuntu 18 (GCC 8) Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
+  - job_name: Ubuntu 18 (GCC 8) MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
+  - job_name: Visual Studio 2019 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+  - job_name: Visual Studio 2019 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+  - job_name: Visual Studio 2019 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+  - job_name: Visual Studio 2017 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  - job_name: Visual Studio 2017 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  - job_name: Visual Studio 2017 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  - job_name: Visual Studio 2015 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2015 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2015 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2013 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2013 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2013 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2012 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2012 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2012 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2010 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2010 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2010 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 for:
   - matrix:
       only:
@@ -63,7 +62,6 @@ for:
     environment:
       BAM_BUILD_MODE: Native
       GCC_VERSION: 9
-      EXTRA_TEST_ARGS: "-t Test2"
   - matrix:
       only:
         - job_name: Ubuntu 18 (GCC 9) MakeFile
