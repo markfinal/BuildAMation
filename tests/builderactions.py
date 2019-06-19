@@ -4,6 +4,8 @@ import multiprocessing
 import os
 import subprocess
 import sys
+import tempfile
+import time
 import traceback
 
 
@@ -24,6 +26,34 @@ class Builder(object):
 
     def dump_generated_files(self, instance, options):
         pass
+
+    def _execute_and_capture(self, arg_list, working_dir, output_messages, error_messages):
+        locallog("Running '%s' in %s" % (' '.join(arg_list), working_dir))
+        return_code = 0
+        out_fd, out_path = tempfile.mkstemp()
+        err_fd, err_path = tempfile.mkstemp()
+        try:
+            with os.fdopen(out_fd, 'w') as out:
+                with os.fdopen(err_fd, 'w') as err:
+                    p = subprocess.Popen(arg_list, stdout=out_fd, stderr=err_fd, cwd=working_dir)
+                    while p.poll() is None:
+                        sys.stdout.write('+') # keep something alive on the console
+                        sys.stdout.flush()
+                        time.sleep(1)
+                    p.wait()
+                    locallog('')
+                    return_code = p.returncode
+        except Exception:
+            error_messages.write("Failed to run '%s' in %s" % (' '.join(arg_list), working_dir))
+            raise
+        finally:
+            with open(out_path) as out:
+                output_messages.write(out.read())
+            with open(err_path) as err:
+                error_messages.write(err.read())
+            os.remove(out_path)
+            os.remove(err_path)
+        return return_code
 
 
 # the version of MSBuild.exe to use, depends on which version of VisualStudio
@@ -113,36 +143,20 @@ class VSSolutionBuilder(Builder):
             # TODO: really need something different here - an invalid test result, rather than a failure
             output_messages.write("VisualStudio solution expected at %s did not exist" % solution_path)
             return 0
-        try:
-            for config in options.configurations:
-                arg_list = [
-                    self._ms_build_path,
-                    "/m:%d" % self.num_threads,
-                    "/verbosity:normal",
-                    solution_path
-                ]
-                # capitalize the first letter of the configuration
-                config = config[0].upper() + config[1:]
-                arg_list.append("/p:Configuration=%s" % config)
-                for platform in instance.platforms():
-                    this_arg_list = copy.deepcopy(arg_list)
-                    this_arg_list.append("/p:Platform=%s" % platform)
-                    locallog("Running '%s'\n" % ' '.join(this_arg_list))
-                    try:
-                        p = subprocess.Popen(this_arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                        (output_stream, error_stream) = p.communicate()  # this should WAIT
-                        exit_code |= p.returncode
-                        if output_stream:
-                            output_messages.write(output_stream)
-                        if error_stream:
-                            error_messages.write(error_stream)
-                    except WindowsError:
-                        error_messages.write("Failed to run '%s'" % ' '.join(this_arg_list))
-                        raise
-        except Exception, e:
-            import traceback
-            error_messages.write(str(e) + '\n' + traceback.format_exc())
-            return -1
+        for config in options.configurations:
+            arg_list = [
+                self._ms_build_path,
+                "/m:%d" % self.num_threads,
+                "/verbosity:normal",
+                solution_path
+            ]
+            # capitalize the first letter of the configuration
+            config = config[0].upper() + config[1:]
+            arg_list.append("/p:Configuration=%s" % config)
+            for platform in instance.platforms():
+                this_arg_list = copy.deepcopy(arg_list)
+                this_arg_list.append("/p:Platform=%s" % platform)
+                exit_code |= self._execute_and_capture(this_arg_list, build_root, output_messages, error_messages)
         return exit_code
 
     def dump_generated_files(self, instance, options):
@@ -184,30 +198,17 @@ class MakeFileBuilder(Builder):
             self._make_args.append(str(self.num_threads))
 
     def post_action(self, instance, options, output_messages, error_messages):
-        exit_code = 0
         makefile_dir = os.path.join(instance.package_path(), options.buildRoot)
         if not os.path.exists(makefile_dir):
             # TODO: really need something different here - an invalid test result, rather than a failure
             output_messages.write("Expected folder containing MakeFile %s did not exist" % makefile_dir)
             return 0
-        try:
-            # currently do not support building configurations separately
-            arg_list = [
-                self._make_executable
-            ]
-            arg_list.extend(self._make_args)
-            locallog("Running '%s' in %s\n" % (' '.join(arg_list), makefile_dir))
-            p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=makefile_dir)
-            (output_stream, error_stream) = p.communicate()  # this should WAIT
-            exit_code |= p.returncode
-            if output_stream:
-                output_messages.write(output_stream)
-            if error_stream:
-                error_messages.write(error_stream)
-        except Exception, e:
-            error_messages.write(str(e))
-            return -1
-        return exit_code
+        # currently do not support building configurations separately
+        arg_list = [
+            self._make_executable
+        ]
+        arg_list.extend(self._make_args)
+        return self._execute_and_capture(arg_list, makefile_dir, output_messages, error_messages)
 
     def dump_generated_files(self, instance, options):
         makefile_dir = os.path.join(instance.package_path(), options.buildRoot)
@@ -237,65 +238,53 @@ class XcodeBuilder(Builder):
         if len(workspaces) > 1:
             output_messages.write("More than one Xcode workspace was found")
             return -1
-        try:
-            # first, list all the schemes available
-            arg_list = [
-                "xcodebuild",
-                "-workspace",
-                workspaces[0],
-                "-list"
-            ]
-            locallog("Running '%s'\n" % ' '.join(arg_list))
-            p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            (output_stream, error_stream) = p.communicate()  # this should WAIT
-            output_messages.write(output_stream)
-            error_messages.write(error_stream)
-            # parse the output to get the schemes
-            lines = output_stream.split('\n')
-            if len(lines) < 3:
-                raise RuntimeError("Unable to parse workspace for schemes. \
-                                   Was --Xcode.generateSchemes passed to the Bam build?")
-            schemes = []
-            has_schemes = False
-            for line in lines:
-                trimmed = line.strip()
-                if has_schemes:
-                    if trimmed:
-                        schemes.append(trimmed)
-                elif trimmed.startswith('Schemes:'):
-                    has_schemes = True
-            if not has_schemes or len(schemes) == 0:
-                raise RuntimeError("No schemes were extracted from the workspace. \
-                                Has the project scheme cache been warmed?")
-            # iterate over all the schemes and configurations
-            for scheme in schemes:
-                for config in options.configurations:
-                    arg_list = [
-                        "xcodebuild",
-                        "-jobs",
-                        str(self.num_threads),
-                        "-workspace",
-                        workspaces[0],
-                        "-scheme",
-                        scheme,
-                        "-configuration"
-                    ]
-                    # capitalize the first letter of the configuration
-                    config = config[0].upper() + config[1:]
-                    arg_list.append(config)
-                    locallog("Running '%s' in '%s'" % (" ".join(arg_list), build_root))
-                    output_messages.write("Running '%s' in '%s'" % (" ".join(arg_list), build_root))
-                    p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=build_root)
-                    (output_stream, error_stream) = p.communicate()  # this should WAIT
-                    exit_code |= p.returncode
-                    if output_stream:
-                        output_messages.write(output_stream)
-                    if error_stream:
-                        error_messages.write(error_stream)
-        except Exception, e:
-            error_messages.write("%s\n" % str(e))
-            error_messages.write(traceback.format_exc())
-            return -1
+        # first, list all the schemes available
+        arg_list = [
+            "xcodebuild",
+            "-workspace",
+            workspaces[0],
+            "-list"
+        ]
+        locallog("Running '%s'\n" % ' '.join(arg_list))
+        p = subprocess.Popen(arg_list, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        (output_stream, error_stream) = p.communicate()  # this should WAIT
+        output_messages.write(output_stream)
+        error_messages.write(error_stream)
+        # parse the output to get the schemes
+        lines = output_stream.split('\n')
+        if len(lines) < 3:
+            raise RuntimeError("Unable to parse workspace for schemes. \
+                               Was --Xcode.generateSchemes passed to the Bam build?")
+        schemes = []
+        has_schemes = False
+        for line in lines:
+            trimmed = line.strip()
+            if has_schemes:
+                if trimmed:
+                    schemes.append(trimmed)
+            elif trimmed.startswith('Schemes:'):
+                has_schemes = True
+        if not has_schemes or len(schemes) == 0:
+            raise RuntimeError("No schemes were extracted from the workspace. \
+                            Has the project scheme cache been warmed?")
+        # iterate over all the schemes and configurations
+        for scheme in schemes:
+            for config in options.configurations:
+                arg_list = [
+                    "xcodebuild",
+                    "-jobs",
+                    str(self.num_threads),
+                    "-workspace",
+                    workspaces[0],
+                    "-scheme",
+                    scheme,
+                    "-configuration"
+                ]
+                # capitalize the first letter of the configuration
+                config = config[0].upper() + config[1:]
+                arg_list.append(config)
+                exit_code |= self._execute_and_capture(arg_list, build_root, output_messages, error_messages)
+                locallog("Running '%s' in '%s'" % (" ".join(arg_list), build_root))
         return exit_code
 
     def dump_generated_files(self, instance, options):
