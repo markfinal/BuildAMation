@@ -21,6 +21,42 @@ matrix:
     dist: xenial
     mono: none
     dotnet: 2.1.401
+    name: Ubuntu 16 (GCC 9) Native
+    env:
+      - BAM_BUILD_MODE=Native
+      - BAM_TOOLCHAIN_NAME=Gcc
+      - BAM_TOOLCHAIN_VERSION=9
+  - os: linux
+    dist: xenial
+    mono: none
+    dotnet: 2.1.401
+    name: Ubuntu 16 (GCC 9) MakeFile
+    env:
+      - BAM_BUILD_MODE=MakeFile
+      - BAM_TOOLCHAIN_NAME=Gcc
+      - BAM_TOOLCHAIN_VERSION=9
+  - os: linux
+    dist: xenial
+    mono: none
+    dotnet: 2.1.401
+    name: Ubuntu 16 (GCC 8) Native
+    env:
+      - BAM_BUILD_MODE=Native
+      - BAM_TOOLCHAIN_NAME=Gcc
+      - BAM_TOOLCHAIN_VERSION=8
+  - os: linux
+    dist: xenial
+    mono: none
+    dotnet: 2.1.401
+    name: Ubuntu 16 (GCC 8) MakeFile
+    env:
+      - BAM_BUILD_MODE=MakeFile
+      - BAM_TOOLCHAIN_NAME=Gcc
+      - BAM_TOOLCHAIN_VERSION=8
+  - os: linux
+    dist: xenial
+    mono: none
+    dotnet: 2.1.401
     name: Ubuntu 16 (GCC 7) Native
     env:
       - BAM_BUILD_MODE=Native

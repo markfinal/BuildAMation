@@ -2,23 +2,10 @@ clone_depth: 10
 configuration: Release
 platform: AnyCPU
 install:
-  - sh: sudo apt-get -q update && sudo apt-get -q -y --no-install-recommends install gnustep-devel libx11-dev libx11-dev:i386 chrpath > /dev/null
   - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=master&job=Image%3A%20Visual%20Studio%202017'
-  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/ubuntu_install_scripts.tar?branch=master&job=Image%3A%20Visual%20Studio%202017'
   - cmd: 7z x bam.tar -oc:\BuildAMation
-  - sh: mkdir ~/BuildAMation
-  - sh: tar xf bam.tar -C ~/BuildAMation
-  - sh: tar xf ubuntu_install_scripts.tar -C ~
 environment:
   matrix:
-  - job_name: Ubuntu 18 (GCC 9) Native
-    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
-  - job_name: Ubuntu 18 (GCC 9) MakeFile
-    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
-  - job_name: Ubuntu 18 (GCC 8) Native
-    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
-  - job_name: Ubuntu 18 (GCC 8) MakeFile
-    APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
   - job_name: Visual Studio 2019 Native
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
   - job_name: Visual Studio 2019 MakeFile
@@ -56,30 +43,6 @@ environment:
   - job_name: Visual Studio 2010 VSSolution
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 for:
-  - matrix:
-      only:
-        - job_name: Ubuntu 18 (GCC 9) Native
-    environment:
-      BAM_BUILD_MODE: Native
-      GCC_VERSION: 9
-  - matrix:
-      only:
-        - job_name: Ubuntu 18 (GCC 9) MakeFile
-    environment:
-      BAM_BUILD_MODE: MakeFile
-      GCC_VERSION: 9
-  - matrix:
-      only:
-        - job_name: Ubuntu 18 (GCC 8) Native
-    environment:
-      BAM_BUILD_MODE: Native
-      GCC_VERSION: 8
-  - matrix:
-      only:
-        - job_name: Ubuntu 18 (GCC 8) MakeFile
-    environment:
-      BAM_BUILD_MODE: MakeFile
-      GCC_VERSION: 8
   - matrix:
       only:
         - job_name: Visual Studio 2019 Native
@@ -204,5 +167,3 @@ build: off
 test_script:
   - cmd: "SET PATH=C:\\Python27-x64;%PATH%"
   - cmd: cd c:\BuildAMation && env.bat && python tests\runtests.py -x Mingw --VisualC.version=%VC_VERSION% -b %BAM_BUILD_MODE% -c debug -c profile -j0 -d %EXTRA_TEST_ARGS%
-  - sh: sudo ~/CI/ubuntu_install_scripts/install_gcc.sh ${GCC_VERSION} && sudo ~/CI/ubuntu_install_scripts/enable_gcc.sh ${GCC_VERSION}
-  - sh: cd ~/BuildAMation && source env.sh && python tests/runtests.py --Gcc.version=$GCC_VERSION -b $BAM_BUILD_MODE -c debug -c profile -j0 -d $EXTRA_TEST_ARGS
