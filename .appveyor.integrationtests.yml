@@ -19,17 +19,6 @@ environment:
   #  APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
   #- job_name: Ubuntu 18 (GCC 8) MakeFile
   #  APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
-  #- job_name: Ubuntu 18 (GCC 7) Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
-  #- job_name: Ubuntu 18 (GCC 7) MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
-  #- job_name: Ubuntu 18 (GCC 6) Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
-  #- job_name: Ubuntu 18 (GCC 6) MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1804
-  #- job_name: Ubuntu 16 (GCC 5) Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1604
-  #- job_name: Ubuntu 16 (GCC 5) MakeFile
   #  APPVEYOR_BUILD_WORKER_IMAGE: Previous Ubuntu1604
   #- job_name: Visual Studio 2019 Native
   #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
@@ -93,46 +82,6 @@ for:
     environment:
       BAM_BUILD_MODE: MakeFile
       GCC_VERSION: 8
-  - matrix:
-      only:
-        - job_name: Ubuntu 18 (GCC 7) Native
-    environment:
-      BAM_BUILD_MODE: Native
-      GCC_VERSION: 7
-  - matrix:
-      only:
-        - job_name: Ubuntu 18 (GCC 7) MakeFile
-    environment:
-      BAM_BUILD_MODE: MakeFile
-      GCC_VERSION: 7
-  - matrix:
-      only:
-        - job_name: Ubuntu 18 (GCC 6) Native
-    environment:
-      BAM_BUILD_MODE: Native
-      GCC_VERSION: 6
-      EXTRA_TEST_ARGS: -T Cxx17Test1
-  - matrix:
-      only:
-        - job_name: Ubuntu 18 (GCC 6) MakeFile
-    environment:
-      BAM_BUILD_MODE: MakeFile
-      GCC_VERSION: 6
-      EXTRA_TEST_ARGS: -T Cxx17Test1
-  - matrix:
-      only:
-        - job_name: Ubuntu 16 (GCC 5) Native
-    environment:
-      BAM_BUILD_MODE: Native
-      GCC_VERSION: 5
-      EXTRA_TEST_ARGS: -T Cxx17Test1
-  - matrix:
-      only:
-        - job_name: Ubuntu 16 (GCC 5) MakeFile
-    environment:
-      BAM_BUILD_MODE: MakeFile
-      GCC_VERSION: 5
-      EXTRA_TEST_ARGS: -T Cxx17Test1
   - matrix:
       only:
         - job_name: Visual Studio 2019 Native
