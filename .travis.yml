@@ -80,6 +80,7 @@ matrix:
       - BAM_BUILD_MODE=Native
       - BAM_TOOLCHAIN_NAME=Gcc
       - BAM_TOOLCHAIN_VERSION=6
+      - EXTRA_TEST_ARGS="-T Cxx17Test1"
   - os: linux
     dist: xenial
     mono: none
@@ -89,6 +90,7 @@ matrix:
       - BAM_BUILD_MODE=MakeFile
       - BAM_TOOLCHAIN_NAME=Gcc
       - BAM_TOOLCHAIN_VERSION=6
+      - EXTRA_TEST_ARGS="-T Cxx17Test1"
   - os: linux
     dist: xenial
     mono: none
@@ -98,6 +100,7 @@ matrix:
       - BAM_BUILD_MODE=Native
       - BAM_TOOLCHAIN_NAME=Gcc
       - BAM_TOOLCHAIN_VERSION=5
+      - EXTRA_TEST_ARGS="-T Cxx17Test1"
   - os: linux
     dist: xenial
     mono: none
@@ -107,6 +110,7 @@ matrix:
       - BAM_BUILD_MODE=MakeFile
       - BAM_TOOLCHAIN_NAME=Gcc
       - BAM_TOOLCHAIN_VERSION=5
+      - EXTRA_TEST_ARGS="-T Cxx17Test1"
   - os: linux
     dist: trusty
     mono: none
