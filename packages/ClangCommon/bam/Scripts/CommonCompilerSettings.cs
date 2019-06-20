@@ -61,7 +61,7 @@ namespace ClangCommon
         C.PreprocessorDefinitions C.ICommonPreprocessorSettings.PreprocessorDefines { get; set; }
 
         [CommandLineProcessor.PathArray("-iquote")]
-        [XcodeProjectProcessor.PathArray("HEADER_SEARCH_PATHS")]
+        [XcodeProjectProcessor.PathArray("USER_HEADER_SEARCH_PATHS")]
         Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.IncludePaths { get; set; }
 
         [CommandLineProcessor.PathArray("-isystem")]

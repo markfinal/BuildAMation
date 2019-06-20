@@ -390,11 +390,13 @@ namespace XcodeBuilder
                 // headermaps confuse multi-configuration projects, so disable
                 projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
 
+                // forces a distinction between user and system include paths
+                projectConfig["ALWAYS_SEARCH_USER_PATHS"] = new UniqueConfigurationValue("NO");
+
                 var isXcode10 = clangMeta.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
                 if (isXcode10)
                 {
                     // use new build system
-                    projectConfig["ALWAYS_SEARCH_USER_PATHS"] = new UniqueConfigurationValue("NO");
 
                     // sadly, an absolute path, but cannot find another variable to make this relative to
                     // and BAM pbxproj files are not in the source tree
