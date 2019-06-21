@@ -318,6 +318,8 @@ namespace MakeFileBuilder
                 if (MakeFileCommonMetaData.IsNMAKE)
                 {
                     // NMake offers no support for order only dependents
+                    // so must just list them as ordinary dependencies, and the recipe must filter appropriately
+                    // for how it uses dependencies
                 }
                 else
                 {
@@ -325,21 +327,21 @@ namespace MakeFileBuilder
                     {
                         rules.Append("| ");
                     }
-                    foreach (var ood in this.OrderOnlyDependencies)
+                }
+                foreach (var ood in this.OrderOnlyDependencies)
+                {
+                    var oodName = ood.VariableName;
+                    if (null == oodName)
                     {
-                        var oodName = ood.VariableName;
-                        if (null == oodName)
-                        {
-                            rules.Append(
-                                $"{commonMeta.UseMacrosInPath(ood.Path.ToString())} "
-                            );
-                        }
-                        else
-                        {
-                            rules.Append(
-                                $"$({commonMeta.UseMacrosInPath(oodName)}) "
-                            );
-                        }
+                        rules.Append(
+                            $"{commonMeta.UseMacrosInPath(ood.Path.ToString())} "
+                        );
+                    }
+                    else
+                    {
+                        rules.Append(
+                            $"$({commonMeta.UseMacrosInPath(oodName)}) "
+                        );
                     }
                 }
                 rules.AppendLine();

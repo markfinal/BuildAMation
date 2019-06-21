@@ -1,3 +1,5 @@
+21-Jun-2019 Fixes #562. NMake does not support order only dependencies, so they must be added as regular dependencies, or targets may be made in the incorrect order. If they are not to be used in rule shell commands, they need filtering out.
+
 16-Jun-2019 Fixes #560. Added VisualC.MetaData.RuntimeLibrary property, used to initialise the compiler setting. This can be overridden with a Bam.Core.IPackageMetaDataConfigure subclass. Also a command line switch, --VisualC.runtime, is also provided, accepting either MD, MDd, MT, MTd, the usual designations for the runtime library.
 
 14-Jun-2019 Fixes #559. Added Version read-only property of C.LinkerTool, C.LibrarianTool and C.AssemblerTool, identical to the C.CompilerTool property.
