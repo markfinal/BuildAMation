@@ -105,7 +105,7 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(ELinkTimeCodeGeneration.Off, "LinkTimeCodeGeneration", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString:"Default")]
         [VisualStudioProcessor.Enum(ELinkTimeCodeGeneration.On, "LinkTimeCodeGeneration", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "UseLinkTimeCodeGeneration")]
         [VisualStudioProcessor.Enum(ELinkTimeCodeGeneration.Incremental, "LinkTimeCodeGeneration", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "UseFastLinkTimeCodeGeneration")]
-        ELinkTimeCodeGeneration ICommonLinkerSettings.LinkTimeCodeGeneration { get; set; }
+        ELinkTimeCodeGeneration? ICommonLinkerSettings.LinkTimeCodeGeneration { get; set; }
 
         public override void AssignFileLayout()
         {

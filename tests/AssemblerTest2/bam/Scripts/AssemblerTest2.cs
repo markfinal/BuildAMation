@@ -78,9 +78,21 @@ namespace AssemblerTest2
             {
                 var gccMeta = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
                 var gccVersion = gccMeta.ToolchainVersion;
-                if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_7))
+                if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_9))
+                {
+                    asmSource.AddFiles("$(packagedir)/source/gcc/9/*.S");
+                }
+                else if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_8))
+                {
+                    asmSource.AddFiles("$(packagedir)/source/gcc/8/*.S");
+                }
+                else if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_7))
                 {
                     asmSource.AddFiles("$(packagedir)/source/gcc/7/*.S");
+                }
+                else if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_6))
+                {
+                    asmSource.AddFiles("$(packagedir)/source/gcc/6/*.S");
                 }
                 else if (gccVersion.AtLeast(GccCommon.ToolchainVersion.GCC_5))
                 {
@@ -112,7 +124,11 @@ namespace AssemblerTest2
                     {
                         var linker = settings as C.ICommonLinkerSettings;
                         linker.Libraries.AddUnique("kernel32.lib");
-                        linker.Libraries.AddUnique("ucrt.lib");
+                        var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
+                        if (vcMeta.ToolchainVersion.AtLeast(VisualCCommon.ToolchainVersion.VC2015))
+                        {
+                            linker.Libraries.AddUnique("ucrt.lib");
+                        }
 
                         var additional = settings as C.IAdditionalSettings;
                         additional.AdditionalSettings.AddUnique("-entry:main");

@@ -41,6 +41,7 @@ namespace ClangCommon
             var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
             var discovery = clangMeta as C.IToolchainDiscovery;
             discovery.discover(null);
+            this.Version = clangMeta.ToolchainVersion;
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim($"--sdk {clangMeta.SDK}"));
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("ar"));
 

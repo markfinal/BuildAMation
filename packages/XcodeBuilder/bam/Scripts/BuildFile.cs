@@ -64,7 +64,7 @@ namespace XcodeBuilder
             {
                 // any requirements for extra escape characters for escaped quotes are handled
                 // in the native command line translation, by detecting the build mode is Xcode
-                text.Append($"settings = {{COMPILER_FLAGS = \"{this.Settings.ToString(' ')}\"; }}; ");
+                text.Append($"settings = {{COMPILER_FLAGS = \"{this.CleansePaths(this.Settings.ToString(' '))}\"; }}; ");
             }
             text.AppendLine($"{indent}}};");
         }

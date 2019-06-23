@@ -386,15 +386,21 @@ namespace XcodeBuilder
 
                 // add configuration to project
                 var projectConfig = new Configuration(config, this, null);
+
+                // headermaps confuse multi-configuration projects, so disable
+                projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
+
+                // forces a distinction between user and system include paths
+                projectConfig["ALWAYS_SEARCH_USER_PATHS"] = new UniqueConfigurationValue("NO");
+
                 var isXcode10 = clangMeta.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
                 if (isXcode10)
                 {
                     // use new build system
-                    projectConfig["ALWAYS_SEARCH_USER_PATHS"] = new UniqueConfigurationValue("NO");
 
                     // sadly, an absolute path, but cannot find another variable to make this relative to
                     // and BAM pbxproj files are not in the source tree
-                    projectConfig["SRCROOT"] = new UniqueConfigurationValue(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(this.ProjectDir.ToString())));
+                    projectConfig["SRCROOT"] = new UniqueConfigurationValue(this.SourceRoot);
 
                     // all 'products' are relative to SYMROOT in the IDE, regardless of the project settings
                     // needed so that built products are no longer 'red' in the IDE
@@ -406,7 +412,6 @@ namespace XcodeBuilder
                 }
                 else
                 {
-                    projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
                     projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
 
                     // reset SRCROOT, or it is taken to be where the workspace is
@@ -480,8 +485,7 @@ namespace XcodeBuilder
                             }
                             else
                             {
-                                var excluded_path = System.IO.Path.GetFileName(fullPath);
-                                excluded.Add(excluded_path);
+                                excluded.Add(fullPath);
                             }
                         }
                         config["EXCLUDED_SOURCE_FILE_NAMES"] = excluded;

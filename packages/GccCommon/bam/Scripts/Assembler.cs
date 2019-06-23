@@ -38,11 +38,14 @@ namespace GccCommon
         {
             this.Macros.AddVerbatim("objext", ".o");
 
-            var metaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-            var discovery = metaData as C.IToolchainDiscovery;
+            this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
+            var discovery = this.GccMetaData as C.IToolchainDiscovery;
             discovery.discover(depth: null);
-            this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(metaData.GccPath));
+            this.Version = this.GccMetaData.ToolchainVersion;
+            this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
         }
+
+        protected Gcc.MetaData GccMetaData { get; private set; }
 
         public override Bam.Core.TokenizedString Executable => this.Macros["AssemblerPath"];
     }

@@ -40,25 +40,25 @@ namespace C
             var target = workspace.EnsureTargetExists(encapsulating);
 
             XcodeBuilder.FileReference.EFileType fileType;
-            if (module is C.ObjectFile)
+            if (module is C.AssembledObjectFile)
             {
-                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeC;
-            }
-            else if (module is C.Cxx.ObjectFile)
-            {
-                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeCxx;
-            }
-            else if (module is C.ObjC.ObjectFile)
-            {
-                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeObjC;
+                fileType = XcodeBuilder.FileReference.EFileType.Assembler;
             }
             else if (module is C.ObjCxx.ObjectFile)
             {
                 fileType = XcodeBuilder.FileReference.EFileType.SourceCodeObjCxx;
             }
-            else if (module is C.AssembledObjectFile)
+            else if (module is C.ObjC.ObjectFile)
             {
-                fileType = XcodeBuilder.FileReference.EFileType.Assembler;
+                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeObjC;
+            }
+            else if (module is C.Cxx.ObjectFile)
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeCxx;
+            }
+            else if (module is C.ObjectFile)
+            {
+                fileType = XcodeBuilder.FileReference.EFileType.SourceCodeC;
             }
             else
             {

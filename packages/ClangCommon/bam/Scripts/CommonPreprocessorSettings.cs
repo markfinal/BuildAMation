@@ -51,10 +51,10 @@ namespace ClangCommon
         [CommandLineProcessor.PreprocessorDefines("-D")]
         C.PreprocessorDefinitions C.ICommonPreprocessorSettings.PreprocessorDefines { get; set; }
 
-        [CommandLineProcessor.PathArray("-I")]
+        [CommandLineProcessor.PathArray("-iquote")]
         Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.IncludePaths { get; set; }
 
-        [CommandLineProcessor.PathArray("-I")]
+        [CommandLineProcessor.PathArray("-isystem")]
         Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.SystemIncludePaths { get; set; }
 
         [CommandLineProcessor.StringArray("-U")]

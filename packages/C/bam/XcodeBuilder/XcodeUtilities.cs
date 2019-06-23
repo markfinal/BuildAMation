@@ -151,15 +151,21 @@ namespace C
                     var asObjFileBase = objFile as C.ObjectFileBase;
                     if (!asObjFileBase.PerformCompilation)
                     {
-                        var fullPath = asObjFileBase.InputPath.ToString();
-                        var filename = System.IO.Path.GetFileName(fullPath);
-                        excludedSource.Add(filename);
+                        excludedSource.Add(asObjFileBase.InputPath.ToString());
                     }
 
                     var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;
                     var deltaSettings = (objFile.Settings as C.SettingsBase).CreateDeltaSettings(sharedSettings, objFile);
                     if (null != deltaSettings)
                     {
+                        if (deltaSettings is C.ICommonPreprocessorSettings preprocessor)
+                        {
+                            // this happens for mixed C language source files, e.g. C++ and ObjC++,
+                            // 1) the target language is already encoded in the file type
+                            // 2) Xcode 10's build system seems to ignore some C++ language settings if -x c++ appears on C++ source files
+                            preprocessor.TargetLanguage = null;
+                        }
+
                         var commandLine = CommandLineProcessor.NativeConversion.Convert(
                             deltaSettings,
                             objFile,
@@ -202,9 +208,7 @@ namespace C
                     var asObjFileBase = objFile as C.ObjectFileBase;
                     if (!asObjFileBase.PerformCompilation)
                     {
-                        var fullPath = asObjFileBase.InputPath.ToString();
-                        var filename = System.IO.Path.GetFileName(fullPath);
-                        excludedSource.Add(filename);
+                        excludedSource.Add(asObjFileBase.InputPath.ToString());
                     }
 
                     var buildFile = objFile.MetaData as XcodeBuilder.BuildFile;

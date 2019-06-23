@@ -92,5 +92,16 @@ namespace XcodeBuilder
         Serialize(
             System.Text.StringBuilder text,
             int indentLevel);
+
+        protected string
+        CleansePaths(
+            string inputString)
+        {
+            // Xcode always treats /private/tmp as /tmp internally, so the project must do so too
+            // otherwise string comparisons of paths will fail, especially for output paths of
+            // shell script build phases
+            var cleanedString = inputString?.Replace("/private/tmp", "/tmp");
+            return cleanedString;
+        }
     }
 }

@@ -66,6 +66,7 @@ namespace VisualCCommon
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             var discovery = meta as C.IToolchainDiscovery;
             discovery.discover(depth);
+            this.Version = meta.ToolchainVersion;
             this.Macros.Add("InstallPath", meta.InstallDir);
             this.EnvironmentVariables = meta.Environment(depth);
             var fullLibExePath = this.GetLibrarianPath(depth);

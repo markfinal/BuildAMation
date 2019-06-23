@@ -1,5 +1,56 @@
-xx-Apr-2019 Fixes #350. Cleaner way of adding and processing package repositories
+xx-Jun-2019 Fixes #350. Cleaner way of adding and processing package repositories
 - Added Bam.Core.Graph.AddPackageRepository(<path>) and Bam.Core.Graph.PackageRepositories (enumerator of paths).
+
+21-Jun-2019 Fixes #562. NMake does not support order only dependencies, so they must be added as regular dependencies, or targets may be made in the incorrect order. If they are not to be used in rule shell commands, they need filtering out.
+
+16-Jun-2019 Fixes #560. Added VisualC.MetaData.RuntimeLibrary property, used to initialise the compiler setting. This can be overridden with a Bam.Core.IPackageMetaDataConfigure subclass. Also a command line switch, --VisualC.runtime, is also provided, accepting either MD, MDd, MT, MTd, the usual designations for the runtime library.
+
+14-Jun-2019 Fixes #559. Added Version read-only property of C.LinkerTool, C.LibrarianTool and C.AssemblerTool, identical to the C.CompilerTool property.
+
+13-Jun-2019 Fixes #108. Reopened. If a package resides in /private/tmp on macOS, an Xcode project will be generated with paths with /private/tmp, but Xcode treats these as /tmp (a symlink to /private/tmp). This causes problems for excluded source files (paths don't match, by string comparison), and some operations in Xcode 10 such as shell script build phases that have output files, such as generated source files, again as paths not matching. Generated Xcode projects are now post-processed to replace /private/tmp with /tmp.
+
+11-Jun-2019 Fixes #558. Xcode project generation now uses the correct file type for source files. Also, mixed language projects (e.g. C++ and ObjectiveC++) no longer need to specify the target compilation language per source file (since it's encoded in the file type).
+
+09-Jun-2019 Fixes #557. VisualStudio compiler version determination doesn't need native 64-bit support; 32-bit will suffice, and is available for all versions of VS.
+
+09-Jun-2019 Fixes #556. Link time code generation (LTCG) was introduced in VisualStudio 2015, so make sure it's not enabled for older VisualStudio versions.
+
+09-Jun-2019 Fixes #555. Added Gcc-6 package, and included it in tests.
+
+08-Jun-2019 Fixes #554. All versions of vcruntime140*.dll and msvcp140*.dll are now included in redists. There are _1 and _2 suffixed versions which offer additional standard library support features.
+
+08-Jun-2019 Fixes #549. VisualStudio 2017 & 2019 CRT version numbers for redist are now generated from the VCToolsVersion environment variable, e.g. 14.16.27023 -> 141, 14.21.27702 -> 142.
+
+08-Jun-2019 Fixes #553. Added Gcc-9 package, and included it in tests.
+
+08-Jun-2019 Fixes #552. Added Gcc-8 package, and included it in tests.
+
+08-Jun-2019 Fixes #551. msbuild, Make and xcodebuild now use the number of available cores to run in the test harness.
+
+07-Jun-2019 Fixes #550. MakeFile generation was throwing an exception if an input module depenency didn't have correctly generated path keys for its own built files (that are dependents).
+
+05-Jun-2019 Fixes #548. Test harness now has a -T (--excludetest) option for removing a test of the given package name from the test run. This option can be repeated many times.
+Test harness internals have been given an overhaul, so that instances of tests are gathered up front, filtered easily, and then each run in turn. Reporting now gives more semantics in the log on each test instance.
+
+03-Jun-2019 Fixes #546. Xcode projects with non-C modules were not adding target dependencies (order only dependencies).
+
+02-Jun-2019 Fixes #544. Format update to the procedurally generated main.cs for debug projects for packages.
+
+02-Jun-2019 Fixes #545. MakeFile variables that map to the same path don't need to create aliases, since any variable replacement in recipes will just use the original variable. This removes an exception that was thrown in these circumstances.
+
+01-Jun-2019 Fixes #543. Xcode 10 projects forcible disable header maps, as they confuse matters in multi-configuration projects. This was already disabled pre-Xcode 10.
+
+01-Jun-2019 Fixes #542. VisualStudio project generation now guards against null reference exceptions when comparing conditions for settings. Mergable VisualStudio settings are now possible, in order to support both system and user include paths in a project.
+
+31-May-2019 Fixes #541. Gcc and Clang now use -isystem and -iquote instead of -I to distinguish between system (angle bracket #include) and non-system (quoted #include) include search paths. Similar, Xcode projects now use SYSTEM_HEADER_SEARCH_PATHS and USER_HEADER_SEARCH_PATHS, and ALWAYS_SEARCH_USER_PATHS.
+
+31-May-2019 Fixes #540. C.ProceduralHeaderFile and C.ProceduralHeaderFileFromToolOutput both have a new virtual Boolean property, UseSystemIncludeSearchPaths, defaulting to false. In Modules deriving from these classes, set this to true in order to override the default behaviour and add directories to system includes search paths.
+ 
+31-May-2019 Fixes #539. C.SuppressWarningsDelegate now allows specification of a C.EBitDepth parameter to limit suppressions to 32- or 64-bit builds only.
+
+29-May-2019 Fixes #538. Added option --dumpprojects to the Python test harness, to dump generated project files to the log for inspection.
+
+29-May-2019 Fixes #537. Xcode 10 builds did not work when package sources were downloaded, due to the source files residing in a different location to the package directory.
 
 24-May-2019 Fixes #536. Xcode runs of the Python test harness did not work when specifying relative paths to package repositories.
 

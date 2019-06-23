@@ -238,9 +238,11 @@ namespace MakeFileBuilder
                     // this is a package test namespace
                     return;
                 }
-                throw new Bam.Core.Exception(
-                    $"Path '{path}' is already registered with macro '{this.PackageVariables[path]}'. Cannot re-register it with macro '{variableName}'"
-                );
+
+                // unexpectedly, due to paths being the primary lookup, there is no need to add an alias here
+                // as it's always resolved to the original variable
+                Bam.Core.Log.DebugMessage($"Path '{path}' is already registered with macro '{this.PackageVariables[path]}'. Ignoring the alias '{variableName}'");
+                return;
             }
             if (IsNMAKE)
             {

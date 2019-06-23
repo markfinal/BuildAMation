@@ -49,6 +49,7 @@ namespace C
             private readonly ToolchainVersion minimum_compiler_version;
             private readonly ToolchainVersion maximum_compiler_version;
             private readonly Bam.Core.EConfiguration? matching_configurations;
+            private readonly EBit? matching_bit_depths;
 
             public Conditions(
                 ToolchainVersion min_version,
@@ -65,19 +66,57 @@ namespace C
             }
 
             public Conditions(
+                EBit matching_bit_depth)
+            {
+                this.matching_bit_depths = matching_bit_depth;
+            }
+
+            public Conditions(
+                Bam.Core.EConfiguration matching_config,
+                EBit matching_bit_depth)
+                :
+                this(matching_config)
+            {
+                this.matching_bit_depths = matching_bit_depth;
+            }
+
+            public Conditions(
                 ToolchainVersion min_version,
                 ToolchainVersion max_version,
                 Bam.Core.EConfiguration matching_config)
+                :
+                this(min_version, max_version)
             {
-                this.minimum_compiler_version = min_version;
-                this.maximum_compiler_version = max_version;
                 this.matching_configurations = matching_config;
+            }
+
+            public Conditions(
+                ToolchainVersion min_version,
+                ToolchainVersion max_version,
+                EBit matching_bit_depth)
+                :
+                this(min_version, max_version)
+            {
+                this.matching_bit_depths = matching_bit_depth;
+            }
+
+            public Conditions(
+                ToolchainVersion min_version,
+                ToolchainVersion max_version,
+                Bam.Core.EConfiguration matching_config,
+                EBit matching_bit_depth)
+                :
+                this(min_version, max_version)
+            {
+                this.matching_configurations = matching_config;
+                this.matching_bit_depths = matching_bit_depth;
             }
 
             public bool
             Match(
                 CompilerTool compilerTool,
-                Bam.Core.Environment environment)
+                Bam.Core.Environment environment,
+                EBit bitdepth)
             {
                 if (null != this.minimum_compiler_version)
                 {
@@ -108,6 +147,12 @@ namespace C
                 {
                     return false;
                 }
+
+                if (this.matching_bit_depths.HasValue && (bitdepth != this.matching_bit_depths.Value))
+                {
+                    return false;
+                }
+
                 return true;
             }
         }
@@ -174,6 +219,35 @@ namespace C
         protected void
         Add(
             string path,
+            EBit bitdepth,
+            params string[] suppression)
+        {
+            var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
+            foreach (var sup in suppression)
+            {
+                warnings.Add(sup, new Conditions(bitdepth));
+            }
+            this.Merge(path, warnings);
+        }
+
+        protected void
+        Add(
+            string path,
+            Bam.Core.EConfiguration config,
+            EBit bitdepth,
+            params string[] suppression)
+        {
+            var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
+            foreach (var sup in suppression)
+            {
+                warnings.Add(sup, new Conditions(config, bitdepth));
+            }
+            this.Merge(path, warnings);
+        }
+
+        protected void
+        Add(
+            string path,
             ToolchainVersion minVersion,
             ToolchainVersion maxVersion,
             Bam.Core.EConfiguration config,
@@ -183,6 +257,39 @@ namespace C
             foreach (var sup in suppression)
             {
                 warnings.Add(sup, new Conditions(minVersion, maxVersion, config));
+            }
+            this.Merge(path, warnings);
+        }
+
+        protected void
+        Add(
+            string path,
+            ToolchainVersion minVersion,
+            ToolchainVersion maxVersion,
+            C.EBit bitdepth,
+            params string[] suppression)
+        {
+            var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
+            foreach (var sup in suppression)
+            {
+                warnings.Add(sup, new Conditions(minVersion, maxVersion, bitdepth));
+            }
+            this.Merge(path, warnings);
+        }
+
+        protected void
+        Add(
+            string path,
+            ToolchainVersion minVersion,
+            ToolchainVersion maxVersion,
+            Bam.Core.EConfiguration config,
+            EBit bitdepth,
+            params string[] suppression)
+        {
+            var warnings = new System.Collections.Generic.Dictionary<string, Conditions>();
+            foreach (var sup in suppression)
+            {
+                warnings.Add(sup, new Conditions(minVersion, maxVersion, config, bitdepth));
             }
             this.Merge(path, warnings);
         }
@@ -197,15 +304,15 @@ namespace C
                     {
                         sourceItem.PrivatePatch(settings =>
                         {
-                            var compiler = settings as C.ICommonCompilerSettings;
+                            var compiler = settings as ICommonCompilerSettings;
                             foreach (var warning in item.Value)
                             {
                                 if (null != warning.Value)
                                 {
                                     var compilerUsed = (settings.Module is Bam.Core.IModuleGroup) ?
-                                        (settings.Module as C.CCompilableModuleContainer<C.ObjectFile>).Compiler :
-                                        (settings.Module as C.ObjectFile).Compiler;
-                                    if (warning.Value.Match(compilerUsed, sourceItem.BuildEnvironment))
+                                        (settings.Module as CCompilableModuleContainer<ObjectFile>).Compiler :
+                                        (settings.Module as ObjectFile).Compiler;
+                                    if (warning.Value.Match(compilerUsed, sourceItem.BuildEnvironment, (sourceItem as CModule).BitDepth))
                                     {
                                         // compiler or configuration specific warning
                                         compiler.DisableWarnings.AddUnique(warning.Key);

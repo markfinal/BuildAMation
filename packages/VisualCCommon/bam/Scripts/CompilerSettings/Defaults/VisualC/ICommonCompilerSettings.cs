@@ -38,7 +38,7 @@ namespace VisualCCommon.DefaultSettings
             Bam.Core.Module module)
         {
             settings.NoLogo = true;
-            settings.RuntimeLibrary = ERuntimeLibrary.MultiThreadedDLL;
+            settings.RuntimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").RuntimeLibrary;
             settings.WarningLevel = EWarningLevel.Level1;
             settings.EnableLanguageExtensions = true; // only because Windows.h does not compile without this, even with WIN32_LEAN_AND_MEAN
             settings.Optimization = null; // assume that the setting in C.ICommonCompilerSettings is sufficient

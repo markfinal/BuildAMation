@@ -36,18 +36,21 @@ namespace GccCommon
     {
         public Librarian()
         {
-            var gccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-            var discovery = gccMetaData as C.IToolchainDiscovery;
+            this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
+            var discovery = this.GccMetaData as C.IToolchainDiscovery;
             discovery.discover(depth: null);
+            this.Version = this.GccMetaData.ToolchainVersion;
 
             this.Macros.AddVerbatim("libprefix", "lib");
             this.Macros.AddVerbatim("libext", ".a");
-            this.Macros.Add("LibrarianPath", Bam.Core.TokenizedString.CreateVerbatim(gccMetaData.ArPath));
+            this.Macros.Add("LibrarianPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.ArPath));
         }
 
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Gcc.ArchiverSettings(module);
+
+        private Gcc.MetaData GccMetaData { get; set; }
 
         public override Bam.Core.TokenizedString Executable => this.Macros["LibrarianPath"];
     }

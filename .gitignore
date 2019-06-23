@@ -22,3 +22,4 @@ NuGetPackages/
 .nuget/
 .vs/
 TestResult.xml
+bam_publish

@@ -36,12 +36,14 @@ namespace VSSolutionBuilder
             string name,
             string value,
             bool isPath,
+            bool inheritValue,
             string condition = null)
         {
             this.Name = name;
             this.Value = value;
             this.Condition = condition;
             this.IsPath = isPath;
+            this.InheritValue = inheritValue;
         }
 
         public string Name
@@ -66,6 +68,29 @@ namespace VSSolutionBuilder
         {
             get;
             private set;
+        }
+
+        private bool InheritValue
+        {
+            get;
+            set;
+        }
+
+        public string
+        Serialize()
+        {
+            if (this.InheritValue)
+            {
+                return new string($"{this.Value};%({this.Name})");
+            }
+            return this.Value;
+        }
+
+        public void Append(
+            string toAppend,
+            string separator = null)
+        {
+            this.Value = new string($"{this.Value}{separator ?? ""}{toAppend}");
         }
     }
 }

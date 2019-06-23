@@ -63,6 +63,17 @@ namespace Cxx11Test1
         }
     }
 
+    public sealed class ConfigureVCRuntime :
+        Bam.Core.IPackageMetaDataConfigure<VisualC.MetaData>
+    {
+        void
+        Bam.Core.IPackageMetaDataConfigure<VisualC.MetaData>.Configure(
+            VisualC.MetaData instance)
+        {
+            instance.RuntimeLibrary = VisualCCommon.ERuntimeLibrary.MultiThreadedDLL;
+        }
+    }
+
     public sealed class TestProg :
         C.Cxx.ConsoleApplication
     {

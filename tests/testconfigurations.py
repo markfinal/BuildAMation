@@ -102,7 +102,7 @@ class ConfigOptions(object):
         return self._arch
 
     def __repr__(self):
-        return self._name
+        return '%s-%s' % (self._name, self._arch)
 
     @staticmethod
     def register_value_option(platform, option_tuple):

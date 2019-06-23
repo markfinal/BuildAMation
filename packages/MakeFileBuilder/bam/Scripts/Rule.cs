@@ -291,6 +291,10 @@ namespace MakeFileBuilder
 
                 foreach (var pre in this.Prequisities)
                 {
+                    if (!pre.Key.GeneratedPaths.ContainsKey(pre.Value))
+                    {
+                        continue;
+                    }
                     rules.Append(
                         $"{commonMeta.UseMacrosInPath(pre.Key.GeneratedPaths[pre.Value].ToStringQuoteIfNecessary())} "
                     );
@@ -314,6 +318,8 @@ namespace MakeFileBuilder
                 if (MakeFileCommonMetaData.IsNMAKE)
                 {
                     // NMake offers no support for order only dependents
+                    // so must just list them as ordinary dependencies, and the recipe must filter appropriately
+                    // for how it uses dependencies
                 }
                 else
                 {
@@ -321,21 +327,21 @@ namespace MakeFileBuilder
                     {
                         rules.Append("| ");
                     }
-                    foreach (var ood in this.OrderOnlyDependencies)
+                }
+                foreach (var ood in this.OrderOnlyDependencies)
+                {
+                    var oodName = ood.VariableName;
+                    if (null == oodName)
                     {
-                        var oodName = ood.VariableName;
-                        if (null == oodName)
-                        {
-                            rules.Append(
-                                $"{commonMeta.UseMacrosInPath(ood.Path.ToString())} "
-                            );
-                        }
-                        else
-                        {
-                            rules.Append(
-                                $"$({commonMeta.UseMacrosInPath(oodName)}) "
-                            );
-                        }
+                        rules.Append(
+                            $"{commonMeta.UseMacrosInPath(ood.Path.ToString())} "
+                        );
+                    }
+                    else
+                    {
+                        rules.Append(
+                            $"$({commonMeta.UseMacrosInPath(oodName)}) "
+                        );
                     }
                 }
                 rules.AppendLine();
@@ -412,6 +418,10 @@ namespace MakeFileBuilder
                     }
                     else
                     {
+                        if (!first.Key.GeneratedPaths.ContainsKey(first.Value))
+                        {
+                            return null;
+                        }
                         return first.Key.GeneratedPaths[first.Value];
                     }
                 }
