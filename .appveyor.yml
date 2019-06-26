@@ -24,8 +24,8 @@ artifacts:
     name: Bam Documentation Zip Archive
   - path: ubuntu_install_scripts.tar
     name: Ubuntu install scripts for continuous integration
-#on_success:
-#    cmd: CI\remote_jobs.bat
+on_success:
+    cmd: CI\remote_jobs.bat
 on_finish:
   - ps: |
       $wc = New-Object 'System.Net.WebClient'
