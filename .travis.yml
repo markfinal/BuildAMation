@@ -19,7 +19,7 @@ before_script:
   - dotnet --version
 env:
   global:
-    - EXTRA_TEST_ARGS="-t Test2"
+    EXTRA_TEST_ARGS: "-t Test2"
 matrix:
   include:
   - os: linux
