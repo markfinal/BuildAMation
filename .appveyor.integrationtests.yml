@@ -4,7 +4,7 @@ platform: AnyCPU
 install:
   - cmd: set BAM_BRANCH_TESTED=%APPVEYOR_REPO_BRANCH%&& if defined BAM_BRANCH set bam_branch_tested=%BAM_BRANCH%
   - cmd: echo "Testing BAM branch '%BAM_BRANCH_TESTED%'"
-  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=master&job=Image%3A%20Visual%20Studio%202017'
+  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=$env:BAM_BRANCH_TESTED&job=Image%3A%20Visual%20Studio%202017'
   - cmd: 7z x bam.tar -oc:\BuildAMation
 environment:
   global:
