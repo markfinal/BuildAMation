@@ -12,7 +12,7 @@ install:
   - wget "https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=${BAM_BRANCH_TESTED}&job=Image%3A%20Visual%20Studio%202017" -O /tmp/bam.tar
   - mkdir -p /tmp/BuildAMation
   - tar xf /tmp/bam.tar -C /tmp/BuildAMation
-  - if [ $TRAVIS_OS_NAME = linux ]; then wget 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/ubuntu_install_scripts.tar?branch=master&job=Image%3A%20Visual%20Studio%202017' -O /tmp/ubuntu_install_scripts.tar; fi
+  - if [ $TRAVIS_OS_NAME = linux ]; then wget "https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/ubuntu_install_scripts.tar?branch=${BAM_BRANCH_TESTED}&job=Image%3A%20Visual%20Studio%202017" -O /tmp/ubuntu_install_scripts.tar; fi
   - if [ $TRAVIS_OS_NAME = linux ]; then tar xf /tmp/ubuntu_install_scripts.tar -C /tmp; fi
   - if [ $TRAVIS_OS_NAME = linux ]; then sudo apt-get -q update && sudo apt-get -q -y --no-install-recommends install gnustep-devel libx11-dev libx11-dev:i386 chrpath; fi
 before_script:
