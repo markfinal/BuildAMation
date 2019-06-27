@@ -8,7 +8,7 @@ language: csharp
 python: '2.7'
 install:
   - export BAM_BRANCH_TESTED=${BAM_BRANCH:-master_default}
-  - echo "Testing BAM branch ${BAM_BRANCH_TESTED}"
+  - echo "Testing BAM branch '${BAM_BRANCH_TESTED}'"
   - wget 'https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=master&job=Image%3A%20Visual%20Studio%202017' -O /tmp/bam.tar
   - mkdir -p /tmp/BuildAMation
   - tar xf /tmp/bam.tar -C /tmp/BuildAMation
