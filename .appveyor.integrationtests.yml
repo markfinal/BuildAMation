@@ -7,45 +7,45 @@ install:
   - ps: Start-FileDownload "https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=$env:BAM_BRANCH_TESTED&job=Image%3A%20Visual%20Studio%202017"
   - cmd: 7z x bam.tar -oc:\BuildAMation
 environment:
-  global:
-    EXTRA_TEST_ARGS: -t Test2
+  #global:
+  #  EXTRA_TEST_ARGS: -t Test2
   matrix:
   - job_name: Visual Studio 2019 Native
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-  #- job_name: Visual Studio 2019 MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-  #- job_name: Visual Studio 2019 VSSolution
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-  #- job_name: Visual Studio 2017 Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-  #- job_name: Visual Studio 2017 MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-  #- job_name: Visual Studio 2017 VSSolution
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-  #- job_name: Visual Studio 2015 Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2015 MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2015 VSSolution
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2013 Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2013 MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2013 VSSolution
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2012 Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2012 MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2012 VSSolution
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2010 Native
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2010 MakeFile
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
-  #- job_name: Visual Studio 2010 VSSolution
-  #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2019 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+  - job_name: Visual Studio 2019 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+  - job_name: Visual Studio 2017 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  - job_name: Visual Studio 2017 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  - job_name: Visual Studio 2017 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+  - job_name: Visual Studio 2015 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2015 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2015 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2013 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2013 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2013 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2012 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2012 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2012 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2010 Native
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2010 MakeFile
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+  - job_name: Visual Studio 2010 VSSolution
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
 for:
   - matrix:
       only:
