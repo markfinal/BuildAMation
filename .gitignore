@@ -23,3 +23,4 @@ NuGetPackages/
 .vs/
 TestResult.xml
 bam_publish
+Bam/Properties
