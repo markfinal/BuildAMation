@@ -140,7 +140,8 @@ namespace Bam.Core
         GetPackageDefinitionPathname(
             string possibleBamFolder)
         {
-            var xmlFiles = System.IO.Directory.GetFiles(possibleBamFolder, "*.xml", System.IO.SearchOption.AllDirectories);
+            // <package>/bam/<packagedefinitionfile>.xml
+            var xmlFiles = System.IO.Directory.GetFiles(possibleBamFolder, "*.xml", System.IO.SearchOption.TopDirectoryOnly);
             if (0 == xmlFiles.Length)
             {
                 return null;
