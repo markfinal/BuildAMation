@@ -108,8 +108,8 @@ namespace Bam
 
                 if (Core.CommandLineProcessor.Evaluate(new Core.Options.ShowDefinitionFile()))
                 {
+                    Core.Graph.Instance.SkipPackageSourceDownloads = true;
                     Core.PackageUtilities.IdentifyAllPackages(
-                        false,
                         allowDuplicates: true,
                         enforceBamAssemblyVersions: false
                     );

@@ -49,11 +49,9 @@ namespace Bam.Core
         /// Optionally insert some definition files first.
         /// </summary>
         /// <param name="rootPath"></param>
-        /// <param name="requiresSourceDownload"></param>
         /// <param name="insertedDefinitionFiles"></param>
         public PackageRepository(
             string rootPath,
-            bool requiresSourceDownload,
             params PackageDefinition[] insertedDefinitionFiles)
         {
             if (!System.IO.Directory.Exists(rootPath))
@@ -90,7 +88,7 @@ namespace Bam.Core
                     continue;
                 }
 
-                var definitionFile = new PackageDefinition(packageDefinitionPath, requiresSourceDownload);
+                var definitionFile = new PackageDefinition(packageDefinitionPath);
                 definitionFile.Read();
                 this.packages.Add(definitionFile);
             }
@@ -100,12 +98,10 @@ namespace Bam.Core
         /// Create a package repository rooted at specified path.
         /// </summary>
         /// <param name="rootPath"></param>
-        /// <param name="requiresSourceDownload"></param>
         public PackageRepository(
-            string rootPath,
-            bool requiresSourceDownload)
+            string rootPath)
             :
-            this(rootPath, requiresSourceDownload, System.Linq.Enumerable.Empty<PackageDefinition>().ToArray())
+            this(rootPath, System.Linq.Enumerable.Empty<PackageDefinition>().ToArray())
         {}
 
         /// <summary>

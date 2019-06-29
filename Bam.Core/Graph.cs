@@ -84,7 +84,7 @@ namespace Bam.Core
                         $"Standard BAM package directory '{primaryPackageRepo}' does not exist"
                     );
                 }
-                this.AddPackageRepository(primaryPackageRepo, false);
+                this.AddPackageRepository(primaryPackageRepo);
             }
             catch (System.ArgumentNullException)
             {
@@ -984,19 +984,17 @@ namespace Bam.Core
         /// Adds a new package repository, if not already added.
         /// </summary>
         /// <param name="repoPath">Path to the new package repository.</param>
-        /// <param name="requiresSourceDownload">Requires a source download?</param>
         /// <param name="insertedDefinitionFiles">Optional array of PackageDefinitions to insert at the front.</param>
         public void
         AddPackageRepository(
             string repoPath,
-            bool requiresSourceDownload,
             params PackageDefinition[] insertedDefinitionFiles)
         {
             if (null != this.InternalPackageRepositories.FirstOrDefault(item => item.RootPath == repoPath))
             {
                 return;
             }
-            var repo = new PackageRepository(repoPath, requiresSourceDownload, insertedDefinitionFiles);
+            var repo = new PackageRepository(repoPath, insertedDefinitionFiles);
             this.InternalPackageRepositories.Add(repo);
         }
 
@@ -1085,5 +1083,10 @@ namespace Bam.Core
         /// Obtain the IOverrideModuleConfiguration instance (if it exists) from the package assembly.
         /// </summary>
         public IOverrideModuleConfiguration OverrideModuleConfiguration { get; set; }
+
+        /// <summary>
+        /// Can the use of BuildAMation skip package source downloads? Default is false.
+        /// </summary>
+        public bool SkipPackageSourceDownloads { get; set; } = false;
     }
 }
