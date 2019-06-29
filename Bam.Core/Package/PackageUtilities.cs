@@ -611,7 +611,7 @@ namespace Bam.Core
         /// use. The master package definition file is the source of disambiguation for package versions.
         /// </summary>
         /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
-        /// <param name="allowDuplicates">If set to <c>true</c> allow duplicates.</param>
+        /// <param name="allowDuplicates">If set to <c>true</c> allow duplicates. Used to show the full extent of the definition file.</param>
         /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
         public static void
         IdentifyAllPackages(
