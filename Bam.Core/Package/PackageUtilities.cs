@@ -650,9 +650,12 @@ namespace Bam.Core
             var rootNode = packageMap.First(item => item.Key == masterDefn).Value;
             DumpTree(rootNode);
 
-            // resolve duplicates before trying to find packages that weren't found
-            // otherwise you may use package roots for packages that will be discarded
-            ResolveDuplicatePackages(rootNode, masterDefinitionFile);
+            if (!allowDuplicates)
+            {
+                // resolve duplicates before trying to find packages that weren't found
+                // otherwise you may use package roots for packages that will be discarded
+                ResolveDuplicatePackages(rootNode, masterDefinitionFile);
+            }
 
             DumpTree(rootNode);
 
@@ -678,7 +681,10 @@ namespace Bam.Core
                 }
 
                 ProcessPackagesIntoTree(queue, packageMap);
-                ResolveDuplicatePackages(rootNode, masterDefinitionFile);
+                if (!allowDuplicates)
+                {
+                    ResolveDuplicatePackages(rootNode, masterDefinitionFile);
+                }
                 DumpTree(rootNode);
 
                 unresolved = rootNode.UnresolvedPackages;
