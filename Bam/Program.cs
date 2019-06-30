@@ -109,11 +109,11 @@ namespace Bam
                 if (Core.CommandLineProcessor.Evaluate(new Core.Options.ShowDefinitionFile()))
                 {
                     Core.Graph.Instance.SkipPackageSourceDownloads = true;
-                    Core.PackageUtilities.IdentifyAllPackages(
+                    var rootNode = Core.PackageUtilities.IdentifyAllPackages(
                         allowDuplicates: true,
                         enforceBamAssemblyVersions: false
                     );
-                    Core.Graph.Instance.MasterPackage.Show();
+                    Core.Graph.Instance.MasterPackage.Show(rootNode);
                     return;
                 }
 

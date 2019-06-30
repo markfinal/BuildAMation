@@ -1335,11 +1335,58 @@ namespace Bam.Core
             }
         }
 
+        private void
+        DumpTreeInternal(
+            PackageTreeNode node,
+            int depth,
+            System.Collections.Generic.Dictionary<PackageTreeNode, int> encountered,
+            Array<PackageTreeNode> displayed)
+        {
+            if (!encountered.ContainsKey(node))
+            {
+                encountered.Add(node, depth);
+            }
+            foreach (var child in node.Children)
+            {
+                if (!encountered.ContainsKey(child))
+                {
+                    encountered.Add(child, depth + 1);
+                }
+            }
+
+            var indent = new string('\t', depth);
+            if (null != node.Definition)
+            {
+                Log.MessageAll($"{indent}{node.Definition.FullName}");
+            }
+            else
+            {
+                Log.MessageAll($"{indent}{node.Name}-{node.Version} ***** unresolved *****");
+            }
+            if (encountered[node] < depth)
+            {
+                return;
+            }
+            if (displayed.Contains(node))
+            {
+                return;
+            }
+            else
+            {
+                displayed.Add(node);
+            }
+            foreach (var child in node.Children)
+            {
+                this.DumpTreeInternal(child, depth + 1, encountered, displayed);
+            }
+        }
+
         /// <summary>
         /// Show a representation of the package definition file to the console.
         /// </summary>
         public void
-        Show()
+        Show(
+            PackageTreeNode rootNode)
         {
             var packageName = this.FullName;
             var formatString = "Definition of package ''";
@@ -1414,6 +1461,10 @@ namespace Bam.Core
                 Log.MessageAll(packageFormatting, "Package Name", "From Repository");
                 var visitedPackages = new Array<PackageDefinition>();
                 this.ShowDependencies(1, visitedPackages, packageFormatting);
+                Log.MessageAll("\n-----");
+                var encountered = new System.Collections.Generic.Dictionary<PackageTreeNode, int>();
+                var displayed = new Array<PackageTreeNode>();
+                this.DumpTreeInternal(rootNode, 0, encountered, displayed);
             }
             else
             {

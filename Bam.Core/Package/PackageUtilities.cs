@@ -607,7 +607,7 @@ namespace Bam.Core
         /// </summary>
         /// <param name="allowDuplicates">If set to <c>true</c> allow duplicates. Used to show the full extent of the definition file.</param>
         /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
-        public static void
+        public static PackageTreeNode
         IdentifyAllPackages(
             bool allowDuplicates = false,
             bool enforceBamAssemblyVersions = true)
@@ -718,6 +718,8 @@ namespace Bam.Core
             }
 
             Graph.Instance.SetPackageDefinitions(packageDefinitions);
+
+            return rootNode;
 #else
             var packageRepos = new System.Collections.Generic.LinkedList<System.Tuple<string,PackageDefinition>>();
             int reposHWM = 0;

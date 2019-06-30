@@ -30,17 +30,30 @@
 using System.Linq;
 namespace Bam.Core
 {
-    internal class PackageTreeNode
+    /// <summary>
+    /// Representation of a package within a tree structure.
+    /// </summary>
+    public class PackageTreeNode
     {
         private Array<PackageTreeNode> InternalParents { get; set; } = new Array<PackageTreeNode>();
         private Array<PackageTreeNode> InternalChildren { get; set; } = new Array<PackageTreeNode>();
 
+        /// <summary>
+        /// Convert a PackageTreeNode to a string.
+        /// </summary>
+        /// <returns>The package definition's full name</returns>
         public override string
         ToString()
         {
             return this.Definition.FullName;
         }
 
+        /// <summary>
+        /// Construct a new PackageTreeNode from an existing package definition file.
+        /// As the package definition file exists, this means that the package has been
+        /// discovered in a repository.
+        /// </summary>
+        /// <param name="definition">The PackageDefinition to use as source for the PackageTreeNode.</param>
         public PackageTreeNode(
             PackageDefinition definition)
         {
@@ -49,6 +62,13 @@ namespace Bam.Core
             this.Version = definition.Version;
         }
 
+        /// <summary>
+        /// Construct a new PackageTreeNode from a name and version.
+        /// This means that the package has not yet been discovered in a repository, so it should be
+        /// considered a placeholder for future discovery.
+        /// </summary>
+        /// <param name="name">Name of the package to find.</param>
+        /// <param name="version">Version ot the package to find, or null if there is no version.</param>
         public PackageTreeNode(
             string name,
             string version)
@@ -58,24 +78,37 @@ namespace Bam.Core
             this.Version = version;
         }
 
+        /// <summary>
+        /// Name of the package represented by this PackageTreeNode.
+        /// </summary>
         public string Name
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Version of the package represented by the PackageTreeNode.
+        /// </summary>
         public string Version
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// PackageDefinition represented by the PackageTreeNode.
+        /// </summary>
         public PackageDefinition Definition
         {
             get;
             private set;
         }
 
+        /// <summary>
+        /// Add a child PackageTreeNode to this.
+        /// </summary>
+        /// <param name="child">PackageTreeNode to add.</param>
         public void
         AddChild(
             PackageTreeNode child)
@@ -84,6 +117,9 @@ namespace Bam.Core
             child.InternalParents.Add(this);
         }
 
+        /// <summary>
+        /// Remove this PackageTreeNode from all of its parents.
+        /// </summary>
         public void
         RemoveFromParents()
         {
@@ -94,6 +130,9 @@ namespace Bam.Core
             this.InternalParents.Clear();
         }
 
+        /// <summary>
+        /// Enumerate the children of this PackageTreeNode.
+        /// </summary>
         public System.Collections.Generic.IEnumerable<PackageTreeNode> Children
         {
             get
@@ -105,6 +144,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Enumerate the parents of this PackageTreeNode.
+        /// </summary>
         public System.Collections.Generic.IEnumerable<PackageTreeNode> Parents
         {
             get
@@ -116,6 +158,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Enumerate the duplicate package names recursively from this PackageTreeNode.
+        /// </summary>
         public System.Collections.Generic.IEnumerable<string> DuplicatePackageNames
         {
             get
@@ -148,6 +193,11 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Enumerate all the PackageTreeNodes for all packages with the given name.
+        /// </summary>
+        /// <param name="packageName">Name of the package to search for duplicates.</param>
+        /// <returns>Enumeration of duplicate packages with the given name.</returns>
         public System.Collections.Generic.IEnumerable<PackageTreeNode>
         DuplicatePackages(
             string packageName)
@@ -182,6 +232,9 @@ namespace Bam.Core
             return packages;
         }
 
+        /// <summary>
+        /// Enumerate all packages that have not been discovered in repositories.
+        /// </summary>
         public System.Collections.Generic.IEnumerable<PackageTreeNode> UnresolvedPackages
         {
             get
@@ -217,6 +270,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Enumerate all package repository paths recursively.
+        /// </summary>
         public System.Collections.Generic.IEnumerable<string> PackageRepositoryPaths
         {
             get
@@ -252,6 +308,9 @@ namespace Bam.Core
             }
         }
 
+        /// <summary>
+        /// Enumerate all unique package definitions recursively.
+        /// </summary>
         public System.Collections.Generic.IEnumerable<PackageDefinition> UniquePackageDefinitions
         {
             get
