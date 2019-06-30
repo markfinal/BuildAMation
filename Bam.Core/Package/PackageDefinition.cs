@@ -1308,10 +1308,11 @@ namespace Bam.Core
             string packageFormatting)
         {
             visitedPackages.Add(this);
-            foreach (var dependent in this.Dependents)
+            foreach (var (depName, depVersion, depIsDefault) in this.Dependents)
             {
                 var dep = Graph.Instance.Packages.First(item =>
-                    System.String.Equals(item.Name, dependent.Item1, System.StringComparison.Ordinal) && System.String.Equals(item.Version, dependent.Item2, System.StringComparison.Ordinal)
+                    System.String.Equals(item.Name, depName, System.StringComparison.Ordinal) &&
+                    System.String.Equals(item.Version, depVersion, System.StringComparison.Ordinal)
                 );
                 if (visitedPackages.Contains(dep))
                 {
@@ -1321,7 +1322,7 @@ namespace Bam.Core
                 var formattedName = System.String.Format("{0}{1}{2}",
                     new string(' ', depth * 4),
                     dep.FullName,
-                    dependent.Item3.GetValueOrDefault(false) ? "*" : System.String.Empty);
+                    depIsDefault.GetValueOrDefault(false) ? "*" : System.String.Empty);
 
                 var repo = (dep.PackageRepositories.Count > 0) ? dep.PackageRepositories[0] : "Found in " + System.IO.Path.GetDirectoryName(dep.GetPackageDirectory());
 
