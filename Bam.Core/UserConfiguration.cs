@@ -31,7 +31,7 @@ using Microsoft.Extensions.Configuration;
 namespace Bam.Core
 {
     /// <summary>
-    /// Users may configure BuildAMation operations by several methods. These take this order of precendece:
+    /// Users may configure BuildAMation operations by several methods. These take this order of precedence:
     ///  - Environment variables prefixed with 'BAM'. The configuration names use colons, :, as scoping, which are invalid
     ///  for environment variables, so a double underscore __ may be safely used instead, e.g.
     ///  configuration = Packages:SourceDir aka environment variable = BAMPackages__SourceDir
