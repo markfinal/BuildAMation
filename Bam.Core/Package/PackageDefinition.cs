@@ -147,16 +147,14 @@ namespace Bam.Core
             PackageRepository repository)
         {
             this.XMLFilename = xmlFilename;
+            this.Repo = repository;
+
             this.Dependents = new Array<(string name, string version, bool? isDefault)>();
             this.BamAssemblies = new Array<BamAssemblyDescription>();
             this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
             this.NuGetPackages = new Array<NuGetPackageDescription>();
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
-            if (null != repository)
-            {
-                this.Repos = new Array<PackageRepository> { repository };
-            }
             this.PackageRepositories = new StringArray(this.GetPackageRepository());
             var associatedRepo = this.GetAssociatedPackageDirectoryForTests();
             if (null != associatedRepo)
@@ -1086,14 +1084,15 @@ namespace Bam.Core
 
         /// <summary>
         /// Gets or sets the array of repositories to search for packages in.
+        /// NOTE: These are EXTRA repositories to search.
         /// </summary>
         /// <value>The package repositories.</value>
         public StringArray PackageRepositories { get; set; }
 
         /// <summary>
-        /// PackageRepositories associated with this package.
+        /// PackageRepository containing this package.
         /// </summary>
-        public Array<PackageRepository> Repos { get; private set; }
+        public PackageRepository Repo { get; private set; }
 
         /// <summary>
         /// Gets or sets the description of the package.

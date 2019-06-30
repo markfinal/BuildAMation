@@ -41,7 +41,6 @@ namespace Bam.Core
     /// </summary>
     public class PackageRepository
     {
-        private readonly StringArray candidatePackageDirs;
         private readonly Array<PackageDefinition> packages = new Array<PackageDefinition>();
 
         /// <summary>
@@ -51,6 +50,35 @@ namespace Bam.Core
         public override string ToString()
         {
             return this.RootPath;
+        }
+
+        private System.Collections.Generic.IEnumerable<string>
+        ScanForPackages(
+            string dirPath)
+        {
+            if (this.IsStructured)
+            {
+                var packagesDir = System.IO.Path.Combine(dirPath, "packages");
+                foreach (var path in System.IO.Directory.GetDirectories(packagesDir, "*", System.IO.SearchOption.TopDirectoryOnly))
+                {
+                    yield return path;
+                }
+                if (this.HasTests)
+                {
+                    var testsDir = System.IO.Path.Combine(dirPath, "tests");
+                    foreach (var path in System.IO.Directory.GetDirectories(testsDir, "*", System.IO.SearchOption.TopDirectoryOnly))
+                    {
+                        yield return path;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var path in System.IO.Directory.GetDirectories(dirPath, "*", System.IO.SearchOption.TopDirectoryOnly))
+                {
+                    yield return path;
+                }
+            }
         }
 
         /// <summary>
@@ -67,17 +95,25 @@ namespace Bam.Core
             {
                 throw new Exception($"Package repository directory '{rootPath}' does not exist");
             }
+            Log.DebugMessage("Adding package repository rooted at '{0}'", rootPath);
             this.RootPath = rootPath;
+            if (System.IO.Directory.Exists(System.IO.Path.Combine(rootPath, "packages")))
+            {
+                this.IsStructured = true;
+                this.HasTests = System.IO.Directory.Exists(System.IO.Path.Combine(rootPath, "tests"));
+            }
+            else
+            {
+                this.IsStructured = false;
+            }
 
             foreach (var defn in insertedDefinitionFiles)
             {
                 this.packages.Add(defn);
             }
 
-            Log.DebugMessage("Adding package repository rooted at '{0}'", rootPath);
-            this.candidatePackageDirs = new StringArray();
-            var possiblePackages = System.IO.Directory.GetDirectories(rootPath, "*", System.IO.SearchOption.TopDirectoryOnly);
-            foreach (var packageDir in possiblePackages)
+            var candidatePackageDirs = this.ScanForPackages(rootPath);
+            foreach (var packageDir in candidatePackageDirs)
             {
                 var possibleBamFolder = System.IO.Path.Combine(packageDir, PackageUtilities.BamSubFolder);
                 if (!System.IO.Directory.Exists(possibleBamFolder))
@@ -90,7 +126,6 @@ namespace Bam.Core
                     continue;
                 }
                 Log.DebugMessage($"\t{packageDir}");
-                this.candidatePackageDirs.Add(packageDir);
 
                 if (this.packages.Any(item => item.XMLFilename == packageDefinitionPath))
                 {
@@ -111,12 +146,30 @@ namespace Bam.Core
             string rootPath)
             :
             this(rootPath, System.Linq.Enumerable.Empty<PackageDefinition>().ToArray())
-        {}
+        { }
 
         /// <summary>
         /// Returns the root path of the repository.
         /// </summary>
         public string RootPath
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Does the repository have a structured layout, i.e. (root)/packages and optionally (root)/tests.
+        /// </summary>
+        public bool IsStructured
+        {
+            get;
+            private set;
+        }
+
+        /// <summary>
+        /// Does a structured repository have a tests directory?
+        /// </summary>
+        public bool HasTests
         {
             get;
             private set;

@@ -68,16 +68,13 @@ namespace Bam.Core
             this.InternalPackageRepositories = new Array<PackageRepository>();
             try
             {
-                var primaryPackageRepoPath = System.IO.Path.Combine(
-                    System.IO.Directory.GetParent(
+                var primaryPackageRepoPath = System.IO.Directory.GetParent(
                         System.IO.Directory.GetParent(
                             System.IO.Directory.GetParent(
                                 this.ProcessState.ExecutableDirectory
                             ).FullName
                         ).FullName
-                    ).FullName,
-                    "packages"
-                );
+                    ).FullName;
                 if (!System.IO.Directory.Exists(primaryPackageRepoPath))
                 {
                     throw new Exception(
