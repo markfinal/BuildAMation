@@ -68,7 +68,7 @@ namespace Bam.Core
             this.InternalPackageRepositories = new Array<PackageRepository>();
             try
             {
-                var primaryPackageRepo = System.IO.Path.Combine(
+                var primaryPackageRepoPath = System.IO.Path.Combine(
                     System.IO.Directory.GetParent(
                         System.IO.Directory.GetParent(
                             System.IO.Directory.GetParent(
@@ -78,13 +78,13 @@ namespace Bam.Core
                     ).FullName,
                     "packages"
                 );
-                if (!System.IO.Directory.Exists(primaryPackageRepo))
+                if (!System.IO.Directory.Exists(primaryPackageRepoPath))
                 {
                     throw new Exception(
-                        $"Standard BAM package directory '{primaryPackageRepo}' does not exist"
+                        $"Standard BAM package directory '{primaryPackageRepoPath}' does not exist"
                     );
                 }
-                this.AddPackageRepository(primaryPackageRepo);
+                this.AddPackageRepository(primaryPackageRepoPath);
             }
             catch (System.ArgumentNullException)
             {
