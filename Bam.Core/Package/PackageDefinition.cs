@@ -1453,6 +1453,12 @@ namespace Bam.Core
                 }
             }
 
+            Log.MessageAll("\nPackage repositories that the system is aware of:");
+            foreach (var repo in Graph.Instance.PackageRepositories)
+            {
+                Log.MessageAll($"\t'{repo.RootPath}'\tStructured? {repo.IsStructured}\tHas Tests? {repo.HasTests}");
+            }
+
             if (this.Dependents.Any())
             {
                 Log.MessageAll("\nDependent packages (* = default version):");
