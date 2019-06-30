@@ -49,7 +49,21 @@ namespace Bam.Core
         /// <returns>Root path of the package repository.</returns>
         public override string ToString()
         {
-            return this.RootPath;
+            if (this.IsStructured)
+            {
+                if (this.HasTests)
+                {
+                    return $"{this.RootPath}\t(Structured+Tests)";
+                }
+                else
+                {
+                    return $"{this.RootPath}\t(Structured)";
+                }
+            }
+            else
+            {
+                return this.RootPath;
+            }
         }
 
         private System.Collections.Generic.IEnumerable<string>

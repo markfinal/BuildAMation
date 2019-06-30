@@ -1454,10 +1454,10 @@ namespace Bam.Core
                 }
             }
 
-            Log.MessageAll("\nPackage repositories that the system is aware of:");
+            Log.MessageAll("\nPackage repositories that the system is aware of (may be more than during builds):");
             foreach (var repo in Graph.Instance.PackageRepositories)
             {
-                Log.MessageAll($"\t'{repo.RootPath}'\tStructured? {repo.IsStructured}\tHas Tests? {repo.HasTests}");
+                Log.MessageAll($"\t{repo.ToString()}");
             }
 
             if (this.Dependents.Any())

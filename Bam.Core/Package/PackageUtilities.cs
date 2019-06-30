@@ -699,7 +699,7 @@ namespace Bam.Core
                     message.AppendLine("Searched for in the following repositories:");
                     foreach (var repo in Graph.Instance.PackageRepositories)
                     {
-                        message.AppendLine($"\t{repo.RootPath}");
+                        message.AppendLine($"\t{repo.ToString()}");
                     }
                     throw new Exception(message.ToString());
                 }
