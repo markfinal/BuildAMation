@@ -1142,10 +1142,8 @@ namespace Bam.Core
             }
 
             authenticated.Add(current);
-            foreach (var dependent in current.Dependents)
+            foreach (var (depName, depVersion, depIsDefault) in current.Dependents)
             {
-                var depName = dependent.Item1;
-                var depVersion = dependent.Item2;
                 var candidates = candidatePackageDefinitions.Where(item => item.Name.Equals(depName, System.StringComparison.Ordinal));
                 if (depVersion != null)
                 {
