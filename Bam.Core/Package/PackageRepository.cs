@@ -77,14 +77,6 @@ namespace Bam.Core
                 {
                     yield return path;
                 }
-                if (this.HasTests)
-                {
-                    var testsDir = System.IO.Path.Combine(dirPath, "tests");
-                    foreach (var path in System.IO.Directory.GetDirectories(testsDir, "*", System.IO.SearchOption.TopDirectoryOnly))
-                    {
-                        yield return path;
-                    }
-                }
             }
             else
             {
@@ -92,6 +84,35 @@ namespace Bam.Core
                 {
                     yield return path;
                 }
+            }
+        }
+
+        private void
+        ReadAndAppendPackageDefinitions(
+            System.Collections.Generic.IEnumerable<string> candidatePackageDirs)
+        {
+            foreach (var packageDir in candidatePackageDirs)
+            {
+                var possibleBamFolder = System.IO.Path.Combine(packageDir, PackageUtilities.BamSubFolder);
+                if (!System.IO.Directory.Exists(possibleBamFolder))
+                {
+                    continue;
+                }
+                var packageDefinitionPath = GetPackageDefinitionPathname(possibleBamFolder);
+                if (null == packageDefinitionPath)
+                {
+                    continue;
+                }
+                Log.DebugMessage($"\t{packageDir}");
+
+                if (this.packages.Any(item => item.XMLFilename == packageDefinitionPath))
+                {
+                    continue;
+                }
+
+                var definitionFile = new PackageDefinition(packageDefinitionPath, this);
+                definitionFile.Read();
+                this.packages.Add(definitionFile);
             }
         }
 
@@ -127,29 +148,7 @@ namespace Bam.Core
             }
 
             var candidatePackageDirs = this.ScanForPackages(rootPath);
-            foreach (var packageDir in candidatePackageDirs)
-            {
-                var possibleBamFolder = System.IO.Path.Combine(packageDir, PackageUtilities.BamSubFolder);
-                if (!System.IO.Directory.Exists(possibleBamFolder))
-                {
-                    continue;
-                }
-                var packageDefinitionPath = GetPackageDefinitionPathname(possibleBamFolder);
-                if (null == packageDefinitionPath)
-                {
-                    continue;
-                }
-                Log.DebugMessage($"\t{packageDir}");
-
-                if (this.packages.Any(item => item.XMLFilename == packageDefinitionPath))
-                {
-                    continue;
-                }
-
-                var definitionFile = new PackageDefinition(packageDefinitionPath, this);
-                definitionFile.Read();
-                this.packages.Add(definitionFile);
-            }
+            this.ReadAndAppendPackageDefinitions(candidatePackageDirs);
         }
 
         /// <summary>
@@ -188,6 +187,8 @@ namespace Bam.Core
             get;
             private set;
         }
+
+        private bool HasBeenScannedForTests { get; set; } = false;
 
         /// <summary>
         /// Find the package by its description in this repository.
@@ -243,6 +244,34 @@ namespace Bam.Core
                 throw new Exception(message.ToString());
             }
             return xmlFiles[0];
+        }
+
+        /// <summary>
+        /// Scan the repository for test packages, and read them in if found.
+        /// </summary>
+        public void
+        ScanTestPackages()
+        {
+            if (!this.IsStructured)
+            {
+                return;
+            }
+            if (!this.HasTests)
+            {
+                return;
+            }
+            if (this.HasBeenScannedForTests)
+            {
+                return;
+            }
+            var testsDir = System.IO.Path.Combine(this.RootPath, "tests");
+            var candidatePackageDirs = new StringArray();
+            foreach (var path in System.IO.Directory.GetDirectories(testsDir, "*", System.IO.SearchOption.TopDirectoryOnly))
+            {
+                candidatePackageDirs.Add(path);
+            }
+            this.ReadAndAppendPackageDefinitions(candidatePackageDirs);
+            this.HasBeenScannedForTests = true;
         }
     }
 }

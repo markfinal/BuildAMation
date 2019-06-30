@@ -225,6 +225,20 @@ namespace Bam.Core
             var parentDir = System.IO.Path.GetDirectoryName(workingDir);
             var repository = Graph.Instance.AddPackageRepository(parentDir);
             var masterDefinitionFile = repository.FindPackage(GetPackageDefinitionPathname(workingDir));
+            if (null == masterDefinitionFile)
+            {
+                // could not find the master package in either an unstructured, or structured (packages) repository
+                // try in the tests folder if this is part of a structured repository
+                if (repository.HasTests)
+                {
+                    repository.ScanTestPackages();
+                    masterDefinitionFile = repository.FindPackage(GetPackageDefinitionPathname(workingDir));
+                }
+                if (null == masterDefinitionFile)
+                {
+                    throw new Exception("Unable to locate master package in any repository");
+                }
+            }
             // the package will have been read already, so re-read it in the context of a master package
             masterDefinitionFile.ReReadAsMaster();
 
