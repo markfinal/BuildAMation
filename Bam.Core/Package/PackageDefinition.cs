@@ -143,7 +143,8 @@ namespace Bam.Core
 
         private void
         Initialize(
-            string xmlFilename)
+            string xmlFilename,
+            PackageRepository repository)
         {
             this.XMLFilename = xmlFilename;
             this.Dependents = new Array<(string name, string version, bool? isDefault)>();
@@ -152,6 +153,10 @@ namespace Bam.Core
             this.NuGetPackages = new Array<NuGetPackageDescription>();
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
+            if (null != repository)
+            {
+                this.Repos = new Array<PackageRepository> { repository };
+            }
             this.PackageRepositories = new StringArray(this.GetPackageRepository());
             var associatedRepo = this.GetAssociatedPackageDirectoryForTests();
             if (null != associatedRepo)
@@ -165,10 +170,12 @@ namespace Bam.Core
         /// <summary>
         /// Construct a new instance, based from an existing XML filename.
         /// </summary>
-        /// <param name="xmlFilename">Xml filename.</param>
+        /// <param name="xmlFilename">Xml filename of the package's definition file</param>
+        /// <param name="repository">Package repository that contains this package.</param>
         public
         PackageDefinition(
-            string xmlFilename) => this.Initialize(xmlFilename);
+            string xmlFilename,
+            PackageRepository repository) => this.Initialize(xmlFilename, repository);
 
         /// <summary>
         /// Create a new instance, for the specified directory, package name and version.
@@ -184,7 +191,7 @@ namespace Bam.Core
         {
             var definitionName = (null != version) ? System.String.Format("{0}-{1}.xml", name, version) : name + ".xml";
             var xmlFilename = System.IO.Path.Combine(bamDirectory, definitionName);
-            this.Initialize(xmlFilename);
+            this.Initialize(xmlFilename, null); // there is no repo defined for creating new packages
             this.Name = name;
             this.Version = version;
             if (null != version)
@@ -1082,6 +1089,11 @@ namespace Bam.Core
         /// </summary>
         /// <value>The package repositories.</value>
         public StringArray PackageRepositories { get; set; }
+
+        /// <summary>
+        /// PackageRepositories associated with this package.
+        /// </summary>
+        public Array<PackageRepository> Repos { get; private set; }
 
         /// <summary>
         /// Gets or sets the description of the package.

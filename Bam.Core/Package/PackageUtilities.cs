@@ -222,13 +222,10 @@ namespace Bam.Core
                 throw new Exception("Working directory package is not well defined");
             }
 
-            var masterDefinitionFile = new PackageDefinition(GetPackageDefinitionPathname(workingDir));
-            masterDefinitionFile.ReadAsMaster();
-
-            // in case the master package is not in a formal package repository structure, add it's parent directory
-            // as a repository, so that sibling packages can be found
             var parentDir = System.IO.Path.GetDirectoryName(workingDir);
-            masterDefinitionFile.PackageRepositories.AddUnique(parentDir);
+            var repository = Graph.Instance.AddPackageRepository(parentDir);
+            var masterDefinitionFile = repository.FindPackage(GetPackageDefinitionPathname(workingDir));
+            masterDefinitionFile.ReadAsMaster();
 
             return masterDefinitionFile;
         }

@@ -985,17 +985,19 @@ namespace Bam.Core
         /// </summary>
         /// <param name="repoPath">Path to the new package repository.</param>
         /// <param name="insertedDefinitionFiles">Optional array of PackageDefinitions to insert at the front.</param>
-        public void
+        /// <returns>The PackageRepository added (or that was already present).</returns>
+        public PackageRepository
         AddPackageRepository(
             string repoPath,
             params PackageDefinition[] insertedDefinitionFiles)
         {
-            if (null != this.InternalPackageRepositories.FirstOrDefault(item => item.RootPath == repoPath))
+            var repo = this.InternalPackageRepositories.FirstOrDefault(item => item.RootPath == repoPath);
+            if (null == repo)
             {
-                return;
+                repo = new PackageRepository(repoPath, insertedDefinitionFiles);
+                this.InternalPackageRepositories.Add(repo);
             }
-            var repo = new PackageRepository(repoPath, insertedDefinitionFiles);
-            this.InternalPackageRepositories.Add(repo);
+            return repo;
         }
 
         /// <summary>

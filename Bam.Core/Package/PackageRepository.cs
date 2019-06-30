@@ -45,6 +45,15 @@ namespace Bam.Core
         private readonly Array<PackageDefinition> packages = new Array<PackageDefinition>();
 
         /// <summary>
+        /// Convert the PackageRepository to a string.
+        /// </summary>
+        /// <returns>Root path of the package repository.</returns>
+        public override string ToString()
+        {
+            return this.RootPath;
+        }
+
+        /// <summary>
         /// Create a package repository rooted at specified path.
         /// Optionally insert some definition files first.
         /// </summary>
@@ -88,7 +97,7 @@ namespace Bam.Core
                     continue;
                 }
 
-                var definitionFile = new PackageDefinition(packageDefinitionPath);
+                var definitionFile = new PackageDefinition(packageDefinitionPath, this);
                 definitionFile.Read();
                 this.packages.Add(definitionFile);
             }
@@ -130,6 +139,18 @@ namespace Bam.Core
             {
                 return this.packages.FirstOrDefault(item => item.Name == packageDescription.name);
             }
+        }
+
+        /// <summary>
+        /// Find the package given a definition file path.
+        /// </summary>
+        /// <param name="definitionFilePath">Path o the definition file path.</param>
+        /// <returns>Package associated with the definition file, or null if not found.</returns>
+        public PackageDefinition
+        FindPackage(
+            string definitionFilePath)
+        {
+            return this.packages.FirstOrDefault(item => item.XMLFilename == definitionFilePath);
         }
 
         private static string
