@@ -623,8 +623,7 @@ namespace Bam.Core
             // is it reasonable to assume that all package overloads are in the same repo? (probably not)
 
             var masterDefinitionFile = GetMasterPackage();
-            Graph.Instance.AddPackageRepository(masterDefinitionFile.PackageRepositories.First(), masterDefinitionFile);
-            foreach (var repoPath in masterDefinitionFile.PackageRepositories.Skip(1))
+            foreach (var repoPath in masterDefinitionFile.PackageRepositories)
             {
                 Graph.Instance.AddPackageRepository(repoPath, masterDefinitionFile);
             }
