@@ -506,12 +506,13 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Read an existing XML file into the instance, treating it specially as
+        /// Re-read an existing XML file into the instance, treating it specially as
         /// the master package, which means that 'default' dependents are honoured.
         /// </summary>
         public void
-        ReadAsMaster()
+        ReReadAsMaster()
         {
+            this.Initialize(this.XMLFilename, this.Repo);
             this.ReadInternal(isMaster: true);
 
             var packageDefinition = this.GetPackageDefinitionName();

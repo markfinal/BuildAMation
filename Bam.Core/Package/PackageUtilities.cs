@@ -225,7 +225,8 @@ namespace Bam.Core
             var parentDir = System.IO.Path.GetDirectoryName(workingDir);
             var repository = Graph.Instance.AddPackageRepository(parentDir);
             var masterDefinitionFile = repository.FindPackage(GetPackageDefinitionPathname(workingDir));
-            masterDefinitionFile.ReadAsMaster();
+            // the package will have been read already, so re-read it in the context of a master package
+            masterDefinitionFile.ReReadAsMaster();
 
             return masterDefinitionFile;
         }
