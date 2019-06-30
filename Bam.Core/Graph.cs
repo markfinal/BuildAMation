@@ -1010,6 +1010,13 @@ namespace Bam.Core
                     return repo;
                 }
             }
+
+            // need to add a new repo
+            if (repoPath.EndsWith("packages") || repoPath.EndsWith("tests"))
+            {
+                // needs to be added as structured
+                repoPath = System.IO.Path.GetDirectoryName(repoPath);
+            }
             repo = new PackageRepository(repoPath, insertedDefinitionFiles);
             this.InternalPackageRepositories.Add(repo);
             return repo;
