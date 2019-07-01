@@ -652,7 +652,9 @@ namespace Bam.Core
 
             Log.DebugMessage("-- Starting package dependency evaluation... --");
 
+            var firstCount = 0;
             ProcessPackagesIntoTree(queue, packageMap);
+            var secondCount = packageMap.Count;
 
             var rootNode = packageMap.First(item => item.Key == masterDefn).Value;
             DumpTree(rootNode);
@@ -667,7 +669,7 @@ namespace Bam.Core
             DumpTree(rootNode);
 
             var unresolved = rootNode.UnresolvedPackages;
-            if (unresolved.Any())
+            while (unresolved.Any() && (firstCount != secondCount))
             {
                 Log.DebugMessage($"{unresolved.Count()} packages not found:");
                 foreach (var package in unresolved)
@@ -687,7 +689,9 @@ namespace Bam.Core
                     queue.Enqueue((package.Name, package.Version, new Array<PackageTreeNode>(package.Parents)));
                 }
 
+                firstCount = secondCount;
                 ProcessPackagesIntoTree(queue, packageMap);
+                secondCount = packageMap.Count;
                 if (!allowDuplicates)
                 {
                     ResolveDuplicatePackages(rootNode, masterDefinitionFile);
@@ -695,28 +699,29 @@ namespace Bam.Core
                 DumpTree(rootNode);
 
                 unresolved = rootNode.UnresolvedPackages;
-                if (unresolved.Any())
+            }
+
+            if (unresolved.Any())
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendLine("Some packages were not found in any repository:");
+                foreach (var package in unresolved)
                 {
-                    var message = new System.Text.StringBuilder();
-                    message.AppendLine("Some packages were not found in any repository:");
-                    foreach (var package in unresolved)
+                    if (null != package.Version)
                     {
-                        if (null != package.Version)
-                        {
-                            message.AppendLine($"\t{package.Name}-{package.Version}");
-                        }
-                        else
-                        {
-                            message.AppendLine($"\t{package.Name}");
-                        }
+                        message.AppendLine($"\t{package.Name}-{package.Version}");
                     }
-                    message.AppendLine("Searched for in the following repositories:");
-                    foreach (var repo in Graph.Instance.PackageRepositories)
+                    else
                     {
-                        message.AppendLine($"\t{repo.ToString()}");
+                        message.AppendLine($"\t{package.Name}");
                     }
-                    throw new Exception(message.ToString());
                 }
+                message.AppendLine("Searched for in the following repositories:");
+                foreach (var repo in Graph.Instance.PackageRepositories)
+                {
+                    message.AppendLine($"\t{repo.ToString()}");
+                }
+                throw new Exception(message.ToString());
             }
 
             Log.DebugMessage("-- Completed package dependency evaluation --");
