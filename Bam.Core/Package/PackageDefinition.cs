@@ -1067,10 +1067,12 @@ namespace Bam.Core
         public StringArray PackageRepositories { get; set; }
 
         /// <summary>
-        /// Gets or sets the array of repositories to search for packages in.
+        /// Gets or sets the array of named repositories to search for packages in.
+        /// The User Configuration "Repository:SearchDirs" is used to specify the directories
+        /// in which to find the named repositories.
         /// NOTE: These are EXTRA repositories to search.
         /// </summary>
-        /// <value>The package repositories.</value>
+        /// <value>The named package repositories.</value>
         public StringArray NamedPackageRepositories { get; set; }
 
         /// <summary>
