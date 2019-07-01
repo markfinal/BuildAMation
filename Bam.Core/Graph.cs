@@ -988,30 +988,14 @@ namespace Bam.Core
             string repoPath,
             params PackageDefinition[] insertedDefinitionFiles)
         {
-            // test for unstructured
             var repo = this.InternalPackageRepositories.FirstOrDefault(item =>
-                !item.IsStructured &&
                 System.String.Equals(item.RootPath, repoPath, System.StringComparison.Ordinal)
             );
             if (null != repo)
             {
                 return repo;
             }
-            // check for structured
-            if (repoPath.EndsWith("packages") || repoPath.EndsWith("tests"))
-            {
-                var parentDir = System.IO.Path.GetDirectoryName(repoPath);
-                repo = this.InternalPackageRepositories.FirstOrDefault(item =>
-                    item.IsStructured &&
-                    System.String.Equals(item.RootPath, parentDir, System.StringComparison.Ordinal)
-                );
-                if (null != repo)
-                {
-                    return repo;
-                }
-            }
 
-            // need to add a new repo
             if (repoPath.EndsWith("packages") || repoPath.EndsWith("tests"))
             {
                 // needs to be added as structured

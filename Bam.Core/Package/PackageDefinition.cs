@@ -120,27 +120,6 @@ namespace Bam.Core
             }
         }
 
-        private string
-        GetAssociatedPackageDirectoryForTests()
-        {
-            // package repositories have a 'package' folder and a 'tests' folder
-            // if this package is from the 'tests' folder, automatically add the 'packages' folder as another place to search for packages
-            var thisRepo = this.GetPackageRepository();
-            if (null == thisRepo)
-            {
-                return null;
-            }
-            if (System.IO.Path.GetFileName(thisRepo).Equals("tests", System.StringComparison.Ordinal))
-            {
-                var associatedPackagesRepo = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(thisRepo), "packages");
-                if (System.IO.Directory.Exists(associatedPackagesRepo))
-                {
-                    return associatedPackagesRepo;
-                }
-            }
-            return null;
-        }
-
         private void
         Initialize(
             string xmlFilename,
@@ -155,12 +134,8 @@ namespace Bam.Core
             this.NuGetPackages = new Array<NuGetPackageDescription>();
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
-            this.PackageRepositories = new StringArray(this.GetPackageRepository());
-            var associatedRepo = this.GetAssociatedPackageDirectoryForTests();
-            if (null != associatedRepo)
-            {
-                this.PackageRepositories.AddUnique(associatedRepo);
-            }
+            this.NamedPackageRepositories = new StringArray();
+            this.PackageRepositories = new StringArray();
             this.Description = string.Empty;
             this.Parents = new Array<PackageDefinition>();
         }
@@ -272,15 +247,6 @@ namespace Bam.Core
 
             // package repositories
             var packageRepos = new StringArray(this.PackageRepositories);
-            // TODO: could these be marked as transient?
-            // don't write out the repo that this package resides in
-            packageRepos.Remove(this.GetPackageRepository());
-            // nor an associated repo for tests
-            var associatedRepo = this.GetAssociatedPackageDirectoryForTests();
-            if (null != associatedRepo)
-            {
-                packageRepos.Remove(associatedRepo);
-            }
             if (packageRepos.Count > 0)
             {
                 var packageRootsElement = document.CreateElement("PackageRepositories", namespaceURI);
@@ -589,7 +555,8 @@ namespace Bam.Core
                 return false;
             }
 
-            var elName = "Repo";
+            var elName1 = "Repo";
+            var elName2 = "NamedRepo";
             while (xmlReader.Read())
             {
                 if (xmlReader.Name.Equals(rootName, System.StringComparison.Ordinal) &&
@@ -598,15 +565,24 @@ namespace Bam.Core
                     break;
                 }
 
-                if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
+                if (elName1.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootName, xmlReader.Name, elName);
+                    var dir = xmlReader.GetAttribute("dir");
+                    var bamDir = this.GetBamDirectory();
+                    var absolutePackageRepoDir = RelativePathUtilities.ConvertRelativePathToAbsolute(bamDir, dir);
+                    this.PackageRepositories.AddUnique(absolutePackageRepoDir);
+                    continue;
+                }
+                else if (elName2.Equals(xmlReader.Name, System.StringComparison.Ordinal))
+                {
+                    var name = xmlReader.GetAttribute("name");
+                    this.NamedPackageRepositories.AddUnique(name);
+                    continue;
                 }
 
-                var dir = xmlReader.GetAttribute("dir");
-                var bamDir = this.GetBamDirectory();
-                var absolutePackageRepoDir = RelativePathUtilities.ConvertRelativePathToAbsolute(bamDir, dir);
-                this.PackageRepositories.AddUnique(absolutePackageRepoDir);
+                throw new Exception(
+                    $"Unexpected child element of '{rootName}'. Found '{xmlReader.Name}', expected '{elName1}' or '{elName2}'"
+                );
             }
 
             return true;
@@ -1091,6 +1067,13 @@ namespace Bam.Core
         public StringArray PackageRepositories { get; set; }
 
         /// <summary>
+        /// Gets or sets the array of repositories to search for packages in.
+        /// NOTE: These are EXTRA repositories to search.
+        /// </summary>
+        /// <value>The package repositories.</value>
+        public StringArray NamedPackageRepositories { get; set; }
+
+        /// <summary>
         /// PackageRepository containing this package.
         /// </summary>
         public PackageRepository Repo { get; private set; }
@@ -1278,23 +1261,6 @@ namespace Bam.Core
         GetPackageDirectory() => System.IO.Path.GetDirectoryName(this.GetBamDirectory());
 
         /// <summary>
-        /// Get the repository directory, if it is a formal repository structure, called 'packages'
-        /// or 'tests'. If it not in a formal structure, null is returned.
-        /// </summary>
-        /// <returns>The package repository.</returns>
-        private string
-        GetPackageRepository()
-        {
-            // package repo/package name/bam/<definition file>.xml
-            var repo = System.IO.Path.GetDirectoryName(this.GetPackageDirectory());
-            if (repo.EndsWith("packages", System.StringComparison.Ordinal) || repo.EndsWith("tests", System.StringComparison.Ordinal))
-            {
-                return repo;
-            }
-            return null;
-        }
-
-        /// <summary>
         /// Get the directory that build files are written into.
         /// </summary>
         /// <returns>The build directory.</returns>
@@ -1451,6 +1417,15 @@ namespace Bam.Core
                     );
 
                     Log.MessageAll($"\t'{repo}'\t(absolute path '{absoluteRepo}')");
+                }
+            }
+
+            if (this.NamedPackageRepositories.Any())
+            {
+                Log.MessageAll("\nNamed package repositories to search (via search paths set by user configuration):");
+                foreach (var repo in this.NamedPackageRepositories)
+                {
+                    Log.MessageAll($"\t'{repo}'");
                 }
             }
 

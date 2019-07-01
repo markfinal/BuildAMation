@@ -285,7 +285,24 @@ namespace Bam.Core
                 {
                     if (null != node.Definition)
                     {
+                        // add relative repository directories
                         repositoryPaths.AddRangeUnique(node.Definition.PackageRepositories);
+
+                        // add repository directories found via a search path
+                        var config = UserConfiguration.Configuration;
+                        var searchDirs = $"{config[UserConfiguration.RepositorySearchDirs]}";
+                        foreach (var namedRepo in node.Definition.NamedPackageRepositories)
+                        {
+                            foreach (var searchDir in searchDirs.Split(System.IO.Path.PathSeparator))
+                            {
+                                var proposedDir = System.IO.Path.Combine(searchDir, namedRepo);
+                                if (!System.IO.Directory.Exists(proposedDir))
+                                {
+                                    continue;
+                                }
+                                repositoryPaths.AddUnique(proposedDir);
+                            }
+                        }
                     }
                     foreach (var child in node.InternalChildren)
                     {
