@@ -45,7 +45,14 @@ namespace Bam.Core
         public override string
         ToString()
         {
-            return this.Definition.FullName;
+            if (null != this.Definition)
+            {
+                return this.Definition.FullName;
+            }
+            else
+            {
+                return $"{this.Name}-{this.Version} (not yet discovered)";
+            }
         }
 
         /// <summary>
@@ -235,7 +242,7 @@ namespace Bam.Core
         /// <summary>
         /// Enumerate all packages that have not been discovered in repositories.
         /// </summary>
-        public System.Collections.Generic.IEnumerable<PackageTreeNode> UnresolvedPackages
+        public System.Collections.Generic.IEnumerable<PackageTreeNode> UndiscoveredPackages
         {
             get
             {

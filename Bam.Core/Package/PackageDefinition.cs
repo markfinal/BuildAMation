@@ -1329,7 +1329,7 @@ namespace Bam.Core
             }
             else
             {
-                Log.MessageAll($"{indent}{node.Name}-{node.Version} ***** unresolved *****");
+                Log.MessageAll($"{indent}{node.Name}-{node.Version} ***** undiscovered *****");
             }
             if (encountered[node] < depth)
             {

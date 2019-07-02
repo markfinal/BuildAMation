@@ -367,7 +367,7 @@ namespace Bam.Core
             }
             else
             {
-                Log.DebugMessage($"{indent}{node.Name}-{node.Version} ***** unresolved *****");
+                Log.DebugMessage($"{indent}{node.Name}-{node.Version} ***** undiscovered *****");
             }
             if (encountered[node] < depth)
             {
@@ -672,11 +672,11 @@ namespace Bam.Core
 
             DumpTree(rootNode);
 
-            var unresolved = rootNode.UnresolvedPackages;
-            while (unresolved.Any() && (firstCount != secondCount))
+            var undiscovered = rootNode.UndiscoveredPackages;
+            while (undiscovered.Any() && (firstCount != secondCount))
             {
-                Log.DebugMessage($"{unresolved.Count()} packages not found:");
-                foreach (var package in unresolved)
+                Log.DebugMessage($"{undiscovered.Count()} packages not found:");
+                foreach (var package in undiscovered)
                 {
                     Log.DebugMessage($"\t{package.Name}-{package.Version}");
                 }
@@ -688,7 +688,7 @@ namespace Bam.Core
                     Graph.Instance.AddPackageRepository(path, masterDefinitionFile);
                 }
 
-                foreach (var package in unresolved)
+                foreach (var package in undiscovered)
                 {
                     queue.Enqueue((package.Name, package.Version, new Array<PackageTreeNode>(package.Parents)));
                 }
@@ -702,14 +702,14 @@ namespace Bam.Core
                 }
                 DumpTree(rootNode);
 
-                unresolved = rootNode.UnresolvedPackages;
+                undiscovered = rootNode.UndiscoveredPackages;
             }
 
-            if (unresolved.Any())
+            if (undiscovered.Any())
             {
                 var message = new System.Text.StringBuilder();
                 message.AppendLine("Some packages were not found in any repository:");
-                foreach (var package in unresolved)
+                foreach (var package in undiscovered)
                 {
                     if (null != package.Version)
                     {
