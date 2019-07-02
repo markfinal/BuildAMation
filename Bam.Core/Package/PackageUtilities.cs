@@ -420,7 +420,9 @@ namespace Bam.Core
                     if (null != specifierMatch)
                     {
                         Log.DebugMessage($"\t\tCommand line package specifier wants version {specifierMatch.Last()}");
-                        duplicatesToRemove = duplicates.Where(item => item.Definition.Version != specifierMatch.Last());
+                        duplicatesToRemove = duplicates.Where(item =>
+                            item.Version != specifierMatch.Last()
+                        );
                         foreach (var toRemove in duplicatesToRemove)
                         {
                             toRemove.RemoveFromParents();
@@ -433,7 +435,9 @@ namespace Bam.Core
                         if (!default((string name, string version, bool? isDefault)).Equals(masterPackageMatch))
                         {
                             Log.DebugMessage($"\t\tMaster package specifies version {masterPackageMatch.version} is default");
-                            duplicatesToRemove = duplicates.Where(item => item.Definition.Version != masterPackageMatch.version);
+                            duplicatesToRemove = duplicates.Where(item =>
+                                item.Version != masterPackageMatch.version
+                            );
                             foreach (var toRemove in duplicatesToRemove.ToList())
                             {
                                 toRemove.RemoveFromParents();
@@ -458,7 +462,7 @@ namespace Bam.Core
                         resolveErrorMessage.AppendLine("Available versions of the package are:");
                         foreach (var dup in duplicates)
                         {
-                            resolveErrorMessage.AppendFormat("\t{0}", dup.Definition.Version);
+                            resolveErrorMessage.AppendFormat("\t{0}", dup.Version);
                             resolveErrorMessage.AppendLine();
                         }
                     }
