@@ -270,11 +270,8 @@ namespace Bam.Core
             if (this.Dependents.Any())
             {
                 var dependentsEl = document.CreateElement("Dependents", namespaceURI);
-                foreach (var package in this.Dependents)
+                foreach (var (packageName, packageVersion, packageIsDefault) in this.Dependents)
                 {
-                    var packageName = package.Item1;
-                    var packageVersion = package.Item2;
-                    var packageIsDefault = package.Item3;
                     System.Xml.XmlElement packageElement = null;
 
                     {
@@ -623,9 +620,9 @@ namespace Bam.Core
                 );
             }
 
-            foreach (var duplicateDepName in this.Dependents.GroupBy(item => item.Item1).Where(item => item.Count() > 1).Select(item => item.Key))
+            foreach (var duplicateDepName in this.Dependents.GroupBy(item => item.name).Where(item => item.Count() > 1).Select(item => item.Key))
             {
-                var numDefaults = this.Dependents.Where(item => item.Item1.Equals(duplicateDepName, System.StringComparison.Ordinal)).Where(item => item.Item3.HasValue && item.Item3.Value).Count();
+                var numDefaults = this.Dependents.Where(item => item.name.Equals(duplicateDepName, System.StringComparison.Ordinal)).Where(item => item.isDefault.HasValue && item.isDefault.Value).Count();
                 if (numDefaults > 1)
                 {
                     throw new Exception("Package definition {0} has defined dependency {1} multiple times as default", this.XMLFilename, duplicateDepName);

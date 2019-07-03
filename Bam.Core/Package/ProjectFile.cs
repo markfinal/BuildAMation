@@ -203,7 +203,7 @@ namespace Bam.Core
         public ProjectFile(
             bool isExecutable,
             string csprojPath,
-            System.Collections.Generic.List<(string,string)> additionalNuGetReferences = null)
+            System.Collections.Generic.List<(string package,string version)> additionalNuGetReferences = null)
         {
             this.CsProjPath = csprojPath;
 
@@ -258,7 +258,7 @@ namespace Bam.Core
             {
                 foreach (var nuget in additionalNuGetReferences)
                 {
-                    this.CreateNugetReference(nuget.Item1, nuget.Item2, nugetReferences);
+                    this.CreateNugetReference(nuget.package, nuget.version, nugetReferences);
                 }
             }
 
