@@ -248,7 +248,7 @@ namespace Bam.Core
             // package repositories
             var packageRepos = new StringArray(this.PackageRepositories);
             var namedPackageRepos = new StringArray(this.NamedPackageRepositories);
-            if (packageRepos.Count > 0 || namedPackageRepos.Count > 0)
+            if (packageRepos.Any() || namedPackageRepos.Any())
             {
                 var packageRootsElement = document.CreateElement("PackageRepositories", namespaceURI);
                 foreach (string repo in packageRepos)
@@ -267,7 +267,7 @@ namespace Bam.Core
                 packageDefinition.AppendChild(packageRootsElement);
             }
 
-            if (this.Dependents.Count > 0)
+            if (this.Dependents.Any())
             {
                 var dependentsEl = document.CreateElement("Dependents", namespaceURI);
                 foreach (var package in this.Dependents)
@@ -311,7 +311,7 @@ namespace Bam.Core
                 packageDefinition.AppendChild(dependentsEl);
             }
 
-            if (this.BamAssemblies.Count > 0)
+            if (this.BamAssemblies.Any())
             {
                 var requiredAssemblies = document.CreateElement("BamAssemblies", namespaceURI);
                 foreach (var assembly in this.BamAssemblies)
@@ -336,7 +336,7 @@ namespace Bam.Core
                 packageDefinition.AppendChild(requiredAssemblies);
             }
 
-            if (this.DotNetAssemblies.Count > 0)
+            if (this.DotNetAssemblies.Any())
             {
                 var requiredDotNetAssemblies = document.CreateElement("DotNetAssemblies", namespaceURI);
                 foreach (var desc in this.DotNetAssemblies)
@@ -411,7 +411,7 @@ namespace Bam.Core
 
             // definitions
             this.Definitions.Remove(this.GetPackageDefinitionName());
-            if (this.Definitions.Count > 0)
+            if (this.Definitions.Any())
             {
                 var definitionsElement = document.CreateElement("Definitions", namespaceURI);
 
@@ -1289,11 +1289,11 @@ namespace Bam.Core
                     dep.FullName,
                     depIsDefault.GetValueOrDefault(false) ? "*" : System.String.Empty);
 
-                var repo = (dep.PackageRepositories.Count > 0) ? dep.PackageRepositories[0] : "Found in " + System.IO.Path.GetDirectoryName(dep.GetPackageDirectory());
+                var repo = dep.PackageRepositories.Any() ? dep.PackageRepositories[0] : "Found in " + System.IO.Path.GetDirectoryName(dep.GetPackageDirectory());
 
                 Log.MessageAll(packageFormatting, formattedName, repo);
 
-                if (dep.Dependents.Count > 0)
+                if (dep.Dependents.Any())
                 {
                     dep.ShowDependencies(depth + 1, visitedPackages, packageFormatting);
                 }

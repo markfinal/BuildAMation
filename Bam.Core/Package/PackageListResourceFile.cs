@@ -74,7 +74,7 @@ namespace Bam.Core
         WriteResXFile(
             string projectPath)
         {
-            if (0 == Graph.Instance.Packages.Count())
+            if (!Graph.Instance.Packages.Any())
             {
                 throw new Exception("Package has not been specified. Run 'bam' from the package directory.");
             }

@@ -1239,7 +1239,7 @@ namespace Bam.Core
 
                 var assemblies = new System.Collections.Generic.List<string>();
                 var result = this.assemblyResolver.TryResolveAssemblyPaths(wrapper, assemblies);
-                if (assemblies.Count > 0)
+                if (assemblies.Any())
                 {
                     return this.loadContext.LoadFromAssemblyPath(assemblies[0]);
                 }
