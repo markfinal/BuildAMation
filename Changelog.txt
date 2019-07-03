@@ -1,5 +1,13 @@
-xx-Jun-2019 Fixes #350. Cleaner way of adding and processing package repositories
+03-Jul-2019 Fixes #173. Packages that reside in the same folder are now discoverable without any PackageRepository element in the definition file.
+
+03-Jul-2019 Fixes #350. Addressed various shortcomings of the package repository concept.
 - Added Bam.Core.Graph.AddPackageRepository(<path>) and Bam.Core.Graph.PackageRepositories (enumerator of paths).
+- Added Bam.Core.Graph.SkipPackageSourceDownloads property (defaults to false) to allow skipping package source downloads. Useful in some modes of operation.
+- Added Bam.Core.PackageRepository class. This formalises the repository. Repositories can be structured (has a packages subdirectory and optional tests subdirectory), or just a flat list of packages. A structured repository always has its packages folder searched. The tests folder, if it exists, is only searched if the master package is in it.
+- Added Bam.Core.PackageTreeNode. This is used internally to create a hierarchy of package dependencies, which massively simplifies determining package dependencies, and then filtering based on default versions or command line overrides of versions.
+- Updated BAM Schema so that PackageRepositories now acccept a child element of type NamedRepo with attribute name. Named repositories are a list of directory names which represent package repositories. These are searched for on a new configuration option, 'Repository:SearchDirs'.
+- Changed the meaning of XML schema 'Repo' element. Previously the 'dir' attribute could be relative, but was ambiguous where it was relative from. The dir attribute can now start with $(packagedir), as in TokenizedStrings, to be relative to the package directory. Absolute paths are also accepted. Named repositories are considered more elegant for structured repositories from external sources, while unnamed are for specifying search paths within a directory structure of a source tree.
+- Bam.Core.PackageDefinition now has a Repo property and NamedPackageRepositories property.
 
 21-Jun-2019 Fixes #562. NMake does not support order only dependencies, so they must be added as regular dependencies, or targets may be made in the incorrect order. If they are not to be used in rule shell commands, they need filtering out.
 
