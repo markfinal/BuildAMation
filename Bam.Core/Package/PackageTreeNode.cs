@@ -293,7 +293,19 @@ namespace Bam.Core
                     if (null != node.Definition)
                     {
                         // add relative repository directories
-                        repositoryPaths.AddRangeUnique(node.Definition.PackageRepositories);
+                        var packageDir = node.Definition.GetPackageDirectory();
+                        foreach (var repo in node.Definition.PackageRepositories)
+                        {
+                            // faking TokenizedString replacement
+                            var repoPath = repo.Replace("$(packagedir)", packageDir);
+                            repoPath = System.IO.Path.GetFullPath(repoPath);
+                            if (!System.IO.Directory.Exists(repoPath))
+                            {
+                                Log.Info($"Repository path '{repo}', expanding to '{repoPath}', from package '{node.Definition.Name}' does not exist");
+                                continue;
+                            }
+                            repositoryPaths.AddUnique(repoPath);
+                        }
 
                         // add repository directories found via a search path
                         var config = UserConfiguration.Configuration;

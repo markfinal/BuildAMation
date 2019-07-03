@@ -247,21 +247,20 @@ namespace Bam.Core
 
             // package repositories
             var packageRepos = new StringArray(this.PackageRepositories);
-            if (packageRepos.Count > 0)
+            var namedPackageRepos = new StringArray(this.NamedPackageRepositories);
+            if (packageRepos.Count > 0 || namedPackageRepos.Count > 0)
             {
                 var packageRootsElement = document.CreateElement("PackageRepositories", namespaceURI);
-                var bamDir = this.GetBamDirectory() + System.IO.Path.DirectorySeparatorChar; // slash added to make it look like a directory
                 foreach (string repo in packageRepos)
                 {
-                    var relativePackageRepo = RelativePathUtilities.GetRelativePathFromRoot(bamDir, repo);
-                    if (OSUtilities.IsWindowsHosting)
-                    {
-                        // standardize on non-Windows directory separators
-                        relativePackageRepo = relativePackageRepo.Replace(System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar);
-                    }
-
                     var rootElement = document.CreateElement("Repo", namespaceURI);
-                    rootElement.SetAttribute("dir", relativePackageRepo);
+                    rootElement.SetAttribute("dir", repo);
+                    packageRootsElement.AppendChild(rootElement);
+                }
+                foreach (string repo in namedPackageRepos)
+                {
+                    var rootElement = document.CreateElement("Repo", namespaceURI);
+                    rootElement.SetAttribute("name", repo);
                     packageRootsElement.AppendChild(rootElement);
                 }
 
@@ -568,9 +567,7 @@ namespace Bam.Core
                 if (elName1.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
                     var dir = xmlReader.GetAttribute("dir");
-                    var bamDir = this.GetBamDirectory();
-                    var absolutePackageRepoDir = RelativePathUtilities.ConvertRelativePathToAbsolute(bamDir, dir);
-                    this.PackageRepositories.AddUnique(absolutePackageRepoDir);
+                    this.PackageRepositories.AddUnique(dir);
                     continue;
                 }
                 else if (elName2.Equals(xmlReader.Name, System.StringComparison.Ordinal))
