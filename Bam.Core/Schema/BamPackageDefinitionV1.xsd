@@ -58,13 +58,18 @@
 </xs:complexType>
 
 <xs:complexType name="package-repository-type">
-    <xs:sequence>
-        <xs:element name="Repo" minOccurs="1" maxOccurs="unbounded">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+        <xs:element name="Repo">
             <xs:complexType>
                 <xs:attribute name="dir" type="xs:string" use="required" />
             </xs:complexType>
         </xs:element>
-    </xs:sequence>
+        <xs:element name="NamedRepo">
+            <xs:complexType>
+              <xs:attribute name="name" type="xs:string" use="required" />
+            </xs:complexType>
+        </xs:element>
+    </xs:choice>
 </xs:complexType>
 
 <xs:attributeGroup name="package-attributes">

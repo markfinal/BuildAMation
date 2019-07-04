@@ -46,15 +46,13 @@ namespace Bam.Core
         /// <param name="path">Path of the source download. Usually a URL.</param>
         /// <param name="subdir">Name of a subdirectory in the source, that should be used as the package directory.</param>
         /// <param name="extractto">Path of where to extract the source to.</param>
-        /// <param name="downloadRequired">True if a download is actually required.</param>
         public PackageSource(
             string name,
             string version,
             string type,
             string path,
             string subdir,
-            string extractto,
-            bool downloadRequired)
+            string extractto)
         {
             PackageSource.EType
             ToType(
@@ -100,8 +98,8 @@ namespace Bam.Core
                 this.ExtractedPackageDir = System.IO.Path.Combine(this.ExtractedPackageDir, this.SubdirectoryAsPackageDir);
             }
 
-            // bypass any downloads
-            if (!downloadRequired)
+            // can the use of BAM bypass any downloads?
+            if (Graph.Instance.SkipPackageSourceDownloads)
             {
                 this.AlreadyFetched = true;
                 return;

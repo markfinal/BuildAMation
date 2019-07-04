@@ -90,8 +90,8 @@ namespace Bam
                 if (Core.PackageUtilities.IsPackageDirectory(Core.Graph.Instance.ProcessState.WorkingDirectory))
                 {
                     Core.Graph.Instance.BuildRoot = System.IO.Path.GetTempPath();
+                    Core.Graph.Instance.SkipPackageSourceDownloads = true;
                     Core.PackageUtilities.CompilePackageAssembly(
-                        false,
                         enforceBamAssemblyVersions: false,
                         enableClean: false
                     );

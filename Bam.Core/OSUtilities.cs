@@ -209,11 +209,22 @@ namespace Bam.Core
             {
                 System.Diagnostics.Process process = System.Diagnostics.Process.Start(processStartInfo);
                 process.StandardInput.Close();
+
+                string outputBuffer = null;
+                var outputThread = new System.Threading.Thread(() => { outputBuffer = process.StandardOutput.ReadToEnd(); });
+                outputThread.Start();
+
+                string errorBuffer = null;
+                var errorThread = new System.Threading.Thread(() => { errorBuffer = process.StandardError.ReadToEnd(); });
+                errorThread.Start();
+
                 process.WaitForExit();
+                errorThread.Join();
+                outputThread.Join();
 
                 var result = new RunExecutableResult(
-                    process.StandardOutput.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray()),
-                    process.StandardError.ReadToEnd().TrimEnd(System.Environment.NewLine.ToCharArray()),
+                    outputBuffer?.TrimEnd(System.Environment.NewLine.ToCharArray()),
+                    errorBuffer?.TrimEnd(System.Environment.NewLine.ToCharArray()),
                     process.ExitCode
                 );
                 if (0 != process.ExitCode)

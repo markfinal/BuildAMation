@@ -66,7 +66,8 @@ namespace Bam.Core
             }
 
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
-            var definition = new PackageDefinition(bamDir, packageName, packageVersion, false);
+            Graph.Instance.SkipPackageSourceDownloads = true;
+            var definition = new PackageDefinition(bamDir, packageName, packageVersion);
 
             IOWrapper.CreateDirectory(bamDir);
             definition.Write();
@@ -103,8 +104,9 @@ namespace Bam.Core
 
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
 
-            var masterPackage = GetMasterPackage(false);
-            if (null != masterPackage.Dependents.FirstOrDefault(item => item.Item1.Equals(packageName, System.StringComparison.Ordinal) && item.Item2.Equals(packageVersion, System.StringComparison.Ordinal)))
+            Graph.Instance.SkipPackageSourceDownloads = true;
+            var masterPackage = GetMasterPackage();
+            if (!default((string name, string version, bool? isDefault)).Equals(masterPackage.Dependents.FirstOrDefault(item => item.name.Equals(packageName, System.StringComparison.Ordinal) && item.version.Equals(packageVersion, System.StringComparison.Ordinal))))
             {
                 if (null != packageVersion)
                 {
@@ -116,7 +118,7 @@ namespace Bam.Core
                 }
             }
 
-            var newDepTuple = new System.Tuple<string, string, bool?>(packageName, packageVersion, null);
+            (string name, string version, bool? isDefault) newDepTuple = (packageName, packageVersion, null);
             masterPackage.Dependents.Add(newDepTuple);
             // TODO: this is unfortunate having to write the file in order to use it with IdentifyAllPackages
             masterPackage.Write();
@@ -124,6 +126,7 @@ namespace Bam.Core
             // validate that the addition is ok
             try
             {
+                Graph.Instance.SkipPackageSourceDownloads = true;
                 PackageUtilities.IdentifyAllPackages(false);
             }
             catch (Exception exception)
@@ -208,11 +211,9 @@ namespace Bam.Core
         /// <summary>
         /// Get the package in which Bam is executed.
         /// </summary>
-        /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
         /// <returns>The master package.</returns>
         public static PackageDefinition
-        GetMasterPackage(
-            bool requiresSourceDownload)
+        GetMasterPackage()
         {
             var workingDir = Graph.Instance.ProcessState.WorkingDirectory;
             var isWorkingPackageWellDefined = IsPackageDirectory(workingDir);
@@ -221,273 +222,231 @@ namespace Bam.Core
                 throw new Exception("Working directory package is not well defined");
             }
 
-            var masterDefinitionFile = new PackageDefinition(
-                GetPackageDefinitionPathname(workingDir),
-                requiresSourceDownload
-            );
-            masterDefinitionFile.Read();
-
-            // in case the master package is not in a formal package repository structure, add it's parent directory
-            // as a repository, so that sibling packages can be found
             var parentDir = System.IO.Path.GetDirectoryName(workingDir);
-            masterDefinitionFile.PackageRepositories.AddUnique(parentDir);
+            var repository = Graph.Instance.AddPackageRepository(parentDir);
+            var masterDefinitionFile = repository.FindPackage(GetPackageDefinitionPathname(workingDir));
+            if (null == masterDefinitionFile)
+            {
+                // could not find the master package in either an unstructured, or structured (packages) repository
+                // try in the tests folder if this is part of a structured repository
+                if (repository.HasTests)
+                {
+                    repository.ScanTestPackages();
+                    masterDefinitionFile = repository.FindPackage(GetPackageDefinitionPathname(workingDir));
+                }
+                if (null == masterDefinitionFile)
+                {
+                    throw new Exception("Unable to locate master package in any repository");
+                }
+            }
+            // the package will have been read already, so re-read it in the context of a master package
+            masterDefinitionFile.ReReadAsMaster();
 
             return masterDefinitionFile;
         }
 
-        private static PackageDefinition
-        TryToResolveDuplicate(
-            PackageDefinition masterDefinitionFile,
-            string dupName,
-            System.Collections.Generic.IEnumerable<PackageDefinition> duplicates,
-            Array<PackageDefinition> packageDefinitions,
-            Array<StringArray> packageVersionSpecifiers,
-            Array<PackageDefinition> toRemove)
+        private static void
+        ProcessPackagesIntoTree(
+            System.Collections.Generic.Queue<(string name, string version, Array<PackageTreeNode> parents)> queue,
+            System.Collections.Generic.Dictionary<(string name, string version), PackageTreeNode> packageMap)
         {
-            // command line specifications take precedence to resolve a duplicate
-            foreach (var specifier in packageVersionSpecifiers)
+            while (queue.Any())
             {
-                if (!specifier.Contains(dupName))
+                var defn = queue.Dequeue();
+                var defnKey = (defn.name, defn.version);
+                Log.DebugMessage($"Considering package {defn.name}-{defn.version} and its dependents");
+
+                PackageDefinition defFile;
+                PackageTreeNode packageNode;
+                if (packageMap.ContainsKey(defnKey) && packageMap[defnKey].Definition != null)
                 {
+                    packageNode = packageMap[defnKey];
+                    defFile = packageNode.Definition;
+                }
+                else
+                {
+                    PackageDefinition
+                    findPackageInRepositories(
+                        (string name, string version) packageDesc)
+                    {
+                        foreach (var repo in Graph.Instance.PackageRepositories)
+                        {
+                            var definition = repo.FindPackage(packageDesc);
+                            if (null != definition)
+                            {
+                                Log.DebugMessage($"\tFound {packageDesc.name}-{packageDesc.version} in repo {repo.RootPath}");
+                                return definition;
+                            }
+                        }
+                        return null;
+                    }
+
+                    defFile = findPackageInRepositories(defnKey);
+                    if (null != defFile)
+                    {
+                        packageNode = new PackageTreeNode(defFile);
+                    }
+                    else
+                    {
+                        packageNode = new PackageTreeNode(defnKey.name, defnKey.version);
+                    }
+
+                    if (packageMap.ContainsKey(defnKey))
+                    {
+                        // since a placeholder is being replaced
+                        System.Diagnostics.Debug.Assert(null == packageMap[defnKey].Definition);
+                        packageMap[defnKey].RemoveFromParents();
+                        packageMap.Remove(defnKey);
+                    }
+                    packageMap.Add(defnKey, packageNode);
+                    if (defn.parents != null)
+                    {
+                        foreach (var parent in defn.parents)
+                        {
+                            parent.AddChild(packageNode);
+                        }
+                    }
+                }
+
+                if (null == defFile)
+                {
+                    // package not found, defer this for later
                     continue;
                 }
 
-                foreach (var dupPackage in duplicates)
+                foreach (var (name, version, isDefault) in defFile.Dependents)
                 {
-                    if (specifier[1].Equals(dupPackage.Version, System.StringComparison.Ordinal))
+                    var key = (name, version);
+                    if (!packageMap.ContainsKey(key))
                     {
-                        toRemove.AddRange(packageDefinitions.Where(item => (item.Name.Equals(dupName, System.StringComparison.Ordinal)) && (item != dupPackage)));
-                        Log.DebugMessage("Duplicate of {0} resolved to {1} by command line", dupName, dupPackage.ToString());
-                        return dupPackage;
+                        var match = queue.FirstOrDefault(item => item.name == key.name && item.version == key.version);
+                        if (default((string name, string version, Array<PackageTreeNode> parents)).Equals(match))
+                        {
+                            Log.DebugMessage($"\tQueuing up {name}-{version}...");
+                            queue.Enqueue((key.name, key.version, new Array<PackageTreeNode>(packageNode)));
+                        }
+                        else
+                        {
+                            match.parents.Add(packageNode);
+                        }
+                        continue;
                     }
+                    Log.DebugMessage($"\tPackage {name}-{version} already encountered");
+                    var depNode = packageMap[key];
+                    packageNode.AddChild(depNode);
                 }
-
-                var noMatchMessage = new System.Text.StringBuilder();
-                noMatchMessage.AppendFormat("Command line version specified, {0}, could not resolve to one of the available versions of package {1}:", specifier[1], duplicates.First().Name);
-                noMatchMessage.AppendLine();
-                foreach (var dup in duplicates)
-                {
-                    noMatchMessage.AppendFormat("\t{0}", dup.Version);
-                    noMatchMessage.AppendLine();
-                }
-                throw new Exception(noMatchMessage.ToString());
             }
-
-            // now look at the master dependency file, for any 'default' specifications
-            var masterDependency = masterDefinitionFile.Dependents.FirstOrDefault(item => item.Item1.Equals(dupName, System.StringComparison.Ordinal) && item.Item3.HasValue && item.Item3.Value);
-            if (null != masterDependency)
-            {
-                toRemove.AddRange(packageDefinitions.Where(item => item.Name.Equals(dupName, System.StringComparison.Ordinal) && !item.Version.Equals(masterDependency.Item2, System.StringComparison.Ordinal)));
-                var found = packageDefinitions.First(item => item.Name.Equals(dupName, System.StringComparison.Ordinal) && item.Version.Equals(masterDependency.Item2, System.StringComparison.Ordinal));
-                Log.DebugMessage("Duplicate of {0} resolved to {1} by master definition file", dupName, found.ToString());
-                return found;
-            }
-
-            Log.DebugMessage("Duplicate of {0} unresolved", dupName);
-            return null;
         }
 
-        private static Array<PackageDefinition>
-        FindPackagesToRemove(
-            Array<PackageDefinition> initialToRemove,
-            Array<PackageDefinition> packageDefinitions,
-            PackageDefinition masterDefinitionFile)
-        {
-            var totalToRemove = new Array<PackageDefinition>(initialToRemove);
-            var queuedForRemoval = new System.Collections.Generic.Queue<PackageDefinition>(initialToRemove);
-            while (queuedForRemoval.Count > 0)
-            {
-                var current = queuedForRemoval.Dequeue();
-                totalToRemove.AddUnique(current);
-                Log.DebugMessage("Examining: {0}", current.ToString());
-
-                foreach (var package in packageDefinitions)
-                {
-                    if (package.Parents.Contains(current))
-                    {
-                        Log.DebugMessage("Package {0} parents include {1}, so removing reference", package.ToString(), current.ToString());
-                        package.Parents.Remove(current);
-                    }
-
-                    if (!package.Parents.Any() && package != masterDefinitionFile && !totalToRemove.Contains(package) && !queuedForRemoval.Contains(package))
-                    {
-                        Log.DebugMessage("*** Package {0} enqueued for removal since no-one refers to it", package.ToString());
-                        queuedForRemoval.Enqueue(package);
-                    }
-                }
-            }
-            return totalToRemove;
-        }
-
+        // this is breadth-first traversal, so that the details of packages are explored
+        // at the highest level, not on the first encounter in a depth-first search
         private static void
-        EnqueuePackageRepositoryToVisit(
-            System.Collections.Generic.LinkedList<System.Tuple<string,PackageDefinition>> reposToVisit,
-            ref int reposAdded,
-            string repoPath,
-            PackageDefinition sourcePackageDefinition)
+        DumpTreeInternal(
+            PackageTreeNode node,
+            int depth,
+            System.Collections.Generic.Dictionary<PackageTreeNode, int> encountered,
+            Array<PackageTreeNode> displayed)
         {
-            // need to always pre-load the search paths (reposToVisit) with the repo that the master package resides in
-            if (null != sourcePackageDefinition)
+            if (!encountered.ContainsKey(node))
             {
-                // visited already? ignore
-                if (Graph.Instance.PackageRepositories.Contains(repoPath))
+                encountered.Add(node, depth);
+            }
+            foreach (var child in node.Children)
+            {
+                if (!encountered.ContainsKey(child))
                 {
-                    return;
+                    encountered.Add(child, depth + 1);
                 }
             }
-            // already planned to visit? ignore
-            if (reposToVisit.Any(item => item.Item1.Equals(repoPath, System.StringComparison.Ordinal)))
+
+            var indent = new string('\t', depth);
+            if (null != node.Definition)
+            {
+                Log.DebugMessage($"{indent}{node.Definition.FullName}");
+            }
+            else
+            {
+                Log.DebugMessage($"{indent}{node.Name}-{node.Version} ***** undiscovered *****");
+            }
+            if (encountered[node] < depth)
             {
                 return;
             }
-            reposToVisit.AddLast(System.Tuple.Create<string, PackageDefinition>(repoPath, sourcePackageDefinition));
-            ++reposAdded;
+            if (displayed.Contains(node))
+            {
+                return;
+            }
+            else
+            {
+                displayed.Add(node);
+            }
+            foreach (var child in node.Children)
+            {
+                DumpTreeInternal(child, depth + 1, encountered, displayed);
+            }
         }
 
-        /// <summary>
-        /// Scan though all package repositories for all package dependencies, and resolve any duplicate package names
-        /// by either data in the package definition file, or on the command line, by specifying a particular version to
-        /// use. The master package definition file is the source of disambiguation for package versions.
-        /// </summary>
-        /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
-        /// <param name="allowDuplicates">If set to <c>true</c> allow duplicates.</param>
-        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
-        public static void
-        IdentifyAllPackages(
-            bool requiresSourceDownload,
-            bool allowDuplicates = false,
-            bool enforceBamAssemblyVersions = true)
+        private static void
+        DumpTree(
+            PackageTreeNode node)
         {
-            var packageRepos = new System.Collections.Generic.LinkedList<System.Tuple<string,PackageDefinition>>();
-            int reposHWM = 0;
-            foreach (var repo in Graph.Instance.PackageRepositories)
-            {
-                EnqueuePackageRepositoryToVisit(packageRepos, ref reposHWM, repo, null);
-            }
+            Log.DebugMessage("-- Dumping the package tree");
+            var encountered = new System.Collections.Generic.Dictionary<PackageTreeNode, int>();
+            var displayed = new Array<PackageTreeNode>();
+            DumpTreeInternal(node, 0, encountered, displayed);
+            Log.DebugMessage("-- Dumping the package tree - DONE");
+        }
 
-            var masterDefinitionFile = GetMasterPackage(requiresSourceDownload);
-            // inject any packages from the command line into the master definition file
-            // and these will be defaults
-            var injectPackages = CommandLineProcessor.Evaluate(new Options.InjectDefaultPackage());
-            if (null != injectPackages)
+        private static void
+        ResolveDuplicatePackages(
+            PackageTreeNode rootNode,
+            PackageDefinition masterDefinitionFile)
+        {
+            var duplicatePackageNames = rootNode.DuplicatePackageNames;
+            if (duplicatePackageNames.Any())
             {
-                foreach (var injected in injectPackages)
+                var packageVersionSpecifiers = CommandLineProcessor.Evaluate(new Options.PackageDefaultVersion());
+
+                Log.DebugMessage("Duplicate packages found");
+                foreach (var name in duplicatePackageNames)
                 {
-                    var name = injected[0];
-                    string version = null;
-                    if (injected.Count > 1)
+                    Log.DebugMessage($"\tResolving duplicates for {name}...");
+                    var duplicates = rootNode.DuplicatePackages(name);
+
+                    // package version specifiers take precedence
+                    var specifierMatch = packageVersionSpecifiers.FirstOrDefault(item => item.First().Equals(name));
+                    System.Collections.Generic.IEnumerable<PackageTreeNode> duplicatesToRemove = null;
+                    if (null != specifierMatch)
                     {
-                        version = injected[1].TrimStart(new [] {'-'}); // see regex in InjectDefaultPackage
+                        Log.DebugMessage($"\t\tCommand line package specifier wants version {specifierMatch.Last()}");
+                        duplicatesToRemove = duplicates.Where(item =>
+                            item.Version != specifierMatch.Last()
+                        );
+                        foreach (var toRemove in duplicatesToRemove)
+                        {
+                            toRemove.RemoveFromParents();
+                        }
                     }
-                    var is_default = true;
-                    var dependent = new System.Tuple<string, string, bool?>(name, version, is_default);
-                    masterDefinitionFile.Dependents.AddUnique(dependent);
-                }
-            }
-            foreach (var repo in masterDefinitionFile.PackageRepositories)
-            {
-                EnqueuePackageRepositoryToVisit(packageRepos, ref reposHWM, repo, masterDefinitionFile);
-            }
-
-            // read the definition files of any package found in the package roots
-            var candidatePackageDefinitions = new Array<PackageDefinition>();
-            candidatePackageDefinitions.Add(masterDefinitionFile);
-            var packageReposVisited = 0;
-            Log.Detail("Querying package repositories...");
-            while (packageRepos.Count > 0)
-            {
-                var repoTuple = packageRepos.First();
-                packageRepos.RemoveFirst();
-                var repo = repoTuple.Item1;
-                if (!System.IO.Directory.Exists(repo))
-                {
-                    var message = new System.Text.StringBuilder();
-                    message.AppendFormat("Package repository directory {0} does not exist.", repo);
-                    message.AppendLine();
-                    message.AppendFormat("Repository requested from {0}", repoTuple.Item2.XMLFilename);
-                    message.AppendLine();
-                    throw new Exception(message.ToString());
-                }
-
-                // faster than System.IO.Directory.GetDirectories(repo, BamSubFolder, System.IO.SearchOption.AllDirectories);
-                // when there are deep directories
-                StringArray candidatePackageDirs = new StringArray();
-                var possiblePackages = System.IO.Directory.GetDirectories(repo, "*", System.IO.SearchOption.TopDirectoryOnly);
-                foreach (var packageDir in possiblePackages)
-                {
-                    var possibleBamFolder = System.IO.Path.Combine(packageDir, BamSubFolder);
-                    if (System.IO.Directory.Exists(possibleBamFolder))
+                    else
                     {
-                        candidatePackageDirs.Add(packageDir);
-                    }
-                }
-
-                Graph.Instance.PackageRepositories.Add(repo);
-
-                foreach (var packageDir in candidatePackageDirs)
-                {
-                    var packageDefinitionPath = GetPackageDefinitionPathname(packageDir);
-
-                    // ignore any duplicates (can be found due to nested repositories)
-                    if (null != candidatePackageDefinitions.FirstOrDefault(item => item.XMLFilename.Equals(packageDefinitionPath, System.StringComparison.Ordinal)))
-                    {
-                        continue;
-                    }
-
-                    var definitionFile = new PackageDefinition(packageDefinitionPath, requiresSourceDownload);
-                    definitionFile.Read();
-                    candidatePackageDefinitions.Add(definitionFile);
-
-                    foreach (var newRepo in definitionFile.PackageRepositories)
-                    {
-                        EnqueuePackageRepositoryToVisit(packageRepos, ref reposHWM, newRepo, definitionFile);
-                    }
-                }
-
-                ++packageReposVisited;
-                Log.DetailProgress("{0,3}%", (int)(100 * ((float)packageReposVisited / reposHWM)));
-            }
-#if DEBUG
-            if (packageReposVisited != reposHWM)
-            {
-                throw new Exception("Inconsistent package repository count: {0} added, {1} visited", reposHWM, packageReposVisited);
-            }
-#endif
-
-            // defaults come from
-            // - the master definition file
-            // - command line args (these trump the mdf)
-            // and only requires resolving when referenced
-            var packageDefinitions = new Array<PackageDefinition>();
-            PackageDefinition.ResolveDependencies(masterDefinitionFile, packageDefinitions, candidatePackageDefinitions);
-
-            // now resolve any duplicate names using defaults
-            // unless duplicates are allowed
-            var duplicatePackageNames = packageDefinitions.GroupBy(item => item.Name).Where(item => item.Count() > 1).Select(item => item.Key);
-            var uniquePackageNames = packageDefinitions.GroupBy(item => item.Name).Where(item => item.Count() == 1).Select(item => item.Key);
-            var versionSpeciferArgs = new Options.PackageDefaultVersion();
-            var packageVersionSpecifiers = CommandLineProcessor.Evaluate(versionSpeciferArgs);
-            if ((duplicatePackageNames.Count() > 0) && !allowDuplicates)
-            {
-                foreach (var dupName in duplicatePackageNames)
-                {
-                    Log.DebugMessage("Duplicate '{0}'; total packages {1}", dupName, packageDefinitions.Count);
-                    var duplicates = packageDefinitions.Where(item => item.Name.Equals(dupName, System.StringComparison.Ordinal));
-                    var toRemove = new Array<PackageDefinition>();
-                    var resolvedDuplicate = TryToResolveDuplicate(masterDefinitionFile, dupName, duplicates, packageDefinitions, packageVersionSpecifiers, toRemove);
-
-                    Log.DebugMessage("Attempting to remove:\n\t{0}", toRemove.ToString("\n\t"));
-                    // try removing any packages that have already been resolved
-                    // which, in turn, can remove additional packages that have become orphaned by other removals
-                    packageDefinitions.RemoveAll(FindPackagesToRemove(toRemove, packageDefinitions, masterDefinitionFile));
-
-                    if (null != resolvedDuplicate)
-                    {
-                        continue;
+                        // does the master package specify a default for this package?
+                        var masterPackageMatch = masterDefinitionFile.Dependents.FirstOrDefault(item => item.name == name && item.isDefault.HasValue && item.isDefault.Value);
+                        if (!default((string name, string version, bool? isDefault)).Equals(masterPackageMatch))
+                        {
+                            Log.DebugMessage($"\t\tMaster package specifies version {masterPackageMatch.version} is default");
+                            duplicatesToRemove = duplicates.Where(item =>
+                                item.Version != masterPackageMatch.version
+                            );
+                            foreach (var toRemove in duplicatesToRemove.ToList())
+                            {
+                                toRemove.RemoveFromParents();
+                            }
+                        }
                     }
 
                     // and if that has reduced the duplicates for this package down to a single version, we're good to carry on
-                    var numDuplicates = duplicates.Count(); // this is LINQ, so it's 'live'
+                    duplicates = rootNode.DuplicatePackages(name);
+                    var numDuplicates = duplicates.Count();
                     if (1 == numDuplicates)
                     {
                         continue;
@@ -497,7 +456,7 @@ namespace Bam.Core
                     var resolveErrorMessage = new System.Text.StringBuilder();
                     if (numDuplicates > 0)
                     {
-                        resolveErrorMessage.AppendFormat("Unable to resolve to a single version of package {0}. Use --{0}.version=<version> to resolve.", dupName);
+                        resolveErrorMessage.AppendFormat("Unable to resolve to a single version of package {0}. Use --{0}.version=<version> to resolve.", name);
                         resolveErrorMessage.AppendLine();
                         resolveErrorMessage.AppendLine("Available versions of the package are:");
                         foreach (var dup in duplicates)
@@ -508,49 +467,148 @@ namespace Bam.Core
                     }
                     else
                     {
-                        resolveErrorMessage.AppendFormat("No version of package {0} has been determined to be available.", dupName);
+                        resolveErrorMessage.AppendFormat("No version of package {0} has been determined to be available.", name);
                         resolveErrorMessage.AppendLine();
-                        if (toRemove.Count() > 0)
+                        if (duplicatesToRemove != null && duplicatesToRemove.Any())
                         {
-                            resolveErrorMessage.AppendFormat("If there were any references to {0}, they may have been removed from consideration by the following packages being discarded:", dupName);
+                            resolveErrorMessage.AppendFormat("If there were any references to {0}, they may have been removed from consideration by the following packages being discarded:", name);
                             resolveErrorMessage.AppendLine();
-                            foreach (var removed in toRemove)
+                            foreach (var removed in duplicatesToRemove)
                             {
-                                resolveErrorMessage.AppendFormat("\t{0}", removed.FullName);
+                                resolveErrorMessage.AppendFormat("\t{0}", removed.Definition.FullName);
                                 resolveErrorMessage.AppendLine();
                             }
                         }
-                        resolveErrorMessage.AppendFormat("Please add an explicit dependency to (a version of) the {0} package either in your master package or one of its dependencies.", dupName);
+                        resolveErrorMessage.AppendFormat("Please add an explicit dependency to (a version of) the {0} package either in your master package or one of its dependencies.", name);
                         resolveErrorMessage.AppendLine();
                     }
                     throw new Exception(resolveErrorMessage.ToString());
                 }
             }
+        }
 
-            // ensure that all packages with a single version in the definition files, does not have a command line override
-            // that refers to a completely different version
-            foreach (var uniquePkgName in uniquePackageNames)
+        private static void
+        InjectExtraModules(
+            PackageDefinition intoPackage)
+        {
+            var injectPackages = CommandLineProcessor.Evaluate(new Options.InjectDefaultPackage());
+            if (null != injectPackages)
             {
-                foreach (var versionSpecifier in packageVersionSpecifiers)
+                foreach (var injected in injectPackages)
                 {
-                    if (!versionSpecifier.Contains(uniquePkgName))
+                    var name = injected[0];
+                    string version = null;
+                    if (injected.Count > 1)
                     {
-                        continue;
+                        version = injected[1].TrimStart(new[] { '-' }); // see regex in InjectDefaultPackage
                     }
-
-                    var versionFromDefinition = packageDefinitions.First(item => item.Name.Equals(uniquePkgName, System.StringComparison.Ordinal)).Version;
-                    if (versionSpecifier[1] != versionFromDefinition)
-                    {
-                        var noMatchMessage = new System.Text.StringBuilder();
-                        noMatchMessage.AppendFormat("Command line version specified, {0}, could not resolve to one of the available versions of package {1}:", versionSpecifier[1], uniquePkgName);
-                        noMatchMessage.AppendLine();
-                        noMatchMessage.AppendFormat("\t{0}", versionFromDefinition);
-                        noMatchMessage.AppendLine();
-                        throw new Exception(noMatchMessage.ToString());
-                    }
+                    var is_default = true;
+                    intoPackage.Dependents.AddUnique((name, version, is_default));
                 }
             }
+        }
 
+        /// <summary>
+        /// Scan though all package repositories for all package dependencies, and resolve any duplicate package names
+        /// by either data in the package definition file, or on the command line, by specifying a particular version to
+        /// use. The master package definition file is the source of disambiguation for package versions.
+        /// </summary>
+        /// <param name="allowDuplicates">If set to <c>true</c> allow duplicates. Used to show the full extent of the definition file.</param>
+        /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
+        public static PackageTreeNode
+        IdentifyAllPackages(
+            bool allowDuplicates = false,
+            bool enforceBamAssemblyVersions = true)
+        {
+            var masterDefinitionFile = GetMasterPackage();
+
+            // inject any packages from the command line into the master definition file
+            // and these will be defaults
+            InjectExtraModules(masterDefinitionFile);
+
+            System.Collections.Generic.Dictionary<(string name, string version), PackageTreeNode> packageMap = new System.Collections.Generic.Dictionary<(string name, string version), PackageTreeNode>();
+
+            (string name, string version) masterDefn = (masterDefinitionFile.Name, masterDefinitionFile.Version);
+            System.Collections.Generic.Queue<(string name, string version, Array<PackageTreeNode> parents)> queue = new System.Collections.Generic.Queue<(string name, string version, Array<PackageTreeNode> parents)>();
+            queue.Enqueue((masterDefn.name, masterDefn.version, null));
+
+            Log.DebugMessage("-- Starting package dependency evaluation... --");
+
+            var firstCount = 0;
+            ProcessPackagesIntoTree(queue, packageMap);
+            var secondCount = packageMap.Count;
+
+            var rootNode = packageMap.First(item => item.Key == masterDefn).Value;
+            DumpTree(rootNode);
+
+            if (!allowDuplicates)
+            {
+                // resolve duplicates before trying to find packages that weren't found
+                // otherwise you may use package roots for packages that will be discarded
+                ResolveDuplicatePackages(rootNode, masterDefinitionFile);
+            }
+
+            DumpTree(rootNode);
+
+            var undiscovered = rootNode.UndiscoveredPackages;
+            while (undiscovered.Any() && (firstCount != secondCount))
+            {
+                Log.DebugMessage($"{undiscovered.Count()} packages not found:");
+                foreach (var package in undiscovered)
+                {
+                    Log.DebugMessage($"\t{package.Name}-{package.Version}");
+                }
+                var repoPaths = rootNode.PackageRepositoryPaths;
+                Log.DebugMessage($"Implicit repo paths to add:");
+                foreach (var path in repoPaths)
+                {
+                    Log.DebugMessage($"\t{path}");
+                    Graph.Instance.AddPackageRepository(path, masterDefinitionFile);
+                }
+
+                foreach (var package in undiscovered)
+                {
+                    queue.Enqueue((package.Name, package.Version, new Array<PackageTreeNode>(package.Parents)));
+                }
+
+                firstCount = secondCount;
+                ProcessPackagesIntoTree(queue, packageMap);
+                secondCount = packageMap.Count;
+                if (!allowDuplicates)
+                {
+                    ResolveDuplicatePackages(rootNode, masterDefinitionFile);
+                }
+                DumpTree(rootNode);
+
+                undiscovered = rootNode.UndiscoveredPackages;
+            }
+
+            if (undiscovered.Any())
+            {
+                var message = new System.Text.StringBuilder();
+                message.AppendLine("Some packages were not found in any repository:");
+                foreach (var package in undiscovered)
+                {
+                    if (null != package.Version)
+                    {
+                        message.AppendLine($"\t{package.Name}-{package.Version}");
+                    }
+                    else
+                    {
+                        message.AppendLine($"\t{package.Name}");
+                    }
+                }
+                message.AppendLine("Searched for in the following repositories:");
+                foreach (var repo in Graph.Instance.PackageRepositories)
+                {
+                    message.AppendLine($"\t{repo.ToString()}");
+                }
+                throw new Exception(message.ToString());
+            }
+
+            Log.DebugMessage("-- Completed package dependency evaluation --");
+
+            var packageDefinitions = rootNode.UniquePackageDefinitions;
             if (enforceBamAssemblyVersions)
             {
                 // for all packages that make up this assembly, ensure that their requirements on the version of the Bam
@@ -562,18 +620,18 @@ namespace Bam.Core
             }
 
             Graph.Instance.SetPackageDefinitions(packageDefinitions);
+
+            return rootNode;
         }
 
         /// <summary>
         /// Compile the package assembly, using all the source files from the dependent packages.
         /// Throws Bam.Core.Exceptions if package compilation fails.
         /// </summary>
-        /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
         /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions. Default is true.</param>
         /// <param name="enableClean">If set to <c>true</c> cleaning the build root is allowed. Default is true.</param>
         public static void
         CompilePackageAssembly(
-            bool requiresSourceDownload,
             bool enforceBamAssemblyVersions = true,
             bool enableClean = true)
         {
@@ -587,7 +645,6 @@ namespace Bam.Core
             gatherSourceProfile.StartProfile();
 
             IdentifyAllPackages(
-                requiresSourceDownload,
                 enforceBamAssemblyVersions: enforceBamAssemblyVersions
             );
 
@@ -857,7 +914,7 @@ namespace Bam.Core
 
                 var assemblies = new System.Collections.Generic.List<string>();
                 var result = this.assemblyResolver.TryResolveAssemblyPaths(wrapper, assemblies);
-                if (assemblies.Count > 0)
+                if (assemblies.Any())
                 {
                     return this.loadContext.LoadFromAssemblyPath(assemblies[0]);
                 }

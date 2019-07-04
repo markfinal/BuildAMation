@@ -151,6 +151,7 @@ namespace Bam
         public static void
         Create()
         {
+            Core.Graph.Instance.SkipPackageSourceDownloads = true;
             Core.PackageUtilities.IdentifyAllPackages(false);
 
             var masterPackage = Core.Graph.Instance.MasterPackage;

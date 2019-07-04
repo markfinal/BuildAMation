@@ -108,12 +108,12 @@ namespace Bam
 
                 if (Core.CommandLineProcessor.Evaluate(new Core.Options.ShowDefinitionFile()))
                 {
-                    Core.PackageUtilities.IdentifyAllPackages(
-                        false,
+                    Core.Graph.Instance.SkipPackageSourceDownloads = true;
+                    var rootNode = Core.PackageUtilities.IdentifyAllPackages(
                         allowDuplicates: true,
                         enforceBamAssemblyVersions: false
                     );
-                    Core.Graph.Instance.MasterPackage.Show();
+                    Core.Graph.Instance.MasterPackage.Show(rootNode);
                     return;
                 }
 

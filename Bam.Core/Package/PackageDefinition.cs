@@ -120,59 +120,35 @@ namespace Bam.Core
             }
         }
 
-        private string
-        GetAssociatedPackageDirectoryForTests()
-        {
-            // package repositories have a 'package' folder and a 'tests' folder
-            // if this package is from the 'tests' folder, automatically add the 'packages' folder as another place to search for packages
-            var thisRepo = this.GetPackageRepository();
-            if (null == thisRepo)
-            {
-                return null;
-            }
-            if (System.IO.Path.GetFileName(thisRepo).Equals("tests", System.StringComparison.Ordinal))
-            {
-                var associatedPackagesRepo = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(thisRepo), "packages");
-                if (System.IO.Directory.Exists(associatedPackagesRepo))
-                {
-                    return associatedPackagesRepo;
-                }
-            }
-            return null;
-        }
-
         private void
         Initialize(
             string xmlFilename,
-            bool requiresSourceDownload)
+            PackageRepository repository)
         {
             this.XMLFilename = xmlFilename;
-            this.Dependents = new Array<System.Tuple<string, string, bool?>>();
+            this.Repo = repository;
+
+            this.Dependents = new Array<(string name, string version, bool? isDefault)>();
             this.BamAssemblies = new Array<BamAssemblyDescription>();
             this.DotNetAssemblies = new Array<DotNetAssemblyDescription>();
             this.NuGetPackages = new Array<NuGetPackageDescription>();
             this.SupportedPlatforms = EPlatform.All;
             this.Definitions = new StringArray();
-            this.PackageRepositories = new StringArray(this.GetPackageRepository());
-            var associatedRepo = this.GetAssociatedPackageDirectoryForTests();
-            if (null != associatedRepo)
-            {
-                this.PackageRepositories.AddUnique(associatedRepo);
-            }
+            this.NamedPackageRepositories = new StringArray();
+            this.PackageRepositories = new StringArray();
             this.Description = string.Empty;
             this.Parents = new Array<PackageDefinition>();
-            this.RequiresSourceDownload = requiresSourceDownload;
         }
 
         /// <summary>
         /// Construct a new instance, based from an existing XML filename.
         /// </summary>
-        /// <param name="xmlFilename">Xml filename.</param>
-        /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
+        /// <param name="xmlFilename">Xml filename of the package's definition file</param>
+        /// <param name="repository">Package repository that contains this package.</param>
         public
         PackageDefinition(
             string xmlFilename,
-            bool requiresSourceDownload) => this.Initialize(xmlFilename, requiresSourceDownload);
+            PackageRepository repository) => this.Initialize(xmlFilename, repository);
 
         /// <summary>
         /// Create a new instance, for the specified directory, package name and version.
@@ -180,17 +156,15 @@ namespace Bam.Core
         /// <param name="bamDirectory">Bam directory.</param>
         /// <param name="name">Name.</param>
         /// <param name="version">Version.</param>
-        /// <param name="requiresSourceDownload">true if a download is required to use the package.</param>
         public
         PackageDefinition(
             string bamDirectory,
             string name,
-            string version,
-            bool requiresSourceDownload)
+            string version)
         {
             var definitionName = (null != version) ? System.String.Format("{0}-{1}.xml", name, version) : name + ".xml";
             var xmlFilename = System.IO.Path.Combine(bamDirectory, definitionName);
-            this.Initialize(xmlFilename, requiresSourceDownload);
+            this.Initialize(xmlFilename, null); // there is no repo defined for creating new packages
             this.Name = name;
             this.Version = version;
             if (null != version)
@@ -273,44 +247,31 @@ namespace Bam.Core
 
             // package repositories
             var packageRepos = new StringArray(this.PackageRepositories);
-            // TODO: could these be marked as transient?
-            // don't write out the repo that this package resides in
-            packageRepos.Remove(this.GetPackageRepository());
-            // nor an associated repo for tests
-            var associatedRepo = this.GetAssociatedPackageDirectoryForTests();
-            if (null != associatedRepo)
-            {
-                packageRepos.Remove(associatedRepo);
-            }
-            if (packageRepos.Count > 0)
+            var namedPackageRepos = new StringArray(this.NamedPackageRepositories);
+            if (packageRepos.Any() || namedPackageRepos.Any())
             {
                 var packageRootsElement = document.CreateElement("PackageRepositories", namespaceURI);
-                var bamDir = this.GetBamDirectory() + System.IO.Path.DirectorySeparatorChar; // slash added to make it look like a directory
                 foreach (string repo in packageRepos)
                 {
-                    var relativePackageRepo = RelativePathUtilities.GetRelativePathFromRoot(bamDir, repo);
-                    if (OSUtilities.IsWindowsHosting)
-                    {
-                        // standardize on non-Windows directory separators
-                        relativePackageRepo = relativePackageRepo.Replace(System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar);
-                    }
-
                     var rootElement = document.CreateElement("Repo", namespaceURI);
-                    rootElement.SetAttribute("dir", relativePackageRepo);
+                    rootElement.SetAttribute("dir", repo);
+                    packageRootsElement.AppendChild(rootElement);
+                }
+                foreach (string repo in namedPackageRepos)
+                {
+                    var rootElement = document.CreateElement("Repo", namespaceURI);
+                    rootElement.SetAttribute("name", repo);
                     packageRootsElement.AppendChild(rootElement);
                 }
 
                 packageDefinition.AppendChild(packageRootsElement);
             }
 
-            if (this.Dependents.Count > 0)
+            if (this.Dependents.Any())
             {
                 var dependentsEl = document.CreateElement("Dependents", namespaceURI);
-                foreach (var package in this.Dependents)
+                foreach (var (packageName, packageVersion, packageIsDefault) in this.Dependents)
                 {
-                    var packageName = package.Item1;
-                    var packageVersion = package.Item2;
-                    var packageIsDefault = package.Item3;
                     System.Xml.XmlElement packageElement = null;
 
                     {
@@ -347,7 +308,7 @@ namespace Bam.Core
                 packageDefinition.AppendChild(dependentsEl);
             }
 
-            if (this.BamAssemblies.Count > 0)
+            if (this.BamAssemblies.Any())
             {
                 var requiredAssemblies = document.CreateElement("BamAssemblies", namespaceURI);
                 foreach (var assembly in this.BamAssemblies)
@@ -372,7 +333,7 @@ namespace Bam.Core
                 packageDefinition.AppendChild(requiredAssemblies);
             }
 
-            if (this.DotNetAssemblies.Count > 0)
+            if (this.DotNetAssemblies.Any())
             {
                 var requiredDotNetAssemblies = document.CreateElement("DotNetAssemblies", namespaceURI);
                 foreach (var desc in this.DotNetAssemblies)
@@ -447,7 +408,7 @@ namespace Bam.Core
 
             // definitions
             this.Definitions.Remove(this.GetPackageDefinitionName());
-            if (this.Definitions.Count > 0)
+            if (this.Definitions.Any())
             {
                 var definitionsElement = document.CreateElement("Definitions", namespaceURI);
 
@@ -494,6 +455,8 @@ namespace Bam.Core
 
         /// <summary>
         /// Read an existing XML file into the instance.
+        /// This is not treated as a master package, so any 'default' dependents
+        /// are not honoured.
         /// </summary>
         public void
         Read()
@@ -505,15 +468,30 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// Re-read an existing XML file into the instance, treating it specially as
+        /// the master package, which means that 'default' dependents are honoured.
+        /// </summary>
+        public void
+        ReReadAsMaster()
+        {
+            this.Initialize(this.XMLFilename, this.Repo);
+            this.ReadInternal(isMaster: true);
+
+            var packageDefinition = this.GetPackageDefinitionName();
+            this.Definitions.AddUnique(packageDefinition);
+        }
+
+        /// <summary>
         /// Read an existing XML file into the instance.
         /// </summary>
         private void
-        ReadInternal()
+        ReadInternal(
+            bool isMaster = false)
         {
             Log.DebugMessage("Reading package definition file: {0}", this.XMLFilename);
 
             // try reading the current schema version first
-            if (this.ReadCurrent())
+            if (this.ReadCurrent(isMaster))
             {
                 if (Graph.Instance.ForceDefinitionFileUpdate)
                 {
@@ -573,7 +551,8 @@ namespace Bam.Core
                 return false;
             }
 
-            var elName = "Repo";
+            var elName1 = "Repo";
+            var elName2 = "NamedRepo";
             while (xmlReader.Read())
             {
                 if (xmlReader.Name.Equals(rootName, System.StringComparison.Ordinal) &&
@@ -582,15 +561,22 @@ namespace Bam.Core
                     break;
                 }
 
-                if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
+                if (elName1.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootName, xmlReader.Name, elName);
+                    var dir = xmlReader.GetAttribute("dir");
+                    this.PackageRepositories.AddUnique(dir);
+                    continue;
+                }
+                else if (elName2.Equals(xmlReader.Name, System.StringComparison.Ordinal))
+                {
+                    var name = xmlReader.GetAttribute("name");
+                    this.NamedPackageRepositories.AddUnique(name);
+                    continue;
                 }
 
-                var dir = xmlReader.GetAttribute("dir");
-                var bamDir = this.GetBamDirectory();
-                var absolutePackageRepoDir = RelativePathUtilities.ConvertRelativePathToAbsolute(bamDir, dir);
-                this.PackageRepositories.AddUnique(absolutePackageRepoDir);
+                throw new Exception(
+                    $"Unexpected child element of '{rootName}'. Found '{xmlReader.Name}', expected '{elName1}' or '{elName2}'"
+                );
             }
 
             return true;
@@ -598,7 +584,8 @@ namespace Bam.Core
 
         private bool
         ReadDependents(
-            System.Xml.XmlReader xmlReader)
+            System.Xml.XmlReader xmlReader,
+            bool isMaster)
         {
             var rootName = "Dependents";
             if (rootName != xmlReader.Name)
@@ -624,12 +611,18 @@ namespace Bam.Core
                 var version = xmlReader.GetAttribute("version");
                 var isDefault = xmlReader.GetAttribute("default");
 
-                this.Dependents.Add(new System.Tuple<string, string, bool?>(name, version, (isDefault != null) ? System.Xml.XmlConvert.ToBoolean(isDefault) as bool? : null));
+                this.Dependents.Add(
+                    (
+                        name,
+                        version,
+                        (isMaster && (isDefault != null)) ? System.Xml.XmlConvert.ToBoolean(isDefault) as bool? : null
+                    )
+                );
             }
 
-            foreach (var duplicateDepName in this.Dependents.GroupBy(item => item.Item1).Where(item => item.Count() > 1).Select(item => item.Key))
+            foreach (var duplicateDepName in this.Dependents.GroupBy(item => item.name).Where(item => item.Count() > 1).Select(item => item.Key))
             {
-                var numDefaults = this.Dependents.Where(item => item.Item1.Equals(duplicateDepName, System.StringComparison.Ordinal)).Where(item => item.Item3.HasValue && item.Item3.Value).Count();
+                var numDefaults = this.Dependents.Where(item => item.name.Equals(duplicateDepName, System.StringComparison.Ordinal)).Where(item => item.isDefault.HasValue && item.isDefault.Value).Count();
                 if (numDefaults > 1)
                 {
                     throw new Exception("Package definition {0} has defined dependency {1} multiple times as default", this.XMLFilename, duplicateDepName);
@@ -899,8 +892,7 @@ namespace Bam.Core
                         type,
                         path,
                         subdir,
-                        extractto,
-                        this.RequiresSourceDownload
+                        extractto
                     )
                 );
             }
@@ -908,12 +900,9 @@ namespace Bam.Core
             return true;
         }
 
-        /// <summary>
-        /// Read the XML file using the current schema.
-        /// </summary>
-        /// <returns><c>true</c>, if current was  read, <c>false</c> otherwise.</returns>
-        protected bool
-        ReadCurrent()
+        private bool
+        ReadCurrent(
+            bool isMaster)
         {
             try
             {
@@ -939,7 +928,7 @@ namespace Bam.Core
                         {
                             // all done
                         }
-                        else if (ReadDependents(xmlReader))
+                        else if (ReadDependents(xmlReader, isMaster))
                         {
                             // all done
                         }
@@ -1032,7 +1021,7 @@ namespace Bam.Core
         /// Array of package name, package version, isdefaultversion, for each dependent of the package.
         /// </summary>
         /// <value>The dependents.</value>
-        public Array<System.Tuple<string, string, bool?>> Dependents { get; private set; }
+        public Array<(string name, string version, bool? isDefault)> Dependents { get; private set; }
 
         /// <summary>
         /// Array of Bam assemblies required for this package.
@@ -1066,17 +1055,30 @@ namespace Bam.Core
 
         /// <summary>
         /// Gets or sets the array of repositories to search for packages in.
+        /// NOTE: These are EXTRA repositories to search.
         /// </summary>
         /// <value>The package repositories.</value>
         public StringArray PackageRepositories { get; set; }
+
+        /// <summary>
+        /// Gets or sets the array of named repositories to search for packages in.
+        /// The User Configuration "Repository:SearchDirs" is used to specify the directories
+        /// in which to find the named repositories.
+        /// NOTE: These are EXTRA repositories to search.
+        /// </summary>
+        /// <value>The named package repositories.</value>
+        public StringArray NamedPackageRepositories { get; set; }
+
+        /// <summary>
+        /// PackageRepository containing this package.
+        /// </summary>
+        public PackageRepository Repo { get; private set; }
 
         /// <summary>
         /// Gets or sets the description of the package.
         /// </summary>
         /// <value>The description.</value>
         public string Description { get; set; }
-
-        private bool RequiresSourceDownload { get; set; } = false;
 
         /// <summary>
         /// Gets the array of sources of the package.
@@ -1119,10 +1121,8 @@ namespace Bam.Core
             }
 
             authenticated.Add(current);
-            foreach (var dependent in current.Dependents)
+            foreach (var (depName, depVersion, depIsDefault) in current.Dependents)
             {
-                var depName = dependent.Item1;
-                var depVersion = dependent.Item2;
                 var candidates = candidatePackageDefinitions.Where(item => item.Name.Equals(depName, System.StringComparison.Ordinal));
                 if (depVersion != null)
                 {
@@ -1141,7 +1141,7 @@ namespace Bam.Core
                     message.AppendFormat(" required by {0}", current.XMLFilename);
                     message.AppendLine();
                     var packageRepos = new StringArray();
-                    Graph.Instance.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item));
+                    Graph.Instance.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item.RootPath));
                     message.AppendLine("Searched in the package repositories:");
                     message.AppendLine(packageRepos.ToString("\n"));
                     throw new Exception(message.ToString());
@@ -1162,7 +1162,7 @@ namespace Bam.Core
                         message.AppendLine();
                     }
                     var packageRepos = new StringArray();
-                    Graph.Instance.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item));
+                    Graph.Instance.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item.RootPath));
                     message.AppendLine("Found in the package repositories:");
                     message.AppendLine(packageRepos.ToString("\n"));
                     throw new Exception(message.ToString());
@@ -1257,23 +1257,6 @@ namespace Bam.Core
         GetPackageDirectory() => System.IO.Path.GetDirectoryName(this.GetBamDirectory());
 
         /// <summary>
-        /// Get the repository directory, if it is a formal repository structure, called 'packages'
-        /// or 'tests'. If it not in a formal structure, null is returned.
-        /// </summary>
-        /// <returns>The package repository.</returns>
-        private string
-        GetPackageRepository()
-        {
-            // package repo/package name/bam/<definition file>.xml
-            var repo = System.IO.Path.GetDirectoryName(this.GetPackageDirectory());
-            if (repo.EndsWith("packages", System.StringComparison.Ordinal) || repo.EndsWith("tests", System.StringComparison.Ordinal))
-            {
-                return repo;
-            }
-            return null;
-        }
-
-        /// <summary>
         /// Get the directory that build files are written into.
         /// </summary>
         /// <returns>The build directory.</returns>
@@ -1287,10 +1270,11 @@ namespace Bam.Core
             string packageFormatting)
         {
             visitedPackages.Add(this);
-            foreach (var dependent in this.Dependents)
+            foreach (var (depName, depVersion, depIsDefault) in this.Dependents)
             {
                 var dep = Graph.Instance.Packages.First(item =>
-                    System.String.Equals(item.Name, dependent.Item1, System.StringComparison.Ordinal) && System.String.Equals(item.Version, dependent.Item2, System.StringComparison.Ordinal)
+                    System.String.Equals(item.Name, depName, System.StringComparison.Ordinal) &&
+                    System.String.Equals(item.Version, depVersion, System.StringComparison.Ordinal)
                 );
                 if (visitedPackages.Contains(dep))
                 {
@@ -1300,16 +1284,62 @@ namespace Bam.Core
                 var formattedName = System.String.Format("{0}{1}{2}",
                     new string(' ', depth * 4),
                     dep.FullName,
-                    dependent.Item3.GetValueOrDefault(false) ? "*" : System.String.Empty);
+                    depIsDefault.GetValueOrDefault(false) ? "*" : System.String.Empty);
 
-                var repo = (dep.PackageRepositories.Count > 0) ? dep.PackageRepositories[0] : "Found in " + System.IO.Path.GetDirectoryName(dep.GetPackageDirectory());
+                var repo = dep.PackageRepositories.Any() ? dep.PackageRepositories[0] : "Found in " + System.IO.Path.GetDirectoryName(dep.GetPackageDirectory());
 
                 Log.MessageAll(packageFormatting, formattedName, repo);
 
-                if (dep.Dependents.Count > 0)
+                if (dep.Dependents.Any())
                 {
                     dep.ShowDependencies(depth + 1, visitedPackages, packageFormatting);
                 }
+            }
+        }
+
+        private void
+        DumpTreeInternal(
+            PackageTreeNode node,
+            int depth,
+            System.Collections.Generic.Dictionary<PackageTreeNode, int> encountered,
+            Array<PackageTreeNode> displayed)
+        {
+            if (!encountered.ContainsKey(node))
+            {
+                encountered.Add(node, depth);
+            }
+            foreach (var child in node.Children)
+            {
+                if (!encountered.ContainsKey(child))
+                {
+                    encountered.Add(child, depth + 1);
+                }
+            }
+
+            var indent = new string('\t', depth);
+            if (null != node.Definition)
+            {
+                Log.MessageAll($"{indent}{node.Definition.FullName}");
+            }
+            else
+            {
+                Log.MessageAll($"{indent}{node.Name}-{node.Version} ***** undiscovered *****");
+            }
+            if (encountered[node] < depth)
+            {
+                return;
+            }
+            if (displayed.Contains(node))
+            {
+                return;
+            }
+            else
+            {
+                displayed.Add(node);
+            }
+            foreach (var child in node.Children)
+            {
+                this.DumpTreeInternal(child, depth + 1, encountered, displayed);
             }
         }
 
@@ -1317,7 +1347,8 @@ namespace Bam.Core
         /// Show a representation of the package definition file to the console.
         /// </summary>
         public void
-        Show()
+        Show(
+            PackageTreeNode rootNode)
         {
             var packageName = this.FullName;
             var formatString = "Definition of package ''";
@@ -1385,6 +1416,21 @@ namespace Bam.Core
                 }
             }
 
+            if (this.NamedPackageRepositories.Any())
+            {
+                Log.MessageAll("\nNamed package repositories to search (via search paths set by user configuration):");
+                foreach (var repo in this.NamedPackageRepositories)
+                {
+                    Log.MessageAll($"\t'{repo}'");
+                }
+            }
+
+            Log.MessageAll("\nPackage repositories that the system is aware of (may be more than during builds):");
+            foreach (var repo in Graph.Instance.PackageRepositories)
+            {
+                Log.MessageAll($"\t{repo.ToString()}");
+            }
+
             if (this.Dependents.Any())
             {
                 Log.MessageAll("\nDependent packages (* = default version):");
@@ -1392,6 +1438,10 @@ namespace Bam.Core
                 Log.MessageAll(packageFormatting, "Package Name", "From Repository");
                 var visitedPackages = new Array<PackageDefinition>();
                 this.ShowDependencies(1, visitedPackages, packageFormatting);
+                Log.MessageAll("\n-----");
+                var encountered = new System.Collections.Generic.Dictionary<PackageTreeNode, int>();
+                var displayed = new Array<PackageTreeNode>();
+                this.DumpTreeInternal(rootNode, 0, encountered, displayed);
             }
             else
             {

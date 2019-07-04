@@ -65,26 +65,23 @@ namespace Bam.Core
             this.DependencyGraph = new DependencyGraph();
             this.MetaData = null;
 
-            this.PackageRepositories = new StringArray();
+            this.InternalPackageRepositories = new Array<PackageRepository>();
             try
             {
-                var primaryPackageRepo = System.IO.Path.Combine(
-                    System.IO.Directory.GetParent(
+                var primaryPackageRepoPath = System.IO.Directory.GetParent(
                         System.IO.Directory.GetParent(
                             System.IO.Directory.GetParent(
                                 this.ProcessState.ExecutableDirectory
                             ).FullName
                         ).FullName
-                    ).FullName,
-                    "packages"
-                );
-                if (!System.IO.Directory.Exists(primaryPackageRepo))
+                    ).FullName;
+                if (!System.IO.Directory.Exists(primaryPackageRepoPath))
                 {
                     throw new Exception(
-                        $"Standard BAM package directory '{primaryPackageRepo}' does not exist"
+                        $"Standard BAM package directory '{primaryPackageRepoPath}' does not exist"
                     );
                 }
-                this.PackageRepositories.AddUnique(primaryPackageRepo);
+                this.AddPackageRepository(primaryPackageRepoPath);
             }
             catch (System.ArgumentNullException)
             {
@@ -843,13 +840,23 @@ namespace Bam.Core
         /// <value>The build environments.</value>
         public System.Collections.Generic.List<Environment> BuildEnvironments => this.Modules.Keys.ToList();
 
-        private Array<PackageDefinition> PackageDefinitions { get; set; }
+        private System.Collections.Generic.IEnumerable<PackageDefinition> PackageDefinitions { get; set; }
 
         /// <summary>
         /// Obtain the master package (the package in which Bam was invoked).
         /// </summary>
         /// <value>The master package.</value>
-        public PackageDefinition MasterPackage => this.PackageDefinitions[0];
+        public PackageDefinition MasterPackage
+        {
+            get
+            {
+                if (null == this.PackageDefinitions)
+                {
+                    throw new Exception("No master package was detected");
+                }
+                return this.PackageDefinitions.First();
+            }
+        }
 
         /// <summary>
         /// Assign the array of package definitions to the Graph.
@@ -860,7 +867,7 @@ namespace Bam.Core
         /// <param name="packages">Array of package definitions.</param>
         public void
         SetPackageDefinitions(
-            Array<PackageDefinition> packages)
+            System.Collections.Generic.IEnumerable<PackageDefinition> packages)
         {
             this.PackageDefinitions = packages;
             this.Macros.AddVerbatim("masterpackagename", this.MasterPackage.Name);
@@ -874,6 +881,10 @@ namespace Bam.Core
         {
             get
             {
+                if (null == this.PackageDefinitions)
+                {
+                    throw new Exception("No packages were defined in the build");
+                }
                 foreach (var package in this.PackageDefinitions)
                 {
                     yield return package;
@@ -964,11 +975,51 @@ namespace Bam.Core
         /// <value>The verbosity level.</value>
         public EVerboseLevel VerbosityLevel { get; set; }
 
+        private Array<PackageRepository> InternalPackageRepositories { get; set; }
+
         /// <summary>
-        /// Obtain a list of package repositories used to locate packages.
+        /// Adds a new package repository, if not already added.
         /// </summary>
-        /// <value>The package repositories.</value>
-        public StringArray PackageRepositories { get; private set; }
+        /// <param name="repoPath">Path to the new package repository.</param>
+        /// <param name="insertedDefinitionFiles">Optional array of PackageDefinitions to insert at the front.</param>
+        /// <returns>The PackageRepository added (or that was already present).</returns>
+        public PackageRepository
+        AddPackageRepository(
+            string repoPath,
+            params PackageDefinition[] insertedDefinitionFiles)
+        {
+            var repo = this.InternalPackageRepositories.FirstOrDefault(item =>
+                System.String.Equals(item.RootPath, repoPath, System.StringComparison.Ordinal)
+            );
+            if (null != repo)
+            {
+                return repo;
+            }
+
+            if (repoPath.EndsWith("packages") || repoPath.EndsWith("tests"))
+            {
+                // needs to be added as structured
+                repoPath = System.IO.Path.GetDirectoryName(repoPath);
+            }
+            repo = new PackageRepository(repoPath, insertedDefinitionFiles);
+            this.InternalPackageRepositories.Add(repo);
+            return repo;
+        }
+
+        /// <summary>
+        /// Enumerates the package repositories known about in the build.
+        /// </summary>
+        /// <value>Each package repository path.</value>
+        public System.Collections.Generic.IEnumerable<PackageRepository> PackageRepositories
+        {
+            get
+            {
+                foreach (var pkgRepo in this.InternalPackageRepositories)
+                {
+                    yield return pkgRepo;
+                }
+            }
+        }
 
         /// <summary>
         /// Determine whether package definition files are automatically updated after being read.
@@ -1040,5 +1091,10 @@ namespace Bam.Core
         /// Obtain the IOverrideModuleConfiguration instance (if it exists) from the package assembly.
         /// </summary>
         public IOverrideModuleConfiguration OverrideModuleConfiguration { get; set; }
+
+        /// <summary>
+        /// Can the use of BuildAMation skip package source downloads? Default is false.
+        /// </summary>
+        public bool SkipPackageSourceDownloads { get; set; } = false;
     }
 }

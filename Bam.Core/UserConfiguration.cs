@@ -31,7 +31,7 @@ using Microsoft.Extensions.Configuration;
 namespace Bam.Core
 {
     /// <summary>
-    /// Users may configure BuildAMation operations by several methods. These take this order of precendece:
+    /// Users may configure BuildAMation operations by several methods. These take this order of precedence:
     ///  - Environment variables prefixed with 'BAM'. The configuration names use colons, :, as scoping, which are invalid
     ///  for environment variables, so a double underscore __ may be safely used instead, e.g.
     ///  configuration = Packages:SourceDir aka environment variable = BAMPackages__SourceDir
@@ -49,7 +49,13 @@ namespace Bam.Core
         /// </summary>
         public const string SourcesDir = "Packages:SourceDir";
 
-        private static Microsoft.Extensions.Configuration.IConfiguration InternalConfiguration;
+        /// <summary>
+        /// Configuration option.
+        /// This is the search path(s) in which named package repositories are looked for.
+        /// </summary>
+        public const string RepositorySearchDirs = "Repository:SearchDirs";
+
+        private static readonly Microsoft.Extensions.Configuration.IConfiguration InternalConfiguration;
 
         static UserConfiguration()
         {
@@ -58,7 +64,8 @@ namespace Bam.Core
                 .AddInMemoryCollection(
                     new System.Collections.Generic.Dictionary<string, string>
                     {
-                        { SourcesDir, System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), ".bam.package.sources") }
+                        { SourcesDir, System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.UserProfile), ".bam.package.sources") },
+                        { RepositorySearchDirs, System.String.Empty }
                     }
                 )
                 .AddIniFile("buildamation.ini", optional: true, reloadOnChange: true)
