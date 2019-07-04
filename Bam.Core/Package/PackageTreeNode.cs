@@ -310,9 +310,13 @@ namespace Bam.Core
                         // add repository directories found via a search path
                         var config = UserConfiguration.Configuration;
                         var searchDirs = $"{config[UserConfiguration.RepositorySearchDirs]}";
+                        var splitSearchDirs = searchDirs.Split(System.IO.Path.PathSeparator).Where(
+                            item => !System.String.IsNullOrEmpty(item) && System.IO.Directory.Exists(item)
+                        );
                         foreach (var namedRepo in node.Definition.NamedPackageRepositories)
                         {
-                            foreach (var searchDir in searchDirs.Split(System.IO.Path.PathSeparator))
+                            var foundNamedRepo = false;
+                            foreach (var searchDir in splitSearchDirs)
                             {
                                 var proposedDir = System.IO.Path.Combine(searchDir, namedRepo);
                                 if (!System.IO.Directory.Exists(proposedDir))
@@ -320,6 +324,18 @@ namespace Bam.Core
                                     continue;
                                 }
                                 repositoryPaths.AddUnique(proposedDir);
+                                foundNamedRepo = true;
+                                break;
+                            }
+                            if (!foundNamedRepo)
+                            {
+                                Log.Info(
+                                    $"Unable to locate named package repository '{namedRepo}' after looking in {splitSearchDirs.Count()} search directories:"
+                                );
+                                foreach (var searchDir in splitSearchDirs)
+                                {
+                                    Log.Info($"\t'{searchDir}'");
+                                }
                             }
                         }
                     }
