@@ -770,37 +770,10 @@ namespace Bam.Core
             var project = new ProjectFile(false, projectPath);
             project.Write();
 
-            string portableRID = System.String.Empty;
-            var architecture = System.Runtime.InteropServices.RuntimeInformation.OSArchitecture.ToString().ToLower();
-            if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Windows))
-            {
-                portableRID = "win-" + architecture;
-            }
-            else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.Linux))
-            {
-                portableRID = "linux-" + architecture;
-            }
-            else if (System.Runtime.InteropServices.RuntimeInformation.IsOSPlatform(System.Runtime.InteropServices.OSPlatform.OSX))
-            {
-                portableRID = "osx-" + architecture;
-            }
-            else
-            {
-                throw new Exception(
-                    "Running on an unsupported OS: {0}",
-                    System.Runtime.InteropServices.RuntimeInformation.OSDescription
-                );
-            }
-
             try
             {
                 var args = new System.Text.StringBuilder();
-                // publish is currently required in order to copy dependencies beside the assembly
-                // don't use --force, because package may have already been restored
-                // specifying a runtime ensures that all non-managed dependencies for NuGet packages with
-                // platform specific runtimes are copied beside the assembly, and can be found by the assembly resolver
-                args.AppendFormat("publish {0} ", projectPath);
-                args.Append(System.String.Format("--runtime {0} ", portableRID));
+                args.AppendFormat("build {0} ", projectPath);
                 if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     args.Append("-c Debug ");
@@ -810,6 +783,7 @@ namespace Bam.Core
                     args.Append("-c Release ");
                 }
                 args.AppendFormat("-o {0} ", System.IO.Path.GetDirectoryName(outputAssemblyPath));
+                args.Append("-v quiet ");
                 var dotNetResult = OSUtilities.RunExecutable(
                     "dotnet",
                     args.ToString()

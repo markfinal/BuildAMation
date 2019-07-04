@@ -1,3 +1,5 @@
+04-Jul-2019 Fixes #563. BAM assembly compilation now uses 'dotnet build' rather than 'dotnet publish --runtime [portableRID]'.
+
 04-Jul-2019 Fixes #564. BAM schema now uses 'xs:anyURI' for the type of the path attribute for package Source.
 
 03-Jul-2019 Fixes #173. Packages that reside in the same folder are now discoverable without any PackageRepository element in the definition file.
