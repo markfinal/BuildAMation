@@ -1,3 +1,5 @@
+05-Jul-2019 Fixes #431. Using System.Environment.SpecialFolder.ProgramFiles instead of fetching environment variables.
+
 05-Jul-2019 ======== Version 2.0.0 alpha 4 Release ========
 
 04-Jul-2019 Fixes #563. BAM assembly compilation now uses 'dotnet build' rather than 'dotnet publish --runtime [portableRID]'.

@@ -161,7 +161,9 @@ namespace Bam.Core
                 {
                     throw new Exception("Only available on Windows");
                 }
-                return TokenizedString.CreateVerbatim(System.Environment.GetEnvironmentVariable("ProgramFiles"));
+                return TokenizedString.CreateVerbatim(
+                    System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles)
+                );
             }
         }
 
@@ -179,8 +181,8 @@ namespace Bam.Core
                     throw new Exception("Only available on Windows");
                 }
                 var envVar = Is64BitHosting ?
-                    System.Environment.GetEnvironmentVariable("ProgramFiles(x86)") :
-                    System.Environment.GetEnvironmentVariable("ProgramFiles");
+                    System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFilesX86) :
+                    System.Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
                 return TokenizedString.CreateVerbatim(envVar);
             }
         }
