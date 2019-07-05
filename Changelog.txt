@@ -1,3 +1,5 @@
+05-Jul-2019 Fixes #74. Reopened. _CONSOLE no longer appears in C++ console applications on non-Windows platforms. (It had been fixed for C applications previously.)
+
 05-Jul-2019 Fixes #431. Using System.Environment.SpecialFolder.ProgramFiles instead of fetching environment variables.
 
 05-Jul-2019 ======== Version 2.0.0 alpha 4 Release ========
