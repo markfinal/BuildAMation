@@ -1,3 +1,5 @@
+06-Jul-2019 Fixes #522. C.PreprocessedFile now performs evaluation similar to an object file, such as a newer source file, and if there are any header includes that are newer.
+
 06-Jul-2019 Fixes #566. Added setting VisualCCommon.ICommonPreprocessorSettings.NoLogo (bool, defaults to true) to the VisualC preprocessor tool.
 
 06-Jul-2019 Fixes #194. A TokenizedString with incorrect token formatting, e.g. $token), $(token, will throw TokenizedString.BadTokenFormatException. Added unit tests. Note that $token does not throw an exception, as this might be an intended string, e.g. $ORIGIN.

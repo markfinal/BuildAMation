@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace C
 {
     class PreprocessedFile :
@@ -49,7 +50,181 @@ namespace C
         protected override void
         EvaluateInternal()
         {
-            // TODO: should be similar to the ObjectFile one, include header dependencies
+            this.ReasonToExecute = null;
+            foreach (var dep in this.Dependents)
+            {
+                if (!(dep is SourceFile) && !dep.Executed)
+                {
+                    // TODO: need to revisit this
+                    // it's odd to spinlock on the ExecutionTask, and then do an additional double check
+                    // on whether it's got the task (when the while loop says it must)
+                    // I *thought* I had coded it so that the dependencies of execution tasks were
+                    // satisfied in the core
+                    var as_module_execution = dep as Bam.Core.IModuleExecution;
+                    while (null == as_module_execution.ExecutionTask)
+                    {
+                        Bam.Core.Log.DebugMessage($"******** Waiting for {dep.ToString()} to have an execution task assigned");
+                        System.Threading.Thread.Yield();
+                    }
+                    // wait for execution task to be finished
+                    var execution_task = as_module_execution.ExecutionTask;
+                    if (null == execution_task)
+                    {
+                        throw new Bam.Core.Exception(
+                            $"No execution task available for dependent {dep.ToString()}, of {this.ToString()}"
+                        );
+                    }
+                    execution_task.Wait();
+                }
+            }
+
+            // does the preprocessed file exist?
+            var preprocessedFilePath = this.GeneratedPaths[PreprocessedFileKey].ToString();
+            if (!System.IO.File.Exists(preprocessedFilePath))
+            {
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[PreprocessedFileKey]);
+                return;
+            }
+            var preprocessedFileWriteTime = System.IO.File.GetLastWriteTime(preprocessedFilePath);
+
+            // has the source file been evaluated to be rebuilt?
+            if ((this as IRequiresSourceModule).Source.ReasonToExecute != null)
+            {
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                    this.GeneratedPaths[PreprocessedFileKey],
+                    this.InputPath
+                );
+                return;
+            }
+
+            // is the source file newer than the preprocessed file?
+            var sourcePath = this.InputPath.ToString();
+            var sourceWriteTime = System.IO.File.GetLastWriteTime(sourcePath);
+            if (sourceWriteTime > preprocessedFileWriteTime)
+            {
+                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                    this.GeneratedPaths[PreprocessedFileKey],
+                    this.InputPath
+                );
+                return;
+            }
+
+            // are there any headers as explicit dependencies (procedurally generated most likely), which are newer?
+            var explicitHeadersUpdated = new Bam.Core.StringArray();
+            foreach (var dep in this.Dependents)
+            {
+                if (dep is HeaderFile headerDep)
+                {
+                    if (null == dep.ReasonToExecute)
+                    {
+                        continue;
+                    }
+                    if (dep.ReasonToExecute.Reason == Bam.Core.ExecuteReasoning.EReason.InputFileIsNewer)
+                    {
+                        explicitHeadersUpdated.AddUnique(headerDep.InputPath.ToString());
+                    }
+                }
+            }
+
+            var includeSearchPaths = (this.Settings as C.ICommonPreprocessorSettings).IncludePaths;
+            // implicitly search the same directory as the source path, as this is not needed to be explicitly on the include path list
+            var currentDir = this.CreateTokenizedString("@dir($(0))", this.InputPath);
+            currentDir.Parse();
+            includeSearchPaths.AddUnique(currentDir);
+
+            var filesToSearch = new System.Collections.Generic.Queue<string>();
+            filesToSearch.Enqueue(sourcePath);
+
+            var headerPathsFound = new Bam.Core.StringArray();
+            while (filesToSearch.Any())
+            {
+                var fileToSearch = filesToSearch.Dequeue();
+
+                string fileContents = null;
+                using (System.IO.TextReader reader = new System.IO.StreamReader(fileToSearch))
+                {
+                    fileContents = reader.ReadToEnd();
+                }
+
+                // never know if developers are consistent with #include "header.h" or #include <header.h> so look for both
+                // nor the amount of whitespace after #include
+                var matches = System.Text.RegularExpressions.Regex.Matches(
+                    fileContents,
+                    "^\\s*#include\\s*[\"<]([^\\s]*)[\">]",
+                    System.Text.RegularExpressions.RegexOptions.Multiline);
+                if (!matches.Any())
+                {
+                    // no #includes
+                    return;
+                }
+
+                foreach (System.Text.RegularExpressions.Match match in matches)
+                {
+                    var headerFile = match.Groups[1].Value;
+                    bool exists = false;
+                    // search for the file on the include paths the compiler uses
+                    foreach (var includePath in includeSearchPaths)
+                    {
+                        try
+                        {
+                            var potentialPath = System.IO.Path.Combine(includePath.ToString(), headerFile);
+                            if (!System.IO.File.Exists(potentialPath))
+                            {
+                                continue;
+                            }
+                            potentialPath = System.IO.Path.GetFullPath(potentialPath);
+                            var headerWriteTime = System.IO.File.GetLastWriteTime(potentialPath);
+
+                            // early out - header is newer than generated preprocessed file
+                            if (headerWriteTime > preprocessedFileWriteTime)
+                            {
+                                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                                    this.GeneratedPaths[PreprocessedFileKey],
+                                    Bam.Core.TokenizedString.CreateVerbatim(potentialPath)
+                                );
+                                return;
+                            }
+
+                            // found #included header in list of explicitly dependent headers that have been updated
+                            if (explicitHeadersUpdated.Contains(potentialPath))
+                            {
+                                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                                    this.GeneratedPaths[PreprocessedFileKey],
+                                    Bam.Core.TokenizedString.CreateVerbatim(potentialPath)
+                                );
+                                return;
+                            }
+
+                            if (!headerPathsFound.Contains(potentialPath))
+                            {
+                                headerPathsFound.Add(potentialPath);
+                                filesToSearch.Enqueue(potentialPath);
+                            }
+
+                            exists = true;
+                            break;
+                        }
+                        catch (System.Exception ex)
+                        {
+                            Bam.Core.Log.MessageAll(
+                                $"IncludeDependency Exception: Cannot locate '{headerFile}' on '{includePath}' due to {ex.Message}"
+                            );
+                        }
+                    }
+
+                    if (!exists)
+                    {
+#if false
+                            Bam.Core.Log.DebugMessage("***** Could not locate '{0}' on any include search path, included from {1}:\n{2}",
+                                                        match.Groups[1],
+                                                        fileToSearch,
+                                                        entry.includePaths.ToString('\n'));
+#endif
+                    }
+                }
+            }
+
+            return;
         }
 
         protected override void
