@@ -701,6 +701,10 @@ namespace Bam.Core
 
                 // step 6 : try the immediate environment
                 var strippedToken = SplitIntoTokens(token, ExtractTokenRegExPattern).First();
+                if (System.String.Equals(token, strippedToken, System.StringComparison.Ordinal))
+                {
+                    throw new EmptyStringException();
+                }
                 var envVar = System.Environment.GetEnvironmentVariable(strippedToken);
                 if (null != envVar)
                 {
@@ -1327,5 +1331,12 @@ namespace Bam.Core
         /// Extract the unparsed string, containing all original tokens.
         /// </summary>
         public string UnparsedString => this.OriginalString;
+
+        /// <summary>
+        /// Exception thrown when a TokenizedString has an empty token, i.e. $()
+        /// </summary>
+        public class EmptyStringException :
+            Exception
+        {}
     }
 }

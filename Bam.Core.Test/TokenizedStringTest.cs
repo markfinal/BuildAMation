@@ -152,6 +152,16 @@ namespace Bam.Core.Test
             NUnit.Framework.Assert.That(Bam.Core.TokenizedString.Count, NUnit.Framework.Is.EqualTo(1));
         }
 
+        [NUnit.Framework.Test]
+        public void
+        EmptyTokenStringThrows()
+        {
+            var str = Bam.Core.TokenizedString.Create("$()", null, null);
+            NUnit.Framework.Assert.That(() => str.Parse(),
+                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.TokenizedString.EmptyStringException>()
+            );
+        }
+
 #if false
         [NUnit.Framework.Test]
         public void
