@@ -33,7 +33,8 @@ namespace VisualCCommon
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-EP ", max_file_count: 1)]
     public abstract class CommonPreprocessorSettings :
         C.SettingsBase,
-        C.ICommonPreprocessorSettings
+        C.ICommonPreprocessorSettings,
+        ICommonPreprocessorSettings
     {
         protected CommonPreprocessorSettings(
             Bam.Core.Module module)
@@ -64,6 +65,9 @@ namespace VisualCCommon
         // unable to find a mapping that works
         [CommandLineProcessor.Bool("", "")]
         bool? C.ICommonPreprocessorSettings.SuppressLineMarkers { get; set; }
+
+        [CommandLineProcessor.Bool("-nologo", "")]
+        bool ICommonPreprocessorSettings.NoLogo { get; set; }
 
         public override void AssignFileLayout()
         {
