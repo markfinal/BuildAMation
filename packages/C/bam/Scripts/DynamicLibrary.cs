@@ -71,20 +71,24 @@ namespace C
                         });
                     this.LinkerNameSymbolicLink = linkerName;
 
-                    var SOName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
-                        {
-                            module.Macros.Add("SymlinkFilename", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
-                            module.SharedObject = this;
-                        });
-                    this.SONameSymbolicLink = SOName;
+                    if (this.Macros.Contains("MinorVersion"))
+                    {
+                        Bam.Core.Log.MessageAll("MinorVersion");
+                        var SOName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback: module =>
+                             {
+                                 module.Macros.Add("SymlinkFilename", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
+                                 module.SharedObject = this;
+                             });
+                        this.SONameSymbolicLink = SOName;
 
 #if D_PACKAGE_GCCCOMMON
-                    this.PrivatePatch(settings =>
-                        {
-                            var gccLinker = settings as GccCommon.ICommonLinkerSettings;
-                            gccLinker.SharedObjectName = SOName.Macros["SymlinkFilename"];
-                        });
+                        this.PrivatePatch(settings =>
+                            {
+                                var gccLinker = settings as GccCommon.ICommonLinkerSettings;
+                                gccLinker.SharedObjectName = SOName.Macros["SymlinkFilename"];
+                            });
 #endif
+                    }
                 }
             }
 

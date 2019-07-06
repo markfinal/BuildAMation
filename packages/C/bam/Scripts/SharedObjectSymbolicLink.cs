@@ -119,14 +119,21 @@ namespace C
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[SOSymLinkKey]);
                 return;
             }
-            var targetPath = symlinkInfo.ContentsPath;
-            if (targetPath != System.IO.Path.GetFileName(this.SharedObject.GeneratedPaths[ConsoleApplication.ExecutableKey].ToString()))
+            try
             {
-                this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
-                    this.GeneratedPaths[SOSymLinkKey],
-                    this.SharedObject.Macros[this.GeneratedPaths["SymlinkUsage"].ToString()]
-                );
-                return;
+                var targetPath = symlinkInfo.ContentsPath;
+                if (targetPath != System.IO.Path.GetFileName(this.SharedObject.GeneratedPaths[ConsoleApplication.ExecutableKey].ToString()))
+                {
+                    this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
+                        this.GeneratedPaths[SOSymLinkKey],
+                        this.SharedObject.Macros[this.GeneratedPaths["SymlinkUsage"].ToString()]
+                    );
+                    return;
+                }
+            }
+            catch (System.ArgumentException)
+            {
+                throw new Bam.Core.Exception($"'{symlinkPath}' is not a symbolic link");
             }
 #else
             throw new System.NotSupportedException("Symbolic links not supported for shared objects on this platform");

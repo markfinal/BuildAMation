@@ -1,3 +1,5 @@
+06-Jul-2019 Fixes #521. Only specifying a major version in SetSemanticVersion is now supported. Particularly on Linux. A shared object symbolic link is no longer written in these circumstances. SetSemanticVersion must be called before base.Init for this to work correctly, or an exception will be thrown.
+
 06-Jul-2019 Fixes #522. C.PreprocessedFile now performs evaluation similar to an object file, such as a newer source file, and if there are any header includes that are newer.
 
 06-Jul-2019 Fixes #566. Added setting VisualCCommon.ICommonPreprocessorSettings.NoLogo (bool, defaults to true) to the VisualC preprocessor tool.
@@ -71,7 +73,7 @@ Test harness internals have been given an overhaul, so that instances of tests a
 31-May-2019 Fixes #541. Gcc and Clang now use -isystem and -iquote instead of -I to distinguish between system (angle bracket #include) and non-system (quoted #include) include search paths. Similarly, Xcode projects now use SYSTEM_HEADER_SEARCH_PATHS and USER_HEADER_SEARCH_PATHS, and ALWAYS_SEARCH_USER_PATHS.
 
 31-May-2019 Fixes #540. C.ProceduralHeaderFile and C.ProceduralHeaderFileFromToolOutput both have a new virtual Boolean property, UseSystemIncludeSearchPaths, defaulting to false. In Modules deriving from these classes, set this to true in order to override the default behaviour and add directories to system includes search paths.
- 
+
 31-May-2019 Fixes #539. C.SuppressWarningsDelegate now allows specification of a C.EBitDepth parameter to limit suppressions to 32- or 64-bit builds only.
 
 29-May-2019 Fixes #538. Added option --dumpprojects to the Python test harness, to dump generated project files to the log for inspection.

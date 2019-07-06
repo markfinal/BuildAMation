@@ -52,7 +52,7 @@ namespace GccCommon
 
             // dynamicext MUST be forced inline, in order for the pre-function #valid
             // to evaluate in the correct context, i.e. this string can never be parsed out of context
-            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.CreateForcedInline(".so.$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))"));
+            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.CreateForcedInline(".so.$(MajorVersion)#valid(.$(MinorVersion)#valid(.$(PatchVersion)))"));
 
             this.Macros.AddVerbatim("pluginprefix", "lib");
             this.Macros.AddVerbatim("pluginext", ".so");
