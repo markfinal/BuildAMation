@@ -1,3 +1,5 @@
+06-Jul-2019 Fixes #194. A TokenizedString with incorrect token formatting, e.g. $token), $(token, will throw TokenizedString.BadTokenFormatException. Added unit tests. Note that $token does not throw an exception, as this might be an intended string, e.g. $ORIGIN.
+
 06-Jul-2019 Fixes #480. An empty TokenizedString, i.e. $(), will now throw TokenizedString.EmptyTokenException. Added unit test.
 
 05-Jul-2019 Fixes #74. Reopened. _CONSOLE no longer appears in C++ console applications on non-Windows platforms. (It had been fixed for C applications previously.)

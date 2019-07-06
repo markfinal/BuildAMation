@@ -76,6 +76,11 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// The marker for entry to a token.
+        /// </summary>
+        public static readonly string TokenEntryMarker = @"$";
+
+        /// <summary>
         /// Prefix of each token.
         /// </summary>
         public static readonly string TokenPrefix = @"$(";
@@ -627,6 +632,16 @@ namespace Bam.Core
                 // if not identified as a token, just add the string, and move along
                 if (!(token.StartsWith(TokenPrefix, System.StringComparison.Ordinal) && token.EndsWith(TokenSuffix, System.StringComparison.Ordinal)))
                 {
+                    // unless it sort of looks like a token, but has bad formatting
+                    // $token will not throw though
+                    if (token.StartsWith(TokenEntryMarker))
+                    {
+                        if (token.StartsWith(TokenPrefix, System.StringComparison.Ordinal) ||
+                            token.EndsWith(TokenSuffix, System.StringComparison.Ordinal))
+                        {
+                            throw new BadTokenFormatException(token);
+                        }
+                    }
                     parsedString.Append(token);
                     tokens.Remove(token);
                     continue;
@@ -1333,10 +1348,27 @@ namespace Bam.Core
         public string UnparsedString => this.OriginalString;
 
         /// <summary>
-        /// Exception thrown when a TokenizedString has an empty token, i.e. $()
+        /// Exception thrown when a TokenizedString has an empty token, i.e. "$()"
         /// </summary>
         public class EmptyStringException :
             Exception
         {}
+
+        /// <summary>
+        /// Exception thrown when a TokenizedString contains bad token formatting, e.g. "$token)" is missing the opening parenthesis scope
+        /// </summary>
+        public class BadTokenFormatException :
+            Exception
+        {
+            /// <summary>
+            /// Exception constructor.
+            /// </summary>
+            /// <param name="message">Exception message.</param>
+            public BadTokenFormatException(
+                string message)
+                :
+                base(message)
+            {}
+        }
     }
 }

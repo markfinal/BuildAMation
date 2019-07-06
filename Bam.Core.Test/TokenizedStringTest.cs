@@ -162,6 +162,35 @@ namespace Bam.Core.Test
             );
         }
 
+        [NUnit.Framework.Test]
+        public void
+        MissingOpenParenthesisThrows()
+        {
+            var str = Bam.Core.TokenizedString.Create("$packagedir)", null, null);
+            NUnit.Framework.Assert.That(() => str.Parse(),
+                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.TokenizedString.BadTokenFormatException>()
+            );
+        }
+
+        [NUnit.Framework.Test]
+        public void
+        MissingCloseParenthesisThrows()
+        {
+            var str = Bam.Core.TokenizedString.Create("$(packagedir", null, null);
+            NUnit.Framework.Assert.That(() => str.Parse(),
+                NUnit.Framework.Throws.Exception.TypeOf<Bam.Core.TokenizedString.BadTokenFormatException>()
+            );
+        }
+
+        [NUnit.Framework.Test]
+        public void
+        MissingBothParenthesisDoesNotThrow()
+        {
+            var str = Bam.Core.TokenizedString.Create("$ORIGIN", null, null);
+            str.Parse();
+            NUnit.Framework.StringAssert.AreEqualIgnoringCase(str.ToString(), "$ORIGIN");
+        }
+
 #if false
         [NUnit.Framework.Test]
         public void
