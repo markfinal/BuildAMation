@@ -41,7 +41,7 @@ namespace C.DefaultSettings
             if (module is C.IDynamicLibrary)
             {
                 settings.InstallName = module.CreateTokenizedString("@rpath/@filename($(LinkOutput))");
-                var fullVersionNumber = module.CreateTokenizedString("$(MajorVersion).$(MinorVersion)#valid(.$(PatchVersion))");
+                var fullVersionNumber = module.CreateTokenizedString("$(MajorVersion)#valid(.$(MinorVersion)#valid(.$(PatchVersion)))");
                 settings.CurrentVersion = fullVersionNumber;
                 settings.CompatibilityVersion = fullVersionNumber;
             }
