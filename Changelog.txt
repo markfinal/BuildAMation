@@ -1,3 +1,14 @@
+07-Jul-2019 Fixes #567. Added common boilerplate code as extension methods:
+- SetVisualCWarningLevel
+- SetClangWarningOptions
+- SetGccWarningOptions
+- SetMingwWarningOptions
+- FindSharedObjectsNextToExecutable
+- GccExportAllSymbols
+- ClangExportAllSymbols
+- MingwExportAllSymbols
+To use, add 'using <Toolchain>Common.Helpers;' to the top of your BAM script.
+
 06-Jul-2019 Fixes #521. Only specifying a major version in SetSemanticVersion is now supported. Particularly on Linux. A shared object symbolic link is no longer written in these circumstances. SetSemanticVersion must be called before base.Init for this to work correctly, or an exception will be thrown.
 
 06-Jul-2019 Fixes #522. C.PreprocessedFile now performs evaluation similar to an object file, such as a newer source file, and if there are any header includes that are newer.
