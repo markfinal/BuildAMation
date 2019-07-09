@@ -294,9 +294,12 @@ namespace Bam.Core
             }
             if (!allTopLevelModuleTypesInPackage.Any())
             {
+                ICommandLineArgument tlmOption = new Options.SetTopLevelModules();
+                var tlmOptionEqualsIndex = tlmOption.LongName.IndexOf('=');
+
                 var message = new System.Text.StringBuilder();
                 message.AppendLine(
-                    $"No top-level modules found in the namespace '{ns}'. Please mark some of the modules below as 'sealed' to identify them as top-level, and thus buildable when {ns} is the master package:"
+                    $"No top-level modules found in the namespace '{ns}'. Please mark some of the modules below as 'sealed', or use the '{tlmOption.LongName.Substring(0, tlmOptionEqualsIndex)}' command line option, to identify them as top-level, and thus buildable when {ns} is the master package:"
                 );
                 foreach (var moduleType in allModuleTypesInPackage)
                 {
