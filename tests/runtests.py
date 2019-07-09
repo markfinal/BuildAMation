@@ -368,17 +368,20 @@ if __name__ == "__main__":
         stats = Stats()
         for test in tests:
             try:
-                config = testConfigs[test.get_name()]
+                configs = testConfigs[test.get_name()]
             except KeyError, e:
                 if options.verbose:
                     print_message("No configuration for package %s: %s" % (test.get_name(), str(e)))
                 continue
-            try:
-                variations = config.get_variations(options.buildmode, options.excludedVariations, options.bitDepth)
-            except KeyError:
-                variations = [None]
-            for variation in variations:
-                test_instances.add(TestInstance(test, '+'.join(set(options.configurations)), variation, config.get_package_options()))
+            if not isinstance(configs, (list,tuple)):
+                configs = [configs]
+            for config in configs:
+                try:
+                    variations = config.get_variations(options.buildmode, options.excludedVariations, options.bitDepth)
+                except KeyError:
+                    variations = [None]
+                for variation in variations:
+                    test_instances.add(TestInstance(test, '+'.join(set(options.configurations)), variation, config.get_package_options(), config.get_alias()))
         if options.verbose:
             print "Test instances are:"
             for instance in sorted(test_instances, key=lambda instance: str(instance)):

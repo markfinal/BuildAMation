@@ -1,3 +1,6 @@
+09-Jul-2019 Fixes #568. Test harness can now run the same test with multiple options.
+This can be useful, if a test package can be applied to different versions of a specific package.
+
 09-Jul-2019 Fixes #437. Fixes #496. Adding test to exercise the 'tests' namespace and Publisher's IncludeAllModulesInNamespace.
 - Added new test NonPackageNamespaceTest1
 - Extended test harness to be able to pass extra arguments to each package, in the case above, passing '--tests' in order to look into the 'tests' namespace for top-level Modules.

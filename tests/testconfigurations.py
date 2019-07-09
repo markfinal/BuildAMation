@@ -9,16 +9,20 @@ class TestSetup:
     _osx = {}
     _options = []
 
-    def __init__(self, win=None, linux=None, osx=None, options=None):
+    def __init__(self, win=None, linux=None, osx=None, options=None, alias=None):
         self._win = {} if win is None else win
         self._linux = {} if linux is None else linux
         self._osx = {} if osx is None else osx
-        if not isinstance(options, (list, tuple)):
+        if options and not isinstance(options, (list, tuple)):
             options = [ options ]
         self._options = options
+        self._alias = alias
 
     def get_package_options(self):
         return self._options
+
+    def get_alias(self):
+        return self._alias
 
     def get_build_modes(self):
         platform = sys.platform
