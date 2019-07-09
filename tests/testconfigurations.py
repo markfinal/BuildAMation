@@ -13,6 +13,8 @@ class TestSetup:
         self._win = {} if win is None else win
         self._linux = {} if linux is None else linux
         self._osx = {} if osx is None else osx
+        if not isinstance(options, (list, tuple)):
+            options = [ options ]
         self._options = options
 
     def get_package_options(self):
