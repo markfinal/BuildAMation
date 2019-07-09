@@ -330,7 +330,7 @@ namespace Bam.Core
                             if (!foundNamedRepo)
                             {
                                 Log.Info(
-                                    $"Unable to locate named package repository '{namedRepo}' after looking in {splitSearchDirs.Count()} search directories:"
+                                    $"Unable to locate named package repository '{namedRepo}', required by '{node.Definition.FullName}', after looking in {splitSearchDirs.Count()} search directories:"
                                 );
                                 foreach (var searchDir in splitSearchDirs)
                                 {
