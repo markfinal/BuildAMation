@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+import copy
+
 class TestInstance:
     """
     A TestInstance is a runnable instance of the test, encompasing all the details it needs
@@ -27,7 +29,7 @@ class TestInstance:
         return self._flavour
 
     def variation_arguments(self):
-        args = [] if not self._package_options else self._package_options
+        args = [] if not self._package_options else copy.deepcopy(self._package_options)
         args.extend(self._variation.get_arguments())
         return args
 
