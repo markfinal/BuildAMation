@@ -158,4 +158,5 @@ def configure_repository():
                                                     linux={"Native": [gcc64, gcc32], "MakeFile": [gcc64, gcc32]},
                                                     osx={"Native": [clang64, clang32], "MakeFile": [clang64, clang32], "Xcode": [clang64, clang32]},
                                                     options=["--tests"])
+    configs["CocoaTest2"] = TestSetup(osx={"Native": [clang64, clang32], "MakeFile": [clang64, clang32], "Xcode": [clang64, clang32]})
     return configs

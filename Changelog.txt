@@ -1,3 +1,5 @@
+11-Jul-2019 Fixes #397. Added CocoaTest2 test package, that exercises putting resource files into a macOS application bundle, and the code then loads them using Cocoa APIs.
+
 09-Jul-2019 Fixes #568. Test harness can now run the same test with multiple options.
 This can be useful, if a test package can be applied to different versions of a specific package.
 
