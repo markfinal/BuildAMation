@@ -47,21 +47,21 @@ namespace Bam.Core
         {
             Log.Info("\nBuildAMation Statistics");
             Log.Info("Memory Usage");
-            Log.Info("Peak working set size : {0:N2}MB", BytesToMegaBytes(System.Diagnostics.Process.GetCurrentProcess().PeakWorkingSet64));
-            Log.Info("Peak virtual size     : {0:N2}MB", BytesToMegaBytes(System.Diagnostics.Process.GetCurrentProcess().PeakVirtualMemorySize64));
-            Log.Info("GC total memory       : {0:N2}MB (after GC, {1:N2}MB)", BytesToMegaBytes(System.GC.GetTotalMemory(false)), BytesToMegaBytes(System.GC.GetTotalMemory(true)));
+            Log.Info($"Peak working set size : {BytesToMegaBytes(System.Diagnostics.Process.GetCurrentProcess().PeakWorkingSet64):N2}MB");
+            Log.Info($"Peak virtual size     : {BytesToMegaBytes(System.Diagnostics.Process.GetCurrentProcess().PeakVirtualMemorySize64):N2}MB");
+            Log.Info($"GC total memory       : {BytesToMegaBytes(System.GC.GetTotalMemory(false)):N2}MB (after GC, {BytesToMegaBytes(System.GC.GetTotalMemory(true)):N2}MB)");
             Log.Info("\nObject counts");
-            Log.Info("Tokenized strings     : {0} ({1} unshared)", TokenizedString.Count, TokenizedString.UnsharedCount);
+            Log.Info($"Tokenized strings     : {TokenizedString.Count} ({TokenizedString.UnsharedCount} unshared)");
             TokenizedString.DumpCache();
-            Log.Info("Modules               : {0}", Module.Count);
+            Log.Info($"Modules               : {Module.Count}");
             Log.Info("\nModule creation times");
             foreach (var env in Graph.Instance.BuildEnvironments)
             {
                 var encapsulatingModules = Graph.Instance.EncapsulatingModules(env);
-                Log.Info("Configuration {0} has {1} named/encapsulating modules, with the following creation times (ms):", env.Configuration.ToString(), encapsulatingModules.Count);
+                Log.Info($"Configuration {env.Configuration.ToString()} has {encapsulatingModules.Count} named/encapsulating modules, with the following creation times (ms):");
                 foreach (var module in encapsulatingModules.OrderByDescending(item => item.CreationTime))
                 {
-                    Log.Info("\t{0}\t{1}", module, module.CreationTime.TotalMilliseconds);
+                    Log.Info($"\t{module.ToString()}\t{module.CreationTime.TotalMilliseconds.ToString()}");
                 }
             }
             TimingProfileUtilities.DumpProfiles();

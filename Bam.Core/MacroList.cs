@@ -64,12 +64,10 @@ namespace Bam.Core
                 if (!this.Dict.ContainsKey(fKey))
                 {
                     var message = new System.Text.StringBuilder();
-                    message.AppendFormat(
-                        "Module '{0}', does not include a macro with the key '{1}'. Available macros are (*=not yet parsed):",
-                        this.Owner != null ? this.Owner : "unknown",
-                        fKey
+                    var owningModule = this.Owner != null ? this.Owner : "unknown";
+                    message.AppendLine(
+                        $"Module '{owningModule}', does not include a macro with the key '{fKey}'. Available macros are (*=not yet parsed):"
                     );
-                    message.AppendLine();
                     foreach (var macro in this.Dict)
                     {
                         if (macro.Value.IsParsed)

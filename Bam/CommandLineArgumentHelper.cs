@@ -50,17 +50,17 @@ namespace Bam
             {
                 if (arg is Core.ICustomHelpText helpText)
                 {
-                    Core.Log.Info("{0}: {1}", helpText.OptionHelp, arg.ContextHelp);
+                    Core.Log.Info($"{helpText.OptionHelp}: {arg.ContextHelp}");
                 }
                 else
                 {
                     if (null == arg.ShortName)
                     {
-                        Core.Log.Info("{0}: {1}", arg.LongName, arg.ContextHelp);
+                        Core.Log.Info($"{arg.LongName}: {arg.ContextHelp}");
                     }
                     else
                     {
-                        Core.Log.Info("{0} (or {1}): {2}", arg.LongName, arg.ShortName, arg.ContextHelp);
+                        Core.Log.Info($"{arg.LongName} (or {arg.ShortName}): {arg.ContextHelp}");
                     }
                 }
                 Core.Log.Info("");
@@ -124,11 +124,10 @@ namespace Bam
             Core.EntryPoint.PrintVersion(Core.EVerboseLevel.Info);
             var clrVersion = System.Environment.Version;
             var targetFrameworkVersion = Core.Graph.Instance.ProcessState.TargetFrameworkVersion;
-            Core.Log.Message(Core.EVerboseLevel.Info,
-                "Using CLR v{0} ({1}) with assemblies in {2}",
-                clrVersion.ToString(),
-                targetFrameworkVersion,
-                Core.Graph.Instance.ProcessState.ExecutableDirectory);
+            Core.Log.Message(
+                Core.EVerboseLevel.Info,
+                $"Using CLR v{clrVersion.ToString()} ({targetFrameworkVersion}) with assemblies in {Core.Graph.Instance.ProcessState.ExecutableDirectory}"
+            );
         }
 
         /// <summary>

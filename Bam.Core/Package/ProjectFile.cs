@@ -186,7 +186,8 @@ namespace Bam.Core
             // custom definitions for all the NuGet packages in the compilation
             foreach (var nugetIdentifier in nugetSet)
             {
-                allDefines.Add(System.String.Format("D_NUGET_{0}", nugetIdentifier.ToUpper().Replace('.', '_').Replace('-', '_')));
+                var processedId = nugetIdentifier.ToUpper().Replace('.', '_').Replace('-', '_');
+                allDefines.Add($"D_NUGET_{processedId}");
             }
 
             allDefines.Sort();

@@ -146,8 +146,7 @@ namespace Bam.Core
                 if (null == value)
                 {
                     throw new Exception(
-                        "Value '{0}' does not exist for the key",
-                        name
+                        $"Value '{name}' does not exist for the key"
                     );
                 }
                 if (!(value is string))

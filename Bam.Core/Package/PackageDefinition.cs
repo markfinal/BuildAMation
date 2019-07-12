@@ -49,7 +49,8 @@ namespace Bam.Core
             {
                 if (args.Exception is System.Xml.Schema.XmlSchemaException)
                 {
-                    throw new Exception("From {0} (line {1}, position {2}):\n{3}", args.Exception.SourceUri, args.Exception.LineNumber, args.Exception.LinePosition, args.Exception.Message);
+                    throw new Exception(
+                        $"From {args.Exception.SourceUri} (line {args.Exception.LineNumber}, position {args.Exception.LinePosition}):\n{args.Exception.Message}");
                 }
 
                 var message = System.String.Format("Validation error: " + args.Message);
@@ -162,18 +163,18 @@ namespace Bam.Core
             string name,
             string version)
         {
-            var definitionName = (null != version) ? System.String.Format("{0}-{1}.xml", name, version) : name + ".xml";
+            var definitionName = (null != version) ? $"{name}-{version}.xml" : $"{name}.xml";
             var xmlFilename = System.IO.Path.Combine(bamDirectory, definitionName);
             this.Initialize(xmlFilename, null); // there is no repo defined for creating new packages
             this.Name = name;
             this.Version = version;
             if (null != version)
             {
-                this.Description = System.String.Format("A new package called {0} with version {1}", name, version);
+                this.Description = $"A new package called {name} with version {version}";
             }
             else
             {
-                this.Description = System.String.Format("A new package called {0}", name);
+                this.Description = $"A new package called {name}";
             }
 
             // add required BuildAMation assemblies
@@ -215,7 +216,7 @@ namespace Bam.Core
                 var attributes = System.IO.File.GetAttributes(this.XMLFilename);
                 if (0 != (attributes & System.IO.FileAttributes.ReadOnly))
                 {
-                    throw new Exception("File '{0}' cannot be written to as it is read only", this.XMLFilename);
+                    throw new Exception($"File '{this.XMLFilename}' cannot be written to as it is read only");
                 }
             }
 
@@ -227,7 +228,7 @@ namespace Bam.Core
             {
                 var xmlns = "http://www.w3.org/2001/XMLSchema-instance";
                 var schemaAttribute = document.CreateAttribute("xsi", "schemaLocation", xmlns);
-                schemaAttribute.Value = System.String.Format("{0} {1}", namespaceURI, RelativePathToLatestSchema);
+                schemaAttribute.Value = $"{namespaceURI} {RelativePathToLatestSchema}";
                 packageDefinition.Attributes.Append(schemaAttribute);
                 packageDefinition.SetAttribute("name", this.Name);
                 if (null != this.Version)
@@ -445,11 +446,12 @@ namespace Bam.Core
         {
             if (null != this.Version)
             {
-                return System.String.Format("D_PACKAGE_{0}_{1}", this.Name, this.Version.Replace('.', '_').Replace('-', '_')).ToUpper();
+                var processedVersion = this.Version.Replace('.', '_').Replace('-', '_');
+                return $"D_PACKAGE_{this.Name}_{processedVersion}".ToUpper();
             }
             else
             {
-                return System.String.Format("D_PACKAGE_{0}", this.Name).ToUpper();
+                return $"D_PACKAGE_{this.Name}".ToUpper();
             }
         }
 
@@ -488,7 +490,7 @@ namespace Bam.Core
         ReadInternal(
             bool isMaster = false)
         {
-            Log.DebugMessage("Reading package definition file: {0}", this.XMLFilename);
+            Log.DebugMessage($"Reading package definition file: {this.XMLFilename}");
 
             // try reading the current schema version first
             if (this.ReadCurrent(isMaster))
@@ -512,7 +514,7 @@ namespace Bam.Core
                         }
                         this.BamAssemblies = newAssemblyList;
                     }
-                    Log.DebugMessage("Forced writing of package definition file '{0}'", this.XMLFilename);
+                    Log.DebugMessage($"Forced writing of package definition file '{this.XMLFilename}'");
                     this.Write();
                 }
 
@@ -522,7 +524,7 @@ namespace Bam.Core
             // this is where earlier versions would be read
             // and immediately written back to update to the latest schema
 
-            throw new Exception("An error occurred while reading a package or package definition file '{0}' does not satisfy any of the package definition schemas", this.XMLFilename);
+            throw new Exception($"An error occurred while reading a package or package definition file '{this.XMLFilename}' does not satisfy any of the package definition schemas");
         }
 
         private bool
@@ -604,7 +606,7 @@ namespace Bam.Core
 
                 if (!xmlReader.Name.Equals(elName, System.StringComparison.Ordinal))
                 {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'. Expected '{2}'", rootName, xmlReader.Name, elName);
+                    throw new Exception($"Unexpected child element of '{rootName}'. Found '{xmlReader.Name}'. Expected '{elName}'");
                 }
 
                 var name = xmlReader.GetAttribute("name");
@@ -625,7 +627,7 @@ namespace Bam.Core
                 var numDefaults = this.Dependents.Where(item => item.name.Equals(duplicateDepName, System.StringComparison.Ordinal)).Where(item => item.isDefault.HasValue && item.isDefault.Value).Count();
                 if (numDefaults > 1)
                 {
-                    throw new Exception("Package definition {0} has defined dependency {1} multiple times as default", this.XMLFilename, duplicateDepName);
+                    throw new Exception($"Package definition {this.XMLFilename} has defined dependency {duplicateDepName} multiple times as default");
                 }
             }
 
@@ -653,7 +655,7 @@ namespace Bam.Core
 
                 if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootName, xmlReader.Name, elName);
+                    throw new Exception($"Unexpected child element of '{rootName}'. Found '{xmlReader.Name}', expected '{elName}'");
                 }
 
                 var assemblyName = xmlReader.GetAttribute("name");
@@ -713,7 +715,7 @@ namespace Bam.Core
 
                 if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootEl, xmlReader.Name, elName);
+                    throw new Exception($"Unexpected child element of '{rootEl}'. Found '{xmlReader.Name}', expected '{elName}'");
                 }
 
                 var assemblyName = xmlReader.GetAttribute("name");
@@ -752,7 +754,7 @@ namespace Bam.Core
 
                 if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootEl, xmlReader.Name, elName);
+                    throw new Exception($"Unexpected child element of '{rootEl}'. Found '{xmlReader.Name}', expected '{elName}'");
                 }
 
                 var nugetIdentifier = xmlReader.GetAttribute("id");
@@ -784,7 +786,7 @@ namespace Bam.Core
 
                 if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootName, xmlReader.Name, elName);
+                    throw new Exception($"Unexpected child element of '{rootName}'. Found '{xmlReader.Name}', expected '{elName}'");
                 }
 
                 var name = xmlReader.GetAttribute("name");
@@ -830,7 +832,7 @@ namespace Bam.Core
 
                 if (!elName.Equals(xmlReader.Name, System.StringComparison.Ordinal))
                 {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}', expected '{2}'", rootName, xmlReader.Name, elName);
+                    throw new Exception($"Unexpected child element of '{rootName}'. Found '{xmlReader.Name}', expected '{elName}'");
                 }
 
                 var definition = xmlReader.GetAttribute("name");
@@ -863,7 +865,7 @@ namespace Bam.Core
 
                 if (!xmlReader.Name.Equals(elName, System.StringComparison.Ordinal))
                 {
-                    throw new Exception("Unexpected child element of '{0}'. Found '{1}'. Expected '{2}'", rootName, xmlReader.Name, elName);
+                    throw new Exception($"Unexpected child element of '{rootName}'. Found '{xmlReader.Name}'. Expected '{elName}'");
                 }
 
                 var platform = xmlReader.GetAttribute("platform");
@@ -911,7 +913,7 @@ namespace Bam.Core
                     var rootElementName = "PackageDefinition";
                     if (!xmlReader.ReadToFollowing(rootElementName))
                     {
-                        Log.DebugMessage("Root element '{0}' not found in '{1}'. Xml instance may be referencing an old schema. This file will now be upgraded to the latest schema.", rootElementName, this.XMLFilename);
+                        Log.DebugMessage($"Root element '{rootElementName}' not found in '{this.XMLFilename}'. Xml instance may be referencing an old schema. This file will now be upgraded to the latest schema.");
                         return false;
                     }
 
@@ -961,12 +963,12 @@ namespace Bam.Core
                             // should be the end element
                             if (xmlReader.NodeType != System.Xml.XmlNodeType.EndElement)
                             {
-                                throw new Exception("Expected end of root element but found '{0}'", xmlReader.Name);
+                                throw new Exception($"Expected end of root element but found '{xmlReader.Name}'");
                             }
                         }
                         else
                         {
-                            throw new Exception("Package definition reading code failed to recognize element with name '{0}'", xmlReader.Name);
+                            throw new Exception($"Package definition reading code failed to recognize element with name '{xmlReader.Name}'");
                         }
                     }
 
@@ -984,12 +986,12 @@ namespace Bam.Core
             catch (System.FormatException formatEx)
             {
                 // format of the XML is wrong
-                throw new Exception(formatEx, "Error while reading {0}", this.XMLFilename);
+                throw new Exception(formatEx, $"Error while reading {this.XMLFilename}");
             }
             catch (System.Xml.XmlException xmlEx)
             {
                 // the XML does not match the schema
-                throw new Exception(xmlEx, "Error while reading {0}", this.XMLFilename);
+                throw new Exception(xmlEx, $"Error while reading {this.XMLFilename}");
             }
             catch (System.Exception)
             {
@@ -1117,7 +1119,7 @@ namespace Bam.Core
 
             if (!current.SupportedPlatforms.Includes(OSUtilities.CurrentOS))
             {
-                throw new Exception("Package {0} is not supported on {1}", current.FullName, OSUtilities.CurrentOS.ToString());
+                throw new Exception($"Package {current.FullName} is not supported on {OSUtilities.CurrentOS.ToString()}");
             }
 
             authenticated.Add(current);
@@ -1133,13 +1135,12 @@ namespace Bam.Core
                 if (0 == candidateCount)
                 {
                     var message = new System.Text.StringBuilder();
-                    message.AppendFormat("Unable to find a candidate package with name '{0}'", depName);
+                    message.Append($"Unable to find a candidate package with name '{depName}'");
                     if (null != depVersion)
                     {
-                        message.AppendFormat(" and version {0}", depVersion);
+                        message.Append($" and version {depVersion}");
                     }
-                    message.AppendFormat(" required by {0}", current.XMLFilename);
-                    message.AppendLine();
+                    message.AppendLine($" required by {current.XMLFilename}");
                     var packageRepos = new StringArray();
                     Graph.Instance.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item.RootPath));
                     message.AppendLine("Searched in the package repositories:");
@@ -1149,13 +1150,12 @@ namespace Bam.Core
                 if (candidateCount > 1)
                 {
                     var message = new System.Text.StringBuilder();
-                    message.AppendFormat("There are {0} identical candidate packages with name '{1}'", candidateCount, depName);
+                    message.Append($"There are {candidateCount} identical candidate packages with name '{depName}'");
                     if (null != depVersion)
                     {
-                        message.AppendFormat(" and version {0}", depVersion);
+                        message.Append($" and version {depVersion}");
                     }
-                    message.AppendFormat(" required by {0} from the following package definition files:", current.XMLFilename);
-                    message.AppendLine();
+                    message.AppendLine($" required by {current.XMLFilename} from the following package definition files:");
                     foreach (var candidate in candidates)
                     {
                         message.AppendFormat(candidate.XMLFilename);
@@ -1188,7 +1188,7 @@ namespace Bam.Core
                 }
                 else
                 {
-                    return System.String.Format("{0}-{1}", this.Name, this.Version);
+                    return $"{this.Name}-{this.Version}";
                 }
             }
         }
@@ -1220,7 +1220,7 @@ namespace Bam.Core
             }
             else
             {
-                builderNames.AddUnique(System.String.Format("{0}Builder", Graph.Instance.Mode));
+                builderNames.AddUnique($"{Graph.Instance.Mode}Builder");
             }
             foreach (var builderName in builderNames)
             {
@@ -1281,11 +1281,9 @@ namespace Bam.Core
                     continue;
                 }
 
-                var formattedName = System.String.Format("{0}{1}{2}",
-                    new string(' ', depth * 4),
-                    dep.FullName,
-                    depIsDefault.GetValueOrDefault(false) ? "*" : System.String.Empty);
-
+                var indent = new string(' ', depth * 4);
+                var isDefault = depIsDefault.GetValueOrDefault(false) ? "*" : System.String.Empty;
+                var formattedName = $"{indent}{dep.FullName}{isDefault}";
                 var repo = dep.PackageRepositories.Any() ? dep.PackageRepositories[0] : "Found in " + System.IO.Path.GetDirectoryName(dep.GetPackageDirectory());
 
                 Log.MessageAll(packageFormatting, formattedName, repo);
@@ -1484,16 +1482,13 @@ namespace Bam.Core
                     {
                         return;
                     }
-                    throw new Exception("This version of BuildAMation, v{0}, does not satisfy minimum requirements v{1}.{2}.{3}, from package {4}",
-                        Graph.Instance.ProcessState.VersionString,
-                        asm.MajorVersion,
-                        asm.MinorVersion,
-                        asm.PatchVersion,
-                        this.Name);
+                    throw new Exception(
+                        $"This version of BuildAMation, v{Graph.Instance.ProcessState.VersionString}, does not satisfy minimum requirements v{asm.MajorVersion}.{asm.MinorVersion}.{asm.PatchVersion}, from package {this.Name}"
+                    );
                 }
                 else
                 {
-                    Log.DebugMessage("Unknown Bam assembly, {0}", asm.Name);
+                    Log.DebugMessage($"Unknown Bam assembly, {asm.Name}");
                 }
             }
         }

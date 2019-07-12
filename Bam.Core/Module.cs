@@ -578,7 +578,7 @@ namespace Bam.Core
         {
             if (null != this.TheClosingPatch)
             {
-                throw new Exception("Module {0} already has a closing patch", this);
+                throw new Exception($"Module {this.ToString()} already has a closing patch");
             }
             this.TheClosingPatch = dlg;
         }
@@ -791,7 +791,7 @@ namespace Bam.Core
             {
                 if ((null != value) && !(value is ITool))
                 {
-                    throw new Exception("Tool {0} does not implement {1}", value.GetType().ToString(), typeof(ITool).ToString());
+                    throw new Exception($"Tool {value.GetType().ToString()} does not implement {typeof(ITool).ToString()}");
                 }
                 this.TheTool = value;
             }
@@ -918,7 +918,7 @@ namespace Bam.Core
             }
             catch (Bam.Core.Exception ex)
             {
-                throw new Bam.Core.Exception(ex, "Settings validation failed for module {0} because:", this.ToString());
+                throw new Bam.Core.Exception(ex, $"Settings validation failed for module {this.ToString()} because:");
             }
         }
 

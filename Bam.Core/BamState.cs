@@ -51,7 +51,7 @@ namespace Bam.Core
             if (string.IsNullOrEmpty(pv))
             {
                 // some Mono implementations only gather the product major/minor/build strings from the assembly
-                productVersion = System.String.Format("{0}.{1}", versionInfo.ProductMajorPart, versionInfo.ProductMinorPart);
+                productVersion = $"{versionInfo.ProductMajorPart}.{versionInfo.ProductMinorPart}";
             }
             else
             {
@@ -70,7 +70,7 @@ namespace Bam.Core
             var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
             try
             {
-                var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
+                var rm = new System.Resources.ResourceManager($"{bamAssembly.GetName().Name}.PackageInfoResources", bamAssembly);
                 return rm.GetString("BamInstallDir");
             }
             catch (System.Resources.MissingManifestResourceException)
@@ -103,7 +103,7 @@ namespace Bam.Core
             var bamAssembly = System.Reflection.Assembly.GetEntryAssembly();
             try
             {
-                var rm = new System.Resources.ResourceManager(System.String.Format("{0}.PackageInfoResources", bamAssembly.GetName().Name), bamAssembly);
+                var rm = new System.Resources.ResourceManager($"{bamAssembly.GetName().Name}.PackageInfoResources", bamAssembly);
                 return rm.GetString("WorkingDir");
             }
             catch (System.Resources.MissingManifestResourceException)

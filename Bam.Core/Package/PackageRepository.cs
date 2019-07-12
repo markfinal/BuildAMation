@@ -130,7 +130,7 @@ namespace Bam.Core
             {
                 throw new Exception($"Package repository directory '{rootPath}' does not exist");
             }
-            Log.DebugMessage("Adding package repository rooted at '{0}'", rootPath);
+            Log.DebugMessage($"Adding package repository rooted at '{rootPath}'");
             this.RootPath = rootPath;
             if (System.IO.Directory.Exists(System.IO.Path.Combine(rootPath, "packages")))
             {
@@ -234,12 +234,10 @@ namespace Bam.Core
             if (xmlFiles.Length > 1)
             {
                 var message = new System.Text.StringBuilder();
-                message.AppendFormat("Too many .xml files found under {0}", possibleBamFolder);
-                message.AppendLine();
+                message.AppendLine($"Too many .xml files found under {possibleBamFolder}");
                 foreach (var file in xmlFiles)
                 {
-                    message.AppendFormat("\t{0}", file);
-                    message.AppendLine();
+                    message.AppendLine($"\t{file}");
                 }
                 throw new Exception(message.ToString());
             }

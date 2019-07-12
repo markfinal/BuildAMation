@@ -55,14 +55,14 @@ namespace Bam.Core
             var bamDir = System.IO.Path.Combine(packageDir, BamSubFolder);
             if (System.IO.Directory.Exists(bamDir))
             {
-                throw new Exception("Cannot create new package: A Bam package already exists at {0}", packageDir);
+                throw new Exception($"Cannot create new package: A Bam package already exists at {packageDir}");
             }
 
             var packageNameArgument = new Options.PackageName();
             var packageName = CommandLineProcessor.Evaluate(packageNameArgument);
             if (null == packageName)
             {
-                throw new Exception("Cannot create new package: No name was defined. Use {0} on the command line to specify it.", (packageNameArgument as ICommandLineArgument).LongName);
+                throw new Exception($"Cannot create new package: No name was defined. Use {(packageNameArgument as ICommandLineArgument).LongName} on the command line to specify it.");
             }
 
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
@@ -80,13 +80,13 @@ namespace Bam.Core
             {
                 writer.NewLine = "\n";
                 writer.WriteLine("using Bam.Core;");
-                writer.WriteLine("namespace {0}", packageName);
+                writer.WriteLine($"namespace {packageName}");
                 writer.WriteLine("{");
                 writer.WriteLine("    // write modules here ...");
                 writer.WriteLine("}");
             }
 
-            Log.Info("Package {0} was successfully created at {1}", definition.FullName, packageDir);
+            Log.Info($"Package {definition.FullName} was successfully created at {packageDir}");
         }
 
         /// <summary>
@@ -99,7 +99,7 @@ namespace Bam.Core
             var packageName = CommandLineProcessor.Evaluate(packageNameArgument);
             if (null == packageName)
             {
-                throw new Exception("No name was defined. Use {0} on the command line to specify it.", (packageNameArgument as ICommandLineArgument).LongName);
+                throw new Exception($"No name was defined. Use {(packageNameArgument as ICommandLineArgument).LongName} on the command line to specify it.");
             }
 
             var packageVersion = CommandLineProcessor.Evaluate(new Options.PackageVersion());
@@ -110,11 +110,11 @@ namespace Bam.Core
             {
                 if (null != packageVersion)
                 {
-                    throw new Exception("Package dependency {0}, version {1}, is already present", packageName, packageVersion);
+                    throw new Exception($"Package dependency {packageName}, version {packageVersion}, is already present");
                 }
                 else
                 {
-                    throw new Exception("Package dependency {0} is already present", packageName);
+                    throw new Exception($"Package dependency {packageName} is already present");
                 }
             }
 
@@ -193,10 +193,7 @@ namespace Bam.Core
             get
             {
                 var coreVersion = Graph.Instance.ProcessState.Version;
-                var coreVersionDefine = System.String.Format("BAM_CORE_VERSION_{0}_{1}_{2}",
-                    coreVersion.Major,
-                    coreVersion.Minor,
-                    coreVersion.Revision);
+                var coreVersionDefine = $"BAM_CORE_VERSION_{coreVersion.Major}_{coreVersion.Minor}_{coreVersion.Revision}";
                 return coreVersionDefine;
             }
         }
@@ -219,7 +216,7 @@ namespace Bam.Core
             var bamDir = System.IO.Path.Combine(packagePath, BamSubFolder);
             if (!System.IO.Directory.Exists(bamDir))
             {
-                throw new Exception("Path {0} does not form a BAM! package: missing '{1}' subdirectory", packagePath, BamSubFolder);
+                throw new Exception($"Path {packagePath} does not form a BAM! package: missing '{BamSubFolder}' subdirectory");
             }
 
             return true;
@@ -238,17 +235,15 @@ namespace Bam.Core
             var xmlFiles = System.IO.Directory.GetFiles(bamDir, "*.xml", System.IO.SearchOption.AllDirectories);
             if (0 == xmlFiles.Length)
             {
-                throw new Exception("No package definition .xml files found under {0}", bamDir);
+                throw new Exception($"No package definition .xml files found under {bamDir}");
             }
             if (xmlFiles.Length > 1)
             {
                 var message = new System.Text.StringBuilder();
-                message.AppendFormat("Too many .xml files found under {0}", bamDir);
-                message.AppendLine();
+                message.AppendLine($"Too many .xml files found under {bamDir}");
                 foreach (var file in xmlFiles)
                 {
-                    message.AppendFormat("\t{0}", file);
-                    message.AppendLine();
+                    message.AppendLine($"\t{file}");
                 }
                 throw new Exception(message.ToString());
             }
@@ -503,31 +498,25 @@ namespace Bam.Core
                     var resolveErrorMessage = new System.Text.StringBuilder();
                     if (numDuplicates > 0)
                     {
-                        resolveErrorMessage.AppendFormat("Unable to resolve to a single version of package {0}. Use --{0}.version=<version> to resolve.", name);
-                        resolveErrorMessage.AppendLine();
+                        resolveErrorMessage.AppendLine($"Unable to resolve to a single version of package {name}. Use --{name}.version=<version> to resolve.");
                         resolveErrorMessage.AppendLine("Available versions of the package are:");
                         foreach (var dup in duplicates)
                         {
-                            resolveErrorMessage.AppendFormat("\t{0}", dup.Version);
-                            resolveErrorMessage.AppendLine();
+                            resolveErrorMessage.AppendLine($"\t{dup.Version}");
                         }
                     }
                     else
                     {
-                        resolveErrorMessage.AppendFormat("No version of package {0} has been determined to be available.", name);
-                        resolveErrorMessage.AppendLine();
+                        resolveErrorMessage.AppendLine($"No version of package {name} has been determined to be available.");
                         if (duplicatesToRemove != null && duplicatesToRemove.Any())
                         {
-                            resolveErrorMessage.AppendFormat("If there were any references to {0}, they may have been removed from consideration by the following packages being discarded:", name);
-                            resolveErrorMessage.AppendLine();
+                            resolveErrorMessage.AppendLine($"If there were any references to {name}, they may have been removed from consideration by the following packages being discarded:");
                             foreach (var removed in duplicatesToRemove)
                             {
-                                resolveErrorMessage.AppendFormat("\t{0}", removed.Definition.FullName);
-                                resolveErrorMessage.AppendLine();
+                                resolveErrorMessage.AppendLine($"\t{removed.Definition.FullName}");
                             }
                         }
-                        resolveErrorMessage.AppendFormat("Please add an explicit dependency to (a version of) the {0} package either in your master package or one of its dependencies.", name);
-                        resolveErrorMessage.AppendLine();
+                        resolveErrorMessage.AppendLine($"Please add an explicit dependency to (a version of) the {name} package either in your master package or one of its dependencies.");
                     }
                     throw new Exception(resolveErrorMessage.ToString());
                 }
@@ -698,7 +687,7 @@ namespace Bam.Core
             var cleanFirst = CommandLineProcessor.Evaluate(new Options.CleanFirst());
             if (enableClean && cleanFirst && System.IO.Directory.Exists(Graph.Instance.BuildRoot))
             {
-                Log.Info("Deleting build root '{0}'", Graph.Instance.BuildRoot);
+                Log.Info($"Deleting build root '{Graph.Instance.BuildRoot}'");
                 try
                 {
                     // make sure no files are read-only, which may have happened as part of collation preserving file attributes
@@ -712,7 +701,7 @@ namespace Bam.Core
                 }
                 catch (System.IO.IOException ex)
                 {
-                    Log.Info("Failed to delete build root, because {0}. Continuing", ex.Message);
+                    Log.Info($"Failed to delete build root, because {ex.Message}. Continuing");
                 }
             }
 
@@ -801,12 +790,9 @@ namespace Bam.Core
             }
 
             // use the compiler in the current runtime version to build the assembly of packages
-            var clrVersion = System.Environment.Version;
-
-            Log.Detail("Compiling package assembly, CLR {0}{1}, because {2}.",
-                clrVersion.ToString(),
-                Graph.Instance.ProcessState.TargetFrameworkVersion != null ? (", targetting " + Graph.Instance.ProcessState.TargetFrameworkVersion) : string.Empty,
-                compileReason);
+            var clrVersion = System.Environment.Version.ToString();
+            var targetFramework = Graph.Instance.ProcessState.TargetFrameworkVersion != null ? (", targetting " + Graph.Instance.ProcessState.TargetFrameworkVersion) : string.Empty;
+            Log.Detail($"Compiling package assembly, CLR {clrVersion}{targetFramework}, because {compileReason}.");
 
             var outputAssemblyPath = cachedAssemblyPathname;
 
@@ -820,7 +806,7 @@ namespace Bam.Core
             try
             {
                 var args = new System.Text.StringBuilder();
-                args.AppendFormat("build {0} ", projectPath);
+                args.AppendFormat($"build {projectPath} ");
                 if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     args.Append("-c Debug ");
@@ -829,7 +815,7 @@ namespace Bam.Core
                 {
                     args.Append("-c Release ");
                 }
-                args.AppendFormat("-o {0} ", System.IO.Path.GetDirectoryName(outputAssemblyPath));
+                args.AppendFormat($"-o {System.IO.Path.GetDirectoryName(outputAssemblyPath)} ");
                 args.Append("-v quiet ");
                 var dotNetResult = OSUtilities.RunExecutable(
                     "dotnet",
@@ -841,13 +827,11 @@ namespace Bam.Core
             {
                 throw new Exception(
                     exception,
-                    "Failed to build the packages:{0}{1}",
-                    System.Environment.NewLine,
-                    exception.Result.StandardOutput
+                    $"Failed to build the packages:{System.Environment.NewLine}{exception.Result.StandardOutput}"
                 );
             }
 
-            Log.DebugMessage("Written assembly to '{0}'", outputAssemblyPath);
+            Log.DebugMessage($"Written assembly to '{outputAssemblyPath}'");
             Graph.Instance.ScriptAssemblyPathname = outputAssemblyPath;
 
             assemblyCompileProfile.StopProfile();
@@ -909,7 +893,7 @@ namespace Bam.Core
             System.Runtime.Loader.AssemblyLoadContext context,
             System.Reflection.AssemblyName name)
         {
-            Log.DebugMessage("Resolving: {0}", name.FullName);
+            Log.DebugMessage($"Resolving: {name.FullName}");
             bool NamesMatch(Microsoft.Extensions.DependencyModel.RuntimeLibrary runtime)
             {
                 return runtime.Name.Equals(name.Name, System.StringComparison.OrdinalIgnoreCase);

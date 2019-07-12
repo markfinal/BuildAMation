@@ -53,41 +53,41 @@ namespace Bam
             using (System.IO.TextWriter writer = new System.IO.StreamWriter(path))
             {
                 writer.NewLine = "\n";
-                writer.WriteLine("{0}namespace Bam", indent(0));
-                writer.WriteLine("{0}{{", indent(0));
-                writer.WriteLine("{0}class Program", indent(1));
-                writer.WriteLine("{0}{{", indent(1));
-                writer.WriteLine("{0}static void Main(string[] args)", indent(2));
-                writer.WriteLine("{0}{{", indent(2));
-                writer.WriteLine("{0}// configure", indent(3));
-                writer.WriteLine("{0}Core.Graph.Instance.VerbosityLevel = Core.EVerboseLevel.Full;", indent(3));
-                writer.WriteLine("{0}Core.Graph.Instance.CompileWithDebugSymbols = true;", indent(3));
-                writer.WriteLine("{0}Core.Graph.Instance.BuildRoot = \"debug_build\";", indent(3));
-                writer.WriteLine("{0}Core.Graph.Instance.Mode = \"Native\";", indent(3));
-                writer.WriteLine("{0}var debug = new Core.Environment", indent(3));
-                writer.WriteLine("{0}{{", indent(3));
-                writer.WriteLine("{0}Configuration = Core.EConfiguration.Debug", indent(4));
-                writer.WriteLine("{0}}};", indent(3));
-                writer.WriteLine("{0}var optimized = new Core.Environment", indent(3));
-                writer.WriteLine("{0}{{", indent(3));
-                writer.WriteLine("{0}Configuration = Core.EConfiguration.Optimized", indent(4));
-                writer.WriteLine("{0}}};", indent(3));
-                writer.WriteLine("{0}var activeConfigs = new Core.Array<Core.Environment>(debug, optimized);", indent(3));
-                writer.WriteLine("{0}// execute", indent(3));
-                writer.WriteLine("{0}try", indent(3));
-                writer.WriteLine("{0}{{", indent(3));
-                writer.WriteLine("{0}Core.EntryPoint.Execute(activeConfigs, packageAssembly: System.Reflection.Assembly.GetEntryAssembly());", indent(4));
-                writer.WriteLine("{0}}}", indent(3));
-                writer.WriteLine("{0}catch (Bam.Core.Exception exception)", indent(3));
-                writer.WriteLine("{0}{{", indent(3));
-                writer.WriteLine("{0}Core.Exception.DisplayException(exception);", indent(4));
-                writer.WriteLine("{0}System.Environment.ExitCode = -1;", indent(4));
-                writer.WriteLine("{0}}}", indent(3));
-                writer.WriteLine(@"{0}Core.Log.Info((0 == System.Environment.ExitCode) ? ""\nBuild Succeeded"" : ""\nBuild Failed"");", indent(3));
-                writer.WriteLine(@"{0}Core.Log.DebugMessage(""Exit code {{0}}"", System.Environment.ExitCode);", indent(3));
-                writer.WriteLine("{0}}}", indent(2));
-                writer.WriteLine("{0}}}", indent(1));
-                writer.WriteLine("{0}}}", indent(0));
+                writer.WriteLine($"{indent(0)}namespace Bam");
+                writer.WriteLine($"{indent(0)}{{");
+                writer.WriteLine($"{indent(1)}class Program");
+                writer.WriteLine($"{indent(1)}{{");
+                writer.WriteLine($"{indent(2)}static void Main(string[] args)");
+                writer.WriteLine($"{indent(2)}{{");
+                writer.WriteLine($"{indent(3)}// configure");
+                writer.WriteLine($"{indent(3)}Core.Graph.Instance.VerbosityLevel = Core.EVerboseLevel.Full;");
+                writer.WriteLine($"{indent(3)}Core.Graph.Instance.CompileWithDebugSymbols = true;");
+                writer.WriteLine($"{indent(3)}Core.Graph.Instance.BuildRoot = \"debug_build\";");
+                writer.WriteLine($"{indent(3)}Core.Graph.Instance.Mode = \"Native\";");
+                writer.WriteLine($"{indent(3)}var debug = new Core.Environment");
+                writer.WriteLine($"{indent(3)}{{");
+                writer.WriteLine($"{indent(4)}Configuration = Core.EConfiguration.Debug");
+                writer.WriteLine($"{indent(3)}}};");
+                writer.WriteLine($"{indent(3)}var optimized = new Core.Environment");
+                writer.WriteLine($"{indent(3)}{{");
+                writer.WriteLine($"{indent(4)}Configuration = Core.EConfiguration.Optimized");
+                writer.WriteLine($"{indent(3)}}};");
+                writer.WriteLine($"{indent(3)}var activeConfigs = new Core.Array<Core.Environment>(debug, optimized);");
+                writer.WriteLine($"{indent(3)}// execute");
+                writer.WriteLine($"{indent(3)}try");
+                writer.WriteLine($"{indent(3)}{{");
+                writer.WriteLine($"{indent(4)}Core.EntryPoint.Execute(activeConfigs, packageAssembly: System.Reflection.Assembly.GetEntryAssembly());");
+                writer.WriteLine($"{indent(3)}}}");
+                writer.WriteLine($"{indent(3)}catch (Bam.Core.Exception exception)");
+                writer.WriteLine($"{indent(3)}{{");
+                writer.WriteLine($"{indent(4)}Core.Exception.DisplayException(exception);");
+                writer.WriteLine($"{indent(4)}System.Environment.ExitCode = -1;");
+                writer.WriteLine($"{indent(3)}}}");
+                writer.WriteLine($@"{indent(3)}Core.Log.Info((0 == System.Environment.ExitCode) ? ""\nBuild Succeeded"" : ""\nBuild Failed"");");
+                writer.WriteLine($@"{indent(3)}Core.Log.DebugMessage($""Exit code {{System.Environment.ExitCode}}"");");
+                writer.WriteLine($"{indent(2)}}}");
+                writer.WriteLine($"{indent(1)}}}");
+                writer.WriteLine($"{indent(0)}}}");
             }
         }
 
@@ -170,8 +170,8 @@ namespace Bam
                 WriteLaunchSettings);
             project.Write();
 
-            Core.Log.Info("Successfully created debug project for package '{0}'", masterPackage.FullName);
-            Core.Log.Info("\t{0}", projectPathname);
+            Core.Log.Info($"Successfully created debug project for package '{masterPackage.FullName}'");
+            Core.Log.Info($"\t{projectPathname}");
         }
     }
 }

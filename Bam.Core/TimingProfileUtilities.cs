@@ -94,16 +94,11 @@ namespace Bam.Core
                 }
             }
 
-            var header =
-                System.String.Format("{0}{1} | {2}{3} | {4}{5} | {6}{7}",
-                                     profileHeader,
-                                     new string(' ', maxNameLength - profileHeader.Length),
-                                     minutesHeader,
-                                     new string(' ', maxMinuteLength - minutesHeader.Length),
-                                     secondsHeader,
-                                     new string(' ', maxSecondLength - secondsHeader.Length),
-                                     millisecondsHeader,
-                                     new string(' ', maxMillisecondLength - millisecondsHeader.Length));
+            var pad0 = new string(' ', maxNameLength - profileHeader.Length);
+            var pad1 = new string(' ', maxMinuteLength - minutesHeader.Length);
+            var pad2 = new string(' ', maxSecondLength - secondsHeader.Length);
+            var pad3 = new string(' ', maxMillisecondLength - millisecondsHeader.Length);
+            var header = $"{profileHeader}{pad0} | {minutesHeader}{pad1} | {secondsHeader}{pad2} | {millisecondsHeader}{pad3}";
             var sectionRule = new string('=', header.Length);
             var profileRule = new string('-', header.Length);
             Log.Info("\nTask timing");
@@ -134,15 +129,11 @@ namespace Bam.Core
                     var cumulativeSecondsString = cumulativeTime.Seconds > 0 ? cumulativeTime.Seconds.ToString() : string.Empty;
                     var cumulativeMillisecondsString = cumulativeTime.Milliseconds > 0 ? cumulativeTime.Milliseconds.ToString() : string.Empty;
 
-                    Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7}",
-                             cumulativeString,
-                             new string(' ', maxNameLength - cumulativeString.Length),
-                             new string(' ', maxMinuteLength - cumulativeMinutesString.Length),
-                             cumulativeMinutesString,
-                             new string(' ', maxSecondLength - cumulativeSecondsString.Length),
-                             cumulativeSecondsString,
-                             new string(' ', maxMillisecondLength - cumulativeMillisecondsString.Length),
-                         cumulativeMillisecondsString);
+                    var pad01 = new string(' ', maxNameLength - cumulativeString.Length);
+                    var pad11 = new string(' ', maxMinuteLength - cumulativeMinutesString.Length);
+                    var pad21 = new string(' ', maxSecondLength - cumulativeSecondsString.Length);
+                    var pad31 = new string(' ', maxMillisecondLength - cumulativeMillisecondsString.Length);
+                    Log.Info($"{cumulativeString}{pad01} | {pad11}{cumulativeMinutesString} | {pad21}{cumulativeSecondsString} | {pad31}{cumulativeMillisecondsString}");
                     Log.Info(sectionRule);
                     requiresProfileRule = false;
                 }
@@ -151,15 +142,11 @@ namespace Bam.Core
                     requiresProfileRule = false;
                 }
 
-                Log.Info("{0}{1} | {2}{3} | {4}{5} | {6}{7}",
-                         profile.Profile.ToString(),
-                         new string(' ', maxNameLength - profile.Profile.ToString().Length),
-                         new string(' ', maxMinuteLength - minuteString.Length),
-                         minuteString,
-                         new string(' ', maxSecondLength - secondString.Length),
-                         secondString,
-                         new string(' ', maxMillisecondLength - millisecondString.Length),
-                         millisecondString);
+                var pad02 = new string(' ', maxNameLength - profile.Profile.ToString().Length);
+                var pad12 = new string(' ', maxMinuteLength - minuteString.Length);
+                var pad22 = new string(' ', maxSecondLength - secondString.Length);
+                var pad32 = new string(' ', maxMillisecondLength - millisecondString.Length);
+                Log.Info($"{profile.Profile.ToString()}{pad02} | {pad12}{minuteString} | {pad22}{secondString} | {pad32}{millisecondString}");
                 if (requiresProfileRule)
                 {
                     Log.Info(profileRule);

@@ -55,14 +55,14 @@ namespace Bam.Core
                 return;
             }
 
-            var builderPackageName = System.String.Format("{0}Builder", Graph.Instance.Mode);
+            var builderPackageName = $"{Graph.Instance.Mode}Builder";
             var builderPackage = Graph.Instance.Packages.FirstOrDefault(item => item.Name.Equals(builderPackageName, System.StringComparison.Ordinal));
             if (null != builderPackage)
             {
                 return;
             }
 
-            throw new Exception("Builder package '{0}' was not specified as a dependency", builderPackageName);
+            throw new Exception($"Builder package '{builderPackageName}' was not specified as a dependency");
         }
     }
 }

@@ -141,22 +141,22 @@ namespace Bam.Core
 
                 if (null == modulesNeedEvaluating)
                 {
-                    Log.DebugMessage("Module evaluation enabled for build mode {0}", graph.Mode);
+                    Log.DebugMessage($"Module evaluation enabled for build mode {graph.Mode}");
                     foreach (var rank in graph.Reverse())
                     {
                         foreach (Module module in rank)
                         {
-                            Log.DebugMessage("\tEvaluation for module {0}", module.GetType().ToString());
+                            Log.DebugMessage($"\tEvaluation for module {module.GetType().ToString()}");
                             module.EvaluateAsync(factory);
                         }
                     }
                 }
                 else
                 {
-                    Log.DebugMessage("Module evaluation disabled for build mode {0}, but enabled for {1} individual modules:", graph.Mode, modulesNeedEvaluating.Count);
+                    Log.DebugMessage($"Module evaluation disabled for build mode {graph.Mode}, but enabled for {modulesNeedEvaluating.Count} individual modules:");
                     foreach (var module in modulesNeedEvaluating)
                     {
-                        Log.DebugMessage("\tEvaluation for module {0}", module.GetType().ToString());
+                        Log.DebugMessage($"\tEvaluation for module {module.GetType().ToString()}");
                         module.EvaluateAsync(factory);
                     }
                 }
@@ -342,10 +342,10 @@ namespace Bam.Core
 
             if (null != abortException)
             {
+                var isThreaded = (threadCount > 1) ? string.Empty : "non-";
                 throw new Exception(
                     abortException,
-                    "Error during {0}threaded build",
-                    (threadCount > 1) ? string.Empty : "non-"
+                    $"Error during {isThreaded}threaded build"
                 );
             }
 

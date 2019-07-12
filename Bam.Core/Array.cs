@@ -197,7 +197,7 @@ namespace Bam.Core
         {
             if (null == item)
             {
-                throw new Exception("Cannot insert null at index {0}", index);
+                throw new Exception($"Cannot insert null at index {index}");
             }
             this.list.Insert(index, item);
         }
@@ -319,7 +319,7 @@ namespace Bam.Core
                 {
                     throw new Exception("Item in array was null");
                 }
-                builder.AppendFormat("{0}{1}", item.ToString(), separator);
+                builder.Append($"{item.ToString()}{separator}");
             }
             // remove the trailing separator
             var output = builder.ToString().TrimEnd(separator.ToCharArray());
@@ -339,7 +339,7 @@ namespace Bam.Core
             var builder = new System.Text.StringBuilder();
             foreach (var item in this.list)
             {
-                builder.AppendFormat("{0}{1}", item.ToString(), separator);
+                builder.Append($"{item.ToString()}{separator}");
             }
             // remove the trailing separator
             var output = builder.ToString().TrimEnd(separator);

@@ -655,16 +655,15 @@ namespace Bam.Core
         {
             if (prefix.HasValue)
             {
-                builder.AppendFormat("{0}{1}{2}", new string(' ', depth), prefix.Value, module.ToString());
+                builder.Append($"{new string(' ', depth)}{prefix.Value}{module.ToString()}");
             }
             else
             {
-                builder.AppendFormat("{0}{1}", new string(' ', depth), module.ToString());
+                builder.Append($"{new string(' ', depth)}{module.ToString()}");
             }
             if (visited.Contains(module))
             {
-                builder.AppendFormat("*");
-                builder.AppendLine();
+                builder.AppendLine("*");
                 return;
             }
             visited.Add(module);
@@ -702,18 +701,19 @@ namespace Bam.Core
             foreach (var rank in this.DependencyGraph)
             {
                 var text = new System.Text.StringBuilder();
-                text.AppendFormat("{2}Rank {0}: {1} modules{2}", rank.Key, rank.Value.Count(), System.Environment.NewLine);
+                text.AppendLine();
+                text.AppendLine($"Rank {rank.Key}: {rank.Value.Count()} modules");
                 text.AppendLine(new string('-', 80));
                 foreach (var m in rank.Value)
                 {
                     text.AppendLine(m.ToString());
                     if (m is IInputPath inputPath)
                     {
-                        text.AppendFormat("\tInput: {0}{1}", inputPath.InputPath.ToString(), System.Environment.NewLine);
+                        text.AppendLine($"\tInput: {inputPath.InputPath.ToString()}");
                     }
                     foreach (var s in m.GeneratedPaths)
                     {
-                        text.AppendFormat("\t{0} : {1}{2}", s.Key, s.Value, System.Environment.NewLine);
+                        text.AppendLine($"\t{s.Key} : {s.Value}");
                     }
                 }
                 Log.Message(this.VerbosityLevel, text.ToString());
@@ -936,7 +936,7 @@ namespace Bam.Core
             var package = Bam.Core.Graph.Instance.Packages.FirstOrDefault(item => item.Name.Equals(packageName, System.StringComparison.Ordinal));
             if (null == package)
             {
-                throw new Exception("Unable to locate package '{0}'", packageName);
+                throw new Exception($"Unable to locate package '{packageName}'");
             }
             if (null == package.MetaData)
             {

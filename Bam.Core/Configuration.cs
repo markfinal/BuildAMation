@@ -58,7 +58,7 @@ namespace Bam.Core
             }
             else
             {
-                throw new Exception("Configuration name '{0}' not recognized", configurationName);
+                throw new Exception($"Configuration name '{configurationName}' not recognized");
             }
             return configuration;
         }

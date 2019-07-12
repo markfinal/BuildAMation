@@ -134,7 +134,7 @@ namespace Bam.Core
                     }
                     catch (System.FormatException exception)
                     {
-                        throw new Exception(exception, "Unable to parse value, '{0}', as an integer", splitArg[1]);
+                        throw new Exception(exception, $"Unable to parse value, '{splitArg[1]}', as an integer");
                     }
                 }
             }
@@ -152,7 +152,7 @@ namespace Bam.Core
         {
             if (null != realArg.ShortName)
             {
-                throw new Exception("The command line argument '{0}' does not support short names", realArg.GetType().ToString());
+                throw new Exception($"The command line argument '{realArg.GetType().ToString()}' does not support short names");
             }
             var reg = new System.Text.RegularExpressions.Regex(realArg.LongName);
             var results = new Array<StringArray>();

@@ -67,7 +67,7 @@ namespace Bam
                         break;
 
                     default:
-                        throw new Core.Exception("Unrecognized verbosity level, {0}", verbosityLevel);
+                        throw new Core.Exception($"Unrecognized verbosity level, {verbosityLevel}");
                 }
 
                 if (Core.CommandLineProcessor.Evaluate(new Core.Options.PrintHelp()))
@@ -177,7 +177,7 @@ namespace Bam
                         Core.Statistics.Display();
                     }
 
-                    Core.Log.DebugMessage("Exit code {0}", System.Environment.ExitCode);
+                    Core.Log.DebugMessage($"Exit code {System.Environment.ExitCode}");
                 }
             }
         }

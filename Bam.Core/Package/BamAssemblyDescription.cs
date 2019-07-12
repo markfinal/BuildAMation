@@ -104,10 +104,10 @@ namespace Bam.Core
             number.Append(this.MajorVersion.Value.ToString());
             if (this.MinorVersion.HasValue)
             {
-                number.AppendFormat(".{0}", this.MinorVersion.Value.ToString());
+                number.Append($".{this.MinorVersion.Value.ToString()}");
                 if (this.PatchVersion.HasValue)
                 {
-                    number.AppendFormat(".{0}", this.PatchVersion.Value.ToString());
+                    number.Append($".{this.PatchVersion.Value.ToString()}");
                 }
             }
             return number.ToString();

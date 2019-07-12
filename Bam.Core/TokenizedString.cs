@@ -157,11 +157,11 @@ namespace Bam.Core
         {
             if (BuiltInPostFunctionNames.Contains(name))
             {
-                throw new Exception("Unable to register post unary function due to name collision with builtin functions, '{0}'", name);
+                throw new Exception($"Unable to register post unary function due to name collision with builtin functions, '{name}'");
             }
             if (CustomPostUnaryFunctions.ContainsKey(name))
             {
-                throw new Exception("Unable to register post unary function because post function '{0}' already exists.", name);
+                throw new Exception($"Unable to register post unary function because post function '{name}' already exists.");
             }
             CustomPostUnaryFunctions.Add(name, function);
         }
@@ -448,31 +448,33 @@ namespace Bam.Core
         {
             if (null == this.ParsedString)
             {
-                throw new Exception("TokenizedString '{0}' has not been parsed{3}{1}{1}Created at:{1}{2}{1}",
-                    this.OriginalString,
-                    System.Environment.NewLine,
-                    this.CreationStackTrace,
-                    AllStringsParsed ? " after the string parsing phase" : string.Empty);
+                var message = new System.Text.StringBuilder();
+                var parsingPhase = AllStringsParsed ? " after the string parsing phase" : string.Empty;
+                message.AppendLine($"TokenizedString '{this.OriginalString}' has not been parsed{parsingPhase}");
+                message.AppendLine();
+                message.AppendLine("Created at:");
+                message.AppendLine(this.CreationStackTrace);
+                throw new Exception(message.ToString());
             }
             if (null != this.Tokens)
             {
-                var tokens = new System.Text.StringBuilder();
+                var message = new System.Text.StringBuilder();
+                var parsingPhase = AllStringsParsed ? " after the string parsing phase" : string.Empty;
+                message.AppendLine($"TokenizedString '{this.OriginalString}' has been parsed to");
+                message.AppendLine($"'{this.ParsedString}'");
+                message.AppendLine($"but the following tokens remain unresolved{parsingPhase}:");
                 foreach (var token in this.Tokens)
                 {
                     if (!token.StartsWith(TokenPrefix, System.StringComparison.Ordinal))
                     {
                         continue;
                     }
-                    tokens.AppendLine($"\t{token}");
+                    message.AppendLine($"\t{token}");
                 }
-                throw new Exception("TokenizedString '{0}' has been parsed to{1}'{4}'{1}but the following tokens remain unresolved{3}:{1}{5}{1}Created at:{1}{2}{1}",
-                    this.OriginalString,
-                    System.Environment.NewLine,
-                    this.CreationStackTrace,
-                    AllStringsParsed ? " after the string parsing phase" : string.Empty,
-                    this.ParsedString,
-                    tokens.ToString()
-                );
+                message.AppendLine();
+                message.AppendLine("Created at:");
+                message.AppendLine(this.CreationStackTrace);
+                throw new Exception(message.ToString());
             }
             return this.ParsedString;
         }
@@ -522,12 +524,16 @@ namespace Bam.Core
         {
             if (this.ParsedString != null)
             {
-                throw new Exception("TokenizedString '{0}' is already parsed{4}.{1}{1}Created at:{1}{2}{1}{1}Parsed at:{1}{3}",
-                    this.OriginalString,
-                    System.Environment.NewLine,
-                    this.CreationStackTrace,
-                    this.parsedStackTrace,
-                    AllStringsParsed ? " after the string parsing phase" : string.Empty);
+                var message = new System.Text.StringBuilder();
+                var parsePhase = AllStringsParsed ? " after the string parsing phase" : string.Empty;
+                message.AppendLine($"TokenizedString '{this.OriginalString}' is already parsed{parsePhase}.");
+                message.AppendLine();
+                message.AppendLine("Created at:");
+                message.AppendLine(this.CreationStackTrace);
+                message.AppendLine();
+                message.AppendLine("Parsed at:");
+                message.AppendLine(this.parsedStackTrace);
+                throw new Exception(message.ToString());
             }
             lock (this.ParsedStringGuard)
             {
@@ -565,7 +571,7 @@ namespace Bam.Core
             if (null == this.ParsedString)
             {
                 this.ParseInternal(customMacroArray);
-                //throw new Exception("String '{0}' has yet to be parsed", this.OriginalString);
+                //throw new Exception($"String '{this.OriginalString}' has yet to be parsed");
             }
             return this.ParsedString;
         }
@@ -839,11 +845,9 @@ namespace Bam.Core
                         var split = argument.Split(',');
                         if (split.Length != 2)
                         {
-                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
-                                split.Length,
-                                functionName,
-                                argument,
-                                this.OriginalString);
+                            throw new Exception(
+                                $"Expected 2, not {split.Length}, arguments in the function call {functionName}({argument}) in {this.OriginalString}"
+                            );
                         }
                         var original = split[0];
                         var extension = split[1].Trim();
@@ -859,11 +863,9 @@ namespace Bam.Core
                         var split = argument.Split(',');
                         if (split.Length != 2)
                         {
-                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
-                                split.Length,
-                                functionName,
-                                argument,
-                                this.OriginalString);
+                            throw new Exception(
+                                $"Expected 2, not {split.Length}, arguments in the function call {functionName}({argument}) in {this.OriginalString}"
+                            );
                         }
                         var path = split[0];
                         var root = split[1] + System.IO.Path.DirectorySeparatorChar;
@@ -876,11 +878,9 @@ namespace Bam.Core
                         var split = argument.Split(',');
                         if (split.Length != 2)
                         {
-                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
-                                split.Length,
-                                functionName,
-                                argument,
-                                this.OriginalString);
+                            throw new Exception(
+                                $"Expected 2, not {split.Length}, arguments in the function call {functionName}({argument}) in {this.OriginalString}"
+                            );
                         }
                         var path = split[0];
                         var fallback = split[1];
@@ -899,11 +899,9 @@ namespace Bam.Core
                         var split = argument.Split(',');
                         if (split.Length != 2)
                         {
-                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
-                                split.Length,
-                                functionName,
-                                argument,
-                                this.OriginalString);
+                            throw new Exception(
+                                $"Expected 2, not {split.Length}, arguments in the function call {functionName}({argument}) in {this.OriginalString}"
+                            );
                         }
                         var original = split[0];
                         var totrim = split[1];
@@ -922,7 +920,7 @@ namespace Bam.Core
                             // so don't interpret them as control characters
                             argument = argument.Replace("\\", "\\\\");
                         }
-                        return System.String.Format("\"{0}\"", argument);
+                        return $"\"{argument}\"";
                     }
 
                 case "ifnotempty":
@@ -930,11 +928,9 @@ namespace Bam.Core
                         var split = argument.Split(',');
                         if (split.Length != 3)
                         {
-                            throw new Exception("Expected 3, not {0}, arguments in the function call {1}({2}) in {3}",
-                                split.Length,
-                                functionName,
-                                argument,
-                                this.OriginalString);
+                            throw new Exception(
+                                $"Expected 3, not {split.Length}, arguments in the function call {functionName}({argument}) in {this.OriginalString}"
+                            );
                         }
                         var predicateString = split[0];
                         if (!System.String.IsNullOrEmpty(predicateString))
@@ -960,11 +956,9 @@ namespace Bam.Core
                         var split = argument.Split(',');
                         if (split.Length != 2)
                         {
-                            throw new Exception("Expected 2, not {0}, arguments in the function call {1}({2}) in {3}",
-                                split.Length,
-                                functionName,
-                                argument,
-                                this.OriginalString);
+                            throw new Exception(
+                                $"Expected 2, not {split.Length}, arguments in the function call {functionName}({argument}) in {this.OriginalString}"
+                            );
                         }
                         var path = split[0];
                         var fallback = split[1];
@@ -982,7 +976,9 @@ namespace Bam.Core
                         {
                             return CustomPostUnaryFunctions[functionName](argument);
                         }
-                        throw new Exception("Unknown post-function '{0}' in TokenizedString '{1}'", functionName, this.OriginalString);
+                        throw new Exception(
+                            $"Unknown post-function '{functionName}' in TokenizedString '{this.OriginalString}'"
+                        );
                     }
             }
         }
@@ -1066,12 +1062,12 @@ namespace Bam.Core
             Log.DebugMessage("Tokenized string cache");
             foreach (var item in AllStrings.OrderBy(item => item.RefCount).ThenBy(item => !item.Verbatim))
             {
-                Log.DebugMessage("#{0} {1}'{2}'{3} {4}",
-                    item.RefCount,
-                    item.Verbatim ? "<verbatim>" : string.Empty,
-                    item.OriginalString,
-                    item.Verbatim ? "</verbatim>" : string.Empty,
-                    item.ModuleWithMacros != null ? System.String.Format("(ref: {0})", item.ModuleWithMacros.GetType().ToString()) : string.Empty);
+                var isVerbatimOpen = item.Verbatim ? "<verbatim>" : string.Empty;
+                var isVerbatimClose = item.Verbatim ? "</verbatim>" : string.Empty;
+                var moduleReference = item.ModuleWithMacros != null ? $"(ref: {item.ModuleWithMacros.GetType().ToString()})" : string.Empty;
+                Log.DebugMessage(
+                    $"#{item.RefCount} {isVerbatimOpen}'{item.OriginalString}'{isVerbatimClose} {moduleReference}"
+                );
             }
         }
 
