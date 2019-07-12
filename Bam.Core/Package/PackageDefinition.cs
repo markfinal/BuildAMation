@@ -53,8 +53,8 @@ namespace Bam.Core
                         $"From {args.Exception.SourceUri} (line {args.Exception.LineNumber}, position {args.Exception.LinePosition}):\n{args.Exception.Message}");
                 }
 
-                var message = System.String.Format("Validation error: " + args.Message);
-                message += System.String.Format("\nAt '" + args.Exception.SourceUri + "', line " + args.Exception.LineNumber + ", position " + args.Exception.LinePosition);
+                var message = $"Validation error: ${args.Message}";
+                message += $"\nAt '{args.Exception.SourceUri}', line {args.Exception.LineNumber}, position {args.Exception.LinePosition}";
 
                 throw new System.Xml.XmlException(message);
             }
