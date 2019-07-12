@@ -284,7 +284,6 @@ class XcodeBuilder(Builder):
                 config = config[0].upper() + config[1:]
                 arg_list.append(config)
                 exit_code |= self._execute_and_capture(arg_list, build_root, output_messages, error_messages)
-                locallog("Running '%s' in '%s'" % (" ".join(arg_list), build_root))
         return exit_code
 
     def dump_generated_files(self, instance, options):

@@ -1,3 +1,5 @@
+12-Jul-2019 Fixes #573. Remove extra test harness logging statement, which made it look like Xcode schemes were built in duplication.
+
 12-Jul-2019 Fixes #534. Added --setdependentdefaultversion option to bam. Requires the --pkgname and --pkgversion options. This change the default version of the named package in the master package.
 
 12-Jul-2019 Fixes #571. Added Clang-Xcode11 package. This currently corresponds to the Xcode11 beta 3 package, but will hopefully be compatible with RTM.
