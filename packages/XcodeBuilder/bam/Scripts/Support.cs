@@ -39,12 +39,8 @@ namespace XcodeBuilder
         {
             foreach (var dir in module.OutputDirectories)
             {
-                shellCommandLines.Add(
-                    System.String.Format(
-                        "[[ ! -d {0} ]] && mkdir -p {0}",
-                        Bam.Core.IOWrapper.EscapeSpacesInPath(dir.ToString())
-                    )
-                );
+                var escapedDir = Bam.Core.IOWrapper.EscapeSpacesInPath(dir.ToString());
+                shellCommandLines.Add($"[[ ! -d {escapedDir} ]] && mkdir -p {escapedDir}");
             }
         }
 

@@ -60,13 +60,10 @@ namespace CommandLineProcessor
             ) as BaseAttribute;
             if (null == matching_attribute)
             {
-                throw new Bam.Core.Exception(
-                    "Unable to locate enumeration mapping of '{0}.{1}' for property {2}.{3}",
-                    propertyValue.GetType().ToString(),
-                    propertyValue.ToString(),
-                    interfacePropertyInfo.DeclaringType.FullName,
-                    interfacePropertyInfo.Name
-                );
+                var message = new System.Text.StringBuilder();
+                message.Append($"Unable to locate enumeration mapping of '{propertyValue.GetType().ToString()}.{propertyValue.ToString()}' ");
+                message.Append($"for property {interfacePropertyInfo.DeclaringType.FullName}.{interfacePropertyInfo.Name}");
+                throw new Bam.Core.Exception(message.ToString());
             }
             var cmd = matching_attribute.CommandSwitch;
             if (!System.String.IsNullOrEmpty(cmd))
@@ -321,8 +318,8 @@ namespace CommandLineProcessor
                 );
             }
             var commandLine = new Bam.Core.StringArray();
-            //Bam.Core.Log.MessageAll("Module: {0}", module.ToString());
-            //Bam.Core.Log.MessageAll("Settings: {0}", settings.ToString());
+            //Bam.Core.Log.MessageAll($"Module: {module.ToString()}");
+            //Bam.Core.Log.MessageAll($"Settings: {settings.ToString()}");
             foreach (var settings_interface in settings.Interfaces())
             {
                 //Bam.Core.Log.MessageAll(settings_interface.ToString());
@@ -335,7 +332,7 @@ namespace CommandLineProcessor
                     var settings_property = settings.Properties.First(
                         item => full_property_interface_name.Equals(item.Name, System.StringComparison.Ordinal)
                     );
-                    //Bam.Core.Log.MessageAll("\t{0}", settings_property.ToString());
+                    //Bam.Core.Log.MessageAll($"\t{settings_property.ToString()}");
                     var attributeArray = settings_property.GetCustomAttributes(typeof(BaseAttribute), false);
                     if (!attributeArray.Any())
                     {
@@ -437,7 +434,7 @@ namespace CommandLineProcessor
                     }
                 }
             }
-            //Bam.Core.Log.MessageAll("{0}: Executing '{1}'", module.ToString(), commandLine.ToString(' '));
+            //Bam.Core.Log.MessageAll($"{module.ToString()}: Executing '{commandLine.ToString(' ')}'");
 
             if (createDelta)
             {
@@ -561,15 +558,11 @@ namespace CommandLineProcessor
                     var match_any = input_files_attributes.FirstOrDefault(item => item is AnyInputFileAttribute);
                     if (null == match_any)
                     {
-                        throw new Bam.Core.Exception(
-                            "Unable to locate InputPathsAttribute suitable for input module {0} and path key {1} while dealing with inputs on module {2}.\n" +
-                            "Does module {2} override the InputModules property?\n" +
-                            "Is settings class {3} missing an InputPaths attribute?",
-                            input_module_and_pathkey.Value.ToString(),
-                            input_module_and_pathkey.Key,
-                            module.ToString(),
-                            settings.ToString()
-                        );
+                        var message = new System.Text.StringBuilder();
+                        message.AppendLine($"Unable to locate InputPathsAttribute suitable for input module {input_module_and_pathkey.Value.ToString()} and path key {input_module_and_pathkey.Key} while dealing with inputs on module {module.ToString()}.");
+                        message.AppendLine($"Does module {module.ToString()} override the InputModules property?");
+                        message.AppendLine($"Is settings class {settings.ToString()} missing an InputPaths attribute?");
+                        throw new Bam.Core.Exception(message.ToString());
                     }
                     matching_input_attr = match_any;
                 }

@@ -37,7 +37,7 @@ namespace C.DefaultSettings
             this C.ICommonPreprocessorSettings settings,
             Bam.Core.Module module)
         {
-            settings.PreprocessorDefines.Add(System.String.Format("D_BAM_CONFIGURATION_{0}", module.BuildEnvironment.Configuration.ToString().ToUpper()));
+            settings.PreprocessorDefines.Add($"D_BAM_CONFIGURATION_{module.BuildEnvironment.Configuration.ToString().ToUpper()}");
             if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 settings.PreprocessorDefines.Add("D_BAM_PLATFORM_WINDOWS");

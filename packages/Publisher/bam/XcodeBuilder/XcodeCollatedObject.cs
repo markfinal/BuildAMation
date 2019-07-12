@@ -104,22 +104,13 @@ namespace Publisher
             var commands = new Bam.Core.StringArray();
             foreach (var dir in module.OutputDirectories)
             {
-                commands.Add(
-                    System.String.Format(
-                        "[[ ! -d {0} ]] && mkdir -p {0}",
-                        copyFileTool.EscapePath(dir.ToString())
-                    )
-                );
+                var escapedDir = copyFileTool.EscapePath(dir.ToString());
+                commands.Add($"[[ ! -d {escapedDir} ]] && mkdir -p {escapedDir}");
             }
-            commands.Add(
-                System.String.Format("{0} {1} {2}",
-                CommandLineProcessor.Processor.StringifyTool(copyFileTool as Bam.Core.ICommandLineTool),
-                CommandLineProcessor.NativeConversion.Convert(
-                    module.Settings,
-                    module
-                ).ToString(' '),
-                CommandLineProcessor.Processor.TerminatingArgs(copyFileTool as Bam.Core.ICommandLineTool))
-            );
+            var toolAsString = CommandLineProcessor.Processor.StringifyTool(copyFileTool as Bam.Core.ICommandLineTool);
+            var toolSettings = CommandLineProcessor.NativeConversion.Convert(module.Settings, module).ToString(' ');
+            var toolPostamble = CommandLineProcessor.Processor.TerminatingArgs(copyFileTool as Bam.Core.ICommandLineTool);
+            commands.Add($"{toolAsString} {toolSettings} {toolPostamble}");
 
             var configuration = target.GetConfiguration(targetModule);
             if (!target.IsUtilityType && arePostBuildCommands)

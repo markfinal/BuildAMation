@@ -106,7 +106,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    Bam.Core.Log.DebugMessage("\tXML has changed, moving {0} to {1}", writePath, targetPath);
+                    Bam.Core.Log.DebugMessage($"\tXML has changed, moving {writePath} to {targetPath}");
                     System.IO.File.Delete(targetPath);
                     System.IO.File.Move(writePath, targetPath);
                 }
@@ -134,7 +134,7 @@ namespace VSSolutionBuilder
                 }
                 else
                 {
-                    Bam.Core.Log.DebugMessage("\tText has changed, moving {0} to {1}", writePath, targetPath);
+                    Bam.Core.Log.DebugMessage($"\tText has changed, moving {writePath} to {targetPath}");
                     System.IO.File.Delete(targetPath);
                     System.IO.File.Move(writePath, targetPath);
                 }
@@ -177,7 +177,8 @@ namespace VSSolutionBuilder
             var solutionPath = solutionPathTS.ToString();
             WriteSolutionFileIfDifferent(solutionPath, solution.Serialize(solutionPath));
 
-            Bam.Core.Log.Info("Successfully created Visual Studio solution for package '{0}'\n\t{1}", graph.MasterPackage.Name, solutionPath);
+            Bam.Core.Log.Info($"Successfully created Visual Studio solution for package '{graph.MasterPackage.Name}'");
+            Bam.Core.Log.Info($"\t{solutionPath}");
         }
 
         Bam.Core.TokenizedString

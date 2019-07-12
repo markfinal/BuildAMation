@@ -76,7 +76,7 @@ namespace Installer
                     break;
 
                 default:
-                    throw new Bam.Core.Exception("Unknown tar compression, {0}", value.ToString());
+                    throw new Bam.Core.Exception($"Unknown tar compression, {value.ToString()}");
                 }
             }
         }

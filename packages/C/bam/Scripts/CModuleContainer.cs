@@ -95,8 +95,7 @@ namespace C
             if (path.Contains('*'))
             {
                 throw new Bam.Core.Exception(
-                    "Single path '{0}' cannot contain a wildcard character. Use AddFiles instead of AddFile",
-                    path
+                    $"Single path '{path}' cannot contain a wildcard character. Use AddFiles instead of AddFile"
                 );
             }
             // TODO: how can I distinguish between creating a child module that inherits it's parents settings
@@ -295,22 +294,21 @@ namespace C
                     }
                     if (!filename.Equals(truePath, System.StringComparison.Ordinal))
                     {
-                        throw new Bam.Core.Exception(
-                            "No source files found matching '{0}' (actually checking '{1}' after directory slash replacement) in module {2}. Found{3}{4}",
-                            filename,
-                            truePath,
-                            Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString(),
-                            System.Environment.NewLine,
-                            list_of_valid_source.ToString()
-                        );
+                        var message = new System.Text.StringBuilder();
+                        message.Append($"No source files found matching '{filename} ");
+                        message.Append($"(actually checking '{truePath}' after directory slash replacement) ");
+                        message.Append($"in module {Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString()}. ");
+                        message.AppendLine("Found");
+                        message.Append(list_of_valid_source.ToString());
+                        throw new Bam.Core.Exception(message.ToString());
                     }
-                    throw new Bam.Core.Exception(
-                        "No source files found matching '{0}' in module {1}. Found{2}{3}",
-                        filename,
-                        Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString(),
-                        System.Environment.NewLine,
-                        list_of_valid_source.ToString()
-                    );
+                    else
+                    {
+                        var message = new System.Text.StringBuilder();
+                        message.AppendLine($"No source files found matching '{filename}' in module {Bam.Core.Graph.Instance.CommonModuleType.Peek().ToString()}. Found");
+                        message.Append(list_of_valid_source.ToString());
+                        throw new Bam.Core.Exception(message.ToString());
+                    }
                 }
                 return validSources.ToList();
             }

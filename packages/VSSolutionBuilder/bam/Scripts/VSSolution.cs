@@ -117,8 +117,7 @@ namespace VSSolutionBuilder
             var content = new System.Text.StringBuilder();
 
             var visualCMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
-            content.AppendFormat(@"Microsoft Visual Studio Solution File, Format Version {0}", visualCMeta.SolutionFormatVersion);
-            content.AppendLine();
+            content.AppendLine($@"Microsoft Visual Studio Solution File, Format Version {visualCMeta.SolutionFormatVersion}");
 
             var configs = new Bam.Core.StringArray();
             foreach (var project in this.Projects)
@@ -127,12 +126,7 @@ namespace VSSolutionBuilder
                     System.IO.Path.GetDirectoryName(solutionPath),
                     project.ProjectPath
                 );
-                content.AppendFormat("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
-                    ProjectTypeGuid.ToString("B").ToUpper(),
-                    System.IO.Path.GetFileNameWithoutExtension(project.ProjectPath),
-                    relativeProjectPath,
-                    project.GuidString);
-                content.AppendLine();
+                content.AppendLine($"Project(\"{ProjectTypeGuid.ToString("B").ToUpper()}\") = \"{System.IO.Path.GetFileNameWithoutExtension(project.ProjectPath)}\", \"{relativeProjectPath}\", \"{project.GuidString}\"");
                 content.AppendLine("EndProject");
 
                 foreach (var config in project.Configurations)
@@ -144,12 +138,7 @@ namespace VSSolutionBuilder
             {
                 var folderPath = folder.Value.Path;
                 var folderGuid = folder.Value.GuidString;
-                content.AppendFormat("Project(\"{0}\") = \"{1}\", \"{2}\", \"{3}\"",
-                    SolutionFolderGuid.ToString("B").ToUpper(),
-                    folderPath,
-                    folderPath,
-                    folderGuid);
-                content.AppendLine();
+                content.AppendLine($"Project(\"{SolutionFolderGuid.ToString("B").ToUpper()}\") = \"{folderPath}\", \"{folderPath}\", \"{folderGuid}\"");
                 content.AppendLine("EndProject");
             }
             content.AppendLine("Global");
@@ -157,8 +146,7 @@ namespace VSSolutionBuilder
             foreach (var config in configs)
             {
                 // TODO: I'm sure these are not meant to be identical, but I don't know what else to put here
-                content.AppendFormat("\t\t{0} = {0}", config);
-                content.AppendLine();
+                content.AppendLine($"\t\t{config} = {config}");
             }
             content.AppendLine("\tEndGlobalSection");
             content.AppendLine("\tGlobalSection(ProjectConfigurationPlatforms) = postSolution");
@@ -171,10 +159,8 @@ namespace VSSolutionBuilder
                 foreach (var config in project.Configurations)
                 {
                     var configName = config.Value.FullName;
-                    content.AppendFormat("\t\t{0}.{1}.ActiveCfg = {1}", guid, configName);
-                    content.AppendLine();
-                    content.AppendFormat("\t\t{0}.{1}.Build.0 = {1}", guid, configName);
-                    content.AppendLine();
+                    content.AppendLine($"\t\t{guid}.{configName}.ActiveCfg = {configName}");
+                    content.AppendLine($"\t\t{guid}.{configName}.Build.0 = {configName}");
                     thisProjectConfigs.AddUnique(configName);
                 }
 
@@ -185,8 +171,7 @@ namespace VSSolutionBuilder
                     // a missing "XX.YY.Build.0" line means not configured to build
                     // also, the remapping between config names seems a little arbitrary, but seems to work
                     // might be related to the project not having an ProjectConfiguration for the unsupported config
-                    content.AppendFormat("\t\t{0}.{1}.ActiveCfg = {2}", guid, uConfig, thisProjectConfigs[0]);
-                    content.AppendLine();
+                    content.AppendLine($"\t\t{guid}.{uConfig}.ActiveCfg = {thisProjectConfigs[0]}");
                 }
             }
             content.AppendLine("\tEndGlobalSection");

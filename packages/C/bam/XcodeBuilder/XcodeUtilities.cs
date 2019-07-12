@@ -121,8 +121,7 @@ namespace C
             else
             {
                 throw new Bam.Core.Exception(
-                    "Unknown type of executable is being processed: {0}",
-                    module.ToString()
+                    $"Unknown type of executable is being processed: {module.ToString()}"
                 );
             }
 

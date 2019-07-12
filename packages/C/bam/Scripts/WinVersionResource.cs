@@ -81,11 +81,7 @@ namespace C
                 contents.AppendLine($"FILEVERSION {binaryMajorVersion},{binaryMinorVersion},{binaryPatchVersion}");
                 if (null != productDefinition)
                 {
-                    contents.AppendFormat("PRODUCTVERSION {0},{1},{2}",
-                        productDefinition.MajorVersion ?? 0,
-                        productDefinition.MinorVersion ?? 0,
-                        productDefinition.PatchVersion ?? 0);
-                    contents.AppendLine();
+                    contents.AppendLine($"PRODUCTVERSION {productDefinition.MajorVersion ?? 0},{productDefinition.MinorVersion ?? 0},{productDefinition.PatchVersion ?? 0}");
                 }
                 contents.AppendLine("FILEFLAGSMASK VS_FFI_FILEFLAGSMASK");
                 string flags = "";
@@ -145,15 +141,9 @@ namespace C
                 if (null != productDefinition)
                 {
                     contents.AppendLine($"\t\t\tVALUE \"ProductName\", \"{productDefinition.Name}\"");
-                    contents.AppendFormat("\t\t\tVALUE \"ProductVersion\", \"{0}.{1}.{2}\"",
-                        productDefinition.MajorVersion ?? 0,
-                        productDefinition.MinorVersion ?? 0,
-                        productDefinition.PatchVersion ?? 0);
-                    contents.AppendLine();
-                    contents.AppendFormat("\t\t\tVALUE \"LegalCopyright\", \"{0}\"", productDefinition.CopyrightNotice);
-                    contents.AppendLine();
-                    contents.AppendFormat("\t\t\tVALUE \"CompanyName\", \"{0}\"", productDefinition.CompanyName);
-                    contents.AppendLine();
+                    contents.AppendLine($"\t\t\tVALUE \"ProductVersion\", \"{productDefinition.MajorVersion ?? 0}.{productDefinition.MinorVersion ?? 0}.{productDefinition.PatchVersion ?? 0}\"");
+                    contents.AppendLine($"\t\t\tVALUE \"LegalCopyright\", \"{productDefinition.CopyrightNotice}\"");
+                    contents.AppendLine($"\t\t\tVALUE \"CompanyName\", \"{productDefinition.CompanyName}\"");
                 }
                 contents.AppendLine("\t\tEND");
                 contents.AppendLine("\tEND");

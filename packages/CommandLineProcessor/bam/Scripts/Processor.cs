@@ -182,7 +182,7 @@ namespace CommandLineProcessor
             }
             processStartInfo.Arguments = arguments;
 
-            Bam.Core.Log.Detail("{0} {1}", processStartInfo.FileName, processStartInfo.Arguments);
+            Bam.Core.Log.Detail($"{processStartInfo.FileName} {processStartInfo.Arguments}");
 
             // useful debugging of the command line processor
             Bam.Core.Log.DebugMessage($"Working directory: '{processStartInfo.WorkingDirectory}'");
@@ -226,7 +226,7 @@ namespace CommandLineProcessor
                 process.WaitForExit();
 
                 exitCode = process.ExitCode;
-                //Bam.Core.Log.DebugMessage("Tool exit code: {0}", exitCode);
+                //Bam.Core.Log.DebugMessage($"Tool exit code: {exitCode}");
                 process.Close();
             }
 

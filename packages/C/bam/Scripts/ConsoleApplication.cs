@@ -551,7 +551,7 @@ namespace C
                             return;
 
                         default:
-                            throw new Bam.Core.Exception("Unknown reason, {0}", source.ReasonToExecute.Reason.ToString());
+                            throw new Bam.Core.Exception($"Unknown reason, {source.ReasonToExecute.Reason.ToString()}");
                     }
                 }
                 // TODO: there could be a chance that a library is up-to-date from a previous build, and yet
@@ -575,7 +575,7 @@ namespace C
                             return;
 
                         default:
-                            throw new Bam.Core.Exception("Unknown reason, {0}", source.ReasonToExecute.Reason.ToString());
+                            throw new Bam.Core.Exception($"Unknown reason, {source.ReasonToExecute.Reason.ToString()}");
                     }
                 }
                 else

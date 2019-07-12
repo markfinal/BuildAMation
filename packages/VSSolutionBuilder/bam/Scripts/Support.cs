@@ -39,12 +39,8 @@ namespace VSSolutionBuilder
         {
             foreach (var dir in module.OutputDirectories)
             {
-                shellCommandLines.Add(
-                    System.String.Format(
-                        "IF NOT EXIST {0} MKDIR {0}",
-                        dir.ToStringQuoteIfNecessary()
-                    )
-                );
+                var quotedDir = dir.ToStringQuoteIfNecessary();
+                shellCommandLines.Add($"IF NOT EXIST {quotedDir} MKDIR {quotedDir}");
             }
         }
 
@@ -57,8 +53,7 @@ namespace VSSolutionBuilder
             if (null == module.Tool)
             {
                 throw new Bam.Core.Exception(
-                    "Command line tool passed with module '{0}' is invalid",
-                    module.ToString()
+                    $"Command line tool passed with module '{module.ToString()}' is invalid"
                 );
             }
             System.Diagnostics.Debug.Assert(module.Tool is Bam.Core.ICommandLineTool);
@@ -67,10 +62,7 @@ namespace VSSolutionBuilder
             if (module.WorkingDirectory != null)
             {
                 args.Add(
-                    System.String.Format(
-                        "cd /D {0} &&",
-                        module.WorkingDirectory.ToStringQuoteIfNecessary()
-                    )
+                    $"cd /D {module.WorkingDirectory.ToStringQuoteIfNecessary()} &&"
                 );
             }
             var tool = module.Tool as Bam.Core.ICommandLineTool;
@@ -80,12 +72,12 @@ namespace VSSolutionBuilder
                 {
                     args.Add("set");
                     var content = new System.Text.StringBuilder();
-                    content.AppendFormat("{0}=", envVar.Key);
+                    content.Append("${envVar.Key}=");
                     foreach (var value in envVar.Value)
                     {
-                        content.AppendFormat("{0};", value.ToStringQuoteIfNecessary());
+                        content.Append($"{value.ToStringQuoteIfNecessary()};");
                     }
-                    content.AppendFormat("%{0}%", envVar.Key);
+                    content.Append($"%{envVar.Key}%");
                     args.Add(content.ToString());
                     args.Add("&&");
                 }
@@ -189,12 +181,7 @@ namespace VSSolutionBuilder
                 module,
                 System.Linq.Enumerable.Repeat(sourcePath, 1),
                 System.Linq.Enumerable.Repeat(outputPath, 1),
-                System.String.Format(
-                    "{0} {1} into {2}",
-                    messagePrefix,
-                    sourcePath.ToString(),
-                    outputPath.ToString()
-                ),
+                $"{messagePrefix} {sourcePath.ToString()} into {outputPath.ToString()}",
                 shellCommandLines,
                 true,
                 addInputFilesToProject

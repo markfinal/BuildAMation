@@ -83,30 +83,24 @@ namespace Installer
             using (var scriptWriter = new System.IO.StreamWriter(path))
             {
                 scriptWriter.WriteLine("[Setup]");
-                scriptWriter.WriteLine("OutputBaseFilename={0}", outputName.ToStringQuoteIfNecessary());
+                scriptWriter.WriteLine($"OutputBaseFilename={outputName.ToStringQuoteIfNecessary()}");
                 var installedExePath = this.CreateTokenizedString("@dir($(buildroot)/$(config)/$(0).exe)", outputName);
                 installedExePath.Parse();
-                scriptWriter.WriteLine("OutputDir={0}", installedExePath.ToStringQuoteIfNecessary());
+                scriptWriter.WriteLine($"OutputDir={installedExePath.ToStringQuoteIfNecessary()}");
                 // create the output directory in-advance, so that multiple InnoSetup processes, writing to the same folder
                 // do not hit a race condition in creating this folder
                 Bam.Core.IOWrapper.CreateDirectoryIfNotExists(installedExePath.ToStringQuoteIfNecessary());
-                scriptWriter.WriteLine("AppName={0}", outputName.ToString());
+                scriptWriter.WriteLine($"AppName={outputName.ToString()}");
                 var productDef = Bam.Core.Graph.Instance.ProductDefinition;
                 if (null != productDef)
                 {
                     scriptWriter.WriteLine(
-                        "AppVersion={0}",
-                        System.String.Format(
-                            "{0}.{1}.{2}",
-                            productDef.MajorVersion ?? 1,
-                            productDef.MinorVersion ?? 0,
-                            productDef.PatchVersion ?? 0
-                        )
+                        $"AppVersion={productDef.MajorVersion ?? 1}.{productDef.MinorVersion ?? 0}.{productDef.PatchVersion ?? 0}"
                     );
                 }
                 else
                 {
-                    scriptWriter.WriteLine("AppVersion={0}", "1.0.0");
+                    scriptWriter.WriteLine("AppVersion=1.0.0");
                 }
                 scriptWriter.WriteLine($"DefaultDirName={{userappdata}}\\{outputName.ToString()}");
                 scriptWriter.WriteLine("ArchitecturesAllowed=x64");

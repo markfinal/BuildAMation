@@ -40,7 +40,7 @@ namespace ClangCommon
             var discovery = clangMeta as C.IToolchainDiscovery;
             discovery.discover(null);
             this.Version = clangMeta.ToolchainVersion;
-            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim(System.String.Format("--sdk {0}", clangMeta.SDK)));
+            this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim($"--sdk {clangMeta.SDK}"));
         }
 
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.XcrunPath);

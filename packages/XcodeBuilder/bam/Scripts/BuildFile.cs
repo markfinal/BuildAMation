@@ -53,13 +53,10 @@ namespace XcodeBuilder
             int indentLevel)
         {
             var indent = new string('\t', indentLevel);
-            text.AppendFormat(
-                "{0}{1} /* {3} in {4} */ = {{isa = {5}; fileRef = {2} /* {3} */; ",
-                indent, this.GUID, this.FileRef.GUID,
-                this.Name,
-                (null != this.Parent) ? this.Parent.Name : "Unknown",
-                this.IsA
-            );
+            var parentName = (null != this.Parent) ? this.Parent.Name : "Unknown";
+            text.Append($"{indent}{this.GUID} ");
+            text.Append($"/* {this.Name} in {parentName} */ ");
+            text.Append($"= {{isa = {this.IsA}; fileRef = {this.FileRef.GUID} /* {this.Name} */; ");
             if (this.Settings != null)
             {
                 // any requirements for extra escape characters for escaped quotes are handled

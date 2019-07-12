@@ -102,7 +102,7 @@ namespace VSSolutionBuilder
                 }
                 if (Bam.Core.EPlatform.Invalid == platform)
                 {
-                    throw new Bam.Core.Exception("Platform cannot be extracted from the tool {0} for project {1}", module.Tool.ToString(), this.ProjectPath);
+                    throw new Bam.Core.Exception($"Platform cannot be extracted from the tool {module.Tool.ToString()} for project {this.ProjectPath}");
                 }
                 var configuration = new VSProjectConfiguration(this, module, platform);
                 this.Configurations.Add(moduleConfig, configuration);
@@ -221,7 +221,7 @@ namespace VSSolutionBuilder
         {
             if (this.LinkDependentProjects.Contains(dependentProject))
             {
-                Bam.Core.Log.DebugMessage("Project {0} already contains a link dependency on {1}. There is no need to add it as an order-only dependency.", this.ProjectPath, dependentProject.ProjectPath);
+                Bam.Core.Log.DebugMessage($"Project {this.ProjectPath} already contains a link dependency on {dependentProject.ProjectPath}. There is no need to add it as an order-only dependency.");
                 return;
             }
             lock (this.OrderOnlyDependentProjects)
@@ -236,7 +236,7 @@ namespace VSSolutionBuilder
         {
             if (this.OrderOnlyDependentProjects.Contains(dependentProject))
             {
-                Bam.Core.Log.DebugMessage("Project {0} already contains an order-only dependency on {1}. Removing the order-only dependency, and upgrading to a link dependency.", this.ProjectPath, dependentProject.ProjectPath);
+                Bam.Core.Log.DebugMessage($"Project {this.ProjectPath} already contains an order-only dependency on {dependentProject.ProjectPath}. Removing the order-only dependency, and upgrading to a link dependency.");
                 this.OrderOnlyDependentProjects.Remove(dependentProject);
             }
             lock (this.LinkDependentProjects)
@@ -597,7 +597,7 @@ namespace VSSolutionBuilder
                     }
 
                 default:
-                    throw new Bam.Core.Exception("Unrecognized project type, {0}", configuration.Type);
+                    throw new Bam.Core.Exception($"Unrecognized project type, {configuration.Type}");
             }
         }
     }

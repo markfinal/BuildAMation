@@ -43,7 +43,7 @@ namespace WindowsSDK
                 this.Macros.Add(
                     "CompilerPath",
                     Bam.Core.TokenizedString.Create(
-                        System.String.Format("$(0)/bin/rc.exe"),
+                        "$(0)/bin/rc.exe",
                         null,
                         tokenised_strings
                     )

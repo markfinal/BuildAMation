@@ -93,24 +93,14 @@ namespace XcodeBuilder
                 if (this.ExistingGUIDs.ContainsKey(guid))
                 {
                     // enable the log code path to view all clashes, rather than aborting on the first
+                    var message = new System.Text.StringBuilder();
+                    message.AppendLine($"GUID collision {guid} between");
+                    message.AppendLine($"\t{objectForGuid.Name}({objectForGuid.IsA})[in {objectForGuid.Project.Name}]");
+                    message.AppendLine($"\t{this.ExistingGUIDs[guid].Name}({this.ExistingGUIDs[guid].IsA})[in {this.ExistingGUIDs[guid].Project.Name}]");
 #if true
-                    throw new Bam.Core.Exception("GUID collision {6} between\n\t{0}({1})[in {2}]\n\t{3}({4})[in {5}]",
-                                                 objectForGuid.Name,
-                                                 objectForGuid.IsA,
-                                                 objectForGuid.Project.Name,
-                                                 this.ExistingGUIDs[guid].Name,
-                                                 this.ExistingGUIDs[guid].IsA,
-                                                 this.ExistingGUIDs[guid].Project.Name,
-                                                 guid);
+                    throw new Bam.Core.Exception(message.ToString());
 #else
-                    Bam.Core.Log.MessageAll("GUID collision {6} between\n\t{0}({1})[in {2}]\n\t{3}({4})[in {5}]",
-                                                 objectForGuid.Name,
-                                                 objectForGuid.IsA,
-                                                 objectForGuid.Project.Name,
-                                                 this.ExistingGUIDs[guid].Name,
-                                                 this.ExistingGUIDs[guid].IsA,
-                                                 this.ExistingGUIDs[guid].Project.Name,
-                                                 guid);
+                    Bam.Core.Log.MessageAll(message.ToString());
                     return;
 #endif
                 }

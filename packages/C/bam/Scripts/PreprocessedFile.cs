@@ -215,10 +215,7 @@ namespace C
                     if (!exists)
                     {
 #if false
-                            Bam.Core.Log.DebugMessage("***** Could not locate '{0}' on any include search path, included from {1}:\n{2}",
-                                                        match.Groups[1],
-                                                        fileToSearch,
-                                                        entry.includePaths.ToString('\n'));
+                        Bam.Core.Log.DebugMessage($"***** Could not locate '{match.Groups[1]}' on any include search path, included from {fileToSearch}:\n{entry.includePaths.ToString('\n')}");
 #endif
                     }
                 }

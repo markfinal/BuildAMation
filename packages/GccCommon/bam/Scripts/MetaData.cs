@@ -64,13 +64,13 @@ namespace GccCommon
             var gccVersion = this.Meta["GccVersion"] as string[];
             if (System.Convert.ToInt32(gccVersion[0]) != (int)this.Meta["ExpectedMajorVersion"])
             {
-                throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gccLocation, System.String.Join(".", gccVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
+                throw new Bam.Core.Exception($"{gccLocation} reports version {System.String.Join(".", gccVersion)}. Expected {this.Meta["ExpectedMajorVersion"]}.{this.Meta["ExpectedMinorVersion"]}");
             }
             if (null != this.Meta["ExpectedMinorVersion"])
             {
                 if (System.Convert.ToInt32(gccVersion[1]) != (int)this.Meta["ExpectedMinorVersion"])
                 {
-                    throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gccLocation, System.String.Join(".", gccVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
+                    throw new Bam.Core.Exception($"{gccLocation} reports version {System.String.Join(".", gccVersion)}. Expected {this.Meta["ExpectedMajorVersion"]}.{this.Meta["ExpectedMinorVersion"]}");
                 }
             }
         }
@@ -86,13 +86,13 @@ namespace GccCommon
             var gxxVersion = this.Meta["G++Version"] as string[];
             if (System.Convert.ToInt32(gxxVersion[0]) != (int)this.Meta["ExpectedMajorVersion"])
             {
-                throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gxxLocation, System.String.Join(".", gxxVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
+                throw new Bam.Core.Exception($"{gxxLocation} reports version {System.String.Join(".", gxxVersion)}. Expected {this.Meta["ExpectedMajorVersion"]}.{this.Meta["ExpectedMinorVersion"]}");
             }
             if (null != this.Meta["ExpectedMinorVersion"])
             {
                 if (System.Convert.ToInt32(gxxVersion[1]) != (int)this.Meta["ExpectedMinorVersion"])
                 {
-                    throw new Bam.Core.Exception("{0} reports version {1}. Expected {2}.{3}", gxxLocation, System.String.Join(".", gxxVersion), this.Meta["ExpectedMajorVersion"], this.Meta["ExpectedMinorVersion"]);
+                    throw new Bam.Core.Exception($"{gxxLocation} reports version {System.String.Join(".", gxxVersion)}. Expected {this.Meta["ExpectedMajorVersion"]}.{this.Meta["ExpectedMinorVersion"]}");
                 }
             }
         }

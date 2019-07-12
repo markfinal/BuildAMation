@@ -188,8 +188,7 @@ namespace VisualStudioProcessor
                         if (associated_attribute.Target != BaseAttribute.TargetGroup.Settings)
                         {
                             throw new Bam.Core.Exception(
-                                "Unable to use property target, {0}",
-                                associated_attribute.Target.ToString()
+                                $"Unable to use property target, {associated_attribute.Target.ToString()}"
                             );
                         }
                         vsSettingsGroup.AddSetting(

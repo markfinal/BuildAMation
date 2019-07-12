@@ -358,7 +358,7 @@ namespace Publisher
                     break;
 
                 default:
-                    throw new Bam.Core.Exception("Unsupported OS: '{0}'", Bam.Core.OSUtilities.CurrentOS);
+                    throw new Bam.Core.Exception($"Unsupported OS: '{Bam.Core.OSUtilities.CurrentOS}'");
             }
         }
 

@@ -73,10 +73,8 @@ namespace VSSolutionBuilder
             var indent = new string('\t', indentLevel);
             foreach (var nested in this.NestedEntities)
             {
-                content.AppendFormat("{0}{1} = {2}", indent, nested.GuidString, this.GuidString);
-                content.AppendLine();
+                content.AppendLine($"{indent}{nested.GuidString} = {this.GuidString}");
             }
-
         }
     }
 }

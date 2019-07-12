@@ -122,7 +122,7 @@ namespace XcodeBuilder
             var writePath = targetExists ? Bam.Core.IOWrapper.CreateTemporaryFile() : targetPath;
             using (var xmlwriter = System.Xml.XmlWriter.Create(writePath, settings))
             {
-                //Bam.Core.Log.MessageAll("Writing {0}", writePath);
+                //Bam.Core.Log.MessageAll($"Writing {writePath}");
                 document.WriteTo(xmlwriter);
             }
             if (targetExists)
@@ -134,7 +134,7 @@ namespace XcodeBuilder
                 }
                 else
                 {
-                    //Bam.Core.Log.MessageAll("\tXML has changed, moving {0} to {1}", writePath, targetPath);
+                    //Bam.Core.Log.MessageAll($"\tXML has changed, moving {writePath} to {targetPath}");
                     System.IO.File.Delete(targetPath);
                     System.IO.File.Move(writePath, targetPath);
                 }
@@ -150,7 +150,7 @@ namespace XcodeBuilder
             var writePath = targetExists ? Bam.Core.IOWrapper.CreateTemporaryFile() : targetPath;
             using (var writer = new System.IO.StreamWriter(writePath))
             {
-                //Bam.Core.Log.MessageAll("Writing {0}", writePath);
+                //Bam.Core.Log.MessageAll($"Writing {writePath}");
                 writer.Write(contents);
             }
             if (targetExists)
@@ -162,7 +162,7 @@ namespace XcodeBuilder
                 }
                 else
                 {
-                    //Bam.Core.Log.MessageAll("\tText has changed, moving {0} to {1}", writePath, targetPath);
+                    //Bam.Core.Log.MessageAll($"\tText has changed, moving {writePath} to {targetPath}");
                     System.IO.File.Delete(targetPath);
                     System.IO.File.Move(writePath, targetPath);
                 }
@@ -233,7 +233,7 @@ namespace XcodeBuilder
                     projectDir.ToString()
                 );
                 var workspaceFileRef = workspaceDoc.CreateElement("FileRef");
-                workspaceFileRef.SetAttribute("location", System.String.Format("group:{0}", relativeProjectDir));
+                workspaceFileRef.SetAttribute("location", $"group:{relativeProjectDir}");
                 workspaceEl.AppendChild(workspaceFileRef);
             }
 

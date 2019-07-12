@@ -140,7 +140,7 @@ namespace VSSolutionBuilder
                         !item.Value.Equals(stringValue, System.StringComparison.Ordinal))
                     )
                 {
-                    throw new Bam.Core.Exception("Cannot change the value of existing boolean option {0} to {1}", name, value);
+                    throw new Bam.Core.Exception($"Cannot change the value of existing boolean option {name} to {value}");
                 }
 
                 this.Settings.AddUnique(
@@ -169,7 +169,7 @@ namespace VSSolutionBuilder
                         !item.Value.Equals(value, System.StringComparison.Ordinal))
                     )
                 {
-                    throw new Bam.Core.Exception("Cannot change the value of existing string option {0} to {1}", name, value);
+                    throw new Bam.Core.Exception($"Cannot change the value of existing string option {name} to {value}");
                 }
 
                 this.Settings.AddUnique(
@@ -201,7 +201,7 @@ namespace VSSolutionBuilder
                         !item.Value.Equals(stringValue, System.StringComparison.Ordinal))
                     )
                 {
-                    throw new Bam.Core.Exception("Cannot change the value of existing tokenized path option {0} to {1}", name, path.ToString());
+                    throw new Bam.Core.Exception($"Cannot change the value of existing tokenized path option {name} to {path.ToString()}");
                 }
 
                 this.Settings.AddUnique(
@@ -323,7 +323,7 @@ namespace VSSolutionBuilder
             {
                 if (this.Settings.Any(item => item.Name.Equals(name) && System.String.Equals(item.Condition, condition, System.StringComparison.Ordinal)))
                 {
-                    throw new Bam.Core.Exception("Cannot append to the preprocessor define list {0}", name);
+                    throw new Bam.Core.Exception($"Cannot append to the preprocessor define list {name}");
                 }
 
                 var defString = definitions.ToString();
@@ -372,7 +372,7 @@ namespace VSSolutionBuilder
                     return "MASM";
 
                 default:
-                    throw new Bam.Core.Exception("Unknown settings group, {0}", this.Group.ToString());
+                    throw new Bam.Core.Exception($"Unknown settings group, {this.Group.ToString()}");
             }
         }
 

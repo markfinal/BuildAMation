@@ -213,7 +213,7 @@ namespace MakeFileBuilder
                         }
                         else
                         {
-                            variables.AppendFormat(
+                            variables.Append(
                                 $"$({commonMeta.UseMacrosInPath(preName)}) "
                             );
                         }

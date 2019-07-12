@@ -107,7 +107,7 @@ namespace VSSolutionBuilder
         {
             get
             {
-                return System.String.Format("{0}|{1}", this.ConfigurationName, this.PlatformName);
+                return $"{this.ConfigurationName}|{this.PlatformName}";
             }
         }
 
@@ -116,7 +116,7 @@ namespace VSSolutionBuilder
         {
             get
             {
-                return System.String.Format("'$(Configuration)|$(Platform)'=='{0}'", this.CombinedName);
+                return $"'$(Configuration)|$(Platform)'=='{this.CombinedName}'";
             }
         }
 
@@ -250,7 +250,7 @@ namespace VSSolutionBuilder
                 {
                     return;
                 }
-                throw new Bam.Core.Exception("Project configuration already has type {0}. Cannot change it to {1}", this.Type.ToString(), type.ToString());
+                throw new Bam.Core.Exception($"Project configuration already has type {this.Type.ToString()}. Cannot change it to {type.ToString()}");
             }
 
             this.Type = type;
@@ -541,7 +541,7 @@ namespace VSSolutionBuilder
         {
             if (this.Type == EType.NA)
             {
-                Bam.Core.Log.DebugMessage("Defaulting project {0} to type Utility", this.Project.ProjectPath);
+                Bam.Core.Log.DebugMessage($"Defaulting project {this.Project.ProjectPath} to type Utility");
                 this.Type = EType.Utility;
                 this.EnableIntermediatePath();
             }
@@ -549,7 +549,7 @@ namespace VSSolutionBuilder
             {
                 if (System.String.IsNullOrEmpty(this.PlatformToolset))
                 {
-                    throw new Bam.Core.Exception("Platform toolset not set for project {0}", this.Project.ProjectPath);
+                    throw new Bam.Core.Exception($"Platform toolset not set for project {this.Project.ProjectPath}");
                 }
             }
             var propGroup = document.CreateVSPropertyGroup(label: "Configuration", condition: this.ConditionText, parentEl: parentEl);
@@ -730,13 +730,7 @@ namespace VSSolutionBuilder
                 else
                 {
                     // prefix the relative path with the VS macro
-                    output_paths.Add(
-                        System.String.Format(
-                            "{0}{1}",
-                            candidate.Key,
-                            candidate.Value
-                        )
-                    );
+                    output_paths.Add($"{candidate.Key}{candidate.Value}");
                 }
             }
             return output_paths.ToString(';');
