@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from optparse import OptionParser
+import argparse
 import os
 import platform
 import subprocess
@@ -58,11 +58,20 @@ def process_path(tests_dir, name, version):
 
 
 if __name__ == "__main__":
-    parser = OptionParser()
-    parser.add_option('--name')
-    parser.add_option('--version', default=None)
-    (options, args) = parser.parse_args()
-    if not options.name:
+    parser = argparse.ArgumentParser(description='Add new dependent to test packages')
+    parser.add_argument('--name', help="Name of package to add")
+    parser.add_argument('--version', default=None, required=False, help="Optional version of package to add")
+    parser.add_argument('--repository', default=None, required=False, help="Optional path to the repository to affect. Default is the BAM default repository.")
+    args = parser.parse_args()
+    if not args.name:
         parser.error('Package name is required')
-    tests_dir = get_bam_testsdir()
-    process_path(tests_dir, options.name, options.version)
+    if args.repository:
+        tests_dir = os.path.abspath(args.repository)
+        if not os.path.isdir(tests_dir):
+            parser.error('Repository does not exist')
+        tests_dir = os.path.join(tests_dir, "tests")
+        if not os.path.isdir(tests_dir):
+            parser.error("No tests subdirectory of this repository, %s" % tests_dir)
+    else:
+        tests_dir = get_bam_testsdir()
+    process_path(tests_dir, args.name, args.version)
