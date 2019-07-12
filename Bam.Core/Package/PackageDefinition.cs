@@ -1158,8 +1158,7 @@ namespace Bam.Core
                     message.AppendLine($" required by {current.XMLFilename} from the following package definition files:");
                     foreach (var candidate in candidates)
                     {
-                        message.AppendFormat(candidate.XMLFilename);
-                        message.AppendLine();
+                        message.AppendLine(candidate.XMLFilename);
                     }
                     var packageRepos = new StringArray();
                     Graph.Instance.PackageRepositories.ToList().ForEach(item => packageRepos.AddUnique(item.RootPath));

@@ -806,7 +806,7 @@ namespace Bam.Core
             try
             {
                 var args = new System.Text.StringBuilder();
-                args.AppendFormat($"build {projectPath} ");
+                args.Append($"build {projectPath} ");
                 if (Graph.Instance.CompileWithDebugSymbols)
                 {
                     args.Append("-c Debug ");
@@ -815,7 +815,7 @@ namespace Bam.Core
                 {
                     args.Append("-c Release ");
                 }
-                args.AppendFormat($"-o {System.IO.Path.GetDirectoryName(outputAssemblyPath)} ");
+                args.Append($"-o {System.IO.Path.GetDirectoryName(outputAssemblyPath)} ");
                 args.Append("-v quiet ");
                 var dotNetResult = OSUtilities.RunExecutable(
                     "dotnet",
@@ -825,9 +825,10 @@ namespace Bam.Core
             }
             catch (RunExecutableException exception)
             {
+                var escapedCompilerOutput = exception.Result.StandardOutput.Replace("{", "{{}").Replace("}", "}}");
                 throw new Exception(
                     exception,
-                    $"Failed to build the packages:{System.Environment.NewLine}{exception.Result.StandardOutput}"
+                    $"Failed to build the packages:{System.Environment.NewLine}{escapedCompilerOutput}"
                 );
             }
 
