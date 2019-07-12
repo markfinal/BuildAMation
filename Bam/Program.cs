@@ -106,6 +106,12 @@ namespace Bam
                     return;
                 }
 
+                if (Core.CommandLineProcessor.Evaluate(new Core.Options.SetDependentDefaultVersion()))
+                {
+                    Core.PackageUtilities.SetDependentDefaultVersion();
+                    return;
+                }
+
                 if (Core.CommandLineProcessor.Evaluate(new Core.Options.ShowDefinitionFile()))
                 {
                     Core.Graph.Instance.SkipPackageSourceDownloads = true;

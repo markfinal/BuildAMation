@@ -137,6 +137,54 @@ namespace Bam.Core
             }
         }
 
+
+        /// <summary>
+        /// Utility method for setting the default version of a dependent package in the master package.
+        /// </summary>
+        public static void
+        SetDependentDefaultVersion()
+        {
+            var packageNameArgument = new Options.PackageName();
+            var packageName = CommandLineProcessor.Evaluate(packageNameArgument);
+            if (null == packageName)
+            {
+                throw new Exception($"No name was defined. Use {(packageNameArgument as ICommandLineArgument).LongName} on the command line to specify it.");
+            }
+
+            Graph.Instance.SkipPackageSourceDownloads = true;
+            var masterPackage = GetMasterPackage();
+            if (!masterPackage.Dependents.Any(item => item.name.Equals(packageName, System.StringComparison.Ordinal)))
+            {
+                throw new Exception($"Package dependency {packageName} is not present");
+            }
+
+            var packageVersionArgument = new Options.PackageVersion();
+            var packageVersion = CommandLineProcessor.Evaluate(packageVersionArgument);
+            if (null == packageVersion)
+            {
+                throw new Exception($"No version was defined. Use {(packageVersionArgument as ICommandLineArgument).LongName} on the command line to specify it.");
+            }
+
+            // set the new default version
+            var newDefaultVersion = masterPackage.Dependents.FirstOrDefault(item => item.name.Equals(packageName, System.StringComparison.Ordinal) && item.version.Equals(packageVersion, System.StringComparison.Ordinal));
+            if (default((string name, string version, bool? isDefault)).Equals(newDefaultVersion))
+            {
+                throw new Exception($"Package dependency {packageName}-{packageVersion} is not present");
+            }
+            masterPackage.Dependents.Remove(newDefaultVersion);
+            masterPackage.Dependents.Add((packageName, packageVersion, true));
+
+            // all other versions are not default
+            var nonDefaultVersions = masterPackage.Dependents.Where(item => item.name.Equals(packageName, System.StringComparison.Ordinal) && !item.version.Equals(packageVersion, System.StringComparison.Ordinal)).ToList();
+            foreach (var dep in nonDefaultVersions)
+            {
+                masterPackage.Dependents.Remove(dep);
+                masterPackage.Dependents.Add((dep.name, dep.version, null));
+            }
+
+            masterPackage.Write();
+        }
+
         /// <summary>
         /// Get the preprocessor define specifying the Bam Core version.
         /// </summary>
