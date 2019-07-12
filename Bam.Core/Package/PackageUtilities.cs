@@ -90,7 +90,7 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Utility method for adding a dependent package.
+        /// Utility method for adding a dependent package to the master package.
         /// </summary>
         public static void
         AddDependentPackage()
@@ -126,7 +126,6 @@ namespace Bam.Core
             // validate that the addition is ok
             try
             {
-                Graph.Instance.SkipPackageSourceDownloads = true;
                 PackageUtilities.IdentifyAllPackages(false);
             }
             catch (Exception exception)

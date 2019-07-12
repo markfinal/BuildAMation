@@ -38,6 +38,6 @@ namespace Bam.Core.Options
     {
         string ICommandLineArgument.ShortName => null;
         string ICommandLineArgument.LongName => "--adddependent";
-        string ICommandLineArgument.ContextHelp => "Add a dependent package to that in the current directory.";
+        string ICommandLineArgument.ContextHelp => "Add a dependent package to the master package.";
     }
 }
