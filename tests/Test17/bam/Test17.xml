@@ -3,6 +3,7 @@
   <Description>Exercise dependency sorting to ensure correctness. Does not build anything.</Description>
   <Dependents>
     <Package name="Clang" version="Xcode10" />
+    <Package name="Clang" version="Xcode11" />
     <Package name="Clang" version="Xcode4" />
     <Package name="Clang" version="Xcode5" />
     <Package name="Clang" version="Xcode6" />
