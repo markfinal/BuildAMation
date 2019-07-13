@@ -72,7 +72,7 @@ namespace VSSolutionBuilder
                 {
                     args.Add("set");
                     var content = new System.Text.StringBuilder();
-                    content.Append("${envVar.Key}=");
+                    content.Append($"{envVar.Key}=");
                     foreach (var value in envVar.Value)
                     {
                         content.Append($"{value.ToStringQuoteIfNecessary()};");
