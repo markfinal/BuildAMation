@@ -3,18 +3,18 @@
   <Description>Simple tests, exercising C compilation</Description>
   <Dependents>
     <Package name="C" />
-    <Package name="Clang" version="Xcode10" />
+    <Package name="Clang" version="Xcode10" default="true" />
     <Package name="Clang" version="Xcode11" />
     <Package name="Clang" version="Xcode4" />
     <Package name="Clang" version="Xcode5" />
     <Package name="Clang" version="Xcode6" />
     <Package name="Clang" version="Xcode7" />
-    <Package name="Clang" version="Xcode8" default="true" />
+    <Package name="Clang" version="Xcode8" />
     <Package name="Clang" version="Xcode9" />
-    <Package name="Gcc" version="4.8" default="true" />
+    <Package name="Gcc" version="4.8" />
     <Package name="Gcc" version="5" />
     <Package name="Gcc" version="6" />
-    <Package name="Gcc" version="7" />
+    <Package name="Gcc" version="7" default="true" />
     <Package name="Gcc" version="8" />
     <Package name="Gcc" version="9" />
     <Package name="MakeFileBuilder" />
@@ -22,9 +22,9 @@
     <Package name="NativeBuilder" />
     <Package name="VisualC" version="10.0" />
     <Package name="VisualC" version="11.0" />
-    <Package name="VisualC" version="12.0" default="true" />
+    <Package name="VisualC" version="12.0" />
     <Package name="VisualC" version="14.0" />
-    <Package name="VisualC" version="15.0" />
+    <Package name="VisualC" version="15.0" default="true" />
     <Package name="VisualC" version="16" />
     <Package name="VSSolutionBuilder" />
     <Package name="XcodeBuilder" />

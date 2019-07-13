@@ -1,6 +1,10 @@
-12-Jul-2019 Fixes #573. Remove extra test harness logging statement, which made it look like Xcode schemes were built in duplication.
+13-Jul-2019 Fixes #534. Added --setdependentdefaultversion option to bam. Requires the --pkgname and --pkgversion options. This change the default version of the named package in the master package.
+Updated tests to use the following default toolchains:
+- Clang-Xcode10 (minimum version in Mojave)
+- Gcc-7         (assuming default Ubuntu 18.04 LTS compiler; can be installed on CentOS7 with http://blog.stevedoria.net/20180214/how-to-install-gcc-7-on-centos-7)
+- VisualC-15.0  (VisualStudio 2017 as a stable version, since 2019 has only recently been released)
 
-12-Jul-2019 Fixes #534. Added --setdependentdefaultversion option to bam. Requires the --pkgname and --pkgversion options. This change the default version of the named package in the master package.
+12-Jul-2019 Fixes #573. Remove extra test harness logging statement, which made it look like Xcode schemes were built in duplication.
 
 12-Jul-2019 Fixes #571. Added Clang-Xcode11 package. This currently corresponds to the Xcode11 beta 3 package, but will hopefully be compatible with RTM.
 
