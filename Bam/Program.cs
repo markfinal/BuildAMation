@@ -117,7 +117,8 @@ namespace Bam
                     Core.Graph.Instance.SkipPackageSourceDownloads = true;
                     var rootNode = Core.PackageUtilities.IdentifyAllPackages(
                         allowDuplicates: true,
-                        enforceBamAssemblyVersions: false
+                        enforceBamAssemblyVersions: false,
+                        noThrow: true
                     );
                     Core.Graph.Instance.MasterPackage.Show(rootNode);
                     return;

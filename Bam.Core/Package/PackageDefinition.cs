@@ -1263,43 +1263,13 @@ namespace Bam.Core
         GetBuildDirectory() => System.IO.Path.Combine(Graph.Instance.BuildRoot, this.FullName);
 
         private void
-        ShowDependencies(
-            int depth,
-            Array<PackageDefinition> visitedPackages,
-            string packageFormatting)
-        {
-            visitedPackages.Add(this);
-            foreach (var (depName, depVersion, depIsDefault) in this.Dependents)
-            {
-                var dep = Graph.Instance.Packages.First(item =>
-                    System.String.Equals(item.Name, depName, System.StringComparison.Ordinal) &&
-                    System.String.Equals(item.Version, depVersion, System.StringComparison.Ordinal)
-                );
-                if (visitedPackages.Contains(dep))
-                {
-                    continue;
-                }
-
-                var indent = new string(' ', depth * 4);
-                var isDefault = depIsDefault.GetValueOrDefault(false) ? "*" : System.String.Empty;
-                var formattedName = $"{indent}{dep.FullName}{isDefault}";
-                var repo = dep.PackageRepositories.Any() ? dep.PackageRepositories[0] : "Found in " + System.IO.Path.GetDirectoryName(dep.GetPackageDirectory());
-
-                Log.MessageAll(packageFormatting, formattedName, repo);
-
-                if (dep.Dependents.Any())
-                {
-                    dep.ShowDependencies(depth + 1, visitedPackages, packageFormatting);
-                }
-            }
-        }
-
-        private void
         DumpTreeInternal(
+            PackageTreeNode parent,
             PackageTreeNode node,
             int depth,
             System.Collections.Generic.Dictionary<PackageTreeNode, int> encountered,
-            Array<PackageTreeNode> displayed)
+            Array<PackageTreeNode> displayed,
+            string formatting)
         {
             if (!encountered.ContainsKey(node))
             {
@@ -1313,10 +1283,31 @@ namespace Bam.Core
                 }
             }
 
-            var indent = new string('\t', depth);
+            var indent = new string(' ', 4 * depth); // must use spaces; tabs don't work well with formatted strings and alignment
             if (null != node.Definition)
             {
-                Log.MessageAll($"{indent}{node.Definition.FullName}");
+                var repoIndex = Graph.Instance.PackageRepositories.ToList().IndexOf(node.Definition.Repo);
+                string packageNameFormatted;
+                string packageIsDefault = string.Empty;
+                if (1 == depth)
+                {
+                    // depth=1 => children of the master package
+                    (_, _, var isDefault) = parent.Definition.Dependents.First(item => item.name == node.Name && item.version == node.Version);
+                    if (isDefault.HasValue && isDefault.Value)
+                    {
+                        packageNameFormatted = $"{indent}{node.Definition.FullName}";
+                        packageIsDefault = "*";
+                    }
+                    else
+                    {
+                        packageNameFormatted = $"{indent}{node.Definition.FullName}";
+                    }
+                }
+                else
+                {
+                    packageNameFormatted = $"{indent}{node.Definition.FullName}";
+                }
+                Log.MessageAll(formatting, packageNameFormatted, packageIsDefault, repoIndex);
             }
             else
             {
@@ -1336,7 +1327,7 @@ namespace Bam.Core
             }
             foreach (var child in node.Children)
             {
-                this.DumpTreeInternal(child, depth + 1, encountered, displayed);
+                this.DumpTreeInternal(node, child, depth + 1, encountered, displayed, formatting);
             }
         }
 
@@ -1423,22 +1414,21 @@ namespace Bam.Core
             }
 
             Log.MessageAll("\nPackage repositories that the system is aware of (may be more than during builds):");
+            var repoIndex = 0;
             foreach (var repo in Graph.Instance.PackageRepositories)
             {
-                Log.MessageAll($"\t{repo.ToString()}");
+                Log.MessageAll($"\t{repoIndex++}: {repo.ToString()}");
             }
 
             if (this.Dependents.Any())
             {
                 Log.MessageAll("\nDependent packages (* = default version):");
-                var packageFormatting = System.String.Format("{{0, -48}} {{1, 32}}");
-                Log.MessageAll(packageFormatting, "Package Name", "From Repository");
-                var visitedPackages = new Array<PackageDefinition>();
-                this.ShowDependencies(1, visitedPackages, packageFormatting);
-                Log.MessageAll("\n-----");
+                var packageFormatting = System.String.Format("{{0, -40}} {{1,-7}} {{2, -5}}");
+                Log.MessageAll(packageFormatting, "Package Name", "Default", "Repository Index");
+                Log.MessageAll(packageFormatting, new string('-', 40), new string('-', 7), new string('-', 16));
                 var encountered = new System.Collections.Generic.Dictionary<PackageTreeNode, int>();
                 var displayed = new Array<PackageTreeNode>();
-                this.DumpTreeInternal(rootNode, 0, encountered, displayed);
+                this.DumpTreeInternal(null, rootNode, 0, encountered, displayed, packageFormatting);
             }
             else
             {

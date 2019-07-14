@@ -373,7 +373,10 @@ namespace Bam.Core
                     Array<PackageTreeNode> parents,
                     PackageTreeNode node)
                 {
-                    definitions.AddUnique(node.Definition);
+                    if (null != node.Definition)
+                    {
+                        definitions.AddUnique(node.Definition);
+                    }
                     foreach (var child in node.InternalChildren)
                     {
                         // check for cyclic dependencies

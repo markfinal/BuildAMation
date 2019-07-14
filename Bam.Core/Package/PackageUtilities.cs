@@ -551,10 +551,12 @@ namespace Bam.Core
         /// </summary>
         /// <param name="allowDuplicates">If set to <c>true</c> allow duplicates. Used to show the full extent of the definition file.</param>
         /// <param name="enforceBamAssemblyVersions">If set to <c>true</c> enforce bam assembly versions.</param>
+        /// <param name="noThrow">If set to <c>true</c> do not throw under exceptional circumstances. Used to show the full extent of the definition file.</param>
         public static PackageTreeNode
         IdentifyAllPackages(
             bool allowDuplicates = false,
-            bool enforceBamAssemblyVersions = true)
+            bool enforceBamAssemblyVersions = true,
+            bool noThrow = false)
         {
             var masterDefinitionFile = GetMasterPackage();
 
@@ -619,7 +621,7 @@ namespace Bam.Core
                 undiscovered = rootNode.UndiscoveredPackages;
             }
 
-            if (undiscovered.Any())
+            if (undiscovered.Any() && !noThrow)
             {
                 var message = new System.Text.StringBuilder();
                 message.AppendLine("Some packages were not found in any repository:");

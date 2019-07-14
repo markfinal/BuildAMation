@@ -1,3 +1,5 @@
+14-Jul-2019 Fixes #572. Cleaned up the output of --showdefinition, after it was changed in alpha 4.
+
 13-Jul-2019 Fixes #534. Added --setdependentdefaultversion option to bam. Requires the --pkgname and --pkgversion options. This change the default version of the named package in the master package.
 Updated tests to use the following default toolchains:
 - Clang-Xcode10 (minimum version in Mojave)
