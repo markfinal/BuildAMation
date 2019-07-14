@@ -1,3 +1,6 @@
+14-Jul-2019 Fixes #574. The default package repository no longer appears twice if running integration tests.
+Added Bam.Core.IOWrapper.PathsAreEqual, which takes into account that Windows APIs may return paths with differing cases on the drive letters.
+
 14-Jul-2019 Fixes #572. Cleaned up the output of --showdefinition, after it was changed in alpha 4.
 
 13-Jul-2019 Fixes #534. Added --setdependentdefaultversion option to bam. Requires the --pkgname and --pkgversion options. This change the default version of the named package in the master package.

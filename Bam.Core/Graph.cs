@@ -992,7 +992,7 @@ namespace Bam.Core
             params PackageDefinition[] insertedDefinitionFiles)
         {
             var repo = this.InternalPackageRepositories.FirstOrDefault(item =>
-                System.String.Equals(item.RootPath, repoPath, System.StringComparison.Ordinal)
+                IOWrapper.PathsAreEqual(item.RootPath, repoPath)
             );
             if (null != repo)
             {
@@ -1003,6 +1003,15 @@ namespace Bam.Core
             {
                 // needs to be added as structured
                 repoPath = System.IO.Path.GetDirectoryName(repoPath);
+
+                // re-test
+                repo = this.InternalPackageRepositories.FirstOrDefault(item =>
+                    IOWrapper.PathsAreEqual(item.RootPath, repoPath)
+                );
+                if (null != repo)
+                {
+                    return repo;
+                }
             }
             repo = new PackageRepository(repoPath, insertedDefinitionFiles);
             this.InternalPackageRepositories.Add(repo);

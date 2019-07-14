@@ -34,6 +34,21 @@ namespace Bam.Core
     /// </summary>
     public static class IOWrapper
     {
+        private static readonly System.StringComparison pathComparer;
+
+        static IOWrapper()
+        {
+            if (OSUtilities.IsWindowsHosting)
+            {
+                // mostly to get around Windows APIs returning inconsistent casing on drive letters
+                pathComparer = System.StringComparison.OrdinalIgnoreCase;
+            }
+            else
+            {
+                pathComparer = System.StringComparison.Ordinal;
+            }
+        }
+
         /// <summary>
         /// Wrapper around System.IO.Directory.CreateDirectory, catching exceptions thrown
         /// and embedding them into a Bam.Core.Exception with more semantic detail.
@@ -132,6 +147,20 @@ namespace Bam.Core
                 return path.Replace(" ", "\\ ");
             }
             return path;
+        }
+
+        /// <summary>
+        /// Compare two paths.
+        /// </summary>
+        /// <param name="path1">First path</param>
+        /// <param name="path2">Second path</param>
+        /// <returns>true if the paths are equal, false otherwise.</returns>
+        static public bool
+        PathsAreEqual(
+            string path1,
+            string path2)
+        {
+            return System.String.Equals(path1, path2, pathComparer);
         }
     }
 }
