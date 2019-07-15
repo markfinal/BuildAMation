@@ -1,3 +1,5 @@
+15-Jul-2019 ======== Version 2.0.0 beta 1 Release ========
+
 14-Jul-2019 Fixes #574. The default package repository no longer appears twice if running integration tests.
 Added Bam.Core.IOWrapper.PathsAreEqual, which takes into account that Windows APIs may return paths with differing cases on the drive letters.
 
