@@ -30,11 +30,20 @@
 using System.Linq;
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class corresponding to the XCBuildConfiguration in an Xcode project.
+    /// </summary>
     public sealed class Configuration :
         Object
     {
         private readonly System.Collections.Generic.Dictionary<string, ConfigurationValue> Settings = new System.Collections.Generic.Dictionary<string, ConfigurationValue>();
 
+        /// <summary>
+        /// Create an instance of the Configuration.
+        /// </summary>
+        /// <param name="config">The Bam EConfiguration corresponding to this Configuration.</param>
+        /// <param name="project">The Project that the Configuration belongs.</param>
+        /// <param name="target">The Target that the Configuration belongs.</param>
         public Configuration(
             Bam.Core.EConfiguration config,
             Project project,
@@ -48,9 +57,16 @@ namespace XcodeBuilder
             this.BuildFiles = new Bam.Core.Array<BuildFile>();
         }
 
+        /// <summary>
+        /// Get the EConfiguration associated with this Configuration.
+        /// </summary>
         public Bam.Core.EConfiguration Config { get; private set; }
         private Bam.Core.StringArray PreBuildCommands { get; set; }
 
+        /// <summary>
+        /// Append pre-build commands to this configuration.
+        /// </summary>
+        /// <param name="commands">Array of shell commands.</param>
         public void
         AppendPreBuildCommands(
             Bam.Core.StringArray commands)
@@ -63,6 +79,10 @@ namespace XcodeBuilder
 
         private Bam.Core.StringArray PostBuildCommands { get; set; }
 
+        /// <summary>
+        /// Append post-build commands to this configuration.
+        /// </summary>
+        /// <param name="commands">Array of shell commands.</param>
         public void
         AppendPostBuildCommands(
             Bam.Core.StringArray commands)
@@ -73,8 +93,16 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Get the list of BuildFiles for this Configuration.
+        /// </summary>
         public Bam.Core.Array<BuildFile> BuildFiles { get; private set; }
 
+        /// <summary>
+        /// Get or set the settings for a given key in the Configuration.
+        /// </summary>
+        /// <param name="key">Named key in the settings.</param>
+        /// <returns>Value associated with the key.</returns>
         public ConfigurationValue this[string key]
         {
             get
@@ -95,6 +123,10 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Set this Configuration's product name.
+        /// </summary>
+        /// <param name="productName">Name of the product.</param>
         public void
         SetProductName(
             Bam.Core.TokenizedString productName)
@@ -102,6 +134,11 @@ namespace XcodeBuilder
             this["PRODUCT_NAME"] = new UniqueConfigurationValue(productName.ToString());
         }
 
+        /// <summary>
+        /// Serialize the Configuration.
+        /// </summary>
+        /// <param name="text">StringBuilder to write to.</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public override void
         Serialize(
             System.Text.StringBuilder text,
@@ -140,6 +177,11 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Serialize the pre-build commands for the Configuration.
+        /// </summary>
+        /// <param name="text">StringBuilder into which to write.</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public void
         SerializePreBuildCommands(
             System.Text.StringBuilder text,
@@ -148,6 +190,11 @@ namespace XcodeBuilder
             this.SerializeCommmandList(text, indentLevel, this.PreBuildCommands);
         }
 
+        /// <summary>
+        /// Serialize the post-build commands for the Configuration.
+        /// </summary>
+        /// <param name="text">StringBuilder into which to write.</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public void
         SerializePostBuildCommands(
             System.Text.StringBuilder text,

@@ -30,20 +30,31 @@
 using System.Linq;
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class representing a PBXNativeTarget in an Xcode project
+    /// </summary>
     public sealed class Target :
         Object
     {
+        /// <summary>
+        /// Type of the product of the target
+        /// </summary>
         public enum EProductType
         {
-            NA,
-            StaticLibrary,
-            Executable,
-            DynamicLibrary,
-            ApplicationBundle,
-            ObjFile,
-            Utility
+            NA,                 //!< Unknown
+            StaticLibrary,      //!< Static library
+            Executable,         //!< Executable 
+            DynamicLibrary,     //!< Dylib
+            ApplicationBundle,  //!< Application bundle
+            ObjFile,            //!< Object file
+            Utility             //!< Utility
         }
 
+        /// <summary>
+        /// Create an instance.
+        /// </summary>
+        /// <param name="module">Module associated with</param>
+        /// <param name="project">Project to add the Target to.</param>
         public Target(
             Bam.Core.Module module,
             Project project)
@@ -105,22 +116,35 @@ namespace XcodeBuilder
                 });
         }
 
+        /// <summary>
+        /// Get the Module
+        /// </summary>
         public Bam.Core.Module Module { get; private set; }
 
         // as value types cannot be used in lock statements, have a separate lock guard
         private static readonly object TypeGuard = new object();
         private EProductType Type { get; set; }
 
+        /// <summary>
+        /// Get the ConfigurationList
+        /// </summary>
         public ConfigurationList ConfigurationList { get; private set; }
 
         private FileReference FileReference = null;
 
+        /// <summary>
+        /// Get the FileReference to the Target.
+        /// </summary>
+        /// <returns></returns>
         public FileReference
         GetFileReference()
         {
             return this.FileReference;
         }
 
+        /// <summary>
+        /// Get the list of TargetDependencies
+        /// </summary>
         public Bam.Core.Array<TargetDependency> TargetDependencies { get; private set; }
         private Bam.Core.Array<Target> ProposedTargetDependencies { get; set; }
         private System.Lazy<Bam.Core.Array<BuildPhase>> BuildPhases { get; set; }
@@ -135,11 +159,21 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Get the sources build phase
+        /// </summary>
         public System.Lazy<SourcesBuildPhase> SourcesBuildPhase { get; private set; }
         private System.Lazy<FrameworksBuildPhase> FrameworksBuildPhase { get; set; }
         private System.Lazy<ShellScriptBuildPhase> PreBuildBuildPhase { get; set; }
+        /// <summary>
+        /// Get the shell script build phase
+        /// </summary>
         public System.Lazy<ShellScriptBuildPhase> PostBuildBuildPhase { get; private set; }
 
+        /// <summary>
+        /// Set the type of the Target
+        /// </summary>
+        /// <param name="type"></param>
         public void
         SetType(
             EProductType type)
@@ -169,8 +203,16 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Is this a utility type Target?
+        /// </summary>
         public bool IsUtilityType => this.Type == EProductType.Utility;
 
+        /// <summary>
+        /// Get the Configuration for the Target
+        /// </summary>
+        /// <param name="module">Associated module</param>
+        /// <returns></returns>
         public Configuration
         GetConfiguration(
             Bam.Core.Module module)
@@ -188,6 +230,12 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Ensure that the output file exists on the Target
+        /// </summary>
+        /// <param name="path">TokenizedString to the output file</param>
+        /// <param name="type">Type of the file reference</param>
+        /// <param name="productType">Product type of the Target</param>
         public void
         EnsureOutputFileReferenceExists(
             Bam.Core.TokenizedString path,
@@ -316,6 +364,12 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Ensure that a source build file exists on the Target
+        /// </summary>
+        /// <param name="path">TokenizedString for the build file</param>
+        /// <param name="type">File type of the file reference</param>
+        /// <returns>The Build File from the Target</returns>
         public BuildFile
         EnsureSourceBuildFileExists(
             Bam.Core.TokenizedString path,
@@ -330,6 +384,13 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Ensure that the Frameworks build file exists
+        /// </summary>
+        /// <param name="path">TokenizedString for the frameworks build file</param>
+        /// <param name="type">File type of the file reference</param>
+        /// <param name="sourceTree">Source tree</param>
+        /// <returns>The BuildFile created</returns>
         public BuildFile
         EnsureFrameworksBuildFileExists(
             Bam.Core.TokenizedString path,
@@ -345,6 +406,10 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Ensure that the header file exists on the Target.
+        /// </summary>
+        /// <param name="path">TokenizedString for the header</param>
         public void
         EnsureHeaderFileExists(
             Bam.Core.TokenizedString path)
@@ -353,6 +418,13 @@ namespace XcodeBuilder
             this.EnsureFileOfTypeExists(path, FileReference.EFileType.HeaderFile, relativePath: relativePath);
         }
 
+        /// <summary>
+        /// Ensure that a file of the given type exists.
+        /// </summary>
+        /// <param name="path">TokenizedString for the file</param>
+        /// <param name="type">Type of that file</param>
+        /// <param name="relativePath">Relative path to use</param>
+        /// <param name="explicitType">Should this use an explicit type?</param>
         public void
         EnsureFileOfTypeExists(
             Bam.Core.TokenizedString path,
@@ -370,6 +442,10 @@ namespace XcodeBuilder
             this.AddFileRefToGroup(fileRef);
         }
 
+        /// <summary>
+        /// Add a dependency on another Target
+        /// </summary>
+        /// <param name="other">Target that is a dependency</param>
         public void
         DependsOn(
             Target other)
@@ -387,6 +463,10 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Add an order only dependency on another Target
+        /// </summary>
+        /// <param name="other">Target that is a dependency</param>
         public void
         Requires(
             Target other)
@@ -397,6 +477,9 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Resolve all target dependencies
+        /// </summary>
         public void
         ResolveTargetDependencies()
         {
@@ -504,6 +587,12 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Add prebuild commands to the Target
+        /// </summary>
+        /// <param name="commands">List of commands</param>
+        /// <param name="configuration">Configuration to add to</param>
+        /// <param name="outputPaths">List of output paths</param>
         public void
         AddPreBuildCommands(
             Bam.Core.StringArray commands,
@@ -523,6 +612,11 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Add post build commands
+        /// </summary>
+        /// <param name="commands">Commands to add</param>
+        /// <param name="configuration">Configuration to add to</param>
         public void
         AddPostBuildCommands(
             Bam.Core.StringArray commands,
@@ -537,6 +631,9 @@ namespace XcodeBuilder
             configuration.AppendPostBuildCommands(commands);
         }
 
+        /// <summary>
+        /// Make this Target into an application bundle
+        /// </summary>
         public void
         MakeApplicationBundle()
         {
@@ -583,6 +680,11 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Serialize the Target
+        /// </summary>
+        /// <param name="text">StringBuilder to write to</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public override void
         Serialize(
             System.Text.StringBuilder text,

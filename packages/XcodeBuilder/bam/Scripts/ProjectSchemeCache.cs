@@ -30,8 +30,15 @@
 using System.Linq;
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class representing the .xcscheme cache file
+    /// </summary>
     public sealed class ProjectSchemeCache
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="project">Project associated with the scheme cache.</param>
         public
         ProjectSchemeCache(
             Project project)
@@ -280,6 +287,9 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Serialise the scheme cache.
+        /// </summary>
         public void
         Serialize()
         {

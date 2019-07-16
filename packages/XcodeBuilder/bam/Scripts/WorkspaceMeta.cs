@@ -29,6 +29,9 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Meta data for workspaces
+    /// </summary>
     public sealed class WorkspaceMeta
     {
         private readonly bool ProjectPerModule = false;
@@ -53,6 +56,11 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Ensure that a target exists on the workspace
+        /// </summary>
+        /// <param name="module">Module associated with target</param>
+        /// <returns>Target created</returns>
         public Target
         EnsureTargetExists(
             Bam.Core.Module module)
@@ -169,6 +177,10 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Serialize the workspace metadata
+        /// </summary>
+        /// <returns>Directory containing the workspace</returns>
         public string
         Serialize()
         {

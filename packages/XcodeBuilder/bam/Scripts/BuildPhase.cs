@@ -30,17 +30,34 @@
 using System.Linq;
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class corresponding to a generic build phase. Concrete classes inherit from this.
+    /// </summary>
     public abstract class BuildPhase :
         Object
     {
+        /// <summary>
+        /// Construct an instane of the build phase.
+        /// </summary>
+        /// <param name="project">Xcode Project in which this belongs.</param>
+        /// <param name="name">Name of the build phase.</param>
+        /// <param name="isa">The IsA of the build phase.</param>
+        /// <param name="hashComponents">Array corresponding to the hash of the components.</param>
         protected BuildPhase(
             Project project,
             string name,
             string isa,
             params string[] hashComponents)
             :
-            base(project, name, isa, hashComponents) => this.BuildFiles = new Bam.Core.Array<BuildFile>();
+            base(project, name, isa, hashComponents)
+        {
+            this.BuildFiles = new Bam.Core.Array<BuildFile>();
+        }
 
+        /// <summary>
+        /// Add a BuildFile to this build phase.
+        /// </summary>
+        /// <param name="other">The BuildFile to add.</param>
         public void
         AddBuildFile(
             BuildFile other)
@@ -56,10 +73,26 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Get the build action mask.
+        /// </summary>
         protected abstract string BuildActionMask { get; }
+
+        /// <summary>
+        /// Get whether this BuildPhase only runs for deployment postprocessing.
+        /// </summary>
         protected abstract bool RunOnlyForDeploymentPostprocessing { get; }
+
+        /// <summary>
+        /// Get the BuildFiles associated with this BuildPhase.
+        /// </summary>
         public Bam.Core.Array<BuildFile> BuildFiles { get; protected set; }
 
+        /// <summary>
+        /// Serialize the BuildPhase.
+        /// </summary>
+        /// <param name="text">StringBuilder that is written to.</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public override void
         Serialize(
             System.Text.StringBuilder text,

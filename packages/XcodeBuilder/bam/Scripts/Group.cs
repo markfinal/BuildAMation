@@ -30,9 +30,17 @@
 using System.Linq;
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class representing a PBXGroup in an Xcode project.
+    /// </summary>
     public sealed class Group :
         Object
     {
+        /// <summary>
+        /// Constuct a group of the given name.
+        /// </summary>
+        /// <param name="project">Project in which to add the Group.</param>
+        /// <param name="name">Name of the group.</param>
         public Group(
             Project project,
             string name)
@@ -43,6 +51,12 @@ namespace XcodeBuilder
             this.Children = new Bam.Core.Array<Object>();
         }
 
+        /// <summary>
+        /// Construct a group of the given name, in the project for the given Target.
+        /// </summary>
+        /// <param name="target">Target within the Project to add the group.</param>
+        /// <param name="name">Name of the group.</param>
+        /// <param name="fullPath">Full path of the group.</param>
         public Group(
             Target target,
             string name,
@@ -54,6 +68,12 @@ namespace XcodeBuilder
             this.Children = new Bam.Core.Array<Object>();
         }
 
+        /// <summary>
+        /// Construct a group of the given name, containing the child Objects provided.
+        /// </summary>
+        /// <param name="project">Project that the Group is added to.</param>
+        /// <param name="name">Name of the group.</param>
+        /// <param name="children">List of child Objects to add to the group.</param>
         public Group(
             Project project,
             string name,
@@ -69,10 +89,25 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Get the source tree for the group.
+        /// </summary>
         public string SourceTree { get; private set; }
+
+        /// <summary>
+        /// Get the children for the group.
+        /// </summary>
         public Bam.Core.Array<Object> Children { get; private set; }
+
+        /// <summary>
+        /// Get the parent of the group.
+        /// </summary>
         public Group Parent { get; private set; }
 
+        /// <summary>
+        /// Add a child Object to the group.
+        /// </summary>
+        /// <param name="other">Object to add.</param>
         public void
         AddChild(
             Object other)
@@ -102,6 +137,11 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Serialize the group.
+        /// </summary>
+        /// <param name="text">StringBuilder to write to.</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public override void
         Serialize(
             System.Text.StringBuilder text,
