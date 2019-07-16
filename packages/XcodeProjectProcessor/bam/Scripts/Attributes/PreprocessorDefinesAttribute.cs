@@ -29,10 +29,18 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Attribute representing preprocessor definitions in Xcode.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PreprocessorDefinesAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute.
+        /// </summary>
+        /// <param name="property">Name of the property.</param>
+        /// <param name="ignore">Whether the property should be ignored.</param>
         public PreprocessorDefinesAttribute(
             string property,
             bool ignore = false

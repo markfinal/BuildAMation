@@ -29,9 +29,19 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Attribute representing a multi-valued enumeration property in Xcode.
+    /// </summary>
     public sealed class MultiEnumAttribute :
         EnumAttribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute
+        /// </summary>
+        /// <param name="key">The enum represented as an object</param>
+        /// <param name="property">The name of the property.</param>
+        /// <param name="value">The string value of the property.</param>
+        /// <param name="ignore">Whether to ignore the property.</param>
         public MultiEnumAttribute(
             object key,
             string property,

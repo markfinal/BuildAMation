@@ -29,10 +29,21 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Attribute to use for enumeration Settings properties to convert to Xcode data.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
     public abstract class EnumAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute.
+        /// </summary>
+        /// <param name="key">The enum represented, as an object.</param>
+        /// <param name="property">The name of the property.</param>
+        /// <param name="value">The string value of the property.</param>
+        /// <param name="type">Whether the property is uniquely or multi-valued.</param>
+        /// <param name="ignore">Whether the property is to be ignored.</param>
         protected EnumAttribute(
             object key,
             string property,
@@ -47,7 +58,14 @@ namespace XcodeProjectProcessor
             this.Value = value;
         }
 
+        /// <summary>
+        /// The enum represented.
+        /// </summary>
         public System.Enum Key { get; private set; }
+
+        /// <summary>
+        /// The value of the enum property as a string.
+        /// </summary>
         public string Value { get; private set; }
     }
 }

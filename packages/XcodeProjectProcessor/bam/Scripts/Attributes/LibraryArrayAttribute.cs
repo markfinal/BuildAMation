@@ -29,6 +29,9 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Attribute for converting arrays of libraries to Xcode projects
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class LibraryArrayAttribute :
         BaseAttribute
