@@ -29,9 +29,17 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class corresponding to the PBXBuildFile object in Xcode projects.
+    /// </summary>
     public sealed class BuildFile :
         Object
     {
+        /// <summary>
+        /// Construct an instance of a BuildFile.
+        /// </summary>
+        /// <param name="fileRef">FileReference corresponding to the BuildFile.</param>
+        /// <param name="target">Target to which the BuildFile is added.</param>
         public BuildFile(
             FileReference fileRef,
             Target target)
@@ -42,11 +50,31 @@ namespace XcodeBuilder
             this.OwningTarget = target;
         }
 
+        /// <summary>
+        /// Get the owning Target of the BuildFile.
+        /// </summary>
         public Target OwningTarget { get; private set; }
+
+        /// <summary>
+        /// Get the FileReference of the BuildFile.
+        /// </summary>
         public FileReference FileRef { get; private set; }
+
+        /// <summary>
+        /// Get or set the Settings on the BuildFile.
+        /// </summary>
         public Bam.Core.StringArray Settings { get; set; }
+
+        /// <summary>
+        /// Get or set the parent object of this BuildFile.
+        /// </summary>
         public Object Parent { get; set; }
 
+        /// <summary>
+        /// Serialize the BuildFile.
+        /// </summary>
+        /// <param name="text">The StringBuilder to write to.</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public override void
         Serialize(
             System.Text.StringBuilder text,

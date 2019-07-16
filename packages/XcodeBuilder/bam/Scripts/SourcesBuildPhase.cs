@@ -29,16 +29,30 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class representing a PBXSourcesBuildPhase in the Xcode project
+    /// </summary>
     public sealed class SourcesBuildPhase :
         BuildPhase
     {
+        /// <summary>
+        /// Construct a new instance
+        /// </summary>
+        /// <param name="target">Target associated with the build phase</param>
         public SourcesBuildPhase(
             Target target)
             :
             base(target.Project, "Sources", "PBXSourcesBuildPhase", target.GUID)
         {}
 
+        /// <summary>
+        /// Get the build action mask
+        /// </summary>
         protected override string BuildActionMask => "0";
+
+        /// <summary>
+        /// Whether this build phase runs only for deployment post processing
+        /// </summary>
         protected override bool RunOnlyForDeploymentPostprocessing => false;
     }
 }

@@ -30,23 +30,34 @@
 using System.Linq;
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class corresponding to a PBXCopyFilesBuildPhase in the Xcode project.
+    /// </summary>
     public sealed class CopyFilesBuildPhase :
         BuildPhase
     {
+        /// <summary>
+        /// Which sub folder is specified for the copy operation.
+        /// </summary>
         public enum ESubFolderSpec
         {
-            AbsolutePath = 0,
-            Wrapper = 1,
-            Executables = 6,
-            Resources = 7,
-            Frameworks = 10,
-            SharedFrameworks = 11,
-            SharedSupport = 12,
-            Plugins = 13,
-            JavaResources = 15,
-            ProductsDirectory = 16
+            AbsolutePath = 0,           //!< An absolute path
+            Wrapper = 1,                //!< A wrapper (?)
+            Executables = 6,            //!< Relative to executables
+            Resources = 7,              //!< Relative to resources
+            Frameworks = 10,            //!< Relative to frameworks
+            SharedFrameworks = 11,      //!< Relative to shared frameworks
+            SharedSupport = 12,         //!< Relative to shared support
+            Plugins = 13,               //!< Relative to plugins
+            JavaResources = 15,         //!< Relative to Java resources
+            ProductsDirectory = 16      //!< Relative to the products directory
         }
 
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="name">Name of the build phase.</param>
+        /// <param name="target">Target to add to.</param>
         public CopyFilesBuildPhase(
             string name,
             Target target)
@@ -57,11 +68,31 @@ namespace XcodeBuilder
             this.SubFolderSpec = ESubFolderSpec.AbsolutePath;
         }
 
+        /// <summary>
+        /// Get the build action mask.
+        /// </summary>
         protected override string BuildActionMask => "2147483647";
+
+        /// <summary>
+        /// Get whether the build phase only runs for deployment preprocessing.
+        /// </summary>
         protected override bool RunOnlyForDeploymentPostprocessing => false;
+
+        /// <summary>
+        /// Get the destination path.
+        /// </summary>
         public string DestinationPath { get; private set; }
+
+        /// <summary>
+        /// Get the sub-folder for the destination.
+        /// </summary>
         public ESubFolderSpec SubFolderSpec { get; set; }
 
+        /// <summary>
+        /// Serialize the CopyFilesBuildPhase.
+        /// </summary>
+        /// <param name="text">StringBuilder to write to.</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public override void
         Serialize(
             System.Text.StringBuilder text,

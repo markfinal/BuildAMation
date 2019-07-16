@@ -29,9 +29,20 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class representing a PBXReferenceProxy in an Xcode project
+    /// </summary>
     public sealed class ReferenceProxy :
         Object
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="project">Project to add the proxy to</param>
+        /// <param name="fileType">File type of the file reference</param>
+        /// <param name="path">TokenizedString for the file reference</param>
+        /// <param name="remoteRef">Remote reference object</param>
+        /// <param name="sourceTree">Source tree</param>
         public ReferenceProxy(
             Project project,
             FileReference.EFileType fileType,
@@ -49,11 +60,31 @@ namespace XcodeBuilder
             project.AppendReferenceProxy(this);
         }
 
+        /// <summary>
+        /// Get the file type
+        /// </summary>
         public FileReference.EFileType FileType { get; private set; }
+
+        /// <summary>
+        /// Get the path of the file reference
+        /// </summary>
         public Bam.Core.TokenizedString Path { get; private set; }
+
+        /// <summary>
+        /// Get the remote reference
+        /// </summary>
         public Object RemoteRef { get; private set; }
+
+        /// <summary>
+        /// Get the source tree
+        /// </summary>
         public FileReference.ESourceTree SourceTree { get; private set; }
 
+        /// <summary>
+        /// Seralize the proxy.
+        /// </summary>
+        /// <param name="text">StringBuilder to write to</param>
+        /// <param name="indentLevel">Number of tabs to indent by</param>
         public override void
         Serialize(
             System.Text.StringBuilder text,

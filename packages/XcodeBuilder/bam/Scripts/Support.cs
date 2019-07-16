@@ -30,6 +30,9 @@
 using System.Linq;
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Support classes for Xcode projet generation
+    /// </summary>
     public static partial class Support
     {
         private static void
@@ -164,6 +167,14 @@ namespace XcodeBuilder
             configuration = target.GetConfiguration(encapsulating);
         }
 
+        /// <summary>
+        /// Add pre build commands to the target.
+        /// </summary>
+        /// <param name="module">Module associated with</param>
+        /// <param name="target">Target to add the commands to</param>
+        /// <param name="configuration">Configuration within the Target</param>
+        /// <param name="commandLine">Command line to add</param>
+        /// <param name="outputPaths">Any output paths to add.</param>
         public static void
         AddPreBuildCommands(
             Bam.Core.Module module,
@@ -186,6 +197,17 @@ namespace XcodeBuilder
             );
         }
 
+        /// <summary>
+        /// Add a pre build step corresponding to a command line tool.
+        /// </summary>
+        /// <param name="module">Module associated with</param>
+        /// <param name="target">Target written to</param>
+        /// <param name="configuration">Configuration written to</param>
+        /// <param name="checkForNewer">Perform a newer check on files</param>
+        /// <param name="allowNonZeroSuccessfulExitCodes">Allow a non-zero exit code to be successful</param>
+        /// <param name="addOrderOnlyDependencyOnTool">Adding an order only dependency</param>
+        /// <param name="outputPaths">Add output paths</param>
+        /// <param name="redirectToFile">Redirect to a file</param>
         public static void
         AddPreBuildStepForCommandLineTool(
             Bam.Core.Module module,
@@ -247,6 +269,17 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Add a prebuild step for command line tool.
+        /// </summary>
+        /// <param name="module">Module associated with</param>
+        /// <param name="target">Target written to</param>
+        /// <param name="configuration">Configuration written to</param>
+        /// <param name="inputFileType">The file type of the input</param>
+        /// <param name="checkForNewer">Is there a check for a newer file?</param>
+        /// <param name="allowNonZeroSuccessfulExitCodes">Allow non-zero exit codes to be successful</param>
+        /// <param name="addOrderOnlyDependencyOnTool">Add an order only dependency</param>
+        /// <param name="outputPaths">Add output paths</param>
         public static void
         AddPreBuildStepForCommandLineTool(
             Bam.Core.Module module,
@@ -276,6 +309,13 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Add post build commands
+        /// </summary>
+        /// <param name="module">Module associated with</param>
+        /// <param name="target">Target added to</param>
+        /// <param name="configuration">Configuration added to</param>
+        /// <param name="customCommands">Custom command lines</param>
         public static void
         AddPostBuildCommands(
             Bam.Core.Module module,
@@ -293,6 +333,14 @@ namespace XcodeBuilder
             );
         }
 
+        /// <summary>
+        /// Add a post build step for a command line tool
+        /// </summary>
+        /// <param name="module">Module associated with</param>
+        /// <param name="moduleToAddBuildStepTo">Module to add the build step to</param>
+        /// <param name="target">Target written to</param>
+        /// <param name="configuration">Configuration written to</param>
+        /// <param name="redirectToFile">Is the output redirected to file?</param>
         public static void
         AddPostBuildStepForCommandLineTool(
             Bam.Core.Module module,

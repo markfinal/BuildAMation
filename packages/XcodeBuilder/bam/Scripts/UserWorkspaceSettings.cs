@@ -29,9 +29,16 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class representing the user data in the workspace
+    /// </summary>
     public class UserWorkspaceSettings :
         WorkspaceSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="workspaceDir">Directory for the workspace</param>
         public
         UserWorkspaceSettings(
             string workspaceDir)
@@ -43,6 +50,9 @@ namespace XcodeBuilder
             this.CreatePlist();
         }
 
+        /// <summary>
+        /// Create a PList
+        /// </summary>
         protected override void
         CreatePlist()
         {
