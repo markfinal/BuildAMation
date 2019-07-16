@@ -29,6 +29,9 @@
 #endregion // License
 namespace WindowsSDKCommon
 {
+    /// <summary>
+    /// Settings class for Windows resource compiler
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "-Fo")]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     [VisualStudioProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "", handledByMetaData: true)]
@@ -39,6 +42,10 @@ namespace WindowsSDKCommon
         C.IAdditionalSettings,
         ICommonWinResourceCompilerSettings
     {
+        /// <summary>
+        /// Construct an instance
+        /// </summary>
+        /// <param name="module"></param>
         public CommonWinResourceCompilerSettings(
             Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
@@ -62,6 +69,9 @@ namespace WindowsSDKCommon
         [VisualStudioProcessor.Bool("SuppressStartupBanner")]
         bool? ICommonWinResourceCompilerSettings.NoLogo { get; set; }
 
+        /// <summary>
+        /// Define the layout of the command line to generate
+        /// </summary>
         public override void AssignFileLayout()
         {
             this.FileLayout = ELayout.Cmds_Outputs_Inputs;
