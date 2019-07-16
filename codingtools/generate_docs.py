@@ -13,8 +13,12 @@ class NoDoxygenError(Exception):
     pass
 
 
-class DoxygenWarningsOrErrors(Exception):
-    pass
+class IncompleteDocumentationError(Exception):
+    def __init__(self, count):
+        self._count = count
+
+    def __str__(self):
+        return "Incomplete documentation, with %d errors" % self._count
 
 
 def _execute_and_capture(arg_list, working_dir, output_messages, error_messages):
@@ -65,7 +69,7 @@ def build_documentation(source_dir, doxygenpath):
             sys.stdout.write("Doxygen warnings/errors:\n")
             sys.stdout.write(error_messages.getvalue())
             sys.stdout.flush()
-            raise DoxygenWarningsOrErrors
+            raise IncompleteDocumentationError(len(error_messages.getvalue()))
     except OSError:
         raise NoDoxygenError('Unable to run doxygen executable "%s"' % doxygenpath)
 
@@ -77,14 +81,10 @@ if __name__ == "__main__":
 
     try:
         build_documentation(os.getcwd(), options.doxygenpath)
-    except DoxygenWarningsOrErrors:
-        print >>sys.stdout, "*** Failure reason: Incomplete documentation"
-        sys.stdout.flush()
-        sys.exit(1)
     except Exception, e:
         print >>sys.stdout, "*** Failure reason: %s" % str(e)
         sys.stdout.flush()
-        sys.exit(2)
+        sys.exit(1)
     else:
         print >>sys.stdout, "Done"
         sys.stdout.flush()
