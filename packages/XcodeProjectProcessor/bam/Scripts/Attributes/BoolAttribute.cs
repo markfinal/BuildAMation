@@ -29,10 +29,21 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Attribute to use for Boolean Settings properties to convert to Xcode data.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public abstract class BoolAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute.
+        /// </summary>
+        /// <param name="property">Name of the property.</param>
+        /// <param name="truth_value">String of what truth means.</param>
+        /// <param name="false_value">String of what false means.</param>
+        /// <param name="type">Is the property uniquely or multi-valued?</param>
+        /// <param name="ignore">Is the property to be ignored?</param>
         protected BoolAttribute(
             string property,
             string truth_value,
@@ -47,7 +58,14 @@ namespace XcodeProjectProcessor
             this.Falisy = false_value;
         }
 
+        /// <summary>
+        /// The string for what truth means.
+        /// </summary>
         public string Truth { get; private set; }
+
+        /// <summary>
+        /// The string for what a falisy means.
+        /// </summary>
         public string Falisy { get; private set; }
     }
 }

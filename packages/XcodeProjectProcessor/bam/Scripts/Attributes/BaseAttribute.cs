@@ -29,15 +29,27 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Base class to all Xcode attribute associated with settings properties.
+    /// </summary>
     public abstract class BaseAttribute :
         System.Attribute
     {
+        /// <summary>
+        /// Xcode values can either be a single value or multivalued.
+        /// </summary>
         public enum ValueType
         {
-            Unique,
-            MultiValued
+            Unique,         //!< Xcode project value has a unique value
+            MultiValued     //!< Xcode project value has many values
         }
 
+        /// <summary>
+        /// Construct an instance of the base attribute.
+        /// </summary>
+        /// <param name="property">Name of the property in the Xcode project.</param>
+        /// <param name="type">Whether the value is single or multi-valued.</param>
+        /// <param name="ignore">This property may be ignored.</param>
         protected BaseAttribute(
             string property,
             ValueType type,
@@ -48,8 +60,19 @@ namespace XcodeProjectProcessor
             this.Ignore = ignore;
         }
 
+        /// <summary>
+        /// Get the property name.
+        /// </summary>
         public string Property { get; private set; }
+
+        /// <summary>
+        /// Get whether the property is singley or multi-valued.
+        /// </summary>
         public ValueType Type { get; private set; }
+
+        /// <summary>
+        /// Get whether the property should be ignored.
+        /// </summary>
         public bool Ignore { get; private set; }
     }
 }

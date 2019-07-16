@@ -30,6 +30,9 @@
 using System.Linq;
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Handles conversion from BAM settings into Xcode projects.
+    /// </summary>
     public static class XcodeConversion
     {
         private static void
@@ -174,11 +177,18 @@ namespace XcodeProjectProcessor
             }
         }
 
+        /// <summary>
+        /// Convert BAM Module settings into Xcode project configuration properties.
+        /// </summary>
+        /// <param name="settings">The Module's settings.</param>
+        /// <param name="real_settings_type">The type of the Module's settings, since it may not be overridden.</param>
+        /// <param name="module">Module associated with the settings. This may be null for per-file settings.</param>
+        /// <param name="configuration">The Xcode project Configuration to complete.</param>
         public static void
         Convert(
             Bam.Core.Settings settings,
             System.Type real_settings_type,
-            Bam.Core.Module module, // cannot use settings.Module as this may be null for per-file settings
+            Bam.Core.Module module,
             XcodeBuilder.Configuration configuration
         )
         {

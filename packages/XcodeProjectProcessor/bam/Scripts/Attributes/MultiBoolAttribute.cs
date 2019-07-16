@@ -29,9 +29,19 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Attribute representing a multi-valued Boolean property in Xcode.
+    /// </summary>
     public sealed class MultiBoolAttribute :
         BoolAttribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute.
+        /// </summary>
+        /// <param name="property">Name of the property represented.</param>
+        /// <param name="truth_value">String value of truth.</param>
+        /// <param name="false_value">String value of false.</param>
+        /// <param name="ignore">Whether to ignore this property.</param>
         public MultiBoolAttribute(
             string property,
             string truth_value,

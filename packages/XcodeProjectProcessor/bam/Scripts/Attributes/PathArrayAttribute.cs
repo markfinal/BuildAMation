@@ -29,10 +29,19 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Attribute representing an array of file syste paths in Xcode.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PathArrayAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute.
+        /// </summary>
+        /// <param name="property">Name of the property.</param>
+        /// <param name="ignore">Whether to ignore the property.</param>
+        /// <param name="prefixWithSrcRoot">True if the path should be prefixed with SRCROOT.</param>
         public PathArrayAttribute(
             string property,
             bool ignore = false,
@@ -44,6 +53,9 @@ namespace XcodeProjectProcessor
             this.PrefixWithSrcRoot = prefixWithSrcRoot;
         }
 
+        /// <summary>
+        /// Should the path be prefixed with SRCROOT?
+        /// </summary>
         public bool PrefixWithSrcRoot { get; private set; }
     }
 }
