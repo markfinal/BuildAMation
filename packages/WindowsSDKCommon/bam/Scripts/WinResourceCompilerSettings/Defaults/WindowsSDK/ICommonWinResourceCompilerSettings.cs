@@ -29,8 +29,16 @@
 #endregion // License
 namespace WindowsSDKCommon.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for default settings
+    /// </summary>
     static partial class DefaultSettingsExtensions
     {
+        /// <summary>
+        /// Set the defaults for ICommonWinResourceCompilerSettings
+        /// </summary>
+        /// <param name="settings">Settings instance</param>
+        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
             this ICommonWinResourceCompilerSettings settings,
