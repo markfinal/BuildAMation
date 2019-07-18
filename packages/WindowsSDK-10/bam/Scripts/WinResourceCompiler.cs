@@ -30,9 +30,16 @@
 using Bam.Core;
 namespace WindowsSDK
 {
+    /// <summary>
+    /// Base class for all versions of the compiler tool
+    /// </summary>
     public abstract class WinResourceCompilerBase :
         C.WinResourceCompilerTool
     {
+        /// <summary>
+        /// Configure the tool.
+        /// </summary>
+        /// <param name="architecture">Architecture in use</param>
         protected void
         configure(
             string architecture)
@@ -75,17 +82,33 @@ namespace WindowsSDK
             this.Macros.AddVerbatim("objext", ".res");
         }
 
+        /// <summary>
+        /// Get the executable path to the compiler
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
+        /// <summary>
+        /// Create a default Settings instance
+        /// </summary>
+        /// <typeparam name="T">Type of settings to make</typeparam>
+        /// <param name="module">Module owning the settings</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new WinResourceCompilerSettings(module);
     }
 
+    /// <summary>
+    /// 32-bit resource compiler
+    /// </summary>
     [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class WinResourceCompiler32 :
         WinResourceCompilerBase
     {
+        /// <summary>
+        /// Initialize the module
+        /// </summary>
+        /// <param name="parent">Parent module</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -98,10 +121,17 @@ namespace WindowsSDK
         }
     }
 
+    /// <summary>
+    /// 64-bit resource compiler
+    /// </summary>
     [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     public sealed class WinResourceCompiler64 :
         WinResourceCompilerBase
     {
+        /// <summary>
+        /// Initialize the module
+        /// </summary>
+        /// <param name="parent">Parent module</param>
         protected override void
         Init(
             Bam.Core.Module parent)

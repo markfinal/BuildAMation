@@ -29,6 +29,9 @@
 #endregion // License
 namespace WindowsSDK
 {
+    /// <summary>
+    /// Metadata for WindowsSDK
+    /// </summary>
     public sealed class MetaData :
         Bam.Core.PackageMetaData
     {
@@ -52,8 +55,18 @@ namespace WindowsSDK
             }
         }
 
+        /// <summary>
+        /// Get metadata by string key
+        /// </summary>
+        /// <param name="index">Lookup key</param>
+        /// <returns>Metadata value by key</returns>
         public override object this[string index] => this.Meta[index];
 
+        /// <summary>
+        /// Whether the metdata contains a key
+        /// </summary>
+        /// <param name="index">Key to lookup</param>
+        /// <returns>true if found, false otherwise</returns>
         public override bool
         Contains(
             string index) => this.Meta.ContainsKey(index);
