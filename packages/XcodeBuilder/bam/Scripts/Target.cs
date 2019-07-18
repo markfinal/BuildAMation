@@ -43,7 +43,7 @@ namespace XcodeBuilder
         {
             NA,                 //!< Unknown
             StaticLibrary,      //!< Static library
-            Executable,         //!< Executable 
+            Executable,         //!< Executable
             DynamicLibrary,     //!< Dylib
             ApplicationBundle,  //!< Application bundle
             ObjFile,            //!< Object file
