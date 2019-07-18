@@ -29,16 +29,30 @@
 #endregion // License
 namespace CommandLineProcessor
 {
+    /// <summary>
+    /// Attribute representing a wildcarded input file set.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)] // only ever one wildcard for files
     public class AnyInputFileAttribute :
         InputPathsAttribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="command_switch">Command line switch representing settings property.</param>
+        /// <param name="path_modifier_if_directory">Optional modifier applied to directories. Default is null.</param>
         public AnyInputFileAttribute(
             string command_switch,
             string path_modifier_if_directory = null)
             :
-            base(null, command_switch, max_file_count: 1) => this.PathModifierIfDirectory = path_modifier_if_directory;
+            base(null, command_switch, max_file_count: 1)
+        {
+            this.PathModifierIfDirectory = path_modifier_if_directory;
+        }
 
+        /// <summary>
+        /// Get the modifier applied to directories.
+        /// </summary>
         public string PathModifierIfDirectory { get; private set; }
     }
 }

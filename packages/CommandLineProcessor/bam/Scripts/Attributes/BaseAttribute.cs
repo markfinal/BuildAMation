@@ -29,12 +29,23 @@
 #endregion // License
 namespace CommandLineProcessor
 {
+    /// <summary>
+    /// Abstract base class for any attribute representing a settings property
+    /// for command line conversion
+    /// </summary>
     public abstract class BaseAttribute :
         System.Attribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute with the given command line switch.
+        /// </summary>
+        /// <param name="command_switch">Switch representing the setting property.</param>
         protected BaseAttribute(
             string command_switch) => this.CommandSwitch = command_switch;
 
+        /// <summary>
+        /// Get the command line switch.
+        /// </summary>
         public string CommandSwitch { get; private set; }
     }
 }

@@ -29,10 +29,17 @@
 #endregion // License
 namespace CommandLineProcessor
 {
+    /// <summary>
+    /// Attribute representing an array of paths to convert to command line.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PathArrayAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="command_switch">Switch for the property.</param>
         public PathArrayAttribute(
             string command_switch)
             :

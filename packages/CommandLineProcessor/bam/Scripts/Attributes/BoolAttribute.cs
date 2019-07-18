@@ -29,18 +29,35 @@
 #endregion // License
 namespace CommandLineProcessor
 {
+    /// <summary>
+    /// Attribute representing a Boolean settings property for command line conversion.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class BoolAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="true_command_switch">Switch for truth.</param>
+        /// <param name="false_command_switch">Switch for false.</param>
         public BoolAttribute(
             string true_command_switch,
             string false_command_switch)
             :
-            base(true_command_switch) => this.FalseCommandSwitch = false_command_switch;
+            base(true_command_switch)
+        {
+            this.FalseCommandSwitch = false_command_switch;
+        }
 
+        /// <summary>
+        /// Get the switch used for truth.
+        /// </summary>
         public string TrueCommandSwitch => this.CommandSwitch;
 
+        /// <summary>
+        /// Get the switch used for false.
+        /// </summary>
         public string FalseCommandSwitch { get; private set; }
     }
 }

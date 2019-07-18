@@ -29,10 +29,17 @@
 #endregion // License
 namespace CommandLineProcessor
 {
+    /// <summary>
+    /// Attribute representing a settings property that is an array of macOS frameworks
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class FrameworkArrayAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance
+        /// </summary>
+        /// <param name="command_switch">Switched used for this property.</param>
         public FrameworkArrayAttribute(
             string command_switch)
             :
