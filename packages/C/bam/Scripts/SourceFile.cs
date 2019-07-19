@@ -29,12 +29,21 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Module representing a source file
+    /// </summary>
     public class SourceFile :
         Bam.Core.Module,
         Bam.Core.IInputPath
     {
+        /// <summary>
+        /// Path key for this module
+        /// </summary>
         public const string SourceFileKey = "Source File";
 
+        /// <summary>
+        /// Determine if this module needs updating
+        /// </summary>
         protected override void
         EvaluateInternal()
         {
@@ -42,6 +51,10 @@ namespace C
             // TODO: could do a hash check of the contents?
         }
 
+        /// <summary>
+        /// Execute the build for this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -49,6 +62,9 @@ namespace C
             // TODO: exception to this is generated source, but there ought to be an override for that
         }
 
+        /// <summary>
+        /// Set the input path for this source module
+        /// </summary>
         public virtual Bam.Core.TokenizedString InputPath
         {
             get

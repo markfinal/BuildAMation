@@ -29,8 +29,15 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Implement this interface when your class performs toolchain discovery.
+    /// </summary>
     public interface IToolchainDiscovery
     {
+        /// <summary>
+        /// Perform discovery for the toolchain for use with the specified bit-depth.
+        /// </summary>
+        /// <param name="depth">Required architecture.</param>
         void
         discover(
             EBit? depth);

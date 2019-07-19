@@ -29,6 +29,10 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Attribute to identify a Module that is Prebuilt, i.e. no execution step
+    /// is run on it.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=false)]
     public class PrebuiltAttribute :
         System.Attribute

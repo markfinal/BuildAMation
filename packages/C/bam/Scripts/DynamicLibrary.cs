@@ -42,6 +42,10 @@ namespace C
         private SharedObjectSymbolicLink linkerNameSymLink = null;
         private SharedObjectSymbolicLink soNameSymLink = null;
 
+        /// <summary>
+        /// Initialize the dynamic library
+        /// </summary>
+        /// <param name="parent">from this parent Module</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -102,8 +106,18 @@ namespace C
         }
 
         // TODO: what is this used for?
+        /// <summary>
+        /// List of source modules
+        /// </summary>
         public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> Source => this.sourceModules.ToReadOnlyCollection();
 
+        /// <summary>
+        /// Create a source collection for C compilation
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match source files. Defaults to null.</param>
+        /// <param name="macroModuleOverride">Optional Module to use as macros source. Defaults to null.</param>
+        /// <param name="filter">Optional regular expression filter to remove source files. Default to null.</param>
+        /// <returns>The collection</returns>
         public sealed override CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
@@ -120,6 +134,13 @@ namespace C
             return collection;
         }
 
+        /// <summary>
+        /// Create a source collection for assembly.
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match source files. Defaults to null.</param>
+        /// <param name="macroModuleOverride">Optional Module to use as macros source. Defaults to null.</param>
+        /// <param name="filter">Optional regular expression filter to remove source files. Default to null.</param>
+        /// <returns>The collection</returns>
         public sealed override AssembledObjectFileCollection
         CreateAssemblerSourceContainer(
             string wildcardPath = null,
@@ -227,6 +248,10 @@ namespace C
             this.UsePublicPatches(dependent);
         }
 
+        /// <summary>
+        /// Execute the build on this dynamic library
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected sealed override void
         ExecuteInternal(
             ExecutionContext context)
@@ -242,6 +267,9 @@ namespace C
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps.ToReadOnlyCollection();
 
         SharedObjectSymbolicLink IDynamicLibrary.LinkerNameSymbolicLink => this.linkerNameSymLink;
+        /// <summary>
+        /// Get the linker name symbolic link
+        /// </summary>
         protected SharedObjectSymbolicLink LinkerNameSymbolicLink
         {
             set
@@ -251,6 +279,9 @@ namespace C
         }
 
         SharedObjectSymbolicLink IDynamicLibrary.SONameSymbolicLink => this.soNameSymLink;
+        /// <summary>
+        /// Get the SO name symbolic link
+        /// </summary>
         protected SharedObjectSymbolicLink SONameSymbolicLink
         {
             set

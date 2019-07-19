@@ -30,8 +30,22 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Utility class offering support for Xcode project generation
+    /// </summary>
     public static partial class XcodeSupport
     {
+        /// <summary>
+        /// Generate an Xcode Target that has been the result of a link or an archive
+        /// </summary>
+        /// <param name="outTarget">Generated Target</param>
+        /// <param name="outConfiguration">Generated Configuration</param>
+        /// <param name="module">Module represented</param>
+        /// <param name="fileType">Filetype of the output</param>
+        /// <param name="productType">Product type of the output</param>
+        /// <param name="productName">Product name of the output</param>
+        /// <param name="outputPath">Path to the output</param>
+        /// <param name="headerFiles">Any header files to be included</param>
         public static void
         LinkOrArchive(
             out XcodeBuilder.Target outTarget,
@@ -221,6 +235,11 @@ namespace C
             outConfiguration = configuration;
         }
 
+        /// <summary>
+        /// Process all library dependencies on a module
+        /// </summary>
+        /// <param name="module">Module with dependencies</param>
+        /// <param name="target">Target to add dependencies on.</param>
         public static void
         ProcessLibraryDependencies(
             ConsoleApplication module,
@@ -321,6 +340,11 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Add order only dependencies from a module
+        /// </summary>
+        /// <param name="module">Module containing order only dependencies</param>
+        /// <param name="target">Target to add dependencies on</param>
         public static void
         AddOrderOnlyDependentProjects(
             C.CModule module,

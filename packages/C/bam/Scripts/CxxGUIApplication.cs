@@ -36,6 +36,10 @@ namespace C.Cxx
     public class GUIApplication :
         ConsoleApplication
     {
+        /// <summary>
+        /// Initialize the GUI application
+        /// </summary>
+        /// <param name="parent">From this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -52,6 +56,9 @@ namespace C.Cxx
             });
         }
 
+        /// <summary>
+        /// Private patch delegate for indicating a Windowed application
+        /// </summary>
         protected Bam.Core.Module.PrivatePatchDelegate WindowsPreprocessor = settings =>
         {
             var preprocessor = settings as C.ICommonPreprocessorSettings;

@@ -63,10 +63,17 @@ namespace C
             return child;
         }
 
+        /// <summary>
+        /// Get the Compiler tool
+        /// </summary>
         public CompilerTool Compiler => this.Tool as CompilerTool;
 
+        /// <summary>
+        /// Set the warnings suppression delegate.
+        /// </summary>
+        /// <param name="suppressor"></param>
         public void
         SuppressWarningsDelegate(
-            SuppressWarningsDelegate suppresor) => suppresor?.Execute(this);
+            SuppressWarningsDelegate suppressor) => suppressor?.Execute(this);
     }
 }

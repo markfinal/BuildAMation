@@ -29,8 +29,16 @@
 #endregion // License
 namespace C.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for handling defaults and operations for C.ICommonLinkerSettingsWin
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
+        /// <summary>
+        /// Set default property values of C.ICommonLinkerSettingsWin
+        /// </summary>
+        /// <param name="settings">C.ICommonLinkerSettingsWin instance</param>
+        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
             this C.ICommonLinkerSettingsWin settings,

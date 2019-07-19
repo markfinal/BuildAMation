@@ -39,12 +39,31 @@ namespace C
     public class ConsoleApplication :
         CModule
     {
+        /// <summary>
+        /// list of source Modules
+        /// </summary>
         protected Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
         private readonly Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
+
+        /// <summary>
+        /// Path key representing the executable
+        /// </summary>
         public const string ExecutableKey = "Executable File";
+
+        /// <summary>
+        /// Path key representing the Windows import library for a DLL
+        /// </summary>
         public const string ImportLibraryKey = "Windows Import Library File";
+
+        /// <summary>
+        /// Path key representing the Windows program database
+        /// </summary>
         public const string PDBKey = "Windows Program DataBase File";
 
+        /// <summary>
+        /// Initialize the console application
+        /// </summary>
+        /// <param name="parent"></param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -95,6 +114,9 @@ namespace C
                 });
         }
 
+        /// <summary>
+        /// Override the name of the subdirectory containing executables
+        /// </summary>
         public override string CustomOutputSubDirectory => "bin";
 
         /// <summary>
@@ -129,6 +151,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Enumerate across all input Modules to this application
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get
@@ -158,6 +183,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Private patch to mark console applications (as opposed to Windowed)
+        /// </summary>
         protected Bam.Core.Module.PrivatePatchDelegate ConsolePreprocessor = settings =>
             {
                 var preprocessor = settings as C.ICommonPreprocessorSettings;
@@ -243,7 +271,7 @@ namespace C
         /// of that type applied to each source.
         /// </summary>
         /// <param name="affectedSource">Required source module.</param>
-        /// <param name="affectedSources">Optional list of additional sources.</param>
+        /// <param name="additionalSources">Optional list of additional sources.</param>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CompileAgainst<DependentModule>(
@@ -268,6 +296,10 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Add a module as a link dependency.
+        /// </summary>
+        /// <param name="dependent">Module to add</param>
         protected void
         AddLinkDependency(
             Bam.Core.Module dependent)
@@ -286,6 +318,10 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Add a runtime dependency (order only). No link step.
+        /// </summary>
+        /// <param name="dependent">Module that is a runtime dependency.</param>
         protected void
         AddRuntimeDependency(
             Bam.Core.Module dependent)
@@ -383,6 +419,10 @@ namespace C
             this.UsePublicPatchesPrivately(dependent);
         }
 
+        /// <summary>
+        /// Add link dependencies to all forwarded modules.
+        /// </summary>
+        /// <param name="module">Module to find forwarded libraries from.</param>
         protected void
         LinkAllForwardedDependenciesFromLibraries(
             Bam.Core.Module module)
@@ -440,6 +480,9 @@ namespace C
             affectedSource.UsePublicPatchesPrivately(dependent);
         }
 
+        /// <summary>
+        /// Get or set the linker tool
+        /// </summary>
         public LinkerTool Linker
         {
             get
@@ -452,6 +495,10 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Execute the link step.
+        /// </summary>
+        /// <param name="context">In this context.</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -519,6 +566,7 @@ namespace C
             }
         }
 
+        // Determine if the application needs to be linked
         protected override void
         EvaluateInternal()
         {

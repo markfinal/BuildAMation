@@ -35,6 +35,10 @@ namespace C.ObjCxx
     public class ObjectFile :
         C.ObjectFile
     {
+        /// <summary>
+        /// Initialize this ObjectiveC++ module.
+        /// </summary>
+        /// <param name="parent">with this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)

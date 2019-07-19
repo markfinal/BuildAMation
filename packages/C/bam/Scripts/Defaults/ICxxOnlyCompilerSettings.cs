@@ -29,8 +29,16 @@
 #endregion // License
 namespace C.Cxx.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for handling defaults and operations for C.ICxxOnlyCompilerSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
+        /// <summary>
+        /// Set default property values of C.ICxxOnlyCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.ICxxOnlyCompilerSettings instance</param>
+        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
             this C.ICxxOnlyCompilerSettings settings,
@@ -42,6 +50,11 @@ namespace C.Cxx.DefaultSettings
             settings.StandardLibrary = EStandardLibrary.NotSet;
         }
 
+        /// <summary>
+        /// Intersection of two C.ICxxOnlyCompilerSettings
+        /// </summary>
+        /// <param name="shared">C.ICxxOnlyCompilerSettings instance for the shared properties</param>
+        /// <param name="other">C.ICxxOnlyCompilerSettings instance to intersect with</param>
         public static void
         Intersect(
             this C.ICxxOnlyCompilerSettings shared,
@@ -53,6 +66,12 @@ namespace C.Cxx.DefaultSettings
             shared.StandardLibrary = shared.StandardLibrary.Intersect(other.StandardLibrary);
         }
 
+        /// <summary>
+        /// Delta between two C.ICxxOnlyCompilerSettings
+        /// </summary>
+        /// <param name="delta">C.ICxxOnlyCompilerSettings to write the delta to</param>
+        /// <param name="lhs">C.ICxxOnlyCompilerSettings to diff against</param>
+        /// <param name="rhs">C.ICxxOnlyCompilerSettings to diff with</param>
         public static void
         Delta(
             this C.ICxxOnlyCompilerSettings delta,
@@ -65,6 +84,11 @@ namespace C.Cxx.DefaultSettings
             delta.StandardLibrary = lhs.StandardLibrary.Complement(rhs.StandardLibrary);
         }
 
+        /// <summary>
+        /// Clone a C.ICxxOnlyCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.ICxxOnlyCompilerSettings containing the cloned properties</param>
+        /// <param name="other">Source C.ICxxOnlyCompilerSettings</param>
         public static void
         Clone(
             this C.ICxxOnlyCompilerSettings settings,

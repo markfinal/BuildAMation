@@ -29,24 +29,47 @@
 #endregion // License
 namespace C.ObjC.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for handling defaults and operations for C.IObjectiveCOnlyCompilerSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
+        /// <summary>
+        /// Set default property values of C.IObjectiveCOnlyCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.IObjectiveCOnlyCompilerSettings instance</param>
+        /// <param name="module">Module associated with Settings</param>
         public static void Defaults(
             this C.IObjectiveCOnlyCompilerSettings settings,
             Bam.Core.Module module)
         {}
 
+        /// <summary>
+        /// Provide empty property values of C.IObjectiveCOnlyCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.IObjectiveCOnlyCompilerSettings instance</param>
         public static void
         Empty(
             this C.IObjectiveCOnlyCompilerSettings settings)
         {}
 
+        /// <summary>
+        /// Intersection of two C.IObjectiveCOnlyCompilerSettings
+        /// </summary>
+        /// <param name="shared">C.IObjectiveCOnlyCompilerSettings instance for the shared properties</param>
+        /// <param name="other">C.IObjectiveCOnlyCompilerSettings instance to intersect with</param>
         public static void
         Intersect(
             this C.IObjectiveCOnlyCompilerSettings shared,
             C.IObjectiveCOnlyCompilerSettings other)
         {}
 
+        /// <summary>
+        /// Delta between two C.IObjectiveCOnlyCompilerSettings
+        /// </summary>
+        /// <param name="delta">C.IObjectiveCOnlyCompilerSettings to write the delta to</param>
+        /// <param name="lhs">C.IObjectiveCOnlyCompilerSettings to diff against</param>
+        /// <param name="rhs">C.IObjectiveCOnlyCompilerSettings to diff with</param>
         public static void
         Delta(
             this C.IObjectiveCOnlyCompilerSettings delta,
@@ -54,6 +77,11 @@ namespace C.ObjC.DefaultSettings
             C.IObjectiveCOnlyCompilerSettings rhs)
         {}
 
+        /// <summary>
+        /// Clone a C.IObjectiveCOnlyCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.IObjectiveCOnlyCompilerSettings containing the cloned properties</param>
+        /// <param name="other">Source C.IObjectiveCOnlyCompilerSettings</param>
         public static void
         Clone(
             this C.IObjectiveCOnlyCompilerSettings settings,

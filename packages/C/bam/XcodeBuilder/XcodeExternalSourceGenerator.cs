@@ -30,8 +30,15 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Utility class offering support for Xcode project generation
+    /// </summary>
     public static partial class XcodeSupport
     {
+        /// <summary>
+        /// Add pre build commands to an Xcode target for generating source
+        /// </summary>
+        /// <param name="module">Module that generates source</param>
         public static void
         GenerateSource(
             ExternalSourceGenerator module)

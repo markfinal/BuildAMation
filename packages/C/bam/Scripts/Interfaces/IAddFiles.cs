@@ -29,8 +29,18 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Interface for containers that need to add files.
+    /// </summary>
     public interface IAddFiles
     {
+        /// <summary>
+        /// Add files patching the path.
+        /// </summary>
+        /// <param name="path">Path to match</param>
+        /// <param name="macroModuleOverride">Optional module to use for macros. Default is null.</param>
+        /// <param name="filter">Optional regular expressions to filter out matches to the path. Default is null.</param>
+        /// <returns></returns>
         Bam.Core.Array<Bam.Core.Module>
         AddFiles(
             string path,

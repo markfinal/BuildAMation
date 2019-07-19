@@ -29,6 +29,9 @@
 #endregion // License
 namespace C.Options
 {
+    /// <summary>
+    /// Command line option to override the default bit-depth to build against.
+    /// </summary>
     public sealed class DefaultBitDepth :
         Bam.Core.IIntegerCommandLineArgument
     {

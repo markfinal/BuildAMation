@@ -29,8 +29,16 @@
 #endregion // License
 namespace C.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for handling defaults and operations for C.ICOnlyCompilerSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
+        /// <summary>
+        /// Set default property values of C.ICOnlyCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.ICOnlyCompilerSettings instance</param>
+        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
             this C.ICOnlyCompilerSettings settings,
@@ -39,6 +47,11 @@ namespace C.DefaultSettings
             settings.LanguageStandard = ELanguageStandard.C89;
         }
 
+        /// <summary>
+        /// Intersection of two C.ICOnlyCompilerSettings
+        /// </summary>
+        /// <param name="shared">C.ICOnlyCompilerSettings instance for the shared properties</param>
+        /// <param name="other">C.ICOnlyCompilerSettings instance to intersect with</param>
         public static void
         Intersect(
             this C.ICOnlyCompilerSettings shared,
@@ -47,6 +60,12 @@ namespace C.DefaultSettings
             shared.LanguageStandard = shared.LanguageStandard.Intersect(other.LanguageStandard);
         }
 
+        /// <summary>
+        /// Delta between two C.ICOnlyCompilerSettings
+        /// </summary>
+        /// <param name="delta">C.ICOnlyCompilerSettings to write the delta to</param>
+        /// <param name="lhs">C.ICOnlyCompilerSettings to diff against</param>
+        /// <param name="rhs">C.ICOnlyCompilerSettings to diff with</param>
         public static void
         Delta(
             this C.ICOnlyCompilerSettings delta,
@@ -56,6 +75,11 @@ namespace C.DefaultSettings
             delta.LanguageStandard = lhs.LanguageStandard.Complement(rhs.LanguageStandard);
         }
 
+        /// <summary>
+        /// Clone a C.ICOnlyCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.ICOnlyCompilerSettings containing the cloned properties</param>
+        /// <param name="other">Source C.ICOnlyCompilerSettings</param>
         public static void
         Clone(
             this C.ICOnlyCompilerSettings settings,

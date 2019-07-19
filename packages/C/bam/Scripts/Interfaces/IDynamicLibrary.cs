@@ -29,9 +29,19 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Interface that dynamic libraries are required.
+    /// </summary>
     interface IDynamicLibrary
     {
+        /// <summary>
+        /// Get the symbolic link for the dynamic library's linker name.
+        /// </summary>
         SharedObjectSymbolicLink LinkerNameSymbolicLink { get; }
+
+        /// <summary>
+        /// Get the symbolic link for the SO name.
+        /// </summary>
         SharedObjectSymbolicLink SONameSymbolicLink { get; }
     }
 }

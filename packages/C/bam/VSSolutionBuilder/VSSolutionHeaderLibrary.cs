@@ -30,8 +30,15 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Utility class offering support for VisualStudio project generation
+    /// </summary>
     public static partial class VSSolutionSupport
     {
+        /// <summary>
+        /// Generate a project representing a header only library
+        /// </summary>
+        /// <param name="module">Header only library Module</param>
         public static void
         HeadersOnly(
             HeaderLibrary module)

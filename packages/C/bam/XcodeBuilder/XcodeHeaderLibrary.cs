@@ -30,8 +30,15 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Utility class offering support for Xcode project generation
+    /// </summary>
     public static partial class XcodeSupport
     {
+        /// <summary>
+        /// Create an Xcode Target for a header only library.
+        /// </summary>
+        /// <param name="module">Header only library</param>
         public static void
         HeadersOnly(
             HeaderLibrary module)

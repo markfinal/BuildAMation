@@ -30,8 +30,17 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Utility class offering support for VisualStudio project generation
+    /// </summary>
     public static partial class VSSolutionSupport
     {
+        /// <summary>
+        /// Process all library dependencies into the VisualStudio project
+        /// </summary>
+        /// <param name="module">Module containing the library dependencies</param>
+        /// <param name="config">The VisualStudio project configuration to add to</param>
+        /// <param name="solution">The VisualStudio solution containing the projects</param>
         public static void
         ProcessLibraryDependencies(
             ConsoleApplication module,
@@ -92,6 +101,14 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Perform VisualStudio project generation for either a link or an archive step.
+        /// </summary>
+        /// <param name="solution">VisualStudio solution written to</param>
+        /// <param name="config">VisualStudio project configuration written to</param>
+        /// <param name="module">Module that is linked or archived</param>
+        /// <param name="type">The type of the project generated</param>
+        /// <param name="headerFiles">Any header files in the project.</param>
         public static void
         LinkOrArchive(
             out VSSolutionBuilder.VSSolution solution,
@@ -173,6 +190,11 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Add order only dependencies.
+        /// </summary>
+        /// <param name="module">Module containing dependents</param>
+        /// <param name="config">VisualStudio project configuration affected</param>
         public static void
         AddOrderOnlyDependentProjects(
             C.CModule module,

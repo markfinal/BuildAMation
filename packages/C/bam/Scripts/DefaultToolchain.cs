@@ -30,6 +30,9 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Utility class for accessing toolchain registration
+    /// </summary>
     public static class DefaultToolchain
     {
         private static readonly Options.DefaultToolchainCommand SelectDefaultToolChainCommand = new Options.DefaultToolchainCommand();
@@ -229,42 +232,92 @@ namespace C
             return toolModule;
         }
 
+        /// <summary>
+        /// Get a suitable C compiler
+        /// </summary>
+        /// <param name="bitDepth">Bit-depth required to compile for</param>
+        /// <returns>The compiler</returns>
         public static CompilerTool
         C_Compiler(
             EBit bitDepth) => GetTool<CompilerTool>(C_Compilers, bitDepth, "C compiler", ref Default[bitDepth].c_compiler);
 
+        /// <summary>
+        /// Get a suitable C++ compiler
+        /// </summary>
+        /// <param name="bitDepth">Bit-depth required to compile for</param>
+        /// <returns>The compiler</returns>
         public static CompilerTool
         Cxx_Compiler(
             EBit bitDepth) => GetTool<CompilerTool>(Cxx_Compilers, bitDepth, "C++ compiler", ref Default[bitDepth].cxx_compiler);
 
+        /// <summary>
+        /// Get a suitable librarian
+        /// </summary>
+        /// <param name="bitDepth">Bit-depth required to archive for</param>
+        /// <returns>The librarian</returns>
         public static LibrarianTool
         Librarian(
             EBit bitDepth) => GetTool<LibrarianTool>(Archivers, bitDepth, "librarian", ref Default[bitDepth].librarian);
 
+        /// <summary>
+        /// Get a suitable C linker
+        /// </summary>
+        /// <param name="bitDepth">Bit-depth required to link for</param>
+        /// <returns>The linker</returns>
         public static LinkerTool
         C_Linker(
             EBit bitDepth) => GetTool<LinkerTool>(C_Linkers, bitDepth, "C linker", ref Default[bitDepth].c_linker);
 
+        /// <summary>
+        /// Get a suitable C++ linker
+        /// </summary>
+        /// <param name="bitDepth">Bit-depth required to link for</param>
+        /// <returns>The linker</returns>
         public static LinkerTool
         Cxx_Linker(
             EBit bitDepth) => GetTool<LinkerTool>(Cxx_Linkers, bitDepth, "C++ linker", ref Default[bitDepth].cxx_linker);
 
+        /// <summary>
+        /// Get a suitable Objective C compiler
+        /// </summary>
+        /// <param name="bitDepth">Bit-depth required to compile for</param>
+        /// <returns>The compiler</returns>
         public static CompilerTool
         ObjectiveC_Compiler(
             EBit bitDepth) => GetTool<CompilerTool>(ObjectiveC_Compilers, bitDepth, "Objective C compiler", ref Default[bitDepth].objc_compiler);
 
+        /// <summary>
+        /// Get a suitable Objective C++ compiler
+        /// </summary>
+        /// <param name="bitDepth">Bit-depth required to compile for</param>
+        /// <returns>The compiler</returns>
         public static CompilerTool
         ObjectiveCxx_Compiler(
             EBit bitDepth) => GetTool<CompilerTool>(ObjectiveCxx_Compilers, bitDepth, "Objective C++ compiler", ref Default[bitDepth].objcxx_compiler);
 
+        /// <summary>
+        /// Get a suitable Windows resource compiler
+        /// </summary>
+        /// <param name="bitDepth">Bit-depth required to compile for</param>
+        /// <returns>The compiler</returns>
         public static WinResourceCompilerTool
         WinResource_Compiler(
             EBit bitDepth) => GetTool<WinResourceCompilerTool>(WinResourceCompilers, bitDepth, "Windows resource compiler", ref Default[bitDepth].winres_compiler);
 
+        /// <summary>
+        /// Get a suitable assembler
+        /// </summary>
+        /// <param name="bitDepth">Bit-depth required to assemble for</param>
+        /// <returns>The assembler</returns>
         public static AssemblerTool
         Assembler(
             EBit bitDepth) => GetTool<AssemblerTool>(Assemblers, bitDepth, "Assembler", ref Default[bitDepth].assembler);
 
+        /// <summary>
+        /// Get a suitable preprocessor
+        /// </summary>
+        /// <param name="bitDepth">Bit-depth required to preprocess for</param>
+        /// <returns>The preprocessor</returns>
         public static PreprocessorTool
         Preprocessor(
             EBit bitDepth) => GetTool<PreprocessorTool>(Preprocessors, bitDepth, "Preprocessor", ref Default[bitDepth].preprocessor);

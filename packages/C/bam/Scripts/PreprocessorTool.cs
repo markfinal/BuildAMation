@@ -29,9 +29,15 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Preprocessor tool
+    /// </summary>
     public abstract class PreprocessorTool :
         Bam.Core.PreBuiltTool
     {
+        /// <summary>
+        /// Get the version of the toolchain for this tool
+        /// </summary>
         public ToolchainVersion Version { get; protected set; }
     }
 }

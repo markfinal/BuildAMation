@@ -39,11 +39,21 @@ namespace C
         Bam.Core.IInputPath,
         IRequiresSourceModule
     {
+        /// <summary>
+        /// Path key for this module type
+        /// </summary>
         public const string ObjectFileKey = "Compiled/assembled object file";
 
         private Bam.Core.Module Parent = null;
+        /// <summary>
+        /// Source file used to generate this object file
+        /// </summary>
         protected SourceFile SourceModule;
 
+        /// <summary>
+        /// Initialize this object file
+        /// </summary>
+        /// <param name="parent">from this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -52,6 +62,9 @@ namespace C
             this.PerformCompilation = true;
         }
 
+        /// <summary>
+        /// Customize the output subdirectory for object files.
+        /// </summary>
         public override string CustomOutputSubDirectory => "obj";
 
         SourceFile IRequiresSourceModule.Source
@@ -82,6 +95,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Set the input path to compile.
+        /// </summary>
         public Bam.Core.TokenizedString InputPath
         {
             get
@@ -124,10 +140,20 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Get or set whether this object file is compiled.
+        /// </summary>
         public bool PerformCompilation { get; set; }
 
+        /// <summary>
+        /// Get whether header evaluation is needed.
+        /// </summary>
         protected abstract bool RequiresHeaderEvaluation { get; }
 
+        /// <summary>
+        /// Execute the build on this module.
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -175,6 +201,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Determine whether this module needs updating.
+        /// </summary>
         protected override void
         EvaluateInternal()
         {
@@ -361,6 +390,9 @@ namespace C
             return;
         }
 
+        /// <summary>
+        /// Enumerate across input modules.
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get

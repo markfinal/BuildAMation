@@ -37,6 +37,12 @@ namespace C
     public abstract class SettingsBase :
         Bam.Core.Settings
     {
+        /// <summary>
+        /// Create a delta settings collection
+        /// </summary>
+        /// <param name="sharedSettings">Settings to compare</param>
+        /// <param name="module">For this module</param>
+        /// <returns>Delta settings</returns>
         public SettingsBase
         CreateDeltaSettings(
             Bam.Core.Settings sharedSettings,
@@ -123,6 +129,11 @@ namespace C
                 }));
         }
 
+        /// <summary>
+        /// Create shared settings for all object files provided
+        /// </summary>
+        /// <param name="objectFiles">List of object files to consider</param>
+        /// <returns>Settings shared by all object files</returns>
         public static SettingsBase
         SharedSettings(
             System.Collections.Generic.IEnumerable<Bam.Core.Module> objectFiles)

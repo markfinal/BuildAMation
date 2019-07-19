@@ -29,8 +29,17 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Utility class offering support for Xcode project generation
+    /// </summary>
     public static partial class XcodeSupport
     {
+        /// <summary>
+        /// Add pre or post-build steps to an Xcode target for generating a file from
+        /// ICommandLineTool output
+        /// </summary>
+        /// <param name="module">Module that will run the ICommandLineTool</param>
+        /// <param name="outputKey">Pathkey for the output of the Module</param>
         public static void
         GenerateFileFromToolStandardOutput(
             Bam.Core.Module module,

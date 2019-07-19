@@ -29,13 +29,22 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Module representing a header file
+    /// </summary>
     public class HeaderFile :
         Bam.Core.Module,
         Bam.Core.IInputPath,
         Bam.Core.IChildModule
     {
+        /// <summary>
+        /// Path key for this type
+        /// </summary>
         public const string HeaderFileKey = "Header File";
 
+        /// <summary>
+        /// Determine if this module needs updating
+        /// </summary>
         protected override void
         EvaluateInternal()
         {
@@ -43,6 +52,10 @@ namespace C
             // TODO: could do a hash check of the contents?
         }
 
+        /// <summary>
+        /// Execute the build of this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -50,6 +63,9 @@ namespace C
             // TODO: exception to this is generated source, but there ought to be an override for that
         }
 
+        /// <summary>
+        /// Get or set the path to the header file itself.
+        /// </summary>
         public Bam.Core.TokenizedString InputPath
         {
             get

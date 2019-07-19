@@ -29,6 +29,9 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Base class for all Windows resource compiler tools
+    /// </summary>
     public abstract class WinResourceCompilerTool :
         CompilerTool
     {}

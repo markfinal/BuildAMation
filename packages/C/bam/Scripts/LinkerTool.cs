@@ -29,16 +29,32 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Tool for linking code.
+    /// </summary>
     public abstract class LinkerTool :
         Bam.Core.PreBuiltTool
     {
+        /// <summary>
+        /// Get the library path for the specified library.
+        /// </summary>
+        /// <param name="library">Library module</param>
+        /// <returns>Path to library</returns>
         public abstract Bam.Core.TokenizedString GetLibraryPath(
             CModule library);
 
+        /// <summary>
+        /// Process dependency between executable and library.
+        /// </summary>
+        /// <param name="executable">Executable</param>
+        /// <param name="library">Library</param>
         public abstract void ProcessLibraryDependency(
             CModule executable,
             CModule library);
 
+        /// <summary>
+        /// Get the version of the toolchain for this tool
+        /// </summary>
         public ToolchainVersion Version { get; protected set; }
     }
 }

@@ -29,6 +29,9 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Utility class containing functions useful for running inside patches.
+    /// </summary>
     public static class PatchUtilities
     {
         private static void

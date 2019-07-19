@@ -70,6 +70,9 @@ namespace C
             public System.Type ComparingType { get; private set; }
         }
 
+        /// <summary>
+        /// A combination of all version numbers
+        /// </summary>
         protected int combinedVersion;
 
         /// <summary>
@@ -98,10 +101,10 @@ namespace C
         }
 
         /// <summary>
-        /// Is the current version at most (<=) the specified version?
+        /// Is the current version at most (&lt;=) the specified version?
         /// </summary>
         /// <param name="maximum">Specified maximum toolchain version.</param>
-        /// <returns>true if current version <= specified maximum.</returns>
+        /// <returns>true if current version &lt;= specified maximum.</returns>
         public bool
         AtMost(
             ToolchainVersion maximum)

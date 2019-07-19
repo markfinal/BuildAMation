@@ -36,6 +36,10 @@ namespace C
     public class GUIApplication :
         ConsoleApplication
     {
+        /// <summary>
+        /// Initialize this application
+        /// </summary>
+        /// <param name="parent">with this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -51,6 +55,9 @@ namespace C
                 });
         }
 
+        /// <summary>
+        /// Private patch for windowed applications
+        /// </summary>
         protected Bam.Core.Module.PrivatePatchDelegate WindowsPreprocessor = settings =>
             {
                 var preprocessor = settings as C.ICommonPreprocessorSettings;
@@ -58,6 +65,13 @@ namespace C
                 preprocessor.PreprocessorDefines.Add("_WINDOWS");
             };
 
+        /// <summary>
+        /// Create a source container for C compilation
+        /// </summary>
+        /// <param name="wildcardPath"></param>
+        /// <param name="macroModuleOverride"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
         public sealed override CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,

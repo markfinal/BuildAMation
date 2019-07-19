@@ -30,15 +30,28 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Module representing a preprocessed file
+    /// </summary>
     class PreprocessedFile :
         CModule,
         Bam.Core.IInputPath,
         IRequiresSourceModule
     {
+        /// <summary>
+        /// Path key for this module type
+        /// </summary>
         public const string PreprocessedFileKey = "Preprocessed file";
 
+        /// <summary>
+        /// Associated source module
+        /// </summary>
         protected SourceFile SourceModule;
 
+        /// <summary>
+        /// Initialize this preprocessed file
+        /// </summary>
+        /// <param name="parent">from this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -47,6 +60,9 @@ namespace C
             this.Tool = C.DefaultToolchain.Preprocessor(this.BitDepth);
         }
 
+        /// <summary>
+        /// Determine whether the module needs updating
+        /// </summary>
         protected override void
         EvaluateInternal()
         {
@@ -224,6 +240,10 @@ namespace C
             return;
         }
 
+        /// <summary>
+        /// Execute the build on this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -304,6 +324,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Get or set the input path for this module
+        /// </summary>
         public Bam.Core.TokenizedString InputPath
         {
             get
@@ -334,6 +357,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Enumerate across the input modules to this module
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get

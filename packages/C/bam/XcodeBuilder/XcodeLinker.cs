@@ -29,8 +29,15 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Utility class offering support for Xcode project generation
+    /// </summary>
     public static partial class XcodeSupport
     {
+        /// <summary>
+        /// Create an Xcode Target for a linked executable.
+        /// </summary>
+        /// <param name="module">The linked executable</param>
         public static void
         Link(
             ConsoleApplication module)

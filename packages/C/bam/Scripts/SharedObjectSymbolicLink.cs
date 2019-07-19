@@ -30,9 +30,15 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Module for the symbolic links for shared objects
+    /// </summary>
     public class SharedObjectSymbolicLink :
         Bam.Core.Module
     {
+        /// <summary>
+        /// Pathkey for this module
+        /// </summary>
         public const string SOSymLinkKey = "Shared object symbolic link";
         private ConsoleApplication sharedObject;
 
@@ -41,6 +47,10 @@ namespace C
         /// </summary>
         public bool IsPrebuilt { get; private set; }
 
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">From this module</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -56,6 +66,9 @@ namespace C
                                                                   this.Macros["SymlinkFilename"]));
         }
 
+        /// <summary>
+        /// Get or set the shared object.
+        /// </summary>
         public ConsoleApplication
         SharedObject
         {
@@ -73,6 +86,10 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Execute the build for this module
+        /// </summary>
+        /// <param name="context"></param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -103,6 +120,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Determine if this module needs updating
+        /// </summary>
         protected override void
         EvaluateInternal()
         {
@@ -140,6 +160,9 @@ namespace C
 #endif
         }
 
+        /// <summary>
+        /// Enumerate across the input modules for this module
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get
@@ -149,6 +172,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Set the working directory for this Module
+        /// </summary>
         public override Bam.Core.TokenizedString WorkingDirectory => this.OutputDirectories.First(); // since ln needs this for relative paths
     }
 }

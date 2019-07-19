@@ -29,8 +29,16 @@
 #endregion // License
 namespace C.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for handling defaults and operations for C.ICommonCompilerSettingsOSX
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
+        /// <summary>
+        /// Set default property values of C.ICommonCompilerSettingsOSX
+        /// </summary>
+        /// <param name="settings">C.ICommonCompilerSettingsOSX instance</param>
+        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
             this C.ICommonCompilerSettingsOSX settings,
@@ -40,6 +48,10 @@ namespace C.DefaultSettings
             // as it's set on both compiler and linker
         }
 
+        /// <summary>
+        /// Provide empty property values of C.ICommonCompilerSettingsOSX
+        /// </summary>
+        /// <param name="settings">C.ICommonCompilerSettingsOSX instance</param>
         public static void
         Empty(
             this C.ICommonCompilerSettingsOSX settings)
@@ -47,6 +59,11 @@ namespace C.DefaultSettings
             settings.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray();
         }
 
+        /// <summary>
+        /// Intersection of two C.ICommonCompilerSettingsOSX
+        /// </summary>
+        /// <param name="shared">C.ICommonCompilerSettingsOSX instance for the shared properties</param>
+        /// <param name="other">C.ICommonCompilerSettingsOSX instance to intersect with</param>
         public static void
         Intersect(
             this C.ICommonCompilerSettingsOSX shared,
@@ -56,6 +73,12 @@ namespace C.DefaultSettings
             shared.MacOSXMinimumVersionSupported = shared.MacOSXMinimumVersionSupported.Intersect(other.MacOSXMinimumVersionSupported);
         }
 
+        /// <summary>
+        /// Delta between two C.ICommonCompilerSettingsOSX
+        /// </summary>
+        /// <param name="delta">C.ICommonCompilerSettingsOSX to write the delta to</param>
+        /// <param name="lhs">C.ICommonCompilerSettingsOSX to diff against</param>
+        /// <param name="rhs">C.ICommonCompilerSettingsOSX to diff with</param>
         public static void
         Delta(
             this C.ICommonCompilerSettingsOSX delta,
@@ -66,6 +89,11 @@ namespace C.DefaultSettings
             delta.MacOSXMinimumVersionSupported = lhs.MacOSXMinimumVersionSupported.Complement(rhs.MacOSXMinimumVersionSupported);
         }
 
+        /// <summary>
+        /// Clone a C.ICommonCompilerSettingsOSX
+        /// </summary>
+        /// <param name="settings">C.ICommonCompilerSettingsOSX containing the cloned properties</param>
+        /// <param name="other">Source C.ICommonCompilerSettingsOSX</param>
         public static void
         Clone(
             this C.ICommonCompilerSettingsOSX settings,

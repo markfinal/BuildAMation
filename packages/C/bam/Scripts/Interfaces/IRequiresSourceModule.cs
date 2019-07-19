@@ -29,8 +29,14 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Implement this interface when your Module requires a Module acting as source.
+    /// </summary>
     public interface IRequiresSourceModule
     {
+        /// <summary>
+        /// Get and set the Module that is source.
+        /// </summary>
         SourceFile Source { get; set; }
     }
 }

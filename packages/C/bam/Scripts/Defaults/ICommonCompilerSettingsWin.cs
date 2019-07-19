@@ -29,8 +29,16 @@
 #endregion // License
 namespace C.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for handling defaults and operations for C.ICommonCompilerSettingsWin
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
+        /// <summary>
+        /// Set default property values of C.ICommonCompilerSettingsWin
+        /// </summary>
+        /// <param name="settings">C.ICommonCompilerSettingsWin instance</param>
+        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
             this C.ICommonCompilerSettingsWin settings,
@@ -39,11 +47,20 @@ namespace C.DefaultSettings
             settings.CharacterSet = ECharacterSet.NotSet;
         }
 
+        /// <summary>
+        /// Provide empty property values of C.ICommonCompilerSettingsWin
+        /// </summary>
+        /// <param name="settings">C.ICommonCompilerSettingsWin instance</param>
         public static void
         Empty(
             this C.ICommonCompilerSettingsWin settings)
         {}
 
+        /// <summary>
+        /// Intersection of two C.ICommonCompilerSettingsWin
+        /// </summary>
+        /// <param name="shared">C.ICommonCompilerSettingsWin instance for the shared properties</param>
+        /// <param name="other">C.ICommonCompilerSettingsWin instance to intersect with</param>
         public static void
         Intersect(
             this C.ICommonCompilerSettingsWin shared,
@@ -52,6 +69,12 @@ namespace C.DefaultSettings
             shared.CharacterSet = shared.CharacterSet.Intersect(other.CharacterSet);
         }
 
+        /// <summary>
+        /// Delta between two C.ICommonCompilerSettingsWin
+        /// </summary>
+        /// <param name="delta">C.ICommonCompilerSettingsWin to write the delta to</param>
+        /// <param name="lhs">C.ICommonCompilerSettingsWin to diff against</param>
+        /// <param name="rhs">C.ICommonCompilerSettingsWin to diff with</param>
         public static void
         Delta(
             this C.ICommonCompilerSettingsWin delta,
@@ -61,6 +84,11 @@ namespace C.DefaultSettings
             delta.CharacterSet = lhs.CharacterSet.Complement(rhs.CharacterSet);
         }
 
+        /// <summary>
+        /// Clone a C.ICommonCompilerSettingsWin
+        /// </summary>
+        /// <param name="settings">C.ICommonCompilerSettingsWin containing the cloned properties</param>
+        /// <param name="other">Source C.ICommonCompilerSettingsWin</param>
         public static void
         Clone(
             this C.ICommonCompilerSettingsWin settings,

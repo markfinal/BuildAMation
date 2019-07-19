@@ -29,9 +29,16 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Collection of header files
+    /// </summary>
     public class HeaderFileCollection :
         CModuleContainer<HeaderFile>
     {
+        /// <summary>
+        /// Add a header file to this collection
+        /// </summary>
+        /// <param name="sourceModule">Header module to add</param>
         public void
         AddFile(
             HeaderFile sourceModule)

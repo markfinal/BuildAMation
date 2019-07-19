@@ -35,6 +35,10 @@ namespace C
     public class AssembledObjectFileCollection :
         CCompilableModuleContainer<AssembledObjectFile>
     {
+        /// <summary>
+        /// Initialize the container of assembled object files
+        /// </summary>
+        /// <param name="parent"></param>
         protected override void
         Init(
             Bam.Core.Module parent)
