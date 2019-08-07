@@ -29,10 +29,18 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
+    /// <summary>
+    /// Attribute associated with preprocessor defines.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PreprocessorDefinesAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="command_switch">Command line switch associated with preprocessor defines</param>
+        /// <param name="inheritExisting">Optional, whether to inherit values. Default is false.</param>
         public PreprocessorDefinesAttribute(
             string command_switch,
             bool inheritExisting = false)

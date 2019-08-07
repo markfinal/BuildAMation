@@ -29,21 +29,37 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
+    /// <summary>
+    /// Attribute for enum settings properties.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
     public class EnumAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// The conversion mode of the enum.
+        /// </summary>
         public enum EMode
         {
-            AsString,
-            AsInteger,
-            AsIntegerWithPrefix,
-            VerbatimString,
-            Empty,
-            NoOp,
-            PassThrough
+            AsString,               //<! Convert the enumeration value as a string
+            AsInteger,              //<! Convert the enumeration value as an integer
+            AsIntegerWithPrefix,    //<! Convert the enumeration value as an integer but with a prefix
+            VerbatimString,         //<! Use a provided string verbatim
+            Empty,                  //<! An empty value
+            NoOp,                   //<! Do nothing with this value
+            PassThrough             //<! Pass the value unchanged
         }
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="key">The value of the enumeration</param>
+        /// <param name="property">Name of the property</param>
+        /// <param name="mode">Conversion mode</param>
+        /// <param name="inheritExisting">Optional, true if the value inherits from parents. Default is false.</param>
+        /// <param name="verbatimString">Optional, use this verbatim string. Default is null.</param>
+        /// <param name="prefix">Optional, use this integer prefix. Default is null.</param>
+        /// <param name="target">Optional, target to write settings to. Default is settings.</param>
         public EnumAttribute(
             object key,
             string property,
@@ -61,9 +77,24 @@ namespace VisualStudioProcessor
             this.Prefix = prefix;
         }
 
+        /// <summary>
+        /// Get the enumeration value.
+        /// </summary>
         public System.Enum Key { get; private set; }
+
+        /// <summary>
+        /// Get the conversion mode.
+        /// </summary>
         public EMode Mode { get; private set; }
+
+        /// <summary>
+        /// Get the verbatim string.
+        /// </summary>
         public string VerbatimString { get; private set; }
+
+        /// <summary>
+        /// Get the prefix
+        /// </summary>
         public string Prefix { get; private set; }
     }
 }

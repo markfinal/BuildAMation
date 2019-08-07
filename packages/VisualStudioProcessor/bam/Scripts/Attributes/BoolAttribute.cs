@@ -29,10 +29,21 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
+    /// <summary>
+    /// Settings attribute for boolean properties.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class BoolAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="property">Name of the property.</param>
+        /// <param name="inheritExisting">Optional whether the value is inherited. Default to false.</param>
+        /// <param name="inverted">Optional whether the logic is inverted. Default to false.</param>
+        /// <param name="target">Optional which target is used for the property. Default to settings.</param>
+        /// <param name="ignore">Optional whether to ignore this property. Default to false.</param>
         public BoolAttribute(
             string property,
             bool inheritExisting = false,
@@ -46,6 +57,15 @@ namespace VisualStudioProcessor
             this.Ignore = ignore;
         }
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="property">Name of the property</param>
+        /// <param name="truth">String representing truth.</param>
+        /// <param name="falisy">String representing false.</param>
+        /// <param name="inheritExisting">Optional whether the value is inherited. Default to false.</param>
+        /// <param name="target">Optional which target is used for the property. Default to settings.</param>
+        /// <param name="ignore">Optional whether to ignore this property. Default to false.</param>
         public BoolAttribute(
             string property,
             string truth,
@@ -62,9 +82,24 @@ namespace VisualStudioProcessor
             this.Ignore = ignore;
         }
 
+        /// <summary>
+        /// Whether the value is inverted
+        /// </summary>
         public bool Inverted { get; private set; }
+
+        /// <summary>
+        /// The truth string
+        /// </summary>
         public string Truth { get; private set; }
+
+        /// <summary>
+        /// The false string
+        /// </summary>
         public string Falisy { get; private set; }
+
+        /// <summary>
+        /// Whether the property is ignored.
+        /// </summary>
         public bool Ignore { get; private set; }
     }
 }

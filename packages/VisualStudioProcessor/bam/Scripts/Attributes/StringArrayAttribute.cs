@@ -29,10 +29,19 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
+    /// <summary>
+    /// Attribute associated with an array of strings.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class StringArrayAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="command_switch">Command line switch for these strings.</param>
+        /// <param name="inheritExisting">Optional, whether to inherit existing values. Default is false.</param>
+        /// <param name="target">Optional, which target to use. Default is settings.</param>
         public StringArrayAttribute(
             string command_switch,
             bool inheritExisting = false,

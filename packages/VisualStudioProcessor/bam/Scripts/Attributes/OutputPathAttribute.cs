@@ -29,10 +29,22 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
+    /// <summary>
+    /// Attribute representing output paths
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = true)] // because there may be multiple outputs
     public class OutputPathAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="pathKey">Path key for the output file type</param>
+        /// <param name="command_switch">Command line switch associated with these output file types</param>
+        /// <param name="inheritExisting">Optional, whether to inherit values. Default is false.</param>
+        /// <param name="target">Optional, which target to use. Default to settings.</param>
+        /// <param name="handledByMetaData">Optional, whether this output file is handled by metadata. Default to false.</param>
+        /// <param name="enableSideEffets">Optional, whether this output file type has side-effects enabled. Default to false.</param>
         public OutputPathAttribute(
             string pathKey,
             string command_switch,
@@ -48,8 +60,19 @@ namespace VisualStudioProcessor
             this.EnableSideEffects = enableSideEffets;
         }
 
+        /// <summary>
+        /// The path key for these output file types.
+        /// </summary>
         public string PathKey { get; private set; }
+
+        /// <summary>
+        /// Whether these output files are handled by metadata
+        /// </summary>
         public bool HandledByMetaData { get; private set; }
+
+        /// <summary>
+        /// Whether side effects are enabled
+        /// </summary>
         public bool EnableSideEffects { get; private set; }
     }
 }

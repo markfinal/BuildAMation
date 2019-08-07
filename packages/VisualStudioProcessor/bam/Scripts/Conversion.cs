@@ -30,13 +30,25 @@
 using System.Linq;
 namespace VisualStudioProcessor
 {
+    /// <summary>
+    /// Utility class for converting settings to VisualStudio projects
+    /// </summary>
     public static class VSSolutionConversion
     {
+        /// <summary>
+        /// Convert a settings object to VisualStudio.
+        /// </summary>
+        /// <param name="settings">Settings containing properties.</param>
+        /// <param name="real_settings_type">The real type of the settings, in case it differs</param>
+        /// <param name="module">The module associated with the settings. May be different to settings.Module for per-file settings.</param>
+        /// <param name="vsSettingsGroup">VisualStudio settings group to write to</param>
+        /// <param name="vsConfig">VisualStudio configuration to write to.</param>
+        /// <param name="condition">Optional, condition applied to settings. Default to null</param>
         public static void
         Convert(
             Bam.Core.Settings settings,
             System.Type real_settings_type,
-            Bam.Core.Module module, // cannot use settings.Module as this may be null for per-file settings
+            Bam.Core.Module module,
             VSSolutionBuilder.VSSettingsGroup vsSettingsGroup,
             VSSolutionBuilder.VSProjectConfiguration vsConfig,
             string condition = null)

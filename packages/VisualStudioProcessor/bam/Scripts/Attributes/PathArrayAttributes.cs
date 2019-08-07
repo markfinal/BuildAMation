@@ -29,10 +29,19 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
+    /// <summary>
+    /// Attribute associated with arrays of paths.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PathArrayAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="command_switch">Command switch associated with these paths</param>
+        /// <param name="inheritExisting">Optional, whether to inherit from the parent values. Default is false.</param>
+        /// <param name="target">Optional, which target to use. Default is settings.</param>
         public PathArrayAttribute(
             string command_switch,
             bool inheritExisting = false,
