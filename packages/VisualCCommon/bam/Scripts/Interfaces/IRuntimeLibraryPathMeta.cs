@@ -29,9 +29,23 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Interface to specify the paths of the C and C++ runtimes
+    /// </summary>
     public interface IRuntimeLibraryPathMeta
     {
+        /// <summary>
+        /// Get where the C runtime are
+        /// </summary>
+        /// <param name="depth">for this bitdepth</param>
+        /// <returns>Paths to the C runtimes</returns>
         Bam.Core.TokenizedStringArray CRuntimePaths(C.EBit depth);
+
+        /// <summary>
+        /// Get where the C++ runtimes are
+        /// </summary>
+        /// <param name="depth">for this bitdepth</param>
+        /// <returns>Paths to the C++ runtimes</returns>
         Bam.Core.TokenizedStringArray CxxRuntimePaths(C.EBit depth);
     }
 }

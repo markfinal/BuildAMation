@@ -29,12 +29,30 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// VisualC specific settings for the linker
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonLinkerSettings : Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Get or set whether the logo is displayed
+        /// </summary>
         bool NoLogo { get; set; }
+
+        /// <summary>
+        /// Get or set whether a manifest is generated
+        /// </summary>
         bool GenerateManifest { get; set; }
+
+        /// <summary>
+        /// Get or set whether safe exception handlers are used
+        /// </summary>
         bool SafeExceptionHandlers { get; set; }
+
+        /// <summary>
+        /// Get or set which type of link time code generation is used
+        /// </summary>
         ELinkTimeCodeGeneration? LinkTimeCodeGeneration { get; set; }
     }
 }

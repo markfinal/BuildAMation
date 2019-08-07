@@ -29,6 +29,9 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Abstract class for common assembler settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.AssembledObjectFile.ObjectFileKey, "-Fo")]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ")]
     [VisualStudioProcessor.OutputPath(C.AssembledObjectFile.ObjectFileKey, "ObjectFileName", handledByMetaData: true)] // if deeper than just $(IntDir)myobj.obj, MASM seems to fail
@@ -39,6 +42,10 @@ namespace VisualCCommon
         C.IAdditionalSettings,
         ICommonAssemblerSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this Module</param>
         protected CommonAssemblerSettings(
             Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
@@ -101,6 +108,9 @@ namespace VisualCCommon
             }
         }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {

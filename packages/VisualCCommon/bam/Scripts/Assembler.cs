@@ -30,6 +30,9 @@
 using System.Linq;
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Abstract base class for VisualC assemblers
+    /// </summary>
     public abstract class AssemblerBase :
         C.AssemblerTool
     {
@@ -60,6 +63,11 @@ namespace VisualCCommon
             throw new Bam.Core.Exception(message.ToString());
         }
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="depth">for this bit depth</param>
+        /// <param name="basename">basename of the assembler tool</param>
         protected AssemblerBase(
             C.EBit depth,
             string basename)
@@ -76,33 +84,63 @@ namespace VisualCCommon
             this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(fullAsmExePath));
         }
 
+        /// <summary>
+        /// Executable path for the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["AssemblerPath"];
 
+        /// <summary>
+        /// Command line switch for response files
+        /// </summary>
         public override string UseResponseFileOption => "@";
     }
 
+    /// <summary>
+    /// Class for 32-bit assembler
+    /// </summary>
     [C.RegisterAssembler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public class Assembler32 :
         AssemblerBase
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
         public Assembler32()
             :
             base(C.EBit.ThirtyTwo, "ml.exe")
         {}
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new VisualC.AssemblerSettings(module);
     }
 
+    /// <summary>
+    /// Class for 64-bit assembler
+    /// </summary>
     [C.RegisterAssembler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     public class Assembler64 :
         AssemblerBase
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
         public Assembler64()
             : base(C.EBit.SixtyFour, "ml64.exe")
         {}
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new VisualC.AssemblerSettings(module);

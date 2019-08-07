@@ -29,10 +29,13 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Types of link time code generation
+    /// </summary>
     public enum ELinkTimeCodeGeneration
     {
-        Off,
-        On,
-        Incremental
+        Off,        //<! Turn off LTCG
+        On,         //<! Turn on LTCG
+        Incremental //<! Use incremental LTCG
     }
 }

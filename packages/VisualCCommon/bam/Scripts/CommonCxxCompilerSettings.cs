@@ -29,10 +29,17 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Abstract class for common C++ compiler settings
+    /// </summary>
     public abstract class CommonCxxCompilerSettings :
         CommonCompilerSettings,
         C.ICxxOnlyCompilerSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">for this module</param>
         protected CommonCxxCompilerSettings(
             Bam.Core.Module module)
             :
@@ -41,6 +48,11 @@ namespace VisualCCommon
             (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.Cxx;
         }
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">for this module</param>
+        /// <param name="useDefaults">Whether to use defaults or leave uninitialised</param>
         protected CommonCxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)

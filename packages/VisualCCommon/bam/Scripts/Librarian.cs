@@ -30,6 +30,9 @@
 using System.Linq;
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Abstract class representing any librarian
+    /// </summary>
     public abstract class LibrarianBase :
         C.LibrarianTool
     {
@@ -60,6 +63,10 @@ namespace VisualCCommon
             throw new Bam.Core.Exception(message.ToString());
         }
 
+        /// <summary>
+        /// Create an instance.
+        /// </summary>
+        /// <param name="depth">Of the given bitdepth</param>
         protected LibrarianBase(
             C.EBit depth)
         {
@@ -75,29 +82,53 @@ namespace VisualCCommon
             this.Macros.AddVerbatim("libext", ".lib");
         }
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new VisualC.ArchiverSettings(module);
 
+        /// <summary>
+        /// Path to the executable for the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["ArchiverPath"];
 
+        /// <summary>
+        /// Command line switch used for response files
+        /// </summary>
         public override string UseResponseFileOption => "@";
     }
 
+    /// <summary>
+    /// Class representing a 32-bit VisualC librarian
+    /// </summary>
     [C.RegisterLibrarian("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class Librarian32 :
         LibrarianBase
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
         public Librarian32()
             :
             base(C.EBit.ThirtyTwo)
         { }
     }
 
+    /// <summary>
+    /// Class representing a 64-bit VisualC librarian
+    /// </summary>
     [C.RegisterLibrarian("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     public sealed class Librarian64 :
         LibrarianBase
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
         public Librarian64()
             :
             base(C.EBit.SixtyFour)

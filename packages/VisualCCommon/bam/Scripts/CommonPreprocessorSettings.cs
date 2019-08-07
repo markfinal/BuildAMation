@@ -29,6 +29,9 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Abstract class for common preprocessor settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.PreprocessedFile.PreprocessedFileKey, "", ignore: true)]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-EP ", max_file_count: 1)]
     public abstract class CommonPreprocessorSettings :
@@ -36,11 +39,20 @@ namespace VisualCCommon
         C.ICommonPreprocessorSettings,
         ICommonPreprocessorSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">Module to create Settings for</param>
         protected CommonPreprocessorSettings(
             Bam.Core.Module module)
             : this(module, true)
         {}
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">Module to create Settings for</param>
+        /// <param name="useDefaults">True to use default values, false to leave unassigned</param>
         protected CommonPreprocessorSettings(
             Bam.Core.Module module,
             bool useDefaults) => this.InitializeAllInterfaces(module, true, useDefaults);
@@ -69,6 +81,9 @@ namespace VisualCCommon
         [CommandLineProcessor.Bool("-nologo", "")]
         bool ICommonPreprocessorSettings.NoLogo { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void AssignFileLayout()
         {
             this.FileLayout = ELayout.Cmds_Inputs_Outputs;

@@ -29,6 +29,9 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Abstract class for common compiler settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "-Fo")]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     [VisualStudioProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "ObjectFileName")]
@@ -41,12 +44,20 @@ namespace VisualCCommon
         C.IAdditionalSettings,
         ICommonCompilerSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this Module</param>
         protected CommonCompilerSettings(
             Bam.Core.Module module)
             : this(module, true)
-        {
-        }
+        {}
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this Module</param>
+        /// <param name="useDefaults">whether to use defaults or leave uninitialised</param>
         protected CommonCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults) => this.InitializeAllInterfaces(module, true, useDefaults);
@@ -187,6 +198,9 @@ namespace VisualCCommon
             }
         }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void AssignFileLayout()
         {
             this.FileLayout = ELayout.Cmds_Outputs_Inputs;
