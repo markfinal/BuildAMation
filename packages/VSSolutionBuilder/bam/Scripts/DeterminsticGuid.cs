@@ -29,8 +29,16 @@
 #endregion // License
 namespace VSSolutionBuilder
 {
+    /// <summary>
+    /// Make a GUID that is determinstic across builds, so that regenerating .vcxprojs will just
+    /// update existing solutions and projects
+    /// </summary>
     public class DeterministicGuid
     {
+        /// <summary>
+        /// Construct the GUID
+        /// </summary>
+        /// <param name="input">from this data</param>
         public
         DeterministicGuid(
             string input)
@@ -48,10 +56,9 @@ namespace VSSolutionBuilder
             this.Guid = hashGuid;
         }
 
-        public System.Guid Guid
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the GUID
+        /// </summary>
+        public System.Guid Guid { get; private set; }
     }
 }

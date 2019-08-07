@@ -30,8 +30,20 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
+    /// <summary>
+    /// Extension class for XML document writes specific to VisualStudio projects
+    /// </summary>
     static class XmlDocumentExtensions
     {
+        /// <summary>
+        /// Create a VisualStudio element
+        /// </summary>
+        /// <param name="document">XMLDocument to extend.</param>
+        /// <param name="name">Name of the element.</param>
+        /// <param name="value">Optional value of the element. Default to null.</param>
+        /// <param name="condition">Optional condition for the element. Default to null.</param>
+        /// <param name="parentEl">Optional parent XML element. Default to null.</param>
+        /// <returns>The new XML element</returns>
         public static System.Xml.XmlElement
         CreateVSElement(
             this System.Xml.XmlDocument document,
@@ -57,6 +69,13 @@ namespace VSSolutionBuilder
             return el;
         }
 
+        /// <summary>
+        /// Create a VisualStudio item group.
+        /// </summary>
+        /// <param name="document">XMLDocument to extend.</param>
+        /// <param name="label">Optional label to specify. Defaults to null.</param>
+        /// <param name="parentEl">Optional parent XML element. Defaults to null.</param>
+        /// <returns>The new XML element.</returns>
         public static System.Xml.XmlElement
         CreateVSItemGroup(
             this System.Xml.XmlDocument document,
@@ -71,6 +90,14 @@ namespace VSSolutionBuilder
             return itemGroup;
         }
 
+        /// <summary>
+        /// Create a VisualStudio property group.
+        /// </summary>
+        /// <param name="document">XMLDocument to extend.</param>
+        /// <param name="label">Optional label to specify. Default to null.</param>
+        /// <param name="condition">Optional condition to apply. Default to null.</param>
+        /// <param name="parentEl">Optional parent XML element. Defaults to null.</param>
+        /// <returns>The new XML element.</returns>
         public static System.Xml.XmlElement
         CreateVSPropertyGroup(
             this System.Xml.XmlDocument document,
@@ -86,6 +113,13 @@ namespace VSSolutionBuilder
             return propertyGroup;
         }
 
+        /// <summary>
+        /// Create a VisualStudio item definition group.
+        /// </summary>
+        /// <param name="document">XMLDocument to extend.</param>
+        /// <param name="condition">Optional condition to apply. Defaults to null.</param>
+        /// <param name="parentEl">Optional parent XML element. Defaults to null.</param>
+        /// <returns>The new XML element.</returns>
         public static System.Xml.XmlElement
         CreateVSItemDefinitionGroup(
             this System.Xml.XmlDocument document,
@@ -95,6 +129,13 @@ namespace VSSolutionBuilder
             return document.CreateVSElement("ItemDefinitionGroup", condition: condition, parentEl: parentEl);
         }
 
+        /// <summary>
+        /// Create a VisualStudio import.
+        /// </summary>
+        /// <param name="document">XMLDocument to extend.</param>
+        /// <param name="importPath">Import path.</param>
+        /// <param name="parentEl">Optional parent XML element. Defaults to null.</param>
+        /// <returns>The new XML element.</returns>
         public static System.Xml.XmlElement
         CreateVSImport(
             this System.Xml.XmlDocument document,
@@ -106,6 +147,13 @@ namespace VSSolutionBuilder
             return import;
         }
 
+        /// <summary>
+        /// Create a VisualStudio import group.
+        /// </summary>
+        /// <param name="document">XMLDocument to extend.</param>
+        /// <param name="label">Label to use.</param>
+        /// <param name="parentEl">Optional parent XML element. Defaults to null.</param>
+        /// <returns>The new XML element.</returns>
         public static System.Xml.XmlElement
         CreateVSImportGroup(
             this System.Xml.XmlDocument document,

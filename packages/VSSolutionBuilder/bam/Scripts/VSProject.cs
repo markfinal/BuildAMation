@@ -30,9 +30,18 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
+    /// <summary>
+    /// Class representing a .vcxproj on disk.
+    /// </summary>
     public sealed class VSProject :
         HasGuid
     {
+        /// <summary>
+        /// Construct an instance, for the given module, at the given path, and added to the given solution.
+        /// </summary>
+        /// <param name="solution">VSSolution to add the project to</param>
+        /// <param name="module">Module corresponding to the new project</param>
+        /// <param name="projectPath">Path at which the project resides.</param>
         public VSProject(
             VSSolution solution,
             Bam.Core.Module module,
@@ -55,11 +64,10 @@ namespace VSSolutionBuilder
             this.LinkDependentProjects = new Bam.Core.Array<VSProject>();
         }
 
-        public Bam.Core.Module Module
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the module corresponding to this project
+        /// </summary>
+        public Bam.Core.Module Module { get; private set; }
 
         private static C.EBit
         GetModuleBitDepth(
@@ -76,6 +84,11 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Get the VSProjectConfiguration within this project corresponding to this Module
+        /// </summary>
+        /// <param name="module">Module to get configuration for</param>
+        /// <returns>The VSProjectConfiguration</returns>
         public VSProjectConfiguration
         GetConfiguration(
             Bam.Core.Module module)
@@ -110,6 +123,13 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Get the unique Settings group for the Module
+        /// </summary>
+        /// <param name="module">Module to get the group for</param>
+        /// <param name="group">The type of the group queried</param>
+        /// <param name="include">Optional what path this settings group corresponds to. Default to null.</param>
+        /// <returns></returns>
         public VSSettingsGroup
         GetUniqueSettingsGroup(
             Bam.Core.Module module,
@@ -155,6 +175,11 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add a header file to the project
+        /// </summary>
+        /// <param name="header">Settings group corresponding to the header</param>
+        /// <param name="config">Configuration to add the header to</param>
         public void
         AddHeader(
             VSSettingsGroup header,
@@ -167,6 +192,11 @@ namespace VSSolutionBuilder
             AddToFilter(header, config);
         }
 
+        /// <summary>
+        /// Add a source file to the project
+        /// </summary>
+        /// <param name="source">Settings group correspnding to the source file</param>
+        /// <param name="config">Configuration to add the source to</param>
         public void
         AddSource(
             VSSettingsGroup source,
@@ -179,6 +209,11 @@ namespace VSSolutionBuilder
             AddToFilter(source, config);
         }
 
+        /// <summary>
+        /// Add an arbitrary file to the project
+        /// </summary>
+        /// <param name="other">Settings group corresponding to the file</param>
+        /// <param name="config">Configuration to add the file to</param>
         public void
         AddOtherFile(
             VSSettingsGroup other,
@@ -191,6 +226,11 @@ namespace VSSolutionBuilder
             AddToFilter(other, config);
         }
 
+        /// <summary>
+        /// Add a resource file to the project
+        /// </summary>
+        /// <param name="other">Settings group corresponding to the resource file</param>
+        /// <param name="config">Configuration to add the resource file to</param>
         public void
         AddResourceFile(
             VSSettingsGroup other,
@@ -203,6 +243,11 @@ namespace VSSolutionBuilder
             AddToFilter(other, config);
         }
 
+        /// <summary>
+        /// Add an assembly file to the project
+        /// </summary>
+        /// <param name="other">Settings group corresponding to the assembly file</param>
+        /// <param name="config">Configuration to add the assembly file to</param>
         public void
         AddAssemblyFile(
             VSSettingsGroup other,
@@ -215,6 +260,10 @@ namespace VSSolutionBuilder
             AddToFilter(other, config);
         }
 
+        /// <summary>
+        /// Add an order only dependency on another project
+        /// </summary>
+        /// <param name="dependentProject">Project that is an order only dependency</param>
         public void
         AddOrderOnlyDependency(
             VSProject dependentProject)
@@ -230,6 +279,10 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add a link-time dependency on another project
+        /// </summary>
+        /// <param name="dependentProject">Project that is a link time dependency</param>
         public void
         AddLinkDependency(
             VSProject dependentProject)
@@ -245,78 +298,38 @@ namespace VSSolutionBuilder
             }
         }
 
-        public string
-        ProjectPath
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the project filepath
+        /// </summary>
+        public string ProjectPath { get; private set; }
 
-        public VSProjectFilter Filter
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the filter applied to this project
+        /// </summary>
+        public VSProjectFilter Filter { get; private set; }
 
-        private VSSolution Solution
-        {
-            get;
-            set;
-        }
+        private VSSolution Solution { get; set; }
 
-        public System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration> Configurations
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the dictionary of EConfiguration to VSProjectConfiguration
+        /// </summary>
+        public System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration> Configurations { get; private set; }
 
-        private Bam.Core.Array<VSSettingsGroup> ProjectSettings
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSSettingsGroup> ProjectSettings { get; set; }
 
-        private Bam.Core.Array<VSSettingsGroup> Headers
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSSettingsGroup> Headers { get; set; }
 
-        private Bam.Core.Array<VSSettingsGroup> Sources
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSSettingsGroup> Sources { get; set; }
 
-        private Bam.Core.Array<VSSettingsGroup> Others
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSSettingsGroup> Others { get; set; }
 
-        private Bam.Core.Array<VSSettingsGroup> Resources
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSSettingsGroup> Resources { get; set; }
 
-        private Bam.Core.Array<VSSettingsGroup> AssemblyFiles
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSSettingsGroup> AssemblyFiles { get; set; }
 
-        private Bam.Core.Array<VSProject> OrderOnlyDependentProjects
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSProject> OrderOnlyDependentProjects { get; set; }
 
-        private Bam.Core.Array<VSProject> LinkDependentProjects
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSProject> LinkDependentProjects { get; set; }
 
         private void
         SerializeDependentProjects(
@@ -379,6 +392,10 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Serialize user settings for the project to XML.
+        /// </summary>
+        /// <returns>The XML document containing the user settings.</returns>
         public System.Xml.XmlDocument
         SerializeUserSettings()
         {
@@ -401,6 +418,10 @@ namespace VSSolutionBuilder
             return document;
         }
 
+        /// <summary>
+        /// Serialize the project to XML
+        /// </summary>
+        /// <returns>XML document containing the project.</returns>
         public System.Xml.XmlDocument
         Serialize()
         {
@@ -571,6 +592,11 @@ namespace VSSolutionBuilder
             return project;
         }
 
+        /// <summary>
+        /// Query whether the .vcxproj corresponding to the Module is buildable.
+        /// </summary>
+        /// <param name="module">Module to query.</param>
+        /// <returns>true if the project is buildable</returns>
         public static bool
         IsBuildable(
             Bam.Core.Module module)

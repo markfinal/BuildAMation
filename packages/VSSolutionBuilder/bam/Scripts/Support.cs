@@ -30,6 +30,9 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
+    /// <summary>
+    /// Utility class offering more useful functions for writing .vcxprojs
+    /// </summary>
     static public partial class Support
     {
         static private void
@@ -124,6 +127,16 @@ namespace VSSolutionBuilder
             shellCommandLines.Add(redirectedCommand);
         }
 
+        /// <summary>
+        /// Add a custom build step for the module into the .vcxproj
+        /// </summary>
+        /// <param name="module">Module whose .vcxproj will be modified</param>
+        /// <param name="inputs">List of input paths</param>
+        /// <param name="outputs">List of output paths</param>
+        /// <param name="message">Message to output when running the custom build step</param>
+        /// <param name="commandList">List of commands to run</param>
+        /// <param name="commandIsForFirstInputOnly">Whether the command should only be run on the first input, or all.</param>
+        /// <param name="addInputFilesToProject">Whether to add input files to the project file</param>
         static public void
         AddCustomBuildStep(
             Bam.Core.Module module,
@@ -163,6 +176,13 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add a custom build step for the .vcxproj based on an ICommandLineTool
+        /// </summary>
+        /// <param name="module">Module containing the ICommandLineTool to run</param>
+        /// <param name="outputPath">Output path generated from the build step</param>
+        /// <param name="messagePrefix">Message to prefix the output with from running</param>
+        /// <param name="addInputFilesToProject">Whether to add the input files to the project</param>
         static public void
         AddCustomBuildStepForCommandLineTool(
             Bam.Core.Module module,
@@ -188,6 +208,12 @@ namespace VSSolutionBuilder
             );
         }
 
+        /// <summary>
+        /// Add prebuild steps for the module
+        /// </summary>
+        /// <param name="module">Module to add the prebuild steps for</param>
+        /// <param name="config">Optional VSProjectConfiguration to add the prebuild step for. Default to null.</param>
+        /// <param name="addOrderOnlyDependencyOnTool">Optional whether to add the tool as an order only dependency. Default to false.</param>
         static public void
         AddPreBuildSteps(
             Bam.Core.Module module,
@@ -223,6 +249,12 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add post-build steps for the module
+        /// </summary>
+        /// <param name="module">Module whose tool generates command lines</param>
+        /// <param name="config">Optional VSProjectConfiguration to add to. Default to null.</param>
+        /// <param name="addOrderOnlyDependencyOnTool">Optional whether the tool is added as an order only dependency. Default to false.</param>
         static public void
         AddPostBuildSteps(
             Bam.Core.Module module,
@@ -258,6 +290,12 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add custom shell commands to a post build step
+        /// </summary>
+        /// <param name="config">VSProjectConfiguration add to</param>
+        /// <param name="module">Module corresponding to the project</param>
+        /// <param name="commands">List of shell commands to add</param>
         static public void
         AddCustomPostBuildStep(
             VSProjectConfiguration config,
@@ -270,6 +308,15 @@ namespace VSSolutionBuilder
             config.AddPostBuildCommands(shellCommandLines);
         }
 
+        /// <summary>
+        /// Add a post build step corresponding to an ICommandLineTool
+        /// </summary>
+        /// <param name="module">Module with ICommandLineTool</param>
+        /// <param name="moduleToAddBuildStepTo">The Module corresponding to the VSProject to add to</param>
+        /// <param name="project">The VSProject written</param>
+        /// <param name="configuration">The VSProjectConfiguration written</param>
+        /// <param name="redirectToFile">Optional whether the output from the commands are redirected to this file. Default to null.</param>
+        /// <param name="includeEnvironmentVariables">Optional whether environment variables are added to the commands. Default to true.</param>
         static public void
         AddPostBuildStepForCommandLineTool(
             Bam.Core.Module module,
@@ -293,6 +340,14 @@ namespace VSSolutionBuilder
             configuration.AddPostBuildCommands(shellCommandLines);
         }
 
+        /// <summary>
+        /// Add a pre build step corresponding to an ICommandLineTool
+        /// </summary>
+        /// <param name="module">Module with ICommandLineTool</param>
+        /// <param name="project">The VSProject written</param>
+        /// <param name="configuration">The VSProjectConfiguration written</param>
+        /// <param name="redirectToFile">Optional whether the output from the commands are redirected to this file. Default to null.</param>
+        /// <param name="includeEnvironmentVariables">Optional whether environment variables are added to the commands. Default to true.</param>
         static public void
         AddPreBuildStepForCommandLineTool(
             Bam.Core.Module module,

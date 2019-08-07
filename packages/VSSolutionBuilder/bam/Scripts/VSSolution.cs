@@ -30,6 +30,9 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
+    /// <summary>
+    /// Class representing a VisualStudio solution.
+    /// </summary>
     public sealed class VSSolution
     {
         private System.Collections.Generic.Dictionary<System.Type, VSProject> ProjectMap = new System.Collections.Generic.Dictionary<System.Type, VSProject>();
@@ -67,6 +70,12 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Ensure that a VisualStudio project exists in the solution.
+        /// Create it if not, and always return it.
+        /// </summary>
+        /// <param name="module">Module representing the project.</param>
+        /// <returns>The project</returns>
         public VSProject
         EnsureProjectExists(
             Bam.Core.Module module)
@@ -96,6 +105,9 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Enumerate across all projects in the solution.
+        /// </summary>
         public System.Collections.Generic.IEnumerable<VSProject> Projects
         {
             get
@@ -107,6 +119,11 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Serialise the solution to a string.
+        /// </summary>
+        /// <param name="solutionPath">Path to which the solution will be written.</param>
+        /// <returns></returns>
         public System.Text.StringBuilder
         Serialize(
             string solutionPath)
