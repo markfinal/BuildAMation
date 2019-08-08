@@ -3,7 +3,6 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>../Common/BuildAMation.snk</AssemblyOriginatorKeyFile>
-    <DelaySign>false</DelaySign>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

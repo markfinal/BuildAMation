@@ -152,7 +152,10 @@ namespace Bam
         Create()
         {
             Core.Graph.Instance.SkipPackageSourceDownloads = true;
-            Core.PackageUtilities.IdentifyAllPackages(false);
+            var allowDuplicates = Core.CommandLineProcessor.Evaluate(new Core.Options.IncludeAllPackageVersions());
+            Core.PackageUtilities.IdentifyAllPackages(
+                allowDuplicates: allowDuplicates
+            );
 
             var masterPackage = Core.Graph.Instance.MasterPackage;
             var projectPathname = masterPackage.GetDebugPackageProjectPathname();
@@ -172,6 +175,10 @@ namespace Bam
 
             Core.Log.Info($"Successfully created debug project for package '{masterPackage.FullName}'");
             Core.Log.Info($"\t{projectPathname}");
+            if (allowDuplicates)
+            {
+                Core.Log.Info("NOTE: All package versions were included in this project. The project may not build due to duplicate symbols.");
+            }
         }
     }
 }
