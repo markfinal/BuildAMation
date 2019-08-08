@@ -29,13 +29,20 @@
 #endregion // License
 namespace VisualC
 {
+    /// <summary>
+    /// Class representing the archiver settings for this version of VisualC
+    /// </summary>
     public sealed class ArchiverSettings :
         VisualCCommon.CommonArchiverSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this module</param>
         public ArchiverSettings(
             Bam.Core.Module module)
             :
             base(module)
-        {}
+        { }
     }
 }

@@ -29,15 +29,27 @@
 #endregion // License
 namespace VisualC
 {
+    /// <summary>
+    /// Class representing the C compiler settings for this version of VisualC
+    /// </summary>
     public sealed class CCompilerSettings :
         VisualCCommon.CommonCCompilerSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this module</param>
         public CCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
         { }
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this module</param>
+        /// <param name="useDefaults">Whether to use defaults or not</param>
         public CCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)

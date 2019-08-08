@@ -29,21 +29,33 @@
 #endregion // License
 namespace VisualC
 {
+    /// <summary>
+    /// Class representing the C++ compiler settings for this version of VisualC
+    /// </summary>
     public sealed class CxxCompilerSettings :
         VisualCCommon.CommonCxxCompilerSettings,
         C.ICxxOnlyCompilerSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this module</param>
         public CxxCompilerSettings(
             Bam.Core.Module module)
             :
             base(module, true)
-        {}
+        { }
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this module</param>
+        /// <param name="useDefaults">Whether to use defaults or not</param>
         public CxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
             :
             base(module, useDefaults)
-        {}
+        { }
     }
 }
