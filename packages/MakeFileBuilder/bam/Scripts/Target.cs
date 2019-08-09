@@ -34,6 +34,11 @@ namespace MakeFileBuilder
         private static object UniqueCounterGuard = new object();
         private static int UniqueCounter = 0; // TODO: this is probably not the best way of creating a unique name for all unreferenced modules
 
+        /// <summary>
+        /// Is the module a prerequisite of the all target
+        /// </summary>
+        /// <param name="module">Module to query</param>
+        /// <returns>True if the module is a prerequisite of all</returns>
         public static bool
         IsPrerequisiteOfAll(
             Bam.Core.Module module)
@@ -53,6 +58,12 @@ namespace MakeFileBuilder
             variableName = variableName.Replace('.', '_');
         }
 
+        /// <summary>
+        /// Convert a module and key name into a unique Make variable name
+        /// </summary>
+        /// <param name="module">Module of interest</param>
+        /// <param name="keyName">Key name (unrelated to path keys)</param>
+        /// <returns>Unique variable name</returns>
         public static string
         MakeUniqueVariableName(
             Bam.Core.Module module,
@@ -88,6 +99,16 @@ namespace MakeFileBuilder
             return expanded_variable;
         }
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="nameOrOutput">Name of the target or an output path</param>
+        /// <param name="isPhony">Is the target phony?</param>
+        /// <param name="variableName">Variable name associated with the target</param>
+        /// <param name="module">Module represented</param>
+        /// <param name="ruleIndex">Index of the rule</param>
+        /// <param name="keyName">Name of the key associated with the target</param>
+        /// <param name="isDependencyOfAll">Is this target a dependency of the all target?</param>
         public Target(
             Bam.Core.TokenizedString nameOrOutput,
             bool isPhony,
@@ -118,9 +139,24 @@ namespace MakeFileBuilder
             this.VariableName = MakeUniqueVariableName(module, keyName);
         }
 
+        /// <summary>
+        /// Is the target a prerequisite of the all target?
+        /// </summary>
         public bool IsPrerequisiteofAll { get; private set; }
+
+        /// <summary>
+        /// Path to the target
+        /// </summary>
         public Bam.Core.TokenizedString Path { get; private set; }
+
+        /// <summary>
+        /// Is the target phone?
+        /// </summary>
         public bool IsPhony { get; private set; }
+
+        /// <summary>
+        /// Variable name used for the target
+        /// </summary>
         public string VariableName { get; private set; }
     }
 }
