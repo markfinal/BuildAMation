@@ -70,6 +70,9 @@ namespace ClangCommon
         [CommandLineProcessor.Bool("-P", "")]
         bool? C.ICommonPreprocessorSettings.SuppressLineMarkers { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {

@@ -34,6 +34,9 @@ namespace ClangCommon
     public sealed class Librarian :
         C.LibrarianTool
     {
+        /// <summary>
+        /// List of arguments
+        /// </summary>
         private readonly Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
 
         public Librarian()
@@ -49,11 +52,24 @@ namespace ClangCommon
             this.Macros.AddVerbatim("libext", ".a");
         }
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Clang.ArchiverSettings(module);
 
+        /// <summary>
+        /// Executable path to the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.XcrunPath);
+
+        /// <summary>
+        /// List of arguments to pass prior to the Module settings
+        /// </summary>
         public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
     }
 }

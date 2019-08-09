@@ -32,6 +32,9 @@ namespace ClangCommon
     public abstract class AssemblerBase :
         C.AssemblerTool
     {
+        /// <summary>
+        /// List of arguments
+        /// </summary>
         protected Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
 
         protected AssemblerBase()
@@ -45,7 +48,14 @@ namespace ClangCommon
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim($"--sdk {clangMeta.SDK}"));
         }
 
+        /// <summary>
+        /// Executable path of the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.XcrunPath);
+
+        /// <summary>
+        /// Arguments to pass to the tool before Module settings
+        /// </summary>
         public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
     }
 
@@ -56,6 +66,12 @@ namespace ClangCommon
     {
         public Assembler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Clang.AssemblerSettings(module);

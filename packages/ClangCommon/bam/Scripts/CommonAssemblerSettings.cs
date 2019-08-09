@@ -78,6 +78,9 @@ namespace ClangCommon
         [XcodeProjectProcessor.StringArray("OTHER_CFLAGS", spacesSeparate: true)]
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {

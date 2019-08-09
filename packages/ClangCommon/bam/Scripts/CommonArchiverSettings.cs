@@ -55,6 +55,9 @@ namespace ClangCommon
         [XcodeProjectProcessor.UniqueEnum(EArchiverCommand.Replace, "", "", ignore: true)]
         EArchiverCommand ICommonArchiverSettings.Command { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {

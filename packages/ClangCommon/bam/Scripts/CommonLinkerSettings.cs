@@ -123,6 +123,9 @@ namespace ClangCommon
             }
         }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {
