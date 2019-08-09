@@ -36,8 +36,15 @@ namespace GccCommon
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonArchiverSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("-s", "")]
         bool ICommonArchiverSettings.Ranlib { get; set; }
@@ -51,6 +58,9 @@ namespace GccCommon
         [CommandLineProcessor.Enum(EArchiverCommand.Replace, "-r")]
         EArchiverCommand ICommonArchiverSettings.Command { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void AssignFileLayout()
         {
             this.FileLayout = ELayout.Cmds_Outputs_Inputs;

@@ -29,17 +29,23 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Symbol visibility options
+    /// </summary>
     public enum EVisibility
     {
-        Default,
-        Internal,
-        Hidden,
-        Protected
+        Default,    //<! All symbols are visible
+        Internal,   //<! Internal mode
+        Hidden,     //<! All symbols are hidden, unless explicit marked up
+        Protected   //<! Protected mode
     }
 
+    /// <summary>
+    /// Special optimisation modes
+    /// </summary>
     public enum EOptimization
     {
-        O3,
-        Ofast
+        O3,     //<! -O3
+        Ofast   //<! -Ofast
     }
 }

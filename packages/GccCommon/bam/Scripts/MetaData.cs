@@ -47,6 +47,11 @@ namespace GccCommon
             this.Meta.Add("ExpectedMinorVersion", this.CompilerMinorVersion);
         }
 
+        /// <summary>
+        /// Indexer into the meta data
+        /// </summary>
+        /// <param name="index">String indexer</param>
+        /// <returns>Result at index</returns>
         public override object this[string index] => this.Meta[index];
 
         public override bool
@@ -115,6 +120,9 @@ namespace GccCommon
             }
         }
 
+        /// <summary>
+        /// Get path to Gcc
+        /// </summary>
         public string GccPath
         {
             get
@@ -124,6 +132,9 @@ namespace GccCommon
             }
         }
 
+        /// <summary>
+        /// Get path to G++
+        /// </summary>
         public string GxxPath
         {
             get
@@ -133,6 +144,9 @@ namespace GccCommon
             }
         }
 
+        /// <summary>
+        /// Get path to ar
+        /// </summary>
         public string ArPath
         {
             get
@@ -142,6 +156,9 @@ namespace GccCommon
             }
         }
 
+        /// <summary>
+        /// Get path to ld
+        /// </summary>
         public string LdPath
         {
             get
@@ -151,10 +168,19 @@ namespace GccCommon
             }
         }
 
+        /// <summary>
+        /// Get the compiler's major version
+        /// </summary>
         protected abstract int CompilerMajorVersion { get; }
 
+        /// <summary>
+        /// Get the compiler's minor version
+        /// </summary>
         protected virtual int? CompilerMinorVersion => null; // defaults to no minor version number
 
+        /// <summary>
+        /// Get the toolchain version
+        /// </summary>
         public C.ToolchainVersion ToolchainVersion
         {
             get

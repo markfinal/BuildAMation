@@ -29,8 +29,11 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Archiver commands
+    /// </summary>
     public enum EArchiverCommand
     {
-        Replace
+        Replace //<! Replace existing object files
     }
 }

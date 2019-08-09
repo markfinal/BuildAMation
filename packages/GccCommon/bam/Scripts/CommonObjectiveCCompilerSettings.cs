@@ -33,6 +33,10 @@ namespace GccCommon
         CommonCCompilerSettings,
         C.IObjectiveCOnlyCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonObjectiveCCompilerSettings(
             Bam.Core.Module module)
             :
@@ -42,6 +46,11 @@ namespace GccCommon
             (this as C.ICOnlyCompilerSettings).LanguageStandard = C.ELanguageStandard.C99; // implied by the language use in GNUStep headers
         }
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         protected
         CommonObjectiveCCompilerSettings(
             Bam.Core.Module module,

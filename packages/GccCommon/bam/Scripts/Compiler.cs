@@ -42,8 +42,14 @@ namespace GccCommon
             this.Version = this.GccMetaData.ToolchainVersion;
         }
 
+        /// <summary>
+        /// Get the Gcc meta data for this tool
+        /// </summary>
         protected Gcc.MetaData GccMetaData { get; private set; }
 
+        /// <summary>
+        /// Get the executable path to this tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
         public override void
@@ -62,6 +68,12 @@ namespace GccCommon
     {
         public CCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Gcc.CCompilerSettings(module);
@@ -74,6 +86,12 @@ namespace GccCommon
     {
         public CxxCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Gcc.CxxCompilerSettings(module);
@@ -86,6 +104,12 @@ namespace GccCommon
     {
         public ObjectiveCCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Gcc.ObjectiveCCompilerSettings(module);
@@ -98,6 +122,12 @@ namespace GccCommon
     {
         public ObjectiveCxxCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Gcc.ObjectiveCxxCompilerSettings(module);

@@ -33,6 +33,10 @@ namespace GccCommon
         CommonCompilerSettings,
         C.ICOnlyCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonCCompilerSettings(
             Bam.Core.Module module)
             :
@@ -41,6 +45,11 @@ namespace GccCommon
             (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.C;
         }
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         protected CommonCCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
