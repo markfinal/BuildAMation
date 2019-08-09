@@ -34,6 +34,9 @@ namespace Publisher
     abstract class PreExistingObject :
         Bam.Core.Module
     {
+        /// <summary>
+        /// Get the parent of the Collation module
+        /// </summary>
         public Bam.Core.Module ParentOfCollationModule { get; private set; }
 
         protected override void
@@ -69,6 +72,9 @@ namespace Publisher
     sealed class PreExistingFile :
         PreExistingObject
     {
+        /// <summary>
+        /// Path key corresponding to the pre-existing file
+        /// </summary>
         public const string ExistingFileKey = "Preexisting file to be copied";
 
         protected override void
@@ -84,6 +90,9 @@ namespace Publisher
     sealed class PreExistingDirectory :
         PreExistingObject
     {
+        /// <summary>
+        /// Path key corresponding to the pre-existing directory
+        /// </summary>
         public const string ExistingDirectoryKey = "Preexisting directory to be copied";
 
         protected override void
@@ -163,7 +172,7 @@ namespace Publisher
 
             /// <summary>
             /// Application is a GUI application.
-            /// On OSX, this is an application bundle, and will automatically appear in a <name>.app/Contents/MacOS folder
+            /// On OSX, this is an application bundle, and will automatically appear in a [name].app/Contents/MacOS folder
             /// under the publishing root.
             /// </summary>
             WindowedApplication,

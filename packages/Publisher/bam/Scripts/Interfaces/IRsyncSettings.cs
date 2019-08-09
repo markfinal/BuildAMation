@@ -29,14 +29,36 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Settings interface for rsync (file/directory copying)
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface IRsyncSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Make the tool output verbose
+        /// </summary>
         bool Verbose { get; set; }
+
+        /// <summary>
+        /// Recursively copy all files
+        /// </summary>
         bool Recursive { get; set; }
+
+        /// <summary>
+        /// Preserve all file attributes when copying
+        /// </summary>
         bool PreserveAllAttributes { get; set; }
+
+        /// <summary>
+        /// Use checksums to avoid copying files again on another run
+        /// </summary>
         bool UseChecksums { get; set; }
+
+        /// <summary>
+        /// List of excluded file paths
+        /// </summary>
         Bam.Core.TokenizedStringArray Exclusions { get; set; }
     }
 }

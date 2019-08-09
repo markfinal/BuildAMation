@@ -30,11 +30,17 @@
 using System.Linq;
 namespace Publisher
 {
+    /// <summary>
+    /// Pre-built tool for performing stripping of binaries
+    /// </summary>
     public sealed class StripTool :
         Bam.Core.PreBuiltTool
     {
         private readonly Bam.Core.TokenizedString ExecutablePath;
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
         public StripTool()
         {
             if (Bam.Core.OSUtilities.IsWindowsHosting)
@@ -52,13 +58,28 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new StripToolSettings(module);
 
+        /// <summary>
+        /// The executable path of the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.ExecutablePath;
 
+        /// <summary>
+        /// Evaluate whether the module needs updating
+        /// </summary>
         protected override void
-        EvaluateInternal() => this.ReasonToExecute = null;
+        EvaluateInternal()
+        {
+            this.ReasonToExecute = null;
+        }
     }
 }

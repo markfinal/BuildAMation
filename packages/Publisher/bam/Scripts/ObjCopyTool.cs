@@ -30,11 +30,17 @@
 using System.Linq;
 namespace Publisher
 {
+    /// <summary>
+    /// Prebuilt tool module for copying elf sections
+    /// </summary>
     public sealed class ObjCopyTool :
         Bam.Core.PreBuiltTool
     {
         private readonly Bam.Core.TokenizedString ExecutablePath;
 
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public ObjCopyTool()
         {
             if (Bam.Core.OSUtilities.IsWindowsHosting)
@@ -55,10 +61,19 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => null; // expected that Modules using this will specify their own Settings classes
 
+        /// <summary>
+        /// Executable path for this tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.ExecutablePath;
 
         protected override void

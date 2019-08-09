@@ -29,11 +29,21 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Settings interface for Linux objcopy tool (copying sections out of elfs)
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface IObjCopyToolSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Only keep the debug symbols section from the elf
+        /// </summary>
         bool OnlyKeepDebug { get; set; }
+
+        /// <summary>
+        /// Make the tool output verbose
+        /// </summary>
         bool Verbose { get; set; }
     }
 }

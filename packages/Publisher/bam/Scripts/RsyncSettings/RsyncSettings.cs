@@ -29,6 +29,9 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Class representing rsync tool settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedFrameworkKey, "", path_modifier: "@dir($(0))")]
     [CommandLineProcessor.InputPaths(C.OSXFramework.FrameworkKey, "")]
     [CommandLineProcessor.InputPaths(CollatedObject.CopiedFrameworkKey, "")]
@@ -36,11 +39,21 @@ namespace Publisher
         Bam.Core.Settings,
         IRsyncSettings
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public RsyncSettings()
         { }
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public RsyncSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("-v", "")]
         bool IRsyncSettings.Verbose { get; set; }

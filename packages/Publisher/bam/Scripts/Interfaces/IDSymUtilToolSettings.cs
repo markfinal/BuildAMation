@@ -29,6 +29,9 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Settings interface for the dsymutil tool (macOS symbol generator)
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface IDSymUtilToolSettings :
         Bam.Core.ISettingsBase

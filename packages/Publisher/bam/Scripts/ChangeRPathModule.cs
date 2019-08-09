@@ -29,6 +29,9 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Module class representing a file with a changed RPATH
+    /// </summary>
     public class ChangeRPathModule :
         Bam.Core.Module
     {
@@ -71,6 +74,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Get or set the source application module that will have its rpath changed
+        /// </summary>
         public C.ConsoleApplication Source
         {
             get
@@ -85,6 +91,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Enumerate across all inputs to this module
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get

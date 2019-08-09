@@ -29,13 +29,23 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Class representing chrpath tool settings
+    /// </summary>
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "")]
     public sealed class ChangeRPathSettings :
         Bam.Core.Settings,
         IChangeRPathSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this module</param>
         public ChangeRPathSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.String("-r ")]
         string IChangeRPathSettings.NewRPath { get; set; }

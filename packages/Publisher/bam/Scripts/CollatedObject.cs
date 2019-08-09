@@ -30,13 +30,31 @@
 using Bam.Core;
 namespace Publisher
 {
+    /// <summary>
+    /// Abstract base class for any collated object
+    /// </summary>
     public abstract class CollatedObject :
         Bam.Core.Module,
         ICollatedObject
     {
+        /// <summary>
+        /// Path key to the file copied
+        /// </summary>
         public const string CopiedFileKey = "Copied file";
+
+        /// <summary>
+        /// Path key to the directory copied
+        /// </summary>
         public const string CopiedDirectoryKey = "Copied directory";
+
+        /// <summary>
+        /// Path key to the renamed directory copied
+        /// </summary>
         public const string CopiedRenamedDirectoryKey = "Copied renamed directory";
+
+        /// <summary>
+        /// Path key to the macOS framework copied
+        /// </summary>
         public const string CopiedFrameworkKey = "Copied framework";
 
         private Bam.Core.Module sourceModule;
@@ -47,6 +65,9 @@ namespace Publisher
         private readonly System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject>();
 
         Bam.Core.Module ICollatedObject.SourceModule => this.sourceModule;
+        /// <summary>
+        /// Set the source module
+        /// </summary>
         public Bam.Core.Module SourceModule
         {
             set
@@ -56,6 +77,9 @@ namespace Publisher
         }
 
         string ICollatedObject.SourcePathKey => this.sourcePathKey;
+        /// <summary>
+        /// Set the source path key
+        /// </summary>
         public string SourcePathKey
         {
             set
@@ -67,6 +91,9 @@ namespace Publisher
         Bam.Core.TokenizedString ICollatedObject.PublishingDirectory => this.publishingDirectory;
 
         ICollatedObject ICollatedObject.Anchor => this.anchor;
+        /// <summary>
+        /// Set the relative anchor point
+        /// </summary>
         public ICollatedObject Anchor
         {
             set
@@ -80,12 +107,21 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Get or set whether to ignore collating this object
+        /// </summary>
         public bool Ignore { get; set; }
 
-        // helper function
+        /// <summary>
+        /// Helper function to determine if this is an anchor
+        /// (as an anchor cannot have an anchor)
+        /// </summary>
         public bool IsAnchor => null == this.anchor;
 
-        // helper function (XcodeBuilder)
+        /// <summary>
+        /// Helper function for XcodeBuilder, to determine if this collated object
+        /// is in the same package as the anchor
+        /// </summary>
         public bool IsInAnchorPackage
         {
             get
@@ -103,6 +139,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Query if the anchor is a macOS application bundle
+        /// </summary>
         public bool IsAnchorAnApplicationBundle
         {
             get
@@ -117,6 +156,11 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Set the publishing directory for this collated object
+        /// </summary>
+        /// <param name="original">Original path</param>
+        /// <param name="positional">With any positional arguments</param>
         public void
         SetPublishingDirectory(
             string original,
@@ -133,16 +177,20 @@ namespace Publisher
         }
 
         // TODO: add accessors, rather than direct to the field
-        public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> DependentCollations
-        {
-            get
-            {
-                return this.dependents;
-            }
-        }
+        /// <summary>
+        /// Get the dependent collations on this collated object
+        /// </summary>
+        public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> DependentCollations => this.dependents;
 
+        /// <summary>
+        /// Get the source path of this collated object
+        /// </summary>
         public Bam.Core.TokenizedString SourcePath => this.sourceModule.GeneratedPaths[this.sourcePathKey];
 
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">with this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -249,6 +297,10 @@ namespace Publisher
             this.Ignore = false;
         }
 
+        /// <summary>
+        /// Execute the tool on this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -290,6 +342,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Enumerate across all inputs to this module
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get

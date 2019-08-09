@@ -30,14 +30,32 @@
 using Bam.Core;
 namespace Publisher
 {
+    /// <summary>
+    /// Abstract module representing a file that has had sections copied from another
+    /// </summary>
     public abstract class ObjCopyModule :
         Bam.Core.Module,
         ICollatedObject
     {
+        /// <summary>
+        /// The Module that is the source of the objcopy
+        /// </summary>
         protected Bam.Core.Module sourceModule;
+
+        /// <summary>
+        /// The path key on that source Module
+        /// </summary>
         protected string sourcePathKey;
+
+        /// <summary>
+        /// The anchor to which this is relative to
+        /// </summary>
         protected ICollatedObject anchor = null;
 
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">with this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -54,6 +72,10 @@ namespace Publisher
             // always generate currently
         }
 
+        /// <summary>
+        /// Execute the tool on this Module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -84,6 +106,9 @@ namespace Publisher
         }
 
         Bam.Core.Module ICollatedObject.SourceModule => this.sourceModule;
+        /// <summary>
+        /// Set the source module
+        /// </summary>
         public Bam.Core.Module SourceModule
         {
             set
@@ -93,6 +118,9 @@ namespace Publisher
         }
 
         string ICollatedObject.SourcePathKey => this.sourcePathKey;
+        /// <summary>
+        /// Set the source path key
+        /// </summary>
         public string SourcePathKey
         {
             set
@@ -104,6 +132,9 @@ namespace Publisher
         Bam.Core.TokenizedString ICollatedObject.PublishingDirectory => this.Macros["publishingdir"];
 
         ICollatedObject ICollatedObject.Anchor => this.anchor;
+        /// <summary>
+        /// Set the anchor
+        /// </summary>
         public ICollatedObject Anchor
         {
             set
@@ -113,11 +144,21 @@ namespace Publisher
         }
     }
 
+    /// <summary>
+    /// Module that makes a debug symbol file
+    /// </summary>
     public sealed class MakeDebugSymbolFile :
         ObjCopyModule
     {
+        /// <summary>
+        /// Path key for the debug symbol file
+        /// </summary>
         public const string DebugSymbolFileKey = "GNU Debug Symbol File";
 
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">with this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -159,6 +200,9 @@ namespace Publisher
         public override Settings
         MakeSettings() => new MakeDebugSymbolFileSettings(this);
 
+        /// <summary>
+        /// Enumerate across all inputs to this Module
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get
@@ -167,6 +211,11 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Make the Module to cause the linkback
+        /// </summary>
+        /// <param name="strippedCollatedObject">The original stripped binary</param>
+        /// <returns>Module to perform the linkback</returns>
         public LinkBackDebugSymbolFile
         LinkBackToDebugSymbols(
             StripModule strippedCollatedObject)
@@ -192,11 +241,21 @@ namespace Publisher
         }
     }
 
+    /// <summary>
+    /// Module that links debug symbol files back to the original executable
+    /// </summary>
     public sealed class LinkBackDebugSymbolFile :
         ObjCopyModule
     {
+        /// <summary>
+        /// Path key to the original executable that has a linkback to the debug symbols
+        /// </summary>
         public const string UpdateOriginalExecutable = "Updating original executable with debug linkback";
 
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">with this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -209,11 +268,17 @@ namespace Publisher
             );
         }
 
+        /// <summary>
+        /// Get or set the Module that holds the debug symbols
+        /// </summary>
         public MakeDebugSymbolFile DebugSymbolModule { get; set; }
 
         public override Settings
         MakeSettings() => new LinkBackDebugSymbolFileSettings(this);
 
+        /// <summary>
+        /// Enumerate all inputs to this Module
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get
@@ -222,6 +287,10 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Run the tool on this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)

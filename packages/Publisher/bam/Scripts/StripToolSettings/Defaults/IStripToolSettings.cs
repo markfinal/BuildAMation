@@ -30,6 +30,9 @@
 using Bam.Core;
 namespace Publisher.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for setting defaults of IStripToolSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
         public static void

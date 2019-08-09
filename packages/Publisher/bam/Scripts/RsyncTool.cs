@@ -30,15 +30,30 @@
 using System.Linq;
 namespace Publisher
 {
+    /// <summary>
+    /// Prebuilt tool for running rsync
+    /// </summary>
     public sealed class RsyncTool :
         CopyFileTool
     {
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new RsyncSettings(module);
 
+        /// <summary>
+        /// Executable path for this tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("bash").First());
 
+        /// <summary>
+        /// Arguments to pass to the tool prior to passing settings
+        /// </summary>
         public override Bam.Core.TokenizedStringArray InitialArguments
         {
             get

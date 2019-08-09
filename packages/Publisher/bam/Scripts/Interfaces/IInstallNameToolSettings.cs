@@ -29,12 +29,26 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Settings interface for macOS installnametool
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface IInstallNameToolSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Set the mode of operation
+        /// </summary>
         EInstallNameToolMode Mode { get; set; }
+
+        /// <summary>
+        /// Specify the old name (may not be required for all modes)
+        /// </summary>
         string OldName { get; set; }
+
+        /// <summary>
+        /// Specify the new name
+        /// </summary>
         string NewName { get; set; }
     }
 }

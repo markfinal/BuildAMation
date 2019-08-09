@@ -30,6 +30,9 @@
 using System.Linq;
 namespace Publisher
 {
+    /// <summary>
+    /// Prebuilt tool for running macOS dsymutil
+    /// </summary>
     public sealed class DSymUtilTool :
         Bam.Core.PreBuiltTool
     {
@@ -42,12 +45,24 @@ namespace Publisher
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("dsymutil"));
         }
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new DSymUtilToolSettings(module);
 
+        /// <summary>
+        /// Executable path to the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("xcrun").First());
 
+        /// <summary>
+        /// Arguments to pass to the tool prior to the settings
+        /// </summary>
         public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
 
         protected override void

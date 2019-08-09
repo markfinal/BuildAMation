@@ -29,9 +29,12 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Install name tool modes of use
+    /// </summary>
     public enum EInstallNameToolMode
     {
-        UpdateIDName,
-        ChangeIDName
+        UpdateIDName,   //<! update the id
+        ChangeIDName    //<! change the id
     }
 }

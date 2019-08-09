@@ -29,6 +29,9 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Class representing any collated file
+    /// </summary>
     public class CollatedFile :
         CollatedObject
     {

@@ -29,13 +29,31 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Settings interface for the strip tool (remove sections from binaries)
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface IStripToolSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Make the tool output verbose
+        /// </summary>
         bool Verbose { get; set; }
+
+        /// <summary>
+        /// Preserve the timestamp of the unstripped binary
+        /// </summary>
         bool PreserveTimestamp { get; set; }
+
+        /// <summary>
+        /// Strip all debug symbols from the binary
+        /// </summary>
         bool StripDebugSymbols { get; set; }
+
+        /// <summary>
+        /// Strip all local symbols from the binary
+        /// </summary>
         bool StripLocalSymbols { get; set; }
     }
 }
