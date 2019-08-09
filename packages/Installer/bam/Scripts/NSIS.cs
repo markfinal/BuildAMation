@@ -35,6 +35,9 @@ namespace Installer
         private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
         private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
 
+        /// <summary>
+        /// Path key to the script for NSIS
+        /// </summary>
         public const string ScriptKey = "NSIS script";
 
         protected override void
@@ -48,6 +51,11 @@ namespace Installer
             );
         }
 
+        /// <summary>
+        /// Add a file to the NSIS installer script
+        /// </summary>
+        /// <param name="module">Module to add</param>
+        /// <param name="key">Path key from module</param>
         public void
         AddFile(
             Bam.Core.Module module,
@@ -57,6 +65,11 @@ namespace Installer
             this.Files.Add(module, key);
         }
 
+        /// <summary>
+        /// Add a path (a directory) to the NSIS installer script
+        /// </summary>
+        /// <param name="module">Module to add</param>
+        /// <param name="key">Path key from module</param>
         public void
         AddPath(
             Bam.Core.Module module,
@@ -109,8 +122,15 @@ namespace Installer
     public sealed class NSISCompilerSettings :
         Bam.Core.Settings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">from this Module</param>
         public NSISCompilerSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         public override void
         AssignFileLayout()
@@ -141,6 +161,9 @@ namespace Installer
         CreateDefaultSettings<T>(
             T module) => new NSISCompilerSettings(module);
 
+        /// <summary>
+        /// Executable path to the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["toolPath"];
     }
 
@@ -237,6 +260,9 @@ namespace Installer
             }
         }
 
+        /// <summary>
+        /// Enumerate across all inputs to this Module
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get

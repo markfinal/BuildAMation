@@ -29,11 +29,14 @@
 #endregion // License
 namespace Installer
 {
+    /// <summary>
+    /// Possible compression types for tar
+    /// </summary>
     public enum ETarCompressionType
     {
-        None,
-        gzip,
-        bzip,
-        lzma
+        None,   //<! No compression
+        gzip,   //<! Use gzip
+        bzip,   //<! Use bzip
+        lzma    //<! Use lzma
     }
 }

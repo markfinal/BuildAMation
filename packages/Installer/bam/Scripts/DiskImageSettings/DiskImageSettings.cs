@@ -39,8 +39,15 @@ namespace Installer
         public DiskImageSettings()
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public DiskImageSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Enum(EDiskImageFormat.UDRW, "-format UDRW")]
         [CommandLineProcessor.Enum(EDiskImageFormat.UDRO, "-format UDRO")]

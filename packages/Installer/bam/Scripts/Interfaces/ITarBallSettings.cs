@@ -29,18 +29,36 @@
 #endregion // License
 namespace Installer
 {
+    /// <summary>
+    /// Possible operations of running tar
+    /// </summary>
     public enum ETarOperation
     {
-        Create
+        Create //<! Create a tarball
     }
 
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ITarBallSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Tar ball operation
+        /// </summary>
         ETarOperation Operation { get; set; }
+
+        /// <summary>
+        /// Level of compression
+        /// </summary>
         ETarCompressionType CompressionType { get; set; }
+
+        /// <summary>
+        /// Regular expression used to transform inputs to the tarball
+        /// </summary>
         string TransformRegEx { get; set; }
+
+        /// <summary>
+        /// Enable verbose output
+        /// </summary>
         bool Verbose { get; set; }
     }
 }

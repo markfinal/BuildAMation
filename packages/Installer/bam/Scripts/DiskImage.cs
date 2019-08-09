@@ -37,6 +37,9 @@ namespace Installer
         CreateDefaultSettings<T>(
             T module) => new DiskImageSettings(module);
 
+        /// <summary>
+        /// Executable path to the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("hdiutil").First());
     }
 
@@ -47,6 +50,9 @@ namespace Installer
     public abstract class DiskImage :
         Bam.Core.Module
     {
+        /// <summary>
+        /// Path key to the generated disk image
+        /// </summary>
         public const string DMGKey = "Disk Image Installer";
 
         private Bam.Core.Module SourceModule;
@@ -131,6 +137,9 @@ namespace Installer
             }
         }
 
+        /// <summary>
+        /// Enumerate across all inputs to this module
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get

@@ -33,8 +33,19 @@ namespace Installer
     public interface IZipSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Enable verbose output
+        /// </summary>
         bool Verbose { get; set; }
+
+        /// <summary>
+        /// Recurse paths when creating
+        /// </summary>
         bool RecursivePaths { get; set; }
+
+        /// <summary>
+        /// Update an existing zip
+        /// </summary>
         bool Update { get; set; }
     }
 }

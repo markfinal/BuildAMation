@@ -44,8 +44,14 @@ namespace Installer
         CreateDefaultSettings<T>(
             T module) => new ZipSettings(module);
 
+        /// <summary>
+        /// Executable path to the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("bash").First());
 
+        /// <summary>
+        /// Arguments to pass to the tool prior to the Module's settings
+        /// </summary>
         public override Bam.Core.TokenizedStringArray InitialArguments
         {
             get
@@ -68,6 +74,9 @@ namespace Installer
             }
         }
 
+        /// <summary>
+        /// Get the codes that can be treated as success
+        /// </summary>
         public override Bam.Core.Array<int> SuccessfulExitCodes
         {
             get
@@ -102,8 +111,14 @@ namespace Installer
         CreateDefaultSettings<T>(
             T module) => new SevenZipSettings(module);
 
+        /// <summary>
+        /// Executable path to the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["toolPath"];
 
+        /// <summary>
+        /// Arguments to follow Module settings to the tool
+        /// </summary>
         public override Bam.Core.TokenizedStringArray TerminatingArguments
         {
             get
