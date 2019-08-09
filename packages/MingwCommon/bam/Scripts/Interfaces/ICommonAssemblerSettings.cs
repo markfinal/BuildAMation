@@ -29,6 +29,9 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Mingw specific assembler settings
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonAssemblerSettings :
         Bam.Core.ISettingsBase

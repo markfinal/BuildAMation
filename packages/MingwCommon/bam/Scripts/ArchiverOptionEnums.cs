@@ -29,8 +29,11 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Mingw archiver commands
+    /// </summary>
     public enum EArchiverCommand
     {
-        Replace
+        Replace //<! Replace all existing object files
     }
 }

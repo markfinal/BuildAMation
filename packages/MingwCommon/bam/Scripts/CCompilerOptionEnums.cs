@@ -29,17 +29,23 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Visibility modes
+    /// </summary>
     public enum EVisibility
     {
-        Default,
-        Internal,
-        Hidden,
-        Protected
+        Default,    //<! All symbols are visible
+        Internal,   //<! Internal mode
+        Hidden,     //<! All symbols are hidden, unless marked up appropriately
+        Protected   //<! Protected mode
     }
 
+    /// <summary>
+    /// Mingw custom optimisation modes
+    /// </summary>
     public enum EOptimization
     {
-        O3,
-        Ofast
+        O3,     //<! -O3
+        Ofast   //<! -Ofast
     }
 }

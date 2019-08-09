@@ -33,12 +33,21 @@ namespace MingwCommon
         MingwCommon.CommonCompilerSettings,
         C.ICxxOnlyCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonCxxCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         protected CommonCxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)

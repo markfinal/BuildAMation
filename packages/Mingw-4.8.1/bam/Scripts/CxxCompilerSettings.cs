@@ -32,12 +32,21 @@ namespace Mingw
     public sealed class CxxCompilerSettings :
         MingwCommon.CommonCxxCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this module</param>
         public CxxCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this module</param>
+        /// <param name="useDefaults">using defaults</param>
         public CxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)

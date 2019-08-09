@@ -38,8 +38,15 @@ namespace MingwCommon
         C.ICommonLinkerSettings,
         C.IAdditionalSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonLinkerSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Enum(C.ESubsystem.NotSet, "")]
         [CommandLineProcessor.Enum(C.ESubsystem.Console, "-Wl,-subsystem,console")]
@@ -69,6 +76,9 @@ namespace MingwCommon
         [CommandLineProcessor.StringArray("")]
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {

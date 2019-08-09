@@ -51,10 +51,22 @@ namespace MingwCommon
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }
 
+        /// <summary>
+        /// Executable path to tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
+        /// <summary>
+        /// Command line switch to use response file
+        /// </summary>
         public override string UseResponseFileOption => "@";
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module)
@@ -79,6 +91,10 @@ namespace MingwCommon
             }
         }
 
+        /// <summary>
+        /// Abstract function to override default settings.
+        /// </summary>
+        /// <param name="settings">Settings instance to override</param>
         protected abstract void
         OverrideDefaultSettings(
             Bam.Core.Settings settings);

@@ -32,6 +32,10 @@ namespace Mingw
     public sealed class LinkerSettings :
         MingwCommon.CommonLinkerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this module</param>
         public LinkerSettings(
             Bam.Core.Module module)
             :

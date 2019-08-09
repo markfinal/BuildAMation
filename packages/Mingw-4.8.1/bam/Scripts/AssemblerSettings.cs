@@ -32,6 +32,10 @@ namespace Mingw
     public sealed class AssemblerSettings :
         MingwCommon.CommonAssemblerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this module</param>
         public AssemblerSettings(
             Bam.Core.Module module)
             :

@@ -37,8 +37,15 @@ namespace MingwCommon
         C.IAdditionalSettings,
         ICommonAssemblerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonAssemblerSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.EnumAttribute(C.EBit.SixtyFour, "-m64")]
@@ -59,6 +66,9 @@ namespace MingwCommon
         [CommandLineProcessor.StringArray("")]
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {

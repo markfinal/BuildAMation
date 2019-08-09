@@ -35,12 +35,20 @@ namespace Mingw
     {
         private System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
 
+        /// <summary>
+        /// Indexer into the meta data
+        /// </summary>
+        /// <param name="index">String index as lookup</param>
+        /// <returns>Meta data at the index</returns>
         public override object this[string index] => this.Meta[index];
 
         public override bool
         Contains(
             string index) => this.Meta.ContainsKey(index);
 
+        /// <summary>
+        /// Suffix applied to tool filenames
+        /// </summary>
         public string ToolSuffix => this.Meta["ToolSuffix"] as string;
 
         void
