@@ -29,6 +29,9 @@
 #endregion // License
 namespace NativeBuilder
 {
+    /// <summary>
+    /// Helper class for Native command line utilities
+    /// </summary>
     static public partial class Support
     {
         public static void
