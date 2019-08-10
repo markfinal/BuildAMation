@@ -70,7 +70,7 @@ namespace WindowsSDKCommon
         bool? ICommonWinResourceCompilerSettings.NoLogo { get; set; }
 
         /// <summary>
-        /// Define the layout of the command line to generate
+        /// Set the layout how command lines are constructed
         /// </summary>
         public override void AssignFileLayout()
         {
