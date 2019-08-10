@@ -29,6 +29,9 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// 32-bit Mingw librarian
+    /// </summary>
     [C.RegisterLibrarian("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class Librarian :
         C.LibrarianTool

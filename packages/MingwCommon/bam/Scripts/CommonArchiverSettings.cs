@@ -29,6 +29,9 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Abstract class representing the common Mingw archiver settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.StaticLibrary.LibraryKey, "")]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonArchiverSettings :

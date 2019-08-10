@@ -29,6 +29,9 @@
 #endregion // License
 namespace Mingw
 {
+    /// <summary>
+    /// Settings class for Windows resource compiling for this Mingw version
+    /// </summary>
     public sealed class WinResourceCompilerSettings :
         MingwCommon.CommonWinResourceCompilerSettings
     {

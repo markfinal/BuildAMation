@@ -29,6 +29,9 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Abstract base class for preprocessor tools
+    /// </summary>
     public abstract class PreprocessorBase :
         C.PreprocessorTool
     {
@@ -62,6 +65,9 @@ namespace MingwCommon
         public override string UseResponseFileOption => "@";
     }
 
+    /// <summary>
+    /// 32-bit Mingw preprocessor tool
+    /// </summary>
     [C.RegisterPreprocessor("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public class Preprocessor32 :
         PreprocessorBase

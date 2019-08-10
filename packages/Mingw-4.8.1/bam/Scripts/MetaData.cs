@@ -29,6 +29,9 @@
 #endregion // License
 namespace Mingw
 {
+    /// <summary>
+    /// Class representing metadata for this version of Mingw
+    /// </summary>
     public class MetaData :
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery

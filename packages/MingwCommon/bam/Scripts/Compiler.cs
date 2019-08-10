@@ -29,6 +29,9 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Abstract base class for all Mingw compilers
+    /// </summary>
     public abstract class CompilerBase :
         C.CompilerTool
     {
@@ -100,6 +103,9 @@ namespace MingwCommon
             Bam.Core.Settings settings);
     }
 
+    /// <summary>
+    /// 32-bit C compiler
+    /// </summary>
     [C.RegisterCCompiler("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public class Compiler32 :
         CompilerBase
@@ -113,6 +119,9 @@ namespace MingwCommon
         }
     }
 
+    /// <summary>
+    /// 32-bit C++ compiler
+    /// </summary>
     [C.RegisterCxxCompiler("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class Compiler32Cxx :
         Compiler32

@@ -29,6 +29,9 @@
 #endregion // License
 namespace MingwCommon.DefaultSettings
 {
+    /// <summary>
+    /// Extension class to default settings for ICommonArchiverSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
         public static void

@@ -29,6 +29,9 @@
 #endregion // License
 namespace Mingw
 {
+    /// <summary>
+    /// Settings class for archiving for this Mingw version
+    /// </summary>
     public sealed class ArchiverSettings :
         MingwCommon.CommonArchiverSettings
     {

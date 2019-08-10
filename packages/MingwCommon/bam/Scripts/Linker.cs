@@ -29,6 +29,9 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Abstract base class for Mingw linkers
+    /// </summary>
     public abstract class LinkerBase :
         C.LinkerTool
     {
@@ -131,6 +134,9 @@ namespace MingwCommon
         }
     }
 
+    /// <summary>
+    /// 32-bit C linker
+    /// </summary>
     [C.RegisterCLinker("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class Linker :
         LinkerBase
@@ -138,6 +144,9 @@ namespace MingwCommon
         public Linker() => this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-gcc$(LinkerSuffix).exe"));
     }
 
+    /// <summary>
+    /// 32-bit C++ linkger
+    /// </summary>
     [C.RegisterCxxLinker("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class LinkerCxx :
         LinkerBase

@@ -29,6 +29,9 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// 32-bit Mingw assembler
+    /// </summary>
     [C.RegisterAssembler("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public class Assembler32 :
         C.AssemblerTool

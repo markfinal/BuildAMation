@@ -30,6 +30,9 @@
 using C;
 namespace MingwCommon.DefaultSettings
 {
+    /// <summary>
+    /// Extension class to default settings for ICommonCompilerSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
         public static void
