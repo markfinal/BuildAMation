@@ -36,8 +36,15 @@ namespace ClangCommon
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonArchiverSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("-s", "")]
         [XcodeProjectProcessor.UniqueBool("", "", "", ignore: true)]

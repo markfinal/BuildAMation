@@ -33,6 +33,10 @@ namespace ClangCommon
         CommonCCompilerSettings,
         C.IObjectiveCOnlyCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonObjectiveCCompilerSettings(
             Bam.Core.Module module)
             :

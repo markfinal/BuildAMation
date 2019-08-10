@@ -33,6 +33,10 @@ namespace ClangCommon
         ClangCommon.CommonCompilerSettings,
         C.ICxxOnlyCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonCxxCompilerSettings(
             Bam.Core.Module module)
             :

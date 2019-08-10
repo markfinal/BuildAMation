@@ -38,6 +38,10 @@ namespace ClangCommon
         C.IAdditionalSettings,
         ICommonAssemblerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonAssemblerSettings(
             Bam.Core.Module module)
         {

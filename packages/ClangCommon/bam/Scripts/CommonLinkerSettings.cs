@@ -38,6 +38,10 @@ namespace ClangCommon
         C.IAdditionalSettings,
         ICommonLinkerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonLinkerSettings(
             Bam.Core.Module module)
         {

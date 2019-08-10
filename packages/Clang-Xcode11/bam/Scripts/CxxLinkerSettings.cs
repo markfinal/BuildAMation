@@ -32,6 +32,10 @@ namespace Clang
     public sealed class CxxLinkerSettings :
         ClangCommon.CommonCxxLinkerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public CxxLinkerSettings(
             Bam.Core.Module module)
             :

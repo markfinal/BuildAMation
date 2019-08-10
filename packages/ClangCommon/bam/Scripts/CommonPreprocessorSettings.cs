@@ -35,6 +35,10 @@ namespace ClangCommon
         C.SettingsBase,
         C.ICommonPreprocessorSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonPreprocessorSettings(
             Bam.Core.Module module)
             :

@@ -39,6 +39,10 @@ namespace ClangCommon
         C.IAdditionalSettings,
         ICommonCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonCompilerSettings(
             Bam.Core.Module module)
             :

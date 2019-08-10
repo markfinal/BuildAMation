@@ -32,12 +32,21 @@ namespace Clang
     public sealed class ObjectiveCCompilerSettings :
         ClangCommon.CommonObjectiveCCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public ObjectiveCCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
         { }
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         public ObjectiveCCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
