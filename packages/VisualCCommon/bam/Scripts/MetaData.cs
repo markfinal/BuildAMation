@@ -42,6 +42,25 @@ namespace VisualCCommon
         /// </summary>
         protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
 
+        /// <summary>
+        /// Indexer into the metadata
+        /// </summary>
+        /// <param name="index">String index to use</param>
+        /// <returns>Indexed result</returns>
+        public override object this[string index] => this.Meta[index];
+
+        /// <summary>
+        /// Does the meta data contain an index.
+        /// </summary>
+        /// <param name="index">String index to query</param>
+        /// <returns>True if the meta data contains the index.</returns>
+        public override bool
+        Contains(
+            string index)
+        {
+            return this.Meta.ContainsKey(index);
+        }
+
         private void
         Findvswhere()
         {

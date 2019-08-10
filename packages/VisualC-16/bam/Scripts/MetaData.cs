@@ -54,22 +54,6 @@ namespace VisualC
         protected override string Subpath_to_vcvars => @"VC\Auxiliary\Build";
 
         /// <summary>
-        /// Indexer into the metadata
-        /// </summary>
-        /// <param name="index">String index to use</param>
-        /// <returns>Indexed result</returns>
-        public override object this[string index] => this.Meta[index];
-
-        /// <summary>
-        /// Does the meta data contain an index.
-        /// </summary>
-        /// <param name="index">String index to query</param>
-        /// <returns>True if the meta data contains the index.</returns>
-        public override bool
-        Contains(
-            string index) => this.Meta.ContainsKey(index);
-
-        /// <summary>
         /// The VisualStudio solution format version
         /// </summary>
         public string
