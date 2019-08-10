@@ -5,13 +5,11 @@ configuration: Release
 platform: AnyCPU
 install:
   - ps: choco install doxygen.install -y
-  - cmd: where doxygen
-  - cmd: doxygen --version
 before_build:
   - dotnet --version
 build_script:
   - cmd: python codingtools\dotnetcore_run_unittests.py
-  - cmd: python codingtools\dotnetcore_make_release.py --local --doxygen doxygen.exe
+  - cmd: python codingtools\dotnetcore_make_release.py --local --doxygen "C:\Program Files\doxygen\doxygen.exe"
 after_build:
   - cmd: 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish\*
   - cmd: 7z a bam.tar %APPVEYOR_BUILD_FOLDER%\bam_publish\*
