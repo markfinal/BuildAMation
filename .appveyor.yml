@@ -4,7 +4,8 @@ clone_depth: 10
 configuration: Release
 platform: AnyCPU
 install:
-  - ps: choco install doxygen.install -y
+  # doxygen 1.8.15 regresses 'internal' in C# - fixed in 1.8.16
+  - ps: choco install doxygen.install -y --version 1.8.14
 before_build:
   - dotnet --version
 build_script:
