@@ -29,6 +29,9 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for common Clang C++ compiler settings
+    /// </summary>
     public abstract class CommonCxxCompilerSettings :
         ClangCommon.CommonCompilerSettings,
         C.ICxxOnlyCompilerSettings

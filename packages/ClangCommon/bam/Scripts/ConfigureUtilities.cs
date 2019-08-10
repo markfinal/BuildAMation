@@ -30,6 +30,9 @@
 using System.Linq;
 namespace ClangCommon
 {
+    /// <summary>
+    /// Helper class for configuring clang
+    /// </summary>
     public static class ConfigureUtilities
     {
         static ConfigureUtilities()
@@ -51,12 +54,7 @@ namespace ClangCommon
             }
         }
 
-        public static string
-        XcrunPath
-        {
-            get;
-            private set;
-        }
+        public static string XcrunPath { get; private set; }
 
         public static string
         SetSDK(

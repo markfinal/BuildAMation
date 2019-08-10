@@ -29,6 +29,9 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Extension class for configuring Clang settings
+    /// </summary>
     public static class SettingsUtilities
     {
         public static EVisibility?

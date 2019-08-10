@@ -29,6 +29,9 @@
 #endregion // License
 namespace Clang
 {
+    /// <summary>
+    /// Class for Objective C++ compiler settings in Clang
+    /// </summary>
     public sealed class ObjectiveCxxCompilerSettings :
         ClangCommon.CommonObjectiveCxxCompilerSettings
     {

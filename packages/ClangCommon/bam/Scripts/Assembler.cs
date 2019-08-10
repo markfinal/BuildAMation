@@ -29,6 +29,9 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for all assembler tools
+    /// </summary>
     public abstract class AssemblerBase :
         C.AssemblerTool
     {
@@ -59,6 +62,9 @@ namespace ClangCommon
         public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
     }
 
+    /// <summary>
+    /// 32-bit and 64-bit assembler for Clang.
+    /// </summary>
     [C.RegisterAssembler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterAssembler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public class Assembler :

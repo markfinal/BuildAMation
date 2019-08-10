@@ -29,6 +29,9 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for all preprocessor tools
+    /// </summary>
     public abstract class PreprocessorBase :
         C.PreprocessorTool
     {
@@ -57,6 +60,9 @@ namespace ClangCommon
         public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
     }
 
+    /// <summary>
+    /// 32-bit and 64-bit preprocessor tools for clang
+    /// </summary>
     [C.RegisterPreprocessor("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterPreprocessor("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public sealed class Preprocessor :

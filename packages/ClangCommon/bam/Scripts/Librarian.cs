@@ -29,6 +29,9 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// 32-bit and 64-bit librarians in clang
+    /// </summary>
     [C.RegisterLibrarian("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterLibrarian("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public sealed class Librarian :

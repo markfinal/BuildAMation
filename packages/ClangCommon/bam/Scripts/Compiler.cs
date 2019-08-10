@@ -29,6 +29,9 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for all compiler tools
+    /// </summary>
     public abstract class CompilerBase :
         C.CompilerTool
     {
@@ -59,6 +62,9 @@ namespace ClangCommon
         public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
     }
 
+    /// <summary>
+    /// 32-bit and 64-bit C compilers
+    /// </summary>
     [C.RegisterCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public sealed class CCompiler :
@@ -77,6 +83,9 @@ namespace ClangCommon
             T module) => new Clang.CCompilerSettings(module);
     }
 
+    /// <summary>
+    /// 32-bit and 64-bit C++ compilers
+    /// </summary>
     [C.RegisterCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public sealed class CxxCompiler :
@@ -95,6 +104,9 @@ namespace ClangCommon
             T module) => new Clang.CxxCompilerSettings(module);
     }
 
+    /// <summary>
+    /// 32-bit and 64-bit Objective C compiler
+    /// </summary>
     [C.RegisterObjectiveCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterObjectiveCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public sealed class ObjectiveCCompiler :
@@ -113,6 +125,9 @@ namespace ClangCommon
             T module) => new Clang.ObjectiveCCompilerSettings(module);
     }
 
+    /// <summary>
+    /// 32-bit and 64-bit Objective C++ tools
+    /// </summary>
     [C.RegisterObjectiveCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterObjectiveCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public sealed class ObjectiveCxxCompiler :

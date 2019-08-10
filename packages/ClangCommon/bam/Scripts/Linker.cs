@@ -29,6 +29,9 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for all linker tools
+    /// </summary>
     public abstract class LinkerBase :
         C.LinkerTool
     {
@@ -126,6 +129,9 @@ namespace ClangCommon
         public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
     }
 
+    /// <summary>
+    /// 32-bit and 64-bit C linkers
+    /// </summary>
     [C.RegisterCLinker("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterCLinker("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public sealed class Linker :
@@ -144,6 +150,9 @@ namespace ClangCommon
             T module) => new Clang.CLinkerSettings(module);
     }
 
+    /// <summary>
+    /// 32-bit and 64-bit C++ linkers
+    /// </summary>
     [C.RegisterCxxLinker("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterCxxLinker("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public sealed class LinkerCxx :
