@@ -31,6 +31,9 @@ using Bam.Core;
 using System.Linq;
 namespace Installer
 {
+    /// <summary>
+    /// Module representing the input file to tar
+    /// </summary>
     class TarInputFiles :
         Bam.Core.Module
     {
@@ -141,6 +144,9 @@ namespace Installer
         }
     }
 
+    /// <summary>
+    /// Prebuilt tool module for tar
+    /// </summary>
     public sealed class TarCompiler :
         Bam.Core.PreBuiltTool
     {

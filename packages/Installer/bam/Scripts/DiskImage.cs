@@ -30,6 +30,9 @@
 using System.Linq;
 namespace Installer
 {
+    /// <summary>
+    /// Compiler tool for hdiutil
+    /// </summary>
     public sealed class DiskImageCompiler :
         Bam.Core.PreBuiltTool
     {

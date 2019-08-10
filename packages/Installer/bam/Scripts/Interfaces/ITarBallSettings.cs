@@ -37,6 +37,9 @@ namespace Installer
         Create //<! Create a tarball
     }
 
+    /// <summary>
+    /// Interface settings for tar
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ITarBallSettings :
         Bam.Core.ISettingsBase

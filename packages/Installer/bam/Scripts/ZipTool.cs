@@ -30,6 +30,9 @@
 using System.Linq;
 namespace Installer
 {
+    /// <summary>
+    /// Abstract call for all zip tools
+    /// </summary>
     public abstract class ZipTool :
         Bam.Core.PreBuiltTool
     {
@@ -37,6 +40,9 @@ namespace Installer
         EvaluateInternal() => this.ReasonToExecute = null;
     }
 
+    /// <summary>
+    /// Posix zip tool
+    /// </summary>
     public sealed class ZipPosix :
         ZipTool
     {
@@ -88,6 +94,9 @@ namespace Installer
         }
     }
 
+    /// <summary>
+    /// Windows zip tool
+    /// </summary>
     public sealed class ZipWin :
         ZipTool
     {

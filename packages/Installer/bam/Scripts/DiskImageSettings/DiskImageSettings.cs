@@ -30,6 +30,9 @@
 using Bam.Core;
 namespace Installer
 {
+    /// <summary>
+    /// Settings class for hdiutil
+    /// </summary>
     [CommandLineProcessor.OutputPath(DiskImage.DMGKey, "-o ")]
     [CommandLineProcessor.InputPaths(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey, "-srcfolder ")]
     public sealed class DiskImageSettings :

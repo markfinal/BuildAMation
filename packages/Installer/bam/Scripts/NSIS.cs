@@ -29,6 +29,9 @@
 #endregion // License
 namespace Installer
 {
+    /// <summary>
+    /// Module representing the NSIS script
+    /// </summary>
     class NSISScript :
         Bam.Core.Module
     {
@@ -118,6 +121,9 @@ namespace Installer
         }
     }
 
+    /// <summary>
+    /// NSIS compiler settings
+    /// </summary>
     [CommandLineProcessor.InputPaths(NSISScript.ScriptKey, "")]
     public sealed class NSISCompilerSettings :
         Bam.Core.Settings
@@ -139,6 +145,9 @@ namespace Installer
         }
     }
 
+    /// <summary>
+    /// NSIS compiler tool
+    /// </summary>
     public sealed class NSISCompiler :
         Bam.Core.PreBuiltTool
     {

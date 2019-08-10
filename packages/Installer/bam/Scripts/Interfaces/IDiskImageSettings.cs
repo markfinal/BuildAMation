@@ -29,6 +29,9 @@
 #endregion // License
 namespace Installer
 {
+    /// <summary>
+    /// Interface settings for hdiutil
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface IDiskImageSettings :
         Bam.Core.ISettingsBase

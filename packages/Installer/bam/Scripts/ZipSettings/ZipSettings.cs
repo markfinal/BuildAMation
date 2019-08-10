@@ -29,6 +29,9 @@
 #endregion // License
 namespace Installer
 {
+    /// <summary>
+    /// Settings class for 7zip
+    /// </summary>
     [CommandLineProcessor.OutputPath(ZipModule.ZipKey, "")]
     public sealed class SevenZipSettings :
         Bam.Core.Settings,
@@ -60,6 +63,9 @@ namespace Installer
         }
     }
 
+    /// <summary>
+    /// Settings class for zip
+    /// </summary>
     [CommandLineProcessor.OutputPath(ZipModule.ZipKey, "")]
     public sealed class ZipSettings :
         Bam.Core.Settings,

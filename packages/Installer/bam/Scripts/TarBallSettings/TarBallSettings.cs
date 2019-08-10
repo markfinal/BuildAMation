@@ -30,6 +30,9 @@
 using Bam.Core;
 namespace Installer
 {
+    /// <summary>
+    /// Settings class for tar
+    /// </summary>
     [CommandLineProcessor.OutputPath(TarBall.TarBallKey, "-f ")]
     [CommandLineProcessor.InputPaths(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey, "")]
     [CommandLineProcessor.InputPaths(Publisher.DebugSymbolCollation.DebugSymbolsDirectoryKey, "")]

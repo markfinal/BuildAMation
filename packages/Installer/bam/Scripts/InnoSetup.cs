@@ -29,6 +29,9 @@
 #endregion // License
 namespace Installer
 {
+    /// <summary>
+    /// Module representing input to InnoSetup
+    /// </summary>
     class InnoSetupScript :
         Bam.Core.Module
     {
@@ -136,6 +139,9 @@ namespace Installer
         }
     }
 
+    /// <summary>
+    /// Settings for InnoSetup
+    /// </summary>
     [CommandLineProcessor.InputPaths(InnoSetupScript.ScriptKey, "")]
     public sealed class InnoSetupCompilerSettings :
         Bam.Core.Settings
@@ -157,6 +163,9 @@ namespace Installer
         }
     }
 
+    /// <summary>
+    /// Compiler tool for InnoSetup
+    /// </summary>
     public sealed class InnoSetupCompiler :
         Bam.Core.PreBuiltTool
     {
