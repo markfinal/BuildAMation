@@ -9,8 +9,7 @@ before_build:
   - dotnet --version
 build_script:
   - cmd: python codingtools\dotnetcore_run_unittests.py
-  - cmd: where doxygen.exe
-  - cmd: python codingtools\dotnetcore_make_release.py --local --doxygen "C:\Program Files\doxygen\doxygen.exe"
+  - cmd: python codingtools\dotnetcore_make_release.py --local --doxygen "C:\Program Files\doxygen\bin\doxygen.exe"
 after_build:
   - cmd: 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish\*
   - cmd: 7z a bam.tar %APPVEYOR_BUILD_FOLDER%\bam_publish\*
