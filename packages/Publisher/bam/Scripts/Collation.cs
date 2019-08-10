@@ -31,6 +31,9 @@ using System.Linq;
 namespace Publisher
 {
     // TODO: move these to another source file
+    /// <summary>
+    /// Abstract representation of a pre-existing object on disk (i.e. one that does not need building)
+    /// </summary>
     abstract class PreExistingObject :
         Bam.Core.Module
     {
@@ -69,6 +72,9 @@ namespace Publisher
         }
     }
 
+    /// <summary>
+    /// Class representing a pre-existing file on disk
+    /// </summary>
     sealed class PreExistingFile :
         PreExistingObject
     {
@@ -87,6 +93,9 @@ namespace Publisher
         }
     }
 
+    /// <summary>
+    /// Class representing a pre-existing directory on disk
+    /// </summary>
     sealed class PreExistingDirectory :
         PreExistingObject
     {

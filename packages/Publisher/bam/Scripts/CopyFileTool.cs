@@ -153,6 +153,9 @@ namespace Publisher
             string path) => Bam.Core.IOWrapper.EscapeSpacesInPath(path);
     }
 
+    /// <summary>
+    /// Prebuilt tool module, mapping to Windows' xcopy
+    /// </summary>
     public sealed class CopyFileWin :
         CopyFileTool
     {

@@ -30,7 +30,7 @@
 namespace Publisher
 {
     /// <summary>
-    /// Class representing objcopy tool settings
+    /// Class representing objcopy tool settings for making debug symbols
     /// </summary>
     [CommandLineProcessor.OutputPath(MakeDebugSymbolFile.DebugSymbolFileKey, "")]
     [CommandLineProcessor.InputPaths(StripModule.StripBinaryKey, "", max_file_count: 1)]
@@ -67,6 +67,9 @@ namespace Publisher
         }
     }
 
+    /// <summary>
+    /// Class representing objcopy tool settings for linking debug symbols back to the executable
+    /// </summary>
     [CommandLineProcessor.OutputPath(LinkBackDebugSymbolFile.UpdateOriginalExecutable, "")]
     [CommandLineProcessor.InputPaths(MakeDebugSymbolFile.DebugSymbolFileKey, "--add-gnu-debuglink=", max_file_count: 1)]
     public sealed class LinkBackDebugSymbolFileSettings :

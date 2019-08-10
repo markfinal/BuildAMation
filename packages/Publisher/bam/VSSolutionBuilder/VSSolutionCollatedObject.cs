@@ -29,6 +29,9 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Helper function for writing VisualStudio projects with collation
+    /// </summary>
     public static partial class VSSolutionSupport
     {
         public static void

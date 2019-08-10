@@ -30,6 +30,9 @@
 using System.Linq;
 namespace Publisher
 {
+    /// <summary>
+    /// Helper utilities for Xcode collation
+    /// </summary>
     public static partial class XcodeSupport
     {
         public static void
