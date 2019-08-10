@@ -45,6 +45,11 @@ namespace ClangCommon
             (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
         }
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         protected CommonObjectiveCCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)

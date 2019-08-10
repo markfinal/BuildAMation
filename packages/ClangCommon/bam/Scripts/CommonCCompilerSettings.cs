@@ -43,6 +43,11 @@ namespace ClangCommon
             base(module)
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         public CommonCCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
