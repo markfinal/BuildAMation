@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Abstract class representing the common Gcc archiver settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.StaticLibrary.LibraryKey, "")]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonArchiverSettings :

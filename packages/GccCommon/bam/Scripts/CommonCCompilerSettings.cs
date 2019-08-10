@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Abstract class representing the common Gcc C compiler settings
+    /// </summary>
     public abstract class CommonCCompilerSettings :
         CommonCompilerSettings,
         C.ICOnlyCompilerSettings

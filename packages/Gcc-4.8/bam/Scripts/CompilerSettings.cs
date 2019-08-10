@@ -29,6 +29,9 @@
 #endregion // License
 namespace Gcc
 {
+    /// <summary>
+    /// Class representing the C compiler settings for this version of Gcc
+    /// </summary>
     public class CCompilerSettings :
         GccCommon.CommonCCompilerSettings
     {

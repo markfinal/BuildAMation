@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Abstract class representing any Gcc linker tool
+    /// </summary>
     public abstract class LinkerBase :
         C.LinkerTool
     {
@@ -207,6 +210,9 @@ namespace GccCommon
         public override Bam.Core.TokenizedString Executable => this.Macros["LinkerPath"];
     }
 
+    /// <summary>
+    /// Both 32-bit and 64-bit GCC C linkers
+    /// </summary>
     [C.RegisterCLinker("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterCLinker("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class Linker :
@@ -215,6 +221,9 @@ namespace GccCommon
         public Linker() => this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
     }
 
+    /// <summary>
+    /// Both 32-bit and 64-bit GCC C++ linkers
+    /// </summary>
     [C.RegisterCxxLinker("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterCxxLinker("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class LinkerCxx :

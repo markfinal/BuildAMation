@@ -29,6 +29,9 @@
 #endregion // License
 namespace Gcc
 {
+    /// <summary>
+    /// Class representing the preprocessor settings for this version of Gcc
+    /// </summary>
     public class PreprocessorSettings :
         GccCommon.CommonPreprocessorSettings
     {

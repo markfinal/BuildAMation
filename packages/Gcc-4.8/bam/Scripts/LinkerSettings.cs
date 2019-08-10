@@ -29,6 +29,9 @@
 #endregion // License
 namespace Gcc
 {
+    /// <summary>
+    /// Class representing the linker settings for this version of Gcc
+    /// </summary>
     public class LinkerSettings :
         GccCommon.CommonLinkerSettings
     {

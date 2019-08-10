@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Both 32-bit and 64-bit Gcc librarians
+    /// </summary>
     [C.RegisterLibrarian("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterLibrarian("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class Librarian :

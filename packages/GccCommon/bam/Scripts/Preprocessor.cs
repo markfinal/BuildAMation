@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Abstract class representing any Gcc preprocessor tool
+    /// </summary>
     public abstract class PreprocessorBase :
         C.PreprocessorTool
     {
@@ -53,6 +56,9 @@ namespace GccCommon
         public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
     }
 
+    /// <summary>
+    /// Both 32-bit and 64-bit GCC preprocessors
+    /// </summary>
     [C.RegisterPreprocessor("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterPreprocessor("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class Preprocessor :

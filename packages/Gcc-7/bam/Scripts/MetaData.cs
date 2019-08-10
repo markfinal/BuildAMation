@@ -29,6 +29,9 @@
 #endregion // License
 namespace Gcc
 {
+    /// <summary>
+    /// Meta data for this version of Gcc
+    /// </summary>
     public sealed class MetaData :
         GccCommon.MetaData
     {

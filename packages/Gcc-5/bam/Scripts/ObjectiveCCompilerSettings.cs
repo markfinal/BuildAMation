@@ -29,6 +29,9 @@
 #endregion // License
 namespace Gcc
 {
+    /// <summary>
+    /// Class representing the Objective C compiler settings for this version of Gcc
+    /// </summary>
     public sealed class ObjectiveCCompilerSettings :
         GccCommon.CommonObjectiveCCompilerSettings
     {

@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Abstract class representing the common Gcc linker settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-o ")]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonLinkerSettings :

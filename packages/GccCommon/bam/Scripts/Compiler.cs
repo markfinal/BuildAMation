@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Abstract class representing any Gcc compiler
+    /// </summary>
     public abstract class CompilerBase :
         C.CompilerTool
     {
@@ -61,6 +64,9 @@ namespace GccCommon
         }
     }
 
+    /// <summary>
+    /// Both 32-bit and 64-bit GCC C compilers
+    /// </summary>
     [C.RegisterCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class CCompiler :
@@ -79,6 +85,9 @@ namespace GccCommon
             T module) => new Gcc.CCompilerSettings(module);
     }
 
+    /// <summary>
+    /// Both 32-bit and 64-bit GCC C++ compilers
+    /// </summary>
     [C.RegisterCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class CxxCompiler :
@@ -97,6 +106,9 @@ namespace GccCommon
             T module) => new Gcc.CxxCompilerSettings(module);
     }
 
+    /// <summary>
+    /// Both 32-bit and 64-bit GCC Objective C compilers
+    /// </summary>
     [C.RegisterObjectiveCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterObjectiveCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class ObjectiveCCompiler :
@@ -115,6 +127,9 @@ namespace GccCommon
             T module) => new Gcc.ObjectiveCCompilerSettings(module);
     }
 
+    /// <summary>
+    /// Both 32-bit and 64-bit GCC Objective C++ compilers
+    /// </summary>
     [C.RegisterObjectiveCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterObjectiveCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class ObjectiveCxxCompiler :
