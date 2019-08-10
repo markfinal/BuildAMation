@@ -4,7 +4,7 @@ clone_depth: 10
 configuration: Release
 platform: AnyCPU
 install:
-  - cmd: powershell choco install doxygen.portable --version 1.8.11 || exit 0
+  - cmd: powershell choco install doxygen
 before_build:
   - dotnet --version
 build_script:
