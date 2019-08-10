@@ -4,9 +4,9 @@ clone_depth: 10
 configuration: Release
 platform: AnyCPU
 install:
+  - ps: choco install doxygen.install -y
   - cmd: where doxygen
   - cmd: doxygen --version
-  #- cmd: powershell choco install doxygen
 before_build:
   - dotnet --version
 build_script:
