@@ -29,6 +29,9 @@
 #endregion // License
 namespace VisualCCommon.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for default settings to ICommonCompilerSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
         public static void

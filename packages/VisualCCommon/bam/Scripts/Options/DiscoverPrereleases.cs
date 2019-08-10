@@ -29,6 +29,9 @@
 #endregion // License
 namespace VisualCCommon.Options
 {
+    /// <summary>
+    /// Command line option to allow discovery of pre-releases of VisualStudio
+    /// </summary>
     public sealed class DiscoverPrereleases :
         Bam.Core.IBooleanCommandLineArgument
     {

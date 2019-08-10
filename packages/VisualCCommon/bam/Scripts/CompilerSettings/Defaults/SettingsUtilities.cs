@@ -29,6 +29,9 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Extension class for compiler settings
+    /// </summary>
     public static class SettingsUtilities
     {
         public static ERuntimeLibrary?
