@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from optparse import OptionParser
+import argparse
 import os
 import StringIO
 import subprocess
@@ -52,10 +52,13 @@ def _execute_and_capture(arg_list, working_dir, output_messages, error_messages)
     return return_code
 
 
-def build_documentation(source_dir, doxygenpath):
+def build_documentation(source_dir, doxygenpath, update_config):
     if not doxygenpath:
         raise RuntimeError("Path to doxygen is required")
-    args = [doxygenpath, os.path.join(source_dir, 'docsrc', 'BuildAMationDoxy')]
+    args = [doxygenpath]
+    if update_config:
+        args.append('-u')
+    args.append(os.path.join(source_dir, 'docsrc', 'BuildAMationDoxy'))
     try:
         output_messages = StringIO.StringIO()
         error_messages = StringIO.StringIO()
@@ -75,12 +78,13 @@ def build_documentation(source_dir, doxygenpath):
 
 
 if __name__ == "__main__":
-    parser = OptionParser()
-    parser.add_option("-d", "--doxygen", dest="doxygenpath", default=None, help="Path to the doxygen executable.")
-    (options, args) = parser.parse_args()
+    parser = argparse.ArgumentParser(description='Generate documentation through doxygen')
+    parser.add_argument("-d", "--doxygen", dest="doxygenpath", default=None, help="Path to the doxygen executable.")
+    parser.add_argument("-u", "--update", dest="doxyupdate", default=False, action="store_true", required=False, help="Update the doxygen config file")
+    args = parser.parse_args()
 
     try:
-        build_documentation(os.getcwd(), options.doxygenpath)
+        build_documentation(os.getcwd(), args.doxygenpath, args.doxyupdate)
     except Exception, e:
         print >>sys.stdout, "*** Failure reason: %s" % str(e)
         sys.stdout.flush()
