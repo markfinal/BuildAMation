@@ -52,7 +52,7 @@ namespace C
         bool ISharedObjectSymbolicLinkSettings.SoftLink { get; set; }
 
         /// <summary>
-        /// Set the file layout.
+        /// Set the layout how command lines are constructed
         /// </summary>
         public override void AssignFileLayout()
         {
