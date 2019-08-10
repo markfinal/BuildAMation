@@ -30,7 +30,7 @@
 namespace VisualCCommon.DefaultSettings
 {
     /// <summary>
-    /// Extension class for default settings to ICommonCompilerSettings
+    /// Extension class for default settings to ICommonLinkerSettings
     /// </summary>
     public static partial class DefaultSettingsExtensions
     {
