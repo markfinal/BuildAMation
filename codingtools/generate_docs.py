@@ -72,7 +72,7 @@ def build_documentation(source_dir, doxygenpath, update_config):
             sys.stdout.write("Doxygen warnings/errors:\n")
             sys.stdout.write(error_messages.getvalue())
             sys.stdout.flush()
-            raise IncompleteDocumentationError(len(error_messages.getvalue()))
+            raise IncompleteDocumentationError(len(error_messages.getvalue().split('\n')))
     except OSError:
         raise NoDoxygenError('Unable to run doxygen executable "%s"' % doxygenpath)
 
