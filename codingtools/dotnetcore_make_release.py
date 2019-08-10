@@ -174,7 +174,7 @@ def main(options, build_dir, source_dir):
         generated_docs_dir = os.path.join(source_dir, 'docs')
         delete_directory(generated_docs_dir)
         try:
-            build_documentation(source_dir, options.doxygen)
+            build_documentation(source_dir, options.doxygen, False)
             if options.make_distribution:
                 zip_dir(os.path.realpath(os.path.join(build_dir, '..', '%s-docs' % bam_version_dir) + '.zip'), generated_docs_dir)
                 tar_dir(os.path.realpath(os.path.join(build_dir, '..', '%s-docs' % bam_version_dir) + '.tgz'), generated_docs_dir)
