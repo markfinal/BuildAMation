@@ -1,4 +1,4 @@
-10-Aug-2019 Fixes #635. Moved public indexer and Contains function of per VisualC-version MetaData class into the base class in VisualCCommon MetaData.
+10-Aug-2019 Fixes #635. Moved public indexer and Contains function of per VisualC-version MetaData class into the base class in VisualCCommon MetaData. Moved MetaData implementation from WindowsSDK versions to WindowsSDKCommon.
 
 08-Aug-2019 Fixes #613. Added command line option --includeallversions, which modifies the behaviour of -p/--createdebugproject, to include all package versions. This project will not compile to an assembly, due to duplicate symbols, but is source browseable.
 

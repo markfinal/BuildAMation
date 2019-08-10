@@ -33,24 +33,6 @@ namespace WindowsSDK
     /// Metadata for WindowsSDK
     /// </summary>
     public sealed class MetaData :
-        Bam.Core.PackageMetaData
-    {
-        private readonly System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        /// <summary>
-        /// Get metadata by string key
-        /// </summary>
-        /// <param name="index">Lookup key</param>
-        /// <returns>Metadata value by key</returns>
-        public override object this[string index] => this.Meta[index];
-
-        /// <summary>
-        /// Whether the metdata contains a key
-        /// </summary>
-        /// <param name="index">Key to lookup</param>
-        /// <returns>true if found, false otherwise</returns>
-        public override bool
-        Contains(
-            string index) => this.Meta.ContainsKey(index);
-    }
+        WindowsSDKCommon.MetaData
+    { }
 }
