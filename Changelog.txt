@@ -1,3 +1,5 @@
+10-Aug-2019 Fixes #636. VisualStudio 2019 vcvarsall.bat can cause a dialog to open to invoke powershell to send telemetry. This can cause non-interactive continuous integration to halt indefinitely, so set VSCMD_SKIP_SENDTELEMETRY while invoking vcvarsall.bat to avoid it.
+
 08-Aug-2019 Fixes #613. Added command line option --includeallversions, which modifies the behaviour of -p/--createdebugproject, to include all package versions. This project will not compile to an assembly, due to duplicate symbols, but is source browseable.
 
 15-Jul-2019 ======== Version 2.0.0 beta 1 Release ========
