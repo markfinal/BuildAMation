@@ -29,6 +29,9 @@
 #endregion // License
 namespace MakeFileBuilder
 {
+    /// <summary>
+    /// Metadata for the builder class
+    /// </summary>
     public sealed class MakeFileMeta :
         Bam.Core.IBuildModeMetaData
     {

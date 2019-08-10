@@ -33,6 +33,10 @@ namespace MakeFileBuilder
     // Notes:
     // A rule is target + prerequisities + receipe
     // A recipe is a collection of commands
+
+    /// <summary>
+    /// Shared metadata for all objects in MakeFiles
+    /// </summary>
     public sealed class MakeFileCommonMetaData
     {
         /// <summary>

@@ -29,6 +29,9 @@
 #endregion // License
 namespace MakeFileBuilder
 {
+    /// <summary>
+    /// Class representing a target in a MakeFile
+    /// </summary>
     public sealed class Target
     {
         private static object UniqueCounterGuard = new object();

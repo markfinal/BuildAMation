@@ -30,6 +30,9 @@
 using System.Linq;
 namespace MakeFileBuilder
 {
+    /// <summary>
+    /// Class representing rules in a MakeFile
+    /// </summary>
     public sealed class Rule
     {
         /// <summary>
