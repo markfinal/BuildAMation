@@ -13,6 +13,14 @@ class NoDoxygenError(Exception):
     pass
 
 
+class DoxygenFailedError(Exception):
+    def __init__(self, errcode):
+        self._errcode = errcode
+
+    def __str__(self):
+        return "Doxygen failed, with error code %d" % self._errcode
+
+
 class IncompleteDocumentationError(Exception):
     def __init__(self, count):
         self._count = count
@@ -62,17 +70,23 @@ def build_documentation(source_dir, doxygenpath, update_config):
     try:
         output_messages = StringIO.StringIO()
         error_messages = StringIO.StringIO()
-        _execute_and_capture(args, source_dir, output_messages, error_messages)
+        return_code = _execute_and_capture(args, source_dir, output_messages, error_messages)
 
         sys.stdout.write("Doxygen output:\n")
         sys.stdout.write(output_messages.getvalue())
         sys.stdout.flush()
 
-        if len(error_messages.getvalue()) > 0:
+        errors = error_messages.getvalue()
+        if errors:
             sys.stdout.write("Doxygen warnings/errors:\n")
-            sys.stdout.write(error_messages.getvalue())
+            sys.stdout.write(errors)
             sys.stdout.flush()
-            raise IncompleteDocumentationError(len(error_messages.getvalue().split('\n')))
+
+        if 0 != return_code:
+            raise DoxygenFailedError(return_code)
+
+        if errors:
+            raise IncompleteDocumentationError(len(errors.split('\n')))
     except OSError:
         raise NoDoxygenError('Unable to run doxygen executable "%s"' % doxygenpath)
 
