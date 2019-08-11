@@ -36,6 +36,10 @@ namespace C.Cxx
     public class ConsoleApplication :
         C.ConsoleApplication
     {
+        /// <summary>
+        /// Initialize the console application
+        /// </summary>
+        /// <param name="parent">With this parent Module</param>
         protected override void
         Init(
             Bam.Core.Module parent)

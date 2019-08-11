@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Abstract class representing any Gcc compiler
+    /// </summary>
     public abstract class CompilerBase :
         C.CompilerTool
     {
@@ -42,8 +45,14 @@ namespace GccCommon
             this.Version = this.GccMetaData.ToolchainVersion;
         }
 
+        /// <summary>
+        /// Get the Gcc meta data for this tool
+        /// </summary>
         protected Gcc.MetaData GccMetaData { get; private set; }
 
+        /// <summary>
+        /// Get the executable path to this tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
         public override void
@@ -55,6 +64,9 @@ namespace GccCommon
         }
     }
 
+    /// <summary>
+    /// Both 32-bit and 64-bit GCC C compilers
+    /// </summary>
     [C.RegisterCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class CCompiler :
@@ -62,11 +74,20 @@ namespace GccCommon
     {
         public CCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Gcc.CCompilerSettings(module);
     }
 
+    /// <summary>
+    /// Both 32-bit and 64-bit GCC C++ compilers
+    /// </summary>
     [C.RegisterCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class CxxCompiler :
@@ -74,11 +95,20 @@ namespace GccCommon
     {
         public CxxCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Gcc.CxxCompilerSettings(module);
     }
 
+    /// <summary>
+    /// Both 32-bit and 64-bit GCC Objective C compilers
+    /// </summary>
     [C.RegisterObjectiveCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterObjectiveCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class ObjectiveCCompiler :
@@ -86,11 +116,20 @@ namespace GccCommon
     {
         public ObjectiveCCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Gcc.ObjectiveCCompilerSettings(module);
     }
 
+    /// <summary>
+    /// Both 32-bit and 64-bit GCC Objective C++ compilers
+    /// </summary>
     [C.RegisterObjectiveCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterObjectiveCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class ObjectiveCxxCompiler :
@@ -98,6 +137,12 @@ namespace GccCommon
     {
         public ObjectiveCxxCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Gcc.ObjectiveCxxCompilerSettings(module);

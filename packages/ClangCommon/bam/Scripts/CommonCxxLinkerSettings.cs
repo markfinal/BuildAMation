@@ -29,10 +29,17 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for common Clang C++ linker settings
+    /// </summary>
     public abstract class CommonCxxLinkerSettings :
         ClangCommon.CommonLinkerSettings,
         C.ICxxOnlyLinkerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonCxxLinkerSettings(
             Bam.Core.Module module)
             :

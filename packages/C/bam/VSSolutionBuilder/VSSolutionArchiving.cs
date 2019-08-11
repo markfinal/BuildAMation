@@ -29,8 +29,15 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Utility class offering support for VisualStudio project generation
+    /// </summary>
     public static partial class VSSolutionSupport
     {
+        /// <summary>
+        /// Create a StaticLibrary VisualStudio project
+        /// </summary>
+        /// <param name="module">StaticLibrary module</param>
         public static void
         Archive(
             StaticLibrary module)

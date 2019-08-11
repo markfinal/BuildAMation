@@ -35,6 +35,9 @@ namespace C
     public class ExternalSourceGenerator :
         Bam.Core.Module
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
         public ExternalSourceGenerator()
         {
             this.Arguments = new Bam.Core.TokenizedStringArray();
@@ -56,6 +59,9 @@ namespace C
 
         private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> InternalInputFiles { get; set; }
 
+        /// <summary>
+        /// Enumerate all input files to this module
+        /// </summary>
         public System.Collections.Generic.IEnumerable<Bam.Core.TokenizedString> InputFiles
         {
             get
@@ -67,6 +73,11 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Add an input file to this Module
+        /// </summary>
+        /// <param name="name">Name associated with it.</param>
+        /// <param name="path">Path to the input file.</param>
         public void
         AddInputFile(
             string name,
@@ -110,6 +121,9 @@ namespace C
 
         private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> InternalExpectedOutputFileDictionary { get; set; }
 
+        /// <summary>
+        /// Get the list of expected output files
+        /// </summary>
         public System.Collections.Generic.IReadOnlyDictionary<string, Bam.Core.TokenizedString> ExpectedOutputFiles => this.InternalExpectedOutputFileDictionary;
 
         /// <summary>
@@ -130,7 +144,11 @@ namespace C
             this.RegisterGeneratedFile(name, path);
         }
 
-        protected override void EvaluateInternal()
+        /// <summary>
+        /// Determine whether the Module needs to be updated
+        /// </summary>
+        protected override void
+        EvaluateInternal()
         {
             this.ReasonToExecute = null; // assume it doesn't need updating until you find a reason for it to...
 
@@ -164,6 +182,10 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Execute the build for this Module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)

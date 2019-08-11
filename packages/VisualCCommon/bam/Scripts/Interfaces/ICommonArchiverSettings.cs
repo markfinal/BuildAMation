@@ -29,11 +29,21 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// VisualC specific settings for the archiver
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonArchiverSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Get or set whether the logo is displayed
+        /// </summary>
         bool NoLogo { get; set; }
+
+        /// <summary>
+        /// Get or set whether link time code generation is used
+        /// </summary>
         bool LinkTimeCodeGeneration { get; set; }
     }
 }

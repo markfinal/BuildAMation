@@ -30,9 +30,17 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
+    /// <summary>
+    /// Class to represent an IDE folder shown in a solution.
+    /// </summary>
     sealed class VSSolutionFolder :
         HasGuid
     {
+        /// <summary>
+        /// Create an instance.
+        /// </summary>
+        /// <param name="uniqueName">A unique name for the folder</param>
+        /// <param name="path">Path associated with the folder</param>
         public VSSolutionFolder(
             string uniqueName,
             string path)
@@ -43,18 +51,17 @@ namespace VSSolutionBuilder
             this.NestedEntities = new Bam.Core.Array<HasGuid>();
         }
 
-        public string Path
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the path associated with the folder.
+        /// </summary>
+        public string Path { get; private set; }
 
-        private Bam.Core.Array<HasGuid> NestedEntities
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<HasGuid> NestedEntities { get; set; }
 
+        /// <summary>
+        /// Append an entity to the folder.
+        /// </summary>
+        /// <param name="entity">Entity that has a GUID to append.</param>
         public void
         appendNestedEntity(
             HasGuid entity)
@@ -65,6 +72,11 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Serialize the solution folder to the provided stringbuilder
+        /// </summary>
+        /// <param name="content">StringBuilder to serialise to</param>
+        /// <param name="indentLevel">Number of levels of indent.</param>
         public void
         Serialize(
             System.Text.StringBuilder content,

@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Abstract class representing the common Gcc linker settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-o ")]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonLinkerSettings :
@@ -37,8 +40,15 @@ namespace GccCommon
         C.IAdditionalSettings,
         ICommonLinkerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonLinkerSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
@@ -75,6 +85,9 @@ namespace GccCommon
         [CommandLineProcessor.Path("-Wl,-soname,")] // ensure that the NEEDED flag is set to the expected symlink for the shared object
         Bam.Core.TokenizedString ICommonLinkerSettings.SharedObjectName { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void AssignFileLayout ()
         {
             this.FileLayout = ELayout.Inputs_Cmds_Outputs;

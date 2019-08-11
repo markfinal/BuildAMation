@@ -29,9 +29,15 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for all compiler tools
+    /// </summary>
     public abstract class CompilerBase :
         C.CompilerTool
     {
+        /// <summary>
+        /// List of arguments
+        /// </summary>
         protected Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
 
         protected CompilerBase()
@@ -45,10 +51,20 @@ namespace ClangCommon
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim($"--sdk {clangMeta.SDK}"));
         }
 
+        /// <summary>
+        /// Executable path of the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(ConfigureUtilities.XcrunPath);
+
+        /// <summary>
+        /// Arguments to pass to the tool prior to module settings
+        /// </summary>
         public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
     }
 
+    /// <summary>
+    /// 32-bit and 64-bit C compilers
+    /// </summary>
     [C.RegisterCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public sealed class CCompiler :
@@ -56,11 +72,20 @@ namespace ClangCommon
     {
         public CCompiler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Clang.CCompilerSettings(module);
     }
 
+    /// <summary>
+    /// 32-bit and 64-bit C++ compilers
+    /// </summary>
     [C.RegisterCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public sealed class CxxCompiler :
@@ -68,11 +93,20 @@ namespace ClangCommon
     {
         public CxxCompiler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Clang.CxxCompilerSettings(module);
     }
 
+    /// <summary>
+    /// 32-bit and 64-bit Objective C compiler
+    /// </summary>
     [C.RegisterObjectiveCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterObjectiveCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public sealed class ObjectiveCCompiler :
@@ -80,11 +114,20 @@ namespace ClangCommon
     {
         public ObjectiveCCompiler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Clang.ObjectiveCCompilerSettings(module);
     }
 
+    /// <summary>
+    /// 32-bit and 64-bit Objective C++ tools
+    /// </summary>
     [C.RegisterObjectiveCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterObjectiveCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
     public sealed class ObjectiveCxxCompiler :
@@ -92,6 +135,12 @@ namespace ClangCommon
     {
         public ObjectiveCxxCompiler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Clang.ObjectiveCxxCompilerSettings(module);

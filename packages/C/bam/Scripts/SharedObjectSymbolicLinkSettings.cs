@@ -29,12 +29,19 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Settings for shared object symbolic links
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.SharedObjectSymbolicLink.SOSymLinkKey, "", path_modifier: "@filename($(0))")]
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1, path_modifier: "@filename($(0))")]
     public sealed class SharedObjectSymbolicLinkSettings :
         Bam.Core.Settings,
         ISharedObjectSymbolicLinkSettings
     {
+        /// <summary>
+        /// Construct an instance
+        /// </summary>
+        /// <param name="module">for this module</param>
         public SharedObjectSymbolicLinkSettings(
             Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
@@ -44,6 +51,9 @@ namespace C
         [CommandLineProcessor.Bool("-s", "")]
         bool ISharedObjectSymbolicLinkSettings.SoftLink { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void AssignFileLayout()
         {
             this.FileLayout = ELayout.Cmds_Inputs_Outputs;

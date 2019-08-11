@@ -29,6 +29,9 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Class representing the cp tool settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedFileKey, "")]
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedDirectoryKey, "")]
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedRenamedDirectoryKey, "")]
@@ -37,11 +40,21 @@ namespace Publisher
         Bam.Core.Settings,
         ICopyFileSettings
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public PosixCopyFileSettings()
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public PosixCopyFileSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("-f", "")]
         bool ICopyFileSettings.Force { get; set; }
@@ -61,6 +74,9 @@ namespace Publisher
         }
     }
 
+    /// <summary>
+    /// Class representing the xcopy tool settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedFileKey, "", path_modifier: "@dir($(0))/")]
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedDirectoryKey, "", path_modifier: "$(0)/")]
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedRenamedDirectoryKey, "", path_modifier: "$(0)/")]
@@ -69,11 +85,21 @@ namespace Publisher
         Bam.Core.Settings,
         ICopyFileSettings
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public WinCopyFileSettings()
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public WinCopyFileSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("/Y /R", "")]
         bool ICopyFileSettings.Force { get; set; }

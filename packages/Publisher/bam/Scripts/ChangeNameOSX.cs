@@ -30,6 +30,9 @@
 using Bam.Core;
 namespace Publisher
 {
+    /// <summary>
+    /// Module representing a file having had install_name_tool --change applied to it
+    /// </summary>
     public class ChangeNameOSX :
         InstallNameModule
     {
@@ -66,6 +69,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Enumerate across all inputs to this Module
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get

@@ -31,9 +31,15 @@ using System.Linq;
 namespace Publisher
 {
     // TODO: move these to another source file
+    /// <summary>
+    /// Abstract representation of a pre-existing object on disk (i.e. one that does not need building)
+    /// </summary>
     abstract class PreExistingObject :
         Bam.Core.Module
     {
+        /// <summary>
+        /// Get the parent of the Collation module
+        /// </summary>
         public Bam.Core.Module ParentOfCollationModule { get; private set; }
 
         protected override void
@@ -66,9 +72,15 @@ namespace Publisher
         }
     }
 
+    /// <summary>
+    /// Class representing a pre-existing file on disk
+    /// </summary>
     sealed class PreExistingFile :
         PreExistingObject
     {
+        /// <summary>
+        /// Path key corresponding to the pre-existing file
+        /// </summary>
         public const string ExistingFileKey = "Preexisting file to be copied";
 
         protected override void
@@ -81,9 +93,15 @@ namespace Publisher
         }
     }
 
+    /// <summary>
+    /// Class representing a pre-existing directory on disk
+    /// </summary>
     sealed class PreExistingDirectory :
         PreExistingObject
     {
+        /// <summary>
+        /// Path key corresponding to the pre-existing directory
+        /// </summary>
         public const string ExistingDirectoryKey = "Preexisting directory to be copied";
 
         protected override void
@@ -163,7 +181,7 @@ namespace Publisher
 
             /// <summary>
             /// Application is a GUI application.
-            /// On OSX, this is an application bundle, and will automatically appear in a <name>.app/Contents/MacOS folder
+            /// On OSX, this is an application bundle, and will automatically appear in a [name].app/Contents/MacOS folder
             /// under the publishing root.
             /// </summary>
             WindowedApplication,

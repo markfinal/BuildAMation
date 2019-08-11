@@ -38,8 +38,14 @@ namespace C
     public abstract class CModule :
         Bam.Core.Module
     {
+        /// <summary>
+        /// Array of modules representing the header files
+        /// </summary>
         protected Bam.Core.Array<Bam.Core.Module> headerModules = new Bam.Core.Array<Bam.Core.Module>();
 
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
         public CModule()
         {
             this.SetSemanticVersion(1, 0, 0);
@@ -47,21 +53,40 @@ namespace C
             this.BitDepth = (EBit)Bam.Core.CommandLineProcessor.Evaluate(new Options.DefaultBitDepth());
         }
 
+        /// <summary>
+        /// Set the semantic version of this module
+        /// </summary>
+        /// <param name="major">Major version</param>
+        /// <param name="minor">Minor version</param>
+        /// <param name="patch">Patch version</param>
         protected void
         SetSemanticVersion(
             int major,
             int minor,
             int patch) => this.SetSemanticVersion(major.ToString(), minor.ToString(), patch.ToString());
 
+        /// <summary>
+        /// Set the semantic version of this module
+        /// </summary>
+        /// <param name="major">Major version</param>
+        /// <param name="minor">Minor version</param>
         protected void
         SetSemanticVersion(
             int major,
             int minor) => this.SetSemanticVersion(major.ToString(), minor.ToString(), null);
 
+        /// <summary>
+        /// Set the semantic version of this module
+        /// </summary>
+        /// <param name="major">Major version</param>
         protected void
         SetSemanticVersion(
             int major) => this.SetSemanticVersion(major.ToString(), null, null);
 
+        /// <summary>
+        /// Set the semantic version of this module
+        /// </summary>
+        /// <param name="version">ISemanticVersion instance</param>
         protected void
         SetSemanticVersion(
             Bam.Core.ISemanticVersion version)
@@ -73,6 +98,12 @@ namespace C
             );
         }
 
+        /// <summary>
+        /// Set the semantic version of this module
+        /// </summary>
+        /// <param name="major">Major version</param>
+        /// <param name="minor">Minor version</param>
+        /// <param name="patch">Patch version</param>
         protected void
         SetSemanticVersion(
             string major,
@@ -108,6 +139,10 @@ namespace C
         /// </summary>
         public string ThirdpartyWindowsVersionResourcePath { get; private set; }
 
+        /// <summary>
+        /// Initialize this CModule
+        /// </summary>
+        /// <param name="parent">Parent module</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -135,8 +170,16 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Get or set this Module's bit depth.
+        /// </summary>
         public EBit BitDepth { get; set; }
 
+        /// <summary>
+        /// Convert a hierarchical tree of Modules into a flat list.
+        /// </summary>
+        /// <param name="files">Array of input Modules</param>
+        /// <returns>Flat array of Modules</returns>
         protected static Bam.Core.Array<Bam.Core.Module>
         FlattenHierarchicalFileList(
             Bam.Core.Array<Bam.Core.Module> files)
@@ -159,6 +202,12 @@ namespace C
             return list;
         }
 
+        /// <summary>
+        /// Based on dependency checking, return a list of Modules in order of decreasing dependency.
+        /// This is useful for single-pass linkers, in order to resolve all symbols.
+        /// </summary>
+        /// <param name="libs">Array of modules to sort.</param>
+        /// <returns>List of Modules in decreasing order of dependencies</returns>
         protected static System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>
         OrderLibrariesWithDecreasingDependencies(
             Bam.Core.Array<Bam.Core.Module> libs)
@@ -195,6 +244,16 @@ namespace C
             return flatLibs.ToReadOnlyCollection();
         }
 
+        /// <summary>
+        /// Create the container.
+        /// </summary>
+        /// <typeparam name="T">Type of the container.</typeparam>
+        /// <param name="requires">Children are added as a requirement rather than a dependency.</param>
+        /// <param name="wildcardPath">Wildcarded path to find children.</param>
+        /// <param name="macroModuleOverride">Optional module to serve as macro source. Default to null.</param>
+        /// <param name="filter">Optional regular expression filter to remove matches from the path search. Default to null.</param>
+        /// <param name="privatePatch">Optional private patch delegate to run against collection. Default to null.</param>
+        /// <returns>The new Container Module</returns>
         protected T
         InternalCreateContainer<T>(
             bool requires,
@@ -227,6 +286,13 @@ namespace C
             return source;
         }
 
+        /// <summary>
+        /// Create a collection of header files.
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to search for matches. Default to null.</param>
+        /// <param name="macroModuleOverride">Optional module to serve as macro source. Default to null.</param>
+        /// <param name="filter">Optional regular expression to filter on the path search. Default to null.</param>
+        /// <returns>A collection of header files.</returns>
         public HeaderFileCollection
         CreateHeaderContainer(
             string wildcardPath = null,
@@ -238,6 +304,10 @@ namespace C
             return headers;
         }
 
+        /// <summary>
+        /// Get a list of order only dependents.
+        /// </summary>
+        /// <returns>List of dependents.</returns>
         public System.Collections.Generic.IEnumerable<Bam.Core.Module>
         OrderOnlyDependents()
         {

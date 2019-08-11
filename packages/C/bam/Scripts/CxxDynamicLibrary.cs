@@ -42,6 +42,10 @@ namespace C.Cxx
         private SharedObjectSymbolicLink linkerNameSymLink = null;
         private SharedObjectSymbolicLink soNameSymLink = null;
 
+        /// <summary>
+        /// Initialize the dynamic library
+        /// </summary>
+        /// <param name="parent">From this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -250,6 +254,10 @@ namespace C.Cxx
             this.UsePublicPatches(dependent);
         }
 
+        /// <summary>
+        /// Execute the link of the dynamic library
+        /// </summary>
+        /// <param name="context"></param>
         protected sealed override void
         ExecuteInternal(
             ExecutionContext context)
@@ -265,6 +273,9 @@ namespace C.Cxx
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps.ToReadOnlyCollection();
 
         SharedObjectSymbolicLink IDynamicLibrary.LinkerNameSymbolicLink => this.linkerNameSymLink;
+        /// <summary>
+        /// Get the linker name symbolic link
+        /// </summary>
         protected SharedObjectSymbolicLink LinkerNameSymbolicLink
         {
             set
@@ -274,6 +285,9 @@ namespace C.Cxx
         }
 
         SharedObjectSymbolicLink IDynamicLibrary.SONameSymbolicLink => this.soNameSymLink;
+        /// <summary>
+        /// Get the SO name symbolic link
+        /// </summary>
         protected SharedObjectSymbolicLink SONameSymbolicLink
         {
             set

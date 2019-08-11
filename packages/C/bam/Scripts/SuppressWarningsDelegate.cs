@@ -174,6 +174,11 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Add suppressions for a path
+        /// </summary>
+        /// <param name="path">Path to suppress warnings for</param>
+        /// <param name="suppression">List of suppression</param>
         protected void
         Add(
             string path,
@@ -187,6 +192,13 @@ namespace C
             this.Merge(path, warnings);
         }
 
+        /// <summary>
+        /// Add suppressions for a path, applied when the toolchain version resides in the specified range. 
+        /// </summary>
+        /// <param name="path">Path to suppress warnings for</param>
+        /// <param name="minVersion">Minimum toolchain version</param>
+        /// <param name="maxVersion">Maximum toolchain version</param>
+        /// <param name="suppression">List of suppressions.</param>
         protected void
         Add(
             string path,
@@ -202,6 +214,12 @@ namespace C
             this.Merge(path, warnings);
         }
 
+        /// <summary>
+        /// Add suppressions for a path, on a given configuration
+        /// </summary>
+        /// <param name="path">Path to suppress warnings for</param>
+        /// <param name="config">Configuration to apply suppressions</param>
+        /// <param name="suppression">List of suppressions.</param>
         protected void
         Add(
             string path,
@@ -216,6 +234,12 @@ namespace C
             this.Merge(path, warnings);
         }
 
+        /// <summary>
+        /// Add suppressions for a path, on a given bitdepth
+        /// </summary>
+        /// <param name="path">Path to suppress warnings for</param>
+        /// <param name="bitdepth">Bit depth to apply suppressions</param>
+        /// <param name="suppression">List of suppressions</param>
         protected void
         Add(
             string path,
@@ -230,6 +254,13 @@ namespace C
             this.Merge(path, warnings);
         }
 
+        /// <summary>
+        /// Add suppressions for a path, on a given bitdepth and configuration.
+        /// </summary>
+        /// <param name="path">Path to suppress warnings for</param>
+        /// <param name="config">Configuration to apply suppressions for</param>
+        /// <param name="bitdepth">Bit depth to apply suppressions for</param>
+        /// <param name="suppression">List of suppressions</param>
         protected void
         Add(
             string path,
@@ -245,6 +276,14 @@ namespace C
             this.Merge(path, warnings);
         }
 
+        /// <summary>
+        /// Add suppressions for a path, on a given range of toolchain versions and configuration
+        /// </summary>
+        /// <param name="path">Path to suppress warnings for</param>
+        /// <param name="minVersion">Minimum toolchain version to apply</param>
+        /// <param name="maxVersion">Maximum toolchain version to apply</param>
+        /// <param name="config">Configuration to apply suppressions for</param>
+        /// <param name="suppression">List of suppressions</param>
         protected void
         Add(
             string path,
@@ -261,6 +300,14 @@ namespace C
             this.Merge(path, warnings);
         }
 
+        /// <summary>
+        /// Add suppressions for a path, on a given range of toolchain versions, and bitdepth
+        /// </summary>
+        /// <param name="path">Path to suppress warnings for</param>
+        /// <param name="minVersion">Minimum toolchain version to apply</param>
+        /// <param name="maxVersion">Maximum toolchain version to apply</param>
+        /// <param name="bitdepth">Bit depth to apply suppressions for</param>
+        /// <param name="suppression">List of suppressions</param>
         protected void
         Add(
             string path,
@@ -277,6 +324,15 @@ namespace C
             this.Merge(path, warnings);
         }
 
+        /// <summary>
+        /// Add suppressions for a path, on a given range of toolchain versions, and bitdepth, and configuration
+        /// </summary>
+        /// <param name="path">Path to suppress warnings for</param>
+        /// <param name="minVersion">Minimum toolchain version</param>
+        /// <param name="maxVersion">Maximum toolchain version</param>
+        /// <param name="config">Configuration apply suppressions to</param>
+        /// <param name="bitdepth">Bit depth to apply suppressions to</param>
+        /// <param name="suppression">List of suppressions</param>
         protected void
         Add(
             string path,
@@ -294,6 +350,11 @@ namespace C
             this.Merge(path, warnings);
         }
 
+        /// <summary>
+        /// Execute the suppression delegate on this container of modules
+        /// </summary>
+        /// <typeparam name="ChildModuleType">Type of Module stored in the container</typeparam>
+        /// <param name="module">Container module to apply to</param>
         public void
         Execute<ChildModuleType>(
             CModuleContainer<ChildModuleType> module) where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()

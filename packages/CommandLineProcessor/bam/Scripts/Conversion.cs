@@ -30,6 +30,9 @@
 using System.Linq;
 namespace CommandLineProcessor
 {
+    /// <summary>
+    /// Helper class for converting Settings to command lines.
+    /// </summary>
     public static class NativeConversion
     {
         private static void
@@ -301,6 +304,13 @@ namespace CommandLineProcessor
             }
         }
 
+        /// <summary>
+        /// Convert a Settings instance to command lines.
+        /// </summary>
+        /// <param name="settings">Settings instance to convert properties to command line.</param>
+        /// <param name="module">The Module owning the Settings.</param>
+        /// <param name="createDelta">Optional whether to create a delta command line (for per-file command lines). Default to false.</param>
+        /// <returns></returns>
         public static Bam.Core.StringArray
         Convert(
             Bam.Core.Settings settings,

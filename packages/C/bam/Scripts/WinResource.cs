@@ -35,6 +35,10 @@ namespace C
     public class WinResource :
         ObjectFileBase
     {
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">in this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -43,6 +47,9 @@ namespace C
             this.Compiler = DefaultToolchain.WinResource_Compiler(this.BitDepth);
         }
 
+        /// <summary>
+        /// Get or set the compiler tool
+        /// </summary>
         public WinResourceCompilerTool Compiler
         {
             get
@@ -55,6 +62,10 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Compile against a dependent module
+        /// </summary>
+        /// <typeparam name="DependentModule">Type of the dependent Module</typeparam>
         public void
         CompileAgainst<DependentModule>() where DependentModule : CModule, new()
         {
@@ -67,6 +78,9 @@ namespace C
             this.UsePublicPatchesPrivately(dependent);
         }
 
+        /// <summary>
+        /// Disable header evaluation
+        /// </summary>
         protected override bool RequiresHeaderEvaluation => false;
     }
 
@@ -76,6 +90,10 @@ namespace C
     public class WinResourceCollection :
         CCompilableModuleContainer<WinResource>
     {
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">from this parent Module</param>
         protected override void
         Init(
             Bam.Core.Module parent)

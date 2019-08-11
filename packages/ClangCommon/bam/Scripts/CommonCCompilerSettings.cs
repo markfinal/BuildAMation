@@ -29,16 +29,28 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for common Clang C compiler settings
+    /// </summary>
     public abstract class CommonCCompilerSettings :
         CommonCompilerSettings,
         C.ICOnlyCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public CommonCCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         public CommonCCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)

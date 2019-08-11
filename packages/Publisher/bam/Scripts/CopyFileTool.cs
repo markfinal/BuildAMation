@@ -30,15 +30,27 @@
 using System.Linq;
 namespace Publisher
 {
+    /// <summary>
+    /// Abstract prebuilt tool that performs file copying
+    /// </summary>
     public abstract class CopyFileTool :
         Bam.Core.PreBuiltTool
     {
+        /// @copydoc Bam::Core::PreBuiltTool::EvaluateInternal
         protected override void
         EvaluateInternal()
         {
             this.ReasonToExecute = null;
         }
 
+        /// <summary>
+        /// Convert paths suitable for use with the copy tool
+        /// </summary>
+        /// <param name="module">Collated object</param>
+        /// <param name="inSourcePath">TokenizedString for the source path</param>
+        /// <param name="inPublishingPath">TokenisedString for the destination published path</param>
+        /// <param name="resolvedSourcePath">Resolved string for the source path</param>
+        /// <param name="resolvedDestinationDir">Resolve string for the published path</param>
         public abstract void
         ConvertPaths(
             CollatedObject module,
@@ -47,20 +59,40 @@ namespace Publisher
             out string resolvedSourcePath,
             out string resolvedDestinationDir);
 
+        /// <summary>
+        /// Escape any characters in the path
+        /// </summary>
+        /// <param name="path">Incoming path</param>
+        /// <returns>Escaped path</returns>
         public abstract string
         EscapePath(
             string path);
     }
 
+    /// <summary>
+    /// Prebuilt tool module, mapping to Posix' cp
+    /// </summary>
     public sealed class CopyFilePosix :
         CopyFileTool
     {
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new PosixCopyFileSettings(module);
 
+        /// <summary>
+        /// Executable path for the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("bash").First());
 
+        /// <summary>
+        /// Arguments passed to the tool prior to per-module settings
+        /// </summary>
         public override Bam.Core.TokenizedStringArray InitialArguments
         {
             get
@@ -73,6 +105,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Arguments passed to the tool after per-module settings
+        /// </summary>
         public override Bam.Core.TokenizedStringArray TerminatingArguments
         {
             get
@@ -118,13 +153,25 @@ namespace Publisher
             string path) => Bam.Core.IOWrapper.EscapeSpacesInPath(path);
     }
 
+    /// <summary>
+    /// Prebuilt tool module, mapping to Windows' xcopy
+    /// </summary>
     public sealed class CopyFileWin :
         CopyFileTool
     {
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new WinCopyFileSettings(module);
 
+        /// <summary>
+        /// Return path to xcopy.exe
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("xcopy.exe").First());
 
         public override void

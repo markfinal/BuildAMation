@@ -29,10 +29,20 @@
 #endregion // License
 namespace Gcc
 {
+    /// <summary>
+    /// Meta data for this version of Gcc
+    /// </summary>
     public sealed class MetaData :
         GccCommon.MetaData
     {
+        /// <summary>
+        /// Major version of the compiler
+        /// </summary>
         protected override int CompilerMajorVersion => 4;
+
+        /// <summary>
+        /// Minor version of the compiler
+        /// </summary>
         protected override int? CompilerMinorVersion => 8;
     }
 }

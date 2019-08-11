@@ -29,6 +29,9 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class corresponding to a PBXContainerItemProxy in an Xcode project.
+    /// </summary>
     public sealed class ContainerItemProxy :
         Object
     {
@@ -44,7 +47,12 @@ namespace XcodeBuilder
             project.AppendContainerItemProxy(this);
         }
 
-        // for NativeTargets in a different Project
+        /// <summary>
+        /// Construct an instance, used for Targets in a different Project to that in which the Target exists.
+        /// </summary>
+        /// <param name="project">Project to add the ContainerItemProxy to.</param>
+        /// <param name="portal">The container portal</param>
+        /// <param name="reference">The Target that is referenced.</param>
         public ContainerItemProxy(
             Project project,
             Object portal,
@@ -56,7 +64,11 @@ namespace XcodeBuilder
             this.ProxyType = 1;
         }
 
-        // for NativeTargets in the same Project
+        /// <summary>
+        /// Construct an instance, used for Targets in the same Project.
+        /// </summary>
+        /// <param name="projectAndPortal">Project to add the ContainerItemProxy to.</param>
+        /// <param name="reference">The Target that is referenced.</param>
         public ContainerItemProxy(
             Project projectAndPortal,
             Target reference)
@@ -67,7 +79,13 @@ namespace XcodeBuilder
             this.ProxyType = 2;
         }
 
-        // for FileReferences in a different Project
+        /// <summary>
+        /// Construct an instance, for a FileReference in a different Project.
+        /// </summary>
+        /// <param name="project">Project to add the ContainerItemProxy to</param>
+        /// <param name="portal">The container portal</param>
+        /// <param name="reference">The FileReference to add a reference to.</param>
+        /// <param name="refName">The name for which to refer to the remote.</param>
         public ContainerItemProxy(
             Project project,
             Object portal,
@@ -81,11 +99,22 @@ namespace XcodeBuilder
             this.RemoteName = refName;
         }
 
+        /// <summary>
+        /// Get the container portal.
+        /// </summary>
         public Object ContainerPortal { get; private set; }
         private int ProxyType { get; set; }
+        /// <summary>
+        /// Get the remote.
+        /// </summary>
         public Object Remote { get; private set; }
         private string RemoteName { get; set; }
 
+        /// <summary>
+        /// Serialize the ContainerItemProxy.
+        /// </summary>
+        /// <param name="text">The StringBuilder to write to.</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public override void
         Serialize(
             System.Text.StringBuilder text,

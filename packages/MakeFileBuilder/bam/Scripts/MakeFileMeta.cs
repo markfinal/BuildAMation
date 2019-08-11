@@ -29,6 +29,9 @@
 #endregion // License
 namespace MakeFileBuilder
 {
+    /// <summary>
+    /// Metadata for the builder class
+    /// </summary>
     public sealed class MakeFileMeta :
         Bam.Core.IBuildModeMetaData
     {
@@ -48,6 +51,10 @@ namespace MakeFileBuilder
         public MakeFileMeta()
         {}
 
+        /// <summary>
+        /// Create an instance of the meta data
+        /// </summary>
+        /// <param name="module">for this module</param>
         public MakeFileMeta(
             Bam.Core.Module module)
         {
@@ -58,8 +65,15 @@ namespace MakeFileBuilder
             AddMeta(this);
         }
 
+        /// <summary>
+        /// Get the common meta data for this builder
+        /// </summary>
         public MakeFileCommonMetaData CommonMetaData { get; private set; }
 
+        /// <summary>
+        /// Add a rule to this meta data
+        /// </summary>
+        /// <returns>The new rule</returns>
         public Rule
         AddRule()
         {
@@ -68,16 +82,28 @@ namespace MakeFileBuilder
             return rule;
         }
 
+        /// <summary>
+        /// Get the rules associated with this metadata
+        /// </summary>
         public Bam.Core.Array<Rule> Rules { get; private set; }
 
+        /// <summary>
+        /// Get the module associated with this metadata
+        /// </summary>
         private Bam.Core.Module Module { get; set; }
 
+        /// <summary>
+        /// Pre-execution commands to run for this builder
+        /// </summary>
         public static void PreExecution()
         {
             var graph = Bam.Core.Graph.Instance;
             graph.MetaData = new MakeFileCommonMetaData();
         }
 
+        /// <summary>
+        /// Post executable commands to run for this builder
+        /// </summary>
         public static void PostExecution()
         {
             var graph = Bam.Core.Graph.Instance;

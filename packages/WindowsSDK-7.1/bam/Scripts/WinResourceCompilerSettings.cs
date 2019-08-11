@@ -29,9 +29,16 @@
 #endregion // License
 namespace WindowsSDK
 {
+    /// <summary>
+    /// Settings used with the windows resource compiler
+    /// </summary>
     public sealed class WinResourceCompilerSettings :
         WindowsSDKCommon.CommonWinResourceCompilerSettings
     {
+        /// <summary>
+        /// Construct an instance
+        /// </summary>
+        /// <param name="module">Module owning the settings</param>
         public WinResourceCompilerSettings(
             Bam.Core.Module module)
             :

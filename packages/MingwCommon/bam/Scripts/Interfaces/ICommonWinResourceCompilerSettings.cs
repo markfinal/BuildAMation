@@ -29,10 +29,16 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Mingw specific Windows resource compilation settings
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonWinResourceCompilerSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Use a temp file for processing
+        /// </summary>
         bool? UseTempFile { get; set; }
     }
 }

@@ -29,9 +29,15 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Abstract class that can be used as a tool to assemble code.
+    /// </summary>
     public abstract class AssemblerTool :
         Bam.Core.PreBuiltTool
     {
+        /// <summary>
+        /// Get the version of the toolchain in use.
+        /// </summary>
         public ToolchainVersion Version { get; protected set; }
     }
 }

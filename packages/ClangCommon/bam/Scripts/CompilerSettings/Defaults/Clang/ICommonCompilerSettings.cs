@@ -30,6 +30,9 @@
 using C;
 namespace ClangCommon.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for setting Clang common compiler setting defaults
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
         public static void

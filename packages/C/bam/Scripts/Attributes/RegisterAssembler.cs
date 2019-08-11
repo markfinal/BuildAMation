@@ -29,9 +29,18 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Attribute to register an assembler tool.
+    /// </summary>
     public sealed class RegisterAssemblerAttribute :
         ToolRegistrationAttribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="toolsetName">Name of the toolset.</param>
+        /// <param name="platform">Platform under which the tool can be used.</param>
+        /// <param name="bitDepth">Bit depth for which the tool is used for.</param>
         public RegisterAssemblerAttribute(
             string toolsetName,
             Bam.Core.EPlatform platform,

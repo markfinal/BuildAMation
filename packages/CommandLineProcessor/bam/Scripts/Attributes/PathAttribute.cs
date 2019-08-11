@@ -29,10 +29,17 @@
 #endregion // License
 namespace CommandLineProcessor
 {
+    /// <summary>
+    /// Attribute representing a single path to convert to command line.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PathAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="command_switch">Switch representing the path.</param>
         public PathAttribute(
             string command_switch)
             :

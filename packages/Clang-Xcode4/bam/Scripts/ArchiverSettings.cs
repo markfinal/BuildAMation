@@ -29,9 +29,16 @@
 #endregion // License
 namespace Clang
 {
+    /// <summary>
+    /// Class for archiver settings in Clang
+    /// </summary>
     public sealed class ArchiverSettings :
         ClangCommon.CommonArchiverSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public ArchiverSettings(
             Bam.Core.Module module)
             :

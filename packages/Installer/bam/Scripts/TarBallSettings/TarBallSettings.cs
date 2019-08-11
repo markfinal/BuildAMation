@@ -30,6 +30,9 @@
 using Bam.Core;
 namespace Installer
 {
+    /// <summary>
+    /// Settings class for tar
+    /// </summary>
     [CommandLineProcessor.OutputPath(TarBall.TarBallKey, "-f ")]
     [CommandLineProcessor.InputPaths(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey, "")]
     [CommandLineProcessor.InputPaths(Publisher.DebugSymbolCollation.DebugSymbolsDirectoryKey, "")]
@@ -37,8 +40,15 @@ namespace Installer
         Bam.Core.Settings,
         ITarBallSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public TarBallSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Enum(ETarOperation.Create, "-c")]
         ETarOperation ITarBallSettings.Operation { get; set; }

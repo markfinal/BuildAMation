@@ -36,6 +36,9 @@ namespace C
     public abstract class OSXFramework :
         CModule
     {
+        /// <summary>
+        /// Path key for this module type
+        /// </summary>
         public const string FrameworkKey = "macOS Framework";
 
         private void
@@ -64,6 +67,10 @@ namespace C
             this.Macros["IDName"] = Bam.Core.TokenizedString.CreateVerbatim(idName);
         }
 
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">from this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)

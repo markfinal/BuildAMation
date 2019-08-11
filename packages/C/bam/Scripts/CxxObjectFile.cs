@@ -35,6 +35,10 @@ namespace C.Cxx
     public class ObjectFile :
         C.ObjectFile
     {
+        /// <summary>
+        /// Initialize the object file
+        /// </summary>
+        /// <param name="parent">From this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)

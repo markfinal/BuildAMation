@@ -29,9 +29,19 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Attribute corresponding to a Boolean property with a single value.
+    /// </summary>
     public sealed class UniqueBoolAttribute :
         BoolAttribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute.
+        /// </summary>
+        /// <param name="property">Name of the property.</param>
+        /// <param name="truth_value">String value representing truth.</param>
+        /// <param name="false_value">String value representing falisy.</param>
+        /// <param name="ignore">Whether the property is ignored.</param>
         public UniqueBoolAttribute(
             string property,
             string truth_value,

@@ -29,11 +29,14 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Types of runtime libraries available
+    /// </summary>
     public enum ERuntimeLibrary
     {
-        MultiThreaded = 0,
-        MultiThreadedDebug = 1,
-        MultiThreadedDLL = 2,
-        MultiThreadedDebugDLL = 3
+        MultiThreaded = 0,          //<! multi-threaded runtime
+        MultiThreadedDebug = 1,     //<! multi-threaded debug runtime
+        MultiThreadedDLL = 2,       //<! multi-threaded DLL runtime
+        MultiThreadedDebugDLL = 3   //<! multi-threaded DLL debug runtime
     }
 }

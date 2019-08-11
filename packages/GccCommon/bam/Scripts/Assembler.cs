@@ -29,9 +29,15 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Abstract class representing any Gcc assembler tool
+    /// </summary>
     public abstract class AssemblerBase :
         C.AssemblerTool
     {
+        /// <summary>
+        /// Unused
+        /// </summary>
         protected Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
 
         protected AssemblerBase()
@@ -45,11 +51,20 @@ namespace GccCommon
             this.Macros.Add("AssemblerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
         }
 
+        /// <summary>
+        /// Get the meta data for this tool
+        /// </summary>
         protected Gcc.MetaData GccMetaData { get; private set; }
 
+        /// <summary>
+        /// Get the executable path to this tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["AssemblerPath"];
     }
 
+    /// <summary>
+    /// Both 32-bit and 64-bit assemblers
+    /// </summary>
     [C.RegisterAssembler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterAssembler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public class Assembler :
@@ -58,6 +73,12 @@ namespace GccCommon
         public Assembler()
         {}
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Gcc.AssemblerSettings(module);

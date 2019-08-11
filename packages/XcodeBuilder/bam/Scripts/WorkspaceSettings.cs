@@ -29,8 +29,18 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Abstract class for the base class of workspace settings
+    /// </summary>
     public abstract class WorkspaceSettings
     {
+        /// <summary>
+        /// Create a key-value pair in XML
+        /// </summary>
+        /// <param name="doc">XML document</param>
+        /// <param name="parent">Parent XML element</param>
+        /// <param name="key">Name of the key</param>
+        /// <param name="value">Name of the value</param>
         protected void
         CreateKeyValuePair(
             System.Xml.XmlDocument doc,
@@ -46,13 +56,25 @@ namespace XcodeBuilder
             parent.AppendChild(valueEl);
         }
 
+        /// <summary>
+        /// Creeate a Plist
+        /// </summary>
         protected abstract void
         CreatePlist();
 
+        /// <summary>
+        /// Get the Path to the settings
+        /// </summary>
         protected string Path { get; set; }
 
+        /// <summary>
+        /// Get the XML document
+        /// </summary>
         protected System.Xml.XmlDocument Document { get; set; }
 
+        /// <summary>
+        /// Serialize the workspace settings
+        /// </summary>
         public void
         Serialize()
         {

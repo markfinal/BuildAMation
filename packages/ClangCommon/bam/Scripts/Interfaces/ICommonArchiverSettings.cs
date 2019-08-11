@@ -29,12 +29,26 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Interface for clang archivers
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonArchiverSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Use ranlib
+        /// </summary>
         bool Ranlib { get; set; }
+
+        /// <summary>
+        /// Do not warn if the library is created
+        /// </summary>
         bool DoNotWarnIfLibraryCreated { get; set; }
+
+        /// <summary>
+        /// Archiver command to run
+        /// </summary>
         EArchiverCommand Command { get; set; }
     }
 }

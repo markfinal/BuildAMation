@@ -29,6 +29,9 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Extension class for compiler enumerations
+    /// </summary>
     public static class SettingsUtilities
     {
         public static EVisibility?

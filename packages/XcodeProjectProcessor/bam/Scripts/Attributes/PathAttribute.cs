@@ -29,10 +29,18 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Attribute representing a single path in Xcode.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PathAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute.
+        /// </summary>
+        /// <param name="property">Name of the property.</param>
+        /// <param name="ignore">Whether to ignore the property.</param>
         public PathAttribute(
             string property,
             bool ignore = false

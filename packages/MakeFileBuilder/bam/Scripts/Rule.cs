@@ -30,8 +30,16 @@
 using System.Linq;
 namespace MakeFileBuilder
 {
+    /// <summary>
+    /// Class representing rules in a MakeFile
+    /// </summary>
     public sealed class Rule
     {
+        /// <summary>
+        /// Create an instance of a rule
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="count">and is this index</param>
         public Rule(
             Bam.Core.Module module,
             int count)
@@ -46,6 +54,15 @@ namespace MakeFileBuilder
             this.AddOrderOnlyDependency(MakeFileCommonMetaData.DIRSTarget);
         }
 
+        /// <summary>
+        /// Add a target to the rule
+        /// </summary>
+        /// <param name="targetNameOrOutput">Name or output path</param>
+        /// <param name="isPhony">Is the target phony</param>
+        /// <param name="variableName">Variable name to reference the target</param>
+        /// <param name="keyName">Key name to reference target</param>
+        /// <param name="isDependencyOfAll">Is the target a dependency of all</param>
+        /// <returns></returns>
         public Target
         AddTarget(
             Bam.Core.TokenizedString targetNameOrOutput,
@@ -78,6 +95,11 @@ namespace MakeFileBuilder
             return target;
         }
 
+        /// <summary>
+        /// Add a prerequisite
+        /// </summary>
+        /// <param name="module">Module that is the prerequisite</param>
+        /// <param name="key">Key name</param>
         public void
         AddPrerequisite(
             Bam.Core.Module module,
@@ -89,6 +111,10 @@ namespace MakeFileBuilder
             }
         }
 
+        /// <summary>
+        /// Add a prerequisite target
+        /// </summary>
+        /// <param name="target">Target to add as prerequisite</param>
         public void
         AddPrerequisite(
             Target target)
@@ -96,6 +122,11 @@ namespace MakeFileBuilder
             this.PrerequisiteTargets.Add(target);
         }
 
+        /// <summary>
+        /// Add a shell command to the rul
+        /// </summary>
+        /// <param name="command">Single command to add</param>
+        /// <param name="ignoreErrors">Optional, should errors be ignored? Default to false</param>
         public void
         AddShellCommand(
             string command,
@@ -111,6 +142,10 @@ namespace MakeFileBuilder
             }
         }
 
+        /// <summary>
+        /// Append target names that are prerequisites of the all target
+        /// </summary>
+        /// <param name="variableNames">List of target variable names acquired</param>
         public void
         AppendAllPrerequisiteTargetNames(
             Bam.Core.StringArray variableNames)
@@ -136,6 +171,10 @@ namespace MakeFileBuilder
             }
         }
 
+        /// <summary>
+        /// Add an order only dependency
+        /// </summary>
+        /// <param name="target">of this Target</param>
         public void
         AddOrderOnlyDependency(
             Target target)
@@ -146,6 +185,11 @@ namespace MakeFileBuilder
             }
         }
 
+        /// <summary>
+        /// Write the variables associated with this rule to a string builder
+        /// </summary>
+        /// <param name="variables">Where to write the rule variables to</param>
+        /// <param name="commonMeta">Meta data to append to</param>
         public void
         WriteVariables(
             System.Text.StringBuilder variables,
@@ -247,6 +291,11 @@ namespace MakeFileBuilder
             }
         }
 
+        /// <summary>
+        /// Write the rules to a string builder
+        /// </summary>
+        /// <param name="rules">Where to write to</param>
+        /// <param name="commonMeta">Meta data to append</param>
         public void
         WriteRules(
             System.Text.StringBuilder rules,
@@ -380,6 +429,9 @@ namespace MakeFileBuilder
             }
         }
 
+        /// <summary>
+        /// Get the first target of this rule
+        /// </summary>
         public Target
         FirstTarget
         {
@@ -392,6 +444,9 @@ namespace MakeFileBuilder
             }
         }
 
+        /// <summary>
+        /// Get the first prerequisite target of this rule
+        /// </summary>
         private Target
         FirstPrerequisiteTarget
         {
@@ -404,6 +459,9 @@ namespace MakeFileBuilder
             }
         }
 
+        /// <summary>
+        /// Get the first prerequisite path of this rule
+        /// </summary>
         private Bam.Core.TokenizedString
         FirstPrerequisitePath
         {
@@ -428,8 +486,16 @@ namespace MakeFileBuilder
             }
         }
 
+        /// <summary>
+        /// Delegate for enumerating across targets
+        /// </summary>
+        /// <param name="target">Current target</param>
         public delegate void eachTargetDelegate(Target target);
 
+        /// <summary>
+        /// Utility function to enumerate across all targets in this rule
+        /// </summary>
+        /// <param name="dlg">Apply this delegate to each target</param>
         public void
         ForEachTarget(
             eachTargetDelegate dlg)

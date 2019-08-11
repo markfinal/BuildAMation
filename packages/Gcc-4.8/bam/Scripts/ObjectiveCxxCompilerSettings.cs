@@ -29,15 +29,27 @@
 #endregion // License
 namespace Gcc
 {
+    /// <summary>
+    /// Class representing the Objective C++ compiler settings for this version of Gcc
+    /// </summary>
     public sealed class ObjectiveCxxCompilerSettings :
         GccCommon.CommonObjectiveCxxCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public ObjectiveCxxCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         public ObjectiveCxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)

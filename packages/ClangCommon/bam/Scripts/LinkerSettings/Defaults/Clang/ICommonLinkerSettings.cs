@@ -29,6 +29,9 @@
 #endregion // License
 namespace ClangCommon.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for setting Clang common linker setting defaults
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
         public static void

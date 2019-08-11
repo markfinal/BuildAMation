@@ -29,9 +29,15 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Abstract module representing a file having had install_name_tool run on it
+    /// </summary>
     public abstract class InstallNameModule :
         Bam.Core.Module
     {
+        /// <summary>
+        /// The original Module applied to
+        /// </summary>
         protected Bam.Core.Module CopiedFileModule = null;
 
         protected override void
@@ -48,6 +54,9 @@ namespace Publisher
             // do nothing
         }
 
+        /// <summary>
+        /// Get or set the source module to apply the install_name_tool to
+        /// </summary>
         public Bam.Core.Module Source
         {
             get

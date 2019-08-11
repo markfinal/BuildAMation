@@ -29,9 +29,16 @@
 #endregion // License
 namespace VisualC
 {
+    /// <summary>
+    /// Class representing the linker settings for this version of VisualC
+    /// </summary>
     public sealed class LinkerSettings :
         VisualCCommon.CommonLinkerSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this module</param>
         public LinkerSettings(
             Bam.Core.Module module)
             :

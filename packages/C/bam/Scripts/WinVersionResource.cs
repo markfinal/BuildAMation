@@ -36,8 +36,15 @@ namespace C
     public class WinVersionResource :
         SourceFile
     {
+        /// <summary>
+        /// Path key for this module
+        /// </summary>
         public const string HashFileKey = "Hash of version resource contents";
 
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">from this parent module</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -49,6 +56,9 @@ namespace C
             );
         }
 
+        /// <summary>
+        /// Get or set the binary module associated with this resource
+        /// </summary>
         public ConsoleApplication BinaryModule { get; set; }
 
         private string
@@ -157,6 +167,10 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Execute the build on this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -176,6 +190,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Determine if this module needs updating
+        /// </summary>
         protected override void
         EvaluateInternal()
         {

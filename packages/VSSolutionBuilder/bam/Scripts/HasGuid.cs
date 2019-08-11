@@ -29,26 +29,29 @@
 #endregion // License
 namespace VSSolutionBuilder
 {
+    /// <summary>
+    /// Base abstract class for all subclasses that have a GUID
+    /// </summary>
     public abstract class HasGuid
     {
+        /// <summary>
+        /// Construct an instance
+        /// </summary>
+        /// <param name="input">from this data</param>
         protected HasGuid(
             string input)
         {
             this.Guid = new DeterministicGuid(input).Guid;
         }
 
-        protected System.Guid Guid
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get or set the Guid
+        /// </summary>
+        protected System.Guid Guid { get; private set; }
 
-        public string GuidString
-        {
-            get
-            {
-                return this.Guid.ToString("B").ToUpper();
-            }
-        }
+        /// <summary>
+        /// Get the 'B' string conversion of the GUID
+        /// </summary>
+        public string GuidString => this.Guid.ToString("B").ToUpper();
     }
 }

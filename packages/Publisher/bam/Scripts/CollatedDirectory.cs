@@ -29,6 +29,9 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Class representing any collated directory
+    /// </summary>
     public sealed class CollatedDirectory :
         CollatedObject
     {

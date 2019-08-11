@@ -29,8 +29,15 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Utility class offering support for VisualStudio project generation
+    /// </summary>
     public static partial class VSSolutionSupport
     {
+        /// <summary>
+        /// Generate a project that creates a linked executable
+        /// </summary>
+        /// <param name="module">Linkable application</param>
         public static void
         Link(
             ConsoleApplication module)

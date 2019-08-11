@@ -29,15 +29,27 @@
 #endregion // License
 namespace Clang
 {
+    /// <summary>
+    /// Class for Objective C++ settings in Clang
+    /// </summary>
     public sealed class ObjectiveCxxCompilerSettings :
         ClangCommon.CommonObjectiveCxxCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public ObjectiveCxxCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
         { }
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         public ObjectiveCxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)

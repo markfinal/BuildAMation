@@ -30,10 +30,17 @@
 using System.Linq;
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class corresponding to a XCConfigurationList in an Xcode project.
+    /// </summary>
     public sealed class ConfigurationList :
         Object,
         System.Collections.Generic.IEnumerable<Configuration>
     {
+        /// <summary>
+        /// Construct an instance of the object
+        /// </summary>
+        /// <param name="parent">The parent Object</param>
         public ConfigurationList(
             Object parent)
             :
@@ -43,12 +50,24 @@ namespace XcodeBuilder
             this.Configurations = new Bam.Core.Array<Configuration>();
         }
 
+        /// <summary>
+        /// Get the Configuration by index.
+        /// </summary>
+        /// <param name="index">A valid index into the list of Configurations.</param>
+        /// <returns>The Configuration</returns>
         public Configuration this[int index] => this.Configurations[index];
 
+        /// <summary>
+        /// Get the parent Object.
+        /// </summary>
         public Object Parent { get; private set; }
 
         private Bam.Core.Array<Configuration> Configurations { get; set; }
 
+        /// <summary>
+        /// Add a Configuration to the list.
+        /// </summary>
+        /// <param name="config">Configuration to add</param>
         public void
         AddConfiguration(
             Configuration config)
@@ -64,6 +83,11 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Serialize the ConfigurationList.
+        /// </summary>
+        /// <param name="text">StringBuilder to write to.</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public override void
         Serialize(
             System.Text.StringBuilder text,
@@ -86,6 +110,10 @@ namespace XcodeBuilder
             text.AppendLine($"{indent}}};");
         }
 
+        /// <summary>
+        /// Allow enumeration across the list.
+        /// </summary>
+        /// <returns>Each Configuration in turn.</returns>
         public System.Collections.Generic.IEnumerator<Configuration>
         GetEnumerator()
         {

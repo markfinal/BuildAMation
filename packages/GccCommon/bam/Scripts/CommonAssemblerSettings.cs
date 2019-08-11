@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Abstract class representing the common Gcc assembler settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.AssembledObjectFile.ObjectFileKey, "-o ")]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ", max_file_count: 1)]
     public abstract class CommonAssemblerSettings :
@@ -37,8 +40,15 @@ namespace GccCommon
         C.IAdditionalSettings,
         ICommonAssemblerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonAssemblerSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
@@ -59,6 +69,9 @@ namespace GccCommon
         [CommandLineProcessor.StringArray("-D")]
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {

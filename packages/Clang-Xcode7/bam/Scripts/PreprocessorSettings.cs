@@ -29,15 +29,27 @@
 #endregion // License
 namespace Clang
 {
+    /// <summary>
+    /// Class for preprocessor settings in Clang
+    /// </summary>
     public sealed class PreprocessorSettings :
         ClangCommon.CommonPreprocessorSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public PreprocessorSettings(
             Bam.Core.Module module)
             :
             base(module)
         { }
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         public PreprocessorSettings(
             Bam.Core.Module module,
             bool useDefaults)

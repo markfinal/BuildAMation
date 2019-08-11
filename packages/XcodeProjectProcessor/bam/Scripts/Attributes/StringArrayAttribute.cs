@@ -29,10 +29,20 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Attribute representing an array of strings in Xcode.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class StringArrayAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute.
+        /// </summary>
+        /// <param name="property">Name of the property.</param>
+        /// <param name="prefix">Optional prefix to all strings. Default is null.</param>
+        /// <param name="spacesSeparate">Optional whether spaces in the value separate into lines in the project file. Default is false.</param>
+        /// <param name="ignore"></param>
         public StringArrayAttribute(
             string property,
             string prefix = null,
@@ -46,9 +56,14 @@ namespace XcodeProjectProcessor
             this.SpacesSeparate = spacesSeparate;
         }
 
+        /// <summary>
+        /// Get the prefix.
+        /// </summary>
         public string Prefix { get; private set; }
 
-        // any extra arguments separated by spaces splits them onto separate lines in the project file
+        /// <summary>
+        /// Whether spaces in the value separate into lines in the Xcode project.
+        /// </summary>
         public bool SpacesSeparate { get; private set; }
     }
 }

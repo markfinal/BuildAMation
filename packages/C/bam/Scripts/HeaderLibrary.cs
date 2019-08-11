@@ -38,12 +38,19 @@ namespace C
     {
         private readonly Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
 
+        /// <summary>
+        /// Determine if this module needs updating
+        /// </summary>
         protected override void
         EvaluateInternal()
         {
             this.ReasonToExecute = null;
         }
 
+        /// <summary>
+        /// Execute the build for this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)

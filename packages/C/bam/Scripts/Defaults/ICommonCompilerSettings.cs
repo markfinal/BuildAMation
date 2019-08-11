@@ -30,8 +30,16 @@
 using Bam.Core;
 namespace C.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for handling defaults and operations for C.ICommonCompilerSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
+        /// <summary>
+        /// Set default property values of C.ICommonCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.ICommonCompilerSettings instance</param>
+        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
             this C.ICommonCompilerSettings settings,
@@ -45,6 +53,10 @@ namespace C.DefaultSettings
             settings.PreprocessOnly = false;
         }
 
+        /// <summary>
+        /// Provide empty property values of C.ICommonCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.ICommonCompilerSettings instance</param>
         public static void
         Empty(
             this C.ICommonCompilerSettings settings)
@@ -53,6 +65,11 @@ namespace C.DefaultSettings
             settings.NamedHeaders = new Bam.Core.StringArray();
         }
 
+        /// <summary>
+        /// Intersection of two C.ICommonCompilerSettings
+        /// </summary>
+        /// <param name="shared">C.ICommonCompilerSettings instance for the shared properties</param>
+        /// <param name="other">C.ICommonCompilerSettings instance to intersect with</param>
         public static void
         Intersect(
             this C.ICommonCompilerSettings shared,
@@ -68,6 +85,12 @@ namespace C.DefaultSettings
             shared.PreprocessOnly = shared.PreprocessOnly.Intersect(other.PreprocessOnly);
         }
 
+        /// <summary>
+        /// Delta between two C.ICommonCompilerSettings
+        /// </summary>
+        /// <param name="delta">C.ICommonCompilerSettings to write the delta to</param>
+        /// <param name="lhs">C.ICommonCompilerSettings to diff against</param>
+        /// <param name="rhs">C.ICommonCompilerSettings to diff with</param>
         public static void
         Delta(
             this C.ICommonCompilerSettings delta,
@@ -84,6 +107,11 @@ namespace C.DefaultSettings
             delta.PreprocessOnly = lhs.PreprocessOnly.Complement(rhs.PreprocessOnly);
         }
 
+        /// <summary>
+        /// Clone a C.ICommonCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.ICommonCompilerSettings containing the cloned properties</param>
+        /// <param name="other">Source C.ICommonCompilerSettings</param>
         public static void
         Clone(
             this C.ICommonCompilerSettings settings,

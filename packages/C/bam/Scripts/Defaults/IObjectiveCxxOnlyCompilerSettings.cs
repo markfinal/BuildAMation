@@ -29,25 +29,48 @@
 #endregion // License
 namespace C.ObjCxx.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for handling defaults and operations for C.IObjectiveCxxOnlyCompilerSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
+        /// <summary>
+        /// Set default property values of C.IObjectiveCxxOnlyCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.IObjectiveCxxOnlyCompilerSettings instance</param>
+        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
             this C.IObjectiveCxxOnlyCompilerSettings settings,
             Bam.Core.Module module)
         {}
 
+        /// <summary>
+        /// Provide empty property values of C.IObjectiveCxxOnlyCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.IObjectiveCxxOnlyCompilerSettings instance</param>
         public static void
         Empty(
             this C.IObjectiveCxxOnlyCompilerSettings settings)
         {}
 
+        /// <summary>
+        /// Intersection of two C.IObjectiveCxxOnlyCompilerSettings
+        /// </summary>
+        /// <param name="shared">C.IObjectiveCxxOnlyCompilerSettings instance for the shared properties</param>
+        /// <param name="other">C.IObjectiveCxxOnlyCompilerSettings instance to intersect with</param>
         public static void
         Intersect(
             this C.IObjectiveCxxOnlyCompilerSettings shared,
             C.IObjectiveCxxOnlyCompilerSettings other)
         {}
 
+        /// <summary>
+        /// Delta between two C.IObjectiveCxxOnlyCompilerSettings
+        /// </summary>
+        /// <param name="delta">C.IObjectiveCxxOnlyCompilerSettings to write the delta to</param>
+        /// <param name="lhs">C.IObjectiveCxxOnlyCompilerSettings to diff against</param>
+        /// <param name="rhs">C.IObjectiveCxxOnlyCompilerSettings to diff with</param>
         public static void
         Delta(
             this C.IObjectiveCxxOnlyCompilerSettings delta,
@@ -55,6 +78,11 @@ namespace C.ObjCxx.DefaultSettings
             C.IObjectiveCxxOnlyCompilerSettings rhs)
         {}
 
+        /// <summary>
+        /// Clone a C.IObjectiveCxxOnlyCompilerSettings
+        /// </summary>
+        /// <param name="settings">C.IObjectiveCxxOnlyCompilerSettings containing the cloned properties</param>
+        /// <param name="other">Source C.IObjectiveCxxOnlyCompilerSettings</param>
         public static void
         Clone(
             this C.IObjectiveCxxOnlyCompilerSettings settings,

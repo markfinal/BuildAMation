@@ -30,17 +30,30 @@
 using Bam.Core;
 namespace Publisher
 {
+    /// <summary>
+    /// Class representing strip tool settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(StripModule.StripBinaryKey, "-o ")]
     [CommandLineProcessor.InputPaths(CollatedObject.CopiedFileKey, "", max_file_count: 1)]
     public sealed class StripToolSettings :
         Bam.Core.Settings,
         IStripToolSettings
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public StripToolSettings()
         {}
 
+        /// <summary>
+        /// Create settings
+        /// </summary>
+        /// <param name="module">for this module</param>
         public StripToolSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("-v", "")]
         bool IStripToolSettings.Verbose { get; set; }

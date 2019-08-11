@@ -30,6 +30,9 @@
 using System.Linq;
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Class representing any VisualC linker tool
+    /// </summary>
     public abstract class LinkerBase :
         C.LinkerTool
     {
@@ -60,6 +63,10 @@ namespace VisualCCommon
             throw new Bam.Core.Exception(message.ToString());
         }
 
+        /// <summary>
+        /// Create an instance.
+        /// </summary>
+        /// <param name="depth">For the given bit-depth</param>
         protected LinkerBase(
             C.EBit depth)
         {
@@ -85,14 +92,31 @@ namespace VisualCCommon
             this.InheritedEnvironmentVariables.Add("TMP");
         }
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new VisualC.LinkerSettings(module);
 
+        /// <summary>
+        /// Get the executable for the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["LinkerPath"];
 
+        /// <summary>
+        /// Get the command line option for response files
+        /// </summary>
         public override string UseResponseFileOption => "@";
 
+        /// <summary>
+        /// Get the true library path for the given module.
+        /// </summary>
+        /// <param name="library">Module representing a library</param>
+        /// <returns>True path for the library</returns>
         public override Bam.Core.TokenizedString
         GetLibraryPath(
             C.CModule library)
@@ -114,6 +138,11 @@ namespace VisualCCommon
             throw new Bam.Core.Exception($"Unsupported library type, {library.GetType().ToString()}");
         }
 
+        /// <summary>
+        /// Process a library dependency on an executable
+        /// </summary>
+        /// <param name="executable">Executable being linked</param>
+        /// <param name="library">Library to link against</param>
         public override void
         ProcessLibraryDependency(
             C.CModule executable,
@@ -141,22 +170,34 @@ namespace VisualCCommon
         }
     }
 
+    /// <summary>
+    /// 32-bit VisualC linker
+    /// </summary>
     [C.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     [C.RegisterCxxLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class Linker32 :
         LinkerBase
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
         public Linker32()
             :
             base(C.EBit.ThirtyTwo)
         {}
     }
 
+    /// <summary>
+    /// 64-bit VisualC linker
+    /// </summary>
     [C.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     [C.RegisterCxxLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     public sealed class Linker64 :
         LinkerBase
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
         public Linker64()
             :
             base(C.EBit.SixtyFour)

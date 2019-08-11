@@ -29,15 +29,27 @@
 #endregion // License
 namespace Clang
 {
+    /// <summary>
+    /// Class for C++ compiler settings in Clang
+    /// </summary>
     public class CxxCompilerSettings :
         ClangCommon.CommonCxxCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public CxxCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         public CxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)

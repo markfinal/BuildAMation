@@ -29,16 +29,30 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class representing a PBXFrameworksBuildPhase in an Xcode project
+    /// </summary>
     public sealed class FrameworksBuildPhase :
         BuildPhase
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="target">Target to add the build phase to.</param>
         public FrameworksBuildPhase(
             Target target)
             :
             base(target.Project, "Frameworks", "PBXFrameworksBuildPhase", target.GUID)
         {}
 
+        /// <summary>
+        /// Get the build action mask.
+        /// </summary>
         protected override string BuildActionMask => "2147483647";
+
+        /// <summary>
+        /// Whether the build phase runs only for deployment post processing.
+        /// </summary>
         protected override bool RunOnlyForDeploymentPostprocessing => false;
     }
 }

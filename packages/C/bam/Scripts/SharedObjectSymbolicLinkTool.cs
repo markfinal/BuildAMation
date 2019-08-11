@@ -30,13 +30,25 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Tool for making shared object symbolic links
+    /// </summary>
     public sealed class SharedObjectSymbolicLinkTool :
         Bam.Core.PreBuiltTool
     {
+        /// <summary>
+        /// Create the default settings.
+        /// </summary>
+        /// <typeparam name="T">Type of the settings class</typeparam>
+        /// <param name="module">Module owning the settings</param>
+        /// <returns>Created Settings</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new SharedObjectSymbolicLinkSettings(module);
 
+        /// <summary>
+        /// Setting the executable to generate the symbolic link
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("ln").First());
     }
 }

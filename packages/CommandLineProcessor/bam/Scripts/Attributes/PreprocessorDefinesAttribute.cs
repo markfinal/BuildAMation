@@ -29,10 +29,17 @@
 #endregion // License
 namespace CommandLineProcessor
 {
+    /// <summary>
+    /// Attribute corresponding to preprocessor definitions to convert to command line.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PreprocessorDefinesAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="command_switch">Switch corresponding to the settings property.</param>
         public PreprocessorDefinesAttribute(
             string command_switch)
             :

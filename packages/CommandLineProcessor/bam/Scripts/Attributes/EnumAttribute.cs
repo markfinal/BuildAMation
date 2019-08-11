@@ -29,16 +29,30 @@
 #endregion // License
 namespace CommandLineProcessor
 {
+    /// <summary>
+    /// Attribute used for a settings enum property to convert to a command line.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
     public class EnumAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="key">The enum object</param>
+        /// <param name="command_switch">Switch to use</param>
         public EnumAttribute(
             object key,
             string command_switch)
             :
-            base(command_switch) => this.Key = key as System.Enum;
+            base(command_switch)
+        {
+            this.Key = key as System.Enum;
+        }
 
+        /// <summary>
+        /// Get the enum object.
+        /// </summary>
         public System.Enum Key { get; private set; }
     }
 }

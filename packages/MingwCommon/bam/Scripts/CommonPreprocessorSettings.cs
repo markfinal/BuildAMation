@@ -29,21 +29,36 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Abstract class representing the common Mingw preprocessor settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.PreprocessedFile.PreprocessedFileKey, "", ignore: true)]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-E ", max_file_count: 1)]
     public abstract class CommonPreprocessorSettings :
         C.SettingsBase,
         C.ICommonPreprocessorSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonPreprocessorSettings(
             Bam.Core.Module module)
             :
             this(module, useDefaults: true)
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         protected CommonPreprocessorSettings(
             Bam.Core.Module module,
-            bool useDefaults) => this.InitializeAllInterfaces(module, true, useDefaults);
+            bool useDefaults)
+        {
+            this.InitializeAllInterfaces(module, true, useDefaults);
+        }
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
         C.PreprocessorDefinitions C.ICommonPreprocessorSettings.PreprocessorDefines { get; set; }
@@ -67,6 +82,9 @@ namespace MingwCommon
         [CommandLineProcessor.Bool("-P", "")]
         bool? C.ICommonPreprocessorSettings.SuppressLineMarkers { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {

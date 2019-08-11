@@ -29,10 +29,16 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Property representing an array of macOS frameworks
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class FrameworkArrayAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Create an instance of the attribute.
+        /// </summary>
         public FrameworkArrayAttribute()
             :
             base(null, ValueType.MultiValued, ignore: false)

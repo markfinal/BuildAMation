@@ -29,15 +29,10 @@
 #endregion // License
 namespace WindowsSDK
 {
+    /// <summary>
+    /// Metadata for WindowsSDK
+    /// </summary>
     public sealed class MetaData :
-        Bam.Core.PackageMetaData
-    {
-        private readonly System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
-
-        public override object this[string index] => this.Meta[index];
-
-        public override bool
-        Contains(
-            string index) => this.Meta.ContainsKey(index);
-    }
+        WindowsSDKCommon.MetaData
+    { }
 }

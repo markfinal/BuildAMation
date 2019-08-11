@@ -29,9 +29,16 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class representing the workspace settings on disk.
+    /// </summary>
     public class SharedWorkspaceSettings :
         WorkspaceSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="workspaceDir">Directory for the workspace.</param>
         public
         SharedWorkspaceSettings(
             string workspaceDir)
@@ -42,6 +49,9 @@ namespace XcodeBuilder
             this.CreatePlist();
         }
 
+        /// <summary>
+        /// Create a PList file
+        /// </summary>
         protected override void
         CreatePlist()
         {

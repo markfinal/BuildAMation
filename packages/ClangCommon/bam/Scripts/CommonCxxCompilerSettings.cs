@@ -29,10 +29,17 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for common Clang C++ compiler settings
+    /// </summary>
     public abstract class CommonCxxCompilerSettings :
         ClangCommon.CommonCompilerSettings,
         C.ICxxOnlyCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonCxxCompilerSettings(
             Bam.Core.Module module)
             :
@@ -41,6 +48,11 @@ namespace ClangCommon
             (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.Cxx;
         }
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         protected CommonCxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)

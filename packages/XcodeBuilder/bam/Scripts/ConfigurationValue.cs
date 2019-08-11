@@ -30,26 +30,51 @@
 using System.Linq;
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Base class to all Configuration values.
+    /// </summary>
     public abstract class ConfigurationValue
     {
         private static char[] SpecialChars = { '$', '@', '=', '+', ' ' };
 
+        /// <summary>
+        /// Determine if the provided string needs quoting.
+        /// </summary>
+        /// <param name="input">The string to check.</param>
+        /// <returns>true if the string needs quoting.</returns>
         protected bool
         StringRequiresQuoting(
             string input) => (-1 != input.IndexOfAny(SpecialChars));
 
+        /// <summary>
+        /// Merge values for the given key.
+        /// </summary>
+        /// <param name="key">Key for the value to be merged into.</param>
+        /// <param name="value">The new value to merge in.</param>
         public abstract void
         Merge(
             string key,
             ConfigurationValue value);
     }
 
+    /// <summary>
+    /// Class corresponding to a value with just a single value.
+    /// </summary>
     public sealed class UniqueConfigurationValue :
         ConfigurationValue
     {
+        /// <summary>
+        /// Construct an instance
+        /// </summary>
+        /// <param name="value">Value to hold</param>
         public UniqueConfigurationValue(
             string value) => this.Value = value;
 
+        /// <summary>
+        /// Merge values. Since this is a single value, any existing value is replaced. A warning is issued.
+        /// </summary>
+        /// <param name="key">Key to the value being merged into.</param>
+        /// <param name="value">New value to merge in.</param>
         public override void
         Merge(
             string key,
@@ -66,6 +91,10 @@ namespace XcodeBuilder
 
         private string Value { get; set; }
 
+        /// <summary>
+        /// Convert the value into human readable text.
+        /// </summary>
+        /// <returns>The string conversion.</returns>
         public override string
         ToString()
         {
@@ -81,26 +110,56 @@ namespace XcodeBuilder
         }
     }
 
+    /// <summary>
+    /// Class corresponding to a value with multiple entries.
+    /// </summary>
     public sealed class MultiConfigurationValue :
         ConfigurationValue
     {
+        /// <summary>
+        /// Construct an instance, starting from empty.
+        /// </summary>
         public MultiConfigurationValue() => this.Value = new Bam.Core.StringArray();
 
+        /// <summary>
+        /// Construct an instance, starting with a single value.
+        /// </summary>
+        /// <param name="value">Value to hold.</param>
         public MultiConfigurationValue(
             string value)
-            : this() => this.Value.AddUnique(value);
+            :
+            this()
+        {
+            this.Value.AddUnique(value);
+        }
 
+        /// <summary>
+        /// Merge a new value in.
+        /// </summary>
+        /// <param name="key">Key corresponding to the value. This is unused.</param>
+        /// <param name="value">New value to merge in.</param>
         public override void
         Merge(
             string key,
-            ConfigurationValue value) => this.Value.AddRangeUnique((value as MultiConfigurationValue).Value);
+            ConfigurationValue value)
+        {
+            this.Value.AddRangeUnique((value as MultiConfigurationValue).Value);
+        }
 
         private Bam.Core.StringArray Value { get; set; }
 
+        /// <summary>
+        /// Add a new value in.
+        /// </summary>
+        /// <param name="value"></param>
         public void
         Add(
             string value) => this.Value.AddUnique(value);
 
+        /// <summary>
+        /// Convert the value into a human readable string.
+        /// </summary>
+        /// <returns>The converted string.</returns>
         public override string
         ToString()
         {

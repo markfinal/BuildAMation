@@ -30,8 +30,18 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Utility class offering support for Xcode project generation
+    /// </summary>
     public static class XcodeSharedSettings
     {
+        /// <summary>
+        /// Tweak the settings based on some criteria.
+        /// This is because there are limitations of the Xcode project, so the Settings as
+        /// presented will not generate a valid project, and need tweaking.
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <param name="assemblerSourcesPresent"></param>
         public static void
         Tweak(
             Bam.Core.Settings settings,

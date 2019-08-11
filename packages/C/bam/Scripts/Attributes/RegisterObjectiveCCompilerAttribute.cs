@@ -29,9 +29,18 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Attribute to register a Objective C compiler tool.
+    /// </summary>
     public sealed class RegisterObjectiveCCompilerAttribute :
         ToolRegistrationAttribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="toolsetName">Name of the toolset.</param>
+        /// <param name="platform">Platform under which the tool can be used.</param>
+        /// <param name="bitDepth">Bit depth for which the tool is used for.</param>
         public RegisterObjectiveCCompilerAttribute(
             string toolsetName,
             Bam.Core.EPlatform platform,

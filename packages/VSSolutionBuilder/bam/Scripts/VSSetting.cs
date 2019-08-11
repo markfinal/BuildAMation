@@ -30,8 +30,19 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
+    /// <summary>
+    /// Class representing an individual setting within a group
+    /// </summary>
     public sealed class VSSetting
     {
+        /// <summary>
+        /// Construct a new setting.
+        /// </summary>
+        /// <param name="name"><Name of the setting.</param>
+        /// <param name="value">Value of the setting.</param>
+        /// <param name="isPath">Whether this setting represents a path.</param>
+        /// <param name="inheritValue">Whether this setting inherits from a parent.</param>
+        /// <param name="condition">Optional condition expression to which this setting requires. Defaults to null.</param>
         public VSSetting(
             string name,
             string value,
@@ -46,36 +57,32 @@ namespace VSSolutionBuilder
             this.InheritValue = inheritValue;
         }
 
-        public string Name
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Name of the setting.
+        /// </summary>
+        public string Name { get; private set; }
 
-        public string Value
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Value of the setting.
+        /// </summary>
+        public string Value { get; private set; }
 
-        public string Condition
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Condition for the setting.
+        /// </summary>
+        public string Condition { get; private set; }
 
-        public bool IsPath
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Whether this setting represents a path.
+        /// </summary>
+        public bool IsPath { get; private set; }
 
-        private bool InheritValue
-        {
-            get;
-            set;
-        }
+        private bool InheritValue { get; set; }
 
+        /// <summary>
+        /// Serialize the setting to a string.
+        /// </summary>
+        /// <returns>String representation</returns>
         public string
         Serialize()
         {
@@ -86,6 +93,11 @@ namespace VSSolutionBuilder
             return this.Value;
         }
 
+        /// <summary>
+        /// Append an additional value to the setting.
+        /// </summary>
+        /// <param name="toAppend">String to append.</param>
+        /// <param name="separator">Optional separator to use. Default is null which means an empty string</param>
         public void Append(
             string toAppend,
             string separator = null)

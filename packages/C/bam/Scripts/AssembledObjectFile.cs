@@ -35,6 +35,10 @@ namespace C
     public class AssembledObjectFile :
         ObjectFileBase
     {
+        /// <summary>
+        /// Initialize the object file.
+        /// </summary>
+        /// <param name="parent">Parent module</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -43,6 +47,9 @@ namespace C
             this.Assembler = DefaultToolchain.Assembler(this.BitDepth);
         }
 
+        /// <summary>
+        /// Get or set the assembler tool
+        /// </summary>
         public AssemblerTool Assembler
         {
             get
@@ -55,6 +62,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Assembler object files do not require header evaluation.
+        /// </summary>
         protected override bool RequiresHeaderEvaluation => false;
     }
 }

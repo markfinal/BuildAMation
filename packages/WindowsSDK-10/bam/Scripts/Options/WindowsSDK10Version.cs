@@ -30,6 +30,9 @@
 using System.Linq;
 namespace WindowsSDK.Options
 {
+    /// <summary>
+    /// Class representing the command line option to override the choice of Windows10 SDK version.
+    /// </summary>
     public class WindowsSDK10Version :
         Bam.Core.IStringCommandLineArgument,
         Bam.Core.ICommandLineArgumentDefault<string>

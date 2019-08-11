@@ -29,8 +29,16 @@
 #endregion // License
 namespace C.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for handling defaults and operations for C.IAdditionalSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
+        /// <summary>
+        /// Set default property values of C.IAdditionalSettings
+        /// </summary>
+        /// <param name="settings">C.IAdditionalSettings instance</param>
+        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
             this C.IAdditionalSettings settings,
@@ -42,6 +50,10 @@ namespace C.DefaultSettings
             }
         }
 
+        /// <summary>
+        /// Provide empty property values of C.IAdditionalSettings
+        /// </summary>
+        /// <param name="settings">C.IAdditionalSettings instance</param>
         public static void
         Empty(
             this C.IAdditionalSettings settings)
@@ -49,6 +61,11 @@ namespace C.DefaultSettings
             settings.AdditionalSettings = new Bam.Core.StringArray();
         }
 
+        /// <summary>
+        /// Intersection of two C.IAdditionalSettings
+        /// </summary>
+        /// <param name="shared">C.IAdditionalSettings instance for the shared properties</param>
+        /// <param name="other">C.IAdditionalSettings instance to intersect with</param>
         public static void
         Intersect(
             this C.IAdditionalSettings shared,
@@ -57,6 +74,12 @@ namespace C.DefaultSettings
             shared.AdditionalSettings = shared.AdditionalSettings.Intersect(other.AdditionalSettings);
         }
 
+        /// <summary>
+        /// Delta between two C.IAdditionalSettings
+        /// </summary>
+        /// <param name="delta">C.IAdditionalSettings to write the delta to</param>
+        /// <param name="lhs">C.IAdditionalSettings to diff against</param>
+        /// <param name="rhs">C.IAdditionalSettings to diff with</param>
         public static void
         Delta(
             this C.IAdditionalSettings delta,
@@ -66,6 +89,11 @@ namespace C.DefaultSettings
             delta.AdditionalSettings = lhs.AdditionalSettings.Complement(rhs.AdditionalSettings);
         }
 
+        /// <summary>
+        /// Clone a C.IAdditionalSettings
+        /// </summary>
+        /// <param name="settings">C.IAdditionalSettings containing the cloned properties</param>
+        /// <param name="other">Source C.IAdditionalSettings</param>
         public static void
         Clone(
             this C.IAdditionalSettings settings,

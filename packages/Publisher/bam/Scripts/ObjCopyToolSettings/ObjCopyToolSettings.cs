@@ -29,6 +29,9 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Class representing objcopy tool settings for making debug symbols
+    /// </summary>
     [CommandLineProcessor.OutputPath(MakeDebugSymbolFile.DebugSymbolFileKey, "")]
     [CommandLineProcessor.InputPaths(StripModule.StripBinaryKey, "", max_file_count: 1)]
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
@@ -36,11 +39,21 @@ namespace Publisher
         Bam.Core.Settings,
         IObjCopyToolSettings
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public MakeDebugSymbolFileSettings()
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public MakeDebugSymbolFileSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("--only-keep-debug", "")]
         bool IObjCopyToolSettings.OnlyKeepDebug { get; set; }
@@ -54,17 +67,30 @@ namespace Publisher
         }
     }
 
+    /// <summary>
+    /// Class representing objcopy tool settings for linking debug symbols back to the executable
+    /// </summary>
     [CommandLineProcessor.OutputPath(LinkBackDebugSymbolFile.UpdateOriginalExecutable, "")]
     [CommandLineProcessor.InputPaths(MakeDebugSymbolFile.DebugSymbolFileKey, "--add-gnu-debuglink=", max_file_count: 1)]
     public sealed class LinkBackDebugSymbolFileSettings :
         Bam.Core.Settings,
         IObjCopyToolSettings
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public LinkBackDebugSymbolFileSettings()
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this module</param>
         public LinkBackDebugSymbolFileSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("--only-keep-debug", "")]
         bool IObjCopyToolSettings.OnlyKeepDebug { get; set; }

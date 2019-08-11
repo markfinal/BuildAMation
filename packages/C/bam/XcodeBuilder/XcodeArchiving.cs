@@ -30,8 +30,15 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Utility class offering support for Xcode project generation
+    /// </summary>
     public static partial class XcodeSupport
     {
+        /// <summary>
+        /// Create a StaticLibrary Xcode Target
+        /// </summary>
+        /// <param name="module">StaticLibrary module</param>
         public static void
         Archive(
             StaticLibrary module)

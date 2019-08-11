@@ -29,18 +29,24 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Compiler symbol visibility
+    /// </summary>
     public enum EVisibility
     {
-        Default,
-        Internal,
-        Hidden,
-        Protected
+        Default,    //<! All symbols are visible
+        Internal,   //<! Internal mode
+        Hidden,     //<! All symbols are hidden, except when specifically marked up
+        Protected   //<! Protected mode
     }
 
+    /// <summary>
+    /// Clang specific optimisation modes
+    /// </summary>
     public enum EOptimization
     {
-        O1,
-        O3,
-        Ofast
+        O1,     //<! -O1
+        O3,     //<! -O3
+        Ofast   //<! -Ofast
     }
 }

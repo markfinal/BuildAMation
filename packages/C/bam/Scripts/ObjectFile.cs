@@ -35,6 +35,10 @@ namespace C
     public class ObjectFile :
         ObjectFileBase
     {
+        /// <summary>
+        /// Initialize this object file
+        /// </summary>
+        /// <param name="parent">with this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -43,6 +47,9 @@ namespace C
             this.Tool = DefaultToolchain.C_Compiler(this.BitDepth);
         }
 
+        /// <summary>
+        /// Get or set the compiler tool
+        /// </summary>
         public CompilerTool Compiler
         {
             get
@@ -55,6 +62,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Do perform header evaluation for this module.
+        /// </summary>
         protected override bool RequiresHeaderEvaluation => true;
     }
 }

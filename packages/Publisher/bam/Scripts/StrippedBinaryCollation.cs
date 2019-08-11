@@ -44,12 +44,19 @@ namespace Publisher
     public abstract class StrippedBinaryCollation :
         Bam.Core.Module
     {
+        /// <summary>
+        /// Path key for the stripped binary collation
+        /// </summary>
         public const string StripBinaryDirectoryKey = "Stripped Collation Root Directory";
 
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
         private readonly System.Collections.Generic.Dictionary<ICollatedObject, ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<ICollatedObject, ICollatedObject>();
 
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">from this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -74,6 +81,10 @@ namespace Publisher
             // TODO
         }
 
+        /// <summary>
+        /// Perform the stripped binary collation
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)

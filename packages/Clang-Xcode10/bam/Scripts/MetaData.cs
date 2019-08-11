@@ -29,6 +29,9 @@
 #endregion // License
 namespace Clang
 {
+    /// <summary>
+    /// Meta data for this version of Clang
+    /// </summary>
     public sealed class MetaData :
         ClangCommon.MetaData
     {

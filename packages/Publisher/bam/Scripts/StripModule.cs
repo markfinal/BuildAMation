@@ -29,10 +29,16 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Collated module that has had symbol stripping performed on it
+    /// </summary>
     public class StripModule :
         Bam.Core.Module,
         ICollatedObject
     {
+        /// <summary>
+        /// Path key for a file that is stripped
+        /// </summary>
         public const string StripBinaryKey = "Stripped Binary Destination";
 
         private Bam.Core.Module sourceModule;
@@ -94,6 +100,9 @@ namespace Publisher
         }
 
         Bam.Core.Module ICollatedObject.SourceModule => this.sourceModule;
+        /// <summary>
+        /// Set the source module to be stripped
+        /// </summary>
         public Bam.Core.Module SourceModule
         {
             set
@@ -103,6 +112,9 @@ namespace Publisher
         }
 
         string ICollatedObject.SourcePathKey => this.sourcePathKey;
+        /// <summary>
+        /// Set the path key to the source module to use
+        /// </summary>
         public string SourcePathKey
         {
             set
@@ -114,6 +126,9 @@ namespace Publisher
         Bam.Core.TokenizedString ICollatedObject.PublishingDirectory => this.Macros["publishingdir"];
 
         ICollatedObject ICollatedObject.Anchor => this.anchor;
+        /// <summary>
+        /// Set the anchor ICollatedObject to reference
+        /// </summary>
         public ICollatedObject Anchor
         {
             set
@@ -122,6 +137,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Enumerate across all inputs to this module
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get

@@ -29,12 +29,21 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Meta data for the Xcode builder
+    /// </summary>
     public class XcodeMeta :
         Bam.Core.IBuildModeMetaData
     {
+        /// <summary>
+        /// What to do before the build starts
+        /// </summary>
         public static void
         PreExecution() => Bam.Core.Graph.Instance.MetaData = new WorkspaceMeta();
 
+        /// <summary>
+        /// What to do after the build finishes
+        /// </summary>
         public static void
         PostExecution()
         {

@@ -30,10 +30,16 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
-    // although this is project related data, it needs to be named after the builder, VSSolution
+    /// <summary>
+    /// Class representing the builder meta data.
+    /// Although this is project related data, it needs to be named after the builder
+    /// </summary>
     public class VSSolutionMeta :
         Bam.Core.IBuildModeMetaData
     {
+        /// <summary>
+        /// Pre-execute step
+        /// </summary>
         public static void
         PreExecution()
         {
@@ -141,6 +147,9 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Post execute step.
+        /// </summary>
         public static void
         PostExecution()
         {

@@ -38,6 +38,9 @@ namespace C
     public abstract class VersionScript :
         C.HeaderFile
     {
+        /// <summary>
+        /// Path key for this module
+        /// </summary>
         public const string HashFileKey = "Hash of version script contents";
 
         /// <summary>
@@ -50,6 +53,10 @@ namespace C
         /// </summary>
         protected abstract string Contents { get; }
 
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">from this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -62,6 +69,9 @@ namespace C
             );
         }
 
+        /// <summary>
+        /// Determine whether this module needs updating
+        /// </summary>
         protected override void
         EvaluateInternal()
         {
@@ -92,6 +102,10 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Execute the build on this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)

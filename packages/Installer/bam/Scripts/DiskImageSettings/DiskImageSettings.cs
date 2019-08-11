@@ -30,6 +30,9 @@
 using Bam.Core;
 namespace Installer
 {
+    /// <summary>
+    /// Settings class for hdiutil
+    /// </summary>
     [CommandLineProcessor.OutputPath(DiskImage.DMGKey, "-o ")]
     [CommandLineProcessor.InputPaths(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey, "-srcfolder ")]
     public sealed class DiskImageSettings :
@@ -39,8 +42,15 @@ namespace Installer
         public DiskImageSettings()
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public DiskImageSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Enum(EDiskImageFormat.UDRW, "-format UDRW")]
         [CommandLineProcessor.Enum(EDiskImageFormat.UDRO, "-format UDRO")]

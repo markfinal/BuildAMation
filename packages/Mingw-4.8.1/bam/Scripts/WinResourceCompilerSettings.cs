@@ -29,9 +29,16 @@
 #endregion // License
 namespace Mingw
 {
+    /// <summary>
+    /// Settings class for Windows resource compiling for this Mingw version
+    /// </summary>
     public sealed class WinResourceCompilerSettings :
         MingwCommon.CommonWinResourceCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this module</param>
         public WinResourceCompilerSettings(
             Bam.Core.Module module)
             :

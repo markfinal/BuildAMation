@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Interface for Gcc specific assembler settings
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonAssemblerSettings :
         Bam.Core.ISettingsBase

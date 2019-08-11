@@ -29,6 +29,9 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for common Clang compiler settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "-o ")]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     public abstract class CommonCompilerSettings :
@@ -39,12 +42,21 @@ namespace ClangCommon
         C.IAdditionalSettings,
         ICommonCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonCompilerSettings(
             Bam.Core.Module module)
             :
             this(module, true)
         { }
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         protected CommonCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
@@ -188,6 +200,9 @@ namespace ClangCommon
             }
         }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {

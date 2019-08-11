@@ -30,6 +30,7 @@
 namespace C
 {
     /// <summary>
+    /// Produce a header file from the standard out of a tool
     /// </summary>
     public abstract class ProceduralHeaderFileFromToolOutput :
         C.HeaderFile
@@ -38,7 +39,15 @@ namespace C
         /// Override this function to specify the path of the header to be written to.
         /// </summary>
         protected abstract Bam.Core.TokenizedString OutputPath { get; }
+
+        /// <summary>
+        /// ICommandLineTool used to generate output
+        /// </summary>
         protected abstract Bam.Core.ICommandLineTool SourceTool { get; }
+
+        /// <summary>
+        /// Set the include directory in use
+        /// </summary>
         protected virtual Bam.Core.TokenizedString IncludeDirectory => this.CreateTokenizedString("@dir($(0))", this.InputPath);
 
         /// <summary>
@@ -46,6 +55,10 @@ namespace C
         /// </summary>
         protected virtual bool UseSystemIncludeSearchPaths => false;
 
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">from this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -82,6 +95,9 @@ namespace C
                 });
         }
 
+        /// <summary>
+        /// Determine whether this module needs updating
+        /// </summary>
         protected override void
         EvaluateInternal()
         {
@@ -90,6 +106,10 @@ namespace C
             this.ReasonToExecute = Bam.Core.ExecuteReasoning.FileDoesNotExist(this.GeneratedPaths[HeaderFileKey]);
         }
 
+        /// <summary>
+        /// Execute the build of this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -142,6 +162,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Enumerate across all input modules
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get

@@ -29,10 +29,16 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Settings interface for changing a Linux RPath
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface IChangeRPathSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// New RPATH to use
+        /// </summary>
         string NewRPath { get; set; }
     }
 }

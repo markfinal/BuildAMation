@@ -29,9 +29,16 @@
 #endregion // License
 namespace Clang
 {
+    /// <summary>
+    /// Class for C linker settings in Clang
+    /// </summary>
     public sealed class CLinkerSettings :
         ClangCommon.CommonLinkerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public CLinkerSettings(
             Bam.Core.Module module)
             :

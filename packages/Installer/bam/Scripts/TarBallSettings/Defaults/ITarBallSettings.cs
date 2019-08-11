@@ -29,6 +29,9 @@
 #endregion // License
 namespace Installer.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for setting defaults for ITarBallSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
         public static void

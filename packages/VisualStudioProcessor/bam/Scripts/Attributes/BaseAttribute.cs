@@ -29,15 +29,28 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
+    /// <summary>
+    /// Base class for all settings attributes for VisualStudio
+    /// </summary>
     public abstract class BaseAttribute :
         System.Attribute
     {
+        /// <summary>
+        /// Each setting can either be in the settings group or the configuration group in
+        /// the VisualStudio project
+        /// </summary>
         public enum TargetGroup
         {
-            Settings,
-            Configuration
+            Settings,       //!< In the settings group
+            Configuration   //<! In the configuration group
         }
 
+        /// <summary>
+        /// Construct a new instance
+        /// </summary>
+        /// <param name="property">Name of the property</param>
+        /// <param name="inheritExisting">True if the values are inherited from the parent. False otherwise.</param>
+        /// <param name="targetGroup">Which group is being targeted</param>
         protected BaseAttribute(
             string property,
             bool inheritExisting,
@@ -48,8 +61,19 @@ namespace VisualStudioProcessor
             this.Target = targetGroup;
         }
 
+        /// <summary>
+        /// The name of the settings property.
+        /// </summary>
         public string Property { get; private set; }
+
+        /// <summary>
+        /// Whether this property inherits from parent values
+        /// </summary>
         public bool InheritExisting { get; private set; }
+
+        /// <summary>
+        /// The target where the setting will be written
+        /// </summary>
         public TargetGroup Target { get; private set; }
     }
 }

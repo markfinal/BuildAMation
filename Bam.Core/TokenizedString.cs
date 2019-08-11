@@ -40,7 +40,7 @@ namespace Bam.Core
     /// <para />
     /// Functions can run before or after token expansion.
     /// <para />
-    /// Pre-functions are run before token expansion, and are identified by #name(...):
+    /// Pre-functions are run before token expansion, and are identified by \#name(...):
     /// <list type="bullet">
     /// <item><description><code>#valid(expr[,default])</code></description> If the expression is a valid
     /// TokenizedString, expand it and use it, otherwise the entire function call is replaced with the 'default' expression, unless
@@ -149,7 +149,7 @@ namespace Bam.Core
         /// The name must not collide with any built-in functions, or any existing custom unary post functions.
         /// </summary>
         /// <param name="name">Name of the function that must be unique.</param>
-        /// <param name="function">Function to apply to any usage of @name in TokenizedStrings.</param>
+        /// <param name="function">Function to apply to any usage of \p name in TokenizedStrings.</param>
         public static void
         RegisterPostUnaryFunction(
             string name,

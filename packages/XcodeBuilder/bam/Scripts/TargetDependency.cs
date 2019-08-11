@@ -29,9 +29,18 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class representing a PBXTargetDependency in the Xcode project
+    /// </summary>
     public sealed class TargetDependency :
         Object
     {
+        /// <summary>
+        /// Construct an instance
+        /// </summary>
+        /// <param name="project">Project to add to</param>
+        /// <param name="dependency">Target that is the dependency</param>
+        /// <param name="proxy">Proxy object</param>
         public TargetDependency(
             Project project,
             Target dependency,
@@ -45,6 +54,12 @@ namespace XcodeBuilder
             project.AppendTargetDependency(this);
         }
 
+        /// <summary>
+        /// Construct an instance
+        /// </summary>
+        /// <param name="project">Project to add to</param>
+        /// <param name="name">Name of the target</param>
+        /// <param name="proxy">Proxy object</param>
         public TargetDependency(
             Project project,
             string name,
@@ -58,9 +73,21 @@ namespace XcodeBuilder
             project.AppendTargetDependency(this);
         }
 
+        /// <summary>
+        /// Get the dependency
+        /// </summary>
         public Target Dependency { get; private set; }
+
+        /// <summary>
+        /// Get the proxy
+        /// </summary>
         public ContainerItemProxy Proxy { get; private set; }
 
+        /// <summary>
+        /// Serialize the TargetDependency
+        /// </summary>
+        /// <param name="text">StringBuilder to write to</param>
+        /// <param name="indentLevel">Number of tabs to indent by</param>
         public override void
         Serialize(
             System.Text.StringBuilder text,

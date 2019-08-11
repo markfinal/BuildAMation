@@ -30,10 +30,17 @@
 using System.Linq;
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Abstract class for common C compiler settings
+    /// </summary>
     public abstract class CommonCCompilerSettings :
         CommonCompilerSettings,
         C.ICOnlyCompilerSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this Module</param>
         protected CommonCCompilerSettings(
             Bam.Core.Module module)
             :
@@ -42,6 +49,11 @@ namespace VisualCCommon
             (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.C;
         }
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this Module</param>
+        /// <param name="useDefaults">whether to use defaults or leave uninitialised</param>
         protected CommonCCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)

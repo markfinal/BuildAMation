@@ -29,8 +29,17 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Utility class for use with settings
+    /// </summary>
     public static class SettingsUtilities
     {
+        /// <summary>
+        /// Get the intersection between two bool values.
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Intersection</returns>
         public static bool?
         Intersect(
             this bool? lhs,
@@ -39,6 +48,12 @@ namespace C
             return (lhs == rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the complement between two bool values
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Complement</returns>
         public static bool?
         Complement(
             this bool? lhs,
@@ -47,6 +62,12 @@ namespace C
             return (lhs != rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the intersection between two EBits
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Intersection</returns>
         public static EBit?
         Intersect(
             this EBit? lhs,
@@ -55,6 +76,12 @@ namespace C
             return (lhs == rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the complement between two EBits
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Complement</returns>
         public static EBit?
         Complement(
             this EBit? lhs,
@@ -63,6 +90,12 @@ namespace C
             return (lhs != rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the intersection between two EOptimization
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Intersection</returns>
         public static EOptimization?
         Intersect(
             this EOptimization? lhs,
@@ -71,6 +104,12 @@ namespace C
             return (lhs == rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the complement between two EOptimization
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Complement</returns>
         public static EOptimization?
         Complement(
             this EOptimization? lhs,
@@ -79,6 +118,12 @@ namespace C
             return (lhs != rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the intersection between two ETargetLanguage
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Intersection</returns>
         public static ETargetLanguage?
         Intersect(
             this ETargetLanguage? lhs,
@@ -87,6 +132,12 @@ namespace C
             return (lhs == rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the complement between two ETargetLanguage
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Complement</returns>
         public static ETargetLanguage?
         Complement(
             this ETargetLanguage? lhs,
@@ -95,6 +146,12 @@ namespace C
             return (lhs != rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the intersection between two strings
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Intersection</returns>
         public static string
         Intersect(
             this string lhs,
@@ -103,6 +160,12 @@ namespace C
             return lhs.Equals(rhs, System.StringComparison.Ordinal) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the complement between two strings
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Complement</returns>
         public static string
         Complement(
             this string lhs,
@@ -111,6 +174,12 @@ namespace C
             return (lhs != rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the intersection between two ECharacterSet
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Intersection</returns>
         public static ECharacterSet?
         Intersect(
             this ECharacterSet? lhs,
@@ -119,6 +188,12 @@ namespace C
             return (lhs == rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the complement between two ECharacterSet
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Complement</returns>
         public static ECharacterSet?
         Complement(
             this ECharacterSet? lhs,
@@ -127,6 +202,12 @@ namespace C
             return (lhs != rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the intersection between two ELanguageStandard
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Intersection</returns>
         public static ELanguageStandard?
         Intersect(
             this ELanguageStandard? lhs,
@@ -135,6 +216,12 @@ namespace C
             return (lhs == rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the complement between two ELanguageStandard
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Complement</returns>
         public static ELanguageStandard?
         Complement(
             this ELanguageStandard? lhs,
@@ -143,6 +230,12 @@ namespace C
             return (lhs != rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the intersection between two EExceptionHandler
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Intersection</returns>
         public static Cxx.EExceptionHandler?
         Intersect(
             this Cxx.EExceptionHandler? lhs,
@@ -151,6 +244,12 @@ namespace C
             return (lhs == rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the complement between two EExceptionHandler
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Complement</returns>
         public static Cxx.EExceptionHandler?
         Complement(
             this Cxx.EExceptionHandler? lhs,
@@ -159,6 +258,12 @@ namespace C
             return (lhs != rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the intersection between two ELanguageStandard
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Intersection</returns>
         public static Cxx.ELanguageStandard?
         Intersect(
             this Cxx.ELanguageStandard? lhs,
@@ -167,6 +272,12 @@ namespace C
             return (lhs == rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the complement between two ELanguageStandard
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Complement</returns>
         public static Cxx.ELanguageStandard?
         Complement(
             this Cxx.ELanguageStandard? lhs,
@@ -175,6 +286,12 @@ namespace C
             return (lhs != rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the intersection between two EStandardLibrary
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Intersection</returns>
         public static Cxx.EStandardLibrary?
         Intersect(
             this Cxx.EStandardLibrary? lhs,
@@ -183,6 +300,12 @@ namespace C
             return (lhs == rhs) ? lhs : null;
         }
 
+        /// <summary>
+        /// Get the complement between two EStandardLibrary
+        /// </summary>
+        /// <param name="lhs">First value</param>
+        /// <param name="rhs">Second value</param>
+        /// <returns>Complement</returns>
         public static Cxx.EStandardLibrary?
         Complement(
             this Cxx.EStandardLibrary? lhs,

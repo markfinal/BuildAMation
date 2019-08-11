@@ -29,6 +29,9 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Abstract class representing the common Mingw Windows resource settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.WinResource.ObjectFileKey, "-o ")]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     public abstract class CommonWinResourceCompilerSettings :
@@ -37,8 +40,15 @@ namespace MingwCommon
         C.IAdditionalSettings,
         ICommonWinResourceCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonWinResourceCompilerSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("-v", "")]
         bool? C.ICommonWinResourceCompilerSettings.Verbose { get; set; }
@@ -55,6 +65,9 @@ namespace MingwCommon
         [CommandLineProcessor.Bool("--use-temp-file", "")]
         bool? ICommonWinResourceCompilerSettings.UseTempFile { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void AssignFileLayout()
         {
             this.FileLayout = ELayout.Cmds_Outputs_Inputs;

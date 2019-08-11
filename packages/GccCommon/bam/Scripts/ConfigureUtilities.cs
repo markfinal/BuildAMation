@@ -30,6 +30,9 @@
 using System.Linq;
 namespace GccCommon
 {
+    /// <summary>
+    /// Deprecated helper utilities
+    /// </summary>
     public static class ConfigureUtilities
     {
         [System.Obsolete("Please use Bam.Core.OSUtilities.RunExecutable instead")]

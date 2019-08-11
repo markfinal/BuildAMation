@@ -30,8 +30,16 @@
 using Bam.Core;
 namespace C.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for handling defaults and operations for C.ICommonPreprocessorSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
+        /// <summary>
+        /// Set default property values of C.ICommonPreprocessorSettings
+        /// </summary>
+        /// <param name="settings">C.ICommonPreprocessorSettings instance</param>
+        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
             this C.ICommonPreprocessorSettings settings,
@@ -74,6 +82,10 @@ namespace C.DefaultSettings
             settings.SuppressLineMarkers = false;
         }
 
+        /// <summary>
+        /// Provide empty property values of C.ICommonPreprocessorSettings
+        /// </summary>
+        /// <param name="settings">C.ICommonPreprocessorSettings instance</param>
         public static void
         Empty(
             this C.ICommonPreprocessorSettings settings)
@@ -84,6 +96,11 @@ namespace C.DefaultSettings
             settings.SystemIncludePaths = new Bam.Core.TokenizedStringArray();
         }
 
+        /// <summary>
+        /// Intersection of two C.ICommonPreprocessorSettings
+        /// </summary>
+        /// <param name="shared">C.ICommonPreprocessorSettings instance for the shared properties</param>
+        /// <param name="other">C.ICommonPreprocessorSettings instance to intersect with</param>
         public static void
         Intersect(
             this C.ICommonPreprocessorSettings shared,
@@ -97,6 +114,12 @@ namespace C.DefaultSettings
             shared.SuppressLineMarkers = shared.SuppressLineMarkers.Intersect(other.SuppressLineMarkers);
         }
 
+        /// <summary>
+        /// Delta between two C.ICommonPreprocessorSettings
+        /// </summary>
+        /// <param name="delta">C.ICommonPreprocessorSettings to write the delta to</param>
+        /// <param name="lhs">C.ICommonPreprocessorSettings to diff against</param>
+        /// <param name="rhs">C.ICommonPreprocessorSettings to diff with</param>
         public static void
         Delta(
             this C.ICommonPreprocessorSettings delta,
@@ -111,6 +134,11 @@ namespace C.DefaultSettings
             delta.SuppressLineMarkers = lhs.SuppressLineMarkers.Complement(rhs.SuppressLineMarkers);
         }
 
+        /// <summary>
+        /// Clone a C.ICommonPreprocessorSettings
+        /// </summary>
+        /// <param name="settings">C.ICommonPreprocessorSettings containing the cloned properties</param>
+        /// <param name="other">Source C.ICommonPreprocessorSettings</param>
         public static void
         Clone(
             this C.ICommonPreprocessorSettings settings,

@@ -29,13 +29,25 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for all Clang meta data
+    /// </summary>
     public abstract class MetaData :
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
     {
+        /// <summary>
+        /// Dictionary of meta data
+        /// </summary>
         protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
         private readonly Bam.Core.StringArray expectedSDKs;
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="lastUpgradeCheck">Version used for the Xcode last upgrade check</param>
+        /// <param name="expectedSDKs">List of expected SDK versions</param>
+        /// <param name="pbxprojObjectVersion">Optional, version of the pbxproj object. Default is 46</param>
         protected MetaData(
             string lastUpgradeCheck,
             Bam.Core.StringArray expectedSDKs,
@@ -46,12 +58,20 @@ namespace ClangCommon
             this.expectedSDKs = expectedSDKs;
         }
 
+        /// <summary>
+        /// Indexer into the metadata
+        /// </summary>
+        /// <param name="index">String index</param>
+        /// <returns>Value at the index</returns>
         public override object this[string index] => this.Meta[index];
 
         public override bool
         Contains(
             string index) => this.Meta.ContainsKey(index);
 
+        /// <summary>
+        /// The SDK version
+        /// </summary>
         public string SDK
         {
             get
@@ -65,6 +85,9 @@ namespace ClangCommon
             }
         }
 
+        /// <summary>
+        /// The minimum version of macOS supported
+        /// </summary>
         public string MacOSXMinimumVersionSupported
         {
             get
@@ -78,6 +101,9 @@ namespace ClangCommon
             }
         }
 
+        /// <summary>
+        /// The last upgrade check
+        /// </summary>
         public string LastUpgradeCheck
         {
             get
@@ -91,6 +117,9 @@ namespace ClangCommon
             }
         }
 
+        /// <summary>
+        /// The pbxproj object version
+        /// </summary>
         public int PbxprojObjectVersion
         {
             get
@@ -104,6 +133,9 @@ namespace ClangCommon
             }
         }
 
+        /// <summary>
+        /// The SDK path
+        /// </summary>
         public string SDKPath
         {
             get
@@ -117,6 +149,9 @@ namespace ClangCommon
             }
         }
 
+        /// <summary>
+        /// The toolchain version
+        /// </summary>
         public C.ToolchainVersion ToolchainVersion
         {
             get

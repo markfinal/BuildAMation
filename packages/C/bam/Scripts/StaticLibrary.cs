@@ -39,8 +39,16 @@ namespace C
     {
         private readonly Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
         private readonly Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
+
+        /// <summary>
+        /// Path key for this module
+        /// </summary>
         public const string LibraryKey = "Static Library File";
 
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">for this parent module</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -53,6 +61,9 @@ namespace C
             );
         }
 
+        /// <summary>
+        /// Override the subdirectory used to write libraries to.
+        /// </summary>
         public override string CustomOutputSubDirectory => "lib";
 
         /// <summary>
@@ -71,6 +82,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Enumerate all input modules
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get
@@ -100,6 +114,13 @@ namespace C
 
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps.ToReadOnlyCollection();
 
+        /// <summary>
+        /// Create a container for assembler
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
+        /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
+        /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
+        /// <returns></returns>
         public AssembledObjectFileCollection
         CreateAssemblerSourceContainer(
             string wildcardPath = null,
@@ -111,6 +132,13 @@ namespace C
             return source;
         }
 
+        /// <summary>
+        /// Create a container for C source
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
+        /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
+        /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
+        /// <returns></returns>
         public CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
@@ -122,6 +150,13 @@ namespace C
             return source;
         }
 
+        /// <summary>
+        /// Create a container for C++ source
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
+        /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
+        /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
+        /// <returns></returns>
         public Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
@@ -133,6 +168,13 @@ namespace C
             return source;
         }
 
+        /// <summary>
+        /// Create a container for ObjectiveC source
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
+        /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
+        /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
+        /// <returns></returns>
         public C.ObjC.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
@@ -144,6 +186,13 @@ namespace C
             return source;
         }
 
+        /// <summary>
+        /// Create a container for ObjectiveC++ source
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
+        /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
+        /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
+        /// <returns></returns>
         public C.ObjCxx.ObjectFileCollection
         CreateObjectiveCxxSourceContainer(
             string wildcardPath = null,
@@ -160,7 +209,7 @@ namespace C
         /// of that type applied to each source.
         /// </summary>
         /// <param name="affectedSource">Required source module.</param>
-        /// <param name="affectedSources">Optional list of additional sources.</param>
+        /// <param name="additionalSources">Optional list of additional sources.</param>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
         CompileAgainst<DependentModule>(
@@ -223,6 +272,9 @@ namespace C
             this.UsePublicPatches(dependent);
         }
 
+        /// <summary>
+        /// Get or set the librarian tool
+        /// </summary>
         public LibrarianTool Librarian
         {
             get
@@ -235,6 +287,10 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Execute the build for this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -276,6 +332,9 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Determine if this module needs updating
+        /// </summary>
         protected sealed override void
         EvaluateInternal()
         {

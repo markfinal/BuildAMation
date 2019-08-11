@@ -29,13 +29,31 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Settings interface for copying a file
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICopyFileSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Whether to force the copy, e.g. if the destination already exists, overwrite
+        /// </summary>
         bool Force { get; set; }
+
+        /// <summary>
+        /// Whether to ask the copy tool to be verbose in its operations
+        /// </summary>
         bool Verbose { get; set; }
+
+        /// <summary>
+        /// Whether to recurse through a directory structure while copying
+        /// </summary>
         bool Recursive { get; set; }
+
+        /// <summary>
+        /// Whether to preserve file attributes in the copied files
+        /// </summary>
         bool PreserveAllAttributes { get; set; }
     }
 }

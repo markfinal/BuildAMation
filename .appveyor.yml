@@ -4,12 +4,13 @@ clone_depth: 10
 configuration: Release
 platform: AnyCPU
 install:
-  - cmd: powershell choco install doxygen.portable --version 1.8.11 || exit 0
+  - cmd: curl -L --silent --show-error --output doxygen.zip http://doxygen.nl/files/doxygen-1.8.16.windows.x64.bin.zip
+  - cmd: 7z x doxygen.zip -oc:\doxygen
 before_build:
   - dotnet --version
 build_script:
   - cmd: python codingtools\dotnetcore_run_unittests.py
-  - cmd: python codingtools\dotnetcore_make_release.py --local --doxygen doxygen.exe
+  - cmd: python codingtools\dotnetcore_make_release.py --local --doxygen "c:\doxygen\doxygen.exe"
 after_build:
   - cmd: 7z a bam.zip %APPVEYOR_BUILD_FOLDER%\bam_publish\*
   - cmd: 7z a bam.tar %APPVEYOR_BUILD_FOLDER%\bam_publish\*

@@ -29,6 +29,9 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Abstract base class for Mingw linkers
+    /// </summary>
     public abstract class LinkerBase :
         C.LinkerTool
     {
@@ -53,10 +56,22 @@ namespace MingwCommon
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }
 
+        /// <summary>
+        /// Executable path to tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["LinkerPath"];
 
+        /// <summary>
+        /// Command line switch to identify response file
+        /// </summary>
         public override string UseResponseFileOption => "@";
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Mingw.LinkerSettings(module);
@@ -119,6 +134,9 @@ namespace MingwCommon
         }
     }
 
+    /// <summary>
+    /// 32-bit C linker
+    /// </summary>
     [C.RegisterCLinker("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class Linker :
         LinkerBase
@@ -126,6 +144,9 @@ namespace MingwCommon
         public Linker() => this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-gcc$(LinkerSuffix).exe"));
     }
 
+    /// <summary>
+    /// 32-bit C++ linkger
+    /// </summary>
     [C.RegisterCxxLinker("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class LinkerCxx :
         LinkerBase

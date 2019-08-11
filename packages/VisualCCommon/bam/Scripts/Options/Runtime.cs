@@ -29,6 +29,9 @@
 #endregion // License
 namespace VisualCCommon.Options
 {
+    /// <summary>
+    /// Command line option to select the runtime library to compile against
+    /// </summary>
     public sealed class Runtime :
         Bam.Core.IRegExCommandLineArgument
     {

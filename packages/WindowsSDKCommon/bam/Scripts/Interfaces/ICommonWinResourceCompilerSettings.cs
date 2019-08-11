@@ -29,11 +29,17 @@
 #endregion // License
 namespace WindowsSDKCommon
 {
+    /// <summary>
+    /// Interface for the Windows resource compiler settings
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     [Bam.Core.SettingsPrecedence(System.Int32.MaxValue)]
     public interface ICommonWinResourceCompilerSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Boolean property for enabling removing the logo
+        /// </summary>
         bool? NoLogo { get; set; }
     }
 }

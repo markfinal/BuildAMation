@@ -29,9 +29,19 @@
 #endregion // License
 namespace XcodeProjectProcessor
 {
+    /// <summary>
+    /// Attribute corresponding to a single value enumeration property.
+    /// </summary>
     public sealed class UniqueEnumAttribute :
         EnumAttribute
     {
+        /// <summary>
+        /// Construct an instance of the attribute.
+        /// </summary>
+        /// <param name="key">Enum object.</param>
+        /// <param name="property">Name of the property.</param>
+        /// <param name="value">Value of the property.</param>
+        /// <param name="ignore">Optionally, whether the property is ignored.</param>
         public UniqueEnumAttribute(
             object key,
             string property,
@@ -42,6 +52,14 @@ namespace XcodeProjectProcessor
             base(key, property, value, ValueType.Unique, ignore: ignore)
         {}
 
+        /// <summary>
+        /// Construct an instance of the attribute. With a second value.
+        /// </summary>
+        /// <param name="key">Enum object.</param>
+        /// <param name="property">Name of the property.</param>
+        /// <param name="value">Value of the property.</param>
+        /// <param name="property2">Second property name.</param>
+        /// <param name="value2">Second value.</param>
         public UniqueEnumAttribute(
             object key,
             string property,
@@ -56,7 +74,14 @@ namespace XcodeProjectProcessor
             this.Value2 = value2;
         }
 
+        /// <summary>
+        /// Get the second property name.
+        /// </summary>
         public string Property2 { get; private set; }
+
+        /// <summary>
+        /// Get the second value.
+        /// </summary>
         public string Value2 { get; private set; }
     }
 }

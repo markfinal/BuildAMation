@@ -29,13 +29,31 @@
 #endregion // License
 namespace Installer
 {
+    /// <summary>
+    /// Interface settings for hdiutil
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface IDiskImageSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Verb to use with the tool
+        /// </summary>
         EDiskImageVerb Verb { get; set; }
+
+        /// <summary>
+        /// Format to apply to the disk image
+        /// </summary>
         EDiskImageFormat Format { get; set; }
+
+        /// <summary>
+        /// Level of verbosity of output
+        /// </summary>
         EDiskImageVerbosity Verbosity { get; set; }
+
+        /// <summary>
+        /// Size of the image
+        /// </summary>
         string ImageSize { get; set; }
     }
 }

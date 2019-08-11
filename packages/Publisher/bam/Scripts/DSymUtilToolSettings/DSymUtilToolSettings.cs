@@ -29,15 +29,25 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Class representing dsymutil tool settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(DSymUtilModule.DSymBundleKey, "-o ")]
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
     public sealed class DSymUtilToolSettings :
         Bam.Core.Settings,
         IDSymUtilToolSettings
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public DSymUtilToolSettings()
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public DSymUtilToolSettings(
             Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 

@@ -29,15 +29,27 @@
 #endregion // License
 namespace Gcc
 {
+    /// <summary>
+    /// Class representing the C++ compiler settings for this version of Gcc
+    /// </summary>
     public class CxxCompilerSettings :
         GccCommon.CommonCxxCompilerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public CxxCompilerSettings(
             Bam.Core.Module module)
             :
             base(module)
         { }
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
+        /// <param name="useDefaults">using defaults</param>
         public CxxCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)

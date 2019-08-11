@@ -30,8 +30,17 @@
 using System.Linq;
 namespace CommandLineProcessor
 {
+    /// <summary>
+    /// Utility function wrapping executing command lines.
+    /// </summary>
     public static class Processor
     {
+        /// <summary>
+        /// Convert the features of an ICommandLineTool to a command line.
+        /// This may feature some prefixed commands.
+        /// </summary>
+        /// <param name="tool">The ICommandLine tool to convert.</param>
+        /// <returns>Stringified version of the tool.</returns>
         public static string
         StringifyTool(
             Bam.Core.ICommandLineTool tool)
@@ -48,6 +57,11 @@ namespace CommandLineProcessor
             return linearized.ToString();
         }
 
+        /// <summary>
+        /// Convert the terminating arguments of an ICommandLineTool to a string.
+        /// </summary>
+        /// <param name="tool">The ICommandLineTool to convert.</param>
+        /// <returns>Stringified terminating arguments</returns>
         public static string
         TerminatingArgs(
             Bam.Core.ICommandLineTool tool)
@@ -63,6 +77,13 @@ namespace CommandLineProcessor
             return linearized.ToString();
         }
 
+        /// <summary>
+        /// Execute an arbitrary executable with arguments.
+        /// </summary>
+        /// <param name="context">The context that the command is running in.</param>
+        /// <param name="executablePath">Absolute path to the executable to run.</param>
+        /// <param name="successfulExitCodes">Array of exit codes that the executable can return for success.</param>
+        /// <param name="commandLineArguments">Array of arguments to pass to the executable.</param>
         public static void
         Execute(
             Bam.Core.ExecutionContext context,
@@ -78,6 +99,17 @@ namespace CommandLineProcessor
             Execute(context, executablePath, successfulExitCodes, commandLineArguments: arguments);
         }
 
+        /// <summary>
+        /// Execute an arbitrary command line executable with arguments.
+        /// </summary>
+        /// <param name="context">The context that the command is running in.</param>
+        /// <param name="executablePath">Absolute path to the executable to run.</param>
+        /// <param name="successfulExitCodes">Array of exit codes that the executable can return for success.</param>
+        /// <param name="commandLineArguments">Optional: Array of arguments to pass to the executable. Default to null.</param>
+        /// <param name="workingDirectory">Optional: Working directory that the executable is run in. Default to null.</param>
+        /// <param name="inheritedEnvironmentVariables">Optional: Array of environment variable keys to inherit from the parent environment. Default to null.</param>
+        /// <param name="addedEnvironmentVariables">Optional: Dictionary of environment variable name=value to add to this executable's environment. Default to null.</param>
+        /// <param name="useResponseFileOption">Optional: the switch for using response files, if all the arguments are to be written to this file first, and then used directly in the tool. Default to null.</param>
         public static void
         Execute(
             Bam.Core.ExecutionContext context,
@@ -250,6 +282,14 @@ namespace CommandLineProcessor
             }
         }
 
+        /// <summary>
+        /// Execute an ICommandLineTool.
+        /// </summary>
+        /// <param name="module">Module that the command line tool is running for.</param>
+        /// <param name="context">Context in which the command line tool is running.</param>
+        /// <param name="tool">Tool to run.</param>
+        /// <param name="commandLine">Single string of arguments to pass.</param>
+        /// <param name="workingDirectory">Optional working directory in which to run the command line tool. Default to null.</param>
         public static void
         Execute(
             Bam.Core.Module module,

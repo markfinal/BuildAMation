@@ -27,14 +27,30 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace Publisher
+namespace WindowsSDKCommon
 {
     /// <summary>
-    /// Install name tool modes of use
+    /// Metadata for WindowsSDK
     /// </summary>
-    public enum EInstallNameToolMode
+    public abstract class MetaData :
+        Bam.Core.PackageMetaData
     {
-        UpdateIDName,   //<! update the id
-        ChangeIDName    //<! change the id
+        private readonly System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
+
+        /// <summary>
+        /// Get metadata by string key
+        /// </summary>
+        /// <param name="index">Lookup key</param>
+        /// <returns>Metadata value by key</returns>
+        public override object this[string index] => this.Meta[index];
+
+        /// <summary>
+        /// Whether the metdata contains a key
+        /// </summary>
+        /// <param name="index">Key to lookup</param>
+        /// <returns>true if found, false otherwise</returns>
+        public override bool
+        Contains(
+            string index) => this.Meta.ContainsKey(index);
     }
 }

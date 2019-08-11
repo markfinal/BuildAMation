@@ -29,10 +29,16 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Module representing a file having had dsymutil run on it
+    /// </summary>
     public class DSymUtilModule :
         Bam.Core.Module,
         ICollatedObject
     {
+        /// <summary>
+        /// Path key to the bundle created by calling dsymutil
+        /// </summary>
         public const string DSymBundleKey = "dSYM bundle";
 
         private Bam.Core.Module sourceModule;
@@ -91,6 +97,9 @@ namespace Publisher
         }
 
         Bam.Core.Module ICollatedObject.SourceModule => this.sourceModule;
+        /// <summary>
+        /// Set the source module
+        /// </summary>
         public Bam.Core.Module SourceModule
         {
             set
@@ -100,6 +109,9 @@ namespace Publisher
         }
 
         string ICollatedObject.SourcePathKey => this.sourcePathKey;
+        /// <summary>
+        /// Set the source path key
+        /// </summary>
         public string SourcePathKey
         {
             set
@@ -111,6 +123,9 @@ namespace Publisher
         Bam.Core.TokenizedString ICollatedObject.PublishingDirectory => this.Macros["publishingdir"];
 
         ICollatedObject ICollatedObject.Anchor => this.anchor;
+        /// <summary>
+        /// Set the relative anchor
+        /// </summary>
         public ICollatedObject Anchor
         {
             set
@@ -119,6 +134,9 @@ namespace Publisher
             }
         }
 
+        /// <summary>
+        /// Enumerate across all inputs to the Module
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get

@@ -29,8 +29,16 @@
 #endregion // License
 namespace C.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for handling defaults and operations for C.ISharedObjectSymbolicLinkSettings
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
+        /// <summary>
+        /// Set default property values of C.ISharedObjectSymbolicLinkSettings
+        /// </summary>
+        /// <param name="settings">C.ISharedObjectSymbolicLinkSettings instance</param>
+        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
             this C.ISharedObjectSymbolicLinkSettings settings,

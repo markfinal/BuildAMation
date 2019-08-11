@@ -40,6 +40,9 @@ namespace C
         IAddFiles
         where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
     {
+        /// <summary>
+        /// list of child Modules
+        /// </summary>
         protected System.Collections.Generic.List<ChildModuleType> children = new System.Collections.Generic.List<ChildModuleType>();
 
         private SourceFileType
@@ -314,6 +317,10 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Execute the module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -321,6 +328,9 @@ namespace C
             // do nothing
         }
 
+        /// <summary>
+        /// Evaluate the module to determine if it's up-to-date
+        /// </summary>
         protected override void
         EvaluateInternal()
         {

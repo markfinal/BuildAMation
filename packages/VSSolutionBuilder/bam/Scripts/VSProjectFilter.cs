@@ -30,21 +30,24 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
+    /// <summary>
+    /// Class representing the filter files associated with VisualStudio project files
+    /// </summary>
     public sealed class VSProjectFilter
     {
         private System.Collections.Generic.Dictionary<string, Bam.Core.Array<VSSettingsGroup>> Filters = new System.Collections.Generic.Dictionary<string, Bam.Core.Array<VSSettingsGroup>>();
 
+        /// <summary>
+        /// Create a filter for the given project.
+        /// </summary>
+        /// <param name="project">Project associated with the filter.</param>
         public VSProjectFilter(
             VSProject project)
         {
             this.Project = project;
         }
 
-        private VSProject Project
-        {
-            get;
-            set;
-        }
+        private VSProject Project { get; set; }
 
         private void
         AddFilters(
@@ -68,6 +71,11 @@ namespace VSSolutionBuilder
             this.AddFilters(module, parent);
         }
 
+        /// <summary>
+        /// Add the file associated with the given settings group to the filter.
+        /// </summary>
+        /// <param name="sourceGroup">Settings group to add.</param>
+        /// <param name="config">Unused</param>
         public void
         AddFile(
             VSSettingsGroup sourceGroup,
@@ -116,6 +124,10 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Serialize the filter to an XML document.
+        /// </summary>
+        /// <returns>XML document containing the filter.</returns>
         public System.Xml.XmlDocument
         Serialize()
         {

@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Both 32-bit and 64-bit Gcc librarians
+    /// </summary>
     [C.RegisterLibrarian("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterLibrarian("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
     public sealed class Librarian :
@@ -46,12 +49,24 @@ namespace GccCommon
             this.Macros.Add("LibrarianPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.ArPath));
         }
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Gcc.ArchiverSettings(module);
 
+        /// <summary>
+        /// Get the meta data for this tool
+        /// </summary>
         private Gcc.MetaData GccMetaData { get; set; }
 
+        /// <summary>
+        /// Get the executable path to the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["LibrarianPath"];
     }
 }

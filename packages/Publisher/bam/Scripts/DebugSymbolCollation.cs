@@ -42,12 +42,19 @@ namespace Publisher
     public abstract class DebugSymbolCollation :
         Bam.Core.Module
     {
+        /// <summary>
+        /// Path key to the debug symbol collation directory
+        /// </summary>
         public const string DebugSymbolsDirectoryKey = "Debug Symbol Collation Root";
 
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
         private readonly System.Collections.Generic.List<ICollatedObject> collatedObjects = new System.Collections.Generic.List<ICollatedObject>();
 
+        /// <summary>
+        /// Initialise this module
+        /// </summary>
+        /// <param name="parent">With this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -72,6 +79,10 @@ namespace Publisher
             // TODO
         }
 
+        /// <summary>
+        /// Execute the tool on this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)

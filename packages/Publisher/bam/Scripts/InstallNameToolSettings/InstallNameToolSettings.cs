@@ -29,16 +29,29 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Class representing install_name_tool tool settings
+    /// </summary>
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "")]
     public sealed class InstallNameToolSettings :
         Bam.Core.Settings,
         IInstallNameToolSettings
     {
+        /// <summary>
+        /// Default constructor
+        /// </summary>
         public InstallNameToolSettings()
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public InstallNameToolSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Enum(EInstallNameToolMode.UpdateIDName, "-id")]
         [CommandLineProcessor.Enum(EInstallNameToolMode.ChangeIDName, "-change")]

@@ -1,3 +1,11 @@
+11-Aug-2019 Fixes #635. Moved MetaData indexers and Contains functions for VisualC and WindowsSDK into their respective Common packages.
+
+11-Aug-2019 Fixes #632. Using Doxygen WARN_AS_ERROR to fail documentation builds if incorrect or missing.
+
+11-Aug-2019 Fixes #579. Fixes #580. Fixes #581. Fixes #575. Fixes #582. Fixes #588. Fixes #600. Fixes #601. Fixes #602. Fixes #615. Fixes #616. Fixes #617. Fixes #618. Fixes #599. Fixes #630. Fixes #631. Fixes #634. Fixes #628. Added documentation to the default packages.
+
+10-Aug-2019 Fixes #635. Moved public indexer and Contains function of per VisualC-version MetaData class into the base class in VisualCCommon MetaData. Moved MetaData implementation from WindowsSDK versions to WindowsSDKCommon.
+
 10-Aug-2019 Fixes #636. VisualStudio 2019 vcvarsall.bat can cause a dialog to open to invoke powershell to send telemetry. This can cause non-interactive continuous integration to halt indefinitely, so set VSCMD_SKIP_SENDTELEMETRY while invoking vcvarsall.bat to avoid it.
 
 08-Aug-2019 Fixes #613. Added command line option --includeallversions, which modifies the behaviour of -p/--createdebugproject, to include all package versions. This project will not compile to an assembly, due to duplicate symbols, but is source browseable.

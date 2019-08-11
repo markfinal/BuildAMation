@@ -29,6 +29,9 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Abstract base class for preprocessor tools
+    /// </summary>
     public abstract class PreprocessorBase :
         C.PreprocessorTool
     {
@@ -51,15 +54,30 @@ namespace MingwCommon
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
         }
 
+        /// <summary>
+        /// Executable path
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
+        /// <summary>
+        /// Command line switch to identify a response file
+        /// </summary>
         public override string UseResponseFileOption => "@";
     }
 
+    /// <summary>
+    /// 32-bit Mingw preprocessor tool
+    /// </summary>
     [C.RegisterPreprocessor("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public class Preprocessor32 :
         PreprocessorBase
     {
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new Mingw.PreprocessorSettings(module);

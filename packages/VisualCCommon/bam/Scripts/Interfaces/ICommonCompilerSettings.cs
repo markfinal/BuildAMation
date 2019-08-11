@@ -29,17 +29,47 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// VisualC specific settings for the compiler
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(VisualCCommon.DefaultSettings.DefaultSettingsExtensions))]
     [Bam.Core.SettingsPrecedence(System.Int32.MaxValue)] // warning settings must come before warning suppressions
     public interface ICommonCompilerSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Get or set whether the logo is displayed
+        /// </summary>
         bool? NoLogo { get; set; }
+
+        /// <summary>
+        /// Get or set the runtime library to use.
+        /// </summary>
         ERuntimeLibrary? RuntimeLibrary { get; set; }
+
+        /// <summary>
+        /// Get or set the warning level
+        /// </summary>
         VisualCCommon.EWarningLevel? WarningLevel { get; set; }
+
+        /// <summary>
+        /// Get or set whether to use language extensions
+        /// </summary>
         bool? EnableLanguageExtensions { get; set; }
+
+        /// <summary>
+        /// Get or set the optimisation level
+        /// </summary>
         EOptimization? Optimization { get; set; }
+
+        /// <summary>
+        /// Get or set whether the object file section count should be increased
+        /// </summary>
         bool? IncreaseObjectFileSectionCount { get; set; }
+
+        /// <summary>
+        /// Get or set whether whole program optimisation is used
+        /// </summary>
         bool? WholeProgramOptimization { get; set; }
     }
 }

@@ -35,6 +35,10 @@ namespace C
     public abstract class Plugin :
         DynamicLibrary
     {
+        /// <summary>
+        /// Initialize this plugin
+        /// </summary>
+        /// <param name="parent">from this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)

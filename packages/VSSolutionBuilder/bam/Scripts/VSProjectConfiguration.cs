@@ -30,18 +30,29 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
-    // abstraction of a project configuration, consisting of platform and configuration
+    /// <summary>
+    /// Class respresenting an abstraction of a project configuration, consisting of platform and configuration 
+    /// </summary>
     public sealed class VSProjectConfiguration
     {
+        /// <summary>
+        /// Type of output
+        /// </summary>
         public enum EType
         {
-            NA,
-            Application,
-            DynamicLibrary,
-            StaticLibrary,
-            Utility
+            NA,             //!< Unknown
+            Application,    //!< Application
+            DynamicLibrary, //!< Dynamic library
+            StaticLibrary,  //!< Static library
+            Utility         //!< Utility (not buildable)
         }
 
+        /// <summary>
+        /// Create an instance of the configuration
+        /// </summary>
+        /// <param name="project">Project to own the configuration</param>
+        /// <param name="module">Module associated</param>
+        /// <param name="platform">Platform on which the configuration applies.</param>
         public VSProjectConfiguration(
             VSProject project,
             Bam.Core.Module module,
@@ -74,15 +85,14 @@ namespace VSSolutionBuilder
             this.PostBuildCommands = new Bam.Core.StringArray();
         }
 
-        public string
-        ConfigurationName
-        {
-            get
-            {
-                return this.Configuration.ToString();
-            }
-        }
+        /// <summary>
+        /// Get the configuration name
+        /// </summary>
+        public string ConfigurationName => this.Configuration.ToString();
 
+        /// <summary>
+        /// Get the platform name
+        /// </summary>
         public string
         PlatformName
         {
@@ -102,144 +112,78 @@ namespace VSSolutionBuilder
             }
         }
 
-        private string
-        CombinedName
-        {
-            get
-            {
-                return $"{this.ConfigurationName}|{this.PlatformName}";
-            }
-        }
+        private string CombinedName => $"{this.ConfigurationName}|{this.PlatformName}";
 
-        public string
-        ConditionText
-        {
-            get
-            {
-                return $"'$(Configuration)|$(Platform)'=='{this.CombinedName}'";
-            }
-        }
+        /// <summary>
+        /// Get the 'condition' text for the configuration
+        /// </summary>
+        public string ConditionText => $"'$(Configuration)|$(Platform)'=='{this.CombinedName}'";
 
-        public Bam.Core.Module Module
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the Module associated with the configuration
+        /// </summary>
+        public Bam.Core.Module Module { get; private set; }
 
-        public string FullName
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the full name of the configuration
+        /// </summary>
+        public string FullName { get; private set; }
 
-        public Bam.Core.EConfiguration Configuration
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the EConfiguration associated with the configuration
+        /// </summary>
+        public Bam.Core.EConfiguration Configuration { get; private set; }
 
-        public Bam.Core.EPlatform Platform
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the EPlatform associated with the configuration
+        /// </summary>
+        public Bam.Core.EPlatform Platform { get; private set; }
 
-        public VSProject Project
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the VSProject associated with the configuration
+        /// </summary>
+        public VSProject Project { get; private set; }
 
-        public EType Type
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the type of the configuration
+        /// </summary>
+        public EType Type { get; private set; }
 
-        public string PlatformToolset
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Get the toolset associated with the configuration
+        /// </summary>
+        public string PlatformToolset { get; private set; }
 
-        private bool UseDebugLibraries
-        {
-            get;
-            set;
-        }
+        private bool UseDebugLibraries { get; set; }
 
-        private bool WholeProgramOptimization
-        {
-            get;
-            set;
-        }
+        private bool WholeProgramOptimization { get; set; }
 
-        private Bam.Core.TokenizedString OutputDirectory
-        {
-            get;
-            set;
-        }
+        private Bam.Core.TokenizedString OutputDirectory { get; set; }
 
-        private Bam.Core.TokenizedString IntermediateDirectory
-        {
-            get;
-            set;
-        }
+        private Bam.Core.TokenizedString IntermediateDirectory { get; set; }
 
-        private Bam.Core.Array<VSSettingsGroup> SettingGroups
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSSettingsGroup> SettingGroups { get; set; }
 
-        private Bam.Core.Array<VSSettingsGroup> Sources
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSSettingsGroup> Sources { get; set; }
 
-        private Bam.Core.Array<VSSettingsGroup> Headers
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSSettingsGroup> Headers { get; set; }
 
-        private Bam.Core.Array<VSSettingsGroup> ResourceFiles
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSSettingsGroup> ResourceFiles { get; set; }
 
-        private Bam.Core.Array<VSSettingsGroup> AssemblyFiles
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSSettingsGroup> AssemblyFiles { get; set; }
 
-        private Bam.Core.Array<VSProject> OrderOnlyDependentProjects
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSProject> OrderOnlyDependentProjects { get; set; }
 
-        private Bam.Core.Array<VSProject> LinkDependentProjects
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSProject> LinkDependentProjects { get; set; }
 
-        private Bam.Core.StringArray PreBuildCommands
-        {
-            get;
-            set;
-        }
+        private Bam.Core.StringArray PreBuildCommands { get; set; }
 
-        private Bam.Core.StringArray PostBuildCommands
-        {
-            get;
-            set;
-        }
+        private Bam.Core.StringArray PostBuildCommands { get; set; }
 
+        /// <summary>
+        /// Set the type of the configuration
+        /// </summary>
+        /// <param name="type">Set the new type of the configuration</param>
         public void
         SetType(
             EType type)
@@ -256,12 +200,14 @@ namespace VSSolutionBuilder
             this.Type = type;
         }
 
-        public C.ECharacterSet CharacterSet
-        {
-            get;
-            set;
-        }
+        /// <summary>
+        /// Get or set the character set in the configuration
+        /// </summary>
+        public C.ECharacterSet CharacterSet { get; set; }
 
+        /// <summary>
+        /// Enable the use of the intermediate directory
+        /// </summary>
         public void
         EnableIntermediatePath()
         {
@@ -272,13 +218,15 @@ namespace VSSolutionBuilder
             this.IntermediateDirectory.Parse();
         }
 
-        public bool EnableManifest
-        {
-            get;
-            set;
-        }
+        /// <summary>
+        /// Get or set whether the manifest is enabled
+        /// </summary>
+        public bool EnableManifest { get; set; }
 
         private Bam.Core.TokenizedString _OutputFile;
+        /// <summary>
+        /// Get or set the output file of the configuration
+        /// </summary>
         public Bam.Core.TokenizedString OutputFile
         {
             get
@@ -298,6 +246,13 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Get the settings group from the configuration for a path
+        /// </summary>
+        /// <param name="group">Type of group</param>
+        /// <param name="include">Optional path to get the settings group for. Defaults to null.</param>
+        /// <param name="uniqueToProject">Optional whether this settings group should be unique to the project. Default to false.</param>
+        /// <returns></returns>
         public VSSettingsGroup
         GetSettingsGroup(
             VSSettingsGroup.ESettingsGroup group,
@@ -334,6 +289,10 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add a header file to the configuration.
+        /// </summary>
+        /// <param name="header">Header to add</param>
         public void
         AddHeaderFile(
             C.HeaderFile header)
@@ -347,6 +306,11 @@ namespace VSSolutionBuilder
             this.Project.AddHeader(headerGroup, this);
         }
 
+        /// <summary>
+        /// Add a source file to the configuration, with optional per-source settings.
+        /// </summary>
+        /// <param name="module">Module representing the source file.</param>
+        /// <param name="patchSettings">Settings representing any settings specified to this source file. Null if there are none.</param>
         public void
         AddSourceFile(
             Bam.Core.Module module,
@@ -368,6 +332,10 @@ namespace VSSolutionBuilder
             this.Project.AddSource(settings, this);
         }
 
+        /// <summary>
+        /// Add an arbitrary file to the configuration.
+        /// </summary>
+        /// <param name="other">File specified by an Bam.Core.IInputPath.</param>
         public void
         AddOtherFile(
             Bam.Core.IInputPath other)
@@ -380,6 +348,10 @@ namespace VSSolutionBuilder
             this.Project.AddOtherFile(otherGroup, this);
         }
 
+        /// <summary>
+        /// Add an arbitrary file to the configuration.
+        /// </summary>
+        /// <param name="other_path">Bam.Core.TokenizedString for the path.</param>
         public void
         AddOtherFile(
             Bam.Core.TokenizedString other_path)
@@ -392,6 +364,11 @@ namespace VSSolutionBuilder
             this.Project.AddOtherFile(otherGroup, this);
         }
 
+        /// <summary>
+        /// Add a Windows resource file to the configuration.
+        /// </summary>
+        /// <param name="resource">Resource file module.</param>
+        /// <param name="patchSettings">Optional settings for this specific resource file. Null if none.</param>
         public void
         AddResourceFile(
             C.WinResource resource,
@@ -414,6 +391,11 @@ namespace VSSolutionBuilder
             this.Project.AddResourceFile(resourceGroup, this);
         }
 
+        /// <summary>
+        /// Add an assembly file to this configuration with optional settings.
+        /// </summary>
+        /// <param name="assembler">Assembler file to add.</param>
+        /// <param name="patchSettings">Settings specific to this file. Or null if there are none.</param>
         public void
         AddAssemblyFile(
             C.AssembledObjectFile assembler,
@@ -436,6 +418,10 @@ namespace VSSolutionBuilder
             this.Project.AddAssemblyFile(assemblyGroup, this);
         }
 
+        /// <summary>
+        /// Add a project that must exist but does not need to be linked against.
+        /// </summary>
+        /// <param name="project">The project required to exist.</param>
         public void
         RequiresProject(
             VSProject project)
@@ -444,6 +430,10 @@ namespace VSSolutionBuilder
             this.Project.AddOrderOnlyDependency(project);
         }
 
+        /// <summary>
+        /// Add a project that must both exist and be linked against.
+        /// </summary>
+        /// <param name="project">The project to be linked against.</param>
         public void
         LinkAgainstProject(
             VSProject project)
@@ -452,6 +442,11 @@ namespace VSSolutionBuilder
             this.Project.AddLinkDependency(project);
         }
 
+        /// <summary>
+        /// Query if this configuration contains the specified settings group (which represents a source file).
+        /// </summary>
+        /// <param name="sourceGroup">Settings group that represents a source file.</param>
+        /// <returns>True if the settings group is in the configuration. False otherwise.</returns>
         public bool
         ContainsSource(
             VSSettingsGroup sourceGroup)
@@ -459,6 +454,11 @@ namespace VSSolutionBuilder
             return this.Sources.Contains(sourceGroup);
         }
 
+        /// <summary>
+        /// Query if this configuration contains the specified settings group (which represents a header file).
+        /// </summary>
+        /// <param name="headerGroup">Settings group that represents a header file.</param>
+        /// <returns>True if the settings group is in the configuration. False otherwise.</returns>
         public bool
         ContainsHeader(
             VSSettingsGroup headerGroup)
@@ -466,6 +466,11 @@ namespace VSSolutionBuilder
             return this.Headers.Contains(headerGroup);
         }
 
+        /// <summary>
+        /// Query if this configuration contains the specified settings group (which represents a Windows resource file).
+        /// </summary>
+        /// <param name="resourceFileGroup">Settings group that represents a Windows resource file.</param>
+        /// <returns>True if the settings group is in the configuration. False otherwise.</returns>
         public bool
         ContainsResourceFile(
             VSSettingsGroup resourceFileGroup)
@@ -473,6 +478,11 @@ namespace VSSolutionBuilder
             return this.ResourceFiles.Contains(resourceFileGroup);
         }
 
+        /// <summary>
+        /// Query if this configuration contains the specified settings group (which represents an assembly file).
+        /// </summary>
+        /// <param name="assemblyFileGroup">Settings group that represents an assembly file.</param>
+        /// <returns>True if the settings group is in the configuration. False otherwise.</returns>
         public bool
         ContainsAssemblyFile(
             VSSettingsGroup assemblyFileGroup)
@@ -480,6 +490,11 @@ namespace VSSolutionBuilder
             return this.AssemblyFiles.Contains(assemblyFileGroup);
         }
 
+        /// <summary>
+        /// Query if a project is an order only dependency in this configuration.
+        /// </summary>
+        /// <param name="project">Project to query for.</param>
+        /// <returns>True if the project is an order only dependency. False otherwise.</returns>
         public bool
         ContainsOrderOnlyDependency(
             VSProject project)
@@ -487,6 +502,11 @@ namespace VSSolutionBuilder
             return this.OrderOnlyDependentProjects.Contains(project);
         }
 
+        /// <summary>
+        /// Query if a project is a link-time dependency in this configuration.
+        /// </summary>
+        /// <param name="project">Project to query for.</param>
+        /// <returns>True if the project is a link-time dependency. False othewrise.</returns>
         public bool
         ContainsLinkDependency(
             VSProject project)
@@ -494,6 +514,10 @@ namespace VSSolutionBuilder
             return this.LinkDependentProjects.Contains(project);
         }
 
+        /// <summary>
+        /// Add a single command to the prebuild commands for this configuration.
+        /// </summary>
+        /// <param name="command">Command to add</param>
         public void
         AddPreBuildCommand(
             string command)
@@ -504,6 +528,10 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add a list of commands to the prebuild commands for this configuration.
+        /// </summary>
+        /// <param name="commands">List of commands to add.</param>
         public void
         AddPreBuildCommands(
             Bam.Core.StringArray commands)
@@ -514,6 +542,10 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add a single command to the postbuild commands for this configuration.
+        /// </summary>
+        /// <param name="command">Command to add</param>
         public void
         AddPostBuildCommand(
             string command)
@@ -524,6 +556,10 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add a list of commands to the postbuild commands for this configuration.
+        /// </summary>
+        /// <param name="commands">List of commands to add.</param>
         public void
         AddPostBuildCommands(
             Bam.Core.StringArray commands)
@@ -534,6 +570,11 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Serialize the configuration properties to an XML document.
+        /// </summary>
+        /// <param name="document">XML document to serialize to.</param>
+        /// <param name="parentEl">Parent XML element to add this to.</param>
         public void
         SerializeProperties(
             System.Xml.XmlDocument document,
@@ -560,6 +601,11 @@ namespace VSSolutionBuilder
             document.CreateVSElement("WholeProgramOptimization", value: this.WholeProgramOptimization.ToString().ToLower(), parentEl: propGroup);
         }
 
+        /// <summary>
+        /// Serialize the configuration paths to an XML document.
+        /// </summary>
+        /// <param name="document">XML document to serialize to.</param>
+        /// <param name="parentEl">Parent XML element to add this to.</param>
         public void
         SerializePaths(
             System.Xml.XmlDocument document,
@@ -598,6 +644,11 @@ namespace VSSolutionBuilder
             document.CreateVSElement("GenerateManifest", value: this.EnableManifest.ToString().ToLower(), parentEl: propGroup);
         }
 
+        /// <summary>
+        /// Serialize the configuration settings to an XML document.
+        /// </summary>
+        /// <param name="document">XML document to serialize to.</param>
+        /// <param name="parentEl">Parent XML element to add this to.</param>
         public void
         SerializeSettings(
             System.Xml.XmlDocument document,
@@ -633,6 +684,11 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Convert a semi-colon separated number of paths to relative where possible.
+        /// </summary>
+        /// <param name="joinedPaths">Paths joined by semi-colons.</param>
+        /// <returns>Relative paths joined by semi-colons.</returns>
         public string
         ToRelativePath(
             string joinedPaths)
@@ -642,6 +698,12 @@ namespace VSSolutionBuilder
             return System.String.Join(";", relative_paths);
         }
 
+        /// <summary>
+        /// Convert a path from a TokenizedString to relative paths.
+        /// </summary>
+        /// <param name="path">Path to convert.</param>
+        /// <param name="isOutputDir">Optional boolean, true if this path represents the OutputDir. False by default.</param>
+        /// <returns>Relative paths.</returns>
         public string
         ToRelativePath(
             Bam.Core.TokenizedString path,
@@ -654,6 +716,11 @@ namespace VSSolutionBuilder
             );
         }
 
+        /// <summary>
+        /// Convert an array of TokenizedStrings to relative paths.
+        /// </summary>
+        /// <param name="paths">Array of strings.</param>
+        /// <returns>Relative paths</returns>
         public string
         ToRelativePaths(
             Bam.Core.TokenizedStringArray paths)
@@ -661,6 +728,12 @@ namespace VSSolutionBuilder
             return ToRelativePaths(paths.ToEnumerableWithoutDuplicates().Select(item => item.ToString()));
         }
 
+        /// <summary>
+        /// Convert an enumeration of paths to relative paths.
+        /// </summary>
+        /// <param name="paths">IEnumerable of string paths.</param>
+        /// <param name="isOutputDir">Optional boolean, true if this path represents the OutputDir. False by default.</param>
+        /// <returns>Relative paths</returns>
         public string
         ToRelativePaths(
             System.Collections.Generic.IEnumerable<string> paths,

@@ -29,8 +29,18 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Base class for all objects in the Xcode project.
+    /// </summary>
     public abstract class Object
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="project">Project that the object belongs to.</param>
+        /// <param name="name">Name of the object.</param>
+        /// <param name="isa">IsA string, referring to the type of the object.</param>
+        /// <param name="hashComponents">Array of string hashes for the components of the object.</param>
         protected Object(
             Project project,
             string name,
@@ -54,6 +64,13 @@ namespace XcodeBuilder
             this.GUID = this.MakeGUID(name, isa, hashComponents);
         }
 
+        /// <summary>
+        /// Make a 96-bit GUID for Xcode objects.
+        /// </summary>
+        /// <param name="name">Name of the object.</param>
+        /// <param name="isa">IsA type of the object.</param>
+        /// <param name="hashComponents">Array of string hashes for components.</param>
+        /// <returns></returns>
         private string
         MakeGUID(
             string name,
@@ -83,16 +100,41 @@ namespace XcodeBuilder
             return guid;
         }
 
+        /// <summary>
+        /// Get the project that the Object belongs to.
+        /// </summary>
         public Project Project { get; private set; }
+
+        /// <summary>
+        /// Get the GUID of the Object.
+        /// </summary>
         public string GUID { get; private set; }
+
+        /// <summary>
+        /// Get the name of the Object.
+        /// </summary>
         public string Name { get; private set; }
+
+        /// <summary>
+        /// Get the IsA type of the object.
+        /// </summary>
         public string IsA { get; private set; }
 
+        /// <summary>
+        /// Serialize the Object.
+        /// </summary>
+        /// <param name="text">StringBuffer to write to.</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public abstract void
         Serialize(
             System.Text.StringBuilder text,
             int indentLevel);
 
+        /// <summary>
+        /// Cleanse the provided path for any inconsistencies.
+        /// </summary>
+        /// <param name="inputString">Path to cleanse.</param>
+        /// <returns>Cleansed path.</returns>
         protected string
         CleansePaths(
             string inputString)

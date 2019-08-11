@@ -29,10 +29,22 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
+    /// <summary>
+    /// Attribute representing inputs to a module
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]
     public class InputPathsAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="pathKey">The path key for the input file</param>
+        /// <param name="command_switch">Switch associated with this type of input file</param>
+        /// <param name="max_file_count">Optional, maximum number of files expected. Default to -1 which is unlimited.</param>
+        /// <param name="inheritExisting">Optional, whether values are inherited from the parent. Default is false.</param>
+        /// <param name="target">Optional, which target is used. Default to settings.</param>
+        /// <param name="handledByMetaData">Optional, whether this input file is handled in metadata. Default is false.</param>
         public InputPathsAttribute(
             string pathKey,
             string command_switch,
@@ -48,8 +60,19 @@ namespace VisualStudioProcessor
             this.HandledByMetaData = handledByMetaData;
         }
 
+        /// <summary>
+        /// Path key for these input files.
+        /// </summary>
         public string PathKey { get; private set; }
+
+        /// <summary>
+        /// Maximum number of input files handled.
+        /// </summary>
         public int MaxFileCount { get; private set; }
+
+        /// <summary>
+        /// Whether these input files are handled by metadata.
+        /// </summary>
         public bool HandledByMetaData { get; private set; }
     }
 }

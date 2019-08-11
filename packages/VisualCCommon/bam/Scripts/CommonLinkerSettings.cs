@@ -29,6 +29,9 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Abstract class for common linker settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-OUT:")]
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.PDBKey, "-PDB:")]
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.ImportLibraryKey, "-IMPLIB:")]
@@ -44,6 +47,10 @@ namespace VisualCCommon
         C.IAdditionalSettings,
         ICommonLinkerSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">Module to create settings for</param>
         protected CommonLinkerSettings(
             Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
@@ -107,6 +114,9 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(ELinkTimeCodeGeneration.Incremental, "LinkTimeCodeGeneration", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "UseFastLinkTimeCodeGeneration")]
         ELinkTimeCodeGeneration? ICommonLinkerSettings.LinkTimeCodeGeneration { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void AssignFileLayout()
         {
             this.FileLayout = ELayout.Cmds_Outputs_Inputs;

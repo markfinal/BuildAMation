@@ -30,21 +30,34 @@
 using System.Linq;
 namespace VSSolutionBuilder
 {
+    /// <summary>
+    /// Class representing a group of settings with a given meaning
+    /// </summary>
     public sealed class VSSettingsGroup
     {
+        /// <summary>
+        /// What type of group is represented
+        /// </summary>
         public enum ESettingsGroup
         {
-            Compiler,
-            Header,
-            Librarian,
-            Linker,
-            PreBuild,
-            PostBuild,
-            CustomBuild,
-            Resource,
-            Assembler
+            Compiler,   //<! Group of source files to compile
+            Header,     //<! Group of header files
+            Librarian,  //<! Archive a number of object files
+            Linker,     //<! Link a number of object files and libraries
+            PreBuild,   //<! Perform a prebuild step
+            PostBuild,  //<! Perform a postbuild step
+            CustomBuild,//<! Customized build step
+            Resource,   //<! Group of Windowsresource files
+            Assembler   //<! Group of assembler files
         }
 
+        /// <summary>
+        /// Construct a new group instance
+        /// </summary>
+        /// <param name="project">Belongs to this project</param>
+        /// <param name="module">Module associated with the group</param>
+        /// <param name="group">Type of the group to make</param>
+        /// <param name="include">Optional a path to include in the group. Default to null.</param>
         public VSSettingsGroup(
             VSProject project,
             Bam.Core.Module module,
@@ -81,50 +94,38 @@ namespace VSSolutionBuilder
             this.Settings = new Bam.Core.Array<VSSetting>();
         }
 
-        private VSProject Project
-        {
-            get;
-            set;
-        }
+        private VSProject Project { get; set; }
 
-        public Bam.Core.Module Module
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Module associated with the group
+        /// </summary>
+        public Bam.Core.Module Module { get; private set; }
 
-        public ESettingsGroup Group
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Type of the group
+        /// </summary>
+        public ESettingsGroup Group { get; private set; }
 
-        public Bam.Core.TokenizedString Include
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Included path with the group
+        /// </summary>
+        public Bam.Core.TokenizedString Include { get; private set; }
 
-        public Bam.Core.TokenizedString RelativeDirectory
-        {
-            get;
-            private set;
-        }
+        /// <summary>
+        /// Relative directory of the group.
+        /// </summary>
+        public Bam.Core.TokenizedString RelativeDirectory { get; private set; }
 
-        private Bam.Core.Array<VSSetting> Settings
-        {
-            get;
-            set;
-        }
+        private Bam.Core.Array<VSSetting> Settings { get; set; }
 
-        private VSProjectConfiguration Configuration
-        {
-            get
-            {
-                return this.Project.GetConfiguration(this.Module);
-            }
-        }
+        private VSProjectConfiguration Configuration => this.Project.GetConfiguration(this.Module);
 
+        /// <summary>
+        /// Add a new Boolean setting to the group.
+        /// </summary>
+        /// <param name="name">Name of the setting</param>
+        /// <param name="value">Bool value of the setting.</param>
+        /// <param name="condition">Optional condition for the setting. Default to null.</param>
         public void
         AddSetting(
             string name,
@@ -155,6 +156,12 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add a new string setting to the group.
+        /// </summary>
+        /// <param name="name">Name of the setting</param>
+        /// <param name="value">String value of the setting.</param>
+        /// <param name="condition">Optional condition for the setting. Default to null.</param>
         public void
         AddSetting(
             string name,
@@ -184,6 +191,14 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add a path setting to the group.
+        /// </summary>
+        /// <param name="name">Name of the setting</param>
+        /// <param name="path">Path of the setting.</param>
+        /// <param name="condition">Optional condition for the setting. Default to null.</param>
+        /// <param name="inheritExisting">Optional whether the value inherits parent values. Default to false.</param>
+        /// <param name="isPath">Optional whether the value is a path. Default to false.</param>
         public void
         AddSetting(
             string name,
@@ -216,6 +231,14 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add an array of strings setting to the group.
+        /// </summary>
+        /// <param name="name">Name of the setting</param>
+        /// <param name="value">Value of the setting.</param>
+        /// <param name="condition">Optional condition for the setting. Default to null.</param>
+        /// <param name="inheritExisting">Optional whether the value inherits parent values. Default to false.</param>
+        /// <param name="arePaths">Optional whether the value is an array of paths. Default to false.</param>
         public void
         AddSetting(
             string name,
@@ -233,6 +256,14 @@ namespace VSSolutionBuilder
             );
         }
 
+        /// <summary>
+        /// Add an enumeration of strings setting to the group.
+        /// </summary>
+        /// <param name="name">Name of the setting</param>
+        /// <param name="value">Value of the setting.</param>
+        /// <param name="condition">Optional condition for the setting. Default to null.</param>
+        /// <param name="inheritExisting">Optional whether the value inherits parent values. Default to false.</param>
+        /// <param name="arePaths">Optional whether the value is an enumeration of paths. Default to false.</param>
         public void
         AddSetting(
             string name,
@@ -271,6 +302,13 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add an array of strings setting to the group.
+        /// </summary>
+        /// <param name="name">Name of the setting</param>
+        /// <param name="value">Value of the setting.</param>
+        /// <param name="condition">Optional condition for the setting. Default to null.</param>
+        /// <param name="inheritExisting">Optional whether the value inherits parent values. Default to false.</param>
         public void
         AddSetting(
             string name,
@@ -308,6 +346,13 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Add preprocessor definitions setting to the group.
+        /// </summary>
+        /// <param name="name">Name of the setting</param>
+        /// <param name="definitions">Value of the setting.</param>
+        /// <param name="condition">Optional condition for the setting. Default to null.</param>
+        /// <param name="inheritExisting">Optional whether the value inherits parent values. Default to false.</param>
         public void
         AddSetting(
             string name,
@@ -376,6 +421,11 @@ namespace VSSolutionBuilder
             }
         }
 
+        /// <summary>
+        /// Serialize the settings group to an XML document.
+        /// </summary>
+        /// <param name="document">XML document to serialise to.</param>
+        /// <param name="parentEl">Parent XML element for this group.</param>
         public void
         Serialize(
             System.Xml.XmlDocument document,

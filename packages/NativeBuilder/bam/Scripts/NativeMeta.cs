@@ -29,6 +29,9 @@
 #endregion // License
 namespace NativeBuilder
 {
+    /// <summary>
+    /// Metadata class for this builder
+    /// </summary>
     [Bam.Core.EvaluationRequired(true)]
     public sealed class NativeMeta :
         Bam.Core.IBuildModeMetaData

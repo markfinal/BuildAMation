@@ -29,63 +29,87 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Warning levels for the compiler
+    /// </summary>
     public enum EWarningLevel
     {
-        Level0 = 0,
-        Level1,
-        Level2,
-        Level3,
-        Level4
+        Level0 = 0, //<! Warning level 0
+        Level1,     //<! Warning level 1
+        Level2,     //<! Warning level 2
+        Level3,     //<! Warning level 3
+        Level4      //<! Warning level 4
     }
 
+    /// <summary>
+    /// Warning levels for the assembler
+    /// </summary>
     public enum EAssemblerWarningLevel
     {
-        Level0 = 0,
-        Level1,
-        Level2,
-        Level3
+        Level0 = 0, //<! Warning level 0
+        Level1,     //<! Warning level 1
+        Level2,     //<! Warning level 2
+        Level3      //<! Warning level 3
     }
 
+    /// <summary>
+    /// Debug types
+    /// </summary>
     public enum EDebugType
     {
-        Embedded = 1,
-        ProgramDatabase = 3,
-        ProgramDatabaseEditAndContinue = 4
+        Embedded = 1,                       //<! Embed symbols into object files
+        ProgramDatabase = 3,                //<! Symbols into pdbs
+        ProgramDatabaseEditAndContinue = 4  //<! Symbols into pdbs and allow edit and continue
     }
 
+    /// <summary>
+    /// Browse information types
+    /// </summary>
     public enum EBrowseInformation
     {
-        None = 0,
-        Full = 1,
-        NoLocalSymbols = 2
+        None = 0,           //<! No browse information
+        Full = 1,           //<! Full browse information
+        NoLocalSymbols = 2  //<! Browse information except for local symbols
     }
 
+    /// <summary>
+    /// Managed compilation types
+    /// </summary>
     public enum EManagedCompilation
     {
-        NoCLR = 0,
-        CLR = 1,
-        PureCLR = 2,
-        SafeCLR = 3,
-        OldSyntaxCLR = 4
+        NoCLR = 0,          //<! No CLR
+        CLR = 1,            //<! CLR
+        PureCLR = 2,        //<! Pure CLR
+        SafeCLR = 3,        //<! Safe CLR
+        OldSyntaxCLR = 4    //<! Old syntax CLR
     }
 
+    /// <summary>
+    /// Basic runtime checks types
+    /// </summary>
     public enum EBasicRuntimeChecks
     {
-        None = 0,
-        StackFrame = 1,
-        UninitializedVariables = 2,
-        StackFrameAndUninitializedVariables = 3
+        None = 0,                               //<! No checks
+        StackFrame = 1,                         //<! Check for stack frames
+        UninitializedVariables = 2,             //<! Check for uninitialised variables
+        StackFrameAndUninitializedVariables = 3 //<! Check stack frame and uninitialised variables
     }
 
+    /// <summary>
+    /// Inline function expansion types
+    /// </summary>
     public enum EInlineFunctionExpansion
     {
-        None = 0,
-        OnlyInline = 1,
-        AnySuitable = 2
+        None = 0,       //<! No inline function expansion
+        OnlyInline = 1, //<! Only those functions marked inline are inlined
+        AnySuitable = 2 //<! Compiler will determine which are suitable for inling
     }
 
+    /// <summary>
+    /// Types of optimisation
+    /// </summary>
     public enum EOptimization
     {
-        Full
+        Full    //<! Full optimisations
     }
 }

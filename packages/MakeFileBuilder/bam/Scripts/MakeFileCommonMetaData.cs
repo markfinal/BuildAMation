@@ -33,12 +33,20 @@ namespace MakeFileBuilder
     // Notes:
     // A rule is target + prerequisities + receipe
     // A recipe is a collection of commands
+
+    /// <summary>
+    /// Shared metadata for all objects in MakeFiles
+    /// </summary>
     public sealed class MakeFileCommonMetaData
     {
-        // experimental
+        /// <summary>
+        /// Is NMAKE the MakeFile chosen format?
+        /// </summary>
         public static bool IsNMAKE = ("NMAKE".Equals(Bam.Core.CommandLineProcessor.Evaluate(new Options.ChooseFormat()), System.StringComparison.Ordinal));
 
-        // a fake Target for order only dependencies
+        /// <summary>
+        /// A fake Target for order only dependencies
+        /// </summary>
         public static Target DIRSTarget = new Target(
             Bam.Core.TokenizedString.CreateVerbatim("$(DIRS)"),
             false,
@@ -217,9 +225,17 @@ namespace MakeFileBuilder
             return true;
         }
 
+        /// <summary>
+        /// Get the variable name for a package's directory
+        /// </summary>
+        /// <param name="packageName">Name of package</param>
+        /// <returns>Variable name</returns>
         public static string
         VariableForPackageDir(
-            string packageName) => $"{packageName}_DIR";
+            string packageName)
+        {
+            return $"{packageName}_DIR";
+        }
 
         private void
         AppendVariable(
@@ -258,6 +274,11 @@ namespace MakeFileBuilder
             this.PackageVariables.Add(path, $"$({variableName})");
         }
 
+        /// <summary>
+        /// Export all package directories
+        /// </summary>
+        /// <param name="output">StringBuilder to write to</param>
+        /// <param name="packageMap">Map of packages</param>
         public void
         ExportPackageDirectories(
             System.Text.StringBuilder output,
@@ -271,6 +292,11 @@ namespace MakeFileBuilder
             }
         }
 
+        /// <summary>
+        /// Replace a Make string with macros that are appropriate
+        /// </summary>
+        /// <param name="path">Path to replace</param>
+        /// <returns>Make macroised path</returns>
         public string
         UseMacrosInPath(
             string path)

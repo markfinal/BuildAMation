@@ -29,16 +29,42 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Interface for clang compilers
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     [Bam.Core.SettingsPrecedence(System.Int32.MaxValue)] // warning settings must come before warning suppressions
     public interface ICommonCompilerSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Enable all warnings
+        /// </summary>
         bool? AllWarnings { get; set; }
+
+        /// <summary>
+        /// Enable extra warnings
+        /// </summary>
         bool? ExtraWarnings { get; set; }
+
+        /// <summary>
+        /// Use pedantic mode
+        /// </summary>
         bool? Pedantic { get; set; }
+
+        /// <summary>
+        /// Set symbol visibility
+        /// </summary>
         EVisibility? Visibility { get; set; }
+
+        /// <summary>
+        /// Enable strict aliasing
+        /// </summary>
         bool? StrictAliasing { get; set; }
+
+        /// <summary>
+        /// Use clang specific optimisations
+        /// </summary>
         EOptimization? Optimization { get; set; }
     }
 }

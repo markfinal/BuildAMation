@@ -29,9 +29,18 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Attribute to register a librarian tool.
+    /// </summary>
     public sealed class RegisterLibrarianAttribute :
         ToolRegistrationAttribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="toolsetName">Name of the toolset.</param>
+        /// <param name="platform">Platform under which the tool can be used.</param>
+        /// <param name="bitDepth">Bit depth for which the tool is used for.</param>
         public RegisterLibrarianAttribute(
             string toolsetName,
             Bam.Core.EPlatform platform,

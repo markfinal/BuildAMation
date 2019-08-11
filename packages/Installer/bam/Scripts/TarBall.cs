@@ -31,6 +31,9 @@ using Bam.Core;
 using System.Linq;
 namespace Installer
 {
+    /// <summary>
+    /// Module representing the input file to tar
+    /// </summary>
     class TarInputFiles :
         Bam.Core.Module
     {
@@ -38,8 +41,15 @@ namespace Installer
         private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
 
         // TODO: this could be improved
+        /// <summary>
+        /// Access to Module-pathkey pairs
+        /// </summary>
         public System.Collections.Generic.KeyValuePair<string, Bam.Core.Module> ModulePathKeyPair => new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.Paths.First().Value, this.Paths.First().Key);
 
+        /// <summary>
+        /// Initialize this module
+        /// </summary>
+        /// <param name="parent">with this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -48,8 +58,16 @@ namespace Installer
             this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)/$(config)/tarinput.txt");
         }
 
+        /// <summary>
+        /// Get the script path used for writing tars
+        /// </summary>
         public Bam.Core.TokenizedString ScriptPath { get; private set; }
 
+        /// <summary>
+        /// Add a file from a module 
+        /// </summary>
+        /// <param name="module">Module to add</param>
+        /// <param name="key">Path key from Module</param>
         public void
         AddFile(
             Bam.Core.Module module,
@@ -59,6 +77,11 @@ namespace Installer
             this.Files.Add(module, key);
         }
 
+        /// <summary>
+        /// Add a path (a directory) from a module
+        /// </summary>
+        /// <param name="module">Module to add</param>
+        /// <param name="key">Path key from module</param>
         public void
         AddPath(
             Bam.Core.Module module,
@@ -74,6 +97,10 @@ namespace Installer
             // do nothing
         }
 
+        /// <summary>
+        /// Execute the tool on this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -117,6 +144,9 @@ namespace Installer
         }
     }
 
+    /// <summary>
+    /// Prebuilt tool module for tar
+    /// </summary>
     public sealed class TarCompiler :
         Bam.Core.PreBuiltTool
     {
@@ -124,6 +154,9 @@ namespace Installer
         CreateDefaultSettings<T>(
             T module) => new TarBallSettings(module);
 
+        /// <summary>
+        /// Executable path to the tar compiler
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("tar").First());
     }
 
@@ -134,10 +167,17 @@ namespace Installer
     public abstract class TarBall :
         Bam.Core.Module
     {
+        /// <summary>
+        /// Path key to the tarball
+        /// </summary>
         public const string TarBallKey = "TarBall Installer";
 
         private TarInputFiles InputFiles;
 
+        /// <summary>
+        /// Initialize the module
+        /// </summary>
+        /// <param name="parent">from the parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)
@@ -198,6 +238,10 @@ namespace Installer
             // do nothing
         }
 
+        /// <summary>
+        /// Execute the tool on this module
+        /// </summary>
+        /// <param name="context">in this context</param>
         protected sealed override void
         ExecuteInternal(
             Bam.Core.ExecutionContext context)
@@ -227,6 +271,9 @@ namespace Installer
             }
         }
 
+        /// <summary>
+        /// Enumerate across all inputs to this module
+        /// </summary>
         public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
         {
             get

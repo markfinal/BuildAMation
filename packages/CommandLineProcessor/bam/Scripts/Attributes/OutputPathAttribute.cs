@@ -29,10 +29,20 @@
 #endregion // License
 namespace CommandLineProcessor
 {
+    /// <summary>
+    /// Attribute representing an output path for command line conversion
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = true)] // because there may be multiple outputs
     public class OutputPathAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="pathKey">Path key to the output file type.</param>
+        /// <param name="command_switch">Switch for the settings property.</param>
+        /// <param name="path_modifier">Optional modifier to the path. Default to null.</param>
+        /// <param name="ignore">Optional ignore this path. Default to false.</param>
         public OutputPathAttribute(
             string pathKey,
             string command_switch,
@@ -46,8 +56,19 @@ namespace CommandLineProcessor
             this.Ignore = ignore;
         }
 
+        /// <summary>
+        /// Path key for the output file type.
+        /// </summary>
         public string PathKey { get; private set; }
+
+        /// <summary>
+        /// Modifier for the path.
+        /// </summary>
         public string PathModifier { get; private set; }
+
+        /// <summary>
+        /// Whether to ignore the output file.
+        /// </summary>
         public bool Ignore { get; private set; }
     }
 }

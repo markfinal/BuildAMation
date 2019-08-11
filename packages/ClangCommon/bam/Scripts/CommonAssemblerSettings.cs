@@ -29,6 +29,9 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for common Clang assembler settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.AssembledObjectFile.ObjectFileKey, "-o ")]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ", max_file_count: 1)]
     public abstract class CommonAssemblerSettings :
@@ -38,6 +41,10 @@ namespace ClangCommon
         C.IAdditionalSettings,
         ICommonAssemblerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonAssemblerSettings(
             Bam.Core.Module module)
         {
@@ -78,6 +85,9 @@ namespace ClangCommon
         [XcodeProjectProcessor.StringArray("OTHER_CFLAGS", spacesSeparate: true)]
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {

@@ -29,15 +29,25 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Abstract class for compiling code.
+    /// </summary>
     public abstract class CompilerTool :
         Bam.Core.PreBuiltTool
     {
+        /// <summary>
+        /// Mark the tool as compiling shared code.
+        /// </summary>
+        /// <param name="settings">Settings to modify</param>
         // TODO: is this needed?
         public virtual void
         CompileAsShared(
             Bam.Core.Settings settings)
         {}
 
+        /// <summary>
+        /// Get the version of the toolchain this compiler is in.
+        /// </summary>
         public ToolchainVersion Version { get; protected set; }
     }
 }

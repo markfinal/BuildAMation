@@ -29,13 +29,20 @@
 #endregion // License
 namespace VisualC
 {
+    /// <summary>
+    /// Class representing the assembler settings for this version of VisualC
+    /// </summary>
     public sealed class AssemblerSettings :
         VisualCCommon.CommonAssemblerSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this module</param>
         public AssemblerSettings(
             Bam.Core.Module module)
             :
             base(module)
-        {}
+        { }
     }
 }

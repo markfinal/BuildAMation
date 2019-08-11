@@ -30,6 +30,9 @@
 using C;
 namespace GccCommon.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for setting Gcc assembler defaults
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
         public static void

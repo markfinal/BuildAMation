@@ -29,8 +29,16 @@
 #endregion // License
 namespace VisualCCommon.Helpers
 {
+    /// <summary>
+    /// Extension class helpers
+    /// </summary>
     public static class HelperClasses
     {
+        /// <summary>
+        /// Set the warning level
+        /// </summary>
+        /// <param name="objectFiles">Object file collection to set the warning level on</param>
+        /// <param name="level">Optional, warning level to set. Defaults to 4.</param>
         public static void
         SetVisualCWarningLevel(
             this C.CObjectFileCollection objectFiles,

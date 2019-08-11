@@ -29,10 +29,19 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Abstract attribute class allowing any tool to be registered from a toolset.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=true)]
     public abstract class ToolRegistrationAttribute :
         System.Attribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="toolsetName">Name of the toolset.</param>
+        /// <param name="platform">Platform under which the tool can be used.</param>
+        /// <param name="bitDepth">Bit depth for which the tool is used for.</param>
         protected ToolRegistrationAttribute(
             string toolsetName,
             Bam.Core.EPlatform platform,
@@ -43,8 +52,19 @@ namespace C
             this.BitDepth = bitDepth;
         }
 
+        /// <summary>
+        /// Name of the toolset
+        /// </summary>
         public string ToolsetName { get; private set; }
+
+        /// <summary>
+        /// Applicable platform for the tool.
+        /// </summary>
         public Bam.Core.EPlatform Platform { get; private set; }
+
+        /// <summary>
+        /// Bit depth applicable to the tool.
+        /// </summary>
         public EBit BitDepth { get; private set; }
     }
 }

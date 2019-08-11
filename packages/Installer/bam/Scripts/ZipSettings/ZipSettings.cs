@@ -29,13 +29,23 @@
 #endregion // License
 namespace Installer
 {
+    /// <summary>
+    /// Settings class for 7zip
+    /// </summary>
     [CommandLineProcessor.OutputPath(ZipModule.ZipKey, "")]
     public sealed class SevenZipSettings :
         Bam.Core.Settings,
         IZipSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public SevenZipSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("-bb3", "")]
         bool IZipSettings.Verbose { get; set; }
@@ -53,6 +63,9 @@ namespace Installer
         }
     }
 
+    /// <summary>
+    /// Settings class for zip
+    /// </summary>
     [CommandLineProcessor.OutputPath(ZipModule.ZipKey, "")]
     public sealed class ZipSettings :
         Bam.Core.Settings,
@@ -61,8 +74,15 @@ namespace Installer
         public ZipSettings()
         {}
 
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public ZipSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("-v", "")]
         bool IZipSettings.Verbose { get; set; }

@@ -29,9 +29,15 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Tool for librarian activities
+    /// </summary>
     public abstract class LibrarianTool :
         Bam.Core.PreBuiltTool
     {
+        /// <summary>
+        /// Get the version of the toolchain for this tool.
+        /// </summary>
         public ToolchainVersion Version { get; protected set; }
     }
 }

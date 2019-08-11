@@ -30,6 +30,9 @@
 using System.Linq;
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Abstract base call for all VisualC compilers
+    /// </summary>
     public abstract class CompilerBase :
         C.CompilerTool
     {
@@ -60,6 +63,10 @@ namespace VisualCCommon
             throw new Bam.Core.Exception(message.ToString());
         }
 
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="depth">for the given bit-depth</param>
         protected CompilerBase(
             C.EBit depth)
         {
@@ -80,58 +87,100 @@ namespace VisualCCommon
             this.InheritedEnvironmentVariables.Add("TMP");
         }
 
+        /// <summary>
+        /// Executable path to this tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
+        /// <summary>
+        /// Command line switch used for response files
+        /// </summary>
         public override string UseResponseFileOption => "@";
     }
 
+    /// <summary>
+    /// Class for 32-bit C compilers
+    /// </summary>
     [C.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public class Compiler32 :
         CompilerBase
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
         public Compiler32()
             :
             base(C.EBit.ThirtyTwo)
         {}
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new VisualC.CCompilerSettings(module);
     }
 
+    /// <summary>
+    /// Class for 32-bit C++ compilers
+    /// </summary>
     [C.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public sealed class CxxCompiler32 :
         Compiler32
     {
-        public CxxCompiler32()
-        {}
-
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new VisualC.CxxCompilerSettings(module);
     }
 
+    /// <summary>
+    /// Class for 64-bit C compilers
+    /// </summary>
     [C.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     public class Compiler64 :
         CompilerBase
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
         public Compiler64()
             :
             base(C.EBit.SixtyFour)
         { }
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new VisualC.CCompilerSettings(module);
     }
 
+    /// <summary>
+    /// Class for 64-bit C++ compilers
+    /// </summary>
     [C.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     public sealed class CxxCompiler64 :
         Compiler64
     {
-        public CxxCompiler64()
-        {}
-
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new VisualC.CxxCompilerSettings(module);

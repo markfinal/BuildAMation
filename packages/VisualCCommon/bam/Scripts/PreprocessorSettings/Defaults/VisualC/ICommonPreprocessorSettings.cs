@@ -29,9 +29,14 @@
 #endregion // License
 namespace VisualCCommon.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for default settings to ICommonPreprocessorSettings
+    /// </summary>
     static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(this ICommonPreprocessorSettings settings, Bam.Core.Module module)
+        public static void Defaults(
+            this ICommonPreprocessorSettings settings,
+            Bam.Core.Module module)
         {
             settings.NoLogo = true;
         }

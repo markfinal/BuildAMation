@@ -29,6 +29,9 @@
 #endregion // License
 namespace Publisher
 {
+    /// <summary>
+    /// Collated object representing a macos Framework
+    /// </summary>
     public sealed class CollatedOSXFramework :
         CollatedObject
     {

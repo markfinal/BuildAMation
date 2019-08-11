@@ -35,6 +35,10 @@ namespace C.ObjC
     public class ObjectFileCollection :
         C.CCompilableModuleContainer<ObjectFile>
     {
+        /// <summary>
+        /// Initialize this collection
+        /// </summary>
+        /// <param name="parent">with this parent</param>
         protected override void
         Init(
             Bam.Core.Module parent)

@@ -29,10 +29,20 @@
 #endregion // License
 namespace CommandLineProcessor
 {
+    /// <summary>
+    /// Attribute representing input files.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = true)] // there may be different types of input files
     public class InputPathsAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="pathKey">Path key representing the type of file.</param>
+        /// <param name="command_switch">Switch representing the property.</param>
+        /// <param name="path_modifier">Optional modifier applied to paths. Default to null.</param>
+        /// <param name="max_file_count">Optional maximum file count. Default to 1.</param>
         public InputPathsAttribute(
             string pathKey,
             string command_switch,
@@ -46,8 +56,19 @@ namespace CommandLineProcessor
             this.MaxFileCount = max_file_count;
         }
 
+        /// <summary>
+        /// Get the path key for the file types.
+        /// </summary>
         public string PathKey { get; private set; }
+
+        /// <summary>
+        /// Get the modifier for the paths.
+        /// </summary>
         public string PathModifier { get; private set; }
+
+        /// <summary>
+        /// Get the maximum file count.
+        /// </summary>
         public int MaxFileCount { get; private set; }
     }
 }

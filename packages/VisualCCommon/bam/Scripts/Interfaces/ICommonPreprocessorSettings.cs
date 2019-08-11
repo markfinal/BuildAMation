@@ -29,10 +29,16 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// VisualC specific settings for the preprocessor
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonPreprocessorSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Get or set whether the logo is displayed
+        /// </summary>
         bool NoLogo { get; set; }
     }
 }

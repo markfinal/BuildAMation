@@ -29,13 +29,27 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// VisualC specific settings for the assembler
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(VisualCCommon.DefaultSettings.DefaultSettingsExtensions))]
     [Bam.Core.SettingsPrecedence(System.Int32.MaxValue)] // warning settings must come before warning suppressions
     public interface ICommonAssemblerSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Get or set whether the logo is displayed
+        /// </summary>
         bool NoLogo { get; set; }
+
+        /// <summary>
+        /// Get or set the warning level
+        /// </summary>
         EAssemblerWarningLevel WarningLevel { get; set; }
+
+        /// <summary>
+        /// Get or set whether safe exception handlers
+        /// </summary>
         bool SafeExceptionHandlers { get; set; }
     }
 }

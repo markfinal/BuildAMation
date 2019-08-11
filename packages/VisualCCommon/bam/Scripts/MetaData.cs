@@ -30,11 +30,36 @@
 using System.Linq;
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Meta data class for this package
+    /// </summary>
     public abstract class MetaData :
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
     {
+        /// <summary>
+        /// Dictionary of key, object pairs that are the metadata.
+        /// </summary>
         protected System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
+
+        /// <summary>
+        /// Indexer into the metadata
+        /// </summary>
+        /// <param name="index">String index to use</param>
+        /// <returns>Indexed result</returns>
+        public override object this[string index] => this.Meta[index];
+
+        /// <summary>
+        /// Does the meta data contain an index.
+        /// </summary>
+        /// <param name="index">String index to query</param>
+        /// <returns>True if the meta data contains the index.</returns>
+        public override bool
+        Contains(
+            string index)
+        {
+            return this.Meta.ContainsKey(index);
+        }
 
         private void
         Findvswhere()
@@ -62,6 +87,10 @@ namespace VisualCCommon
 #endif
         }
 
+        /// <summary>
+        /// Get the vswhere install path
+        /// </summary>
+        /// <returns>Installation path</returns>
         protected string
         Vswhere_getinstallpath()
         {
@@ -295,6 +324,13 @@ namespace VisualCCommon
             return env;
         }
 
+        /// <summary>
+        /// Get the environment variables to apply to tools
+        /// </summary>
+        /// <param name="depth">Bit depth of tool</param>
+        /// <param name="hasNative64BitTools">Does the toolchain have native 64-bit tools?</param>
+        /// <param name="inherited_envvars">Optional, array of environment variables to inherit from the system. Default is null.</param>
+        /// <param name="required_envvars">Optional, dictionary of environment variables to set. Default is null.</param>
         protected void
         Get_tool_environment_variables(
             C.EBit depth,
@@ -340,6 +376,9 @@ namespace VisualCCommon
             this.Meta.Add(EnvironmentKey(depth), env);
         }
 
+        /// <summary>
+        /// Get or set the installation directory for VisualStudio
+        /// </summary>
         public Bam.Core.TokenizedString
         InstallDir
         {
@@ -369,6 +408,11 @@ namespace VisualCCommon
             }
         }
 
+        /// <summary>
+        /// Get the environment variables for the given bitdepth
+        /// </summary>
+        /// <param name="depth">Bit depth</param>
+        /// <returns>Environment variable dictionary</returns>
         public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray>
         Environment(
             C.EBit depth)
@@ -383,6 +427,9 @@ namespace VisualCCommon
 
         private string VswherePath { get; set; }
 
+        /// <summary>
+        /// Get the toolchain version
+        /// </summary>
         public C.ToolchainVersion ToolchainVersion
         {
             get
@@ -396,8 +443,14 @@ namespace VisualCCommon
             }
         }
 
+        /// <summary>
+        /// Get the sub-path to where vcvars.bat resides
+        /// </summary>
         protected abstract string Subpath_to_vcvars { get; }
 
+        /// <summary>
+        /// Whether there are native 64-bit tools available
+        /// </summary>
         protected virtual bool HasNative64BitTools => true;
 
         private static bool report_WindowsSDK_done = false;
@@ -533,6 +586,9 @@ namespace VisualCCommon
             }
         }
 
+        /// <summary>
+        /// Get or set the runtime library to use
+        /// </summary>
         public ERuntimeLibrary RuntimeLibrary
         {
             get

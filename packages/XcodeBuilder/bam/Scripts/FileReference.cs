@@ -29,8 +29,16 @@
 #endregion // License
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Extensions to convert enumerations to strings.
+    /// </summary>
     public static class EnumToStringExtensions
     {
+        /// <summary>
+        /// Extension function to convert FileReference.FileType to string.
+        /// </summary>
+        /// <param name="type">The type of the FileReference.</param>
+        /// <returns>Stringified type.</returns>
         public static string
         AsString(
             this FileReference.EFileType type)
@@ -99,6 +107,11 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Extension function to convert FileReference.ESourceTree to string.
+        /// </summary>
+        /// <param name="sourceTree">The source tree of the FileReference.</param>
+        /// <returns>Stringified source tree.</returns>
         public static string
         AsString(
             this FileReference.ESourceTree sourceTree)
@@ -132,43 +145,61 @@ namespace XcodeBuilder
         }
     }
 
+    /// <summary>
+    /// Class representing a PBXFileReference in an Xcode project.
+    /// </summary>
     public sealed class FileReference :
         Object
     {
+        /// <summary>
+        /// The file type options
+        /// </summary>
         public enum EFileType
         {
-            SourceCodeC,
-            SourceCodeCxx,
-            SourceCodeObjC,
-            SourceCodeObjCxx,
-            HeaderFile,
-            Archive,
-            Executable,
-            DynamicLibrary,
-            WrapperFramework,
-            ApplicationBundle,
-            Project,
-            YaccFile,
-            LexFile,
-            TextBasedDylibDefinition,
-            TextFile,
-            Assembler,
-            ZipArchive,
-            MetalShaderSource,
-            GLSLShaderSource
+            SourceCodeC,                //!< C source code
+            SourceCodeCxx,              //!< C++ source code
+            SourceCodeObjC,             //!< Objective C source code
+            SourceCodeObjCxx,           //!< Objective C++ source code
+            HeaderFile,                 //!< Header file
+            Archive,                    //!< Static library archive
+            Executable,                 //!< Executable file
+            DynamicLibrary,             //!< Dylib
+            WrapperFramework,           //!< Framework
+            ApplicationBundle,          //!< Application bundle
+            Project,                    //!< Xcode project file
+            YaccFile,                   //!< Yacc bison file
+            LexFile,                    //!< Lex flex file
+            TextBasedDylibDefinition,   //!< TBD (Text Based Dylib)
+            TextFile,                   //!< Text file
+            Assembler,                  //!< Assembler source
+            ZipArchive,                 //!< Zip archive
+            MetalShaderSource,          //!< Metal shader source
+            GLSLShaderSource            //!< GLSL shader source
         }
 
+        /// <summary>
+        /// The source tree options
+        /// </summary>
         public enum ESourceTree
         {
-            NA,               /* maps to <unknown> */
-            Absolute,         /* absolute path */
-            Group,            /* group of things? (which group, where?) */
-            SourceRoot,       /* relative to project */
-            DeveloperDir,     /* relative to developer directory */
-            BuiltProductsDir, /* relative to where products are built in project */
-            SDKRoot           /* relative to SDK root */
+            NA,               //<! maps to <unknown>
+            Absolute,         //<! absolute path
+            Group,            //<! group of things? (which group, where?)
+            SourceRoot,       //<! relative to project
+            DeveloperDir,     //<! relative to developer directory
+            BuiltProductsDir, //<! relative to where products are built in project
+            SDKRoot           //<! relative to SDK root
         }
 
+        /// <summary>
+        /// Construct an instance
+        /// </summary>
+        /// <param name="path">The TokenizedString to the file reference</param>
+        /// <param name="type">Type of filereference</param>
+        /// <param name="project">Project to add the filereference to</param>
+        /// <param name="explicitType">Optional: Is this an explicit type? Defaults to false.</param>
+        /// <param name="sourceTree">Optional: Which source tree does the file reference belong in? Defaults to unknown.</param>
+        /// <param name="relativePath">Optional: The relative path to use in the Xcode project. Defaults to null.</param>
         public FileReference(
             Bam.Core.TokenizedString path,
             EFileType type,
@@ -186,6 +217,12 @@ namespace XcodeBuilder
             this.RelativePath = relativePath;
         }
 
+        /// <summary>
+        /// Make another FileReference that can be linked across projects.
+        /// </summary>
+        /// <param name="module">Module in which to create the linked TokenizedString</param>
+        /// <param name="project">Project in which to add the linked FileReference.</param>
+        /// <returns></returns>
         public FileReference
         MakeLinkableAlias(
             Bam.Core.Module module,
@@ -203,12 +240,26 @@ namespace XcodeBuilder
                 sourceTree: ESourceTree.Group);
         }
 
+        /// <summary>
+        /// Get the path of the file reference.
+        /// </summary>
         public Bam.Core.TokenizedString Path { get; private set; }
+
+        /// <summary>
+        /// Get the type of the file reference.
+        /// </summary>
         public EFileType Type { get; private set; }
         private bool ExplicitType { get; set; }
+
+        /// <summary>
+        /// Get the source tree of the file reference
+        /// </summary>
         public ESourceTree SourceTree { get; private set; }
         private string RelativePath { get; set; }
 
+        /// <summary>
+        /// Convert the file reference from an executable to an application bundle.
+        /// </summary>
         public void
         MakeApplicationBundle()
         {
@@ -223,6 +274,11 @@ namespace XcodeBuilder
             this.Type = EFileType.ApplicationBundle;
         }
 
+        /// <summary>
+        /// Serialize the file reference.
+        /// </summary>
+        /// <param name="text">StringBuilder to write to.</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public override void
         Serialize(
             System.Text.StringBuilder text,

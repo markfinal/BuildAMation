@@ -29,6 +29,9 @@
 #endregion // License
 namespace ClangCommon.Helpers
 {
+    /// <summary>
+    /// Extension class for helping with Clang settings
+    /// </summary>
     public static class HelperClasses
     {
         public static void

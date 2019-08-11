@@ -29,9 +29,16 @@
 #endregion // License
 namespace Gcc
 {
+    /// <summary>
+    /// Class representing the assembler settings for this version of Gcc
+    /// </summary>
     public sealed class AssemblerSettings :
         GccCommon.CommonAssemblerSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         public AssemblerSettings(
             Bam.Core.Module module)
             :

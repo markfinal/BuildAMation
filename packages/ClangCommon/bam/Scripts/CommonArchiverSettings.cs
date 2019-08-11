@@ -29,6 +29,9 @@
 #endregion // License
 namespace ClangCommon
 {
+    /// <summary>
+    /// Abstract class for common Clang archiver settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.StaticLibrary.LibraryKey, "")]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     public abstract class CommonArchiverSettings :
@@ -36,8 +39,15 @@ namespace ClangCommon
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
+        /// <summary>
+        /// Create a settings instance
+        /// </summary>
+        /// <param name="module">for this Module</param>
         protected CommonArchiverSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("-s", "")]
         [XcodeProjectProcessor.UniqueBool("", "", "", ignore: true)]
@@ -55,6 +65,9 @@ namespace ClangCommon
         [XcodeProjectProcessor.UniqueEnum(EArchiverCommand.Replace, "", "", ignore: true)]
         EArchiverCommand ICommonArchiverSettings.Command { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {

@@ -29,12 +29,26 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Interface for Gcc specific archiver settings
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonArchiverSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Use ranlib
+        /// </summary>
         bool Ranlib { get; set; }
+
+        /// <summary>
+        /// Do not warn if a library is created
+        /// </summary>
         bool DoNotWarnIfLibraryCreated { get; set; }
+
+        /// <summary>
+        /// Archive command to use
+        /// </summary>
         GccCommon.EArchiverCommand Command { get; set; }
     }
 }

@@ -29,10 +29,21 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
+    /// <summary>
+    /// Attribute associated with a path
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class PathAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="command_switch">Command switch associated with this path</param>
+        /// <param name="inheritExisting">Optional, whether to inherit existing values. Default to false.</param>
+        /// <param name="ignored">Optional, whether to ignore this property. Default to false.</param>
+        /// <param name="target">Optional, which target to use. Default to settings.</param>
+        /// <param name="boolWhenValid">Optional, associated bool property when this path is valid. Default is null.</param>
         public PathAttribute(
             string command_switch,
             bool inheritExisting = false,
@@ -46,7 +57,14 @@ namespace VisualStudioProcessor
             this.BoolPropertyWhenValid = boolWhenValid;
         }
 
+        /// <summary>
+        /// Whether this property is ignored.
+        /// </summary>
         public bool Ignored { get; private set; }
+
+        /// <summary>
+        /// Associated bool property when the path is valid.
+        /// </summary>
         public string BoolPropertyWhenValid { get; private set; }
     }
 }

@@ -29,10 +29,19 @@
 #endregion // License
 namespace VisualStudioProcessor
 {
+    /// <summary>
+    /// Attribute associated with a string property.
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
     public class StringAttribute :
         BaseAttribute
     {
+        /// <summary>
+        /// Create an instance.
+        /// </summary>
+        /// <param name="command_switch">Command line switch associated with these strings.</param>
+        /// <param name="inheritExisting">Optional, whether to inherit existing values. Default is false.</param>
+        /// <param name="target">Optional, which target to use. Default is settings.</param>
         public StringAttribute(
             string command_switch,
             bool inheritExisting = false,

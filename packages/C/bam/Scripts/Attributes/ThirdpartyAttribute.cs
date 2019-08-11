@@ -29,13 +29,26 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Attribute applied to modules that are 'thirdparty' (i.e. not written by you)
+    /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]
     public class ThirdpartyAttribute :
         System.Attribute
     {
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="windowsVersionResourcePath">Optional path to the Windows version resource path. Default to null.</param>
         public ThirdpartyAttribute(
-            string windowsVersionResourcePath = null) => this.WindowsVersionResourcePath = windowsVersionResourcePath;
+            string windowsVersionResourcePath = null)
+        {
+            this.WindowsVersionResourcePath = windowsVersionResourcePath;
+        }
 
+        /// <summary>
+        /// Path to the Windows version resource file.
+        /// </summary>
         public string WindowsVersionResourcePath { get; private set; }
     }
 }

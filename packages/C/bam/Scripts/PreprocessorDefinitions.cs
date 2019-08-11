@@ -39,10 +39,17 @@ namespace C
     {
         private readonly System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> Defines = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
 
-        // this might look empty, but a default constructor is needed to initialise Settings classes
+        /// <summary>
+        /// Default constructor.
+        /// This might look unusually empty, but a default constructor is needed to initialise Settings classes
+        /// </summary>
         public PreprocessorDefinitions()
         {}
 
+        /// <summary>
+        /// Construct an instance
+        /// </summary>
+        /// <param name="items">Source key-value pairs to initialise from</param>
         public PreprocessorDefinitions(
             System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.TokenizedString>> items)
         {
@@ -52,6 +59,11 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Add a key-value pair
+        /// </summary>
+        /// <param name="name">Preprocessor define name</param>
+        /// <param name="value">Associated value</param>
         public void
         Add(
             string name,
@@ -72,6 +84,11 @@ namespace C
             this.Defines.Add(name, valueTS);
         }
 
+        /// <summary>
+        /// Add a key-value pair
+        /// </summary>
+        /// <param name="name">Preprocessor define name</param>
+        /// <param name="value">Associated value</param>
         public void
         Add(
             string name,
@@ -91,10 +108,18 @@ namespace C
             this.Defines.Add(name, value);
         }
 
+        /// <summary>
+        /// Add a key
+        /// </summary>
+        /// <param name="name">Preprocessor define name</param>
         public void
         Add(
             string name) => this.Add(name, null as Bam.Core.TokenizedString);
 
+        /// <summary>
+        /// Remove a key
+        /// </summary>
+        /// <param name="name">Preprocessor define name</param>
         public void
         Remove(
             string name)
@@ -105,14 +130,31 @@ namespace C
             }
         }
 
+        /// <summary>
+        /// Number of definitions
+        /// </summary>
         public int Count => this.Defines.Count;
 
+        /// <summary>
+        /// Determine if this key is contained
+        /// </summary>
+        /// <param name="key">Preprocessor define name</param>
+        /// <returns>true if the key is contained</returns>
         public bool
         Contains(
             string key) => this.Defines.ContainsKey(key);
 
+        /// <summary>
+        /// Indexer to get definition value for the specified key.
+        /// </summary>
+        /// <param name="key">Preprocessor define name</param>
+        /// <returns>Associated value</returns>
         public Bam.Core.TokenizedString this[string key] => this.Defines[key];
 
+        /// <summary>
+        /// Get the enumerator for this instance
+        /// </summary>
+        /// <returns>The enumerator</returns>
         public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, Bam.Core.TokenizedString>>
         GetEnumerator()
         {
@@ -149,10 +191,20 @@ namespace C
             return content.ToString();
         }
 
+        /// <summary>
+        /// Get the intersection of preprocessor definitions
+        /// </summary>
+        /// <param name="other">Another set of preprocessor definitions</param>
+        /// <returns>Intersection of defines</returns>
         public PreprocessorDefinitions
         Intersect(
             PreprocessorDefinitions other) => new PreprocessorDefinitions(System.Linq.Enumerable.Intersect(this, other));
 
+        /// <summary>
+        /// Get the complement of preprocessor definitions
+        /// </summary>
+        /// <param name="other">Another set of preprocessor definitions</param>
+        /// <returns>Complement of defines</returns>
         public PreprocessorDefinitions
         Complement(
             PreprocessorDefinitions other) => new PreprocessorDefinitions(System.Linq.Enumerable.Except(this, other));

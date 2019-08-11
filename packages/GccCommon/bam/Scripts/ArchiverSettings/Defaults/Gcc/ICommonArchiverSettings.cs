@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon.DefaultSettings
 {
+    /// <summary>
+    /// Extension class for setting Gcc archiver defaults
+    /// </summary>
     public static partial class DefaultSettingsExtensions
     {
         public static void

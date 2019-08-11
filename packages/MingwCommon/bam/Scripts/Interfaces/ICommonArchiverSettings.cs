@@ -29,12 +29,26 @@
 #endregion // License
 namespace MingwCommon
 {
+    /// <summary>
+    /// Mingw specific archiver options
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     public interface ICommonArchiverSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Use ranlib
+        /// </summary>
         bool Ranlib { get; set; }
+
+        /// <summary>
+        /// Disable warning if the library is created
+        /// </summary>
         bool DoNotWarnIfLibraryCreated { get; set; }
+
+        /// <summary>
+        /// The mode in which to run the archiver
+        /// </summary>
         MingwCommon.EArchiverCommand Command { get; set; }
     }
 }

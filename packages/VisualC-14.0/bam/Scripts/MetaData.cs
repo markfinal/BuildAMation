@@ -29,10 +29,16 @@
 #endregion // License
 namespace VisualC
 {
+    /// <summary>
+    /// Class representing meta data for this package
+    /// </summary>
     public class MetaData :
         VisualCCommon.MetaData,
         VisualCCommon.IRuntimeLibraryPathMeta
     {
+        /// <summary>
+        /// Create the default instance
+        /// </summary>
         public MetaData()
         {
             this.SolutionFormatVersion = "12.00";
@@ -41,13 +47,14 @@ namespace VisualC
             this.VCXProjFiltersToolsVersion = "4.0";
         }
 
+        /// <summary>
+        /// Path within the installation to vcvars.bat
+        /// </summary>
         protected override string Subpath_to_vcvars => "VC";
-        public override object this[string index] => this.Meta[index];
 
-        public override bool
-        Contains(
-            string index) => this.Meta.ContainsKey(index);
-
+        /// <summary>
+        /// The VisualStudio solution format version
+        /// </summary>
         public string
         SolutionFormatVersion
         {
@@ -62,6 +69,9 @@ namespace VisualC
             }
         }
 
+        /// <summary>
+        /// Platform toolset for the VisualStudio projects
+        /// </summary>
         public string
         PlatformToolset
         {
@@ -76,6 +86,9 @@ namespace VisualC
             }
         }
 
+        /// <summary>
+        /// VCXProject tools version
+        /// </summary>
         public string
         VCXProjToolsVersion
         {
@@ -90,6 +103,9 @@ namespace VisualC
             }
         }
 
+        /// <summary>
+        /// VCXProject filter tools version
+        /// </summary>
         public string
         VCXProjFiltersToolsVersion
         {

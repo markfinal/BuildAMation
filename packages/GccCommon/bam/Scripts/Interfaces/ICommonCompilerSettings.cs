@@ -29,17 +29,47 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Interface for Gcc specific compiler settings
+    /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     [Bam.Core.SettingsPrecedence(System.Int32.MaxValue)] // warning settings must come before warning suppressions
     public interface ICommonCompilerSettings :
         Bam.Core.ISettingsBase
     {
+        /// <summary>
+        /// Generate position independent code (for shared libraries)
+        /// </summary>
         bool? PositionIndependentCode { get; set; }
+
+        /// <summary>
+        /// Enable all warnings
+        /// </summary>
         bool? AllWarnings { get; set; }
+
+        /// <summary>
+        /// Enable extra warnings
+        /// </summary>
         bool? ExtraWarnings { get; set; }
+
+        /// <summary>
+        /// Enable pedantic mode
+        /// </summary>
         bool? Pedantic { get; set; }
+
+        /// <summary>
+        /// Enable symbol visibility
+        /// </summary>
         EVisibility? Visibility { get; set; }
+
+        /// <summary>
+        /// Enable strict aliasing
+        /// </summary>
         bool? StrictAliasing { get; set; }
+
+        /// <summary>
+        /// Enable specific optimisations
+        /// </summary>
         EOptimization? Optimization { get; set; }
     }
 }

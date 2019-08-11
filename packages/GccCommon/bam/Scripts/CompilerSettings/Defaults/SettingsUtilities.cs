@@ -29,6 +29,9 @@
 #endregion // License
 namespace GccCommon
 {
+    /// <summary>
+    /// Extension class for Gcc enum properties
+    /// </summary>
     public static class SettingsUtilities
     {
         public static EVisibility?

@@ -30,6 +30,9 @@
 using System.Linq;
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Abstract base class representing a preprocessor tool
+    /// </summary>
     public abstract class PreprocessorBase :
         C.PreprocessorTool
     {
@@ -60,6 +63,10 @@ namespace VisualCCommon
             throw new Bam.Core.Exception(message.ToString());
         }
 
+        /// <summary>
+        /// Create an instance.
+        /// </summary>
+        /// <param name="depth">Bit-depth to create for.</param>
         protected PreprocessorBase(
             C.EBit depth)
         {
@@ -80,34 +87,64 @@ namespace VisualCCommon
             this.InheritedEnvironmentVariables.Add("TMP");
         }
 
+        /// <summary>
+        /// The executable for the tool
+        /// </summary>
         public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
+        /// <summary>
+        /// Option used for response files
+        /// </summary>
         public override string UseResponseFileOption => "@";
     }
 
+    /// <summary>
+    /// Class representing a 32-bit preprocessor.
+    /// </summary>
     [C.RegisterPreprocessor("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     public class Preprocessor32 :
         PreprocessorBase
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
         public Preprocessor32()
             :
             base(C.EBit.ThirtyTwo)
         {}
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new VisualC.PreprocessorSettings(module);
     }
 
+    /// <summary>
+    /// Class representing a 64-bit preprocessor.
+    /// </summary>
     [C.RegisterPreprocessor("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     public class Preprocessor64 :
         PreprocessorBase
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
         public Preprocessor64()
             :
             base(C.EBit.SixtyFour)
         { }
 
+        /// <summary>
+        /// Create the default settings for the specified module.
+        /// </summary>
+        /// <typeparam name="T">Module type</typeparam>
+        /// <param name="module">Module to create settings for</param>
+        /// <returns>New settings instance</returns>
         public override Bam.Core.Settings
         CreateDefaultSettings<T>(
             T module) => new VisualC.PreprocessorSettings(module);

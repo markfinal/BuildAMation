@@ -29,6 +29,9 @@
 #endregion // License
 namespace VisualCCommon
 {
+    /// <summary>
+    /// Abstract class for common archiver settings
+    /// </summary>
     [CommandLineProcessor.OutputPath(C.StaticLibrary.LibraryKey, "-OUT:")]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     [VisualStudioProcessor.OutputPath(C.StaticLibrary.LibraryKey, "", handledByMetaData: true)]
@@ -38,6 +41,10 @@ namespace VisualCCommon
         C.IAdditionalSettings,
         ICommonArchiverSettings
     {
+        /// <summary>
+        /// Create an instance
+        /// </summary>
+        /// <param name="module">of settings for this Module</param>
         protected CommonArchiverSettings(
             Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
 
@@ -53,6 +60,9 @@ namespace VisualCCommon
         [VisualStudioProcessor.Bool("LinkTimeCodeGeneration")]
         bool ICommonArchiverSettings.LinkTimeCodeGeneration { get; set; }
 
+        /// <summary>
+        /// Set the layout how command lines are constructed
+        /// </summary>
         public override void
         AssignFileLayout()
         {

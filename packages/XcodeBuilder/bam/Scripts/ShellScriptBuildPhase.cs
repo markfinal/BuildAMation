@@ -30,11 +30,25 @@
 using System.Linq;
 namespace XcodeBuilder
 {
+    /// <summary>
+    /// Class representing a PBXShellScriptBuildPhase in an Xcode project
+    /// </summary>
     public sealed class ShellScriptBuildPhase :
         BuildPhase
     {
+        /// <summary>
+        /// Delegate for generating scripts.
+        /// </summary>
+        /// <param name="target">Target associated with the script</param>
+        /// <returns>Delegate return</returns>
         public delegate string GenerateScriptDelegate(Target target);
 
+        /// <summary>
+        /// Construct an instance.
+        /// </summary>
+        /// <param name="target">Target containing the build phase.</param>
+        /// <param name="name">Name of the build phase</param>
+        /// <param name="generateScript">Delegate to generate the script.</param>
         public ShellScriptBuildPhase(
             Target target,
             string name,
@@ -52,17 +66,38 @@ namespace XcodeBuilder
 
         private readonly GenerateScriptDelegate GenerateScript;
 
+        /// <summary>
+        /// Get the build action mask.
+        /// </summary>
         protected override string BuildActionMask => "2147483647";
+
+        /// <summary>
+        /// Whether the build phase runs only for deployment post processing
+        /// </summary>
         protected override bool RunOnlyForDeploymentPostprocessing => false;
 
+        /// <summary>
+        /// Get the shell script path
+        /// </summary>
         public string ShellPath { get; private set; }
+
+        /// <summary>
+        /// Does the environment show in the log?
+        /// </summary>
         public bool ShowEnvironmentInLog { get; private set; }
 
         private Bam.Core.TokenizedStringArray InputPaths { get; set; }
         private Bam.Core.TokenizedStringArray OutputPaths { get; set; }
 
+        /// <summary>
+        /// Get the associated Target to the build phase.
+        /// </summary>
         public Target AssociatedTarget { get; private set; }
 
+        /// <summary>
+        /// Add output paths to the build phase.
+        /// </summary>
+        /// <param name="outputPaths">Paths to add</param>
         public void
         AddOutputPaths(
             Bam.Core.TokenizedStringArray outputPaths)
@@ -73,6 +108,11 @@ namespace XcodeBuilder
             }
         }
 
+        /// <summary>
+        /// Serialize the build phase.
+        /// </summary>
+        /// <param name="text">StringBuilder to write to</param>
+        /// <param name="indentLevel">Number of tabs to indent by.</param>
         public override void
         Serialize(
             System.Text.StringBuilder text,
