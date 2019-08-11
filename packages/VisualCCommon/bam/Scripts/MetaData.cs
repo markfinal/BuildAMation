@@ -353,6 +353,13 @@ namespace VisualCCommon
             {
                 required_envvars.Add("PATH", new Bam.Core.StringArray { "%WINDIR%\\System32" });
             }
+
+            // VsDevCmd.bat in VS2019+ tries to invoke powershell.exe to send telemetry
+            // which can cause non-interactive continuous integration to halt indefinitely
+            // because a dialog is opened if powershell cannot be found
+            // disabling telemetry avoids this issue
+            required_envvars.Add("VSCMD_SKIP_SENDTELEMETRY", new Bam.Core.StringArray { "1" });
+
             // for WindowsSDK-7.1
             if (null == inherited_envvars)
             {
