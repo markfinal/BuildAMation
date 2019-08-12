@@ -90,7 +90,7 @@ namespace Bam.Core
             var graph = Graph.Instance;
             if (null != packageAssembly)
             {
-                PackageUtilities.IdentifyAllPackages(true);
+                PackageUtilities.IdentifyAllPackages(allowDuplicates: false);
                 graph.ScriptAssembly = packageAssembly;
                 graph.ScriptAssemblyPathname = packageAssembly.Location;
             }

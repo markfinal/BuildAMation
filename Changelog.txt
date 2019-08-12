@@ -1,3 +1,5 @@
+12-Aug-2019 Fixes #638. Debugging package project files no longer allows multiple package versions to appear in the internal package list.
+
 12-Aug-2019 ======== Version 2.0.0 beta 2 Release ========
 
 11-Aug-2019 Fixes #635. Moved MetaData indexers and Contains functions for VisualC and WindowsSDK into their respective Common packages.
