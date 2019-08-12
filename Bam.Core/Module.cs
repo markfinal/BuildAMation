@@ -309,6 +309,7 @@ namespace Bam.Core
                 }
 
                 var module = new T();
+                /*
                 if (null != parent)
                 {
                     module.Macros.Add("parentmodulename", parent.Macros["modulename"]);
@@ -319,6 +320,7 @@ namespace Bam.Core
                     // since the parent might have been redirected
                     module.AddRedirectedPackageDirectory(parent);
                 }
+                */
                 if (preInitCallback != null)
                 {
                     preInitCallback(module);

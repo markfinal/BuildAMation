@@ -62,6 +62,7 @@ namespace Bam.Core
             this.Macros = new MacroList(this.GetType().FullName);
             this.BuildEnvironmentInternal = null;
             this.CommonModuleType = new PeekableStack<System.Type>();
+            this.ModuleStack = new PeekableStack<Module>();
             this.DependencyGraph = new DependencyGraph();
             this.MetaData = null;
 
@@ -109,6 +110,12 @@ namespace Bam.Core
         public PeekableStack<System.Type> CommonModuleType { get; private set; }
 
         /// <summary>
+        /// Stack of modules that were created prior to the current module.
+        /// This is so that modules created as dependencies can inspect their module parental hierarchy at construction time.
+        /// </summary>
+        public PeekableStack<Module> ModuleStack { get; private set; }
+
+        /// <summary>
         /// A referenced module is one that is referenced by it's class type. This is normally in use when specifying
         /// a dependency. There can be one and only one copy, in a build environment, of this type of module.
         /// A non-referenced module, is one that is never referred to explicitly in user scripts, but are created behind
@@ -144,6 +151,7 @@ namespace Bam.Core
                     {
                         if (null != module)
                         {
+                            this.ModuleStack.Push(module);
                             referencedModules.Add(module);
                         }
                     });
@@ -154,6 +162,7 @@ namespace Bam.Core
                 // remove the failed to create module from the referenced list
                 // and also any modules and strings created in its Init function, potentially
                 // of child module types
+                this.ModuleStack.Pop();
                 var moduleTypeToRemove = this.CommonModuleType.Peek();
                 TokenizedString.RemoveEncapsulatedStrings(moduleTypeToRemove);
                 Module.RemoveEncapsulatedModules(moduleTypeToRemove);
@@ -164,6 +173,7 @@ namespace Bam.Core
             }
             finally
             {
+                this.ModuleStack.Pop();
                 this.CommonModuleType.Pop();
             }
         }
