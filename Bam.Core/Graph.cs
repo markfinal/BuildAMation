@@ -145,6 +145,7 @@ namespace Bam.Core
                 return matchedModule as T;
             }
             this.CommonModuleType.Push(typeof(T));
+            var moduleStackAppended = false;
             try
             {
                 var newModule = Module.Create<T>(preInitCallback: module =>
@@ -152,6 +153,7 @@ namespace Bam.Core
                         if (null != module)
                         {
                             this.ModuleStack.Push(module);
+                            moduleStackAppended = true;
                             referencedModules.Add(module);
                         }
                     });
@@ -162,7 +164,6 @@ namespace Bam.Core
                 // remove the failed to create module from the referenced list
                 // and also any modules and strings created in its Init function, potentially
                 // of child module types
-                this.ModuleStack.Pop();
                 var moduleTypeToRemove = this.CommonModuleType.Peek();
                 TokenizedString.RemoveEncapsulatedStrings(moduleTypeToRemove);
                 Module.RemoveEncapsulatedModules(moduleTypeToRemove);
@@ -173,7 +174,10 @@ namespace Bam.Core
             }
             finally
             {
-                this.ModuleStack.Pop();
+                if (moduleStackAppended)
+                {
+                    this.ModuleStack.Pop();
+                }
                 this.CommonModuleType.Pop();
             }
         }
