@@ -309,18 +309,19 @@ namespace Bam.Core
                 }
 
                 var module = new T();
-                /*
                 if (null != parent)
                 {
+                    /*
                     module.Macros.Add("parentmodulename", parent.Macros["modulename"]);
 
                     var encapsulatingParent = parent.GetEncapsulatingReferencedModule();
                     module.Macros.Add("encapsulatedparentmodulename", encapsulatingParent.Macros["modulename"]);
+                    */
 
-                    // since the parent might have been redirected
+                    // children of Modules that have been redirect, also need to inherit the
+                    // redirected package directory
                     module.AddRedirectedPackageDirectory(parent);
                 }
-                */
                 if (preInitCallback != null)
                 {
                     preInitCallback(module);
