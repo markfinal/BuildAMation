@@ -286,9 +286,6 @@ namespace Bam.Core
 
         /// <summary>
         /// Create the specified module type T, given an optional parent module (for collections), pre-init and post-init callbacks.
-        /// If a parent is provided, two macros are defined:
-        /// 'parentmodulename' which is linked to the parent module's 'modulename' macro
-        /// 'encapsulatedparentmodulename' which is linked to the parent's encapsulated module's 'modulename' macro
         /// </summary>
         /// <param name="parent">Parent module for which this new module is intended as a child.</param>
         /// <param name="preInitCallback">Callback invoked after module creation, but prior to Init.</param>
@@ -311,13 +308,6 @@ namespace Bam.Core
                 var module = new T();
                 if (null != parent)
                 {
-                    /*
-                    module.Macros.Add("parentmodulename", parent.Macros["modulename"]);
-
-                    var encapsulatingParent = parent.GetEncapsulatingReferencedModule();
-                    module.Macros.Add("encapsulatedparentmodulename", encapsulatingParent.Macros["modulename"]);
-                    */
-
                     // children of Modules that have been redirect, also need to inherit the
                     // redirected package directory
                     module.AddRedirectedPackageDirectory(parent);
