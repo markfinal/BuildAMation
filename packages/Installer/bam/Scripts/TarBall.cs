@@ -55,7 +55,12 @@ namespace Installer
             Bam.Core.Module parent)
         {
             base.Init(parent);
-            this.ScriptPath = this.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)/$(config)/tarinput.txt");
+
+            var encapsulatingModule = Bam.Core.Graph.Instance.ModuleStack.Peek();
+            this.ScriptPath = this.CreateTokenizedString(
+                "$(buildroot)/$(0)/$(config)/tarinput.txt",
+                new[] { encapsulatingModule.Macros["modulename"] }
+            );
         }
 
         /// <summary>
@@ -64,7 +69,7 @@ namespace Installer
         public Bam.Core.TokenizedString ScriptPath { get; private set; }
 
         /// <summary>
-        /// Add a file from a module 
+        /// Add a file from a module
         /// </summary>
         /// <param name="module">Module to add</param>
         /// <param name="key">Path key from Module</param>

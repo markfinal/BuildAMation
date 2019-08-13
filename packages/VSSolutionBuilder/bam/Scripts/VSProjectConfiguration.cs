@@ -31,7 +31,7 @@ using System.Linq;
 namespace VSSolutionBuilder
 {
     /// <summary>
-    /// Class respresenting an abstraction of a project configuration, consisting of platform and configuration 
+    /// Class respresenting an abstraction of a project configuration, consisting of platform and configuration
     /// </summary>
     public sealed class VSProjectConfiguration
     {
@@ -211,9 +211,9 @@ namespace VSSolutionBuilder
         public void
         EnableIntermediatePath()
         {
-            this.IntermediateDirectory = Bam.Core.TokenizedString.Create(
-                "$(packagebuilddir)/$(encapsulatingmodulename)/$(config)/",
-                this.Module
+            this.IntermediateDirectory = this.Module.CreateTokenizedString(
+                "$(packagebuilddir)/$(0)/$(config)/",
+                new[] {this.Module.GetEncapsulatingReferencedModule().Macros["modulename"]}
             );
             this.IntermediateDirectory.Parse();
         }

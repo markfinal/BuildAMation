@@ -988,7 +988,6 @@ namespace Bam.Core
         /// is at the top of the stack.
         /// Knowledge of the encapsulating module is useful for logical grouping, such as build sub-folder names.
         /// Macros added to the module:
-        /// 'encapsulatingmodulename'
         /// 'encapsulatingbuilddir'
         /// </summary>
         /// <returns>The encapsulating referenced module.</returns>
@@ -998,7 +997,6 @@ namespace Bam.Core
             if (null == this.EncapsulatingModule)
             {
                 var encapsulatingModule = Graph.Instance.GetReferencedModule(this.BuildEnvironment, this.EncapsulatingType);
-                this.Macros.AddVerbatim("encapsulatingmodulename", this.EncapsulatingType.Name);
                 this.Macros.Add("encapsulatingbuilddir", encapsulatingModule.Macros["packagebuilddir"]);
                 this.EncapsulatingModule = encapsulatingModule;
             }
