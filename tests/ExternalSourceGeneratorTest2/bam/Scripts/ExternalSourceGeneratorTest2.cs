@@ -34,10 +34,9 @@ namespace ExternalSourceGeneratorTest2
         C.ExternalSourceGenerator
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Executable = Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("python").FirstOrDefault());
 
@@ -55,10 +54,9 @@ namespace ExternalSourceGeneratorTest2
         PythonSourceGenerator
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.AddInputFile("PyScript", this.CreateTokenizedString("$(packagedir)/generators/class.py"));
             this.AddInputFile("SpecFile", this.CreateTokenizedString("$(packagedir)/specs/generated_class.xml"));
@@ -81,10 +79,9 @@ namespace ExternalSourceGeneratorTest2
         C.Cxx.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var python_generator = Bam.Core.Graph.Instance.FindReferencedModule<SpecificPythonGenerator>();
 

@@ -33,10 +33,9 @@ namespace Bam.Core.Test
         Bam.Core.Module
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             // this is quite ugly, but you can only use
             // Bam.Core.Graph.FindReferencedModule while modules are being

@@ -54,10 +54,9 @@ namespace Test
         C.ObjectFile
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
         }
     }
@@ -66,10 +65,9 @@ namespace Test
         C.ObjectFile
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
             try
             {
@@ -93,10 +91,9 @@ namespace Test
         C.ObjectFile
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
             this.PrivatePatch(settings =>
             {
@@ -110,10 +107,9 @@ namespace Test
         C.ObjectFile
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
             this.PrivatePatch(settings =>
                 {
@@ -127,10 +123,9 @@ namespace Test
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/main.c");
         }
@@ -140,10 +135,9 @@ namespace Test
         C.Cxx.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCxxSourceContainer("$(packagedir)/source/main.c");
         }
@@ -154,10 +148,9 @@ namespace Test
         C.GUIApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
             source.PrivatePatch(settings =>

@@ -33,10 +33,9 @@ namespace InstallerTest1
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("InstallerTest1: Example C dynamic library");
@@ -58,10 +57,9 @@ namespace InstallerTest1
         C.Cxx.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("InstallerTest1: Example C++ dynamic library");

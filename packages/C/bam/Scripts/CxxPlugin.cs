@@ -38,12 +38,10 @@ namespace C.Cxx
         /// <summary>
         /// Initialize the plugin
         /// </summary>
-        /// <param name="parent">with this parent Module</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.RegisterGeneratedFile(
                 ExecutableKey,
                 this.CreateTokenizedString(

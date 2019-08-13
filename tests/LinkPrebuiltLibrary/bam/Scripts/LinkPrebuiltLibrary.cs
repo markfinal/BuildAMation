@@ -34,10 +34,9 @@ namespace LinkPrebuiltLibrary
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/library/*.c");
         }
@@ -47,10 +46,9 @@ namespace LinkPrebuiltLibrary
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
             this.CompileAndLinkAgainst<TestLib>(source);

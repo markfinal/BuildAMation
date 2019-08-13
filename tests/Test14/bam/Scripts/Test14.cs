@@ -33,10 +33,9 @@ namespace Test14
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/staticlibrary1.h");
             this.CreateCSourceContainer("$(packagedir)/source/staticlibrary1.c");
@@ -54,10 +53,9 @@ namespace Test14
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test14: Example dynamic library");

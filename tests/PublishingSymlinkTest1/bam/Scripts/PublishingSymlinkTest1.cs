@@ -34,10 +34,9 @@ namespace PublishingSymlinkTest1
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             // copy a single data file as the root of all other copies
             this.IncludeFiles<Runtime>("$(packagedir)/data/testfile1.txt", this.CreateTokenizedString("$(publishroot)"), null);

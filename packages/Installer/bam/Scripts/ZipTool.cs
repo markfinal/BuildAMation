@@ -101,8 +101,7 @@ namespace Installer
         ZipTool
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
 #if D_NUGET_7_ZIP_COMMANDLINE
             this.Macros.AddVerbatim(
@@ -113,7 +112,7 @@ namespace Installer
 
             // since the toolPath macro is needed to evaluate the Executable property
             // in the check for existence
-            base.Init(parent);
+            base.Init();
         }
 
         public override Bam.Core.Settings

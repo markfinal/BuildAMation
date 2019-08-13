@@ -33,10 +33,9 @@ namespace EmbedStaticIntoDynamicLibrary
         C.CObjectFileCollection
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.AddFiles("$(packagedir)/source/static/*.c");
 
@@ -64,10 +63,9 @@ namespace EmbedStaticIntoDynamicLibrary
         C.Cxx.ObjectFileCollection
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.AddFiles("$(packagedir)/source/static/*.c");
 
@@ -95,10 +93,9 @@ namespace EmbedStaticIntoDynamicLibrary
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("EmbedStaticIntoDynamicLibrary: Example C dynamic library");
@@ -127,10 +124,9 @@ namespace EmbedStaticIntoDynamicLibrary
         C.Cxx.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("EmbedStaticIntoDynamicLibrary: Example C++ dynamic library");
@@ -159,10 +155,9 @@ namespace EmbedStaticIntoDynamicLibrary
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/app/*.c");
             this.CompileAndLinkAgainst<CDynamicLibrary>(source);
@@ -183,10 +178,9 @@ namespace EmbedStaticIntoDynamicLibrary
         C.Cxx.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/app/*.c");
             this.CompileAndLinkAgainst<CxxDynamicLibrary>(source);
@@ -207,10 +201,9 @@ namespace EmbedStaticIntoDynamicLibrary
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<CApp>(C.ConsoleApplication.ExecutableKey);
@@ -221,10 +214,9 @@ namespace EmbedStaticIntoDynamicLibrary
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<CxxApp>(C.Cxx.ConsoleApplication.ExecutableKey);

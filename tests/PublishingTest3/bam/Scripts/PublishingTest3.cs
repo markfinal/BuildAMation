@@ -33,10 +33,9 @@ namespace PublishingTest3
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/source/dynamiclib.h");
             this.CreateCSourceContainer("$(packagedir)/source/dynamiclib.c");
@@ -47,10 +46,9 @@ namespace PublishingTest3
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main1.c");
             this.CompileAndLinkAgainst<SimpleDynamicLib>(source);
@@ -61,10 +59,9 @@ namespace PublishingTest3
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main2.c");
             this.CompileAndLinkAgainst<SimpleDynamicLib>(source);
@@ -75,10 +72,9 @@ namespace PublishingTest3
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<SimpleExe1>(C.ConsoleApplication.ExecutableKey);
@@ -91,10 +87,9 @@ namespace PublishingTest3
         Publisher.DebugSymbolCollation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateSymbolsFrom<Runtime>();
         }
@@ -105,10 +100,9 @@ namespace PublishingTest3
         Publisher.StrippedBinaryCollation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.StripBinariesFrom<Runtime, DebugSymbols>();
         }

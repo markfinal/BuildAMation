@@ -34,10 +34,9 @@ namespace InstallerTest1
         Publisher.StrippedBinaryCollation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.StripBinariesFrom<CExecutableRuntime, CExecutableDebugSymbols>();
         }
@@ -48,10 +47,9 @@ namespace InstallerTest1
         Publisher.StrippedBinaryCollation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.StripBinariesFrom<CxxExecutableRuntime, CxxExecutableDebugSymbols>();
         }

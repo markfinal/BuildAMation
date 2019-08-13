@@ -45,12 +45,10 @@ namespace C
         /// <summary>
         /// Initialize the dynamic library
         /// </summary>
-        /// <param name="parent">from this parent Module</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.RegisterGeneratedFile(
                 ExecutableKey,
                 this.CreateTokenizedString(

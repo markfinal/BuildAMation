@@ -38,10 +38,9 @@ namespace Publisher
         private C.ConsoleApplication TheSource;
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ChangeRPathTool>();
         }
 

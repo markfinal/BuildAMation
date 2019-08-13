@@ -33,10 +33,9 @@ namespace Test13
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test13: Example dynamic library A");
@@ -57,10 +56,9 @@ namespace Test13
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test13: Example dynamic library B");
@@ -83,10 +81,9 @@ namespace Test13
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
 
@@ -108,10 +105,9 @@ namespace Test13
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<Application>(C.ConsoleApplication.ExecutableKey);

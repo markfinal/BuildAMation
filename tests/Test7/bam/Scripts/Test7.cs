@@ -33,10 +33,9 @@ namespace Test7
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("ExplicitDynamicLibrary");
 

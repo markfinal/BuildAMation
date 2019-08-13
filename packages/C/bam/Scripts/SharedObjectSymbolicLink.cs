@@ -50,12 +50,10 @@ namespace C
         /// <summary>
         /// Initialize this module
         /// </summary>
-        /// <param name="parent">From this module</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
             this.IsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);

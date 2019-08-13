@@ -33,10 +33,9 @@ namespace InstallerTest1
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
             var appAnchor = this.Include<CExecutable>(C.GUIApplication.ExecutableKey);
@@ -60,10 +59,9 @@ namespace InstallerTest1
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
             var appAnchor = this.Include<CxxExecutable>(C.Cxx.GUIApplication.ExecutableKey);

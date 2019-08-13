@@ -33,10 +33,9 @@ namespace Test10
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/stlib.c");
         }
@@ -46,10 +45,9 @@ namespace Test10
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test10: Example dynamic library");
@@ -62,10 +60,9 @@ namespace Test10
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/standaloneapp.c");
 
@@ -77,10 +74,9 @@ namespace Test10
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/dlldependentapp.c");
 
@@ -101,10 +97,9 @@ namespace Test10
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
 

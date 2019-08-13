@@ -38,12 +38,10 @@ namespace C.ObjCxx
         /// <summary>
         /// Initialize this ObjectiveC++ module.
         /// </summary>
-        /// <param name="parent">with this parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.Compiler = C.DefaultToolchain.ObjectiveCxx_Compiler(this.BitDepth);
         }
     }

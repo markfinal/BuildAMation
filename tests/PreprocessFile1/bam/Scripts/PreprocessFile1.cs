@@ -33,10 +33,9 @@ namespace PreprocessFile1
         C.PreprocessedFile
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.PublicPatch((settings,appliedTo) =>
             {
@@ -57,10 +56,9 @@ namespace PreprocessFile1
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
 

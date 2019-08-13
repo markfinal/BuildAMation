@@ -34,10 +34,9 @@ namespace CocoaTest1
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init (parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/library.c");
         }
@@ -48,10 +47,9 @@ namespace CocoaTest1
         C.GUIApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init (parent);
+            base.Init();
 
             this.CreateObjectiveCSourceContainer("$(packagedir)/source/main.m");
 
@@ -71,10 +69,9 @@ namespace CocoaTest1
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
             this.Include<CocoaTest>(C.ConsoleApplication.ExecutableKey);

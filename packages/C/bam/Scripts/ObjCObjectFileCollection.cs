@@ -38,12 +38,10 @@ namespace C.ObjC
         /// <summary>
         /// Initialize this collection
         /// </summary>
-        /// <param name="parent">with this parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.Tool = C.DefaultToolchain.ObjectiveC_Compiler(this.BitDepth);
         }
     }

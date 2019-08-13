@@ -34,10 +34,9 @@ namespace CocoaTest2
         C.GUIApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init (parent);
+            base.Init();
 
             this.CreateObjectiveCSourceContainer("$(packagedir)/source/main.m");
 
@@ -55,10 +54,9 @@ namespace CocoaTest2
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
             var anchor = this.Include<MyApplication>(C.ConsoleApplication.ExecutableKey);

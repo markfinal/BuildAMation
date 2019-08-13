@@ -44,10 +44,9 @@ namespace Installer
         public const string ScriptKey = "InnoSetup script";
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var encapsulatingModule = Bam.Core.Graph.Instance.ModuleStack.Peek();
             this.RegisterGeneratedFile(
@@ -175,8 +174,7 @@ namespace Installer
         Bam.Core.PreBuiltTool
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
 #if D_NUGET_INNOSETUP
             this.Macros.AddVerbatim(
@@ -186,7 +184,7 @@ namespace Installer
 #endif
             // since the toolPath macro is needed to evaluate the Executable property
             // in the check for existence
-            base.Init(parent);
+            base.Init();
         }
 
         public override Bam.Core.Settings
@@ -209,10 +207,9 @@ namespace Installer
         private InnoSetupScript ScriptModule;
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.ScriptModule = Bam.Core.Module.Create<InnoSetupScript>();
             this.DependsOn(this.ScriptModule);

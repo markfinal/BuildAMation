@@ -35,10 +35,9 @@ namespace InstallerTest1
         Installer.TarBall
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("C_TarBallInstaller");
 
@@ -62,10 +61,9 @@ namespace InstallerTest1
         Installer.TarBall
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_TarBallInstaller");
 
@@ -91,10 +89,9 @@ namespace InstallerTest1
         Installer.TarBall
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("C_SymbolsTarBall");
 
@@ -113,10 +110,9 @@ namespace InstallerTest1
         Installer.TarBall
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_SymbolsTarBall");
 

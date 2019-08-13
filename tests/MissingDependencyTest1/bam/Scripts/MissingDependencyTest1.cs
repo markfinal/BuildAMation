@@ -33,10 +33,9 @@ namespace MissingDependencyTest1
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
             this.CompileAndLinkAgainst<Dependent>(source);
@@ -47,10 +46,9 @@ namespace MissingDependencyTest1
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
             this.CompileAndLinkAgainst<Library>(source);
@@ -61,10 +59,9 @@ namespace MissingDependencyTest1
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/library.c");
             this.CompileAgainst<Dependent>(source);
@@ -75,10 +72,9 @@ namespace MissingDependencyTest1
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             throw new Bam.Core.UnableToBuildModuleException("this is testing failure to build");
         }
@@ -88,10 +84,9 @@ namespace MissingDependencyTest1
         C.Plugin
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/plugin.c");
 
@@ -103,10 +98,9 @@ namespace MissingDependencyTest1
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/plugintest.c");
 
@@ -118,10 +112,9 @@ namespace MissingDependencyTest1
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<PluginTest>(C.ConsoleApplication.ExecutableKey);

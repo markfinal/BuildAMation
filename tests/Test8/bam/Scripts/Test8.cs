@@ -56,10 +56,9 @@ namespace Test8
         }
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
             this.RequiredToExist<Test7.ExplicitDynamicLibrary>(source);
@@ -82,10 +81,9 @@ namespace Test8
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<ApplicationTest>(C.ConsoleApplication.ExecutableKey);

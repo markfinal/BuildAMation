@@ -59,10 +59,9 @@ namespace ConfigurationTest1
         System.Type IHasModuleConfiguration.WriteableClassType => typeof(ConfigureLibrary);
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/configurablelibrary/*.h");
             var source = this.CreateCSourceContainer("$(packagedir)/source/library.c");

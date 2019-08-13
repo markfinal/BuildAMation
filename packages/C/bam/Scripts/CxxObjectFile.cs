@@ -38,12 +38,10 @@ namespace C.Cxx
         /// <summary>
         /// Initialize the object file
         /// </summary>
-        /// <param name="parent">From this parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             // TODO: shouldn't attempt to find the default C compiler if only C++ is of interest
             this.Compiler = C.DefaultToolchain.Cxx_Compiler(this.BitDepth);
         }

@@ -34,10 +34,9 @@ namespace AssemblerTest1
         C.Cxx.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateAssemblerSourceContainer();
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
@@ -133,10 +132,9 @@ namespace AssemblerTest1
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateAssemblerSourceContainer();
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))

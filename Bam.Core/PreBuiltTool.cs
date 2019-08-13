@@ -53,12 +53,10 @@ namespace Bam.Core
         /// Bam.Core.UnableToBuildModuleException is thrown. This can be caught locally
         /// if it is recoverable, otherwise the module using the Tool will not build.
         /// </summary>
-        /// <param name="parent">Parent module to this module being initialised.</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             if (!this.Executable.IsParsed)
             {

@@ -46,10 +46,9 @@ namespace Publisher
         private ICollatedObject anchor = null;
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<StripTool>();
             this.RegisterGeneratedFile(

@@ -39,12 +39,10 @@ namespace C.Cxx
         /// <summary>
         /// Initialize the console application
         /// </summary>
-        /// <param name="parent">With this parent Module</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.Linker = C.DefaultToolchain.Cxx_Linker(this.BitDepth);
         }
 

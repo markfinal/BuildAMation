@@ -33,10 +33,9 @@ namespace ChrpathTest1
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/*.c");
 
@@ -53,10 +52,9 @@ namespace ChrpathTest1
         Publisher.ChangeRPathModule
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Source = Bam.Core.Graph.Instance.FindReferencedModule<TestExe>();
 

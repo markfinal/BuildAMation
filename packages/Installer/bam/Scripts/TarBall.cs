@@ -49,12 +49,10 @@ namespace Installer
         /// <summary>
         /// Initialize this module
         /// </summary>
-        /// <param name="parent">with this parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var encapsulatingModule = Bam.Core.Graph.Instance.ModuleStack.Peek();
             this.ScriptPath = this.CreateTokenizedString(
@@ -182,12 +180,10 @@ namespace Installer
         /// <summary>
         /// Initialize the module
         /// </summary>
-        /// <param name="parent">from the parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.RegisterGeneratedFile(
                 TarBallKey,

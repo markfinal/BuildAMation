@@ -38,10 +38,9 @@ namespace NonPackageNamespaceTest1
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/*.h");
             var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
@@ -69,10 +68,9 @@ namespace NonPackageNamespaceTest1
             C.ConsoleApplication
         {
             protected override void
-            Init(
-                Bam.Core.Module parent)
+            Init()
             {
-                base.Init(parent);
+                base.Init();
 
                 var source = this.CreateCSourceContainer("$(packagedir)/tests/test1.c");
                 this.CompileAndLinkAgainst<Library>(source);
@@ -91,10 +89,9 @@ namespace NonPackageNamespaceTest1
             C.ConsoleApplication
         {
             protected override void
-            Init(
-                Bam.Core.Module parent)
+            Init()
             {
-                base.Init(parent);
+                base.Init();
 
                 var source = this.CreateCSourceContainer("$(packagedir)/tests/test2.c");
                 this.CompileAndLinkAgainst<Library>(source);
@@ -114,10 +111,9 @@ namespace NonPackageNamespaceTest1
             Publisher.Collation
         {
             protected override void
-            Init(
-                Bam.Core.Module parent)
+            Init()
             {
-                base.Init(parent);
+                base.Init();
 
                 this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
                 this.IncludeAllModulesInNamespace("NonPackageNamespaceTest1.tests", C.ConsoleApplication.ExecutableKey);

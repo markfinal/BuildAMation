@@ -33,10 +33,9 @@ namespace InstallerTest1
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/source/staticlib/*.h");
             this.CreateCxxSourceContainer("$(packagedir)/source/staticlib/*.cpp");
@@ -55,10 +54,9 @@ namespace InstallerTest1
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/source/staticlib/*.h");
             this.CreateCSourceContainer("$(packagedir)/source/staticlib/*.cpp");

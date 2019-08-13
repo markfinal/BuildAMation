@@ -51,12 +51,10 @@ namespace C
         /// <summary>
         /// Initialize this preprocessed file
         /// </summary>
-        /// <param name="parent">from this parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.Tool = C.DefaultToolchain.Preprocessor(this.BitDepth);
         }
 

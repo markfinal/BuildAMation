@@ -33,10 +33,9 @@ namespace Test17
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             // NB: these are long handed code, normally hidden behind utility functions
 
@@ -55,10 +54,9 @@ namespace Test17
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var y = Bam.Core.Graph.Instance.FindReferencedModule<Y>();
             this.DependsOn(y);
@@ -74,10 +72,9 @@ namespace Test17
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var x = Bam.Core.Graph.Instance.FindReferencedModule<X>();
             this.DependsOn(x);
