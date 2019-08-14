@@ -48,12 +48,12 @@ namespace Installer
         {
             base.Init();
 
-            var encapsulatingModule = Bam.Core.Graph.Instance.ModuleStack.Peek();
+            var parentModule = Bam.Core.Graph.Instance.ModuleStack.Peek();
             this.RegisterGeneratedFile(
                 ScriptKey,
                 this.CreateTokenizedString(
                     "$(buildroot)/$(0)/$(config)/script.nsi",
-                    new[] { encapsulatingModule.Macros["modulename"] }
+                    new[] { parentModule.Macros["modulename"] }
                 )
             );
         }

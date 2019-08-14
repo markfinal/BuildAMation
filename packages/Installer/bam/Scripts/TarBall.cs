@@ -54,10 +54,10 @@ namespace Installer
         {
             base.Init();
 
-            var encapsulatingModule = Bam.Core.Graph.Instance.ModuleStack.Peek();
+            var parentModule = Bam.Core.Graph.Instance.ModuleStack.Peek();
             this.ScriptPath = this.CreateTokenizedString(
                 "$(buildroot)/$(0)/$(config)/tarinput.txt",
-                new[] { encapsulatingModule.Macros["modulename"] }
+                new[] { parentModule.Macros["modulename"] }
             );
         }
 
