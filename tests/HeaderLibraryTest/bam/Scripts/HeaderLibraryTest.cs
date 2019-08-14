@@ -40,10 +40,9 @@ namespace HeaderLibraryTest
         C.HeaderLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var headers = this.CreateHeaderContainer("$(packagedir)/include/unusedmacros.h");
 
@@ -65,10 +64,9 @@ namespace HeaderLibraryTest
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
 
@@ -81,10 +79,9 @@ namespace HeaderLibraryTest
         C.HeaderLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/lib1/stringifymacro.h");
 
@@ -103,10 +100,9 @@ namespace HeaderLibraryTest
         C.HeaderLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/lib2/stringifymacrovalue.h");
 
@@ -126,10 +122,9 @@ namespace HeaderLibraryTest
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/lib.c");
 
@@ -142,10 +137,9 @@ namespace HeaderLibraryTest
         C.HeaderLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/level1/**.h");
 
@@ -163,10 +157,9 @@ namespace HeaderLibraryTest
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/deeplib.c");
 

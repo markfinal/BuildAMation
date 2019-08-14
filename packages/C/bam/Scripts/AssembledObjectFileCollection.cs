@@ -38,12 +38,10 @@ namespace C
         /// <summary>
         /// Initialize the container of assembled object files
         /// </summary>
-        /// <param name="parent"></param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.Tool = DefaultToolchain.Assembler(this.BitDepth);
         }
     }

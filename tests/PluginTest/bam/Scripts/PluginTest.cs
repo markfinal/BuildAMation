@@ -34,10 +34,9 @@ namespace PluginTest
         C.Cxx.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/application/main.cpp");
             source.PrivatePatch(settings =>
@@ -63,10 +62,9 @@ namespace PluginTest
         C.Cxx.Plugin
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Macros["pluginprefix"] = Bam.Core.TokenizedString.CreateVerbatim("test");
             this.Macros["pluginext"] = Bam.Core.TokenizedString.CreateVerbatim(".plugin");
@@ -84,10 +82,9 @@ namespace PluginTest
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.WindowedApplication);
             this.Include<Application>(C.ConsoleApplication.ExecutableKey);
@@ -100,10 +97,9 @@ namespace PluginTest
         Publisher.DebugSymbolCollation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateSymbolsFrom<RuntimePackage>();
         }
@@ -114,10 +110,9 @@ namespace PluginTest
         Publisher.StrippedBinaryCollation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.StripBinariesFrom<RuntimePackage, DebugSymbols>();
         }

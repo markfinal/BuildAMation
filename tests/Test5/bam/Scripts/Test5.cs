@@ -34,10 +34,9 @@ namespace Test5
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.PrivatePatch(settings =>
                 {
@@ -59,10 +58,9 @@ namespace Test5
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
 
@@ -83,10 +81,9 @@ namespace Test5
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.Library);
 
@@ -104,10 +101,9 @@ namespace Test5
         Publisher.DebugSymbolCollation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateSymbolsFrom<RuntimePackage>();
         }
@@ -118,10 +114,9 @@ namespace Test5
         Publisher.StrippedBinaryCollation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.StripBinariesFrom<RuntimePackage, DebugSymbols>();
         }

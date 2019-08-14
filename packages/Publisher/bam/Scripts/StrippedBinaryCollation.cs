@@ -56,12 +56,10 @@ namespace Publisher
         /// <summary>
         /// Initialize this module
         /// </summary>
-        /// <param name="parent">from this parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.RegisterGeneratedFile(
                 StripBinaryDirectoryKey,

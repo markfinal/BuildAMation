@@ -34,10 +34,9 @@ namespace DuplicateSourceFilenameTest
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var headers = this.CreateHeaderContainer("$(packagedir)/source/A/*.h");
             headers.AddFiles("$(packagedir)/source/B/*.h");

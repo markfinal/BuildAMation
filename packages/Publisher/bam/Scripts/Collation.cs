@@ -43,10 +43,9 @@ namespace Publisher
         public Bam.Core.Module ParentOfCollationModule { get; private set; }
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var graph = Bam.Core.Graph.Instance;
             var index = (graph.CommonModuleType.Count > 1) ? 1 : 0;
@@ -84,10 +83,9 @@ namespace Publisher
         public const string ExistingFileKey = "Preexisting file to be copied";
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.RegisterGeneratedFile(ExistingFileKey, this.Macros["ExistingFile"]);
         }
@@ -105,10 +103,9 @@ namespace Publisher
         public const string ExistingDirectoryKey = "Preexisting directory to be copied";
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.RegisterGeneratedFile(ExistingDirectoryKey, this.Macros["ExistingDirectory"]);
         }
@@ -134,10 +131,9 @@ namespace Publisher
         Bam.Core.Module
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Mapping = new ModuleOutputDefaultPublishingPathMapping();
 

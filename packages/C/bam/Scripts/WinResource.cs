@@ -38,12 +38,10 @@ namespace C
         /// <summary>
         /// Initialize this module
         /// </summary>
-        /// <param name="parent">in this parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.Compiler = DefaultToolchain.WinResource_Compiler(this.BitDepth);
         }
 
@@ -93,12 +91,10 @@ namespace C
         /// <summary>
         /// Initialize this module
         /// </summary>
-        /// <param name="parent">from this parent Module</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.Tool = DefaultToolchain.WinResource_Compiler(this.BitDepth);
         }
     }

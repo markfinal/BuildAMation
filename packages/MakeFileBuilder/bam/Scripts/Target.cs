@@ -80,7 +80,7 @@ namespace MakeFileBuilder
             }
             else
             {
-                var encapsulating = module.GetEncapsulatingReferencedModule();
+                var encapsulating = module.EncapsulatingModule;
                 varName.Append(
                     $"{encapsulating.ToString()}_{module.ToString()}"
                 );

@@ -39,12 +39,10 @@ namespace C
         /// <summary>
         /// Initialize this application
         /// </summary>
-        /// <param name="parent">with this parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.PrivatePatch(settings =>
                 {

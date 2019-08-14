@@ -33,10 +33,9 @@ namespace CyclicDependenciesTest1
         Bam.Core.Module
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var depB = Bam.Core.Graph.Instance.FindReferencedModule<B>();
             this.DependsOn(depB);
@@ -56,10 +55,9 @@ namespace CyclicDependenciesTest1
         Bam.Core.Module
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var depA = Bam.Core.Graph.Instance.FindReferencedModule<A>();
             this.DependsOn(depA);
@@ -79,10 +77,9 @@ namespace CyclicDependenciesTest1
         Bam.Core.Module
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var depB = Bam.Core.Graph.Instance.FindReferencedModule<B>();
             this.DependsOn(depB);

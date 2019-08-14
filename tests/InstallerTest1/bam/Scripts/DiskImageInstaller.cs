@@ -34,10 +34,9 @@ namespace InstallerTest1
         Installer.DiskImage
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.PrivatePatch(settings =>
                 {
@@ -56,10 +55,9 @@ namespace InstallerTest1
         Installer.DiskImage
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.PrivatePatch(settings =>
             {

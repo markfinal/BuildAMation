@@ -1,3 +1,15 @@
+14-Aug-2019 Fixes #587. BREAKING CHANGE. No longer need to pass a parent Module to Module.Init().
+This change affects every Module class. The use of the parent Module is the exception rather than the rule, and there are alternative methods to get the information if it is needed.
+Added Bam.Core.Graph.ModuleStack property in order to peek at the hierarchy of parent Modules. This can be done in Init() calls.
+Removed Bam.Core.Module.GetEncapsulatingReferencedModule. Access to the encapsulating Module is now through the readonly Module.EncapsulatingModule property.
+The encapsulating Module is now calculated after the Module preInitCallback but before Init().
+The following Module macros are no longer available:
+* parentmodulename
+* encapsulatedparentmodulename
+* encapsulatingmodulename
+* encapsulatingbuilddir
+They can be obtained via the actual Modules accessed by the new properties.
+
 12-Aug-2019 Fixes #638. Debugging package project files no longer allows multiple package versions to appear in the internal package list.
 
 12-Aug-2019 ======== Version 2.0.0 beta 2 Release ========

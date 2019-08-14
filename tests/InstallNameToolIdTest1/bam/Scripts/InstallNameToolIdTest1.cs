@@ -33,10 +33,9 @@ namespace InstallNameToolIdTest1
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/*.c");
         }
@@ -46,10 +45,9 @@ namespace InstallNameToolIdTest1
         Publisher.IdNameOSX
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Source = Bam.Core.Graph.Instance.FindReferencedModule<DynamicLib>();
 

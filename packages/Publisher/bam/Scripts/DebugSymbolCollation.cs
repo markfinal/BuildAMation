@@ -54,12 +54,10 @@ namespace Publisher
         /// <summary>
         /// Initialise this module
         /// </summary>
-        /// <param name="parent">With this parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.RegisterGeneratedFile(
                 DebugSymbolsDirectoryKey,

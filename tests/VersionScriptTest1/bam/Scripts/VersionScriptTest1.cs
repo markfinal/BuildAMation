@@ -34,10 +34,9 @@ namespace VersionScriptTest1
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/application/main.c");
             this.CompileAndLinkAgainst<Library>(source);
@@ -56,10 +55,9 @@ namespace VersionScriptTest1
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/library/library.c");
             source.PrivatePatch(settings =>
@@ -115,10 +113,9 @@ namespace VersionScriptTest1
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
             this.Include<Application>(C.ConsoleApplication.ExecutableKey);

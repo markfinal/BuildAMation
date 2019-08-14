@@ -33,8 +33,7 @@ namespace ZipTest1
         Installer.ZipModule
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
             // note, set before the base class Init function is called
             this.Macros.Add(
@@ -42,7 +41,7 @@ namespace ZipTest1
                 this.CreateTokenizedString("$(packagedir)/data/dirtozip")
             );
 
-            base.Init(parent);
+            base.Init();
 
             this.Macros.AddVerbatim(
                 "zipoutputbasename",

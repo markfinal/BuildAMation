@@ -62,6 +62,8 @@ namespace Bam.Core
         /// 'modulename' - name of the module
         /// 'OutputName' - the 'main' part of the filename for the output of the module, but may have a module specific prefix and/or suffix
         /// 'config' - the textual name of the configuration for the module
+        /// Note that the EncapsulatingModule property is not available until after the Module's preInit callback has been invoked.
+        /// But the EncapsulatingType is available after the constructor has completed.
         /// </summary>
         protected Module()
         {
@@ -77,8 +79,7 @@ namespace Bam.Core
             // TODO: Can this be generalized to be a collection of files?
             this._GeneratedPaths = new System.Collections.Generic.Dictionary<string, TokenizedString>();
 
-            // capture the details of the encapsulating module
-            this.EncapsulatingModule = null;
+            // capture the type of the encapsulating module
             this.EncapsulatingType = graph.CommonModuleType.Peek();
 
             // add the package root
@@ -238,13 +239,10 @@ namespace Bam.Core
         /// <summary>
         /// Initialize the module. The base implementation does nothing, but subsequent sub-classing
         /// adds more specific details. Always invoke the base.Init.
-        /// The parent module is present for any cases in which parentage is useful for the initialization of the child.
         /// </summary>
-        /// <param name="parent">Parent.</param>
         protected virtual void
-        Init(
-            Module parent)
-        {}
+        Init()
+        { }
 
         /// <summary>
         /// Utillity function to determine whether a specific module type can be created. Does it satisfy all requirements,
@@ -284,11 +282,23 @@ namespace Bam.Core
         /// <param name="module">The module that has just been created and initialized.</param>
         public delegate void PostInitDelegate(Module module);
 
+        private void
+        ConfigureEncapsulatingModule()
+        {
+            var graph = Graph.Instance;
+            this.EncapsulatingModule = graph.GetReferencedModule(this.BuildEnvironment, this.EncapsulatingType);
+
+            // TODO: there may have to be a more general module type for something that is not built, as this affects modules referred to prebuilts too
+            // note that this cannot be a class, as modules already are derived from another base class (generally)
+            if (this.EncapsulatingModule is PreBuiltTool)
+            {
+                return;
+            }
+            this.Macros.Add("moduleoutputdir", graph.BuildModeMetaData.ModuleOutputDirectory(this, this.EncapsulatingModule));
+        }
+
         /// <summary>
         /// Create the specified module type T, given an optional parent module (for collections), pre-init and post-init callbacks.
-        /// If a parent is provided, two macros are defined:
-        /// 'parentmodulename' which is linked to the parent module's 'modulename' macro
-        /// 'encapsulatedparentmodulename' which is linked to the parent's encapsulated module's 'modulename' macro
         /// </summary>
         /// <param name="parent">Parent module for which this new module is intended as a child.</param>
         /// <param name="preInitCallback">Callback invoked after module creation, but prior to Init.</param>
@@ -311,20 +321,20 @@ namespace Bam.Core
                 var module = new T();
                 if (null != parent)
                 {
-                    module.Macros.Add("parentmodulename", parent.Macros["modulename"]);
-
-                    var encapsulatingParent = parent.GetEncapsulatingReferencedModule();
-                    module.Macros.Add("encapsulatedparentmodulename", encapsulatingParent.Macros["modulename"]);
-
-                    // since the parent might have been redirected
+                    // children of Modules that have been redirect, also need to inherit the
+                    // redirected package directory
                     module.AddRedirectedPackageDirectory(parent);
                 }
                 if (preInitCallback != null)
                 {
                     preInitCallback(module);
                 }
-                module.InitializeModuleConfiguration(); // required to run after the preInitCallback for referenced modules
-                module.Init(parent);
+                // required to run after the preInitCallback for referenced modules
+                {
+                    module.ConfigureEncapsulatingModule();
+                    module.InitializeModuleConfiguration();
+                }
+                module.Init();
                 if (postInitCallback != null)
                 {
                     postInitCallback(module);
@@ -974,8 +984,6 @@ namespace Bam.Core
 
         private System.Type EncapsulatingType { get; set; }
 
-        private Module EncapsulatingModule { get; set; }
-
         /// <summary>
         /// A referenced module is an encapsulating module, and can be considered to be uniquely identifiable by name.
         /// An unreferenced module belongs, in some part, to another module and perhaps many of them exist within the
@@ -984,49 +992,28 @@ namespace Bam.Core
         /// all unreferenced modules belonging to that are created within it's Init function, the encapsulating module type
         /// is at the top of the stack.
         /// Knowledge of the encapsulating module is useful for logical grouping, such as build sub-folder names.
-        /// Macros added to the module:
-        /// 'encapsulatingmodulename'
-        /// 'encapsulatingbuilddir'
         /// </summary>
-        /// <returns>The encapsulating referenced module.</returns>
-        public Module
-        GetEncapsulatingReferencedModule()
-        {
-            if (null == this.EncapsulatingModule)
-            {
-                var encapsulatingModule = Graph.Instance.GetReferencedModule(this.BuildEnvironment, this.EncapsulatingType);
-                this.Macros.AddVerbatim("encapsulatingmodulename", this.EncapsulatingType.Name);
-                this.Macros.Add("encapsulatingbuilddir", encapsulatingModule.Macros["packagebuilddir"]);
-                this.EncapsulatingModule = encapsulatingModule;
-            }
-            return this.EncapsulatingModule;
-        }
+        public Module EncapsulatingModule { get; private set; }
 
         private void
         Complete()
         {
-            var graph = Graph.Instance;
-            var encapsulatingModule = this.GetEncapsulatingReferencedModule();
-
-            // TODO: there may have to be a more general module type for something that is not built, as this affects modules referred to prebuilts too
-            // note that this cannot be a class, as modules already are derived from another base class (generally)
-            if (!(encapsulatingModule is PreBuiltTool))
+            // modules that are encapsulated, that have settings, and aren't a child (as their parent is also encapsulated,
+            // and thus gets this too), inherit the public patches from the encapsulating module,
+            // since this is identical behavior to 'using public patches'
+            if (this.EncapsulatingModule == this)
             {
-                this.Macros.Add("moduleoutputdir", graph.BuildModeMetaData.ModuleOutputDirectory(this, encapsulatingModule));
+                return;
             }
-
-            // modules that are encapsulated, have settings, and aren't a child (as their parent is also encapsulated, and thus gets this too), inherit the
-            // public patches from the encapsulating module, since this is identical behavior to 'using public patches'
-            if (encapsulatingModule != this)
+            if (null == this.Settings)
             {
-                if (this.Settings != null)
-                {
-                    if (!(this is IChildModule))
-                    {
-                        this.UsePublicPatches(encapsulatingModule);
-                    }
-                }
+                return;
             }
+            if (this is IChildModule)
+            {
+                return;
+            }
+            this.UsePublicPatches(this.EncapsulatingModule);
         }
 
         /// <summary>

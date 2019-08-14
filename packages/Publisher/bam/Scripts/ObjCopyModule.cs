@@ -55,12 +55,10 @@ namespace Publisher
         /// <summary>
         /// Initialize this module
         /// </summary>
-        /// <param name="parent">with this parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<ObjCopyTool>();
             this.Requires(sourceModule);
         }
@@ -158,12 +156,10 @@ namespace Publisher
         /// <summary>
         /// Initialize this module
         /// </summary>
-        /// <param name="parent">with this parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var trueSourceModule = this.sourceModule;
             // stripping works on the initial collated file
@@ -255,12 +251,10 @@ namespace Publisher
         /// <summary>
         /// Initialize this module
         /// </summary>
-        /// <param name="parent">with this parent</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.RegisterGeneratedFile(
                 UpdateOriginalExecutable,

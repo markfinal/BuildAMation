@@ -33,10 +33,9 @@ namespace CyclicDependenciesTest2
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/lib1.c");
             this.CompileAgainst<Lib2>(source);
@@ -47,10 +46,9 @@ namespace CyclicDependenciesTest2
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/lib2.c");
             this.CompileAgainst<Lib1>(source);
@@ -61,10 +59,9 @@ namespace CyclicDependenciesTest2
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/app.c");
             this.CompileAndLinkAgainst<Lib1>(source);

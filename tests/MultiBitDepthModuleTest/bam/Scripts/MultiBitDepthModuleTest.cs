@@ -39,10 +39,9 @@ namespace MultiBitDepthModuleTest
         }
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/main.c");
         }
@@ -58,10 +57,9 @@ namespace MultiBitDepthModuleTest
         }
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/main.c");
         }

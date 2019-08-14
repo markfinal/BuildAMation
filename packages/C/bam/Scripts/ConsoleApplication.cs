@@ -63,12 +63,10 @@ namespace C
         /// <summary>
         /// Initialize the console application
         /// </summary>
-        /// <param name="parent"></param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.RegisterGeneratedFile(
                 ExecutableKey,
                 this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)")

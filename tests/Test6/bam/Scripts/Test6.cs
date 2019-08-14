@@ -33,10 +33,9 @@ namespace Test6
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var headers = this.CreateHeaderContainer("$(packagedir)/include/header.h");
             headers.AddFile("$(packagedir)/include/platform/platform.h");

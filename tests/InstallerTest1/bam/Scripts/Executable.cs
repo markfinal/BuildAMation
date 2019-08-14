@@ -34,10 +34,9 @@ namespace InstallerTest1
         C.GUIApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/*.cpp");
 
@@ -64,10 +63,9 @@ namespace InstallerTest1
         C.Cxx.GUIApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/*.cpp");
 

@@ -105,16 +105,14 @@ namespace WindowsSDK
         /// <summary>
         /// Initialize the module
         /// </summary>
-        /// <param name="parent">Parent module</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
             var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             this.EnvironmentVariables = vcMeta.Environment(C.EBit.ThirtyTwo);
             this.configure(null);
             // now check the executable exists
-            base.Init(parent);
+            base.Init();
         }
     }
 
@@ -128,16 +126,14 @@ namespace WindowsSDK
         /// <summary>
         /// Initialize the module
         /// </summary>
-        /// <param name="parent">Parent module</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
             var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             this.EnvironmentVariables = vcMeta.Environment(C.EBit.SixtyFour);
             this.configure("x64");
             // now check the executable exists
-            base.Init(parent);
+            base.Init();
         }
     }
 }

@@ -42,7 +42,7 @@ namespace C
         Compile(
             ObjectFileBase module)
         {
-            var encapsulating = module.GetEncapsulatingReferencedModule();
+            var encapsulating = module.EncapsulatingModule;
 
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
             var project = solution.EnsureProjectExists(encapsulating);

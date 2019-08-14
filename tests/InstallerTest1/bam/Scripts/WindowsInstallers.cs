@@ -34,10 +34,9 @@ namespace InstallerTest1
         Installer.InnoSetupInstaller
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("C_InnoSetupInstaller");
 
@@ -50,10 +49,9 @@ namespace InstallerTest1
         Installer.InnoSetupInstaller
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_InnoSetupInstaller");
 
@@ -66,10 +64,9 @@ namespace InstallerTest1
         Installer.NSISInstaller
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("C_NSISInstaller");
 
@@ -82,10 +79,9 @@ namespace InstallerTest1
         Installer.NSISInstaller
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_NSISInstaller");
 

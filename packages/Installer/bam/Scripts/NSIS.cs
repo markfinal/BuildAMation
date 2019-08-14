@@ -44,13 +44,17 @@ namespace Installer
         public const string ScriptKey = "NSIS script";
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
+
+            var parentModule = Bam.Core.Graph.Instance.ModuleStack.Peek();
             this.RegisterGeneratedFile(
                 ScriptKey,
-                this.CreateTokenizedString("$(buildroot)/$(encapsulatingmodulename)/$(config)/script.nsi")
+                this.CreateTokenizedString(
+                    "$(buildroot)/$(0)/$(config)/script.nsi",
+                    new[] { parentModule.Macros["modulename"] }
+                )
             );
         }
 
@@ -95,7 +99,7 @@ namespace Installer
             var path = this.GeneratedPaths[ScriptKey].ToString();
             var dir = System.IO.Path.GetDirectoryName(path);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir);
-            var outputName = this.GetEncapsulatingReferencedModule().Macros["OutputName"];
+            var outputName = this.EncapsulatingModule.Macros["OutputName"];
             using (var scriptWriter = new System.IO.StreamWriter(path))
             {
                 scriptWriter.WriteLine($"Name \"{outputName.ToString()}\"");
@@ -152,8 +156,7 @@ namespace Installer
         Bam.Core.PreBuiltTool
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
 #if D_NUGET_NSIS
             this.Macros.AddVerbatim(
@@ -163,7 +166,7 @@ namespace Installer
 #endif
             // since the toolPath macro is needed to evaluate the Executable property
             // in the check for existence
-            base.Init(parent);
+            base.Init();
         }
 
         public override Bam.Core.Settings
@@ -186,10 +189,9 @@ namespace Installer
         private NSISScript ScriptModule;
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.ScriptModule = Bam.Core.Module.Create<NSISScript>();
             this.DependsOn(this.ScriptModule);

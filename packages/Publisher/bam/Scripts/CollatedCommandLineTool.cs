@@ -37,10 +37,9 @@ namespace Publisher
         Bam.Core.ICommandLineTool
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             // share the metadata in case it's queried
             this.MetaData = (this as ICollatedObject).SourceModule.Tool.MetaData;

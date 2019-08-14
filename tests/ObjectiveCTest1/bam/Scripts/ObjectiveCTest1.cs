@@ -35,10 +35,9 @@ namespace ObjectiveCTest1
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateObjectiveCSourceContainer();
             source.AddFile("$(packagedir)/source/main.m");

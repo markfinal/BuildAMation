@@ -38,12 +38,10 @@ namespace C.Cxx
         /// <summary>
         /// Initialize the object file collection
         /// </summary>
-        /// <param name="parent">with this parent Module</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.Tool = C.DefaultToolchain.Cxx_Compiler(this.BitDepth);
         }
     }

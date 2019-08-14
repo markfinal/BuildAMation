@@ -33,10 +33,9 @@ namespace Test4
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.LinkAgainst<MyStaticLib>();
 
@@ -59,10 +58,9 @@ namespace Test4
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/staticlibrary.h");
             var source = this.CreateCSourceContainer("$(packagedir)/source/staticlibrary.c");

@@ -33,10 +33,9 @@ namespace ProceduralHeaderTest2
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var headers = this.CreateHeaderContainer();
             var source = this.CreateCSourceContainer("$(packagedir)/source/testapp/main.c");
@@ -59,10 +58,9 @@ namespace ProceduralHeaderTest2
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var headers = this.CreateHeaderContainer("$(packagedir)/include/*.h");
             var source = this.CreateCSourceContainer("$(packagedir)/source/library/lib.c");
@@ -86,10 +84,9 @@ namespace ProceduralHeaderTest2
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/testapp2/main.c");
             this.CompileAndLinkAgainst<LibraryUsingGeneratedHeader>(source);

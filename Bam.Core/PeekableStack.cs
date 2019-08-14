@@ -64,7 +64,10 @@ namespace Bam.Core
         /// </summary>
         /// <returns>Object that remains on the end of the stack.</returns>
         public T
-        Peek() => this.Peek(0);
+        Peek()
+        {
+            return this.Peek(0);
+        }
 
         /// <summary>
         /// More generalised peeking.
@@ -75,11 +78,19 @@ namespace Bam.Core
         /// <returns>Object, index elements from the end of the stack, but which remains on the stack.</returns>
         public T
         Peek(
-            int index) => this.list.ElementAt(this.list.Count - index - 1);
+            int index)
+        {
+            return this.list.ElementAt(this.list.Count - index - 1);
+        }
 
         /// <summary>
         /// Returns the number of elements on the stack (read only).
         /// </summary>
         public int Count => this.list.Count;
+
+        /// <summary>
+        /// True if the stack is empty.
+        /// </summary>
+        public bool Empty => (0 == this.list.Count);
     }
 }

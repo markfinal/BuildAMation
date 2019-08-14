@@ -142,12 +142,10 @@ namespace C
         /// <summary>
         /// Initialize this CModule
         /// </summary>
-        /// <param name="parent">Parent module</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.IsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);
 
@@ -164,9 +162,11 @@ namespace C
             }
 
             // if there is a parent from which this module is created, inherit bitdepth
-            if (null != parent)
+            var graph = Bam.Core.Graph.Instance;
+            if (!graph.ModuleStack.Empty)
             {
-                this.BitDepth = (parent as CModule).BitDepth;
+                var parentModule = graph.ModuleStack.Peek();
+                this.BitDepth = (parentModule as CModule).BitDepth;
             }
         }
 

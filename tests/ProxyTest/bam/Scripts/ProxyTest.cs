@@ -34,10 +34,9 @@ namespace ProxyTest
         C.ObjectFile
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.InputPath = this.CreateTokenizedString("$(packagedir)/main.c");
         }
@@ -47,10 +46,9 @@ namespace ProxyTest
         C.CObjectFileCollection
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.AddFile("$(packagedir)/main.c");
         }

@@ -34,10 +34,9 @@ namespace ConfigurationTest1
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/funkyfeature/*.h");
             this.CreateCSourceContainer("$(packagedir)/source/funkyfeature.c");

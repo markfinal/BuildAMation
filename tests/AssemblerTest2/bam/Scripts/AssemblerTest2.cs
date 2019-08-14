@@ -34,10 +34,9 @@ namespace AssemblerTest2
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/*.c");
             this.CreateHeaderContainer("$(packagedir)/source/*.h");

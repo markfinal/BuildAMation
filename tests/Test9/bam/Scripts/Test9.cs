@@ -33,10 +33,9 @@ namespace Test9
         C.ObjectFile
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main_c.c");
         }
@@ -46,10 +45,9 @@ namespace Test9
         C.CObjectFileCollection
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.AddFile("$(packagedir)/source/main_c.c");
         }
@@ -59,10 +57,9 @@ namespace Test9
         C.Cxx.ObjectFile
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main_cpp.c");
             this.PrivatePatch(settings =>
@@ -78,10 +75,9 @@ namespace Test9
         C.Cxx.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/*.h");
 
@@ -109,10 +105,9 @@ namespace Test9
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/library_c.h");
 
@@ -129,10 +124,9 @@ namespace Test9
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/library_cpp.h");
 
@@ -152,10 +146,9 @@ namespace Test9
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test9: Example C dynamic library");
@@ -175,10 +168,9 @@ namespace Test9
         C.Cxx.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test9: Example C++ dynamic library");

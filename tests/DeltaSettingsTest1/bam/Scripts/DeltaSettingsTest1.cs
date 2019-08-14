@@ -33,10 +33,9 @@ namespace DeltaSettingsTest1
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
             source.PrivatePatch(settings =>

@@ -34,10 +34,9 @@ namespace ExternalSourceGeneratorTest1
         C.ExternalSourceGenerator
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Executable = Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("python").FirstOrDefault());
 
@@ -75,10 +74,9 @@ namespace ExternalSourceGeneratorTest1
         }
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var python_generator = Bam.Core.Module.Create<PythonSourceGenerator>();
             ConfigurePythonGenerator(python_generator);

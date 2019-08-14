@@ -33,10 +33,9 @@ namespace Test2
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/library.h");
             this.CreateCSourceContainer("$(packagedir)/source/library.c");
@@ -54,10 +53,9 @@ namespace Test2
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/application.c");
 

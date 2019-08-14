@@ -33,10 +33,9 @@ namespace HeaderLibraryTest2
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/baselib/*.h");
             this.CreateCSourceContainer("$(packagedir)/source/baselib/*.c");
@@ -55,10 +54,9 @@ namespace HeaderLibraryTest2
         C.HeaderLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/headerlib/*.h");
 
@@ -78,10 +76,9 @@ namespace HeaderLibraryTest2
         C.StaticLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateHeaderContainer("$(packagedir)/include/middlelib/*.h");
             var source = this.CreateCSourceContainer("$(packagedir)/source/middlelib/*.c");
@@ -102,10 +99,9 @@ namespace HeaderLibraryTest2
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/app/*.c");
 

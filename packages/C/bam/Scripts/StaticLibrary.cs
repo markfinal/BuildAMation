@@ -48,12 +48,10 @@ namespace C
         /// <summary>
         /// Initialize this module
         /// </summary>
-        /// <param name="parent">for this parent module</param>
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
             this.Librarian = DefaultToolchain.Librarian(this.BitDepth);
             this.RegisterGeneratedFile(
                 LibraryKey,

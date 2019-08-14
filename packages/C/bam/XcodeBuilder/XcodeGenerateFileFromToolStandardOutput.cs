@@ -52,7 +52,7 @@ namespace C
             {
                 // tool was not buildable
                 postBuildTarget = false;
-                var encapsulating = module.GetEncapsulatingReferencedModule();
+                var encapsulating = module.EncapsulatingModule;
                 if (null == encapsulating.MetaData)
                 {
                     var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;

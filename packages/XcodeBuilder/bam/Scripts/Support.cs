@@ -148,7 +148,7 @@ namespace XcodeBuilder
             out Target target,
             out Configuration configuration)
         {
-            var encapsulating = module.GetEncapsulatingReferencedModule();
+            var encapsulating = module.EncapsulatingModule;
 #if D_PACKAGE_PUBLISHER
             if (encapsulating is Publisher.Collation asCollation)
             {

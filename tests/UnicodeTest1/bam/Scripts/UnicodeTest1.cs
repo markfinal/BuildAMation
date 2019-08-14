@@ -35,10 +35,9 @@ namespace UnicodeTest1
         protected C.Cxx.ObjectFileCollection Source { get; private set; }
 
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Source = this.CreateCxxSourceContainer("$(packagedir)/source/main.cpp");
             this.Source.PrivatePatch(settings =>
@@ -53,10 +52,9 @@ namespace UnicodeTest1
         Common
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Source.PrivatePatch(settings =>
             {
@@ -73,10 +71,9 @@ namespace UnicodeTest1
         Common
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Source.PrivatePatch(settings =>
             {
@@ -93,10 +90,9 @@ namespace UnicodeTest1
         Common
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Source.PrivatePatch(settings =>
             {

@@ -34,10 +34,9 @@ namespace InstallNameToolChangeTest1
         C.DynamicLibrary
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.CreateCSourceContainer("$(packagedir)/source/lib/*.c");
 
@@ -55,10 +54,9 @@ namespace InstallNameToolChangeTest1
         C.ConsoleApplication
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             var source = this.CreateCSourceContainer("$(packagedir)/source/app/*.c");
             this.CompileAndLinkAgainst<DynamicLib>(source);
@@ -69,10 +67,9 @@ namespace InstallNameToolChangeTest1
         Publisher.ChangeNameOSX
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.Source = Bam.Core.Graph.Instance.FindReferencedModule<Executable>();
 
@@ -89,10 +86,9 @@ namespace InstallNameToolChangeTest1
         Publisher.Collation
     {
         protected override void
-        Init(
-            Bam.Core.Module parent)
+        Init()
         {
-            base.Init(parent);
+            base.Init();
 
             this.SetDefaultMacrosAndMappings(EPublishingType.ConsoleApplication);
 
