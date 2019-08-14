@@ -162,9 +162,10 @@ namespace C
             }
 
             // if there is a parent from which this module is created, inherit bitdepth
-            if (!Bam.Core.Graph.Instance.ModuleStack.Empty)
+            var graph = Bam.Core.Graph.Instance;
+            if (!graph.ModuleStack.Empty)
             {
-                var parentModule = Bam.Core.Graph.ModuleStack.Peek();
+                var parentModule = graph.ModuleStack.Peek();
                 this.BitDepth = (parentModule as CModule).BitDepth;
             }
         }
