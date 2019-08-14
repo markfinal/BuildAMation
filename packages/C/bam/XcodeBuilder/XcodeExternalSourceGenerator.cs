@@ -43,7 +43,7 @@ namespace C
         GenerateSource(
             ExternalSourceGenerator module)
         {
-            var encapsulating = module.GetEncapsulatingReferencedModule();
+            var encapsulating = module.EncapsulatingModule;
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
             var target = workspace.EnsureTargetExists(encapsulating);

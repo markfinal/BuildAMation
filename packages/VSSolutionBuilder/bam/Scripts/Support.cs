@@ -100,7 +100,7 @@ namespace VSSolutionBuilder
         GetModuleForProject(
             Bam.Core.Module requestingModule)
         {
-            var projectModule = requestingModule.GetEncapsulatingReferencedModule();
+            var projectModule = requestingModule.EncapsulatingModule;
 #if D_PACKAGE_PUBLISHER
             if (projectModule is Publisher.Collation)
             {

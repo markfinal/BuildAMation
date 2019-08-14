@@ -53,7 +53,7 @@ namespace C
             {
                 // tool was not buildable
                 postBuildTarget = false;
-                var encapsulating = module.GetEncapsulatingReferencedModule();
+                var encapsulating = module.EncapsulatingModule;
                 if (null == encapsulating.MetaData)
                 {
                     var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;

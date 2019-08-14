@@ -99,7 +99,7 @@ namespace Installer
             var path = this.GeneratedPaths[ScriptKey].ToString();
             var dir = System.IO.Path.GetDirectoryName(path);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir);
-            var outputName = this.GetEncapsulatingReferencedModule().Macros["OutputName"];
+            var outputName = this.EncapsulatingModule.Macros["OutputName"];
             using (var scriptWriter = new System.IO.StreamWriter(path))
             {
                 scriptWriter.WriteLine($"Name \"{outputName.ToString()}\"");
