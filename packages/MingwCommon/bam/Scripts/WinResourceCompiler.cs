@@ -43,7 +43,7 @@ namespace MingwCommon
             discovery.discover(depth: null);
 
             this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(0)\bin\windres.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
-            this.Macros.AddVerbatim("objext", ".o");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.ObjectFileExtension, ".o");
 
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.CreateTokenizedString("$(0)/bin", new[] { mingwMeta["InstallDir"] as Bam.Core.TokenizedString })));
             this.InheritedEnvironmentVariables.Add("TEMP");

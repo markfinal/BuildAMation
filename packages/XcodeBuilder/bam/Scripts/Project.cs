@@ -554,7 +554,7 @@ namespace XcodeBuilder
                     projectConfig["COMBINE_HIDPI_IMAGES"] = new UniqueConfigurationValue("NO"); // TODO: needed to quieten Xcode 4 verification
 
                     // reset SRCROOT, or it is taken to be where the workspace is
-                    var pkgdir = this.Module.Macros["packagedir"].ToString() + "/";
+                    var pkgdir = this.Module.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].ToString() + "/";
                     var relativeSourcePath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
                         System.IO.Path.GetDirectoryName(this.ProjectDir.ToString()),
                         pkgdir
@@ -613,8 +613,8 @@ namespace XcodeBuilder
                         foreach (var file in diff)
                         {
                             var fullPath = file.FileRef.Path.ToString();
-                            var package_build_dir = this.Module.Macros["packagebuilddir"].ToString();
-                            var srcRoot = this.Module.Macros["packagedir"].ToString();
+                            var package_build_dir = this.Module.Macros[Bam.Core.ModuleMacroNames.PackageBuildDirectory].ToString();
+                            var srcRoot = this.Module.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].ToString();
                             if (fullPath.StartsWith(package_build_dir))
                             {
                                 var excluded_path = "$(SYMROOT)" + fullPath.Replace(package_build_dir, "");

@@ -79,13 +79,13 @@ namespace VisualCCommon
             var fullLinkExePath = this.GetLinkerPath(depth);
             this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(fullLinkExePath));
 
-            this.Macros.AddVerbatim("exeext", ".exe");
-            this.Macros.AddVerbatim("dynamicprefix", string.Empty);
-            this.Macros.AddVerbatim("dynamicext", ".dll");
-            this.Macros.AddVerbatim("pluginprefix", string.Empty);
-            this.Macros.AddVerbatim("pluginext", ".dll");
-            this.Macros.AddVerbatim("libprefix", string.Empty);
-            this.Macros.AddVerbatim("libext", ".lib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.ExecutableFileExtension, ".exe");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.DynamicLibraryPrefix, string.Empty);
+            this.Macros.AddVerbatim(C.ModuleMacroNames.DynamicLibraryFileExtension, ".dll");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.PluginPrefix, string.Empty);
+            this.Macros.AddVerbatim(C.ModuleMacroNames.PluginFileExtension, ".dll");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryPrefix, string.Empty);
+            this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryFileExtension, ".lib");
             this.Macros.AddVerbatim("pdbext", ".pdb");
 
             this.InheritedEnvironmentVariables.Add("TEMP");

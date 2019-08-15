@@ -39,7 +39,7 @@ namespace InstallerTest1
         {
             base.Init();
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("C_TarBallInstaller");
+            this.Macros[Bam.Core.ModuleMacroNames.OutputName] = Bam.Core.TokenizedString.CreateVerbatim("C_TarBallInstaller");
 
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
 
@@ -65,7 +65,7 @@ namespace InstallerTest1
         {
             base.Init();
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_TarBallInstaller");
+            this.Macros[Bam.Core.ModuleMacroNames.OutputName] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_TarBallInstaller");
 
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
 
@@ -93,7 +93,7 @@ namespace InstallerTest1
         {
             base.Init();
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("C_SymbolsTarBall");
+            this.Macros[Bam.Core.ModuleMacroNames.OutputName] = Bam.Core.TokenizedString.CreateVerbatim("C_SymbolsTarBall");
 
             this.SourceFolder<CExecutableDebugSymbols>(Publisher.DebugSymbolCollation.DebugSymbolsDirectoryKey);
 
@@ -114,7 +114,7 @@ namespace InstallerTest1
         {
             base.Init();
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_SymbolsTarBall");
+            this.Macros[Bam.Core.ModuleMacroNames.OutputName] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_SymbolsTarBall");
 
             this.SourceFolder<CxxExecutableDebugSymbols>(Publisher.DebugSymbolCollation.DebugSymbolsDirectoryKey);
 

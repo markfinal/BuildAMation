@@ -48,12 +48,12 @@ namespace ClangCommon
             this.Version = clangMeta.ToolchainVersion;
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim($"--sdk {clangMeta.SDK}"));
 
-            this.Macros.AddVerbatim("exeext", string.Empty);
-            this.Macros.AddVerbatim("dynamicprefix", "lib");
-            this.Macros.AddVerbatim("dynamicextonly", ".dylib");
-            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.Create(".$(MajorVersion)$(dynamicextonly)", null));
-            this.Macros.AddVerbatim("pluginprefix", "lib");
-            this.Macros.AddVerbatim("pluginext", ".dylib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.ExecutableFileExtension, string.Empty);
+            this.Macros.AddVerbatim(C.ModuleMacroNames.DynamicLibraryPrefix, "lib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.DynamicLibraryUnversionedFileExtension, ".dylib");
+            this.Macros.Add(C.ModuleMacroNames.DynamicLibraryFileExtension, Bam.Core.TokenizedString.Create(".$(MajorVersion)$(dynamicextonly)", null));
+            this.Macros.AddVerbatim(C.ModuleMacroNames.PluginPrefix, "lib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.PluginFileExtension, ".dylib");
         }
 
         private static string

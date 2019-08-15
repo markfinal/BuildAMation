@@ -102,24 +102,24 @@ namespace Bam.Core
                     }
                 }
                 this.PackageDefinition = packageDefinition;
-                this.Macros.AddVerbatim("bampackagedir", packageDefinition.GetPackageDirectory());
+                this.Macros.AddVerbatim(ModuleMacroNames.BamPackageDirectory, packageDefinition.GetPackageDirectory());
                 this.AddRedirectedPackageDirectory(this);
-                this.Macros.AddVerbatim("packagename", packageDefinition.Name);
-                this.Macros.AddVerbatim("packagebuilddir", packageDefinition.GetBuildDirectory());
-                Graph.Instance.Macros.Add($"{packageDefinition.Name}.packagedir", this.Macros["packagedir"]);
+                this.Macros.AddVerbatim(ModuleMacroNames.PackageName, packageDefinition.Name);
+                this.Macros.AddVerbatim(ModuleMacroNames.PackageBuildDirectory, packageDefinition.GetBuildDirectory());
+                Graph.Instance.Macros.Add($"{packageDefinition.Name}.packagedir", this.Macros[ModuleMacroNames.PackageDirectory]);
             }
             catch (System.NullReferenceException)
             {
                 // graph.Packages can be null during unittests
             }
-            this.Macros.AddVerbatim("modulename", this.GetType().Name);
-            this.Macros.Add("OutputName", this.Macros["modulename"]);
+            this.Macros.AddVerbatim(ModuleMacroNames.ModuleName, this.GetType().Name);
+            this.Macros.Add(ModuleMacroNames.OutputName, this.Macros[ModuleMacroNames.ModuleName]);
 
             this.OwningRank = null;
             this.Tool = null;
             this.MetaData = null;
             this.BuildEnvironment = graph.BuildEnvironment;
-            this.Macros.AddVerbatim("config", this.BuildEnvironment.Configuration.ToString());
+            this.Macros.AddVerbatim(ModuleMacroNames.ConfigurationName, this.BuildEnvironment.Configuration.ToString());
             this.ReasonToExecute = ExecuteReasoning.Undefined();
             this.ExecutionTask = null;
             this.EvaluationTask = null;
@@ -167,7 +167,7 @@ namespace Bam.Core
             var downloadedPackageSource = this.PackageDefinition.Sources?.First().ExtractedPackageDir;
             if (null != downloadedPackageSource)
             {
-                this.Macros.AddVerbatim("packagedir", downloadedPackageSource);
+                this.Macros.AddVerbatim(ModuleMacroNames.PackageDirectory, downloadedPackageSource);
                 return;
             }
 
@@ -191,11 +191,11 @@ namespace Bam.Core
                 var downloadedRedirectedPackageSource = redirectedPackageDefinition.Sources?.First().ExtractedPackageDir;
                 if (null != downloadedRedirectedPackageSource)
                 {
-                    this.Macros.AddVerbatim("packagedir", downloadedRedirectedPackageSource);
+                    this.Macros.AddVerbatim(ModuleMacroNames.PackageDirectory, downloadedRedirectedPackageSource);
                 }
                 else
                 {
-                    this.Macros.AddVerbatim("packagedir", redirectedPackageDefinition.GetPackageDirectory());
+                    this.Macros.AddVerbatim(ModuleMacroNames.PackageDirectory, redirectedPackageDefinition.GetPackageDirectory());
                 }
                 return;
             }
@@ -217,12 +217,12 @@ namespace Bam.Core
 
                         if (RelativePathUtilities.IsPathAbsolute(packageDirRedirect.RedirectedPath))
                         {
-                            this.Macros.AddVerbatim("packagedir", packageDirRedirect.RedirectedPath);
+                            this.Macros.AddVerbatim(ModuleMacroNames.PackageDirectory, packageDirRedirect.RedirectedPath);
                         }
                         else
                         {
                             this.Macros.Add(
-                                "packagedir",
+                                ModuleMacroNames.PackageDirectory,
                                 this.CreateTokenizedString(
                                     "@normalize($(bampackagedir)/$(0))",
                                     Bam.Core.TokenizedString.CreateVerbatim(packageDirRedirect.RedirectedPath)
@@ -233,7 +233,10 @@ namespace Bam.Core
                     }
                 }
             }
-            this.Macros.Add("packagedir", this.CreateTokenizedString("$(bampackagedir)"));
+            this.Macros.Add(
+                ModuleMacroNames.PackageDirectory,
+                this.CreateTokenizedString($"$({ModuleMacroNames.BamPackageDirectory})")
+            );
         }
 
         /// <summary>
@@ -294,7 +297,7 @@ namespace Bam.Core
             {
                 return;
             }
-            this.Macros.Add("moduleoutputdir", graph.BuildModeMetaData.ModuleOutputDirectory(this, this.EncapsulatingModule));
+            this.Macros.Add(ModuleMacroNames.ModuleOutputDirectory, graph.BuildModeMetaData.ModuleOutputDirectory(this, this.EncapsulatingModule));
         }
 
         /// <summary>

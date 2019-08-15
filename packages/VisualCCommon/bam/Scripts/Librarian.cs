@@ -78,8 +78,8 @@ namespace VisualCCommon
             this.EnvironmentVariables = meta.Environment(depth);
             var fullLibExePath = this.GetLibrarianPath(depth);
             this.Macros.Add("ArchiverPath", Bam.Core.TokenizedString.CreateVerbatim(fullLibExePath));
-            this.Macros.AddVerbatim("libprefix", string.Empty);
-            this.Macros.AddVerbatim("libext", ".lib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryPrefix, string.Empty);
+            this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryFileExtension, ".lib");
         }
 
         /// <summary>

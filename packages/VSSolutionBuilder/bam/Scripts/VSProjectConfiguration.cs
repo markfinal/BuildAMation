@@ -213,7 +213,7 @@ namespace VSSolutionBuilder
         {
             this.IntermediateDirectory = this.Module.CreateTokenizedString(
                 "$(packagebuilddir)/$(0)/$(config)/",
-                new[] {this.Module.EncapsulatingModule.Macros["modulename"]}
+                new[] {this.Module.EncapsulatingModule.Macros[Bam.Core.ModuleMacroNames.ModuleName] }
             );
             this.IntermediateDirectory.Parse();
         }

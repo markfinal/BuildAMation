@@ -53,7 +53,7 @@ namespace Installer
                 ScriptKey,
                 this.CreateTokenizedString(
                     "$(buildroot)/$(0)/$(config)/script.iss",
-                    new[] { parentModule.Macros["modulename"]}
+                    new[] { parentModule.Macros[Bam.Core.ModuleMacroNames.ModuleName] }
                 )
             );
         }
@@ -99,7 +99,7 @@ namespace Installer
             var path = this.GeneratedPaths[ScriptKey].ToString();
             var dir = System.IO.Path.GetDirectoryName(path);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir);
-            var outputName = this.EncapsulatingModule.Macros["OutputName"];
+            var outputName = this.EncapsulatingModule.Macros[Bam.Core.ModuleMacroNames.OutputName];
             using (var scriptWriter = new System.IO.StreamWriter(path))
             {
                 scriptWriter.WriteLine("[Setup]");

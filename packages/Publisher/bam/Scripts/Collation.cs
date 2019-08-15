@@ -820,7 +820,7 @@ namespace Publisher
         {
             var modulePublishDir = this.Mapping.FindPublishDirectory(dependent, key);
             var collatedFile = this.IncludeNoGather(dependent, key, modulePublishDir, null, anchorPublishRoot);
-            (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros["OutputName"]);
+            (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros[Bam.Core.ModuleMacroNames.OutputName]);
             this.gatherAllDependencies(dependent, key, collatedFile, anchorPublishRoot);
             return collatedFile;
         }

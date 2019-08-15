@@ -75,9 +75,8 @@ namespace C.Cxx
                         });
                     this.LinkerNameSymbolicLink = linkerName;
 
-                    if (this.Macros.Contains("MinorVersion"))
+                    if (this.Macros.Contains(ModuleMacroNames.MinorVersion))
                     {
-                        Bam.Core.Log.MessageAll("MinorVersion");
                         var SOName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback: module =>
                              {
                                  module.Macros.Add("SymlinkFilename", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));

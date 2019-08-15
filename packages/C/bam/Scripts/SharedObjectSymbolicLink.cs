@@ -80,7 +80,7 @@ namespace C
                 this.DependsOn(value);
 
                 // ensure that the symlink is called the same as what it is linking to
-                this.Macros["OutputName"] = value.Macros["OutputName"];
+                this.Macros[Bam.Core.ModuleMacroNames.OutputName] = value.Macros[Bam.Core.ModuleMacroNames.OutputName];
             }
         }
 

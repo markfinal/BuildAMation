@@ -46,19 +46,19 @@ namespace GccCommon
             var installPath = Bam.Core.TokenizedString.CreateVerbatim(System.IO.Path.GetDirectoryName(ldPath));
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(installPath));
 
-            this.Macros.AddVerbatim("exeext", string.Empty);
-            this.Macros.AddVerbatim("dynamicprefix", "lib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.ExecutableFileExtension, string.Empty);
+            this.Macros.AddVerbatim(C.ModuleMacroNames.DynamicLibraryPrefix, "lib");
             // TODO: should be able to build these up cumulatively, but the deferred expansion only
             // works for a single depth (up to the Module using this Tool) so this needs looking into
-            this.Macros.AddVerbatim("linkernameext", ".so");
-            this.Macros.Add("sonameext", Bam.Core.TokenizedString.Create(".so.$(MajorVersion)", null));
+            this.Macros.AddVerbatim(C.ModuleMacroNames.SharedObjectLinkerNameFileExtension, ".so");
+            this.Macros.Add(C.ModuleMacroNames.SharedObjectSONameFileExtension, Bam.Core.TokenizedString.Create(".so.$(MajorVersion)", null));
 
             // dynamicext MUST be forced inline, in order for the pre-function #valid
             // to evaluate in the correct context, i.e. this string can never be parsed out of context
-            this.Macros.Add("dynamicext", Bam.Core.TokenizedString.CreateForcedInline(".so.$(MajorVersion)#valid(.$(MinorVersion)#valid(.$(PatchVersion)))"));
+            this.Macros.Add(C.ModuleMacroNames.DynamicLibraryFileExtension, Bam.Core.TokenizedString.CreateForcedInline(".so.$(MajorVersion)#valid(.$(MinorVersion)#valid(.$(PatchVersion)))"));
 
-            this.Macros.AddVerbatim("pluginprefix", "lib");
-            this.Macros.AddVerbatim("pluginext", ".so");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.PluginPrefix, "lib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.PluginFileExtension, ".so");
         }
 
         /// <summary>

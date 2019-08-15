@@ -44,7 +44,7 @@ namespace InstallerTest1
                     dmgSettings.ImageSize = "128m";
                 });
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("C_DiskImageInstaller");
+            this.Macros[Bam.Core.ModuleMacroNames.OutputName] = Bam.Core.TokenizedString.CreateVerbatim("C_DiskImageInstaller");
 
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }
@@ -65,7 +65,7 @@ namespace InstallerTest1
                 dmgSettings.ImageSize = "128m";
             });
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_DiskImageInstaller");
+            this.Macros[Bam.Core.ModuleMacroNames.OutputName] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_DiskImageInstaller");
 
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }

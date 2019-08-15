@@ -1,3 +1,5 @@
+15-Aug-2019 Fixes #639. Added Bam.Core.GraphMacroNames, Bam.Core.ModuleMacroNames, C.ModuleMacroNames static classes with string constants for many of the keys used in the macro lookups.
+
 14-Aug-2019 Fixes #587. BREAKING CHANGE. No longer need to pass a parent Module to Module.Init().
 This change affects every Module class. The use of the parent Module is the exception rather than the rule, and there are alternative methods to get the information if it is needed.
 Added Bam.Core.Graph.ModuleStack property in order to peek at the hierarchy of parent Modules. This can be done in Init() calls.

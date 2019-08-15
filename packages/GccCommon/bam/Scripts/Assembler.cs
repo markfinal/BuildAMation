@@ -42,7 +42,7 @@ namespace GccCommon
 
         protected AssemblerBase()
         {
-            this.Macros.AddVerbatim("objext", ".o");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.ObjectFileExtension, ".o");
 
             this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
             var discovery = this.GccMetaData as C.IToolchainDiscovery;

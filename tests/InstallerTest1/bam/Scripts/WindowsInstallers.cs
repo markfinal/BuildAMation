@@ -38,7 +38,7 @@ namespace InstallerTest1
         {
             base.Init();
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("C_InnoSetupInstaller");
+            this.Macros[Bam.Core.ModuleMacroNames.OutputName] = Bam.Core.TokenizedString.CreateVerbatim("C_InnoSetupInstaller");
 
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }
@@ -53,7 +53,7 @@ namespace InstallerTest1
         {
             base.Init();
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_InnoSetupInstaller");
+            this.Macros[Bam.Core.ModuleMacroNames.OutputName] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_InnoSetupInstaller");
 
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }
@@ -68,7 +68,7 @@ namespace InstallerTest1
         {
             base.Init();
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("C_NSISInstaller");
+            this.Macros[Bam.Core.ModuleMacroNames.OutputName] = Bam.Core.TokenizedString.CreateVerbatim("C_NSISInstaller");
 
             this.SourceFolder<CExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }
@@ -83,7 +83,7 @@ namespace InstallerTest1
         {
             base.Init();
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_NSISInstaller");
+            this.Macros[Bam.Core.ModuleMacroNames.OutputName] = Bam.Core.TokenizedString.CreateVerbatim("Cxx_NSISInstaller");
 
             this.SourceFolder<CxxExecutableStripped>(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey);
         }

@@ -43,8 +43,8 @@ namespace MingwCommon
             discovery.discover(depth: null);
 
             this.Macros.Add("ArchiverPath", this.CreateTokenizedString(@"$(0)\bin\ar.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
-            this.Macros.AddVerbatim("libprefix", "lib");
-            this.Macros.AddVerbatim("libext", ".a");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryPrefix, "lib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryFileExtension, ".a");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.InheritedEnvironmentVariables.Add("SYSTEMROOT");

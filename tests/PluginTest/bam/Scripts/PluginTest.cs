@@ -66,8 +66,8 @@ namespace PluginTest
         {
             base.Init();
 
-            this.Macros["pluginprefix"] = Bam.Core.TokenizedString.CreateVerbatim("test");
-            this.Macros["pluginext"] = Bam.Core.TokenizedString.CreateVerbatim(".plugin");
+            this.Macros[C.ModuleMacroNames.PluginPrefix] = Bam.Core.TokenizedString.CreateVerbatim("test");
+            this.Macros[C.ModuleMacroNames.PluginFileExtension] = Bam.Core.TokenizedString.CreateVerbatim(".plugin");
 
             var source = this.CreateCxxSourceContainer("$(packagedir)/source/plugin/pluginmain.cpp");
             source.PrivatePatch(settings =>

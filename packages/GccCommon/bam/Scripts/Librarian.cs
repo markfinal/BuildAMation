@@ -44,8 +44,8 @@ namespace GccCommon
             discovery.discover(depth: null);
             this.Version = this.GccMetaData.ToolchainVersion;
 
-            this.Macros.AddVerbatim("libprefix", "lib");
-            this.Macros.AddVerbatim("libext", ".a");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryPrefix, "lib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryFileExtension, ".a");
             this.Macros.Add("LibrarianPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.ArPath));
         }
 

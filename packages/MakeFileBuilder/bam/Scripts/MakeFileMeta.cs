@@ -131,7 +131,7 @@ namespace MakeFileBuilder
                 {
                     continue;
                 }
-                var packageDir = module.Macros["packagedir"].ToString();
+                var packageDir = module.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].ToString();
                 packageMap.Add(package, packageDir);
             }
             commonMeta.ExportPackageDirectories(

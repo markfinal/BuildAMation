@@ -887,7 +887,7 @@ namespace Bam.Core
             System.Collections.Generic.IEnumerable<PackageDefinition> packages)
         {
             this.PackageDefinitions = packages;
-            this.Macros.AddVerbatim("masterpackagename", this.MasterPackage.Name);
+            this.Macros.AddVerbatim(GraphMacroNames.MasterPackageName, this.MasterPackage.Name);
         }
 
         /// <summary>
@@ -982,7 +982,7 @@ namespace Bam.Core
                     value
                 );
                 this.TheBuildRoot = absoluteBuildRootPath;
-                this.Macros.AddVerbatim("buildroot", absoluteBuildRootPath);
+                this.Macros.AddVerbatim(GraphMacroNames.BuildRoot, absoluteBuildRootPath);
             }
         }
 

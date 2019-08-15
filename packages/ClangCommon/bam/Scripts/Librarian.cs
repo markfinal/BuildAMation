@@ -51,8 +51,8 @@ namespace ClangCommon
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim($"--sdk {clangMeta.SDK}"));
             this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("ar"));
 
-            this.Macros.AddVerbatim("libprefix", "lib");
-            this.Macros.AddVerbatim("libext", ".a");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryPrefix, "lib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryFileExtension, ".a");
         }
 
         /// <summary>

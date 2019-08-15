@@ -44,13 +44,13 @@ namespace MingwCommon
             this.Macros.AddVerbatim("LinkerSuffix", mingwMeta.ToolSuffix);
 
             this.Macros.Add("BinPath", this.CreateTokenizedString(@"$(0)\bin", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
-            this.Macros.AddVerbatim("exeext", ".exe");
-            this.Macros.AddVerbatim("dynamicprefix", "lib");
-            this.Macros.AddVerbatim("dynamicext", ".dll");
-            this.Macros.AddVerbatim("pluginprefix", "lib");
-            this.Macros.AddVerbatim("pluginext", ".dll");
-            this.Macros.AddVerbatim("libprefix", "lib");
-            this.Macros.AddVerbatim("libext", ".a");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.ExecutableFileExtension, ".exe");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.DynamicLibraryPrefix, "lib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.DynamicLibraryFileExtension, ".dll");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.PluginPrefix, "lib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.PluginFileExtension, ".dll");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryPrefix, "lib");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryFileExtension, ".a");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
             this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));

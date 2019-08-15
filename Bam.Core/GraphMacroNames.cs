@@ -27,56 +27,21 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using System.Linq;
-namespace C
+namespace Bam.Core
 {
     /// <summary>
-    /// Utility class offering support for Xcode project generation
+    /// Common macro names used in the Graph, i.e. Graph.Instance.Macros[use name here]
     /// </summary>
-    public static partial class XcodeSupport
+    public static class GraphMacroNames
     {
         /// <summary>
-        /// Create a StaticLibrary Xcode Target
+        /// Name of the master package.
         /// </summary>
-        /// <param name="module">StaticLibrary module</param>
-        public static void
-        Archive(
-            StaticLibrary module)
-        {
-            Bam.Core.TokenizedString productName;
-            if (module.Macros[Bam.Core.ModuleMacroNames.OutputName].ToString().Equals(module.Macros[Bam.Core.ModuleMacroNames.ModuleName].ToString(), System.StringComparison.Ordinal))
-            {
-                productName = Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}");
-            }
-            else
-            {
-                productName = module.Macros[Bam.Core.ModuleMacroNames.OutputName];
-            }
+        public const string MasterPackageName = "masterpackagename";
 
-            LinkOrArchive(
-                out XcodeBuilder.Target target,
-                out XcodeBuilder.Configuration configuration,
-                module,
-                XcodeBuilder.FileReference.EFileType.Archive,
-                XcodeBuilder.Target.EProductType.StaticLibrary,
-                productName,
-                module.GeneratedPaths[C.StaticLibrary.LibraryKey],
-                module.HeaderFiles
-            );
-
-            // convert librarian settings to the Xcode project
-            XcodeProjectProcessor.XcodeConversion.Convert(
-                module.Settings,
-                module.Settings.GetType(),
-                module,
-                configuration
-            );
-
-            // add order only dependents
-            AddOrderOnlyDependentProjects(
-                module,
-                target
-            );
-        }
+        /// <summary>
+        /// Root directory of where build outputs are written, i.e. this.Macros[use name here] (where this is a Module)
+        /// </summary>
+        public const string BuildRoot = "buildroot";
     }
 }

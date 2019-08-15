@@ -42,7 +42,7 @@ namespace ClangCommon
 
         protected AssemblerBase()
         {
-            this.Macros.AddVerbatim("objext", ".o");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.ObjectFileExtension, ".o");
 
             var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
             var discovery = clangMeta as C.IToolchainDiscovery;

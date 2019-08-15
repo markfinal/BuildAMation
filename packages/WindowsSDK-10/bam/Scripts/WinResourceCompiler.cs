@@ -79,7 +79,7 @@ namespace WindowsSDK
                     "Unable to determine resource compiler path, as neither %WindowsSdkVerBinPath% nor %WindowsSdkDir% were defined"
                 );
             }
-            this.Macros.AddVerbatim("objext", ".res");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.ObjectFileExtension, ".res");
         }
 
         /// <summary>

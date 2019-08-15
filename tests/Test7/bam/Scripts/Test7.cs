@@ -37,7 +37,7 @@ namespace Test7
         {
             base.Init();
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim("ExplicitDynamicLibrary");
+            this.Macros[Bam.Core.ModuleMacroNames.OutputName] = Bam.Core.TokenizedString.CreateVerbatim("ExplicitDynamicLibrary");
 
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test7: Example dynamic library");

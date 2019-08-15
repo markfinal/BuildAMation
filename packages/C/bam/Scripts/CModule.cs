@@ -110,22 +110,22 @@ namespace C
             string minor,
             string patch)
         {
-            this.Macros["MajorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(major);
+            this.Macros[ModuleMacroNames.MajorVersion] = Bam.Core.TokenizedString.CreateVerbatim(major);
             if (minor != null)
             {
-                this.Macros["MinorVersion"] = Bam.Core.TokenizedString.CreateVerbatim(minor);
+                this.Macros[ModuleMacroNames.MinorVersion] = Bam.Core.TokenizedString.CreateVerbatim(minor);
             }
             else
             {
-                this.Macros.Remove("MinorVersion");
+                this.Macros.Remove(ModuleMacroNames.MinorVersion);
             }
             if (patch != null)
             {
-                this.Macros.Add("PatchVersion", Bam.Core.TokenizedString.CreateVerbatim(patch));
+                this.Macros.Add(ModuleMacroNames.PatchVersion, Bam.Core.TokenizedString.CreateVerbatim(patch));
             }
             else
             {
-                this.Macros.Remove("PatchVersion");
+                this.Macros.Remove(ModuleMacroNames.PatchVersion);
             }
         }
 

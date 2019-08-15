@@ -70,7 +70,7 @@ namespace VisualCCommon
         protected CompilerBase(
             C.EBit depth)
         {
-            this.Macros.AddVerbatim("objext", ".obj");
+            this.Macros.AddVerbatim(C.ModuleMacroNames.ObjectFileExtension, ".obj");
 
             var meta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             var discovery = meta as C.IToolchainDiscovery;

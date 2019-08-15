@@ -27,53 +27,53 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace Bam.Core
 {
     /// <summary>
-    /// Abstract class representing any Gcc preprocessor tool
+    /// Common macro names used for Modules.
     /// </summary>
-    public abstract class PreprocessorBase :
-        C.PreprocessorTool
+    public static class ModuleMacroNames
     {
-        protected PreprocessorBase()
-        {
-            this.Macros.AddVerbatim(C.ModuleMacroNames.ObjectFileExtension, ".o");
-
-            this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
-            var discovery = this.GccMetaData as C.IToolchainDiscovery;
-            discovery.discover(depth: null);
-            this.Version = this.GccMetaData.ToolchainVersion;
-        }
+        /// <summary>
+        /// Directory of the Module's package (i.e. that containing the 'bam' folder).
+        /// </summary>
+        public const string BamPackageDirectory = "bampackagedir";
 
         /// <summary>
-        /// Get the Gcc metadata for this tool
+        /// Name of the Module's package.
         /// </summary>
-        protected Gcc.MetaData GccMetaData { get; private set; }
+        public const string PackageName = "packagename";
 
         /// <summary>
-        /// Executable path to this tool
+        /// Root directory that package build files are written to.
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
-    }
-
-    /// <summary>
-    /// Both 32-bit and 64-bit GCC preprocessors
-    /// </summary>
-    [C.RegisterPreprocessor("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
-    [C.RegisterPreprocessor("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
-    public sealed class Preprocessor :
-        PreprocessorBase
-    {
-        public Preprocessor() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
+        public const string PackageBuildDirectory = "packagebuilddir";
 
         /// <summary>
-        /// Create the default settings for the specified module.
+        /// Directory of the Module's package.
+        /// This may be the same as \p BamPackageDirectory, unless the package has
+        /// downloadable or redirected source, and then it is as specified.
         /// </summary>
-        /// <typeparam name="T">Module type</typeparam>
-        /// <param name="module">Module to create settings for</param>
-        /// <returns>New settings instance</returns>
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module) => new Gcc.PreprocessorSettings(module);
+        public const string PackageDirectory = "packagedir";
+
+        /// <summary>
+        /// The name of this Module
+        /// </summary>
+        public const string ModuleName = "modulename";
+
+        /// <summary>
+        /// The basename used for any file written for this Module.
+        /// </summary>
+        public const string OutputName = "OutputName";
+
+        /// <summary>
+        /// The name of the configuration for this Module instance.
+        /// </summary>
+        public const string ConfigurationName = "config";
+
+        /// <summary>
+        /// Directory that this Module's output files are written to.
+        /// </summary>
+        public const string ModuleOutputDirectory = "moduleoutputdir";
     }
 }
