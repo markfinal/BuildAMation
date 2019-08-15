@@ -81,14 +81,9 @@ namespace Bam.Core
             #endif
 
         /// <summary>
-        /// Create an instance of the default settings for the tool associated with the module.
+        /// \copydoc ITool.SettingsType
         /// </summary>
-        /// <returns>The default settings.</returns>
-        /// <param name="module">Module.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        public abstract Settings
-        CreateDefaultSettings<T>(
-            T module) where T : Module;
+        public abstract System.Type SettingsType { get; }
 
         /// <summary>
         /// Get the environment variables to be injected into the run of the tool.

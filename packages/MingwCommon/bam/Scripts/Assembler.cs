@@ -64,25 +64,8 @@ namespace MingwCommon
         public override string UseResponseFileOption => "@";
 
         /// <summary>
-        /// Create the default settings for the specified module.
+        /// \copydoc Bam.Core.ITool.SettingsType
         /// </summary>
-        /// <typeparam name="T">Module type</typeparam>
-        /// <param name="module">Module to create settings for</param>
-        /// <returns>New settings instance</returns>
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            if (typeof(C.AssembledObjectFile).IsInstanceOfType(module) ||
-                typeof(C.AssembledObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new Mingw.AssemblerSettings(module);
-                return settings;
-            }
-            else
-            {
-                throw new Bam.Core.Exception($"Could not determine type of module {typeof(T).ToString()}");
-            }
-        }
+        public override System.Type SettingsType => typeof(Mingw.AssemblerSettings);
     }
 }

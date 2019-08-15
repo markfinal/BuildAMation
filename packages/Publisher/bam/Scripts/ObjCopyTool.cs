@@ -62,14 +62,9 @@ namespace Publisher
         }
 
         /// <summary>
-        /// Create the default settings for the specified module.
+        /// \copydoc Bam.Core.ITool.SettingsType
         /// </summary>
-        /// <typeparam name="T">Module type</typeparam>
-        /// <param name="module">Module to create settings for</param>
-        /// <returns>New settings instance</returns>
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module) => null; // expected that Modules using this will specify their own Settings classes
+        public override System.Type SettingsType => null; // expected that Modules using this will specify their own Settings classes
 
         /// <summary>
         /// Executable path for this tool

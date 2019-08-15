@@ -187,9 +187,10 @@ namespace Installer
             base.Init();
         }
 
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module) => new InnoSetupCompilerSettings(module);
+        /// <summary>
+        /// \copydoc Bam.Core.ITool.SettingsType
+        /// </summary>
+        public override System.Type SettingsType => typeof(InnoSetupCompilerSettings);
 
         /// <summary>
         /// Executable path to the tool

@@ -1194,7 +1194,13 @@ namespace Bam.Core
         MakeSettings()
         {
             System.Diagnostics.Debug.Assert(null != this.Tool);
-            return (this.Tool as ITool).CreateDefaultSettings(this);
+            var type = (this.Tool as ITool).SettingsType;
+            if (null == type)
+            {
+                return null;
+            }
+            var settings = System.Activator.CreateInstance(type, new[] { this }) as Settings;
+            return settings;
         }
 
         /// <summary>

@@ -73,13 +73,8 @@ namespace MingwCommon
         PreprocessorBase
     {
         /// <summary>
-        /// Create the default settings for the specified module.
+        /// \copydoc Bam.Core.ITool.SettingsType
         /// </summary>
-        /// <typeparam name="T">Module type</typeparam>
-        /// <param name="module">Module to create settings for</param>
-        /// <returns>New settings instance</returns>
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module) => new Mingw.PreprocessorSettings(module);
+        public override System.Type SettingsType => typeof(Mingw.PreprocessorSettings);
     }
 }

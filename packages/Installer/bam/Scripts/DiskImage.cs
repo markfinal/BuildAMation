@@ -36,9 +36,10 @@ namespace Installer
     public sealed class DiskImageCompiler :
         Bam.Core.PreBuiltTool
     {
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module) => new DiskImageSettings(module);
+        /// <summary>
+        /// \copydoc Bam.Core.ITool.SettingsType
+        /// </summary>
+        public override System.Type SettingsType => typeof(DiskImageSettings);
 
         /// <summary>
         /// Executable path to the tool

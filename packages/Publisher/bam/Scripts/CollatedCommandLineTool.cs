@@ -62,12 +62,6 @@ namespace Publisher
 
         string Bam.Core.ICommandLineTool.UseResponseFileOption => this.GetTool().UseResponseFileOption;
 
-        /// <summary>
-        /// Create the default settings for the specified module.
-        /// </summary>
-        /// <typeparam name="T">Module type</typeparam>
-        /// <param name="module">Module to create settings for</param>
-        /// <returns>New settings instance</returns>
-        Bam.Core.Settings Bam.Core.ITool.CreateDefaultSettings<T>(T module) => this.GetTool().CreateDefaultSettings(module);
+        System.Type Bam.Core.ITool.SettingsType => this.GetTool().SettingsType;
     }
 }

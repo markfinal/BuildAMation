@@ -41,9 +41,10 @@ namespace ProceduralHeaderTest2
             this.CreateCSourceContainer("$(packagedir)/source/generateheadertool/main.c");
         }
 
-        public Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module) where T : Bam.Core.Module => null;
+        /// <summary>
+        /// \copydoc Bam.Core.ITool.SettingsType
+        /// </summary>
+        public override System.Type SettingsType => null;
 
         public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> EnvironmentVariables { get; private set; }
         public Bam.Core.StringArray InheritedEnvironmentVariables { get; private set; }

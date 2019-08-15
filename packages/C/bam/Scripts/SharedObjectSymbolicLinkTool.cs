@@ -37,14 +37,9 @@ namespace C
         Bam.Core.PreBuiltTool
     {
         /// <summary>
-        /// Create the default settings.
+        /// \copydoc Bam.Core.ITool.SettingsType
         /// </summary>
-        /// <typeparam name="T">Type of the settings class</typeparam>
-        /// <param name="module">Module owning the settings</param>
-        /// <returns>Created Settings</returns>
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module) => new SharedObjectSymbolicLinkSettings(module);
+        public override System.Type SettingsType => typeof(SharedObjectSymbolicLinkSettings);
 
         /// <summary>
         /// Setting the executable to generate the symbolic link

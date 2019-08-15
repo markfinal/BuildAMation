@@ -37,14 +37,8 @@ namespace Bam.Core
     public interface ITool
     {
         /// <summary>
-        /// Create and initialize to defaults, the Settings class for this Tool and all of its properties as defined by
-        /// the interfaces implemented by the Settings class.
+        /// Fetch the type of the Settings class for this tool.
         /// </summary>
-        /// <returns>The default settings.</returns>
-        /// <param name="module">Module.</param>
-        /// <typeparam name="T">The 1st type parameter.</typeparam>
-        Settings
-        CreateDefaultSettings<T>(
-            T module) where T : Module;
+        System.Type SettingsType { get; }
     }
 }

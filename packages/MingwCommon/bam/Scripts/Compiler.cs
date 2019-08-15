@@ -63,44 +63,6 @@ namespace MingwCommon
         /// Command line switch to use response file
         /// </summary>
         public override string UseResponseFileOption => "@";
-
-        /// <summary>
-        /// Create the default settings for the specified module.
-        /// </summary>
-        /// <typeparam name="T">Module type</typeparam>
-        /// <param name="module">Module to create settings for</param>
-        /// <returns>New settings instance</returns>
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module)
-        {
-            if (typeof(C.Cxx.ObjectFile).IsInstanceOfType(module) ||
-                typeof(C.Cxx.ObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new Mingw.CxxCompilerSettings(module);
-                this.OverrideDefaultSettings(settings);
-                return settings;
-            }
-            else if (typeof(C.ObjectFile).IsInstanceOfType(module) ||
-                     typeof(C.CObjectFileCollection).IsInstanceOfType(module))
-            {
-                var settings = new Mingw.CCompilerSettings(module);
-                this.OverrideDefaultSettings(settings);
-                return settings;
-            }
-            else
-            {
-                throw new Bam.Core.Exception($"Could not determine type of module {typeof(T).ToString()}");
-            }
-        }
-
-        /// <summary>
-        /// Abstract function to override default settings.
-        /// </summary>
-        /// <param name="settings">Settings instance to override</param>
-        protected abstract void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings);
     }
 
     /// <summary>
@@ -110,13 +72,10 @@ namespace MingwCommon
     public class Compiler32 :
         CompilerBase
     {
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
-        {
-            var cSettings = settings as C.ICommonCompilerSettings;
-            cSettings.Bits = C.EBit.ThirtyTwo;
-        }
+        /// <summary>
+        /// \copydoc Bam.Core.ITool.SettingsType
+        /// </summary>
+        public override System.Type SettingsType => typeof(Mingw.CCompilerSettings);
     }
 
     /// <summary>
@@ -128,13 +87,9 @@ namespace MingwCommon
     {
         public Compiler32Cxx() => this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-g++.exe"));
 
-        protected override void
-        OverrideDefaultSettings(
-            Bam.Core.Settings settings)
-        {
-            base.OverrideDefaultSettings(settings);
-            var preprocessor = settings as C.ICommonPreprocessorSettings;
-            preprocessor.TargetLanguage = C.ETargetLanguage.Cxx;
-        }
+        /// <summary>
+        /// \copydoc Bam.Core.ITool.SettingsType
+        /// </summary>
+        public override System.Type SettingsType => typeof(Mingw.CxxCompilerSettings);
     }
 }

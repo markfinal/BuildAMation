@@ -169,9 +169,10 @@ namespace Installer
             base.Init();
         }
 
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module) => new NSISCompilerSettings(module);
+        /// <summary>
+        /// \copydoc Bam.Core.ITool.SettingsType
+        /// </summary>
+        public override System.Type SettingsType => typeof(NSISCompilerSettings);
 
         /// <summary>
         /// Executable path to the tool

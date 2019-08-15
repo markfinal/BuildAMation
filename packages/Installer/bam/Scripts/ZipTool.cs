@@ -43,9 +43,10 @@ namespace Installer
     public sealed class ZipPosix :
         ZipTool
     {
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module) => new ZipSettings(module);
+        /// <summary>
+        /// \copydoc Bam.Core.ITool.SettingsType
+        /// </summary>
+        public override System.Type SettingsType => typeof(ZipSettings);
 
         /// <summary>
         /// Executable path to the tool
@@ -112,9 +113,10 @@ namespace Installer
             base.Init();
         }
 
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module) => new SevenZipSettings(module);
+        /// <summary>
+        /// \copydoc Bam.Core.ITool.SettingsType
+        /// </summary>
+        public override System.Type SettingsType => typeof(SevenZipSettings);
 
         /// <summary>
         /// Executable path to the tool

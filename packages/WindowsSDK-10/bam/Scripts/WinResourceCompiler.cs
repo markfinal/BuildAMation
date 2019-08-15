@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace WindowsSDK
 {
     /// <summary>
@@ -88,14 +87,9 @@ namespace WindowsSDK
         public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
 
         /// <summary>
-        /// Create a default Settings instance
+        /// \copydoc Bam.Core.ITool.SettingsType
         /// </summary>
-        /// <typeparam name="T">Type of settings to make</typeparam>
-        /// <param name="module">Module owning the settings</param>
-        /// <returns>New settings instance</returns>
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module) => new WinResourceCompilerSettings(module);
+        public override System.Type SettingsType => typeof(WinResourceCompilerSettings);
     }
 
     /// <summary>

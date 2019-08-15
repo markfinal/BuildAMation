@@ -153,9 +153,10 @@ namespace Installer
     public sealed class TarCompiler :
         Bam.Core.PreBuiltTool
     {
-        public override Bam.Core.Settings
-        CreateDefaultSettings<T>(
-            T module) => new TarBallSettings(module);
+        /// <summary>
+        /// \copydoc Bam.Core.ITool.SettingsType
+        /// </summary>
+        public override System.Type SettingsType => typeof(TarBallSettings);
 
         /// <summary>
         /// Executable path to the tar compiler
