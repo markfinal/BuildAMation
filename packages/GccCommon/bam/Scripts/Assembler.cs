@@ -35,11 +35,6 @@ namespace GccCommon
     public abstract class AssemblerBase :
         C.AssemblerTool
     {
-        /// <summary>
-        /// Unused
-        /// </summary>
-        protected Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();
-
         protected AssemblerBase()
         {
             this.Macros.AddVerbatim(C.ModuleMacroNames.ObjectFileExtension, ".o");
@@ -70,9 +65,6 @@ namespace GccCommon
     public class Assembler :
         AssemblerBase
     {
-        public Assembler()
-        {}
-
         /// <summary>
         /// Create the default settings for the specified module.
         /// </summary>
