@@ -1,3 +1,5 @@
+15-Aug-2019 Fixes #620. Bam.Core.PreBuiltTool has now sealed the EvaluateInternal and ExecuteInternal methods. Subclasses do not need to do anything special here.
+
 15-Aug-2019 Fixes #622. Split PreExisting* classes into separate source files in Publisher.
 
 15-Aug-2019 Fixes #629. Removed unused field from GccCommon.AssemblerBase.

@@ -72,14 +72,5 @@ namespace Publisher
         /// The executable path of the tool
         /// </summary>
         public override Bam.Core.TokenizedString Executable => this.ExecutablePath;
-
-        /// <summary>
-        /// Evaluate whether the module needs updating
-        /// </summary>
-        protected override void
-        EvaluateInternal()
-        {
-            this.ReasonToExecute = null;
-        }
     }
 }

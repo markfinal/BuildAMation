@@ -35,10 +35,7 @@ namespace Installer
     /// </summary>
     public abstract class ZipTool :
         Bam.Core.PreBuiltTool
-    {
-        protected override void
-        EvaluateInternal() => this.ReasonToExecute = null;
-    }
+    {}
 
     /// <summary>
     /// Posix zip tool

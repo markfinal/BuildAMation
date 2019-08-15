@@ -50,8 +50,5 @@ namespace Publisher
         /// Path to the executable
         /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("chrpath").First());
-
-        protected override void
-        EvaluateInternal() => this.ReasonToExecute = null;
     }
 }

@@ -36,13 +36,6 @@ namespace Publisher
     public abstract class CopyFileTool :
         Bam.Core.PreBuiltTool
     {
-        /// @copydoc Bam::Core::PreBuiltTool::EvaluateInternal
-        protected override void
-        EvaluateInternal()
-        {
-            this.ReasonToExecute = null;
-        }
-
         /// <summary>
         /// Convert paths suitable for use with the copy tool
         /// </summary>

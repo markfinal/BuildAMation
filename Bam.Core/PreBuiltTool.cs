@@ -136,7 +136,7 @@ namespace Bam.Core
         /// No execution needed to update the prebuilt tool.
         /// </summary>
         /// <param name="context">Context.</param>
-        protected override void
+        protected sealed override void
         ExecuteInternal(
             ExecutionContext context)
         {
@@ -147,7 +147,7 @@ namespace Bam.Core
         /// Confirm that the prebuilt executable exists.
         /// If it does not, an exception is thrown.
         /// </summary>
-        protected override void
+        protected sealed override void
         EvaluateInternal()
         {
             this.ReasonToExecute = null;

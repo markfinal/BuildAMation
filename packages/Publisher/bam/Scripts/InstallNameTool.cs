@@ -67,8 +67,5 @@ namespace Publisher
         /// Arguments to pass to the tool prior to the settings
         /// </summary>
         public override Bam.Core.TokenizedStringArray InitialArguments => this.arguments;
-
-        protected override void
-        EvaluateInternal() => this.ReasonToExecute = null;
     }
 }
