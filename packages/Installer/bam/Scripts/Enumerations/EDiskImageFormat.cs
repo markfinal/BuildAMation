@@ -30,30 +30,19 @@
 namespace Installer
 {
     /// <summary>
-    /// Interface settings for tar
+    /// Possible disk image formats
     /// </summary>
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ITarBallSettings :
-        Bam.Core.ISettingsBase
+    public enum EDiskImageFormat
     {
-        /// <summary>
-        /// Tar ball operation
-        /// </summary>
-        ETarOperation Operation { get; set; }
-
-        /// <summary>
-        /// Level of compression
-        /// </summary>
-        ETarCompressionType CompressionType { get; set; }
-
-        /// <summary>
-        /// Regular expression used to transform inputs to the tarball
-        /// </summary>
-        string TransformRegEx { get; set; }
-
-        /// <summary>
-        /// Enable verbose output
-        /// </summary>
-        bool Verbose { get; set; }
+        UDRW, //<! UDIF read/write image
+        UDRO, //<! UDIF read-only image
+        UDCO, //<! UDIF ADC-compressed image
+        UDZO, //<! UDIF zlib-compressed image
+        ULFO, //<! UDIF lzfse-compressed image (OS X 10.11+ only)
+        UDBZ, //<! UDIF bzip2-compressed image (Mac OS X 10.4+ only)
+        UDTO, //<! DVD/CD-R master for export
+        UDSP, //<! SPARSE (grows with content)
+        UDSB, //<! SPARSEBUNDLE (grows with content; bundle-backed)
+        UFBI  //<! UDIF entire image with MD5 checksum
     }
 }

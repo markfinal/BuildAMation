@@ -30,30 +30,10 @@
 namespace Installer
 {
     /// <summary>
-    /// Interface settings for tar
+    /// Possible verbs to use with disk image manipulation
     /// </summary>
-    [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ITarBallSettings :
-        Bam.Core.ISettingsBase
+    public enum EDiskImageVerb
     {
-        /// <summary>
-        /// Tar ball operation
-        /// </summary>
-        ETarOperation Operation { get; set; }
-
-        /// <summary>
-        /// Level of compression
-        /// </summary>
-        ETarCompressionType CompressionType { get; set; }
-
-        /// <summary>
-        /// Regular expression used to transform inputs to the tarball
-        /// </summary>
-        string TransformRegEx { get; set; }
-
-        /// <summary>
-        /// Enable verbose output
-        /// </summary>
-        bool Verbose { get; set; }
+        Create //<! Create a disk image
     }
 }

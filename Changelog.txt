@@ -1,3 +1,5 @@
+15-Aug-2019 Fixes #627. Split Installer enums into different source files for consistency.
+
 15-Aug-2019 Fixes #639. Added Bam.Core.GraphMacroNames, Bam.Core.ModuleMacroNames, C.ModuleMacroNames static classes with string constants for many of the keys used in the macro lookups.
 
 14-Aug-2019 Fixes #587. BREAKING CHANGE. No longer need to pass a parent Module to Module.Init().

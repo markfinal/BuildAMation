@@ -30,31 +30,6 @@
 namespace Installer
 {
     /// <summary>
-    /// Possible disk image formats
-    /// </summary>
-    public enum EDiskImageFormat
-    {
-        UDRW, //<! UDIF read/write image
-        UDRO, //<! UDIF read-only image
-        UDCO, //<! UDIF ADC-compressed image
-        UDZO, //<! UDIF zlib-compressed image
-        ULFO, //<! UDIF lzfse-compressed image (OS X 10.11+ only)
-        UDBZ, //<! UDIF bzip2-compressed image (Mac OS X 10.4+ only)
-        UDTO, //<! DVD/CD-R master for export
-        UDSP, //<! SPARSE (grows with content)
-        UDSB, //<! SPARSEBUNDLE (grows with content; bundle-backed)
-        UFBI  //<! UDIF entire image with MD5 checksum
-    }
-
-    /// <summary>
-    /// Possible verbs to use with disk image manipulation
-    /// </summary>
-    public enum EDiskImageVerb
-    {
-        Create //<! Create a disk image
-    }
-
-    /// <summary>
     /// Possible verbosity modes for disk image manipulation
     /// </summary>
     public enum EDiskImageVerbosity
