@@ -1,3 +1,5 @@
+16-Aug-2019 Fixes #633. Removed the deprecated GccCommon.ConfigureUtilities.
+
 15-Aug-2019 Fixes #619. BREAKING CHANGE. Removed Bam.Core.ITool.CreateDefaultSettings<T>(Module) with the getter property Bam.Core.ITool.SettingsType. This simplifies package code, and centralises the Settings object construction.
 
 15-Aug-2019 Fixes #620. Bam.Core.PreBuiltTool has now sealed the EvaluateInternal and ExecuteInternal methods. Subclasses do not need to do anything special here.
