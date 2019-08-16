@@ -267,7 +267,7 @@ namespace Bam.Core
                                     }
                                     catch (Exception ex)
                                     {
-                                        abortException = ex;
+                                        abortException = new Exception(ex, $"Module {module.ToString()} failed");
                                         cancellationSource.Cancel();
                                     }
                                     finally
@@ -322,7 +322,7 @@ namespace Bam.Core
                         }
                         catch (Exception ex)
                         {
-                            abortException = ex;
+                            abortException = new Exception(ex, $"Module {module.ToString()} failed");
                             break;
                         }
                         finally
