@@ -42,10 +42,7 @@ namespace CodeGenTest
             this.CreateCSourceContainer("$(packagedir)/source/codegentool/main.c");
         }
 
-        /// <summary>
-        /// \copydoc Bam.Core.ITool.SettingsType
-        /// </summary>
-        public override System.Type SettingsType => typeof(GeneratedSourceSettings);
+        public System.Type SettingsType => typeof(GeneratedSourceSettings);
 
         public System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedStringArray> EnvironmentVariables { get; private set; }
 
