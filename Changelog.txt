@@ -1,3 +1,5 @@
+18-Aug-2019 Fixes #643. Added --keepgoing (default = False) command line option to the Python test harness. This changes the default behaviour to run through all tests and then report a summary. By default, it now aborts when the first error is encountered. This should allow continuous integration to report systemic errors much faster.
+
 16-Aug-2019 Fixes #642. Additional exception messages regarding which Module failed to build are now included by default.
 
 16-Aug-2019 Fixes #633. Removed the deprecated GccCommon.ConfigureUtilities.

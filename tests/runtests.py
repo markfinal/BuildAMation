@@ -312,6 +312,7 @@ if __name__ == "__main__":
     optParser.add_option("--injectdefaultpackage", dest="injected", action="append", default=None, help="Inject default packages, specify packagename or packagename-packageversion")
     optParser.add_option("--dumpprojects", dest="dumpprojects", action="store_true", default=False, help="Dump generated project files to stdout")
     optParser.add_option("--prefix", dest="prefix", action="store", default=None, help="Prefix command to each bam process")
+    optParser.add_option("--keepgoing", dest="keepgoing", action="store_true", default=False, help="Keep going after test failures.")
     test_option_setup(optParser)
     (options, args) = optParser.parse_args()
 
@@ -394,6 +395,9 @@ if __name__ == "__main__":
         output_buffer = StringIO.StringIO()
         for test in sorted(test_instances, key=lambda instance: str(instance)):
             exit_code += execute_test_instance(test, options, output_buffer, stats, the_builder)
+            if exit_code != 0 and not options.keepgoing:
+                print "Aborted early due to failures..."
+                break
 
         if not options.keepFiles:
             # TODO: consider keeping track of all directories created instead
