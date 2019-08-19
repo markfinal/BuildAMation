@@ -1161,25 +1161,24 @@ namespace Bam.Core
         public IModuleConfiguration Configuration { get; set; }
 
         /// <summary>
-        /// Enumerable of Modules that are considered inputs to this Module, as in, they need
-        /// to be operated on in order to generate the output(s) of this Module.
-        /// By default, this is the list of Dependents (not Required), although subclasses can
-        /// override this property to give a more precise meaning.
-        /// This default implementation is not aware of path keys of derived Module types
-        /// so if a caller requires knowledge of that, it is expected the Module types of interest
-        /// will override this property to provide the necessary path keys.
+        /// Enumerable of paths that are considered inputs to this Module, as in, they need
+        /// to be transformed to generate the output(s) of this Module.
+        /// All paths are generated from Modules, hence the Module-pathkey tuple pair.
+        /// Since Modules can have multiple pathkeys (e.g. multiple outputs from running the Tool over it)
+        /// there is no way for the default implementation to guess the intended pathkey. Thus
+        /// it is intended that derived Module types will override this property.
+        /// Usually it will be an (filtered) enumeration of the Dependents of the Module (not Required)
+        /// to act as inputs to processing.
         /// </summary>
-        public virtual System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string,Module>> InputModules
+        public virtual System.Collections.Generic.IEnumerable<(Module module,string pathKey)> InputModulePaths
         {
             get
             {
-                foreach (var module in this.DependentsList)
+                if (!this.Dependents.Any())
                 {
-                    yield return new System.Collections.Generic.KeyValuePair<string, Module>(
-                        $"Input module path key not overridden in module {this.ToString()} from dependent {module.ToString()}",
-                        module
-                    );
+                    return System.Linq.Enumerable.Empty<(Module module, string pathKey)>();
                 }
+                throw new UnspecifiedInputModulePathException(this, this.Dependents);
             }
         }
 

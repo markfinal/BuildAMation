@@ -27,59 +27,39 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
-namespace Publisher
+namespace Bam.Core
 {
     /// <summary>
-    /// Module representing a file having had install_name_tool --change applied to it
+    /// Exception representing unspecified pathkeys for an input modules.
     /// </summary>
-    public class ChangeNameOSX :
-        InstallNameModule
+    public class UnspecifiedInputModulePathException :
+        Exception
     {
-        protected override void
-        ExecuteInternal(
-            ExecutionContext context)
-        {
-            switch (Bam.Core.Graph.Instance.Mode)
-            {
-#if D_PACKAGE_MAKEFILEBUILDER
-                case "MakeFile":
-                    MakeFileBuilder.Support.Add(this);
-                    break;
-#endif
-
-#if D_PACKAGE_NATIVEBUILDER
-                case "Native":
-                    NativeBuilder.Support.RunCommandLineTool(this, context);
-                    break;
-#endif
-
-#if D_PACKAGE_XCODEBUILDER
-                case "Xcode":
-                    {
-                        XcodeBuilder.Support.AddPostBuildStepForCommandLineTool(
-                            this,
-                            this.Source, // add it to the source module's target
-                            out XcodeBuilder.Target target,
-                            out XcodeBuilder.Configuration configuration
-                        );
-                    }
-                    break;
-#endif
-            }
-        }
-
-#if false
         /// <summary>
-        /// Enumerate across all inputs to this Module
+        /// Construct an instance
         /// </summary>
-        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        /// <param name="module">The Module needing to be built</param>
+        /// <param name="dependents">Enumeration of the Modules requiring pathkeys</param>
+        public UnspecifiedInputModulePathException(
+            Module module,
+            System.Collections.Generic.IEnumerable<Module> dependents) :
+            base(CreateMessage(module, dependents))
         {
-            get
-            {
-                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.ConsoleApplication.ExecutableKey, this.CopiedFileModule);
-            }
         }
-#endif
+
+        private static string
+        CreateMessage(
+            Module module,
+            System.Collections.Generic.IEnumerable<Module> dependents)
+        {
+            var message = new System.Text.StringBuilder();
+            message.AppendLine($"The following dependents need pathkeys specified to indicate the input paths to Module '{module.ToString()}':");
+            foreach (var dependent in dependents)
+            {
+                message.AppendLine($"\t{dependent.ToString()}");
+            }
+            message.AppendLine($"Ensure that the InputModulePaths property has been overridden in {module.ToString()}");
+            return message.ToString();
+        }
     }
 }

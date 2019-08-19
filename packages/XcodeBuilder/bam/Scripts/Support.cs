@@ -63,13 +63,13 @@ namespace XcodeBuilder
             {
                 var output_path = Bam.Core.IOWrapper.EscapeSpacesInPath(output.ToString());
                 condition_text.Append($"! -e {output_path} ");
-                foreach (var input in module.InputModules)
+                foreach (var (inputModule, inputPathKey) in module.InputModulePaths)
                 {
-                    if (!input.Value.GeneratedPaths.Any())
+                    if (!inputModule.GeneratedPaths.Any())
                     {
                         continue;
                     }
-                    var input_path = Bam.Core.IOWrapper.EscapeSpacesInPath(input.Value.GeneratedPaths[input.Key].ToString());
+                    var input_path = Bam.Core.IOWrapper.EscapeSpacesInPath(inputModule.GeneratedPaths[inputPathKey].ToString());
                     condition_text.Append($"|| {input_path} -nt {output_path} ");
                 }
                 if (output != last_output)
@@ -300,10 +300,10 @@ namespace XcodeBuilder
                 addOrderOnlyDependencyOnTool: addOrderOnlyDependencyOnTool,
                 outputPaths: outputPaths
             );
-            foreach (var input in module.InputModules)
+            foreach (var (inputModule,inputPathKey) in module.InputModulePaths)
             {
                 target.EnsureFileOfTypeExists(
-                    input.Value.GeneratedPaths[input.Key],
+                    inputModule.GeneratedPaths[inputPathKey],
                     inputFileType
                 );
             }

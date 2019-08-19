@@ -141,13 +141,13 @@ namespace Installer
         }
 
         /// <summary>
-        /// Enumerate across all inputs to this module
+        /// /copydoc Bam.Core.Module.InputModulePaths
         /// </summary>
-        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        public override System.Collections.Generic.IEnumerable<(Bam.Core.Module module, string pathKey)> InputModulePaths
         {
             get
             {
-                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.SourcePathKey, this.SourceModule);
+                yield return (this.SourceModule, this.SourcePathKey);
             }
         }
     }

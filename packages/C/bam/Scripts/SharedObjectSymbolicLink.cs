@@ -158,6 +158,7 @@ namespace C
 #endif
         }
 
+#if false
         /// <summary>
         /// Enumerate across the input modules for this module
         /// </summary>
@@ -169,6 +170,7 @@ namespace C
                 yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.DynamicLibrary.ExecutableKey, this.Dependents[0]);
             }
         }
+#endif
 
         /// <summary>
         /// Set the working directory for this Module

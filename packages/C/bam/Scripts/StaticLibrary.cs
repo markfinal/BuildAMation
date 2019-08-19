@@ -70,15 +70,15 @@ namespace C
         public System.Collections.Generic.IEnumerable<Bam.Core.Module> ObjectFiles => FlattenHierarchicalFileList(this.sourceModules);
 
         /// <summary>
-        /// Enumerate all input modules
+        /// /copydoc Bam.Core.Module.InputModulePaths
         /// </summary>
-        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        public override System.Collections.Generic.IEnumerable<(Bam.Core.Module module, string pathKey)> InputModulePaths
         {
             get
             {
                 foreach (var obj in this.ObjectFiles.Where(item => (item as ObjectFileBase).PerformCompilation))
                 {
-                    yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.ObjectFileBase.ObjectFileKey, obj);
+                    yield return (obj, C.ObjectFileBase.ObjectFileKey);
                 }
             }
         }

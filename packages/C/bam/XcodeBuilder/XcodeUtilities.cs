@@ -57,7 +57,7 @@ namespace C
             Bam.Core.TokenizedString outputPath,
             System.Collections.Generic.IEnumerable<Bam.Core.Module> headerFiles)
         {
-            if (module.IsPrebuilt || !module.InputModules.Any())
+            if (module.IsPrebuilt || !module.InputModulePaths.Any())
             {
                 outTarget = null;
                 outConfiguration = null;
@@ -145,13 +145,13 @@ namespace C
             }
 
             var excludedSource = new XcodeBuilder.MultiConfigurationValue();
-            var realObjectFiles = module.InputModules.Select(item => item.Value).Where(item => item is ObjectFile); // C,C++,ObjC,ObjC++
+            var realObjectFiles = module.InputModulePaths.Select(item => item.module).Where(item => item is ObjectFile); // C,C++,ObjC,ObjC++
             if (realObjectFiles.Any())
             {
                 var sharedSettings = C.SettingsBase.SharedSettings(
                     realObjectFiles
                 );
-                XcodeSharedSettings.Tweak(sharedSettings, realObjectFiles.Count() != module.InputModules.Count());
+                XcodeSharedSettings.Tweak(sharedSettings, realObjectFiles.Count() != module.InputModulePaths.Count());
                 XcodeProjectProcessor.XcodeConversion.Convert(
                     sharedSettings,
                     realObjectFiles.First().Settings.GetType(),
@@ -201,7 +201,7 @@ namespace C
                 }
 
                 // now deal with other object file types
-                var assembledObjectFiles = module.InputModules.Select(item => item.Value).Where(item => item is AssembledObjectFile);
+                var assembledObjectFiles = module.InputModulePaths.Select(item => item.module).Where(item => item is AssembledObjectFile);
                 foreach (var asmObj in assembledObjectFiles)
                 {
                     var buildFile = asmObj.MetaData as XcodeBuilder.BuildFile;
@@ -210,13 +210,14 @@ namespace C
             }
             else
             {
+                var firstInputModuleSettings = module.InputModulePaths.First().module.Settings;
                 XcodeProjectProcessor.XcodeConversion.Convert(
-                    module.InputModules.First().Value.Settings,
-                    module.InputModules.First().Value.Settings.GetType(),
+                    firstInputModuleSettings,
+                    firstInputModuleSettings.GetType(),
                     module,
                     configuration
                 );
-                foreach (var objFile in module.InputModules.Select(item => item.Value))
+                foreach (var objFile in module.InputModulePaths.Select(item => item.module))
                 {
                     var asObjFileBase = objFile as C.ObjectFileBase;
                     if (!asObjFileBase.PerformCompilation)

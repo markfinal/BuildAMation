@@ -133,6 +133,7 @@ namespace Publisher
             }
         }
 
+#if false
         /// <summary>
         /// Enumerate across all inputs to the Module
         /// </summary>
@@ -143,5 +144,6 @@ namespace Publisher
                 yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.sourcePathKey, this.sourceModule);
             }
         }
+#endif
     }
 }

@@ -196,6 +196,7 @@ namespace Publisher
         public override Settings
         MakeSettings() => new MakeDebugSymbolFileSettings(this);
 
+#if false
         /// <summary>
         /// Enumerate across all inputs to this Module
         /// </summary>
@@ -206,6 +207,7 @@ namespace Publisher
                 yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.sourcePathKey, this.sourceModule);
             }
         }
+#endif
 
         /// <summary>
         /// Make the Module to cause the linkback
@@ -270,6 +272,7 @@ namespace Publisher
         public override Settings
         MakeSettings() => new LinkBackDebugSymbolFileSettings(this);
 
+#if false
         /// <summary>
         /// Enumerate all inputs to this Module
         /// </summary>
@@ -280,6 +283,7 @@ namespace Publisher
                 yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(MakeDebugSymbolFile.DebugSymbolFileKey, this.DebugSymbolModule);
             }
         }
+#endif
 
         /// <summary>
         /// Run the tool on this module

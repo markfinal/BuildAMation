@@ -356,13 +356,13 @@ namespace C
         }
 
         /// <summary>
-        /// Enumerate across the input modules to this module
+        /// /copydoc Bam.Core.Module.InputModulePaths
         /// </summary>
-        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        public override System.Collections.Generic.IEnumerable<(Bam.Core.Module module, string pathKey)> InputModulePaths
         {
             get
             {
-                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(SourceFile.SourceFileKey, this.SourceModule);
+                yield return (this.SourceModule, SourceFile.SourceFileKey);
             }
         }
     }

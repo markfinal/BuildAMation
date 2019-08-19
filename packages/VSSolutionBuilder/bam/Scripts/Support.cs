@@ -194,9 +194,9 @@ namespace VSSolutionBuilder
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
             AddModuleCommandLineShellCommand(module, shellCommandLines, includeEnvironmentVariables: true);
 
-            System.Diagnostics.Debug.Assert(1 == module.InputModules.Count());
-            var firstInput = module.InputModules.First();
-            var sourcePath = firstInput.Value.GeneratedPaths[firstInput.Key];
+            System.Diagnostics.Debug.Assert(1 == module.InputModulePaths.Count());
+            var firstInput = module.InputModulePaths.First();
+            var sourcePath = firstInput.module.GeneratedPaths[firstInput.pathKey];
             AddCustomBuildStep(
                 module,
                 System.Linq.Enumerable.Repeat(sourcePath, 1),

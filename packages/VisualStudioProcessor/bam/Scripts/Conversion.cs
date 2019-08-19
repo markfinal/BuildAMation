@@ -321,7 +321,7 @@ namespace VisualStudioProcessor
                 typeof(InputPathsAttribute),
                 true // since generally specified in an abstract class
             ) as InputPathsAttribute[];
-            if (settings.Module.InputModules.Any())
+            if (settings.Module.InputModulePaths.Any())
             {
                 if (!input_files_attributes.Any())
                 {
@@ -333,10 +333,10 @@ namespace VisualStudioProcessor
                 var max_files = attr.MaxFileCount;
                 if (max_files >= 0)
                 {
-                    if (max_files != settings.Module.InputModules.Count())
+                    if (max_files != settings.Module.InputModulePaths.Count())
                     {
                         throw new Bam.Core.Exception(
-                            $"InputPaths attribute specifies a maximum of {max_files} files, but {settings.Module.InputModules.Count()} are available"
+                            $"InputPaths attribute specifies a maximum of {max_files} files, but {settings.Module.InputModulePaths.Count()} are available"
                         );
                     }
                 }
@@ -378,7 +378,7 @@ namespace VisualStudioProcessor
                 // Studio projects already
                 return;
             }
-            foreach (var input_module in settings.Module.InputModules.Select(item => item.Value))
+            foreach (var (inputModule,_) in settings.Module.InputModulePaths)
             {
                 try
                 {
@@ -386,7 +386,7 @@ namespace VisualStudioProcessor
                     // it will be updated later using VS macros
                     vsSettingsGroup.AddSetting(
                         matching_input_attr.Property,
-                        input_module.GeneratedPaths[matching_input_attr.Property],
+                        inputModule.GeneratedPaths[matching_input_attr.Property],
                         condition: condition,
                         isPath: true
                     );
@@ -394,7 +394,7 @@ namespace VisualStudioProcessor
                 catch (System.Collections.Generic.KeyNotFoundException)
                 {
                     throw new Bam.Core.Exception(
-                        $"Unable to locate path key {matching_input_attr.PathKey} for input module of type {input_module.ToString()}"
+                        $"Unable to locate path key {matching_input_attr.PathKey} for input module of type {inputModule.ToString()}"
                     );
                 }
             }

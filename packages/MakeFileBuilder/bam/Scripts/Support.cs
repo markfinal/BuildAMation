@@ -56,9 +56,9 @@ namespace MakeFileBuilder
                     keyName: output.Key
                 );
             }
-            foreach (var input in module.InputModules)
+            foreach (var (inputModule,inputPathKey) in module.InputModulePaths)
             {
-                rule.AddPrerequisite(input.Value, input.Key);
+                rule.AddPrerequisite(inputModule, inputPathKey);
             }
             foreach (var dep in module.Dependents)
             {
@@ -166,9 +166,9 @@ namespace MakeFileBuilder
             {
                 meta.CommonMetaData.AddDirectory(dir.ToString());
             }
-            foreach (var input in module.InputModules)
+            foreach (var (inputModule,inputPathKey) in module.InputModulePaths)
             {
-                rule.AddPrerequisite(input.Value, input.Key);
+                rule.AddPrerequisite(inputModule, inputPathKey);
             }
             foreach (var dep in module.Dependents)
             {

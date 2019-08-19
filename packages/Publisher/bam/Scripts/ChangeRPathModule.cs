@@ -90,6 +90,7 @@ namespace Publisher
             }
         }
 
+#if false
         /// <summary>
         /// Enumerate across all inputs to this module
         /// </summary>
@@ -103,5 +104,6 @@ namespace Publisher
                 );
             }
         }
+#endif
     }
 }

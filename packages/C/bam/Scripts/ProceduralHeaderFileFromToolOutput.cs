@@ -160,6 +160,7 @@ namespace C
             }
         }
 
+#if false
         /// <summary>
         /// Enumerate across all input modules
         /// </summary>
@@ -170,5 +171,6 @@ namespace C
                 yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.ConsoleApplication.ExecutableKey, this.Tool as Bam.Core.Module);
             }
         }
+#endif
     }
 }

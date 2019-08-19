@@ -40,12 +40,6 @@ namespace Installer
         private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
         private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
 
-        // TODO: this could be improved
-        /// <summary>
-        /// Access to Module-pathkey pairs
-        /// </summary>
-        public System.Collections.Generic.KeyValuePair<string, Bam.Core.Module> ModulePathKeyPair => new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(this.Paths.First().Value, this.Paths.First().Key);
-
         /// <summary>
         /// Initialize this module
         /// </summary>
@@ -270,17 +264,6 @@ namespace Installer
 
                 default:
                     throw new System.NotSupportedException();
-            }
-        }
-
-        /// <summary>
-        /// Enumerate across all inputs to this module
-        /// </summary>
-        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
-        {
-            get
-            {
-                yield return this.InputFiles.ModulePathKeyPair;
             }
         }
     }

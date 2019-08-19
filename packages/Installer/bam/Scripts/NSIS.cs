@@ -273,13 +273,13 @@ namespace Installer
         }
 
         /// <summary>
-        /// Enumerate across all inputs to this Module
+        /// /copydoc Bam.Core.Module.InputModulePaths
         /// </summary>
-        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        public override System.Collections.Generic.IEnumerable<(Bam.Core.Module module, string pathKey)> InputModulePaths
         {
             get
             {
-                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(NSISScript.ScriptKey, this.ScriptModule);
+                yield return (this.ScriptModule, NSISScript.ScriptKey);
             }
         }
     }

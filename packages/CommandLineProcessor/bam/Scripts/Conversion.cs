@@ -473,7 +473,7 @@ namespace CommandLineProcessor
                 typeof(InputPathsAttribute),
                 true // since generally specified in an abstract class
             ) as InputPathsAttribute[];
-            if (module.InputModules.Any())
+            if (module.InputModulePaths.Any())
             {
                 if (!input_files_attributes.Any())
                 {
@@ -482,12 +482,12 @@ namespace CommandLineProcessor
                         $"There is no InputPaths attribute associated with the {settings.ToString()} settings class and module {module.ToString()}"
                     );
                     message.AppendLine("The following input paths were identified for the module:");
-                    foreach (var input in module.InputModules)
+                    foreach (var (inputModule,inputPathKey) in module.InputModulePaths)
                     {
-                        message.Append($"\t{input.Value.ToString()}[{input.Key}]");
-                        if (input.Value.GeneratedPaths.ContainsKey(input.Key))
+                        message.Append($"\t{inputModule.ToString()}[{inputPathKey}]");
+                        if (inputModule.GeneratedPaths.ContainsKey(inputPathKey))
                         {
-                            message.Append($" = '{input.Value.GeneratedPaths[input.Key].ToString()}'");
+                            message.Append($" = '{inputModule.GeneratedPaths[inputPathKey].ToString()}'");
                         }
                         message.AppendLine();
                     }
@@ -497,10 +497,10 @@ namespace CommandLineProcessor
                 var max_files = attr.MaxFileCount;
                 if (max_files >= 0)
                 {
-                    if (max_files != module.InputModules.Count())
+                    if (max_files != module.InputModulePaths.Count())
                     {
                         throw new Bam.Core.Exception(
-                            $"InputPaths attribute specifies a maximum of {max_files} files, but {module.InputModules.Count()} are available"
+                            $"InputPaths attribute specifies a maximum of {max_files} files, but {module.InputModulePaths.Count()} are available"
                         );
                     }
                 }
@@ -556,10 +556,10 @@ namespace CommandLineProcessor
             {
                 return;
             }
-            foreach (var input_module_and_pathkey in module.InputModules)
+            foreach (var (inputModule, inputPathKey) in module.InputModulePaths)
             {
                 var matching_input_attr = input_files_attributes.FirstOrDefault(
-                    item => input_module_and_pathkey.Key.Equals(item.PathKey, System.StringComparison.Ordinal)
+                    item => inputPathKey.Equals(item.PathKey, System.StringComparison.Ordinal)
                 );
                 if (null == matching_input_attr)
                 {
@@ -569,14 +569,18 @@ namespace CommandLineProcessor
                     if (null == match_any)
                     {
                         var message = new System.Text.StringBuilder();
-                        message.AppendLine($"Unable to locate InputPathsAttribute suitable for input module {input_module_and_pathkey.Value.ToString()} and path key {input_module_and_pathkey.Key} while dealing with inputs on module {module.ToString()}.");
-                        message.AppendLine($"Does module {module.ToString()} override the InputModules property?");
-                        message.AppendLine($"Is settings class {settings.ToString()} missing an InputPaths attribute?");
+                        message.AppendLine($"Unable to locate an InputPathsAttribute or AnyInputFileAttribute suitable for this input:");
+                        message.AppendLine($"\tModule : {inputModule.ToString()}");
+                        message.AppendLine($"\tPathkey: {inputPathKey}");
+                        message.AppendLine($"while dealing with inputs on module {module.ToString()}.");
+                        message.AppendLine("Possible reasons:");
+                        message.AppendLine($"\tDoes module {module.ToString()} override the Dependents property?");
+                        message.AppendLine($"\tIs settings class {settings.ToString()} missing an InputPaths attribute?");
                         throw new Bam.Core.Exception(message.ToString());
                     }
                     matching_input_attr = match_any;
                 }
-                var input_path = input_module_and_pathkey.Value.GeneratedPaths[input_module_and_pathkey.Key];
+                var input_path = inputModule.GeneratedPaths[inputPathKey];
 #if D_PACKAGE_PUBLISHER
                 if (matching_input_attr is AnyInputFileAttribute &&
                     (matching_input_attr as AnyInputFileAttribute).PathModifierIfDirectory != null &&
