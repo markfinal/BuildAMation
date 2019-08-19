@@ -158,19 +158,17 @@ namespace C
 #endif
         }
 
-#if false
         /// <summary>
-        /// Enumerate across the input modules for this module
+        /// /copydoc Bam.Core.Module.InputModulePaths
         /// </summary>
-        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        public override System.Collections.Generic.IEnumerable<(Bam.Core.Module module, string pathKey)> InputModulePaths
         {
             get
             {
-                System.Diagnostics.Debug.Assert(1 == this.Dependents.Count);
-                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.DynamicLibrary.ExecutableKey, this.Dependents[0]);
+                System.Diagnostics.Debug.Assert(1 == this.Dependents.Count());
+                yield return (this.Dependents.First(), C.DynamicLibrary.ExecutableKey);
             }
         }
-#endif
 
         /// <summary>
         /// Set the working directory for this Module
