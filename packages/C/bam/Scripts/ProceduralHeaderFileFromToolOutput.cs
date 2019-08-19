@@ -160,17 +160,15 @@ namespace C
             }
         }
 
-#if false
         /// <summary>
-        /// Enumerate across all input modules
+        /// /copydoc Bam.Core.Module.InputModulePaths
         /// </summary>
-        public override System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>> InputModules
+        public override System.Collections.Generic.IEnumerable<(Bam.Core.Module module, string pathKey)> InputModulePaths
         {
             get
             {
-                yield return new System.Collections.Generic.KeyValuePair<string, Bam.Core.Module>(C.ConsoleApplication.ExecutableKey, this.Tool as Bam.Core.Module);
+                yield return (this.Tool as Bam.Core.Module, C.ConsoleApplication.ExecutableKey);
             }
         }
-#endif
     }
 }
