@@ -58,7 +58,7 @@ namespace Bam.Core
             foreach (var env in Graph.Instance.BuildEnvironments)
             {
                 var encapsulatingModules = Graph.Instance.EncapsulatingModules(env);
-                Log.Info($"Configuration {env.Configuration.ToString()} has {encapsulatingModules.Count} named/encapsulating modules, with the following creation times (ms):");
+                Log.Info($"Configuration {env.Configuration.ToString()} has {encapsulatingModules.Count()} named/encapsulating modules, with the following creation times (ms):");
                 foreach (var module in encapsulatingModules.OrderByDescending(item => item.CreationTime))
                 {
                     Log.Info($"\t{module.ToString()}\t{module.CreationTime.TotalMilliseconds.ToString()}");

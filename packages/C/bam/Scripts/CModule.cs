@@ -176,30 +176,28 @@ namespace C
         public EBit BitDepth { get; set; }
 
         /// <summary>
-        /// Convert a hierarchical tree of Modules into a flat list.
+        /// Enumerate across the hierarchical tree of Modules.
         /// </summary>
         /// <param name="files">Array of input Modules</param>
-        /// <returns>Flat array of Modules</returns>
-        protected static Bam.Core.Array<Bam.Core.Module>
+        /// <returns>Flattened Module enumeration</returns>
+        protected static System.Collections.Generic.IEnumerable<Bam.Core.Module>
         FlattenHierarchicalFileList(
             Bam.Core.Array<Bam.Core.Module> files)
         {
-            var list = new Bam.Core.Array<Bam.Core.Module>();
             foreach (var input in files)
             {
                 if (input is Bam.Core.IModuleGroup)
                 {
                     foreach (var child in input.Children)
                     {
-                        list.Add(child);
+                        yield return child;
                     }
                 }
                 else
                 {
-                    list.Add(input);
+                    yield return input;
                 }
             }
-            return list;
         }
 
         /// <summary>

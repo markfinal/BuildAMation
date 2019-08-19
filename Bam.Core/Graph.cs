@@ -443,7 +443,7 @@ namespace Bam.Core
 
         private void ApplyGroupDependenciesToChildren(
             Module module,
-            System.Collections.ObjectModel.ReadOnlyCollection<Module> children,
+            System.Collections.Generic.IEnumerable<Module> children,
             System.Collections.Generic.IEnumerable<Module> dependencies)
         {
             // find all dependencies that are not children of this module
@@ -461,7 +461,7 @@ namespace Bam.Core
 
         private void ApplyGroupRequirementsToChildren(
             Module module,
-            System.Collections.ObjectModel.ReadOnlyCollection<Module> children,
+            System.Collections.Generic.IEnumerable<Module> children,
             System.Collections.Generic.IEnumerable<Module> dependencies)
         {
             // find all dependencies that are not children of this module
@@ -759,7 +759,7 @@ namespace Bam.Core
         private void
         InternalValidateGraph(
             int parentRankIndex,
-            System.Collections.ObjectModel.ReadOnlyCollection<Module> modules)
+            System.Collections.Generic.IEnumerable<Module> modules)
         {
             foreach (var c in modules)
             {
@@ -842,14 +842,14 @@ namespace Bam.Core
             Module module) => this.ReferencedModules[module.BuildEnvironment].Contains(module);
 
         /// <summary>
-        /// Returns a read only collection of all the named/referenced/encapsulating modules
+        /// Returns a enumeration of all the named/referenced/encapsulating modules
         /// for the specified Environment.
         /// </summary>
         /// <returns>The collection of modules</returns>
         /// <param name="env">The Environment to query for named modules.</param>
-        public System.Collections.ObjectModel.ReadOnlyCollection<Module>
+        public System.Collections.Generic.IEnumerable<Module>
         EncapsulatingModules(
-            Environment env) => this.ReferencedModules[env].ToReadOnlyCollection();
+            Environment env) => this.ReferencedModules[env];
 
         /// <summary>
         /// Obtain the list of build environments defined for this Graph.

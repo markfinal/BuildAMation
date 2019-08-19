@@ -448,56 +448,56 @@ namespace Bam.Core
 
         private void
         InternalDependsOn(
-            Module module)
+            Module newDependent)
         {
-            if (this == module)
+            if (this == newDependent)
             {
                 throw new Exception(
                     $"Circular reference. Module {this.ToString()} cannot depend on itself"
                 );
             }
-            if (this.DependentsList.Contains(module))
+            if (this.DependentsList.Contains(newDependent))
             {
                 return;
             }
-            if (this.DependeesList.Contains(module))
+            if (this.DependeesList.Contains(newDependent))
             {
                 throw new Exception(
-                    $"Cyclic dependency found between {this.ToString()} and {module.ToString()}"
+                    $"Cyclic dependency found between {this.ToString()} and {newDependent.ToString()}"
                 );
             }
-            this.DependentsList.Add(module);
-            module.DependeesList.Add(this);
+            this.DependentsList.Add(newDependent);
+            newDependent.DependeesList.Add(this);
         }
 
         /// <summary>
         /// An axiom of Bam. If a module depends on another, that other must have completely been brought up-to-date
         /// before the first module can begin to build.
         /// </summary>
-        /// <param name="module">Module to depend upon.</param>
-        /// <param name="moreModules">A zero-or-longer list or further modules to depend upon</param>
+        /// <param name="newDependent">Module to depend upon.</param>
+        /// <param name="additionalDependents">A zero-or-longer list of further Modules to depend upon</param>
         public void
         DependsOn(
-            Module module,
-            params Module[] moreModules)
+            Module newDependent,
+            params Module[] additionalDependents)
         {
-            this.InternalDependsOn(module);
-            foreach (var m in moreModules)
+            this.InternalDependsOn(newDependent);
+            foreach (var dependent in additionalDependents)
             {
-                this.InternalDependsOn(m);
+                this.InternalDependsOn(dependent);
             }
         }
 
         /// <summary>
-        /// An axiom of Bam. Depend upon a list of modules.
+        /// An axiom of Bam. Depend upon a range of tuples of pathkey-Module.
         /// </summary>
-        /// <param name="modules">Modules.</param>
+        /// <param name="newDependents">Range of Modules to dependent upon</param>
         public void
         DependsOn(
-            System.Collections.Generic.IEnumerable<Module> modules)
+            System.Collections.Generic.IEnumerable<Module> newDependents)
         {
-            this.DependentsList.AddRangeUnique(modules);
-            foreach (var module in modules)
+            this.DependentsList.AddRangeUnique(newDependents);
+            foreach (var module in newDependents)
             {
                 module.DependeesList.Add(this);
             }
@@ -652,34 +652,34 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Obtain a read-only list of modules it depends on.
+        /// Obtain an enumerable of modules it depends on.
         /// </summary>
         /// <value>The dependents.</value>
-        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependents => this.DependentsList.ToReadOnlyCollection();
+        public System.Collections.Generic.IEnumerable<Module> Dependents => this.DependentsList;
 
         /// <summary>
-        /// Obtain a read-only list of modules that depend on it.
+        /// Obtain an enumerable of modules that depend on it.
         /// </summary>
         /// <value>The dependees.</value>
-        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Dependees => this.DependeesList.ToReadOnlyCollection();
+        public System.Collections.Generic.IEnumerable<Module> Dependees => this.DependeesList;
 
         /// <summary>
-        /// Obtain a read-only list of modules it requires to be up-to-date.
+        /// Obtain an enumerable of modules it requires to be up-to-date.
         /// </summary>
         /// <value>The requirements.</value>
-        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Requirements => this.RequiredDependentsList.ToReadOnlyCollection();
+        public System.Collections.Generic.IEnumerable<Module> Requirements => this.RequiredDependentsList;
 
         /// <summary>
-        /// Obtain a read-only list of modules that require it.
+        /// Obtain an enumerable of modules that require it.
         /// </summary>
         /// <value>The requirees.</value>
-        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Requirees => this.RequiredDependeesList.ToReadOnlyCollection();
+        public System.Collections.Generic.IEnumerable<Module> Requirees => this.RequiredDependeesList;
 
         /// <summary>
         /// Obtain a read-only list of dependents that are children of this module.
         /// </summary>
         /// <value>The children.</value>
-        public System.Collections.ObjectModel.ReadOnlyCollection<Module> Children => new System.Collections.ObjectModel.ReadOnlyCollection<Module>(this.DependentsList.Where(item => (item is IChildModule child) && (child.Parent == this)).ToList());
+        public System.Collections.Generic.IEnumerable<Module> Children => this.DependentsList.Where(item => (item is IChildModule child) && (child.Parent == this));
 
         private readonly Array<Module> DependentsList = new Array<Module>();
         private readonly Array<Module> DependeesList = new Array<Module>();

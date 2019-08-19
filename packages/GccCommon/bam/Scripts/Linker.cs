@@ -27,6 +27,7 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace GccCommon
 {
     /// <summary>
@@ -80,7 +81,7 @@ namespace GccCommon
             C.IDynamicLibrary dynamicModule)
         {
             var dynamicDeps = new Bam.Core.Array<C.CModule>();
-            if (0 == (dynamicModule as C.CModule).Dependents.Count)
+            if (!(dynamicModule as C.CModule).Dependents.Any())
             {
                 return dynamicDeps;
             }

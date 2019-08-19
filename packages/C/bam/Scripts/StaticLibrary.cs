@@ -67,18 +67,7 @@ namespace C
         /// <summary>
         /// Access the object files required to create this library.
         /// </summary>
-        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
-        ObjectFiles
-        {
-            get
-            {
-                var module_list = FlattenHierarchicalFileList(this.sourceModules);
-                foreach (var module in module_list)
-                {
-                    yield return module;
-                }
-            }
-        }
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module> ObjectFiles => FlattenHierarchicalFileList(this.sourceModules);
 
         /// <summary>
         /// Enumerate all input modules
@@ -97,18 +86,7 @@ namespace C
         /// <summary>
         /// Access the headers files associated with this library.
         /// </summary>
-        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
-        HeaderFiles
-        {
-            get
-            {
-                var module_list = FlattenHierarchicalFileList(this.headerModules);
-                foreach (var module in module_list)
-                {
-                    yield return module;
-                }
-            }
-        }
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module> HeaderFiles => FlattenHierarchicalFileList(this.headerModules);
 
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps.ToReadOnlyCollection();
 

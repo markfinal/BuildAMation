@@ -120,34 +120,12 @@ namespace C
         /// <summary>
         /// Access the headers files associated with this executable.
         /// </summary>
-        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
-        HeaderFiles
-        {
-            get
-            {
-                var module_list = FlattenHierarchicalFileList(this.headerModules);
-                foreach (var module in module_list)
-                {
-                    yield return module;
-                }
-            }
-        }
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module> HeaderFiles => FlattenHierarchicalFileList(this.headerModules);
 
         /// <summary>
         /// Access the object files required to create this executable.
         /// </summary>
-        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
-        ObjectFiles
-        {
-            get
-            {
-                var module_list = FlattenHierarchicalFileList(this.sourceModules);
-                foreach (var module in module_list)
-                {
-                    yield return module;
-                }
-            }
-        }
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module> ObjectFiles => FlattenHierarchicalFileList(this.sourceModules);
 
         /// <summary>
         /// Enumerate across all input Modules to this application

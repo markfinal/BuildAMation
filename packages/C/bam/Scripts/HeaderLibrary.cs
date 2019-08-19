@@ -114,17 +114,6 @@ namespace C
         /// <summary>
         /// Access the headers forming this library.
         /// </summary>
-        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
-        HeaderFiles
-        {
-            get
-            {
-                var module_list = FlattenHierarchicalFileList(this.headerModules);
-                foreach (var module in module_list)
-                {
-                    yield return module;
-                }
-            }
-        }
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module> HeaderFiles => FlattenHierarchicalFileList(this.headerModules);
     }
 }
