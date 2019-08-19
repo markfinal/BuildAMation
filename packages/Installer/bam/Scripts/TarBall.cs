@@ -40,6 +40,13 @@ namespace Installer
         private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Files = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
         private readonly System.Collections.Generic.Dictionary<Bam.Core.Module, string> Paths = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
 
+        // TODO: this could be improved, as it is assuming that only the first directory added to the tar file
+        // is of interest as inputs, and ignores all remaining directories, and all individual files
+        /// <summary>
+        /// Access to Module-pathkey tuples
+        /// </summary>
+        public (Bam.Core.Module, string) ModulePathTuple => (this.Paths.First().Key, this.Paths.First().Value);
+
         /// <summary>
         /// Initialize this module
         /// </summary>
@@ -264,6 +271,17 @@ namespace Installer
 
                 default:
                     throw new System.NotSupportedException();
+            }
+        }
+
+        /// <summary>
+        /// /copydoc Bam.Core.Module.InputModulePaths
+        /// </summary>
+        public override System.Collections.Generic.IEnumerable<(Bam.Core.Module module, string pathKey)> InputModulePaths
+        {
+            get
+            {
+                yield return this.InputFiles.ModulePathTuple;
             }
         }
     }
