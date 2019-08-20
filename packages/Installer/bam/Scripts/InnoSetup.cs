@@ -156,14 +156,10 @@ namespace Installer
         /// <param name="module">from this Module</param>
         public InnoSetupCompilerSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Inputs_Outputs_Cmds)
         {
             this.InitializeAllInterfaces(module, false, true);
-        }
-
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Inputs_Outputs_Cmds;
         }
     }
 

@@ -43,17 +43,13 @@ namespace Publisher
         /// <param name="module">for this module</param>
         public ChangeRPathSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Inputs_Outputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
 
         [CommandLineProcessor.String("-r ")]
         string IChangeRPathSettings.NewRPath { get; set; }
-
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
-        }
     }
 }

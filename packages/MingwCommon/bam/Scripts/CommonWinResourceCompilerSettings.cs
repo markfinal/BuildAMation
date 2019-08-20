@@ -46,6 +46,8 @@ namespace MingwCommon
         /// <param name="module">for this Module</param>
         protected CommonWinResourceCompilerSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -64,13 +66,5 @@ namespace MingwCommon
 
         [CommandLineProcessor.Bool("--use-temp-file", "")]
         bool? ICommonWinResourceCompilerSettings.UseTempFile { get; set; }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
-        }
     }
 }

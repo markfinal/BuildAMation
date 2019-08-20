@@ -39,22 +39,15 @@ namespace Publisher
         IDSymUtilToolSettings
     {
         /// <summary>
-        /// Default constructor
-        /// </summary>
-        public DSymUtilToolSettings()
-        {}
-
-        /// <summary>
         /// Create a settings instance
         /// </summary>
         /// <param name="module">for this Module</param>
         public DSymUtilToolSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
-
-        public override void
-        AssignFileLayout()
+            Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
         {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
+            this.InitializeAllInterfaces(module, false, true);
         }
     }
 }

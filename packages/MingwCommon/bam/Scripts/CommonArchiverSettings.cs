@@ -27,6 +27,8 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using Bam.Core;
+
 namespace MingwCommon
 {
     /// <summary>
@@ -45,6 +47,8 @@ namespace MingwCommon
         /// <param name="module">for this Module</param>
         protected CommonArchiverSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -59,14 +63,5 @@ namespace MingwCommon
 
         [CommandLineProcessor.Enum(EArchiverCommand.Replace, "-r")]
         EArchiverCommand ICommonArchiverSettings.Command { get; set; }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
-        }
     }
 }

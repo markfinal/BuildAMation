@@ -39,15 +39,14 @@ namespace Installer
         Bam.Core.Settings,
         IDiskImageSettings
     {
-        public DiskImageSettings()
-        {}
-
         /// <summary>
         /// Create a settings instance
         /// </summary>
         /// <param name="module">for this Module</param>
         public DiskImageSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Inputs_Outputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -75,11 +74,5 @@ namespace Installer
 
         [CommandLineProcessor.String("-size ")]
         string IDiskImageSettings.ImageSize { get; set; }
-
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
-        }
     }
 }

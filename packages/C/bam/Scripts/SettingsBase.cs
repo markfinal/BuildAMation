@@ -38,6 +38,22 @@ namespace C
         Bam.Core.Settings
     {
         /// <summary>
+        /// Default constructor
+        /// </summary>
+        protected SettingsBase()
+        { }
+
+        /// <summary>
+        /// Construct an instance with the given layout
+        /// </summary>
+        /// <param name="layout">Layout of switches, inputs and outputs</param>
+        protected SettingsBase(
+            Bam.Core.Settings.ELayout layout)
+            :
+            base(layout)
+        { }
+
+        /// <summary>
         /// Create a delta settings collection
         /// </summary>
         /// <param name="sharedSettings">Settings to compare</param>

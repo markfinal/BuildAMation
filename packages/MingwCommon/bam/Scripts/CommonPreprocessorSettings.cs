@@ -56,6 +56,8 @@ namespace MingwCommon
         protected CommonPreprocessorSettings(
             Bam.Core.Module module,
             bool useDefaults)
+            :
+            base(ELayout.Cmds_Inputs_Outputs)
         {
             this.InitializeAllInterfaces(module, true, useDefaults);
         }
@@ -81,14 +83,5 @@ namespace MingwCommon
 
         [CommandLineProcessor.Bool("-P", "")]
         bool? C.ICommonPreprocessorSettings.SuppressLineMarkers { get; set; }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
-        }
     }
 }

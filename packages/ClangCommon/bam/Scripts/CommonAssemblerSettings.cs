@@ -47,6 +47,8 @@ namespace ClangCommon
         /// <param name="module">for this Module</param>
         protected CommonAssemblerSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Inputs_Outputs)
         {
             this.InitializeAllInterfaces(module, false, true);
 
@@ -84,14 +86,5 @@ namespace ClangCommon
         [CommandLineProcessor.StringArray("")]
         [XcodeProjectProcessor.StringArray("OTHER_CFLAGS", spacesSeparate: true)]
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
-        }
     }
 }

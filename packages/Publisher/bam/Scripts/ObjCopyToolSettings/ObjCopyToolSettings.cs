@@ -40,17 +40,13 @@ namespace Publisher
         IObjCopyToolSettings
     {
         /// <summary>
-        /// Default constructor
-        /// </summary>
-        public MakeDebugSymbolFileSettings()
-        {}
-
-        /// <summary>
         /// Create a settings instance
         /// </summary>
         /// <param name="module">for this Module</param>
         public MakeDebugSymbolFileSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Inputs_Outputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -60,11 +56,6 @@ namespace Publisher
 
         [CommandLineProcessor.Bool("-v", "")]
         bool IObjCopyToolSettings.Verbose { get; set; }
-
-        public override void AssignFileLayout ()
-        {
-            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
-        }
     }
 
     /// <summary>
@@ -77,17 +68,13 @@ namespace Publisher
         IObjCopyToolSettings
     {
         /// <summary>
-        /// Default constructor
-        /// </summary>
-        public LinkBackDebugSymbolFileSettings()
-        {}
-
-        /// <summary>
         /// Create a settings instance
         /// </summary>
         /// <param name="module">for this module</param>
         public LinkBackDebugSymbolFileSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Inputs_Outputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -97,10 +84,5 @@ namespace Publisher
 
         [CommandLineProcessor.Bool("-v", "")]
         bool IObjCopyToolSettings.Verbose { get; set; }
-
-        public override void AssignFileLayout ()
-        {
-            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
-        }
     }
 }

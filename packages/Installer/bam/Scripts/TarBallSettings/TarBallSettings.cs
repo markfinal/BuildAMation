@@ -46,6 +46,8 @@ namespace Installer
         /// <param name="module">for this Module</param>
         public TarBallSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -96,10 +98,5 @@ namespace Installer
 
         [CommandLineProcessor.Bool("-v", "")]
         bool ITarBallSettings.Verbose { get; set; }
-
-        public override void AssignFileLayout ()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
-        }
     }
 }

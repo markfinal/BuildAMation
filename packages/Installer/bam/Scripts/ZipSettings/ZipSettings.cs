@@ -43,6 +43,8 @@ namespace Installer
         /// <param name="module">for this Module</param>
         public SevenZipSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -55,12 +57,6 @@ namespace Installer
 
         [CommandLineProcessor.Bool("u", "a")]
         bool IZipSettings.Update { get; set; }
-
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
-        }
     }
 
     /// <summary>
@@ -71,15 +67,14 @@ namespace Installer
         Bam.Core.Settings,
         IZipSettings
     {
-        public ZipSettings()
-        {}
-
         /// <summary>
         /// Create a settings instance
         /// </summary>
         /// <param name="module">for this Module</param>
         public ZipSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -92,11 +87,5 @@ namespace Installer
 
         [CommandLineProcessor.Bool("-u", "")]
         bool IZipSettings.Update { get; set; }
-
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
-        }
     }
 }

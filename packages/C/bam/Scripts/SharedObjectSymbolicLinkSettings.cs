@@ -43,20 +43,17 @@ namespace C
         /// </summary>
         /// <param name="module">for this module</param>
         public SharedObjectSymbolicLinkSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Inputs_Outputs)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("-f", "")]
         bool ISharedObjectSymbolicLinkSettings.Force { get; set; }
 
         [CommandLineProcessor.Bool("-s", "")]
         bool ISharedObjectSymbolicLinkSettings.SoftLink { get; set; }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
-        }
     }
 }

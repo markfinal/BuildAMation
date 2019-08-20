@@ -321,10 +321,10 @@ namespace CommandLineProcessor
             {
                 return new Bam.Core.StringArray();
             }
-            if (settings.FileLayout == Bam.Core.Settings.ELayout.Unassigned)
+            if (settings.CommandLayout == Bam.Core.Settings.ELayout.Unassigned)
             {
                 throw new Bam.Core.Exception(
-                    $"File layout for {settings.ToString()} settings is unassigned. Override AssignFileLayout in this class."
+                    $"Command layout for {settings.ToString()} settings is unassigned. Check that the constructor updates the layout on the base class"
                 );
             }
             var commandLine = new Bam.Core.StringArray();
@@ -505,7 +505,7 @@ namespace CommandLineProcessor
                     }
                 }
             }
-            switch (settings.FileLayout)
+            switch (settings.CommandLayout)
             {
                 case Bam.Core.Settings.ELayout.Cmds_Outputs_Inputs:
                     ProcessOutputPaths(settings, module, commandLine, output_file_attributes);
@@ -539,7 +539,7 @@ namespace CommandLineProcessor
 
                 default:
                     throw new Bam.Core.Exception(
-                        $"Unhandled file layout {settings.FileLayout.ToString()} for settings {settings.ToString()}"
+                        $"Unhandled file layout {settings.CommandLayout.ToString()} for settings {settings.ToString()}"
                     );
             }
             return commandLine;

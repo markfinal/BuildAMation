@@ -60,7 +60,12 @@ namespace VisualCCommon
         /// <param name="useDefaults">whether to use defaults or leave uninitialised</param>
         protected CommonCompilerSettings(
             Bam.Core.Module module,
-            bool useDefaults) => this.InitializeAllInterfaces(module, true, useDefaults);
+            bool useDefaults)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
+        {
+            this.InitializeAllInterfaces(module, true, useDefaults);
+        }
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
         [VisualStudioProcessor.PreprocessorDefines("PreprocessorDefinitions", inheritExisting: true)]
@@ -196,14 +201,6 @@ namespace VisualCCommon
                     "Compiler specific optimizations can only be set when the common optimization is C.EOptimization.Custom"
                 );
             }
-        }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

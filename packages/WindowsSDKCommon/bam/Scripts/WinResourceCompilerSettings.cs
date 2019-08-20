@@ -47,7 +47,12 @@ namespace WindowsSDKCommon
         /// </summary>
         /// <param name="module"></param>
         public CommonWinResourceCompilerSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Bool("-v", "")]
         [VisualStudioProcessor.Bool("ShowProgress")]
@@ -68,13 +73,5 @@ namespace WindowsSDKCommon
         [CommandLineProcessor.Bool("-NOLOGO", "")]
         [VisualStudioProcessor.Bool("SuppressStartupBanner")]
         bool? ICommonWinResourceCompilerSettings.NoLogo { get; set; }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
-        }
     }
 }

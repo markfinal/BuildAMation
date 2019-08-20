@@ -40,17 +40,13 @@ namespace Publisher
         IRsyncSettings
     {
         /// <summary>
-        /// Default constructor
-        /// </summary>
-        public RsyncSettings()
-        { }
-
-        /// <summary>
         /// Create a settings instance
         /// </summary>
         /// <param name="module">for this Module</param>
         public RsyncSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Inputs_Outputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -69,11 +65,5 @@ namespace Publisher
 
         [CommandLineProcessor.PathArray("--exclude ")]
         Bam.Core.TokenizedStringArray IRsyncSettings.Exclusions { get; set; }
-
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
-        }
     }
 }

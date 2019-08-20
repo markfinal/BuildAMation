@@ -47,7 +47,12 @@ namespace VisualCCommon
         /// </summary>
         /// <param name="module">of settings for this Module</param>
         protected CommonAssemblerSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         // defined in the executable used
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "")]
@@ -106,15 +111,6 @@ namespace VisualCCommon
                     throw new Bam.Core.Exception("Safe exception handlers are only valid in 32-bit");
                 }
             }
-        }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

@@ -59,6 +59,8 @@ namespace GccCommon
         protected CommonCompilerSettings(
             Bam.Core.Module module,
             bool useDefaults)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
         {
             this.InitializeAllInterfaces(module, true, useDefaults);
         }
@@ -152,15 +154,6 @@ namespace GccCommon
                     "Compiler specific optimizations can only be set when the common optimization is C.EOptimization.Custom"
                 );
             }
-        }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
         }
     }
 }

@@ -45,6 +45,8 @@ namespace GccCommon
         /// <param name="module">for this Module</param>
         protected CommonArchiverSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -60,13 +62,5 @@ namespace GccCommon
 
         [CommandLineProcessor.Enum(EArchiverCommand.Replace, "-r")]
         EArchiverCommand ICommonArchiverSettings.Command { get; set; }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
-        }
     }
 }

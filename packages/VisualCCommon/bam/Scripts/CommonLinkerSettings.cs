@@ -52,7 +52,12 @@ namespace VisualCCommon
         /// </summary>
         /// <param name="module">Module to create settings for</param>
         protected CommonLinkerSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.Enum(C.ESubsystem.NotSet, "")]
         [CommandLineProcessor.Enum(C.ESubsystem.Console, "-SUBSYSTEM:CONSOLE")]
@@ -113,13 +118,5 @@ namespace VisualCCommon
         [VisualStudioProcessor.Enum(ELinkTimeCodeGeneration.On, "LinkTimeCodeGeneration", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "UseLinkTimeCodeGeneration")]
         [VisualStudioProcessor.Enum(ELinkTimeCodeGeneration.Incremental, "LinkTimeCodeGeneration", VisualStudioProcessor.EnumAttribute.EMode.VerbatimString, verbatimString: "UseFastLinkTimeCodeGeneration")]
         ELinkTimeCodeGeneration? ICommonLinkerSettings.LinkTimeCodeGeneration { get; set; }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
-        }
     }
 }

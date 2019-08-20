@@ -38,17 +38,13 @@ namespace Publisher
         IInstallNameToolSettings
     {
         /// <summary>
-        /// Default constructor
-        /// </summary>
-        public InstallNameToolSettings()
-        {}
-
-        /// <summary>
         /// Create a settings instance
         /// </summary>
         /// <param name="module">for this Module</param>
         public InstallNameToolSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Inputs_Outputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -62,11 +58,6 @@ namespace Publisher
 
         [CommandLineProcessor.String("")]
         string IInstallNameToolSettings.NewName { get; set; }
-
-        public override void AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
-        }
 
         public override void
         Validate()

@@ -36,12 +36,21 @@ namespace Bam.Core
     public abstract class Settings
     {
         /// <summary>
-        /// Default constructor.
+        /// Default constructor
         /// </summary>
         protected Settings()
+            :
+            this(ELayout.Unassigned)
+        { }
+
+        /// <summary>
+        /// Construct an instance of the Settings.
+        /// </summary>
+        /// <param name="layout">Layout of the command line generated from the settings.</param>
+        protected Settings(
+            ELayout layout)
         {
-            this.FileLayout = ELayout.Unassigned;
-            this.AssignFileLayout();
+            this.CommandLayout = layout;
         }
 
         private class InterfaceData
@@ -220,7 +229,7 @@ namespace Bam.Core
         {}
 
         /// <summary>
-        /// If settings are linearised to a command line, layout of where files are placed.
+        /// If settings are linearised to a command line, layout of where files and options commands are placed.
         /// </summary>
         public enum ELayout
         {
@@ -255,16 +264,9 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Access to the specified layout.
+        /// Access to the specified layout for commands.
         /// </summary>
-        public ELayout FileLayout { get; protected set; }
-
-        /// <summary>
-        /// Abstract function to assign the layout of the linearised settings.
-        /// </summary>
-        public /*abstract*/virtual void
-        AssignFileLayout()
-        {}
+        public ELayout CommandLayout { get; private set; }
 
         /// <summary>
         /// Defines the local policy to use for all settings

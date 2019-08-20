@@ -46,7 +46,12 @@ namespace VisualCCommon
         /// </summary>
         /// <param name="module">of settings for this Module</param>
         protected CommonArchiverSettings(
-            Bam.Core.Module module) => this.InitializeAllInterfaces(module, false, true);
+            Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
+        {
+            this.InitializeAllInterfaces(module, false, true);
+        }
 
         [CommandLineProcessor.StringArray("")]
         [VisualStudioProcessor.StringArray("AdditionalOptions")]
@@ -59,14 +64,5 @@ namespace VisualCCommon
         [CommandLineProcessor.Bool("-LTCG", "")]
         [VisualStudioProcessor.Bool("LinkTimeCodeGeneration")]
         bool ICommonArchiverSettings.LinkTimeCodeGeneration { get; set; }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
-        }
     }
 }

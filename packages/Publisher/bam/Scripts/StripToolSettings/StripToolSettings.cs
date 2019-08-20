@@ -40,17 +40,13 @@ namespace Publisher
         IStripToolSettings
     {
         /// <summary>
-        /// Default constructor
-        /// </summary>
-        public StripToolSettings()
-        {}
-
-        /// <summary>
         /// Create settings
         /// </summary>
         /// <param name="module">for this module</param>
         public StripToolSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Outputs_Inputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -66,12 +62,6 @@ namespace Publisher
 
         [CommandLineProcessor.Bool("-x", "")]
         bool IStripToolSettings.StripLocalSymbols { get; set; }
-
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Outputs_Inputs;
-        }
 
         public override void
         Validate()

@@ -47,6 +47,8 @@ namespace MingwCommon
         /// <param name="module">for this Module</param>
         protected CommonLinkerSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Inputs_Cmds_Outputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -78,14 +80,5 @@ namespace MingwCommon
 
         [CommandLineProcessor.StringArray("")]
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
-
-        /// <summary>
-        /// Set the layout how command lines are constructed
-        /// </summary>
-        public override void
-        AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Inputs_Cmds_Outputs;
-        }
     }
 }

@@ -41,17 +41,13 @@ namespace Publisher
         ICopyFileSettings
     {
         /// <summary>
-        /// Default constructor
-        /// </summary>
-        public PosixCopyFileSettings()
-        {}
-
-        /// <summary>
         /// Create a settings instance
         /// </summary>
         /// <param name="module">for this Module</param>
         public PosixCopyFileSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Cmds_Inputs_Outputs)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -67,11 +63,6 @@ namespace Publisher
 
         [CommandLineProcessor.Bool("-a", "")]
         bool ICopyFileSettings.PreserveAllAttributes { get; set; }
-
-        public override void AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Cmds_Inputs_Outputs;
-        }
     }
 
     /// <summary>
@@ -86,17 +77,13 @@ namespace Publisher
         ICopyFileSettings
     {
         /// <summary>
-        /// Default constructor
-        /// </summary>
-        public WinCopyFileSettings()
-        {}
-
-        /// <summary>
         /// Create a settings instance
         /// </summary>
         /// <param name="module">for this Module</param>
         public WinCopyFileSettings(
             Bam.Core.Module module)
+            :
+            base(ELayout.Inputs_Outputs_Cmds)
         {
             this.InitializeAllInterfaces(module, false, true);
         }
@@ -112,10 +99,5 @@ namespace Publisher
 
         [CommandLineProcessor.Bool("/K /B", "")]
         bool ICopyFileSettings.PreserveAllAttributes { get; set; }
-
-        public override void AssignFileLayout()
-        {
-            this.FileLayout = ELayout.Inputs_Outputs_Cmds;
-        }
     }
 }
