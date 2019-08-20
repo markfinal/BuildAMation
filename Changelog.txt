@@ -1,3 +1,5 @@
+20-Aug-2019 Fixes #644. Added missing toolchain versions for Xcode 11 and VisualStudio 2019.
+
 19-Aug-2019 Fixes #625. BREAKING CHANGE. Bam.Core.Module.InputModules renamed to InputModulePaths, and the KeyValuePair argument replaced with a (Bam.Core.Module module, string pathKey) tuple to simplify the API. Added Bam.Core.UnspecifiedInputModulePathException to be thrown when a suitable override for InputModulePaths has not been provided in a derivation of Module.
 
 19-Aug-2019 Fixes #641. BREAKING CHANGE. Replaced ReadOnlyCollections with generic IEnumerable where possible (avoids allocating a new object). The following public APIs have changed:

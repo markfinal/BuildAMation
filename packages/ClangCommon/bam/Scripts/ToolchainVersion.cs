@@ -60,6 +60,11 @@ namespace ClangCommon
         /// </summary>
         public static readonly C.ToolchainVersion Xcode_10 = FromComponentVersions(10, 0, 0);
 
+        /// <summary>
+        /// Xcode 11.0
+        /// </summary>
+        public static readonly C.ToolchainVersion Xcode_11 = FromComponentVersions(11, 0, 0);
+
         private ToolchainVersion(
             int major_version,
             int minor_version,

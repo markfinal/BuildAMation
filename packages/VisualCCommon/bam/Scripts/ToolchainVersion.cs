@@ -86,6 +86,21 @@ namespace VisualCCommon
         /// </summary>
         public static readonly C.ToolchainVersion VC2017_15_8 = FromMSCVer(1915);
 
+        /// <summary>
+        /// VisualC 2019 16.0
+        /// </summary>
+        public static readonly C.ToolchainVersion VC2019_16_0 = FromMSCVer(1920);
+
+        /// <summary>
+        /// VisualC 2019 16.1
+        /// </summary>
+        public static readonly C.ToolchainVersion VC2019_16_1 = FromMSCVer(1921);
+
+        /// <summary>
+        /// VisualC 2019 16.2
+        /// </summary>
+        public static readonly C.ToolchainVersion VC2019_16_2 = FromMSCVer(1922);
+
         private ToolchainVersion(
             int mscVer) => this.combinedVersion = mscVer;
 
