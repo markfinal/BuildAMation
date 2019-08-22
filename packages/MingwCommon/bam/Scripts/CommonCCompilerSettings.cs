@@ -36,28 +36,6 @@ namespace MingwCommon
         CommonCompilerSettings,
         C.ICOnlyCompilerSettings
     {
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this Module</param>
-        protected CommonCCompilerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
-
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this Module</param>
-        /// <param name="useDefaults">using defaults</param>
-        protected CommonCCompilerSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
-            :
-            base(module, useDefaults)
-        {}
-
         [CommandLineProcessor.Enum(C.ELanguageStandard.NotSet, "")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.C89, "-std=c89")]
         [CommandLineProcessor.Enum(C.ELanguageStandard.GNU89, "-std=gnu89")]

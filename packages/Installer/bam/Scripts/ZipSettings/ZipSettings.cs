@@ -38,16 +38,12 @@ namespace Installer
         IZipSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        public SevenZipSettings(
-            Bam.Core.Module module)
+        public SevenZipSettings()
             :
             base(ELayout.Cmds_Outputs_Inputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Bool("-bb3", "")]
         bool IZipSettings.Verbose { get; set; }
@@ -68,16 +64,12 @@ namespace Installer
         IZipSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        public ZipSettings(
-            Bam.Core.Module module)
+        public ZipSettings()
             :
             base(ELayout.Cmds_Outputs_Inputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Bool("-v", "")]
         bool IZipSettings.Verbose { get; set; }

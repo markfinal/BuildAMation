@@ -34,27 +34,5 @@ namespace VisualC
     /// </summary>
     public sealed class PreprocessorSettings :
         VisualCCommon.CommonPreprocessorSettings
-    {
-        /// <summary>
-        /// Create an instance
-        /// </summary>
-        /// <param name="module">of settings for this module</param>
-        public PreprocessorSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        { }
-
-        /// <summary>
-        /// Create an instance
-        /// </summary>
-        /// <param name="module">of settings for this module</param>
-        /// <param name="useDefaults">Whether to use defaults or not</param>
-        public PreprocessorSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
-            :
-            base(module, useDefaults)
-        { }
-    }
+    {}
 }

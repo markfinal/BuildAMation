@@ -34,27 +34,5 @@ namespace Mingw
     /// </summary>
     public sealed class CCompilerSettings :
         MingwCommon.CommonCompilerSettings
-    {
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this module</param>
-        public CCompilerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
-
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this module</param>
-        /// <param name="useDefaults">using defaults</param>
-        public CCompilerSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
-            :
-            base(module, useDefaults)
-        {}
-    }
+    {}
 }

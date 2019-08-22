@@ -43,16 +43,12 @@ namespace WindowsSDKCommon
         ICommonWinResourceCompilerSettings
     {
         /// <summary>
-        /// Construct an instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module"></param>
-        public CommonWinResourceCompilerSettings(
-            Bam.Core.Module module)
+        public CommonWinResourceCompilerSettings()
             :
             base(ELayout.Cmds_Outputs_Inputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Bool("-v", "")]
         [VisualStudioProcessor.Bool("ShowProgress")]

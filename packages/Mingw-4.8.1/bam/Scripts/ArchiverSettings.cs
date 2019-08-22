@@ -34,15 +34,5 @@ namespace Mingw
     /// </summary>
     public sealed class ArchiverSettings :
         MingwCommon.CommonArchiverSettings
-    {
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this module</param>
-        public ArchiverSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
-    }
+    {}
 }

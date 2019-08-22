@@ -42,16 +42,12 @@ namespace MingwCommon
         ICommonArchiverSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        protected CommonArchiverSettings(
-            Bam.Core.Module module)
+        protected CommonArchiverSettings()
             :
             base(ELayout.Cmds_Outputs_Inputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Bool("-s", "")]
         bool ICommonArchiverSettings.Ranlib { get; set; }

@@ -34,27 +34,5 @@ namespace Mingw
     /// </summary>
     public sealed class PreprocessorSettings :
         MingwCommon.CommonPreprocessorSettings
-    {
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this module</param>
-        public PreprocessorSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
-
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this module</param>
-        /// <param name="useDefaults">using defaults</param>
-        public PreprocessorSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
-            :
-            base(module, useDefaults)
-        {}
-    }
+    {}
 }

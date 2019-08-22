@@ -45,15 +45,6 @@ namespace C.ObjC.DefaultSettings
         {}
 
         /// <summary>
-        /// Provide empty property values of C.IObjectiveCOnlyCompilerSettings
-        /// </summary>
-        /// <param name="settings">C.IObjectiveCOnlyCompilerSettings instance</param>
-        public static void
-        Empty(
-            this C.IObjectiveCOnlyCompilerSettings settings)
-        {}
-
-        /// <summary>
         /// Intersection of two C.IObjectiveCOnlyCompilerSettings
         /// </summary>
         /// <param name="shared">C.IObjectiveCOnlyCompilerSettings instance for the shared properties</param>

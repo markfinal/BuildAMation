@@ -45,6 +45,9 @@ namespace C.DefaultSettings
             this C.ICommonPreprocessorSettings settings,
             Bam.Core.Module module)
         {
+            settings.IncludePaths = new Bam.Core.TokenizedStringArray();
+            settings.SystemIncludePaths = new Bam.Core.TokenizedStringArray();
+            settings.PreprocessorDefines = new PreprocessorDefinitions();
             settings.PreprocessorDefines.Add($"D_BAM_CONFIGURATION_{module.BuildEnvironment.Configuration.ToString().ToUpper()}");
             if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
@@ -78,22 +81,9 @@ namespace C.DefaultSettings
                     settings.PreprocessorDefines.Add("D_BAM_PLATFORM_BIGENDIAN");
                 }
             }
+            settings.PreprocessorUndefines = new Bam.Core.StringArray();
             settings.TargetLanguage = ETargetLanguage.C;
             settings.SuppressLineMarkers = false;
-        }
-
-        /// <summary>
-        /// Provide empty property values of C.ICommonPreprocessorSettings
-        /// </summary>
-        /// <param name="settings">C.ICommonPreprocessorSettings instance</param>
-        public static void
-        Empty(
-            this C.ICommonPreprocessorSettings settings)
-        {
-            settings.IncludePaths = new Bam.Core.TokenizedStringArray();
-            settings.PreprocessorDefines = new PreprocessorDefinitions();
-            settings.PreprocessorUndefines = new Bam.Core.StringArray();
-            settings.SystemIncludePaths = new Bam.Core.TokenizedStringArray();
         }
 
         /// <summary>
@@ -144,18 +134,22 @@ namespace C.DefaultSettings
             this C.ICommonPreprocessorSettings settings,
             C.ICommonPreprocessorSettings other)
         {
+            settings.PreprocessorDefines = new PreprocessorDefinitions();
             foreach (var define in other.PreprocessorDefines)
             {
                 settings.PreprocessorDefines.Add(define.Key, define.Value);
             }
+            settings.IncludePaths = new Bam.Core.TokenizedStringArray();
             foreach (var path in other.IncludePaths)
             {
                 settings.IncludePaths.AddUnique(path);
             }
+            settings.SystemIncludePaths = new Bam.Core.TokenizedStringArray();
             foreach (var path in other.SystemIncludePaths)
             {
                 settings.SystemIncludePaths.AddUnique(path);
             }
+            settings.PreprocessorUndefines = new Bam.Core.StringArray();
             foreach (var path in other.PreprocessorUndefines)
             {
                 settings.PreprocessorUndefines.AddUnique(path);

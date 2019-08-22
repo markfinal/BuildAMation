@@ -34,15 +34,5 @@ namespace Gcc
     /// </summary>
     public sealed class AssemblerSettings :
         GccCommon.CommonAssemblerSettings
-    {
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this Module</param>
-        public AssemblerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
-    }
+    {}
 }

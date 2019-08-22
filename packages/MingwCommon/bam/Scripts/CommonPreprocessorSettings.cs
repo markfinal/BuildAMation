@@ -39,28 +39,12 @@ namespace MingwCommon
         C.ICommonPreprocessorSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        protected CommonPreprocessorSettings(
-            Bam.Core.Module module)
-            :
-            this(module, useDefaults: true)
-        {}
-
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this Module</param>
-        /// <param name="useDefaults">using defaults</param>
-        protected CommonPreprocessorSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
+        protected CommonPreprocessorSettings()
             :
             base(ELayout.Cmds_Inputs_Outputs)
-        {
-            this.InitializeAllInterfaces(module, true, useDefaults);
-        }
+        {}
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
         C.PreprocessorDefinitions C.ICommonPreprocessorSettings.PreprocessorDefines { get; set; }

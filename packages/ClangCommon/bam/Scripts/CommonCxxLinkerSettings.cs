@@ -36,16 +36,6 @@ namespace ClangCommon
         ClangCommon.CommonLinkerSettings,
         C.ICxxOnlyLinkerSettings
     {
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this Module</param>
-        protected CommonCxxLinkerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
-
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.NotSet, "")]
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libstdcxx, "-stdlib=libstdc++")]
         [CommandLineProcessor.Enum(C.Cxx.EStandardLibrary.libcxx, "-stdlib=libc++")]

@@ -36,29 +36,11 @@ namespace ClangCommon
         CommonCCompilerSettings,
         C.IObjectiveCOnlyCompilerSettings
     {
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this Module</param>
-        protected CommonObjectiveCCompilerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
+        protected override void
+        ModifyDefaults()
         {
-            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
-        }
+            base.ModifyDefaults();
 
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this Module</param>
-        /// <param name="useDefaults">using defaults</param>
-        protected CommonObjectiveCCompilerSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
-            :
-            base(module, useDefaults)
-        {
             (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveC;
         }
 

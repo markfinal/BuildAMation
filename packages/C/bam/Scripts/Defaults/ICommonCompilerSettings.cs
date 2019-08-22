@@ -50,19 +50,9 @@ namespace C.DefaultSettings
             settings.Optimization = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug)) ? EOptimization.Speed : EOptimization.Off;
             settings.OmitFramePointer = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug));
             settings.WarningsAsErrors = true;
-            settings.PreprocessOnly = false;
-        }
-
-        /// <summary>
-        /// Provide empty property values of C.ICommonCompilerSettings
-        /// </summary>
-        /// <param name="settings">C.ICommonCompilerSettings instance</param>
-        public static void
-        Empty(
-            this C.ICommonCompilerSettings settings)
-        {
             settings.DisableWarnings = new Bam.Core.StringArray();
             settings.NamedHeaders = new Bam.Core.StringArray();
+            settings.PreprocessOnly = false;
         }
 
         /// <summary>
@@ -122,10 +112,12 @@ namespace C.DefaultSettings
             settings.WarningsAsErrors = other.WarningsAsErrors;
             settings.Optimization = other.Optimization;
             settings.OmitFramePointer = other.OmitFramePointer;
+            settings.DisableWarnings = new Bam.Core.StringArray();
             foreach (var path in other.DisableWarnings)
             {
                 settings.DisableWarnings.AddUnique(path);
             }
+            settings.NamedHeaders = new Bam.Core.StringArray();
             foreach (var header in other.NamedHeaders)
             {
                 settings.NamedHeaders.AddUnique(header);

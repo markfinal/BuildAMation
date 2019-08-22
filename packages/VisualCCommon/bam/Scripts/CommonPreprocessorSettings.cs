@@ -40,27 +40,12 @@ namespace VisualCCommon
         ICommonPreprocessorSettings
     {
         /// <summary>
-        /// Create an instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">Module to create Settings for</param>
-        protected CommonPreprocessorSettings(
-            Bam.Core.Module module)
-            : this(module, true)
-        {}
-
-        /// <summary>
-        /// Create an instance
-        /// </summary>
-        /// <param name="module">Module to create Settings for</param>
-        /// <param name="useDefaults">True to use default values, false to leave unassigned</param>
-        protected CommonPreprocessorSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
+        protected CommonPreprocessorSettings()
             :
             base(ELayout.Cmds_Inputs_Outputs)
-        {
-            this.InitializeAllInterfaces(module, true, useDefaults);
-        }
+        {}
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
         C.PreprocessorDefinitions C.ICommonPreprocessorSettings.PreprocessorDefines { get; set; }

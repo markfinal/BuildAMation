@@ -44,20 +44,6 @@ namespace C.DefaultSettings
             this C.IAdditionalSettings settings,
             Bam.Core.Module module)
         {
-            if (null == settings.AdditionalSettings)
-            {
-                settings.AdditionalSettings = new Bam.Core.StringArray();
-            }
-        }
-
-        /// <summary>
-        /// Provide empty property values of C.IAdditionalSettings
-        /// </summary>
-        /// <param name="settings">C.IAdditionalSettings instance</param>
-        public static void
-        Empty(
-            this C.IAdditionalSettings settings)
-        {
             settings.AdditionalSettings = new Bam.Core.StringArray();
         }
 
@@ -99,6 +85,7 @@ namespace C.DefaultSettings
             this C.IAdditionalSettings settings,
             C.IAdditionalSettings other)
         {
+            settings.AdditionalSettings = new Bam.Core.StringArray();
             foreach (var path in other.AdditionalSettings)
             {
                 settings.AdditionalSettings.AddUnique(path);

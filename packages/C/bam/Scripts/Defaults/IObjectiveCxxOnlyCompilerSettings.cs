@@ -46,15 +46,6 @@ namespace C.ObjCxx.DefaultSettings
         {}
 
         /// <summary>
-        /// Provide empty property values of C.IObjectiveCxxOnlyCompilerSettings
-        /// </summary>
-        /// <param name="settings">C.IObjectiveCxxOnlyCompilerSettings instance</param>
-        public static void
-        Empty(
-            this C.IObjectiveCxxOnlyCompilerSettings settings)
-        {}
-
-        /// <summary>
         /// Intersection of two C.IObjectiveCxxOnlyCompilerSettings
         /// </summary>
         /// <param name="shared">C.IObjectiveCxxOnlyCompilerSettings instance for the shared properties</param>

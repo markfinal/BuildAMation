@@ -48,16 +48,12 @@ namespace VisualCCommon
         ICommonLinkerSettings
     {
         /// <summary>
-        /// Create an instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">Module to create settings for</param>
-        protected CommonLinkerSettings(
-            Bam.Core.Module module)
+        protected CommonLinkerSettings()
             :
             base(ELayout.Cmds_Outputs_Inputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Enum(C.ESubsystem.NotSet, "")]
         [CommandLineProcessor.Enum(C.ESubsystem.Console, "-SUBSYSTEM:CONSOLE")]

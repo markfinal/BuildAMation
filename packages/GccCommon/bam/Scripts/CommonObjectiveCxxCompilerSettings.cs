@@ -36,29 +36,11 @@ namespace GccCommon
         CommonCxxCompilerSettings,
         C.IObjectiveCxxOnlyCompilerSettings
     {
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this Module</param>
-        protected CommonObjectiveCxxCompilerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
+        protected override void
+        ModifyDefaults()
         {
-            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
-        }
+            base.ModifyDefaults();
 
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this Module</param>
-        /// <param name="useDefaults">using defaults</param>
-        protected CommonObjectiveCxxCompilerSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
-            :
-            base(module, useDefaults)
-        {
             (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.ObjectiveCxx;
         }
     }

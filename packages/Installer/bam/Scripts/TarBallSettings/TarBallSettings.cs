@@ -41,16 +41,12 @@ namespace Installer
         ITarBallSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        public TarBallSettings(
-            Bam.Core.Module module)
+        public TarBallSettings()
             :
             base(ELayout.Cmds_Outputs_Inputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Enum(ETarOperation.Create, "-c")]
         ETarOperation ITarBallSettings.Operation { get; set; }

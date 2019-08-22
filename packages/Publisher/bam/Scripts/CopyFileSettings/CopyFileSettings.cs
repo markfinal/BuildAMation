@@ -41,16 +41,12 @@ namespace Publisher
         ICopyFileSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        public PosixCopyFileSettings(
-            Bam.Core.Module module)
+        public PosixCopyFileSettings()
             :
             base(ELayout.Cmds_Inputs_Outputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Bool("-f", "")]
         bool ICopyFileSettings.Force { get; set; }
@@ -77,16 +73,12 @@ namespace Publisher
         ICopyFileSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        public WinCopyFileSettings(
-            Bam.Core.Module module)
+        public WinCopyFileSettings()
             :
             base(ELayout.Inputs_Outputs_Cmds)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Bool("/Y /R", "")]
         bool ICopyFileSettings.Force { get; set; }

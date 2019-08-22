@@ -51,12 +51,12 @@ namespace Bam.Core
             ELayout layout)
         {
             this.CommandLayout = layout;
+            this._Properties = FindProperties(this.GetType());
         }
 
         private class InterfaceData
         {
-            public System.Type InterfaceType;
-            public System.Reflection.MethodInfo emptyMethod;
+            public System.Type interfaceType;
             public System.Reflection.MethodInfo defaultMethod;
         }
 
@@ -77,34 +77,35 @@ namespace Bam.Core
         {
             lock (Cache)
             {
-                if (!Cache.ContainsKey(settingsType))
+                if (Cache.ContainsKey(settingsType))
                 {
-                    var attributeType = typeof(SettingsExtensionsAttribute);
-                    var interfaces = new SettingsInterfaces();
-                    foreach (var i in currentInterfaces)
-                    {
-                        var attributeArray = i.GetCustomAttributes(attributeType, false);
-                        if (0 == attributeArray.Length)
-                        {
-                            throw new Exception(
-                                $"Settings interface {i.ToString()} is missing attribute {attributeType.ToString()}"
-                            );
-                        }
-
-                        var newData = new InterfaceData
-                        {
-                            InterfaceType = i
-                        };
-
-                        var attribute = attributeArray[0] as SettingsExtensionsAttribute;
-                        // TODO: the Empty function could be replaced by the auto-property initializers in C#6.0 (when Mono catches up)
-                        // although it won't then be a centralized definition, so the extension method as-is is probably better
-                        newData.emptyMethod = attribute.GetMethod("Empty", new[] { i });
-                        newData.defaultMethod = attribute.GetMethod("Defaults", new[] { i, typeof(Module) });
-                        interfaces.Data.Add(newData);
-                    }
-                    Cache.Add(settingsType, interfaces);
+                    return Cache[settingsType];
                 }
+
+                var attributeType = typeof(SettingsExtensionsAttribute);
+                var interfaces = new SettingsInterfaces();
+                foreach (var interfaceType in currentInterfaces)
+                {
+                    var attributeArray = interfaceType.GetCustomAttributes(attributeType, false);
+                    if (0 == attributeArray.Length)
+                    {
+                        throw new Exception(
+                            $"Settings interface {interfaceType.ToString()} is missing attribute {attributeType.ToString()}"
+                        );
+                    }
+
+                    var attribute = attributeArray[0] as SettingsExtensionsAttribute;
+                    // cannot replace Defaults extension methods with C# 6.0+ property initialisers easily
+                    // since there is no centralised initialisation (a copy of each common property per C toolchain, for instance)
+                    // and cannot inherit from a base class because each property has different attributes depending on the toolchain
+                    var newInterface = new InterfaceData
+                    {
+                        interfaceType = interfaceType,
+                        defaultMethod = attribute.GetMethod("Defaults", new[] { interfaceType, typeof(Module) })
+                    };
+                    interfaces.Data.Add(newInterface);
+                }
+                Cache.Add(settingsType, interfaces);
 
                 return Cache[settingsType];
             }
@@ -167,43 +168,6 @@ namespace Bam.Core
             }
             props.AddRangeUnique(FindProperties(baseType));
             return props;
-        }
-
-        /// <summary>
-        /// For all settings interfaces, optionally calling Empty method and Default method
-        /// in the extensions class defined by SettingsExtensionsAttribute on each interface.
-        /// If defaults are allowed, also call this Settings class' ModifyDefaults() function
-        /// which can be overridden in subclasses.
-        /// If defaults are allowed, then call the LocalPolicy if it's been defined.
-        /// </summary>
-        /// <param name="module">Module.</param>
-        /// <param name="emptyFirst">If set to <c>true</c> empty first.</param>
-        /// <param name="useDefaults">If set to <c>true</c> use defaults.</param>
-        protected void
-        InitializeAllInterfaces(
-            Module module,
-            bool emptyFirst,
-            bool useDefaults)
-        {
-            this.Module = module;
-            var data = GetSettingsInterfaces(this.GetType(), this.Interfaces());
-            foreach (var i in data.Data)
-            {
-                if (emptyFirst)
-                {
-                    i.emptyMethod?.Invoke(null, new[] { this });
-                }
-                if (useDefaults)
-                {
-                    i.defaultMethod?.Invoke(null, new object[] { this, module });
-                }
-            }
-            if (useDefaults)
-            {
-                ModifyDefaults();
-                LocalPolicy?.DefineLocalSettings(this, module);
-            }
-            this._Properties = FindProperties(this.GetType());
         }
 
         /// <summary>
@@ -282,5 +246,41 @@ namespace Bam.Core
         protected virtual void
         ModifyDefaults()
         {}
+
+        /// <summary>
+        /// For all interfaces in the settings, assign the default value to each property,
+        /// and assign the module to the settings.
+        /// For all settings interfaces, assign the default value via each interfaces' Default
+        /// extension method defined by SettingsExtensionsAttribute on each interface.
+        /// Also call this Settings class' ModifyDefaults() function
+        /// which can be overridden in subclasses.
+        /// Then call the LocalPolicy if it's been defined.
+        /// </summary>
+        /// <param name="module">Module that the Settings applies to</param>
+        public void
+        SetModuleAndDefaultPropertyValues(
+            Module module)
+        {
+            this.AssignModule(module);
+
+            var data = GetSettingsInterfaces(this.GetType(), this.Interfaces());
+            foreach (var i in data.Data)
+            {
+                i.defaultMethod?.Invoke(null, new object[] { this, module });
+            }
+            ModifyDefaults();
+            LocalPolicy?.DefineLocalSettings(this, module);
+        }
+
+        /// <summary>
+        /// Assign the Module that owns these settings.
+        /// </summary>
+        /// <param name="module">Module that the Settings applies to.</param>
+        public void
+        AssignModule(
+            Module module)
+        {
+            this.Module = module;
+        }
     }
 }

@@ -45,27 +45,12 @@ namespace VisualCCommon
         ICommonCompilerSettings
     {
         /// <summary>
-        /// Create an instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">of settings for this Module</param>
-        protected CommonCompilerSettings(
-            Bam.Core.Module module)
-            : this(module, true)
-        {}
-
-        /// <summary>
-        /// Create an instance
-        /// </summary>
-        /// <param name="module">of settings for this Module</param>
-        /// <param name="useDefaults">whether to use defaults or leave uninitialised</param>
-        protected CommonCompilerSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
+        protected CommonCompilerSettings()
             :
             base(ELayout.Cmds_Outputs_Inputs)
-        {
-            this.InitializeAllInterfaces(module, true, useDefaults);
-        }
+        {}
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
         [VisualStudioProcessor.PreprocessorDefines("PreprocessorDefinitions", inheritExisting: true)]

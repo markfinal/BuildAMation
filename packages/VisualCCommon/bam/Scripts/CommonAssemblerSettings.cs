@@ -43,16 +43,12 @@ namespace VisualCCommon
         ICommonAssemblerSettings
     {
         /// <summary>
-        /// Create an instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">of settings for this Module</param>
-        protected CommonAssemblerSettings(
-            Bam.Core.Module module)
+        protected CommonAssemblerSettings()
             :
             base(ELayout.Cmds_Outputs_Inputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         // defined in the executable used
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "")]

@@ -38,16 +38,12 @@ namespace Publisher
         IChangeRPathSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this module</param>
-        public ChangeRPathSettings(
-            Bam.Core.Module module)
+        public ChangeRPathSettings()
             :
             base(ELayout.Cmds_Inputs_Outputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.String("-r ")]
         string IChangeRPathSettings.NewRPath { get; set; }

@@ -55,13 +55,10 @@ namespace CodeGenTest
         Bam.Core.Settings,
         IGeneratedSourceSettings
     {
-        public GeneratedSourceSettings(
-            Bam.Core.Module module)
+        public GeneratedSourceSettings()
             :
             base(ELayout.Inputs_Outputs_Cmds)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.String("")]
         string IGeneratedSourceSettings.Keyword { get; set; }

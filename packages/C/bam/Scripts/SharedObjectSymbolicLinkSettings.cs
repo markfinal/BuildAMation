@@ -39,16 +39,12 @@ namespace C
         ISharedObjectSymbolicLinkSettings
     {
         /// <summary>
-        /// Construct an instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this module</param>
-        public SharedObjectSymbolicLinkSettings(
-            Bam.Core.Module module)
+        public SharedObjectSymbolicLinkSettings()
             :
             base(ELayout.Cmds_Inputs_Outputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Bool("-f", "")]
         bool ISharedObjectSymbolicLinkSettings.Force { get; set; }

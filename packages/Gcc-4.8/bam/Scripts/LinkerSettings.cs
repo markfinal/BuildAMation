@@ -34,15 +34,5 @@ namespace Gcc
     /// </summary>
     public class LinkerSettings :
         GccCommon.CommonLinkerSettings
-    {
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this Module</param>
-        public LinkerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        {}
-    }
+    {}
 }

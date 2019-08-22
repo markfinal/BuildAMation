@@ -40,16 +40,12 @@ namespace Publisher
         IRsyncSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        public RsyncSettings(
-            Bam.Core.Module module)
+        public RsyncSettings()
             :
             base(ELayout.Cmds_Inputs_Outputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Bool("-v", "")]
         bool IRsyncSettings.Verbose { get; set; }

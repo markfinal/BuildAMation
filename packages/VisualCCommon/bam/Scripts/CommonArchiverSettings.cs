@@ -42,16 +42,12 @@ namespace VisualCCommon
         ICommonArchiverSettings
     {
         /// <summary>
-        /// Create an instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">of settings for this Module</param>
-        protected CommonArchiverSettings(
-            Bam.Core.Module module)
+        protected CommonArchiverSettings()
             :
             base(ELayout.Cmds_Outputs_Inputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.StringArray("")]
         [VisualStudioProcessor.StringArray("AdditionalOptions")]

@@ -42,15 +42,17 @@ namespace ClangCommon
         ICommonAssemblerSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        protected CommonAssemblerSettings(
-            Bam.Core.Module module)
+        protected CommonAssemblerSettings()
             :
             base(ELayout.Cmds_Inputs_Outputs)
+        {}
+
+        protected override void
+        ModifyDefaults()
         {
-            this.InitializeAllInterfaces(module, false, true);
+            base.ModifyDefaults();
 
             // not in the defaults in the C package to avoid a compile-time dependency on the Clang package
             (this as C.ICommonAssemblerSettingsOSX).MacOSXMinimumVersionSupported =

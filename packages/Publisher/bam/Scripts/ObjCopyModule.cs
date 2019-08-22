@@ -194,7 +194,10 @@ namespace Publisher
         }
 
         public override Settings
-        MakeSettings() => new MakeDebugSymbolFileSettings(this);
+        MakeSettings()
+        {
+            return new MakeDebugSymbolFileSettings();
+        }
 
         /// <summary>
         /// /copydoc Bam.Core.Module.InputModulePaths
@@ -268,7 +271,10 @@ namespace Publisher
         public MakeDebugSymbolFile DebugSymbolModule { get; set; }
 
         public override Settings
-        MakeSettings() => new LinkBackDebugSymbolFileSettings(this);
+        MakeSettings()
+        {
+            return new LinkBackDebugSymbolFileSettings();
+        }
 
         /// <summary>
         /// /copydoc Bam.Core.Module.InputModulePaths

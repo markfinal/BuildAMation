@@ -38,16 +38,12 @@ namespace Publisher
         IInstallNameToolSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        public InstallNameToolSettings(
-            Bam.Core.Module module)
+        public InstallNameToolSettings()
             :
             base(ELayout.Cmds_Inputs_Outputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Enum(EInstallNameToolMode.UpdateIDName, "-id")]
         [CommandLineProcessor.Enum(EInstallNameToolMode.ChangeIDName, "-change")]

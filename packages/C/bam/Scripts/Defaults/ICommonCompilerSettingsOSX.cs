@@ -46,16 +46,6 @@ namespace C.DefaultSettings
         {
             // N.B. this default is set in the specific Clang version
             // as it's set on both compiler and linker
-        }
-
-        /// <summary>
-        /// Provide empty property values of C.ICommonCompilerSettingsOSX
-        /// </summary>
-        /// <param name="settings">C.ICommonCompilerSettingsOSX instance</param>
-        public static void
-        Empty(
-            this C.ICommonCompilerSettingsOSX settings)
-        {
             settings.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray();
         }
 
@@ -99,6 +89,7 @@ namespace C.DefaultSettings
             this C.ICommonCompilerSettingsOSX settings,
             C.ICommonCompilerSettingsOSX other)
         {
+            settings.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray();
             foreach (var path in other.FrameworkSearchPaths)
             {
                 settings.FrameworkSearchPaths.AddUnique(path);

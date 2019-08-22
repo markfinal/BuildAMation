@@ -133,16 +133,12 @@ namespace Installer
         Bam.Core.Settings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">from this Module</param>
-        public NSISCompilerSettings(
-            Bam.Core.Module module)
+        public NSISCompilerSettings()
             :
             base(ELayout.Inputs_Outputs_Cmds)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
     }
 
     /// <summary>

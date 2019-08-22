@@ -41,16 +41,12 @@ namespace MingwCommon
         ICommonAssemblerSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        protected CommonAssemblerSettings(
-            Bam.Core.Module module)
+        protected CommonAssemblerSettings()
             :
             base(ELayout.Cmds_Inputs_Outputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.EnumAttribute(C.EBit.SixtyFour, "-m64")]

@@ -1,3 +1,6 @@
+22-Aug-2019 Fixes #645. BREAKING CHANGE. Initialisation of Settings interface properties simplified. Settings classes only require a default constructor now. Removed InitializeAllInterfaces method. Added SetModuleAndDefaultPropertyValues and AssignModule methods to Base.Core.Settings.
+Interfaces that can be delta'd (e.g. compiler interfaces used in project generator build modes) no longer require an Empty extension method. Instead, Defaults and Clone extension methods are responsible for initialising any reference properties before use.
+
 20-Aug-2019 Fixes #585. BREAKING CHANGE. Removed virtual function Bam.Core.Settings.AssignFileLayout() has been removed. The property FileLayout has been renamed to CommandLayout, and the setter made private. Bam.Core.Settings constructor now requires an ELayout value. This enforces the invariant nature of the layout, and eliminates one (virtual) function call per Settings instance.
 
 20-Aug-2019 Fixes #644. Added missing toolchain versions for Xcode 11 and VisualStudio 2019.

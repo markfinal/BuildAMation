@@ -42,28 +42,12 @@ namespace GccCommon
         ICommonCompilerSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        protected CommonCompilerSettings(
-            Bam.Core.Module module)
-            :
-            this(module, true)
-        {}
-
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this Module</param>
-        /// <param name="useDefaults">using defaults</param>
-        protected CommonCompilerSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
+        protected CommonCompilerSettings()
             :
             base(ELayout.Cmds_Outputs_Inputs)
-        {
-            this.InitializeAllInterfaces(module, true, useDefaults);
-        }
+        {}
 
         [CommandLineProcessor.PreprocessorDefines("-D")]
         C.PreprocessorDefinitions C.ICommonPreprocessorSettings.PreprocessorDefines { get; set; }

@@ -37,29 +37,11 @@ namespace VisualCCommon
         CommonCompilerSettings,
         C.ICOnlyCompilerSettings
     {
-        /// <summary>
-        /// Create an instance
-        /// </summary>
-        /// <param name="module">of settings for this Module</param>
-        protected CommonCCompilerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
+        protected override void
+        ModifyDefaults()
         {
-            (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.C;
-        }
+            base.ModifyDefaults();
 
-        /// <summary>
-        /// Create an instance
-        /// </summary>
-        /// <param name="module">of settings for this Module</param>
-        /// <param name="useDefaults">whether to use defaults or leave uninitialised</param>
-        protected CommonCCompilerSettings(
-            Bam.Core.Module module,
-            bool useDefaults)
-            :
-            base(module, useDefaults)
-        {
             (this as C.ICommonPreprocessorSettings).TargetLanguage = C.ETargetLanguage.C;
         }
 

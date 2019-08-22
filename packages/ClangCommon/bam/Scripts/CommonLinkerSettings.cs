@@ -42,15 +42,17 @@ namespace ClangCommon
         ICommonLinkerSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        protected CommonLinkerSettings(
-            Bam.Core.Module module)
+        protected CommonLinkerSettings()
             :
             base(ELayout.Cmds_Outputs_Inputs)
+        {}
+
+        protected override void
+        ModifyDefaults()
         {
-            this.InitializeAllInterfaces(module, false, true);
+            base.ModifyDefaults();
 
             // not in the defaults in the C package to avoid a compile-time dependency on the Clang package
             (this as C.ICommonLinkerSettingsOSX).MacOSMinimumVersionSupported =

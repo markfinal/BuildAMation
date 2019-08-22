@@ -34,15 +34,5 @@ namespace VisualC
     /// </summary>
     public sealed class ArchiverSettings :
         VisualCCommon.CommonArchiverSettings
-    {
-        /// <summary>
-        /// Create an instance
-        /// </summary>
-        /// <param name="module">of settings for this module</param>
-        public ArchiverSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        { }
-    }
+    {}
 }

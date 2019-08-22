@@ -42,16 +42,12 @@ namespace MingwCommon
         C.IAdditionalSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        protected CommonLinkerSettings(
-            Bam.Core.Module module)
+        protected CommonLinkerSettings()
             :
             base(ELayout.Inputs_Cmds_Outputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Enum(C.ESubsystem.NotSet, "")]
         [CommandLineProcessor.Enum(C.ESubsystem.Console, "-Wl,-subsystem,console")]

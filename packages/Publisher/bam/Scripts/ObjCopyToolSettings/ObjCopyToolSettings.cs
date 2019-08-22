@@ -40,16 +40,12 @@ namespace Publisher
         IObjCopyToolSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        public MakeDebugSymbolFileSettings(
-            Bam.Core.Module module)
+        public MakeDebugSymbolFileSettings()
             :
             base(ELayout.Cmds_Inputs_Outputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Bool("--only-keep-debug", "")]
         bool IObjCopyToolSettings.OnlyKeepDebug { get; set; }
@@ -68,16 +64,12 @@ namespace Publisher
         IObjCopyToolSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this module</param>
-        public LinkBackDebugSymbolFileSettings(
-            Bam.Core.Module module)
+        public LinkBackDebugSymbolFileSettings()
             :
             base(ELayout.Cmds_Inputs_Outputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Bool("--only-keep-debug", "")]
         bool IObjCopyToolSettings.OnlyKeepDebug { get; set; }

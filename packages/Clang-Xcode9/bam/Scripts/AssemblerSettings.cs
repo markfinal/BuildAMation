@@ -31,15 +31,5 @@ namespace Clang
 {
     public sealed class AssemblerSettings :
         ClangCommon.CommonAssemblerSettings
-    {
-        /// <summary>
-        /// Create a settings instance
-        /// </summary>
-        /// <param name="module">for this Module</param>
-        public AssemblerSettings(
-            Bam.Core.Module module)
-            :
-            base(module)
-        { }
-    }
+    {}
 }

@@ -41,16 +41,12 @@ namespace GccCommon
         ICommonLinkerSettings
     {
         /// <summary>
-        /// Create a settings instance
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this Module</param>
-        protected CommonLinkerSettings(
-            Bam.Core.Module module)
+        protected CommonLinkerSettings()
             :
             base(ELayout.Inputs_Cmds_Outputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]

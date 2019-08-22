@@ -40,16 +40,12 @@ namespace Publisher
         IStripToolSettings
     {
         /// <summary>
-        /// Create settings
+        /// Default constructor
         /// </summary>
-        /// <param name="module">for this module</param>
-        public StripToolSettings(
-            Bam.Core.Module module)
+        public StripToolSettings()
             :
             base(ELayout.Cmds_Outputs_Inputs)
-        {
-            this.InitializeAllInterfaces(module, false, true);
-        }
+        {}
 
         [CommandLineProcessor.Bool("-v", "")]
         bool IStripToolSettings.Verbose { get; set; }

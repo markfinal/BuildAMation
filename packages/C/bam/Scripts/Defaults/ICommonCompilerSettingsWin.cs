@@ -48,15 +48,6 @@ namespace C.DefaultSettings
         }
 
         /// <summary>
-        /// Provide empty property values of C.ICommonCompilerSettingsWin
-        /// </summary>
-        /// <param name="settings">C.ICommonCompilerSettingsWin instance</param>
-        public static void
-        Empty(
-            this C.ICommonCompilerSettingsWin settings)
-        {}
-
-        /// <summary>
         /// Intersection of two C.ICommonCompilerSettingsWin
         /// </summary>
         /// <param name="shared">C.ICommonCompilerSettingsWin instance for the shared properties</param>

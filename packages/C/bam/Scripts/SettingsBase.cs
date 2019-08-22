@@ -66,7 +66,8 @@ namespace C
         {
             var attributeType = typeof(Bam.Core.SettingsExtensionsAttribute);
 
-            var moduleSpecificSettings = System.Activator.CreateInstance(module.Settings.GetType(), module, false) as SettingsBase;
+            var moduleSpecificSettings = System.Activator.CreateInstance(module.Settings.GetType()) as SettingsBase;
+            moduleSpecificSettings.AssignModule(module);
             var sharedInterfaces = sharedSettings.Interfaces();
             foreach (var i in module.Settings.Interfaces())
             {
@@ -229,10 +230,10 @@ namespace C
             var sharedSettingsType = sharedSettingsTypeDefn.CreateType();
             var attributeType = typeof(Bam.Core.SettingsExtensionsAttribute);
 
-            // now that we have an instance of the shared settings type, calculate the values of the individual settings across all object files
-            // for all shared interfaces
+            // now that we have an instance of the shared settings type, calculate the values of the
+            // individual settings across all object files for all shared interfaces
             var commonSettings = System.Activator.CreateInstance(sharedSettingsType) as SettingsBase;
-            commonSettings.InitializeAllInterfaces(objectFiles.First(), true, false);
+            commonSettings.AssignModule(objectFiles.First());
             foreach (var i in sharedInterfaces)
             {
                 var attributeArray = i.GetCustomAttributes(attributeType, false);
