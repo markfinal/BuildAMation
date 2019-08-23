@@ -321,7 +321,7 @@ namespace VisualStudioProcessor
                 typeof(InputPathsAttribute),
                 true // since generally specified in an abstract class
             ) as InputPathsAttribute[];
-            if (settings.Module.InputModulePaths.Any())
+            if (settings.Module != null && settings.Module.InputModulePaths.Any())
             {
                 if (!input_files_attributes.Any())
                 {

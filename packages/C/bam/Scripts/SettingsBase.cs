@@ -233,7 +233,7 @@ namespace C
             // now that we have an instance of the shared settings type, calculate the values of the
             // individual settings across all object files for all shared interfaces
             var commonSettings = System.Activator.CreateInstance(sharedSettingsType) as SettingsBase;
-            commonSettings.AssignModule(objectFiles.First());
+            // note: commonSettings have a null Module
             foreach (var i in sharedInterfaces)
             {
                 var attributeArray = i.GetCustomAttributes(attributeType, false);
