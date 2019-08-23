@@ -147,7 +147,7 @@ class VSSolutionBuilder(Builder):
             arg_list = [
                 self._ms_build_path,
                 "/m:%d" % self.num_threads,
-                "/verbosity:normal",
+                "/verbosity:quiet",
                 solution_path
             ]
             # capitalize the first letter of the configuration
