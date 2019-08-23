@@ -274,6 +274,7 @@ namespace Bam.Core
 
         /// <summary>
         /// Assign the Module that owns these settings.
+        /// Assign the Settings property inside the Module.
         /// </summary>
         /// <param name="module">Module that the Settings applies to.</param>
         public void
@@ -281,6 +282,7 @@ namespace Bam.Core
             Module module)
         {
             this.Module = module;
+            module.Settings = this;
         }
     }
 }

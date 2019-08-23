@@ -548,7 +548,9 @@ namespace Bam.Core
 
                     try
                     {
-                        module.Settings = module.MakeSettings();
+                        // this handles connecting the module to the settings and vice versa too
+                        var settings = module.MakeSettings();
+                        settings.SetModuleAndDefaultPropertyValues(module);
                     }
                     catch (System.TypeInitializationException ex)
                     {

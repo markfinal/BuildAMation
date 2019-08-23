@@ -1199,7 +1199,6 @@ namespace Bam.Core
                 return null;
             }
             var settings = System.Activator.CreateInstance(type) as Settings;
-            settings.SetModuleAndDefaultPropertyValues(this);
             return settings;
         }
 
