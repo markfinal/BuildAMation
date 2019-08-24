@@ -1,4 +1,4 @@
-24-Aug-2019 Fixes #584. Removed the Bam.Core.Module argument from the extension method Defaults for each settings interface. If the Module is needed, then the Module property on the Settings itself can be queried.
+24-Aug-2019 Fixes #584. BREAKING CHANGE. Removed the Bam.Core.Module argument from the extension method Defaults for each settings interface. If the Module is needed, then the Module property on the Settings itself can be queried.
 
 23-Aug-2019 Fixes #648. Python test harness VSSolution runs now use msbuild at quiet verbosity instead of normal, to reduce build spam.
 
