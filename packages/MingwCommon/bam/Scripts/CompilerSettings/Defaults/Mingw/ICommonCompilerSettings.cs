@@ -37,13 +37,13 @@ namespace MingwCommon.DefaultSettings
     {
         public static void
         Defaults(
-            this MingwCommon.ICommonCompilerSettings settings,
-            Bam.Core.Module module)
+            this MingwCommon.ICommonCompilerSettings settings)
         {
             settings.AllWarnings = false;
             settings.ExtraWarnings = false;
             settings.Pedantic = false;
             settings.Visibility = EVisibility.Hidden;
+            var module = (settings as Bam.Core.Settings).Module;
             settings.StrictAliasing = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug));
             settings.Optimization = null; // assume default C.ICommonCompilerSettings.Optimization is sufficient
         }

@@ -37,14 +37,14 @@ namespace GccCommon.DefaultSettings
     {
         public static void
         Defaults(
-            this GccCommon.ICommonCompilerSettings settings,
-            Bam.Core.Module module)
+            this GccCommon.ICommonCompilerSettings settings)
         {
             settings.PositionIndependentCode = false;
             settings.AllWarnings = false;
             settings.ExtraWarnings = false;
             settings.Pedantic = false;
             settings.Visibility = EVisibility.Hidden;
+            var module = (settings as Bam.Core.Settings).Module;
             settings.StrictAliasing = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug));
             settings.Optimization = null; // assume that the setting in C.ICommonCompilerSettings is sufficient
         }

@@ -38,11 +38,9 @@ namespace C.DefaultSettings
         /// Set default property values of C.ICommonWinResourceCompilerSettings
         /// </summary>
         /// <param name="settings">C.ICommonWinResourceCompilerSettings instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ICommonWinResourceCompilerSettings settings,
-            Bam.Core.Module module)
+            this C.ICommonWinResourceCompilerSettings settings)
         {
             settings.Verbose = false;
             settings.IncludePaths = new Bam.Core.TokenizedStringArray();

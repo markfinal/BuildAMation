@@ -36,10 +36,10 @@ namespace ClangCommon.DefaultSettings
     {
         public static void
         Defaults(
-            this ClangCommon.ICommonLinkerSettings settings,
-            Bam.Core.Module module)
+            this ClangCommon.ICommonLinkerSettings settings)
         {
             settings.RPath = new Bam.Core.TokenizedStringArray();
+            var module = (settings as Bam.Core.Settings).Module;
             if (!(module is C.DynamicLibrary) && !(module is C.Cxx.DynamicLibrary))
             {
                 // only applied to executables, not dylibs, nor plugins

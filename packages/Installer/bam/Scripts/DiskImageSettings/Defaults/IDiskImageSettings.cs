@@ -36,8 +36,7 @@ namespace Installer.DefaultSettings
     {
         public static void
         Defaults(
-            this IDiskImageSettings settings,
-            Bam.Core.Module module)
+            this IDiskImageSettings settings)
         {
             settings.Verb = EDiskImageVerb.Create;
             settings.Format = EDiskImageFormat.UDZO;

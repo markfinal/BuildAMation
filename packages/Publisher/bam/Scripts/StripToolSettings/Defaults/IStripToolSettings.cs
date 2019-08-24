@@ -37,9 +37,9 @@ namespace Publisher.DefaultSettings
     {
         public static void
         Defaults(
-            this IStripToolSettings settings,
-            Bam.Core.Module module)
+            this IStripToolSettings settings)
         {
+            var module = (settings as Bam.Core.Settings).Module;
             if (!module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.OSX))
             {
                 settings.Verbose = true;

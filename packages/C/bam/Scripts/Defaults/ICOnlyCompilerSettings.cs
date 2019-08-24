@@ -38,11 +38,9 @@ namespace C.DefaultSettings
         /// Set default property values of C.ICOnlyCompilerSettings
         /// </summary>
         /// <param name="settings">C.ICOnlyCompilerSettings instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ICOnlyCompilerSettings settings,
-            Bam.Core.Module module)
+            this C.ICOnlyCompilerSettings settings)
         {
             settings.LanguageStandard = ELanguageStandard.C89;
         }

@@ -38,12 +38,11 @@ namespace C.DefaultSettings
         /// Set default property values of C.ICommonLinkerSettings
         /// </summary>
         /// <param name="settings">C.ICommonLinkerSettings instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ICommonLinkerSettings settings,
-            Bam.Core.Module module)
+            this C.ICommonLinkerSettings settings)
         {
+            var module = (settings as Bam.Core.Settings).Module;
             settings.Bits = (module as CModule).BitDepth;
             settings.OutputType = ELinkerOutput.Executable;
             settings.LibraryPaths = new Bam.Core.TokenizedStringArray();

@@ -33,9 +33,9 @@ namespace Publisher.DefaultSettings
     {
         public static void
         Defaults(
-            this IRsyncSettings settings,
-            Bam.Core.Module module)
+            this IRsyncSettings settings)
         {
+            var module = (settings as Bam.Core.Settings).Module;
             settings.Verbose = true;
             settings.Recursive = (module is CollatedDirectory || module is CollatedOSXFramework);
             settings.PreserveAllAttributes = true;

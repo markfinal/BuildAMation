@@ -33,9 +33,9 @@ namespace Publisher.DefaultSettings
     {
         public static void
         Defaults(
-            this IInstallNameToolSettings settings,
-            Bam.Core.Module module)
+            this IInstallNameToolSettings settings)
         {
+            var module = (settings as Bam.Core.Settings).Module;
             if (module is IdNameOSX)
             {
                 settings.Mode = EInstallNameToolMode.UpdateIDName;

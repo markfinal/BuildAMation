@@ -36,8 +36,7 @@ namespace ClangCommon.DefaultSettings
     {
         public static void
         Defaults(
-            this ICommonArchiverSettings settings,
-            Bam.Core.Module module)
+            this ICommonArchiverSettings settings)
         {
             settings.Ranlib = true;
             settings.DoNotWarnIfLibraryCreated = true;

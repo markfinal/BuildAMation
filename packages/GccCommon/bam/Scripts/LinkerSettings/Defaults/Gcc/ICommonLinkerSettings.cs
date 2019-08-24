@@ -36,8 +36,7 @@ namespace GccCommon.DefaultSettings
     {
         public static void
         Defaults(
-            this GccCommon.ICommonLinkerSettings settings,
-            Bam.Core.Module module)
+            this GccCommon.ICommonLinkerSettings settings)
         {
             settings.CanUseOrigin = false;
             settings.RPath = new Bam.Core.TokenizedStringArray();

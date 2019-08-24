@@ -38,11 +38,9 @@ namespace WindowsSDKCommon.DefaultSettings
         /// Set the defaults for ICommonWinResourceCompilerSettings
         /// </summary>
         /// <param name="settings">Settings instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this ICommonWinResourceCompilerSettings settings,
-            Bam.Core.Module module)
+            this ICommonWinResourceCompilerSettings settings)
         {
             settings.NoLogo = true;
         }

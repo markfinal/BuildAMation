@@ -36,8 +36,7 @@ namespace ClangCommon.DefaultSettings
     {
         public static void
         Defaults(
-            this ICommonAssemblerSettings settings,
-            Bam.Core.Module module)
+            this ICommonAssemblerSettings settings)
         {}
     }
 }

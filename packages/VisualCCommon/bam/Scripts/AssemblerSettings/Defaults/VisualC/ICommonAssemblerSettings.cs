@@ -36,11 +36,11 @@ namespace VisualCCommon.DefaultSettings
     {
         public static void
         Defaults(
-            this VisualCCommon.ICommonAssemblerSettings settings,
-            Bam.Core.Module module)
+            this VisualCCommon.ICommonAssemblerSettings settings)
         {
             settings.NoLogo = true;
             settings.WarningLevel = EAssemblerWarningLevel.Level3;
+            var module = (settings as Bam.Core.Settings).Module;
             settings.SafeExceptionHandlers = ((module as C.CModule).BitDepth == C.EBit.ThirtyTwo);
         }
     }

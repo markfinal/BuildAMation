@@ -38,11 +38,9 @@ namespace C.DefaultSettings
         /// Set default property values of C.ICxxOnlyLinkerSettings
         /// </summary>
         /// <param name="settings">C.ICxxOnlyLinkerSettings instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ICxxOnlyLinkerSettings settings,
-            Bam.Core.Module module)
+            this C.ICxxOnlyLinkerSettings settings)
         {
             settings.StandardLibrary = C.Cxx.EStandardLibrary.NotSet;
         }

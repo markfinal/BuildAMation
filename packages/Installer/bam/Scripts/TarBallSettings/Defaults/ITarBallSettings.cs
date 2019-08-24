@@ -36,8 +36,7 @@ namespace Installer.DefaultSettings
     {
         public static void
         Defaults(
-            this ITarBallSettings settings,
-            Bam.Core.Module module)
+            this ITarBallSettings settings)
         {
             settings.Operation = ETarOperation.Create;
             settings.CompressionType = ETarCompressionType.None;

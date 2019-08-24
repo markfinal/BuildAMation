@@ -38,11 +38,9 @@ namespace C.Cxx.DefaultSettings
         /// Set default property values of C.ICxxOnlyCompilerSettings
         /// </summary>
         /// <param name="settings">C.ICxxOnlyCompilerSettings instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ICxxOnlyCompilerSettings settings,
-            Bam.Core.Module module)
+            this C.ICxxOnlyCompilerSettings settings)
         {
             settings.ExceptionHandler = C.Cxx.EExceptionHandler.Disabled;
             settings.EnableRunTimeTypeInfo = true;

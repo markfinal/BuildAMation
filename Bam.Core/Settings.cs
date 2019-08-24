@@ -56,8 +56,7 @@ namespace Bam.Core
 
         private class InterfaceData
         {
-            public System.Type interfaceType;
-            public System.Reflection.MethodInfo defaultMethod;
+            public System.Reflection.MethodInfo defaultsMethod;
         }
 
         private class SettingsInterfaces
@@ -100,8 +99,7 @@ namespace Bam.Core
                     // and cannot inherit from a base class because each property has different attributes depending on the toolchain
                     var newInterface = new InterfaceData
                     {
-                        interfaceType = interfaceType,
-                        defaultMethod = attribute.GetMethod("Defaults", new[] { interfaceType, typeof(Module) })
+                        defaultsMethod = attribute.GetMethod("Defaults", new[] { interfaceType })
                     };
                     interfaces.Data.Add(newInterface);
                 }
@@ -266,7 +264,7 @@ namespace Bam.Core
             var data = GetSettingsInterfaces(this.GetType(), this.Interfaces());
             foreach (var i in data.Data)
             {
-                i.defaultMethod?.Invoke(null, new object[] { this, module });
+                i.defaultsMethod?.Invoke(null, new object[] { this });
             }
             ModifyDefaults();
             LocalPolicy?.DefineLocalSettings(this, module);

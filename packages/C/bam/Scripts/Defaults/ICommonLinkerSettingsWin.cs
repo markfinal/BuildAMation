@@ -38,11 +38,9 @@ namespace C.DefaultSettings
         /// Set default property values of C.ICommonLinkerSettingsWin
         /// </summary>
         /// <param name="settings">C.ICommonLinkerSettingsWin instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ICommonLinkerSettingsWin settings,
-            Bam.Core.Module module)
+            this C.ICommonLinkerSettingsWin settings)
         {
             settings.SubSystem = ESubsystem.Console;
             settings.ExportDefinitionFile = null;

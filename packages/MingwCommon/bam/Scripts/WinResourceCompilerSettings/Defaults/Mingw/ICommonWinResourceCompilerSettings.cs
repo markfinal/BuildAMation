@@ -36,8 +36,7 @@ namespace MingwCommon.DefaultSettings
     {
         public static void
         Defaults(
-            this ICommonWinResourceCompilerSettings settings,
-            Bam.Core.Module module)
+            this ICommonWinResourceCompilerSettings settings)
         {
             settings.UseTempFile = true; // avoiding a popen error, see https://amindlost.wordpress.com/2012/06/09/mingw-windres-exe-cant-popen-error/
         }

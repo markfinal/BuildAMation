@@ -33,8 +33,7 @@ namespace Installer.DefaultSettings
     {
         public static void
         Defaults(
-            this IZipSettings settings,
-            Bam.Core.Module module)
+            this IZipSettings settings)
         {
             settings.Verbose = false;
             settings.RecursivePaths = false;

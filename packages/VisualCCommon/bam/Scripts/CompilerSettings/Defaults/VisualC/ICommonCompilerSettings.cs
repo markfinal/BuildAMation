@@ -37,8 +37,7 @@ namespace VisualCCommon.DefaultSettings
     {
         public static void
         Defaults(
-            this VisualCCommon.ICommonCompilerSettings settings,
-            Bam.Core.Module module)
+            this VisualCCommon.ICommonCompilerSettings settings)
         {
             settings.NoLogo = true;
             settings.RuntimeLibrary = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC").RuntimeLibrary;

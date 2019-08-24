@@ -38,11 +38,9 @@ namespace C.DefaultSettings
         /// Set default property values of C.IAdditionalSettings
         /// </summary>
         /// <param name="settings">C.IAdditionalSettings instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.IAdditionalSettings settings,
-            Bam.Core.Module module)
+            this C.IAdditionalSettings settings)
         {
             settings.AdditionalSettings = new Bam.Core.StringArray();
         }

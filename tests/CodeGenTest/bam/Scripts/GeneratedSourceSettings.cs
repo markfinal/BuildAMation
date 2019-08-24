@@ -35,9 +35,9 @@ namespace CodeGenTest
         {
             public static void
             Defaults(
-                this IGeneratedSourceSettings settings,
-                Bam.Core.Module module)
+                this IGeneratedSourceSettings settings)
             {
+                var module = (settings as Bam.Core.Settings).Module;
                 settings.Keyword = module.Macros["GenerateBasename"].ToString();
             }
         }

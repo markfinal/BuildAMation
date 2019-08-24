@@ -36,8 +36,7 @@ namespace VisualCCommon.DefaultSettings
     {
         public static void
         Defaults(
-            this VisualCCommon.ICommonLinkerSettings settings,
-            Bam.Core.Module module)
+            this VisualCCommon.ICommonLinkerSettings settings)
         {
             settings.NoLogo = true;
             settings.GenerateManifest = true;

@@ -33,8 +33,7 @@ namespace Publisher.DefaultSettings
     {
         public static void
         Defaults(
-            this IChangeRPathSettings settings,
-            Bam.Core.Module module)
+            this IChangeRPathSettings settings)
         {
             settings.NewRPath = null;
         }

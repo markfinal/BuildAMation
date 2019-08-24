@@ -36,8 +36,7 @@ namespace VisualCCommon.DefaultSettings
     {
         public static void
         Defaults(
-            this ICommonArchiverSettings settings,
-            Bam.Core.Module module)
+            this ICommonArchiverSettings settings)
         {
             settings.NoLogo = true;
             settings.LinkTimeCodeGeneration = false;

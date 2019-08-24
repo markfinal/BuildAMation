@@ -34,9 +34,9 @@ namespace VisualCCommon.DefaultSettings
     /// </summary>
     static partial class DefaultSettingsExtensions
     {
-        public static void Defaults(
-            this ICommonPreprocessorSettings settings,
-            Bam.Core.Module module)
+        public static void
+        Defaults(
+            this ICommonPreprocessorSettings settings)
         {
             settings.NoLogo = true;
         }

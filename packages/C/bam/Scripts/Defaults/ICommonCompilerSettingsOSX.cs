@@ -38,11 +38,9 @@ namespace C.DefaultSettings
         /// Set default property values of C.ICommonCompilerSettingsOSX
         /// </summary>
         /// <param name="settings">C.ICommonCompilerSettingsOSX instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ICommonCompilerSettingsOSX settings,
-            Bam.Core.Module module)
+            this C.ICommonCompilerSettingsOSX settings)
         {
             // N.B. this default is set in the specific Clang version
             // as it's set on both compiler and linker

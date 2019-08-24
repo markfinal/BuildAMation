@@ -39,12 +39,11 @@ namespace C.DefaultSettings
         /// Set default property values of C.ICommonCompilerSettings
         /// </summary>
         /// <param name="settings">C.ICommonCompilerSettings instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ICommonCompilerSettings settings,
-            Bam.Core.Module module)
+            this C.ICommonCompilerSettings settings)
         {
+            var module = (settings as Bam.Core.Settings).Module;
             settings.Bits = (module as CModule).BitDepth;
             settings.DebugSymbols = (0 != (module.BuildEnvironment.Configuration & (Bam.Core.EConfiguration.Debug | Bam.Core.EConfiguration.Profile)));
             settings.Optimization = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug)) ? EOptimization.Speed : EOptimization.Off;

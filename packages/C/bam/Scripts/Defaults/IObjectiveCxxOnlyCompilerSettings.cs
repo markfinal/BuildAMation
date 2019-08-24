@@ -38,11 +38,9 @@ namespace C.ObjCxx.DefaultSettings
         /// Set default property values of C.IObjectiveCxxOnlyCompilerSettings
         /// </summary>
         /// <param name="settings">C.IObjectiveCxxOnlyCompilerSettings instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.IObjectiveCxxOnlyCompilerSettings settings,
-            Bam.Core.Module module)
+            this C.IObjectiveCxxOnlyCompilerSettings settings)
         {}
 
         /// <summary>

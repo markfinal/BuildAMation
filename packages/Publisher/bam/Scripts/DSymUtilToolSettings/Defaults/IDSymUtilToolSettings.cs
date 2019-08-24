@@ -33,8 +33,7 @@ namespace Publisher.DefaultSettings
     {
         public static void
         Defaults(
-            this IDSymUtilToolSettings settings,
-            Bam.Core.Module module)
+            this IDSymUtilToolSettings settings)
         {}
     }
 }

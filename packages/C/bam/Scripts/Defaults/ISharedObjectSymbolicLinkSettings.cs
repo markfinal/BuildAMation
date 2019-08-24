@@ -38,11 +38,9 @@ namespace C.DefaultSettings
         /// Set default property values of C.ISharedObjectSymbolicLinkSettings
         /// </summary>
         /// <param name="settings">C.ISharedObjectSymbolicLinkSettings instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ISharedObjectSymbolicLinkSettings settings,
-            Bam.Core.Module module)
+            this C.ISharedObjectSymbolicLinkSettings settings)
         {
             settings.Force = true;
             settings.SoftLink = true;

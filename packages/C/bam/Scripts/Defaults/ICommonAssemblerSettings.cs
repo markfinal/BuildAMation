@@ -38,12 +38,11 @@ namespace C.DefaultSettings
         /// Set default property values of C.ICommonAssemblerSettings
         /// </summary>
         /// <param name="settings">C.ICommonAssemblerSettings instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ICommonAssemblerSettings settings,
-            Bam.Core.Module module)
+            this C.ICommonAssemblerSettings settings)
         {
+            var module = (settings as Bam.Core.Settings).Module;
             settings.Bits = (module as CModule).BitDepth;
             settings.DebugSymbols = (0 != (module.BuildEnvironment.Configuration & (Bam.Core.EConfiguration.Debug | Bam.Core.EConfiguration.Profile)));
             settings.WarningsAsErrors = true;

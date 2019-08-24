@@ -33,11 +33,11 @@ namespace Publisher.DefaultSettings
     {
         public static void
         Defaults(
-            this ICopyFileSettings settings,
-            Bam.Core.Module module)
+            this ICopyFileSettings settings)
         {
             settings.Force = true;
             settings.Verbose = true;
+            var module = (settings as Bam.Core.Settings).Module;
             settings.Recursive = (module is CollatedDirectory);
             settings.PreserveAllAttributes = true;
         }

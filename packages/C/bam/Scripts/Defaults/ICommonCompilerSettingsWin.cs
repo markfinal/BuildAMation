@@ -38,11 +38,9 @@ namespace C.DefaultSettings
         /// Set default property values of C.ICommonCompilerSettingsWin
         /// </summary>
         /// <param name="settings">C.ICommonCompilerSettingsWin instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ICommonCompilerSettingsWin settings,
-            Bam.Core.Module module)
+            this C.ICommonCompilerSettingsWin settings)
         {
             settings.CharacterSet = ECharacterSet.NotSet;
         }

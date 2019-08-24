@@ -38,14 +38,13 @@ namespace C.DefaultSettings
         /// Set default property values of C.ICommonLinkerSettingsOSX
         /// </summary>
         /// <param name="settings">C.ICommonLinkerSettingsOSX instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ICommonLinkerSettingsOSX settings,
-            Bam.Core.Module module)
+            this C.ICommonLinkerSettingsOSX settings)
         {
             settings.Frameworks = new Bam.Core.TokenizedStringArray();
             settings.FrameworkSearchPaths = new Bam.Core.TokenizedStringArray();
+            var module = (settings as Bam.Core.Settings).Module;
             if (module is C.IDynamicLibrary)
             {
                 settings.InstallName = module.CreateTokenizedString("@rpath/@filename($(LinkOutput))");

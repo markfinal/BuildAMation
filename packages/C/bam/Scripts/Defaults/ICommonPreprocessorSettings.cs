@@ -39,15 +39,14 @@ namespace C.DefaultSettings
         /// Set default property values of C.ICommonPreprocessorSettings
         /// </summary>
         /// <param name="settings">C.ICommonPreprocessorSettings instance</param>
-        /// <param name="module">Module associated with Settings</param>
         public static void
         Defaults(
-            this C.ICommonPreprocessorSettings settings,
-            Bam.Core.Module module)
+            this C.ICommonPreprocessorSettings settings)
         {
             settings.IncludePaths = new Bam.Core.TokenizedStringArray();
             settings.SystemIncludePaths = new Bam.Core.TokenizedStringArray();
             settings.PreprocessorDefines = new PreprocessorDefinitions();
+            var module = (settings as Bam.Core.Settings).Module;
             settings.PreprocessorDefines.Add($"D_BAM_CONFIGURATION_{module.BuildEnvironment.Configuration.ToString().ToUpper()}");
             if (module.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
