@@ -48,8 +48,8 @@ namespace MingwCommon
             base(ELayout.Cmds_Inputs_Outputs)
         {}
 
-        [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-m32")]
-        [CommandLineProcessor.EnumAttribute(C.EBit.SixtyFour, "-m64")]
+        [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
+        [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
         C.EBit? C.ICommonAssemblerSettings.Bits { get; set; }
 
         [CommandLineProcessor.Bool("-g", "")]

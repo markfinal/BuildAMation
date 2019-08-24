@@ -59,8 +59,8 @@ namespace ClangCommon
                 Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang").MacOSXMinimumVersionSupported;
         }
 
-        [CommandLineProcessor.EnumAttribute(C.EBit.ThirtyTwo, "-arch i386")]
-        [CommandLineProcessor.EnumAttribute(C.EBit.SixtyFour, "-arch x86_64")]
+        [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-arch i386")]
+        [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-arch x86_64")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.ThirtyTwo, "VALID_ARCHS", "i386", "ARCHS", "$(ARCHS_STANDARD_32_BIT)")]
         [XcodeProjectProcessor.UniqueEnum(C.EBit.SixtyFour, "VALID_ARCHS", "x86_64", "ARCHS", "$(ARCHS_STANDARD_64_BIT)")]
         C.EBit C.ICommonLinkerSettings.Bits { get; set; }

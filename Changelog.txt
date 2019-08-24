@@ -1,3 +1,5 @@
+24-Aug-2019 Fixes #646. Removed unnecessary use of Attribute at the end of some XYZAttribute markup.
+
 24-Aug-2019 Fixes #576. XcodeProjectProcessor.XcodeConversion.Convert no longer has a required real_settings_type argument. Instead, there is an optional settingsTypeOverride. This is because the use case for a different Settings type is the exception rather than the rule.
 
 24-Aug-2019 Fixes #584. BREAKING CHANGE. Removed the Bam.Core.Module argument from the extension method Defaults for each settings interface. If the Module is needed, then the Module property on the Settings itself can be queried.
