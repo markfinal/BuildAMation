@@ -86,7 +86,6 @@ namespace C
                 configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
                 XcodeProjectProcessor.XcodeConversion.Convert(
                     module.Settings,
-                    module.Settings.GetType(),
                     module,
                     configuration
                 );

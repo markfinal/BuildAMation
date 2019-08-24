@@ -67,7 +67,6 @@ namespace C
             // convert librarian settings to the Xcode project
             XcodeProjectProcessor.XcodeConversion.Convert(
                 module.Settings,
-                module.Settings.GetType(),
                 module,
                 configuration
             );

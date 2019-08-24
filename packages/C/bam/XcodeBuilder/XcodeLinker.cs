@@ -104,7 +104,6 @@ namespace C
             // convert link settings to the Xcode project
             XcodeProjectProcessor.XcodeConversion.Convert(
                 module.Settings,
-                module.Settings.GetType(),
                 module,
                 configuration
             );

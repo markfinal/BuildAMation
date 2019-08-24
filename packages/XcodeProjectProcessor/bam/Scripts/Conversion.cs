@@ -181,15 +181,15 @@ namespace XcodeProjectProcessor
         /// Convert BAM Module settings into Xcode project configuration properties.
         /// </summary>
         /// <param name="settings">The Module's settings.</param>
-        /// <param name="real_settings_type">The type of the Module's settings, since it may not be overridden.</param>
         /// <param name="module">Module associated with the settings. This may be null for per-file settings.</param>
         /// <param name="configuration">The Xcode project Configuration to complete.</param>
+        /// <param name="settingsTypeOverride">Optional, override the settings type. Default is null.</param>
         public static void
         Convert(
             Bam.Core.Settings settings,
-            System.Type real_settings_type,
             Bam.Core.Module module,
-            XcodeBuilder.Configuration configuration
+            XcodeBuilder.Configuration configuration,
+            System.Type settingsTypeOverride = null
         )
         {
             foreach (var settings_interface in settings.Interfaces())
@@ -211,7 +211,7 @@ namespace XcodeProjectProcessor
                     {
                         continue;
                     }
-                    var attribute_settings_property = Bam.Core.Settings.FindProperties(real_settings_type).First(
+                    var attribute_settings_property = Bam.Core.Settings.FindProperties(settingsTypeOverride ?? settings.GetType()).First(
                         item => full_property_interface_name.Equals(item.Name, System.StringComparison.Ordinal)
                     );
                     var attributeArray = attribute_settings_property.GetCustomAttributes(typeof(BaseAttribute), false);

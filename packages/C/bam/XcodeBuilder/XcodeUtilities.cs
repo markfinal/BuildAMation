@@ -154,9 +154,9 @@ namespace C
                 XcodeSharedSettings.Tweak(sharedSettings, realObjectFiles.Count() != module.InputModulePaths.Count());
                 XcodeProjectProcessor.XcodeConversion.Convert(
                     sharedSettings,
-                    realObjectFiles.First().Settings.GetType(),
                     module,
-                    configuration
+                    configuration,
+                    settingsTypeOverride: realObjectFiles.First().Settings.GetType()
                 );
 
                 foreach (var objFile in realObjectFiles)
@@ -213,7 +213,6 @@ namespace C
                 var firstInputModuleSettings = module.InputModulePaths.First().module.Settings;
                 XcodeProjectProcessor.XcodeConversion.Convert(
                     firstInputModuleSettings,
-                    firstInputModuleSettings.GetType(),
                     module,
                     configuration
                 );
