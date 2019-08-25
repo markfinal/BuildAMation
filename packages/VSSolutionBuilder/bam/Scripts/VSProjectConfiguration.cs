@@ -303,7 +303,7 @@ namespace VSSolutionBuilder
                 header.InputPath
             );
             this.Headers.AddUnique(headerGroup);
-            this.Project.AddHeader(headerGroup, this);
+            this.Project.AddHeader(headerGroup);
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace VSSolutionBuilder
                 );
             }
             this.Sources.AddUnique(settings);
-            this.Project.AddSource(settings, this);
+            this.Project.AddSource(settings);
         }
 
         /// <summary>
@@ -345,7 +345,7 @@ namespace VSSolutionBuilder
                 VSSettingsGroup.ESettingsGroup.CustomBuild,
                 other.InputPath
             );
-            this.Project.AddOtherFile(otherGroup, this);
+            this.Project.AddOtherFile(otherGroup);
         }
 
         /// <summary>
@@ -361,7 +361,7 @@ namespace VSSolutionBuilder
                 VSSettingsGroup.ESettingsGroup.CustomBuild,
                 other_path
             );
-            this.Project.AddOtherFile(otherGroup, this);
+            this.Project.AddOtherFile(otherGroup);
         }
 
         /// <summary>
@@ -392,7 +392,7 @@ namespace VSSolutionBuilder
                 resource.InputPath
             );
             this.ResourceFiles.AddUnique(resourceGroup);
-            this.Project.AddResourceFile(resourceGroup, this);
+            this.Project.AddResourceFile(resourceGroup);
         }
 
         /// <summary>
@@ -423,7 +423,7 @@ namespace VSSolutionBuilder
                 assembler.InputPath
             );
             this.AssemblyFiles.AddUnique(assemblyGroup);
-            this.Project.AddAssemblyFile(assemblyGroup, this);
+            this.Project.AddAssemblyFile(assemblyGroup);
         }
 
         /// <summary>

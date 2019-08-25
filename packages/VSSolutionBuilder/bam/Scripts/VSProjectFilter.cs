@@ -75,11 +75,9 @@ namespace VSSolutionBuilder
         /// Add the file associated with the given settings group to the filter.
         /// </summary>
         /// <param name="sourceGroup">Settings group to add.</param>
-        /// <param name="config">Unused</param>
         public void
         AddFile(
-            VSSettingsGroup sourceGroup,
-            VSProjectConfiguration config)
+            VSSettingsGroup sourceGroup)
         {
             if (null != sourceGroup.RelativeDirectory)
             {

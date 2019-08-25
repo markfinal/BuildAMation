@@ -1,3 +1,11 @@
+25-Aug-2019 Fixes #606. Removed an unused VSProjectConfiguration argument from the following functions:
+* VisualStudioBuilder.VSProject.AddHeader
+* VisualStudioBuilder.VSProject.AddSource
+* VisualStudioBuilder.VSProject.AddOtherFile
+* VisualStudioBuilder.VSProject.AddResourceFile
+* VisualStudioBuilder.VSProject.AddAssembyFile
+* VisualStudioBuilder.VSProjectFilter.AddFile
+
 25-Aug-2019 Fixes #604. VisualStudioBuilder.VSProject.GetUniqueSettingsGroup and VisualStudioBuilder.VSProjectConfiguration.GetSettingsGroup refactor. No longer accept optional arguments. 'include' argument renamed to 'path' to be less ambiguous, since it is a setting related to a path in the project file (e.g. settings specific to a source file). A null path means a setting shared across all files. The 'uniqueToProject' argument to GetSettingsGroup is removed, since the path being non-null implies a unique settings group.
 
 25-Aug-2019 Fixes #598. Split C.WinResourceCollection into a separate source file.

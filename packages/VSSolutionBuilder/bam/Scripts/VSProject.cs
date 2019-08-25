@@ -167,12 +167,11 @@ namespace VSSolutionBuilder
 
         private void
         AddToFilter(
-            VSSettingsGroup group,
-            VSProjectConfiguration config)
+            VSSettingsGroup group)
         {
             lock (this.Filter)
             {
-                this.Filter.AddFile(group, config);
+                this.Filter.AddFile(group);
             }
         }
 
@@ -180,85 +179,74 @@ namespace VSSolutionBuilder
         /// Add a header file to the project
         /// </summary>
         /// <param name="header">Settings group corresponding to the header</param>
-        /// <param name="config">Configuration to add the header to</param>
         public void
         AddHeader(
-            VSSettingsGroup header,
-            VSProjectConfiguration config)
+            VSSettingsGroup header)
         {
             lock (this.Headers)
             {
                 this.Headers.AddUnique(header);
             }
-            AddToFilter(header, config);
+            AddToFilter(header);
         }
 
         /// <summary>
         /// Add a source file to the project
         /// </summary>
         /// <param name="source">Settings group correspnding to the source file</param>
-        /// <param name="config">Configuration to add the source to</param>
         public void
         AddSource(
-            VSSettingsGroup source,
-            VSProjectConfiguration config)
+            VSSettingsGroup source)
         {
             lock (this.Sources)
             {
                 this.Sources.AddUnique(source);
             }
-            AddToFilter(source, config);
         }
 
         /// <summary>
         /// Add an arbitrary file to the project
         /// </summary>
         /// <param name="other">Settings group corresponding to the file</param>
-        /// <param name="config">Configuration to add the file to</param>
         public void
         AddOtherFile(
-            VSSettingsGroup other,
-            VSProjectConfiguration config)
+            VSSettingsGroup other)
         {
             lock (this.Others)
             {
                 this.Others.AddUnique(other);
             }
-            AddToFilter(other, config);
+            AddToFilter(other);
         }
 
         /// <summary>
         /// Add a resource file to the project
         /// </summary>
         /// <param name="other">Settings group corresponding to the resource file</param>
-        /// <param name="config">Configuration to add the resource file to</param>
         public void
         AddResourceFile(
-            VSSettingsGroup other,
-            VSProjectConfiguration config)
+            VSSettingsGroup other)
         {
             lock (this.Resources)
             {
                 this.Resources.AddUnique(other);
             }
-            AddToFilter(other, config);
+            AddToFilter(other);
         }
 
         /// <summary>
         /// Add an assembly file to the project
         /// </summary>
         /// <param name="other">Settings group corresponding to the assembly file</param>
-        /// <param name="config">Configuration to add the assembly file to</param>
         public void
         AddAssemblyFile(
-            VSSettingsGroup other,
-            VSProjectConfiguration config)
+            VSSettingsGroup other)
         {
             lock (this.AssemblyFiles)
             {
                 this.AssemblyFiles.AddUnique(other);
             }
-            AddToFilter(other, config);
+            AddToFilter(other);
         }
 
         /// <summary>
