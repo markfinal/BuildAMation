@@ -43,21 +43,21 @@ namespace VisualStudioProcessor
         /// <param name="command_switch">Command line switch associated with these output file types</param>
         /// <param name="inheritExisting">Optional, whether to inherit values. Default is false.</param>
         /// <param name="target">Optional, which target to use. Default to settings.</param>
-        /// <param name="handledByMetaData">Optional, whether this output file is handled by metadata. Default to false.</param>
-        /// <param name="enableSideEffets">Optional, whether this output file type has side-effects enabled. Default to false.</param>
+        /// <param name="handledByMetaData">Optional, whether this output file is handled by metadata rather than requiring an explicit command line switch. Default to false.</param>
+        /// <param name="setOnProjectConfiguration">Optional, whether this output file has a project wide configuration property that is also set. Default to false.</param>
         public OutputPathAttribute(
             string pathKey,
             string command_switch,
             bool inheritExisting = false,
             TargetGroup target = TargetGroup.Settings,
             bool handledByMetaData = false,
-            bool enableSideEffets = false)
+            bool setOnProjectConfiguration = false)
             :
             base(command_switch, inheritExisting, target)
         {
             this.PathKey = pathKey;
             this.HandledByMetaData = handledByMetaData;
-            this.EnableSideEffects = enableSideEffets;
+            this.SetOnProjectConfiguration = setOnProjectConfiguration;
         }
 
         /// <summary>
@@ -73,6 +73,6 @@ namespace VisualStudioProcessor
         /// <summary>
         /// Whether side effects are enabled
         /// </summary>
-        public bool EnableSideEffects { get; private set; }
+        public bool SetOnProjectConfiguration { get; private set; }
     }
 }

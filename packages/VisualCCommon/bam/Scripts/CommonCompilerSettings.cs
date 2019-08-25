@@ -82,9 +82,9 @@ namespace VisualCCommon
         [CommandLineProcessor.Enum(C.ECharacterSet.NotSet, "")]
         [CommandLineProcessor.Enum(C.ECharacterSet.Unicode, "-DUNICODE -D_UNICODE")]
         [CommandLineProcessor.Enum(C.ECharacterSet.MultiByte, "-D_MBCS")]
-        [VisualStudioProcessor.Enum(C.ECharacterSet.NotSet, "CharacterSet", VisualStudioProcessor.EnumAttribute.EMode.PassThrough, target: VisualStudioProcessor.BaseAttribute.TargetGroup.Configuration)] // set project wide
-        [VisualStudioProcessor.Enum(C.ECharacterSet.Unicode, "CharacterSet", VisualStudioProcessor.EnumAttribute.EMode.PassThrough, target: VisualStudioProcessor.BaseAttribute.TargetGroup.Configuration)] // ditto
-        [VisualStudioProcessor.Enum(C.ECharacterSet.MultiByte, "CharacterSet", VisualStudioProcessor.EnumAttribute.EMode.PassThrough, target: VisualStudioProcessor.BaseAttribute.TargetGroup.Configuration)] // ditto
+        [VisualStudioProcessor.Enum(C.ECharacterSet.NotSet, "CharacterSet", VisualStudioProcessor.EnumAttribute.EMode.SetOnProjectConfiguration, target: VisualStudioProcessor.BaseAttribute.TargetGroup.Configuration)] // set project wide
+        [VisualStudioProcessor.Enum(C.ECharacterSet.Unicode, "CharacterSet", VisualStudioProcessor.EnumAttribute.EMode.SetOnProjectConfiguration, target: VisualStudioProcessor.BaseAttribute.TargetGroup.Configuration)] // ditto
+        [VisualStudioProcessor.Enum(C.ECharacterSet.MultiByte, "CharacterSet", VisualStudioProcessor.EnumAttribute.EMode.SetOnProjectConfiguration, target: VisualStudioProcessor.BaseAttribute.TargetGroup.Configuration)] // ditto
         C.ECharacterSet? C.ICommonCompilerSettingsWin.CharacterSet { get; set; }
 
         // no attributes as this mapping is in which compiler executable is used

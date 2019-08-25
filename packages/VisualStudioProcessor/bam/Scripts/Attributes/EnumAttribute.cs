@@ -41,13 +41,12 @@ namespace VisualStudioProcessor
         /// </summary>
         public enum EMode
         {
-            AsString,               //<! Convert the enumeration value as a string
-            AsInteger,              //<! Convert the enumeration value as an integer
-            AsIntegerWithPrefix,    //<! Convert the enumeration value as an integer but with a prefix
-            VerbatimString,         //<! Use a provided string verbatim
-            Empty,                  //<! An empty value
-            NoOp,                   //<! Do nothing with this value
-            PassThrough             //<! Pass the value unchanged
+            AsString,                 //<! Convert the enumeration value as a string
+            AsInteger,                //<! Convert the enumeration value as an integer
+            AsIntegerWithPrefix,      //<! Convert the enumeration value as an integer but with a prefix
+            VerbatimString,           //<! Use a provided string verbatim
+            NoOp,                     //<! Do nothing with this value
+            SetOnProjectConfiguration //<! For TargetGroup.Configuration enums, set the value on the project configuration, rather than keeping it local.
         }
 
         /// <summary>

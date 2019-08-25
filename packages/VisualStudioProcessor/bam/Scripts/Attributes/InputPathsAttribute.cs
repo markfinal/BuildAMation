@@ -44,7 +44,7 @@ namespace VisualStudioProcessor
         /// <param name="max_file_count">Optional, maximum number of files expected. Default to -1 which is unlimited.</param>
         /// <param name="inheritExisting">Optional, whether values are inherited from the parent. Default is false.</param>
         /// <param name="target">Optional, which target is used. Default to settings.</param>
-        /// <param name="handledByMetaData">Optional, whether this input file is handled in metadata. Default is false.</param>
+        /// <param name="handledByMetaData">Optional, whether this input file is handled in metadata rather than requiring an explicit command line switch. Default is false.</param>
         public InputPathsAttribute(
             string pathKey,
             string command_switch,

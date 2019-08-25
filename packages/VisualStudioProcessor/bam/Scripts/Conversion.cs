@@ -123,14 +123,6 @@ namespace VisualStudioProcessor
                                     );
                                     break;
 
-                                case EnumAttribute.EMode.Empty:
-                                    vsSettingsGroup.AddSetting(
-                                        associated_attribute.Property,
-                                        "",
-                                        condition: condition
-                                    );
-                                    break;
-
                                 case EnumAttribute.EMode.NoOp:
                                     break;
 
@@ -146,7 +138,7 @@ namespace VisualStudioProcessor
                             var setter = prop.GetSetMethod();
                             switch (associated_attribute.Mode)
                             {
-                                case EnumAttribute.EMode.PassThrough:
+                                case EnumAttribute.EMode.SetOnProjectConfiguration:
                                     setter.Invoke(vsConfig, new[] { property_value });
                                     break;
 
@@ -183,15 +175,6 @@ namespace VisualStudioProcessor
                         var prop = vsConfig.GetType().GetProperty(associated_attribute.Property);
                         var setter = prop?.GetSetMethod();
                         setter?.Invoke(vsConfig, new[] { property_value });
-
-                        if (associated_attribute.BoolPropertyWhenValid != null)
-                        {
-                            vsSettingsGroup.AddSetting(
-                                associated_attribute.BoolPropertyWhenValid,
-                                true,
-                                condition: condition
-                            );
-                        }
                     }
                     else if (attributeArray.First() is PathArrayAttribute)
                     {
@@ -434,7 +417,7 @@ namespace VisualStudioProcessor
                     generatedPath.Value,
                     condition: condition
                 );
-                if (matching_attr.EnableSideEffects)
+                if (matching_attr.SetOnProjectConfiguration)
                 {
                     // there may be a property of the same name on the VS configuration
                     // if there is, set it with the path
