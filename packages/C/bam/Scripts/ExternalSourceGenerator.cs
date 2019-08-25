@@ -36,16 +36,6 @@ namespace C
         Bam.Core.Module
     {
         /// <summary>
-        /// Construct an instance.
-        /// </summary>
-        public ExternalSourceGenerator()
-        {
-            this.Arguments = new Bam.Core.TokenizedStringArray();
-            this.InternalInputFiles = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
-            this.InternalExpectedOutputFileDictionary = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
-        }
-
-        /// <summary>
         /// Specify the path to the external executable to run.
         /// </summary>
         /// <value>The executable.</value>
@@ -55,9 +45,9 @@ namespace C
         /// Specify the list of arguments to invoke the executable with.
         /// </summary>
         /// <value>The arguments.</value>
-        public Bam.Core.TokenizedStringArray Arguments { get; private set; }
+        public Bam.Core.TokenizedStringArray Arguments { get; private set; } = new Bam.Core.TokenizedStringArray();
 
-        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> InternalInputFiles { get; set; }
+        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> InternalInputFiles { get; set; } = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
 
         /// <summary>
         /// Enumerate all input files to this module
@@ -119,7 +109,7 @@ namespace C
         SetOutputDirectory(
             string dir_path) => this.SetOutputDirectory(this.CreateTokenizedString(dir_path));
 
-        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> InternalExpectedOutputFileDictionary { get; set; }
+        private System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString> InternalExpectedOutputFileDictionary { get; set; } = new System.Collections.Generic.Dictionary<string, Bam.Core.TokenizedString>();
 
         /// <summary>
         /// Get the list of expected output files

@@ -1,3 +1,5 @@
+25-Aug-2019 Fixes #596. Moved initialisers in C.ExternalSourceGenerator's default constructor into automatic property initialisers.
+
 25-Aug-2019 Fixes #595. C.DefaultToolchain private fields are now readonly.
 
 25-Aug-2019 Fixes #593. Made C.CModule's default constructor protected, and added documentation to explain why a Module constructor is needed in this case.
