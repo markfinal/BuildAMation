@@ -194,14 +194,12 @@ namespace VSSolutionBuilder
         /// <param name="path">Path of the setting.</param>
         /// <param name="condition">Optional condition for the setting. Default to null.</param>
         /// <param name="inheritExisting">Optional whether the value inherits parent values. Default to false.</param>
-        /// <param name="isPath">Optional whether the value is a path. Default to false.</param>
         public void
         AddSetting(
             string name,
             Bam.Core.TokenizedString path,
             string condition = null,
-            bool inheritExisting = false,
-            bool isPath = false)
+            bool inheritExisting = false)
         {
             lock (this.Settings)
             {
@@ -219,7 +217,7 @@ namespace VSSolutionBuilder
                     new VSSetting(
                         name,
                         stringValue,
-                        isPath: isPath,
+                        isPath: true,
                         inheritValue: false,
                         condition: condition
                     )

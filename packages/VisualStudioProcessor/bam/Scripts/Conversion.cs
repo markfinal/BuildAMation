@@ -177,8 +177,7 @@ namespace VisualStudioProcessor
                         vsSettingsGroup.AddSetting(
                             associated_attribute.Property,
                             property_value as Bam.Core.TokenizedString,
-                            condition: condition,
-                            isPath: true
+                            condition: condition
                         );
 
                         var prop = vsConfig.GetType().GetProperty(associated_attribute.Property);
@@ -387,8 +386,7 @@ namespace VisualStudioProcessor
                     vsSettingsGroup.AddSetting(
                         matching_input_attr.Property,
                         inputModule.GeneratedPaths[matching_input_attr.Property],
-                        condition: condition,
-                        isPath: true
+                        condition: condition
                     );
                 }
                 catch (System.Collections.Generic.KeyNotFoundException)
@@ -434,8 +432,7 @@ namespace VisualStudioProcessor
                 vsSettingsGroup.AddSetting(
                     matching_attr.Property,
                     generatedPath.Value,
-                    condition: condition,
-                    isPath: true
+                    condition: condition
                 );
                 if (matching_attr.EnableSideEffects)
                 {

@@ -1,3 +1,5 @@
+25-Aug-2019 Fixes #608. Removed isPath optional argument to VSSettingsGroup.AddSetting overload for paths, as all uses were referring to paths (rather than just generic strings).
+
 25-Aug-2019 Fixes #607. Changed the default value of the separator argument to VSSetting from null to the empty string, to avoid some logic in the code.
 
 25-Aug-2019 Fixes #609. Renamed VSSolutionBuilder.VSSolutionFolder.appendNestedEntity to AppendNestedEntity for consistency.
