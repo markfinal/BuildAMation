@@ -97,12 +97,12 @@ namespace VSSolutionBuilder
         /// Append an additional value to the setting.
         /// </summary>
         /// <param name="toAppend">String to append.</param>
-        /// <param name="separator">Optional separator to use. Default is null which means an empty string</param>
+        /// <param name="separator">Optional separator to use. Default is the empty string</param>
         public void Append(
             string toAppend,
-            string separator = null)
+            string separator = "")
         {
-            this.Value = new string($"{this.Value}{separator ?? ""}{toAppend}");
+            this.Value = new string($"{this.Value}{separator}{toAppend}");
         }
     }
 }

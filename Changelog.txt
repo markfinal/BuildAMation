@@ -1,3 +1,5 @@
+25-Aug-2019 Fixes #607. Changed the default value of the separator argument to VSSetting from null to the empty string, to avoid some logic in the code.
+
 25-Aug-2019 Fixes #609. Renamed VSSolutionBuilder.VSSolutionFolder.appendNestedEntity to AppendNestedEntity for consistency.
 
 25-Aug-2019 Fixes #605. Removed Bam.Core.Module argument from VSProject.GetConfiguration, since that information is already in the VSProject.
