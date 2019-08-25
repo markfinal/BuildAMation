@@ -1,3 +1,5 @@
+25-Aug-2019 Fixes #595. C.DefaultToolchain private fields are now readonly.
+
 25-Aug-2019 Fixes #593. Made C.CModule's default constructor protected, and added documentation to explain why a Module constructor is needed in this case.
 
 25-Aug-2019 Fixes #592. C.IToolchainDiscovery.discover renamed to Discover for consistency.
