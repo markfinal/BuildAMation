@@ -53,7 +53,9 @@ namespace XcodeProjectProcessor
         {}
 
         /// <summary>
-        /// Construct an instance of the attribute. With a second value.
+        /// Construct an instance of the attribute. With a second pair.
+        /// The second pair is used in instances where a single enum generates two
+        /// values in the Xcode project file, e.g. look at the EBit enumeration.
         /// </summary>
         /// <param name="key">Enum object.</param>
         /// <param name="property">Name of the property.</param>
