@@ -58,11 +58,11 @@ namespace VSSolutionBuilder
             var folder = this.SolutionFolders[keyPath];
             if (null != parent)
             {
-                parent.appendNestedEntity(folder);
+                parent.AppendNestedEntity(folder);
             }
             if (1 == split.Length)
             {
-                folder.appendNestedEntity(project);
+                folder.AppendNestedEntity(project);
             }
             else
             {

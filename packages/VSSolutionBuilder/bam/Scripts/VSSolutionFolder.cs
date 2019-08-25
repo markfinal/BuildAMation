@@ -63,7 +63,7 @@ namespace VSSolutionBuilder
         /// </summary>
         /// <param name="entity">Entity that has a GUID to append.</param>
         public void
-        appendNestedEntity(
+        AppendNestedEntity(
             HasGuid entity)
         {
             lock (this.NestedEntities)
