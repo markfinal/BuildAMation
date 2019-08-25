@@ -118,7 +118,10 @@ namespace XcodeBuilder
                 }
                 else
                 {
-                    this.Settings[key].Merge(key, value);
+                    if (!this.Settings[key].Merge(value))
+                    {
+                        Bam.Core.Log.Info($"Warning: Replacing previous value for key '{key}' with '{value.ToString()}'");
+                    }
                 }
             }
         }

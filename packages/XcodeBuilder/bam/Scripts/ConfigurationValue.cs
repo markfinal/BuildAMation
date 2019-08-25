@@ -47,13 +47,12 @@ namespace XcodeBuilder
             string input) => (-1 != input.IndexOfAny(SpecialChars));
 
         /// <summary>
-        /// Merge values for the given key.
+        /// Merge new values into the current state.
         /// </summary>
-        /// <param name="key">Key for the value to be merged into.</param>
         /// <param name="value">The new value to merge in.</param>
-        public abstract void
+        /// <returns>True if the merge occurred. False if something went wrong.</returns>
+        public abstract bool
         Merge(
-            string key,
             ConfigurationValue value);
     }
 
@@ -71,22 +70,28 @@ namespace XcodeBuilder
             string value) => this.Value = value;
 
         /// <summary>
-        /// Merge values. Since this is a single value, any existing value is replaced. A warning is issued.
+        /// Merge values.
         /// </summary>
-        /// <param name="key">Key to the value being merged into.</param>
         /// <param name="value">New value to merge in.</param>
-        public override void
+        ///
+
+        /// <summary>
+        /// Merge new values into the current state.
+        /// Since this is a single value, any existing value is replaced - false is retured in this case.
+        /// </summary>
+        /// <param name="value">The new value to merge in.</param>
+        /// <returns>True if the merge occurred. False if something went wrong.</returns>
+        public override bool
         Merge(
-            string key,
             ConfigurationValue value)
         {
             var newValue = (value as UniqueConfigurationValue).Value;
             if (this.Value.Equals(newValue, System.StringComparison.Ordinal))
             {
-                return;
+                return true;
             }
-            Bam.Core.Log.Info($"Warning: Replacing '{this.Value}' with '{newValue}' for '{key}'");
             this.Value = (value as UniqueConfigurationValue).Value;
+            return false;
         }
 
         private string Value { get; set; }
@@ -134,16 +139,16 @@ namespace XcodeBuilder
         }
 
         /// <summary>
-        /// Merge a new value in.
+        /// Merge new values into the current state.
         /// </summary>
-        /// <param name="key">Key corresponding to the value. This is unused.</param>
-        /// <param name="value">New value to merge in.</param>
-        public override void
+        /// <param name="value">The new value to merge in.</param>
+        /// <returns>Always true</returns>
+        public override bool
         Merge(
-            string key,
             ConfigurationValue value)
         {
             this.Value.AddRangeUnique((value as MultiConfigurationValue).Value);
+            return true;
         }
 
         private Bam.Core.StringArray Value { get; set; }

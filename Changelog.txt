@@ -1,3 +1,5 @@
+25-Aug-2019 Fixes #583. XcodeBuilder.ConfigurationValue.Merge no longer accepts a key argument. This was only used for failure logging, which is now moved to the call point.
+
 25-Aug-2019 Fixes #578. Clarified use of the second key-value pair for XcodeProjectProcessor.UniqueEnumAttribute.
 
 24-Aug-2019 Fixes #646. Removed unnecessary use of Attribute at the end of some XYZAttribute markup.
