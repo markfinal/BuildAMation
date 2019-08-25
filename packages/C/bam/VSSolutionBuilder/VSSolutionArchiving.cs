@@ -56,7 +56,10 @@ namespace C
             }
 
             // add the librarian settings
-            var librarianGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Librarian);
+            var librarianGroup = config.GetSettingsGroup(
+                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Librarian,
+                null
+            );
             VisualStudioProcessor.VSSolutionConversion.Convert(
                 module.Settings,
                 module.Settings.GetType(),

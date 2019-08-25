@@ -247,25 +247,25 @@ namespace VSSolutionBuilder
         }
 
         /// <summary>
-        /// Get the settings group from the configuration for a path
+        /// Get the settings group from the configuration for a path.
+        /// If the path is non-null, then the settings group created is unique to the path in the project.
+        /// If the path is null, then it is a group that's shared among all files in the project.
         /// </summary>
         /// <param name="group">Type of group</param>
-        /// <param name="include">Optional path to get the settings group for. Defaults to null.</param>
-        /// <param name="uniqueToProject">Optional whether this settings group should be unique to the project. Default to false.</param>
-        /// <returns></returns>
+        /// <param name="path">Path associated with the settings group.</param>
+        /// <returns>Either the group already created, or a new settings group.</returns>
         public VSSettingsGroup
         GetSettingsGroup(
             VSSettingsGroup.ESettingsGroup group,
-            Bam.Core.TokenizedString include = null,
-            bool uniqueToProject = false)
+            Bam.Core.TokenizedString path)
         {
             lock (this.SettingGroups)
             {
                 foreach (var settings in this.SettingGroups)
                 {
-                    if (null == include)
+                    if (null == path)
                     {
-                        if ((null == settings.Include) && (settings.Group == group))
+                        if ((null == settings.Path) && (settings.Group == group))
                         {
                             return settings;
                         }
@@ -274,16 +274,16 @@ namespace VSSolutionBuilder
                     {
                         // ignore group, as files can mutate between them during the buildprocess (e.g. headers into custom builds)
                         // TODO: can this be a TokenizedString hash compare?
-                        if ((null != include) && (settings.Include.ToString().Equals(include.ToString(), System.StringComparison.Ordinal)))
+                        if (settings.Path.ToString().Equals(path.ToString(), System.StringComparison.Ordinal))
                         {
                             return settings;
                         }
                     }
                 }
 
-                var newGroup = uniqueToProject ?
-                    this.Project.GetUniqueSettingsGroup(this.Module, group, include) :
-                    new VSSettingsGroup(this.Project, this.Module, group, include);
+                var newGroup = (null != path) ?
+                    this.Project.GetUniqueSettingsGroup(this.Module, group, path) :
+                    new VSSettingsGroup(this.Project, this.Module, group, null);
                 this.SettingGroups.Add(newGroup);
                 return newGroup;
             }
@@ -386,7 +386,11 @@ namespace VSSolutionBuilder
                     condition: this.ConditionText
                 );
             }
-            var resourceGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.Resource, resource.InputPath);
+            var resourceGroup = this.Project.GetUniqueSettingsGroup(
+                this.Module,
+                VSSettingsGroup.ESettingsGroup.Resource,
+                resource.InputPath
+            );
             this.ResourceFiles.AddUnique(resourceGroup);
             this.Project.AddResourceFile(resourceGroup, this);
         }
@@ -413,7 +417,11 @@ namespace VSSolutionBuilder
                     condition: this.ConditionText
                 );
             }
-            var assemblyGroup = this.Project.GetUniqueSettingsGroup(this.Module, VSSettingsGroup.ESettingsGroup.CustomBuild, assembler.InputPath);
+            var assemblyGroup = this.Project.GetUniqueSettingsGroup(
+                this.Module,
+                VSSettingsGroup.ESettingsGroup.CustomBuild,
+                assembler.InputPath
+            );
             this.AssemblyFiles.AddUnique(assemblyGroup);
             this.Project.AddAssemblyFile(assemblyGroup, this);
         }
@@ -657,7 +665,7 @@ namespace VSSolutionBuilder
             var itemDefnGroup = document.CreateVSItemDefinitionGroup(condition: this.ConditionText, parentEl: parentEl);
             foreach (var group in this.SettingGroups)
             {
-                if (group.Include != null)
+                if (group.Path != null)
                 {
                     continue;
                 }
@@ -666,7 +674,7 @@ namespace VSSolutionBuilder
 
             if (this.PreBuildCommands.Count > 0)
             {
-                var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PreBuild);
+                var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PreBuild, null);
                 preBuildGroup.AddSetting(
                     "Command",
                     this.PreBuildCommands.ToString(System.Environment.NewLine)
@@ -675,7 +683,7 @@ namespace VSSolutionBuilder
             }
             if (this.PostBuildCommands.Count > 0)
             {
-                var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PostBuild);
+                var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PostBuild, null);
                 preBuildGroup.AddSetting(
                     "Command",
                     this.PostBuildCommands.ToString(System.Environment.NewLine)

@@ -154,7 +154,10 @@ namespace C
                 config.AddHeaderFile(header as HeaderFile);
             }
 
-            var compilerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler);
+            var compilerGroup = config.GetSettingsGroup(
+                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Compiler,
+                null
+            );
 
             // add real C/C++ source files to the project
             var realObjectFiles = module.InputModulePaths.Select(item => item.module).Where(item => item is ObjectFile);

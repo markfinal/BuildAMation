@@ -57,22 +57,22 @@ namespace VSSolutionBuilder
         /// <param name="project">Belongs to this project</param>
         /// <param name="module">Module associated with the group</param>
         /// <param name="group">Type of the group to make</param>
-        /// <param name="include">Optional a path to include in the group. Default to null.</param>
+        /// <param name="path">The path to associate with the new settings group</param>
         public VSSettingsGroup(
             VSProject project,
             Bam.Core.Module module,
             ESettingsGroup group,
-            Bam.Core.TokenizedString include = null)
+            Bam.Core.TokenizedString path)
         {
             this.Project = project;
             this.Module = module;
             this.Group = group;
-            this.Include = include;
-            if (null != include)
+            this.Path = path;
+            if (null != path)
             {
                 this.RelativeDirectory = module.CreateTokenizedString(
                     "@isrelative(@trimstart(@relativeto(@dir($(0)),$(packagedir)),../),@dir($(0)))",
-                    include
+                    path
                 );
                 lock (this.RelativeDirectory)
                 {
@@ -107,9 +107,9 @@ namespace VSSolutionBuilder
         public ESettingsGroup Group { get; private set; }
 
         /// <summary>
-        /// Included path with the group
+        /// Path associated with the settings.
         /// </summary>
-        public Bam.Core.TokenizedString Include { get; private set; }
+        public Bam.Core.TokenizedString Path { get; private set; }
 
         /// <summary>
         /// Relative directory of the group.
@@ -431,14 +431,14 @@ namespace VSSolutionBuilder
             System.Xml.XmlDocument document,
             System.Xml.XmlElement parentEl)
         {
-            if ((this.Settings.Count == 0) && (this.Include == null))
+            if ((this.Settings.Count == 0) && (this.Path == null))
             {
                 return;
             }
             var group = document.CreateVSElement(this.GetGroupName(), parentEl: parentEl);
-            if (null != this.Include)
+            if (null != this.Path)
             {
-                var rel_path = this.Configuration.ToRelativePath(this.Include);
+                var rel_path = this.Configuration.ToRelativePath(this.Path);
                 group.SetAttribute("Include", rel_path);
             }
             foreach (var setting in this.Settings.OrderBy(pair => pair.Name))

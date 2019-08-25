@@ -69,7 +69,10 @@ namespace C
                 solution);
 
             // add the linker settings
-            var linkerGroup = config.GetSettingsGroup(VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Linker);
+            var linkerGroup = config.GetSettingsGroup(
+                VSSolutionBuilder.VSSettingsGroup.ESettingsGroup.Linker,
+                null
+            );
             VisualStudioProcessor.VSSolutionConversion.Convert(
                 module.Settings,
                 module.Settings.GetType(),

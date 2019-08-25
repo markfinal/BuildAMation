@@ -88,14 +88,14 @@ namespace VSSolutionBuilder
                 var filter = this.Filters[path];
                 if (filter.Any(item =>
                     {
-                        lock (item.Include)
+                        lock (item.Path)
                         {
-                            if (!item.Include.IsParsed)
+                            if (!item.Path.IsParsed)
                             {
-                                item.Include.Parse();
+                                item.Path.Parse();
                             }
                         }
-                        return item.Include.ToString().Equals(sourceGroup.Include.ToString(), System.StringComparison.Ordinal);
+                        return item.Path.ToString().Equals(sourceGroup.Path.ToString(), System.StringComparison.Ordinal);
                     }))
                 {
                     return;
@@ -104,7 +104,7 @@ namespace VSSolutionBuilder
                     this.Project,
                     sourceGroup.Module,
                     sourceGroup.Group,
-                    sourceGroup.Include
+                    sourceGroup.Path
                 );
                 newGroup.AddSetting(
                     "Filter",
@@ -119,7 +119,7 @@ namespace VSSolutionBuilder
                     this.Project,
                     sourceGroup.Module,
                     sourceGroup.Group,
-                    sourceGroup.Include
+                    sourceGroup.Path
                 );
             }
         }
@@ -149,7 +149,7 @@ namespace VSSolutionBuilder
                 var extensions = new Bam.Core.StringArray();
                 foreach (var setting in filter.Value)
                 {
-                    var path = setting.Include;
+                    var path = setting.Path;
                     var extension = System.IO.Path.GetExtension(path.ToString()).TrimStart(new[] { '.' });
                     extensions.AddUnique(extension);
                     setting.Serialize(document, filesEl);

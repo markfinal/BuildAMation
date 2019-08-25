@@ -165,8 +165,7 @@ namespace VSSolutionBuilder
                 }
                 var customBuild = config.GetSettingsGroup(
                     VSSettingsGroup.ESettingsGroup.CustomBuild,
-                    include: input,
-                    uniqueToProject: true
+                    input
                 );
                 customBuild.AddSetting("Command", commandList.ToString(System.Environment.NewLine), condition: config.ConditionText);
                 customBuild.AddSetting("Message", message, condition: config.ConditionText);

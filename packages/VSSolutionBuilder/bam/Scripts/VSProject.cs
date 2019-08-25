@@ -128,37 +128,38 @@ namespace VSSolutionBuilder
         /// </summary>
         /// <param name="module">Module to get the group for</param>
         /// <param name="group">The type of the group queried</param>
-        /// <param name="include">Optional what path this settings group corresponds to. Default to null.</param>
+        /// <param name="path">The path this settings group corresponds to. Default to null.</param>
         /// <returns></returns>
         public VSSettingsGroup
         GetUniqueSettingsGroup(
             Bam.Core.Module module,
             VSSettingsGroup.ESettingsGroup group,
-            Bam.Core.TokenizedString include = null)
+            Bam.Core.TokenizedString path)
         {
             lock (this.ProjectSettings)
             {
                 foreach (var settings in this.ProjectSettings)
                 {
-                    if (null == include)
+                    if (null == path)
                     {
-                        if ((null == settings.Include) && (settings.Group == group))
+                        if ((null == settings.Path) && (settings.Group == group))
                         {
                             return settings;
                         }
                     }
                     else
                     {
-                        // ignore group, as files can mutate between them during the buildprocess (e.g. headers into custom builds)
+                        // ignore checking the group, as files can mutate between them during the buildprocess
+                        // (e.g. headers into custom builds)
                         // TODO: can this be a TokenizedString hash compare?
-                        if (settings.Include.ToString().Equals(include.ToString(), System.StringComparison.Ordinal))
+                        if (settings.Path.ToString().Equals(path.ToString(), System.StringComparison.Ordinal))
                         {
                             return settings;
                         }
                     }
                 }
 
-                var newGroup = new VSSettingsGroup(this, module, group, include);
+                var newGroup = new VSSettingsGroup(this, module, group, path);
                 this.ProjectSettings.Add(newGroup);
                 return newGroup;
             }
