@@ -55,7 +55,7 @@ namespace Mingw
         public string ToolSuffix => this.Meta["ToolSuffix"] as string;
 
         void
-        C.IToolchainDiscovery.discover(
+        C.IToolchainDiscovery.Discover(
             C.EBit? depth)
         {
             if (this.Contains("InstallDir"))

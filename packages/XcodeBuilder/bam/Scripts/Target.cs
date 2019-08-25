@@ -786,7 +786,7 @@ namespace XcodeBuilder
                         // try a forced discovery, since it doesn't appear to have happened prior to now
                         // which suggests a project with no source files
                         var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
-                        (clangMeta as C.IToolchainDiscovery).discover(C.EBit.SixtyFour); // arbitrary
+                        (clangMeta as C.IToolchainDiscovery).Discover(C.EBit.SixtyFour); // arbitrary
 
                         // set which SDK to build against
                         newConfig["SDKROOT"] = new UniqueConfigurationValue(clangMeta.SDK);

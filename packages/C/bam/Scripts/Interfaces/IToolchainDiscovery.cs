@@ -39,7 +39,7 @@ namespace C
         /// </summary>
         /// <param name="depth">Required architecture.</param>
         void
-        discover(
+        Discover(
             EBit? depth);
     }
 }

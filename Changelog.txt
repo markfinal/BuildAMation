@@ -1,3 +1,5 @@
+25-Aug-2019 Fixes #592. C.IToolchainDiscovery.discover renamed to Discover for consistency.
+
 25-Aug-2019 Fixes #586. WindowsSDK.WinResourceCompilerBase.configure renamed to Configure for consistency.
 
 25-Aug-2019 Fixes #583. XcodeBuilder.ConfigurationValue.Merge no longer accepts a key argument. This was only used for failure logging, which is now moved to the call point.

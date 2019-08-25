@@ -158,7 +158,7 @@ namespace ClangCommon
             {
                 if (!this.Meta.ContainsKey("ToolchainVersion"))
                 {
-                    (this as C.IToolchainDiscovery).discover(null);
+                    (this as C.IToolchainDiscovery).Discover(null);
                 }
                 return this.Meta["ToolchainVersion"] as C.ToolchainVersion;
             }
@@ -198,7 +198,7 @@ namespace ClangCommon
         }
 
         void
-        C.IToolchainDiscovery.discover(
+        C.IToolchainDiscovery.Discover(
             C.EBit? depth)
         {
             if (this.Contains("SDKPath"))

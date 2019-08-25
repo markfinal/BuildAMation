@@ -524,7 +524,7 @@ namespace VisualCCommon
         }
 
         void
-        C.IToolchainDiscovery.discover(
+        C.IToolchainDiscovery.Discover(
             C.EBit? depth)
         {
             if (null == this.VswherePath)

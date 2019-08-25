@@ -41,7 +41,7 @@ namespace MingwCommon
 
             var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Mingw.MetaData>("Mingw");
             var discovery = mingwMeta as C.IToolchainDiscovery;
-            discovery.discover(depth: null);
+            discovery.Discover(depth: null);
 
             this.Version = null; // TODO
 

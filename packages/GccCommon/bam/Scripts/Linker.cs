@@ -40,7 +40,7 @@ namespace GccCommon
         {
             this.GccMetaData = Bam.Core.Graph.Instance.PackageMetaData<Gcc.MetaData>("Gcc");
             var discovery = this.GccMetaData as C.IToolchainDiscovery;
-            discovery.discover(depth: null);
+            discovery.Discover(depth: null);
             this.Version = this.GccMetaData.ToolchainVersion;
 
             var ldPath = this.GccMetaData.LdPath;

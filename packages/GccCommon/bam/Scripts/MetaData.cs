@@ -225,7 +225,7 @@ namespace GccCommon
         }
 
         void
-        C.IToolchainDiscovery.discover (
+        C.IToolchainDiscovery.Discover (
             C.EBit? depth)
         {
             if (this.Contains("GccPath"))

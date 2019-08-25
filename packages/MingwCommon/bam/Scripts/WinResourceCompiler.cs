@@ -40,7 +40,7 @@ namespace MingwCommon
         {
             var mingwMeta = Bam.Core.Graph.Instance.PackageMetaData<Bam.Core.PackageMetaData>("Mingw");
             var discovery = mingwMeta as C.IToolchainDiscovery;
-            discovery.discover(depth: null);
+            discovery.Discover(depth: null);
 
             this.Macros.Add("CompilerPath", this.CreateTokenizedString(@"$(0)\bin\windres.exe", mingwMeta["InstallDir"] as Bam.Core.TokenizedString));
             this.Macros.AddVerbatim(C.ModuleMacroNames.ObjectFileExtension, ".o");
