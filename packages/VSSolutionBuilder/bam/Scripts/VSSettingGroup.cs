@@ -55,21 +55,19 @@ namespace VSSolutionBuilder
         /// Construct a new group instance
         /// </summary>
         /// <param name="project">Belongs to this project</param>
-        /// <param name="module">Module associated with the group</param>
         /// <param name="group">Type of the group to make</param>
         /// <param name="path">The path to associate with the new settings group</param>
         public VSSettingsGroup(
             VSProject project,
-            Bam.Core.Module module,
             ESettingsGroup group,
             Bam.Core.TokenizedString path)
         {
             this.Project = project;
-            this.Module = module;
             this.Group = group;
             this.Path = path;
             if (null != path)
             {
+                var module = project.Module;
                 this.RelativeDirectory = module.CreateTokenizedString(
                     "@isrelative(@trimstart(@relativeto(@dir($(0)),$(packagedir)),../),@dir($(0)))",
                     path
@@ -94,12 +92,10 @@ namespace VSSolutionBuilder
             this.Settings = new Bam.Core.Array<VSSetting>();
         }
 
-        private VSProject Project { get; set; }
-
         /// <summary>
-        /// Module associated with the group
+        /// Project that the settings group is associated with.
         /// </summary>
-        public Bam.Core.Module Module { get; private set; }
+        public VSProject Project { get; private set; }
 
         /// <summary>
         /// Type of the group
@@ -118,7 +114,7 @@ namespace VSSolutionBuilder
 
         private Bam.Core.Array<VSSetting> Settings { get; set; }
 
-        private VSProjectConfiguration Configuration => this.Project.GetConfiguration(this.Module);
+        private VSProjectConfiguration Configuration => this.Project.GetConfiguration();
 
         /// <summary>
         /// Add a new Boolean setting to the group.

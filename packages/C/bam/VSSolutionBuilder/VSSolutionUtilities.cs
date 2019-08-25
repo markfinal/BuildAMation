@@ -122,7 +122,7 @@ namespace C
             {
                 solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
                 var prebuiltProject = solution.EnsureProjectExists(module);
-                config = prebuiltProject.GetConfiguration(module);
+                config = prebuiltProject.GetConfiguration();
                 config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
                 config.EnableIntermediatePath();
 
@@ -143,7 +143,7 @@ namespace C
 
             solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
             var project = solution.EnsureProjectExists(module);
-            config = project.GetConfiguration(module);
+            config = project.GetConfiguration();
 
             // ensure the project type is accurate
             config.SetType(type);

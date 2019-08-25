@@ -150,7 +150,7 @@ namespace VSSolutionBuilder
             var projectModule = GetModuleForProject(module);
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
             var project = solution.EnsureProjectExists(projectModule);
-            var config = project.GetConfiguration(projectModule);
+            var config = project.GetConfiguration();
 
             var is_first_input = true;
             foreach (var input in inputs)
@@ -224,7 +224,7 @@ namespace VSSolutionBuilder
             {
                 var projectModule = GetModuleForProject(module);
                 var project = solution.EnsureProjectExists(projectModule);
-                config = project.GetConfiguration(projectModule);
+                config = project.GetConfiguration();
             }
 
             var shellCommandLines = new Bam.Core.StringArray();
@@ -265,7 +265,7 @@ namespace VSSolutionBuilder
             {
                 var projectModule = GetModuleForProject(module);
                 var project = solution.EnsureProjectExists(projectModule);
-                config = project.GetConfiguration(projectModule);
+                config = project.GetConfiguration();
             }
 
             var shellCommandLines = new Bam.Core.StringArray();
@@ -327,7 +327,7 @@ namespace VSSolutionBuilder
         {
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
             project = solution.EnsureProjectExists(moduleToAddBuildStepTo);
-            configuration = project.GetConfiguration(moduleToAddBuildStepTo);
+            configuration = project.GetConfiguration();
 
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
@@ -358,7 +358,7 @@ namespace VSSolutionBuilder
             var moduleToAddBuildStepTo = GetModuleForProject(module);
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
             project = solution.EnsureProjectExists(moduleToAddBuildStepTo);
-            configuration = project.GetConfiguration(moduleToAddBuildStepTo);
+            configuration = project.GetConfiguration();
 
             var shellCommandLines = new Bam.Core.StringArray();
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);

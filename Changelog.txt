@@ -1,3 +1,7 @@
+25-Aug-2019 Fixes #605. Removed Bam.Core.Module argument from VSProject.GetConfiguration, since that information is already in the VSProject.
+Also removed Bam.Core.Module argument from VSProjectConfiguration constructor (again as VSProject is passed already). Removed Module property from this class.
+Also removed Bam.Core.Module argument from VSSettingsGroup constructor. Removed Module property from this class.
+
 25-Aug-2019 Fixes #606. Removed an unused VSProjectConfiguration argument from the following functions:
 * VisualStudioBuilder.VSProject.AddHeader
 * VisualStudioBuilder.VSProject.AddSource

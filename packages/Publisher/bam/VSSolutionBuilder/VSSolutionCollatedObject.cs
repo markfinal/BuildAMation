@@ -84,7 +84,7 @@ namespace Publisher
             }
 
             var project = projectModule.MetaData as VSSolutionBuilder.VSProject;
-            var config = project.GetConfiguration(projectModule);
+            var config = project.GetConfiguration();
 
             if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility && arePostBuildCommands)
             {
