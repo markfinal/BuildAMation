@@ -70,12 +70,6 @@ namespace XcodeBuilder
             string value) => this.Value = value;
 
         /// <summary>
-        /// Merge values.
-        /// </summary>
-        /// <param name="value">New value to merge in.</param>
-        ///
-
-        /// <summary>
         /// Merge new values into the current state.
         /// Since this is a single value, any existing value is replaced - false is retured in this case.
         /// </summary>
