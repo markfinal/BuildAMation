@@ -45,8 +45,10 @@ namespace C
 
         /// <summary>
         /// Construct an instance.
+        /// These are common states that need to be set before \a any Init function, from any derived Module,
+        /// is called.
         /// </summary>
-        public CModule()
+        protected CModule()
         {
             this.SetSemanticVersion(1, 0, 0);
             // default bit depth
