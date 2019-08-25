@@ -30,10 +30,10 @@
 namespace C
 {
     /// <summary>
-    /// Compile a Windows resource file into the compiled resource.
+    /// Collection of one or more resource files.
     /// </summary>
-    public class WinResource :
-        ObjectFileBase
+    public class WinResourceCollection :
+        CCompilableModuleContainer<WinResource>
     {
         /// <summary>
         /// Initialize this module
@@ -42,43 +42,7 @@ namespace C
         Init()
         {
             base.Init();
-            this.Compiler = DefaultToolchain.WinResource_Compiler(this.BitDepth);
+            this.Tool = DefaultToolchain.WinResource_Compiler(this.BitDepth);
         }
-
-        /// <summary>
-        /// Get or set the compiler tool
-        /// </summary>
-        public WinResourceCompilerTool Compiler
-        {
-            get
-            {
-                return this.Tool as WinResourceCompilerTool;
-            }
-            set
-            {
-                this.Tool = value;
-            }
-        }
-
-        /// <summary>
-        /// Compile against a dependent module
-        /// </summary>
-        /// <typeparam name="DependentModule">Type of the dependent Module</typeparam>
-        public void
-        CompileAgainst<DependentModule>() where DependentModule : CModule, new()
-        {
-            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
-            if (null == dependent)
-            {
-                return;
-            }
-            this.DependsOn(dependent);
-            this.UsePublicPatchesPrivately(dependent);
-        }
-
-        /// <summary>
-        /// Disable header evaluation
-        /// </summary>
-        protected override bool RequiresHeaderEvaluation => false;
     }
 }
