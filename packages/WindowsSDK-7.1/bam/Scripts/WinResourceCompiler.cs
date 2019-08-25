@@ -40,7 +40,7 @@ namespace WindowsSDK
         /// </summary>
         /// <param name="architecture">Architecture in use</param>
         protected void
-        configure(
+        Configure(
             string architecture)
         {
             if (this.EnvironmentVariables.ContainsKey("WindowsSDKDir"))
@@ -105,7 +105,7 @@ namespace WindowsSDK
         {
             var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             this.EnvironmentVariables = vcMeta.Environment(C.EBit.ThirtyTwo);
-            this.configure(null);
+            this.Configure(null);
             // now check the executable exists
             base.Init();
         }
@@ -126,7 +126,7 @@ namespace WindowsSDK
         {
             var vcMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             this.EnvironmentVariables = vcMeta.Environment(C.EBit.SixtyFour);
-            this.configure("x64");
+            this.Configure("x64");
             // now check the executable exists
             base.Init();
         }
