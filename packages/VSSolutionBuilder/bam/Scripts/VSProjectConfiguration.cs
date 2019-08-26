@@ -55,10 +55,12 @@ namespace VSSolutionBuilder
         /// <param name="platform">Platform on which the configuration applies.</param>
         public VSProjectConfiguration(
             VSProject project,
+            Bam.Core.Module module,
             Bam.Core.EPlatform platform)
         {
             this.Project = project;
-            this.Configuration = project.Module.BuildEnvironment.Configuration;
+            this.Module = module;
+            this.Configuration = module.BuildEnvironment.Configuration;
             this.Platform = platform;
             this.FullName = this.CombinedName;
 
@@ -116,6 +118,11 @@ namespace VSSolutionBuilder
         /// Get the 'condition' text for the configuration
         /// </summary>
         public string ConditionText => $"'$(Configuration)|$(Platform)'=='{this.CombinedName}'";
+
+        /// <summary>
+        /// Get the Module associated with the configuration
+        /// </summary>
+        public Bam.Core.Module Module { get; private set; }
 
         /// <summary>
         /// Get the full name of the configuration
@@ -204,10 +211,9 @@ namespace VSSolutionBuilder
         public void
         EnableIntermediatePath()
         {
-            var module = this.Project.Module;
-            this.IntermediateDirectory = module.CreateTokenizedString(
+            this.IntermediateDirectory = this.Module.CreateTokenizedString(
                 "$(packagebuilddir)/$(0)/$(config)/",
-                new[] {module.EncapsulatingModule.Macros[Bam.Core.ModuleMacroNames.ModuleName] }
+                new[] {this.Module.EncapsulatingModule.Macros[Bam.Core.ModuleMacroNames.ModuleName] }
             );
             this.IntermediateDirectory.Parse();
         }
@@ -276,8 +282,8 @@ namespace VSSolutionBuilder
                 }
 
                 var newGroup = (null != path) ?
-                    this.Project.GetUniqueSettingsGroup(this.Project.Module, group, path) :
-                    new VSSettingsGroup(this.Project, group, null);
+                    this.Project.GetUniqueSettingsGroup(this.Module, group, path) :
+                    new VSSettingsGroup(this.Project, this.Module, group, null);
                 this.SettingGroups.Add(newGroup);
                 return newGroup;
             }
@@ -292,7 +298,7 @@ namespace VSSolutionBuilder
             C.HeaderFile header)
         {
             var headerGroup = this.Project.GetUniqueSettingsGroup(
-                this.Project.Module,
+                this.Module,
                 VSSettingsGroup.ESettingsGroup.Header,
                 header.InputPath
             );
@@ -335,7 +341,7 @@ namespace VSSolutionBuilder
             Bam.Core.IInputPath other)
         {
             var otherGroup = this.Project.GetUniqueSettingsGroup(
-                this.Project.Module,
+                this.Module,
                 VSSettingsGroup.ESettingsGroup.CustomBuild,
                 other.InputPath
             );
@@ -351,7 +357,7 @@ namespace VSSolutionBuilder
             Bam.Core.TokenizedString other_path)
         {
             var otherGroup = this.Project.GetUniqueSettingsGroup(
-                this.Project.Module,
+                this.Module,
                 VSSettingsGroup.ESettingsGroup.CustomBuild,
                 other_path
             );
@@ -381,7 +387,7 @@ namespace VSSolutionBuilder
                 );
             }
             var resourceGroup = this.Project.GetUniqueSettingsGroup(
-                this.Project.Module,
+                this.Module,
                 VSSettingsGroup.ESettingsGroup.Resource,
                 resource.InputPath
             );
@@ -412,7 +418,7 @@ namespace VSSolutionBuilder
                 );
             }
             var assemblyGroup = this.Project.GetUniqueSettingsGroup(
-                this.Project.Module,
+                this.Module,
                 VSSettingsGroup.ESettingsGroup.CustomBuild,
                 assembler.InputPath
             );
@@ -622,13 +628,12 @@ namespace VSSolutionBuilder
                     parentEl: propGroup
                 );
 
-                var module = this.Project.Module;
-                var targetNameTS = module.CreateTokenizedString("@basename($(0))", this.OutputFile);
+                var targetNameTS = this.Module.CreateTokenizedString("@basename($(0))", this.OutputFile);
                 targetNameTS.Parse();
                 var targetName = targetNameTS.ToString();
                 if (!string.IsNullOrEmpty(targetName))
                 {
-                    var filenameTS = module.CreateTokenizedString("@filename($(0))", this.OutputFile);
+                    var filenameTS = this.Module.CreateTokenizedString("@filename($(0))", this.OutputFile);
                     filenameTS.Parse();
                     var filename = filenameTS.ToString();
                     var ext = filename.Replace(targetName, string.Empty);
@@ -669,7 +674,7 @@ namespace VSSolutionBuilder
 
             if (this.PreBuildCommands.Count > 0)
             {
-                var preBuildGroup = new VSSettingsGroup(this.Project, VSSettingsGroup.ESettingsGroup.PreBuild, null);
+                var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PreBuild, null);
                 preBuildGroup.AddSetting(
                     "Command",
                     this.PreBuildCommands.ToString(System.Environment.NewLine)
@@ -678,7 +683,7 @@ namespace VSSolutionBuilder
             }
             if (this.PostBuildCommands.Count > 0)
             {
-                var preBuildGroup = new VSSettingsGroup(this.Project, VSSettingsGroup.ESettingsGroup.PostBuild, null);
+                var preBuildGroup = new VSSettingsGroup(this.Project, this.Module, VSSettingsGroup.ESettingsGroup.PostBuild, null);
                 preBuildGroup.AddSetting(
                     "Command",
                     this.PostBuildCommands.ToString(System.Environment.NewLine)

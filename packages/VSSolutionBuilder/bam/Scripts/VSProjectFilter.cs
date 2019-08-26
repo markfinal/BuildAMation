@@ -82,7 +82,7 @@ namespace VSSolutionBuilder
             if (null != sourceGroup.RelativeDirectory)
             {
                 var path = sourceGroup.RelativeDirectory.ToString();
-                this.AddFilters(sourceGroup.Project.Module, path);
+                this.AddFilters(sourceGroup.Module, path);
                 var filter = this.Filters[path];
                 if (filter.Any(item =>
                     {
@@ -100,6 +100,7 @@ namespace VSSolutionBuilder
                 }
                 var newGroup = new VSSettingsGroup(
                     this.Project,
+                    sourceGroup.Module,
                     sourceGroup.Group,
                     sourceGroup.Path
                 );
@@ -114,6 +115,7 @@ namespace VSSolutionBuilder
                 // this codepath is followed when source files are in the package directory directly
                 new VSSettingsGroup(
                     this.Project,
+                    sourceGroup.Module,
                     sourceGroup.Group,
                     sourceGroup.Path
                 );

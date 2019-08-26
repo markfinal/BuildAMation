@@ -46,7 +46,7 @@ namespace C
 
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
             var project = solution.EnsureProjectExists(encapsulating);
-            var config = project.GetConfiguration();
+            var config = project.GetConfiguration(encapsulating);
 
             VSSolutionBuilder.VSSettingsGroup.ESettingsGroup group;
             if (module is C.WinResource)

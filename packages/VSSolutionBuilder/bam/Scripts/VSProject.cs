@@ -85,16 +85,16 @@ namespace VSSolutionBuilder
         }
 
         /// <summary>
-        /// Get the VSProjectConfiguration within this project. (Corresponds to the Module that the VSProject is associated with.)
+        /// Get the VSProjectConfiguration within this project corresponding to this Module
         /// </summary>
+        /// <param name="module">Module to get configuration for</param>
         /// <returns>The VSProjectConfiguration</returns>
         public VSProjectConfiguration
-        GetConfiguration()
+        GetConfiguration(
+            Bam.Core.Module module)
         {
             lock (this.Configurations)
             {
-                var module = this.Module;
-
                 var moduleConfig = module.BuildEnvironment.Configuration;
                 if (this.Configurations.ContainsKey(moduleConfig))
                 {
@@ -117,7 +117,7 @@ namespace VSSolutionBuilder
                 {
                     throw new Bam.Core.Exception($"Platform cannot be extracted from the tool {module.Tool.ToString()} for project {this.ProjectPath}");
                 }
-                var configuration = new VSProjectConfiguration(this, platform);
+                var configuration = new VSProjectConfiguration(this, module, platform);
                 this.Configurations.Add(moduleConfig, configuration);
                 return configuration;
             }
@@ -159,7 +159,7 @@ namespace VSSolutionBuilder
                     }
                 }
 
-                var newGroup = new VSSettingsGroup(this, group, path);
+                var newGroup = new VSSettingsGroup(this, module, group, path);
                 this.ProjectSettings.Add(newGroup);
                 return newGroup;
             }
@@ -595,7 +595,7 @@ namespace VSSolutionBuilder
             {
                 return false;
             }
-            var configuration = project.GetConfiguration();
+            var configuration = project.GetConfiguration(module);
             switch (configuration.Type)
             {
                 case VSProjectConfiguration.EType.Application:
