@@ -51,6 +51,7 @@ namespace VSSolutionBuilder
         /// Create an instance of the configuration
         /// </summary>
         /// <param name="project">Project to own the configuration</param>
+        /// <param name="module">Module associated</param>
         /// <param name="platform">Platform on which the configuration applies.</param>
         public VSProjectConfiguration(
             VSProject project,
