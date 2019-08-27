@@ -30,53 +30,9 @@
 namespace Publisher
 {
     /// <summary>
-    /// Module that has had the --id command run on install_name_tool
+    /// Module that has install_name_tool --id run on it
     /// </summary>
     public class IdNameOSX :
         InstallNameModule
-    {
-        protected override void
-        ExecuteInternal(
-            Bam.Core.ExecutionContext context)
-        {
-            switch (Bam.Core.Graph.Instance.Mode)
-            {
-#if D_PACKAGE_MAKEFILEBUILDER
-                case "MakeFile":
-                    MakeFileBuilder.Support.Add(this);
-                    break;
-#endif
-
-#if D_PACKAGE_NATIVEBUILDER
-                case "Native":
-                    NativeBuilder.Support.RunCommandLineTool(this, context);
-                    break;
-#endif
-
-#if D_PACKAGE_XCODEBUILDER
-                case "Xcode":
-                    {
-                        XcodeBuilder.Support.AddPostBuildStepForCommandLineTool(
-                            this,
-                            this.Source, // add it to the source module's target
-                            out XcodeBuilder.Target target,
-                            out XcodeBuilder.Configuration configuration
-                        );
-                    }
-                    break;
-#endif
-            }
-        }
-
-        /// <summary>
-        /// /copydoc Bam.Core.Module.InputModulePaths
-        /// </summary>
-        public override System.Collections.Generic.IEnumerable<(Bam.Core.Module module, string pathKey)> InputModulePaths
-        {
-            get
-            {
-                yield return (this.CopiedFileModule, C.ConsoleApplication.ExecutableKey);
-            }
-        }
-    }
+    {}
 }

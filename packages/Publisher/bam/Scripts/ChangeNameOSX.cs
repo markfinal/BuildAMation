@@ -27,7 +27,6 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
     /// <summary>
@@ -35,49 +34,5 @@ namespace Publisher
     /// </summary>
     public class ChangeNameOSX :
         InstallNameModule
-    {
-        protected override void
-        ExecuteInternal(
-            ExecutionContext context)
-        {
-            switch (Bam.Core.Graph.Instance.Mode)
-            {
-#if D_PACKAGE_MAKEFILEBUILDER
-                case "MakeFile":
-                    MakeFileBuilder.Support.Add(this);
-                    break;
-#endif
-
-#if D_PACKAGE_NATIVEBUILDER
-                case "Native":
-                    NativeBuilder.Support.RunCommandLineTool(this, context);
-                    break;
-#endif
-
-#if D_PACKAGE_XCODEBUILDER
-                case "Xcode":
-                    {
-                        XcodeBuilder.Support.AddPostBuildStepForCommandLineTool(
-                            this,
-                            this.Source, // add it to the source module's target
-                            out XcodeBuilder.Target target,
-                            out XcodeBuilder.Configuration configuration
-                        );
-                    }
-                    break;
-#endif
-            }
-        }
-
-        /// <summary>
-        /// /copydoc Bam.Core.Module.InputModulePaths
-        /// </summary>
-        public override System.Collections.Generic.IEnumerable<(Bam.Core.Module module, string pathKey)> InputModulePaths
-        {
-            get
-            {
-                yield return (this.CopiedFileModule, C.ConsoleApplication.ExecutableKey);
-            }
-        }
-    }
+    {}
 }
