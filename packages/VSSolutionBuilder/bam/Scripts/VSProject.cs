@@ -36,38 +36,56 @@ namespace VSSolutionBuilder
     public sealed class VSProject :
         HasGuid
     {
+        private VSSolution Solution { get; set; }
+
         /// <summary>
-        /// Construct an instance, for the given module, at the given path, and added to the given solution.
+        /// Get the project filepath
+        /// </summary>
+        public string ProjectPath { get; private set; }
+
+        /// <summary>
+        /// Get the dictionary of EConfiguration to VSProjectConfiguration
+        /// </summary>
+        public System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration> Configurations { get; private set; } = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration>();
+
+        private Bam.Core.Array<VSSettingsGroup> ProjectSettings { get; set; } = new Bam.Core.Array<VSSettingsGroup>();
+
+        private Bam.Core.Array<VSSettingsGroup> Headers { get; set; } = new Bam.Core.Array<VSSettingsGroup>();
+
+        private Bam.Core.Array<VSSettingsGroup> Sources { get; set; } = new Bam.Core.Array<VSSettingsGroup>();
+
+        private Bam.Core.Array<VSSettingsGroup> Others { get; set; } = new Bam.Core.Array<VSSettingsGroup>();
+
+        private Bam.Core.Array<VSSettingsGroup> Resources { get; set; } = new Bam.Core.Array<VSSettingsGroup>();
+
+        private Bam.Core.Array<VSSettingsGroup> AssemblyFiles { get; set; } = new Bam.Core.Array<VSSettingsGroup>();
+
+        /// <summary>
+        /// Get the filter applied to this project
+        /// </summary>
+        public VSProjectFilter Filter { get; private set; }
+
+        private Bam.Core.Array<VSProject> OrderOnlyDependentProjects { get; set; } = new Bam.Core.Array<VSProject>();
+
+        private Bam.Core.Array<VSProject> LinkDependentProjects { get; set; } = new Bam.Core.Array<VSProject>();
+
+        /// <summary>
+        /// Construct an instance, at the given path, and added to the given solution.
+        /// The module association is at the solution level (by type), and in child configurations
+        /// which have a 1-1 Module relationship.
         /// </summary>
         /// <param name="solution">VSSolution to add the project to</param>
-        /// <param name="module">Module corresponding to the new project</param>
         /// <param name="projectPath">Path at which the project resides.</param>
         public VSProject(
             VSSolution solution,
-            Bam.Core.Module module,
             Bam.Core.TokenizedString projectPath)
             :
             base(projectPath.ToString())
         {
             this.Solution = solution;
-            this.Module = module;
             this.ProjectPath = projectPath.ToString();
-            this.Configurations = new System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration>();
-            this.ProjectSettings = new Bam.Core.Array<VSSettingsGroup>();
-            this.Headers = new Bam.Core.Array<VSSettingsGroup>();
-            this.Sources = new Bam.Core.Array<VSSettingsGroup>();
-            this.Others = new Bam.Core.Array<VSSettingsGroup>();
-            this.Resources = new Bam.Core.Array<VSSettingsGroup>();
-            this.AssemblyFiles = new Bam.Core.Array<VSSettingsGroup>();
             this.Filter = new VSProjectFilter(this);
-            this.OrderOnlyDependentProjects = new Bam.Core.Array<VSProject>();
-            this.LinkDependentProjects = new Bam.Core.Array<VSProject>();
         }
-
-        /// <summary>
-        /// Get the module corresponding to this project
-        /// </summary>
-        public Bam.Core.Module Module { get; private set; }
 
         private static C.EBit
         GetModuleBitDepth(
@@ -93,6 +111,13 @@ namespace VSSolutionBuilder
         GetConfiguration(
             Bam.Core.Module module)
         {
+            lock (this) // this is quite a heavyweight lock
+            {
+                if (null == module.MetaData)
+                {
+                    module.MetaData = this;
+                }
+            }
             lock (this.Configurations)
             {
                 var moduleConfig = module.BuildEnvironment.Configuration;
@@ -287,39 +312,6 @@ namespace VSSolutionBuilder
             }
         }
 
-        /// <summary>
-        /// Get the project filepath
-        /// </summary>
-        public string ProjectPath { get; private set; }
-
-        /// <summary>
-        /// Get the filter applied to this project
-        /// </summary>
-        public VSProjectFilter Filter { get; private set; }
-
-        private VSSolution Solution { get; set; }
-
-        /// <summary>
-        /// Get the dictionary of EConfiguration to VSProjectConfiguration
-        /// </summary>
-        public System.Collections.Generic.Dictionary<Bam.Core.EConfiguration, VSProjectConfiguration> Configurations { get; private set; }
-
-        private Bam.Core.Array<VSSettingsGroup> ProjectSettings { get; set; }
-
-        private Bam.Core.Array<VSSettingsGroup> Headers { get; set; }
-
-        private Bam.Core.Array<VSSettingsGroup> Sources { get; set; }
-
-        private Bam.Core.Array<VSSettingsGroup> Others { get; set; }
-
-        private Bam.Core.Array<VSSettingsGroup> Resources { get; set; }
-
-        private Bam.Core.Array<VSSettingsGroup> AssemblyFiles { get; set; }
-
-        private Bam.Core.Array<VSProject> OrderOnlyDependentProjects { get; set; }
-
-        private Bam.Core.Array<VSProject> LinkDependentProjects { get; set; }
-
         private void
         SerializeDependentProjects(
             System.Xml.XmlDocument document,
@@ -383,6 +375,7 @@ namespace VSSolutionBuilder
 
         /// <summary>
         /// Serialize user settings for the project to XML.
+        /// This includes working directories for the debugger, which are per configuration.
         /// </summary>
         /// <returns>The XML document containing the user settings.</returns>
         public System.Xml.XmlDocument
@@ -394,17 +387,55 @@ namespace VSSolutionBuilder
             var visualCMeta = Bam.Core.Graph.Instance.PackageMetaData<VisualC.MetaData>("VisualC");
             projectEl.SetAttribute("ToolsVersion", visualCMeta.VCXProjToolsVersion);
 
-            // the working directory appears to need to be the same in all configurations
-            var el = document.CreateVSPropertyGroup(parentEl: projectEl);
-            var debuggerFlavour = document.CreateVSElement("DebuggerFlavor");
-            debuggerFlavour.InnerText = "WindowsLocalDebugger";
-            var workingDir = document.CreateVSElement("LocalDebuggerWorkingDirectory");
-            (this.Module as C.ConsoleApplication).WorkingDirectory.Parse();
-            workingDir.InnerText = (this.Module as C.ConsoleApplication).WorkingDirectory.ToString();
-            el.AppendChild(debuggerFlavour);
-            el.AppendChild(workingDir);
+            foreach (var configuration in this.Configurations.Select(item => item.Value))
+            {
+                var el = document.CreateVSPropertyGroup(parentEl: projectEl, condition: configuration.ConditionText);
+                var debuggerFlavour = document.CreateVSElement("DebuggerFlavor");
+                debuggerFlavour.InnerText = "WindowsLocalDebugger";
+                if (configuration.Module is C.ConsoleApplication module && module.WorkingDirectory != null)
+                {
+                    if (!module.WorkingDirectory.IsParsed)
+                    {
+                        module.WorkingDirectory.Parse();
+                    }
+                    var workingDir = document.CreateVSElement("LocalDebuggerWorkingDirectory");
+                    workingDir.InnerText = module.WorkingDirectory.ToString();
+                    el.AppendChild(workingDir);
+                }
+                el.AppendChild(debuggerFlavour);
+            }
 
             return document;
+        }
+
+        private void
+        AddWindowsSDKVersion(
+            System.Xml.XmlDocument document,
+            System.Xml.XmlElement globalPropertyGroup,
+            VisualC.MetaData visualCMeta)
+        {
+            string windowsSDKVersion = null;
+            foreach (var config in this.Configurations)
+            {
+                var vcEnv = visualCMeta.Environment(GetModuleBitDepth(config.Value.Module));
+                if (!vcEnv.ContainsKey("WindowsSDKVersion"))
+                {
+                    continue;
+                }
+                var config_windowssdk_version = vcEnv["WindowsSDKVersion"].First().ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar);
+                if (null == windowsSDKVersion)
+                {
+                    windowsSDKVersion = config_windowssdk_version;
+                }
+                else if (!config_windowssdk_version.Equals(windowsSDKVersion, System.StringComparison.Ordinal))
+                {
+                    throw new Bam.Core.Exception("Inconsistent WindowsSDK versions between project configurations");
+                }
+            }
+            if (null != windowsSDKVersion)
+            {
+                document.CreateVSElement("WindowsTargetPlatformVersion", value: windowsSDKVersion, parentEl: globalPropertyGroup);
+            }
         }
 
         /// <summary>
@@ -435,16 +466,7 @@ namespace VSSolutionBuilder
             // global properties
             var globalPropertyGroup = document.CreateVSPropertyGroup(label: "Globals", parentEl: projectEl);
             document.CreateVSElement("ProjectGuid", value: this.Guid.ToString("B").ToUpper(), parentEl: globalPropertyGroup);
-            var vcEnv = visualCMeta.Environment(GetModuleBitDepth(this.Module));
-            if (vcEnv.ContainsKey("WindowsSDKVersion"))
-            {
-                var windowssdk_version = vcEnv["WindowsSDKVersion"].First().ToString().TrimEnd(System.IO.Path.DirectorySeparatorChar);
-                document.CreateVSElement("WindowsTargetPlatformVersion", value: windowssdk_version, parentEl: globalPropertyGroup);
-            }
-            else
-            {
-                // appears to automatically fall back to 8.1
-            }
+            this.AddWindowsSDKVersion(document, globalPropertyGroup, visualCMeta);
 
             document.CreateVSImport(@"$(VCTargetsPath)\Microsoft.Cpp.Default.props", parentEl: projectEl);
 

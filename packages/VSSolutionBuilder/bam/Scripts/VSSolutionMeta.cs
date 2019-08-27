@@ -175,10 +175,7 @@ namespace VSSolutionBuilder
 
                 WriteXMLIfDifferent(project.ProjectPath, xmlWriterSettings, project.Serialize());
                 WriteXMLIfDifferent(project.ProjectPath + ".filters", xmlWriterSettings, project.Filter.Serialize());
-                if (project.Module is C.ConsoleApplication && (project.Module as C.ConsoleApplication).WorkingDirectory != null)
-                {
-                    WriteXMLIfDifferent(project.ProjectPath + ".user", xmlWriterSettings, project.SerializeUserSettings());
-                }
+                WriteXMLIfDifferent(project.ProjectPath + ".user", xmlWriterSettings, project.SerializeUserSettings());
             }
 
             var solutionPathTS = Bam.Core.TokenizedString.Create("$(buildroot)/$(masterpackagename).sln", null);

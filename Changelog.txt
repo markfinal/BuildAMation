@@ -1,3 +1,6 @@
+27-Aug-2019 Fixes #605. VisualStudio projects are associated by module type, while VS project configurations are associated to a module. Reinforced this by changing VSSolution.EnsureProjectExists to take the module type (and build environment, needed for additional data) instead of the module itself. Assigning the VSProject to a Module's MetaData property is now the responsibility of VSProject.GetConfiguration.
+As an aside, different working directories per configuration (i.e. per module) can now be used.
+
 25-Aug-2019 Fixes #611. VisualStudioProcessor attributes that were ambiguous have been renamed or removed.
 
 25-Aug-2019 Fixes #608. Removed isPath optional argument to VSSettingsGroup.AddSetting overload for paths, as all uses were referring to paths (rather than just generic strings).

@@ -149,7 +149,7 @@ namespace VSSolutionBuilder
         {
             var projectModule = GetModuleForProject(module);
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
-            var project = solution.EnsureProjectExists(projectModule);
+            var project = solution.EnsureProjectExists(projectModule.GetType(), projectModule.BuildEnvironment);
             var config = project.GetConfiguration(projectModule);
 
             var is_first_input = true;
@@ -223,7 +223,7 @@ namespace VSSolutionBuilder
             if (config == null)
             {
                 var projectModule = GetModuleForProject(module);
-                var project = solution.EnsureProjectExists(projectModule);
+                var project = solution.EnsureProjectExists(projectModule.GetType(), projectModule.BuildEnvironment);
                 config = project.GetConfiguration(projectModule);
             }
 
@@ -243,7 +243,7 @@ namespace VSSolutionBuilder
                     tool = (tool as Publisher.ICollatedObject).SourceModule;
                 }
 #endif
-                var toolProject = solution.EnsureProjectExists(tool);
+                var toolProject = solution.EnsureProjectExists(tool.GetType(), tool.BuildEnvironment);
                 config.RequiresProject(toolProject);
             }
         }
@@ -264,7 +264,7 @@ namespace VSSolutionBuilder
             if (config == null)
             {
                 var projectModule = GetModuleForProject(module);
-                var project = solution.EnsureProjectExists(projectModule);
+                var project = solution.EnsureProjectExists(projectModule.GetType(), projectModule.BuildEnvironment);
                 config = project.GetConfiguration(projectModule);
             }
 
@@ -284,7 +284,7 @@ namespace VSSolutionBuilder
                     tool = (tool as Publisher.ICollatedObject).SourceModule;
                 }
 #endif
-                var toolProject = solution.EnsureProjectExists(tool);
+                var toolProject = solution.EnsureProjectExists(tool.GetType(), tool.BuildEnvironment);
                 config.RequiresProject(toolProject);
             }
         }
@@ -326,7 +326,7 @@ namespace VSSolutionBuilder
             bool includeEnvironmentVariables = true)
         {
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
-            project = solution.EnsureProjectExists(moduleToAddBuildStepTo);
+            project = solution.EnsureProjectExists(moduleToAddBuildStepTo.GetType(), moduleToAddBuildStepTo.BuildEnvironment);
             configuration = project.GetConfiguration(moduleToAddBuildStepTo);
 
             var shellCommandLines = new Bam.Core.StringArray();
@@ -357,7 +357,7 @@ namespace VSSolutionBuilder
         {
             var moduleToAddBuildStepTo = GetModuleForProject(module);
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolution;
-            project = solution.EnsureProjectExists(moduleToAddBuildStepTo);
+            project = solution.EnsureProjectExists(moduleToAddBuildStepTo.GetType(), moduleToAddBuildStepTo.BuildEnvironment);
             configuration = project.GetConfiguration(moduleToAddBuildStepTo);
 
             var shellCommandLines = new Bam.Core.StringArray();

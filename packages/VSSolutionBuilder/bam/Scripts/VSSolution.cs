@@ -73,33 +73,34 @@ namespace VSSolutionBuilder
         /// <summary>
         /// Ensure that a VisualStudio project exists in the solution.
         /// Create it if not, and always return it.
+        /// The project itself maps to the type of the Module, rather than the Module itself.
         /// </summary>
-        /// <param name="module">Module representing the project.</param>
+        /// <param name="moduleType">Module type representing the project.</param>
+        /// <param name="environment">Environment in which this project was created.</param>
         /// <returns>The project</returns>
         public VSProject
         EnsureProjectExists(
-            Bam.Core.Module module)
+            System.Type moduleType,
+            Bam.Core.Environment environment)
         {
-            var moduleType = module.GetType();
             lock (this.ProjectMap)
             {
                 if (!this.ProjectMap.ContainsKey(moduleType))
                 {
+                    // projects map to multiple Modules (each configuration)
+                    // so just create a path against the first Module found
+                    var module = Bam.Core.Graph.Instance.EncapsulatingModules(environment).First(item => item.GetType() == moduleType);
                     var projectPath = module.CreateTokenizedString("$(packagebuilddir)/$(modulename).vcxproj");
                     projectPath.Parse();
-                    var project = new VSProject(this, module, projectPath);
+                    var project = new VSProject(this, projectPath);
                     this.ProjectMap.Add(moduleType, project);
 
-                    var groups = module.GetType().GetCustomAttributes(typeof(Bam.Core.ModuleGroupAttribute), true);
+                    var groups = moduleType.GetCustomAttributes(typeof(Bam.Core.ModuleGroupAttribute), true);
                     if (groups.Length > 0)
                     {
                         var solutionFolderName = (groups as Bam.Core.ModuleGroupAttribute[])[0].GroupName;
                         this.AddNestedEntity(".", solutionFolderName, project);
                     }
-                }
-                if (null == module.MetaData)
-                {
-                    module.MetaData = this.ProjectMap[moduleType];
                 }
                 return this.ProjectMap[moduleType];
             }

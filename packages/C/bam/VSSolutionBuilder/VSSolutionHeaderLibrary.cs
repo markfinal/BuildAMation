@@ -49,7 +49,7 @@ namespace C
             }
 
             var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-            var project = solution.EnsureProjectExists(module);
+            var project = solution.EnsureProjectExists(module.GetType(), module.BuildEnvironment);
             var config = project.GetConfiguration(module);
 
             config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);

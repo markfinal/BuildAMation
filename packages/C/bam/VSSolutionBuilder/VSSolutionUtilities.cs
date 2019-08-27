@@ -53,7 +53,7 @@ namespace C
                 {
                     if ((input is C.StaticLibrary) || (input is C.IDynamicLibrary))
                     {
-                        config.LinkAgainstProject(solution.EnsureProjectExists(input));
+                        config.LinkAgainstProject(solution.EnsureProjectExists(input.GetType(), input.BuildEnvironment));
                     }
                     else if ((input is C.CSDKModule) || (input is C.HeaderLibrary))
                     {
@@ -121,7 +121,7 @@ namespace C
             if (module.IsPrebuilt)
             {
                 solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-                var prebuiltProject = solution.EnsureProjectExists(module);
+                var prebuiltProject = solution.EnsureProjectExists(module.GetType(), module.BuildEnvironment);
                 config = prebuiltProject.GetConfiguration(module);
                 config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
                 config.EnableIntermediatePath();
@@ -142,7 +142,7 @@ namespace C
             }
 
             solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-            var project = solution.EnsureProjectExists(module);
+            var project = solution.EnsureProjectExists(module.GetType(), module.BuildEnvironment);
             config = project.GetConfiguration(module);
 
             // ensure the project type is accurate

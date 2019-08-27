@@ -67,10 +67,11 @@ namespace Publisher
                     {
                         projectModule = (collatedInterface.SourceModule as PreExistingObject).ParentOfCollationModule;
 
-                        // ensure a project exists, as this collation may be visited prior to
+                        // ensure a project configuration exists, as this collation may be visited prior to
                         // the source which invoked it
                         var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-                        solution.EnsureProjectExists(projectModule);
+                        var theproject = solution.EnsureProjectExists(projectModule.GetType(), projectModule.BuildEnvironment);
+                        theproject.GetConfiguration(projectModule);
 
                         arePostBuildCommands = false;
                     }

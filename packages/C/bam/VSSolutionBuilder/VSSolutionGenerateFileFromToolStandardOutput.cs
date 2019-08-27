@@ -57,7 +57,7 @@ namespace C
                 if (null == encapsulating.MetaData)
                 {
                     var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-                    var project = solution.EnsureProjectExists(encapsulating);
+                    var project = solution.EnsureProjectExists(encapsulating.GetType(), encapsulating.BuildEnvironment);
                     var config = project.GetConfiguration(encapsulating);
                 }
                 toolMeta = encapsulating.MetaData;
