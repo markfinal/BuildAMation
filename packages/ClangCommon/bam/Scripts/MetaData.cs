@@ -233,7 +233,7 @@ namespace ClangCommon
                         }
                     }
                 }
-                catch (System.ComponentModel.Win32Exception)
+                catch (Bam.Core.Exception)
                 {
                     if (Bam.Core.OSUtilities.IsOSXHosting)
                     {
@@ -242,6 +242,7 @@ namespace ClangCommon
                     // arbitrary choice for non-macOS platforms
                     this.SDK = "macos10.13";
                     this.MacOSXMinimumVersionSupported = "10.13";
+                    this.ToolchainVersion = ClangCommon.ToolchainVersion.Xcode_10;
                 }
 
                 this.SDKPath = ClangCommon.ConfigureUtilities.GetSDKPath(this.SDK);
@@ -249,7 +250,7 @@ namespace ClangCommon
                     $"Using {ClangCommon.ConfigureUtilities.GetClangVersion(this.SDK)} and {this.SDK} SDK installed at {this.SDKPath}"
                 );
             }
-            catch (System.InvalidOperationException)
+            catch (Bam.Core.RunExecutableException)
             {
                 if (Bam.Core.OSUtilities.IsOSXHosting)
                 {

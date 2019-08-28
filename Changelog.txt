@@ -1,3 +1,5 @@
+28-Aug-2019 Fixes #378. Fixed regression in being able to generate Xcode projects on non-macOS platforms.
+
 27-Aug-2019 Fixes #623. Publisher.InstallNameModule now implements a common ExecuteInternal override, rather than it being duplicated in each derived Module. Also, fixed the MakeFile implementation to actually call install_name_tool.
 
 27-Aug-2019 Fixes #605. VisualStudio projects are associated by module type, while VS project configurations are associated to a module. Reinforced this by changing VSSolution.EnsureProjectExists to take the module type (and build environment, needed for additional data) instead of the module itself. Assigning the VSProject to a Module's MetaData property is now the responsibility of VSProject.GetConfiguration.
