@@ -1346,14 +1346,14 @@ namespace Bam.Core
         /// <summary>
         /// Exception thrown when a TokenizedString has an empty token, i.e. "$()"
         /// </summary>
-        public class EmptyStringException :
+        public sealed class EmptyStringException :
             Exception
         {}
 
         /// <summary>
         /// Exception thrown when a TokenizedString contains bad token formatting, e.g. "$token)" is missing the opening parenthesis scope
         /// </summary>
-        public class BadTokenFormatException :
+        public sealed class BadTokenFormatException :
             Exception
         {
             /// <summary>

@@ -62,7 +62,7 @@ namespace GccCommon
     /// </summary>
     [C.RegisterAssembler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterAssembler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
-    public class Assembler :
+    public sealed class Assembler :
         AssemblerBase
     {
         /// <summary>

@@ -32,7 +32,7 @@ namespace Bam.Core
     /// <summary>
     /// Exception class if the OSUtilities.RunExecutable function fails.
     /// </summary>
-    public class RunExecutableException :
+    public sealed class RunExecutableException :
         Exception
     {
         /// <summary>

@@ -33,7 +33,7 @@ namespace CommandLineProcessor
     /// Attribute corresponding to preprocessor definitions to convert to command line.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public class PreprocessorDefinesAttribute :
+    public sealed class PreprocessorDefinesAttribute :
         BaseAttribute
     {
         /// <summary>

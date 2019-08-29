@@ -33,7 +33,7 @@ namespace VisualStudioProcessor
     /// Attribute associated with a string property.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public class StringAttribute :
+    public sealed class StringAttribute :
         BaseAttribute
     {
         /// <summary>

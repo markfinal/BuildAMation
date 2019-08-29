@@ -69,7 +69,7 @@ namespace MingwCommon
     /// 32-bit Mingw preprocessor tool
     /// </summary>
     [C.RegisterPreprocessor("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public class Preprocessor32 :
+    public sealed class Preprocessor32 :
         PreprocessorBase
     {
         /// <summary>

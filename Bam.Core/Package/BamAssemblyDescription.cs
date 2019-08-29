@@ -33,7 +33,7 @@ namespace Bam.Core
     /// Information concerned each Bam assembly reference, including name and minimum
     /// version number supported.
     /// </summary>
-    public class BamAssemblyDescription
+    public sealed class BamAssemblyDescription
     {
         /// <summary>
         /// Construct a new instance, with just a name.

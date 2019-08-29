@@ -35,7 +35,7 @@ namespace Bam.Core
     /// as they are dynamic runtime extensions. This exception type copes with developers
     /// not having all dependencies in order to build a plugin.
     /// </summary>
-    public class UnableToBuildModuleException :
+    public sealed class UnableToBuildModuleException :
         Exception
     {
         /// <summary>

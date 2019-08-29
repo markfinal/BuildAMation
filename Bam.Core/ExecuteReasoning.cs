@@ -33,7 +33,7 @@ namespace Bam.Core
     /// In some build modes, module execution only occurs after evaluation has determined that the module outputs
     /// require building. This class encapsulates the reasoning behind a (re)build of a module.
     /// </summary>
-    public class ExecuteReasoning
+    public sealed class ExecuteReasoning
     {
         /// <summary>
         /// Enumeration defining the different types of module (re)build.

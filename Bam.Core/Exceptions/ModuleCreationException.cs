@@ -32,7 +32,7 @@ namespace Bam.Core
     /// <summary>
     /// Specific exception class to throw when modules fail to create.
     /// </summary>
-    public class ModuleCreationException :
+    public sealed class ModuleCreationException :
         Exception
     {
         /// <summary>

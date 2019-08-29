@@ -32,7 +32,7 @@ namespace Gcc
     /// <summary>
     /// Class representing the preprocessor settings for this version of Gcc
     /// </summary>
-    public class PreprocessorSettings :
+    public sealed class PreprocessorSettings :
         GccCommon.CommonPreprocessorSettings
     {}
 }

@@ -33,7 +33,7 @@ namespace VisualStudioProcessor
     /// Attribute associated with preprocessor defines.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public class PreprocessorDefinesAttribute :
+    public sealed class PreprocessorDefinesAttribute :
         BaseAttribute
     {
         /// <summary>

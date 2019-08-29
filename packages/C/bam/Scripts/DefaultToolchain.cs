@@ -52,7 +52,7 @@ namespace C
         private static readonly System.Collections.Generic.Dictionary<EBit, string> DisambiguousToolchainToUse = new System.Collections.Generic.Dictionary<EBit, string>();
 
         // cache of the tool modules for a particular toolchain
-        private class ToolModules
+        private sealed class ToolModules
         {
             public CompilerTool            c_compiler = null;
             public CompilerTool            cxx_compiler = null;

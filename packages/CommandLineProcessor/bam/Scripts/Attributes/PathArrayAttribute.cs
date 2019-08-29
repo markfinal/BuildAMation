@@ -33,7 +33,7 @@ namespace CommandLineProcessor
     /// Attribute representing an array of paths to convert to command line.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public class PathArrayAttribute :
+    public sealed class PathArrayAttribute :
         BaseAttribute
     {
         /// <summary>

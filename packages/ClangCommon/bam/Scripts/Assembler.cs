@@ -67,7 +67,7 @@ namespace ClangCommon
     /// </summary>
     [C.RegisterAssembler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterAssembler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
-    public class Assembler :
+    public sealed class Assembler :
         AssemblerBase
     {
         public Assembler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));

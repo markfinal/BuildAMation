@@ -1,3 +1,5 @@
+29-Aug-2019 Fixes #589. Sealed classes that are not expected to be derived from.
+
 29-Aug-2019 Fixes #641. BREAKING CHANGE. Replaced ReadOnlyCollections with generic IEnumerable where possible (avoids allocating a new object). The following public APIs have changed:
  - Bam.Core.Graph.EncapsulatingModules
  - Bam.Core.Module.Dependents

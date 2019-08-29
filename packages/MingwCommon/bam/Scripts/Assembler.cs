@@ -33,7 +33,7 @@ namespace MingwCommon
     /// 32-bit Mingw assembler
     /// </summary>
     [C.RegisterAssembler("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public class Assembler32 :
+    public sealed class Assembler32 :
         C.AssemblerTool
     {
         public Assembler32()

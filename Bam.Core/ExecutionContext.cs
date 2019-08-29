@@ -33,7 +33,7 @@ namespace Bam.Core
     /// Each module execution has a copy of an execution context, which holds useful state data about
     /// invoking the execution, and recording the output from the execution.
     /// </summary>
-    public class ExecutionContext
+    public sealed class ExecutionContext
     {
         /// <summary>
         /// Construct an instance of the context.

@@ -33,7 +33,7 @@ namespace XcodeProjectProcessor
     /// Attribute for converting arrays of libraries to Xcode projects
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public class LibraryArrayAttribute :
+    public sealed class LibraryArrayAttribute :
         BaseAttribute
     {
         public LibraryArrayAttribute()

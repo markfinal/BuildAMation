@@ -33,7 +33,7 @@ namespace Bam.Core
     /// Information concerned each .NET framework assembly, including name and
     /// required target framework version.
     /// </summary>
-    public class DotNetAssemblyDescription
+    public sealed class DotNetAssemblyDescription
     {
         /// <summary>
         /// Construct a new instance, including a name.

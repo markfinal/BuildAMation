@@ -35,7 +35,7 @@ namespace Bam.Core
     /// Representation of a single archive file used as part of package download,
     /// specified in the package's definition file.
     /// </summary>
-    public class PackageSource
+    public sealed class PackageSource
     {
         /// <summary>
         /// Create a new package source

@@ -34,7 +34,7 @@ namespace Bam.Core
     /// Utility class wrapping NuGet package information.
     /// Use this to query information regarding the specified NuGet name and version.
     /// </summary>
-    public class NuGetInfo
+    public sealed class NuGetInfo
     {
         private static readonly NuGet.Repositories.NuGetv3LocalRepository repo =
             new NuGet.Repositories.NuGetv3LocalRepository(System.IO.Path.Combine(NuGet.Common.NuGetEnvironment.GetFolderPath(NuGet.Common.NuGetFolderPath.NuGetHome), "packages"));

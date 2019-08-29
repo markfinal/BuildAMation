@@ -99,7 +99,7 @@ namespace VisualCCommon
     /// Class for 32-bit assembler
     /// </summary>
     [C.RegisterAssembler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public class Assembler32 :
+    public sealed class Assembler32 :
         AssemblerBase
     {
         /// <summary>
@@ -120,7 +120,7 @@ namespace VisualCCommon
     /// Class for 64-bit assembler
     /// </summary>
     [C.RegisterAssembler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
-    public class Assembler64 :
+    public sealed class Assembler64 :
         AssemblerBase
     {
         /// <summary>

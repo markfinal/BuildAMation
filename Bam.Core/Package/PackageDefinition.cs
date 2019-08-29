@@ -34,7 +34,7 @@ namespace Bam.Core
     /// Representation of the .xml file required by each Bam package, with methods for reading
     /// and writing them, and inspecting and retrieving data about packages.
     /// </summary>
-    public class PackageDefinition
+    public sealed class PackageDefinition
     {
         private static void
         ValidationCallBack(

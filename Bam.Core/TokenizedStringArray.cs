@@ -141,7 +141,7 @@ namespace Bam.Core
             return base.Contains(item);
         }
 
-        class ParsedTokenizedStringComparer :
+        sealed class ParsedTokenizedStringComparer :
             System.Collections.Generic.IEqualityComparer<TokenizedString>
         {
             bool

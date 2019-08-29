@@ -33,7 +33,7 @@ namespace CommandLineProcessor
     /// Attribute representing a single path to convert to command line.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public class PathAttribute :
+    public sealed class PathAttribute :
         BaseAttribute
     {
         /// <summary>

@@ -33,7 +33,7 @@ namespace Bam.Core
     /// Information concerned each NuGet package, including id and
     /// version.
     /// </summary>
-    public class NuGetPackageDescription
+    public sealed class NuGetPackageDescription
     {
         /// <summary>
         /// Construct a new instance, including an identifier and version, and applicable platforms.

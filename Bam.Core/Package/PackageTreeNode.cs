@@ -33,7 +33,7 @@ namespace Bam.Core
     /// <summary>
     /// Representation of a package within a tree structure.
     /// </summary>
-    public class PackageTreeNode
+    public sealed class PackageTreeNode
     {
         private Array<PackageTreeNode> InternalParents { get; set; } = new Array<PackageTreeNode>();
         private Array<PackageTreeNode> InternalChildren { get; set; } = new Array<PackageTreeNode>();

@@ -32,7 +32,7 @@ namespace Gcc
     /// <summary>
     /// Class representing the linker settings for this version of Gcc
     /// </summary>
-    public class LinkerSettings :
+    public sealed class LinkerSettings :
         GccCommon.CommonLinkerSettings
     {}
 }

@@ -39,7 +39,7 @@ namespace Bam.Core
     /// [rootdir]
     /// where packages are subdirectories in any of those folders.
     /// </summary>
-    public class PackageRepository
+    public sealed class PackageRepository
     {
         private readonly Array<PackageDefinition> packages = new Array<PackageDefinition>();
 

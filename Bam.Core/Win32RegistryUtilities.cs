@@ -105,7 +105,7 @@ namespace Bam.Core
         /// <summary>
         /// Wrapper around Microsoft.Win32.RegistryKey to avoid a public dependency on a NuGet package.
         /// </summary>
-        public class RegKey :
+        public sealed class RegKey :
             System.IDisposable
         {
             private Microsoft.Win32.RegistryKey key;

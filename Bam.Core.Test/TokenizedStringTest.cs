@@ -29,7 +29,7 @@
 #endregion // License
 namespace Bam.Core.Test
 {
-    class TokenizedStringTestModule :
+    sealed class TokenizedStringTestModule :
         Bam.Core.Module
     {
         protected override void
@@ -49,7 +49,7 @@ namespace Bam.Core.Test
 
     [NUnit.Framework.TestFixture(Author="Mark Final")]
     [NUnit.Framework.TestOf(typeof(Bam.Core.TokenizedString))]
-    public class TokenizedStringTest
+    public sealed class TokenizedStringTest
     {
         private Bam.Core.Graph graph;
         public static Bam.Core.Module testModule = null; // workaround for not being able to use Graph.FindReferencedModule

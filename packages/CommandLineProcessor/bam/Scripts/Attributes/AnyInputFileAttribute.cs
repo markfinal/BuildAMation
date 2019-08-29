@@ -33,7 +33,7 @@ namespace CommandLineProcessor
     /// Attribute representing a wildcarded input file set.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)] // only ever one wildcard for files
-    public class AnyInputFileAttribute :
+    public sealed class AnyInputFileAttribute :
         InputPathsAttribute
     {
         /// <summary>

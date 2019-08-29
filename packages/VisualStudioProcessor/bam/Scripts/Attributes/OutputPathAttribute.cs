@@ -33,7 +33,7 @@ namespace VisualStudioProcessor
     /// Attribute representing output paths
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = true)] // because there may be multiple outputs
-    public class OutputPathAttribute :
+    public sealed class OutputPathAttribute :
         BaseAttribute
     {
         /// <summary>

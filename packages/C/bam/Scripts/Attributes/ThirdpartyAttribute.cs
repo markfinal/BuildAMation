@@ -33,7 +33,7 @@ namespace C
     /// Attribute applied to modules that are 'thirdparty' (i.e. not written by you)
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]
-    public class ThirdpartyAttribute :
+    public sealed class ThirdpartyAttribute :
         System.Attribute
     {
         /// <summary>

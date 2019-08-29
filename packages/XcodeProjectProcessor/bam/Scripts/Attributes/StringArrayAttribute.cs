@@ -33,7 +33,7 @@ namespace XcodeProjectProcessor
     /// Attribute representing an array of strings in Xcode.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public class StringArrayAttribute :
+    public sealed class StringArrayAttribute :
         BaseAttribute
     {
         /// <summary>

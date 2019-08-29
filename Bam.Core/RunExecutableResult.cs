@@ -32,7 +32,7 @@ namespace Bam.Core
     /// <summary>
     /// Result of running and executable, successfully or not.
     /// </summary>
-    public class RunExecutableResult
+    public sealed class RunExecutableResult
     {
         /// <summary>
         /// Create an instance of the result of running an executable.

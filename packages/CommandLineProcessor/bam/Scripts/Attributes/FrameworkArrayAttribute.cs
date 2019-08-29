@@ -33,7 +33,7 @@ namespace CommandLineProcessor
     /// Attribute representing a settings property that is an array of macOS frameworks
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public class FrameworkArrayAttribute :
+    public sealed class FrameworkArrayAttribute :
         BaseAttribute
     {
         /// <summary>

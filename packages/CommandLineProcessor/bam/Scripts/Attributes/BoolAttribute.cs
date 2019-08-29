@@ -33,7 +33,7 @@ namespace CommandLineProcessor
     /// Attribute representing a Boolean settings property for command line conversion.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public class BoolAttribute :
+    public sealed class BoolAttribute :
         BaseAttribute
     {
         /// <summary>

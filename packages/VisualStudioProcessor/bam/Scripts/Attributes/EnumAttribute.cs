@@ -33,7 +33,7 @@ namespace VisualStudioProcessor
     /// Attribute for enum settings properties.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
-    public class EnumAttribute :
+    public sealed class EnumAttribute :
         BaseAttribute
     {
         /// <summary>

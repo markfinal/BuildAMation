@@ -32,7 +32,7 @@ namespace Bam.Core
     /// <summary>
     /// Exception representing unspecified pathkeys for an input modules.
     /// </summary>
-    public class UnspecifiedInputModulePathException :
+    public sealed class UnspecifiedInputModulePathException :
         Exception
     {
         /// <summary>

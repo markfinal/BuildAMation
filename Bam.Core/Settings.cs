@@ -54,12 +54,12 @@ namespace Bam.Core
             this._Properties = FindProperties(this.GetType());
         }
 
-        private class InterfaceData
+        private sealed class InterfaceData
         {
             public System.Reflection.MethodInfo defaultsMethod;
         }
 
-        private class SettingsInterfaces
+        private sealed class SettingsInterfaces
         {
             public Bam.Core.Array<InterfaceData> Data = new Array<InterfaceData>();
         }

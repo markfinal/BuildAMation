@@ -44,7 +44,7 @@ namespace C
     /// </summary>
     public abstract class SuppressWarningsDelegate
     {
-        private class Conditions
+        private sealed class Conditions
         {
             private readonly ToolchainVersion minimum_compiler_version;
             private readonly ToolchainVersion maximum_compiler_version;

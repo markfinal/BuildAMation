@@ -33,7 +33,7 @@ namespace VisualStudioProcessor
     /// Attribute associated with an array of strings.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public class StringArrayAttribute :
+    public sealed class StringArrayAttribute :
         BaseAttribute
     {
         /// <summary>

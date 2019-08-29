@@ -32,7 +32,7 @@ namespace Bam.Core
     /// <summary>
     /// Store data for each timing profile.
     /// </summary>
-    public class TimeProfile
+    public sealed class TimeProfile
     {
         static TimeProfile()
         {

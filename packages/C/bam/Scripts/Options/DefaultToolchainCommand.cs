@@ -32,7 +32,7 @@ namespace C.Options
     /// <summary>
     /// Command line option to select the toolchain to use. Either as a choice, or to resolve ambiguity.
     /// </summary>
-    public class DefaultToolchainCommand :
+    public sealed class DefaultToolchainCommand :
         Bam.Core.IStringCommandLineArgument
     {
         string Bam.Core.ICommandLineArgument.LongName => "--C.toolchain";

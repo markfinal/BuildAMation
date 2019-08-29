@@ -35,7 +35,7 @@ namespace Bam.Core
     /// Inspect the current configuration state of BuildAMation (Bam), such as the version number,
     /// where Bam is being executed, which version of the .NET framework is being targeted.
     /// </summary>
-    public class BamState :
+    public sealed class BamState :
         ISemanticVersion
     {
         private static void

@@ -102,7 +102,7 @@ namespace VisualCCommon
     /// Class representing a 32-bit preprocessor.
     /// </summary>
     [C.RegisterPreprocessor("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public class Preprocessor32 :
+    public sealed class Preprocessor32 :
         PreprocessorBase
     {
         /// <summary>
@@ -123,7 +123,7 @@ namespace VisualCCommon
     /// Class representing a 64-bit preprocessor.
     /// </summary>
     [C.RegisterPreprocessor("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
-    public class Preprocessor64 :
+    public sealed class Preprocessor64 :
         PreprocessorBase
     {
         /// <summary>
