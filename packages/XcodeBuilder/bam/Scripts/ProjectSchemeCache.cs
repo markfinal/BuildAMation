@@ -46,7 +46,7 @@ namespace XcodeBuilder
             this.Project = project;
             this.SchemeDocuments = new System.Collections.Generic.Dictionary<string, System.Xml.XmlDocument>();
 
-            foreach (var target in project.GetTargetList())
+            foreach (var target in project.TargetList)
             {
                 var schemeFilename = $"{target.Name}.xcscheme";
                 var schemePathname = $"{project.ProjectDir}/xcuserdata/{System.Environment.GetEnvironmentVariable("USER")}.xcuserdatad/xcschemes/{schemeFilename}";

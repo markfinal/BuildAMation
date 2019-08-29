@@ -1,3 +1,17 @@
+29-Aug-2019 Fixes #641. BREAKING CHANGE. Replaced ReadOnlyCollections with generic IEnumerable where possible (avoids allocating a new object). The following public APIs have changed:
+ - Bam.Core.Graph.EncapsulatingModules
+ - Bam.Core.Module.Dependents
+ - Bam.Core.Module.Dependees
+ - Bam.Core.Module.Requirements
+ - Bam.Core.Module.Requirees
+ - Bam.Core.Module.Children
+ - C.CModule.FlattenHierarchicalFileList (protected)
+ - C.CModule.OrderLibrariesWithDecreasingDependencies (protected)
+ - C.CModuleContainer.Children
+ - C.IForwardedLibraries.ForwardedLibraries
+ - C.DynamicLibrary.Source
+ - XcodeBuilder.Project.GetTargetList function repurposed as TargetList property.
+
 29-Aug-2019 Fixes #649. Reduced overhead of checking the Bam.Core.MacroList through the Dict property (no allocations now).
 
 29-Aug-2019 Fixes #597. BREAKING CHANGE. Deprecated classes and functions that generate a *Container in favour of *Collection. This seems to be the more C# way.
@@ -84,15 +98,6 @@ Interfaces that can be delta'd (e.g. compiler interfaces used in project generat
 20-Aug-2019 Fixes #644. Added missing toolchain versions for Xcode 11 and VisualStudio 2019.
 
 19-Aug-2019 Fixes #625. BREAKING CHANGE. Bam.Core.Module.InputModules renamed to InputModulePaths, and the KeyValuePair argument replaced with a (Bam.Core.Module module, string pathKey) tuple to simplify the API. Added Bam.Core.UnspecifiedInputModulePathException to be thrown when a suitable override for InputModulePaths has not been provided in a derivation of Module.
-
-19-Aug-2019 Fixes #641. BREAKING CHANGE. Replaced ReadOnlyCollections with generic IEnumerable where possible (avoids allocating a new object). The following public APIs have changed:
- - Bam.Core.Graph.EncapsulatingModules
- - Bam.Core.Module.Dependents
- - Bam.Core.Module.Dependees
- - Bam.Core.Module.Requirements
- - Bam.Core.Module.Requirees
- - Bam.Core.Module.Children
- - C.CModule.FlattenHierarchicalFileList (protected)
 
 18-Aug-2019 Fixes #643. Added --keepgoing (default = False) command line option to the Python test harness. This changes the default behaviour to run through all tests and then report a summary. By default, it now aborts when the first error is encountered. This should allow continuous integration to report systemic errors much faster.
 

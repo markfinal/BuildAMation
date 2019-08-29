@@ -106,7 +106,7 @@ namespace C
         /// <summary>
         /// List of source modules
         /// </summary>
-        public System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> Source => this.sourceModules.ToReadOnlyCollection();
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module> Source => this.sourceModules;
 
         /// <summary>
         /// Create a source collection for C compilation
@@ -298,7 +298,7 @@ namespace C
             base.ExecuteInternal(context);
         }
 
-        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps.ToReadOnlyCollection();
+        System.Collections.Generic.IEnumerable<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps;
 
         SharedObjectSymbolicLink IDynamicLibrary.LinkerNameSymbolicLink => this.linkerNameSymLink;
         /// <summary>

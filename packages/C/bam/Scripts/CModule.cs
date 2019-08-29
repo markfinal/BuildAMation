@@ -208,7 +208,7 @@ namespace C
         /// </summary>
         /// <param name="libs">Array of modules to sort.</param>
         /// <returns>List of Modules in decreasing order of dependencies</returns>
-        protected static System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module>
+        protected static System.Collections.Generic.IEnumerable<Bam.Core.Module>
         OrderLibrariesWithDecreasingDependencies(
             Bam.Core.Array<Bam.Core.Module> libs)
         {
@@ -241,7 +241,7 @@ namespace C
                     ++i;
                 }
             }
-            return flatLibs.ToReadOnlyCollection();
+            return flatLibs;
         }
 
         /// <summary>

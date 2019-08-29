@@ -163,8 +163,7 @@ namespace XcodeBuilder
         /// Get the list of Targets
         /// </summary>
         /// <returns></returns>
-        public System.Collections.Generic.IReadOnlyList<Target>
-        GetTargetList() => this.Targets.Values.ToList();
+        public System.Collections.Generic.IEnumerable<Target> TargetList => this.Targets.Values;
 
         private Bam.Core.Array<FileReference> FileReferences { get; set; }
         private Bam.Core.Array<BuildFile> BuildFiles { get; set; }

@@ -38,6 +38,6 @@ namespace C
         /// Collection of Modules that will need forwarding when the Module implementing this
         /// interface is linked.
         /// </summary>
-        System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> ForwardedLibraries { get; }
+        System.Collections.Generic.IEnumerable<Bam.Core.Module> ForwardedLibraries { get; }
     }
 }

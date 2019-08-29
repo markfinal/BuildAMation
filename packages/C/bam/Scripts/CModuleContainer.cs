@@ -274,9 +274,9 @@ namespace C
         // note that this is 'new' to hide the version in Bam.Core.Module
         // C# does not support return type covariance (https://en.wikipedia.org/wiki/Covariant_return_type)
         /// <summary>
-        /// Return a read-only collection of the children of this collection, using the ChildModuleType generic type for each module in the collection.
+        /// Return an enumerable of the children of this collection, using the ChildModuleType generic type for each module in the collection.
         /// </summary>
-        public new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType> Children => new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType>(base.Children.Select(item => item as ChildModuleType).ToList());
+        public new System.Collections.Generic.IEnumerable<ChildModuleType> Children => base.Children.Select(item => item as ChildModuleType);
 
         /// <summary>
         /// Return a list of all child modules whose input path contains the specified filename.
