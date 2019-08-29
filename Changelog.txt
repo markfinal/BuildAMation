@@ -1,3 +1,5 @@
+29-Aug-2019 Fixes #649. Reduced overhead of checking the Bam.Core.MacroList through the Dict property (no allocations now).
+
 29-Aug-2019 Fixes #597. BREAKING CHANGE. Deprecated classes and functions that generate a *Container in favour of *Collection. This seems to be the more C# way.
 Classes renamed:
 * C.CCompilableModuleContainer -> C.CCompilableModuleCollection

@@ -42,7 +42,7 @@ namespace Bam.Core
         public MacroList(
             string owner = null)
         {
-            this.DictInternal = new System.Collections.Generic.Dictionary<string, TokenizedString>();
+            this.EditableDict = new System.Collections.Generic.Dictionary<string, TokenizedString>();
             this.Owner = owner;
         }
 
@@ -50,7 +50,10 @@ namespace Bam.Core
 
         private static string
         FormattedKey(
-            string key) => $"{TokenizedString.TokenPrefix}{key}{TokenizedString.TokenSuffix}";
+            string key)
+        {
+            return $"{TokenizedString.TokenPrefix}{key}{TokenizedString.TokenSuffix}";
+        }
 
         /// <summary>
         /// Get or set the macro defined by the given key.
@@ -64,7 +67,7 @@ namespace Bam.Core
                 if (!this.Dict.ContainsKey(fKey))
                 {
                     var message = new System.Text.StringBuilder();
-                    var owningModule = this.Owner != null ? this.Owner : "unknown";
+                    var owningModule = this.Owner ?? "unknown";
                     message.AppendLine(
                         $"Module '{owningModule}', does not include a macro with the key '{fKey}'. Available macros are (*=not yet parsed):"
                     );
@@ -87,7 +90,7 @@ namespace Bam.Core
             }
             set
             {
-                this.DictInternal[FormattedKey(key)] = value;
+                this.EditableDict[FormattedKey(key)] = value;
             }
         }
 
@@ -117,7 +120,7 @@ namespace Bam.Core
                     $"Circular reference; cannnot assign macro '{key}' when it is referred to in TokenizedString or one of it's positional strings"
                 );
             }
-            this.DictInternal[FormattedKey(key)] = value;
+            this.EditableDict[FormattedKey(key)] = value;
         }
 
         /// <summary>
@@ -128,7 +131,10 @@ namespace Bam.Core
         public void
         Add(
             string key,
-            string value) => this.Add(key, TokenizedString.Create(value, null));
+            string value)
+        {
+            this.Add(key, TokenizedString.Create(value, null));
+        }
 
         /// <summary>
         /// Add a verbatim macro.
@@ -138,7 +144,10 @@ namespace Bam.Core
         public void
         AddVerbatim(
             string key,
-            string value) => this.Add(key, TokenizedString.CreateVerbatim(value));
+            string value)
+        {
+            this.Add(key, TokenizedString.CreateVerbatim(value));
+        }
 
         /// <summary>
         /// Remove the macro associated with the provided key.
@@ -146,15 +155,20 @@ namespace Bam.Core
         /// <param name="key">Key.</param>
         public void
         Remove(
-            string key) => this.DictInternal.Remove(FormattedKey(key));
+            string key)
+        {
+            this.EditableDict.Remove(FormattedKey(key));
+        }
 
-        private System.Collections.Generic.Dictionary<string, TokenizedString> DictInternal { get; set; }
+        private System.Collections.Generic.Dictionary<string, TokenizedString> EditableDict { get; set; }
 
         /// <summary>
-        /// Obtain a read-only instance of the key-value pair dictionary.
+        /// Obtain a read only view of the key-value pair dictionary.
+        /// Note that the keys have been formatted, so that they are pre- and post-pended with the Token prefix and suffix
+        /// so any lookup must use these.
         /// </summary>
         /// <value>The dict.</value>
-        public System.Collections.ObjectModel.ReadOnlyDictionary<string, TokenizedString> Dict => new System.Collections.ObjectModel.ReadOnlyDictionary<string, TokenizedString>(this.DictInternal);
+        public System.Collections.Generic.IReadOnlyDictionary<string, TokenizedString> Dict => this.EditableDict;
 
         /// <summary>
         /// Query if the dictionary contains the given key-token.
@@ -162,6 +176,9 @@ namespace Bam.Core
         /// <param name="token">Token (not starting with $( nor ending with )).</param>
         public bool
         Contains(
-            string token) => this.Dict.ContainsKey(FormattedKey(token));
+            string token)
+        {
+            return this.Dict.ContainsKey(FormattedKey(token));
+        }
     }
 }
