@@ -33,10 +33,10 @@ namespace C
     /// Collection of one or more object files assembled from preprocessed assembly.
     /// </summary>
     public class AssembledObjectFileCollection :
-        CCompilableModuleContainer<AssembledObjectFile>
+        CCompilableModuleCollection<AssembledObjectFile>
     {
         /// <summary>
-        /// Initialize the container of assembled object files
+        /// Initialize the collection of assembled object files
         /// </summary>
         protected override void
         Init()

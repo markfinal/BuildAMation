@@ -37,8 +37,8 @@ namespace Test3
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/library2.h");
-            this.CreateCSourceContainer("$(packagedir)/source/library2.c");
+            this.CreateHeaderCollection("$(packagedir)/include/library2.h");
+            this.CreateCSourceCollection("$(packagedir)/source/library2.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
                     if (settings is C.ICommonPreprocessorSettings preprocessor)

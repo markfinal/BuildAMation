@@ -40,8 +40,8 @@ namespace InstallerTest1
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("InstallerTest1: Example C dynamic library");
 
-            this.CreateHeaderContainer("$(packagedir)/source/dynamiclib/*.h");
-            this.CreateCSourceContainer("$(packagedir)/source/dynamiclib/*.cpp");
+            this.CreateHeaderCollection("$(packagedir)/source/dynamiclib/*.h");
+            this.CreateCSourceCollection("$(packagedir)/source/dynamiclib/*.cpp");
 
             this.PublicPatch((settings, appliedTo) =>
             {
@@ -64,8 +64,8 @@ namespace InstallerTest1
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("InstallerTest1: Example C++ dynamic library");
 
-            this.CreateHeaderContainer("$(packagedir)/source/dynamiclib/*.h");
-            this.CreateCxxSourceContainer("$(packagedir)/source/dynamiclib/*.cpp");
+            this.CreateHeaderCollection("$(packagedir)/source/dynamiclib/*.h");
+            this.CreateCxxSourceCollection("$(packagedir)/source/dynamiclib/*.cpp");
 
             this.PublicPatch((settings, appliedTo) =>
             {

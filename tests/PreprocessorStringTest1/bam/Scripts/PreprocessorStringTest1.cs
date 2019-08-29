@@ -38,7 +38,7 @@ namespace PreprocessorStringTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/*.c");
             source.PrivatePatch(settings =>
                 {
                     var preprocessor = settings as C.ICommonPreprocessorSettings;

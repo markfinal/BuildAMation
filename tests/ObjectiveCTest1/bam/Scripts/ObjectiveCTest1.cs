@@ -39,7 +39,7 @@ namespace ObjectiveCTest1
         {
             base.Init();
 
-            var source = this.CreateObjectiveCSourceContainer();
+            var source = this.CreateObjectiveCSourceCollection();
             source.AddFile("$(packagedir)/source/main.m");
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))

@@ -53,7 +53,7 @@ namespace ConfigurationTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/testapp.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/testapp.c");
             this.CompileAndLinkAgainst<ConfigurableLibrary>(source);
         }
     }

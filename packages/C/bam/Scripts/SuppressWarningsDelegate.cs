@@ -193,7 +193,7 @@ namespace C
         }
 
         /// <summary>
-        /// Add suppressions for a path, applied when the toolchain version resides in the specified range. 
+        /// Add suppressions for a path, applied when the toolchain version resides in the specified range.
         /// </summary>
         /// <param name="path">Path to suppress warnings for</param>
         /// <param name="minVersion">Minimum toolchain version</param>
@@ -351,13 +351,13 @@ namespace C
         }
 
         /// <summary>
-        /// Execute the suppression delegate on this container of modules
+        /// Execute the suppression delegate on this collection of modules
         /// </summary>
-        /// <typeparam name="ChildModuleType">Type of Module stored in the container</typeparam>
-        /// <param name="module">Container module to apply to</param>
+        /// <typeparam name="ChildModuleType">Type of Module stored in the collection</typeparam>
+        /// <param name="module">Collection module to apply to</param>
         public void
         Execute<ChildModuleType>(
-            CModuleContainer<ChildModuleType> module) where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
+            CModuleCollection<ChildModuleType> module) where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
         {
             foreach (var item in this.suppressions)
             {
@@ -371,7 +371,7 @@ namespace C
                                 if (null != warning.Value)
                                 {
                                     var compilerUsed = (settings.Module is Bam.Core.IModuleGroup) ?
-                                        (settings.Module as CCompilableModuleContainer<ObjectFile>).Compiler :
+                                        (settings.Module as CCompilableModuleCollection<ObjectFile>).Compiler :
                                         (settings.Module as ObjectFile).Compiler;
                                     if (warning.Value.Match(compilerUsed, sourceItem.BuildEnvironment, (sourceItem as CModule).BitDepth))
                                     {

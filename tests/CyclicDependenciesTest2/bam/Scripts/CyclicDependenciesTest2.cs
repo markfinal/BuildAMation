@@ -37,7 +37,7 @@ namespace CyclicDependenciesTest2
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/lib1.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/lib1.c");
             this.CompileAgainst<Lib2>(source);
         }
     }
@@ -50,7 +50,7 @@ namespace CyclicDependenciesTest2
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/lib2.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/lib2.c");
             this.CompileAgainst<Lib1>(source);
         }
     }
@@ -63,7 +63,7 @@ namespace CyclicDependenciesTest2
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/app.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/app.c");
             this.CompileAndLinkAgainst<Lib1>(source);
             this.CompileAndLinkAgainst<Lib2>(source);
         }

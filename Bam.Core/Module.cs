@@ -373,7 +373,7 @@ namespace Bam.Core
         /// </summary>
         /// <typeparam name="T">Type of the module to clone.</typeparam>
         /// <param name="source">Module to be cloned.</param>
-        /// <param name="parent">Optional parent module for the clone, should it be a child of a container.</param>
+        /// <param name="parent">Optional parent module for the clone, should it be a child of a collection.</param>
         /// <param name="preInitCallback">Optional pre-Init callback to be invoked during creation.</param>
         /// <param name="postInitCallback">Optional post-Init callback to be invoked after Init has returned.</param>
         /// <returns>The cloned module</returns>

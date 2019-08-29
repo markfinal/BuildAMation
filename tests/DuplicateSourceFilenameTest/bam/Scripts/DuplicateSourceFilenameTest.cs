@@ -38,10 +38,10 @@ namespace DuplicateSourceFilenameTest
         {
             base.Init();
 
-            var headers = this.CreateHeaderContainer("$(packagedir)/source/A/*.h");
+            var headers = this.CreateHeaderCollection("$(packagedir)/source/A/*.h");
             headers.AddFiles("$(packagedir)/source/B/*.h");
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/*.c");
             source.AddFiles("$(packagedir)/source/A/*.c");
             source.AddFiles("$(packagedir)/source/B/*.c");
         }

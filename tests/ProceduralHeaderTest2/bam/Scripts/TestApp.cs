@@ -37,8 +37,8 @@ namespace ProceduralHeaderTest2
         {
             base.Init();
 
-            var headers = this.CreateHeaderContainer();
-            var source = this.CreateCSourceContainer("$(packagedir)/source/testapp/main.c");
+            var headers = this.CreateHeaderCollection();
+            var source = this.CreateCSourceCollection("$(packagedir)/source/testapp/main.c");
 
             var genHeader = Bam.Core.Graph.Instance.FindReferencedModule<GenHeader>();
             source.DependsOn(genHeader);
@@ -62,8 +62,8 @@ namespace ProceduralHeaderTest2
         {
             base.Init();
 
-            var headers = this.CreateHeaderContainer("$(packagedir)/include/*.h");
-            var source = this.CreateCSourceContainer("$(packagedir)/source/library/lib.c");
+            var headers = this.CreateHeaderCollection("$(packagedir)/include/*.h");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/library/lib.c");
 
             var genHeader = Bam.Core.Graph.Instance.FindReferencedModule<GenHeader>();
             source.DependsOn(genHeader);
@@ -88,7 +88,7 @@ namespace ProceduralHeaderTest2
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/testapp2/main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/testapp2/main.c");
             this.CompileAndLinkAgainst<LibraryUsingGeneratedHeader>(source);
         }
     }

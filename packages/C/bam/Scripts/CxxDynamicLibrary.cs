@@ -105,19 +105,36 @@ namespace C.Cxx
         }
 
         /// <summary>
-        /// Create a container whose matching source compiles against C.
+        /// Create a collection whose matching source compiles against C.
         /// </summary>
-        /// <returns>The C source container.</returns>
+        /// <returns>The C source collection.</returns>
         /// <param name="wildcardPath">Wildcard path.</param>
         /// <param name="macroModuleOverride">Macro module override.</param>
         /// <param name="filter">Filter.</param>
+        [System.Obsolete("Please use CreateCSourceCollection instead", true)]
         public sealed override CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var collection = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
+            return this.CreateCSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a collection whose matching source compiles against C.
+        /// </summary>
+        /// <returns>The C source collection.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
+        public sealed override CObjectFileCollection
+        CreateCSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var collection = base.CreateCSourceCollection(wildcardPath, macroModuleOverride, filter);
             collection.PrivatePatch(settings =>
             {
                 var preprocessor = settings as C.ICommonPreprocessorSettings;
@@ -128,19 +145,36 @@ namespace C.Cxx
         }
 
         /// <summary>
-        /// Create a container whose matching source compiles against C++.
+        /// Create a collection whose matching source compiles against C++.
         /// </summary>
-        /// <returns>The cxx source container.</returns>
+        /// <returns>The cxx source collection.</returns>
         /// <param name="wildcardPath">Wildcard path.</param>
         /// <param name="macroModuleOverride">Macro module override.</param>
         /// <param name="filter">Filter.</param>
+        [System.Obsolete("Please use CreateCxxSourceCollection instead", true)]
         public sealed override Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var collection = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
+            return this.CreateCxxSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a collection whose matching source compiles against C++.
+        /// </summary>
+        /// <returns>The cxx source collection.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
+        public sealed override Cxx.ObjectFileCollection
+        CreateCxxSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var collection = base.CreateCxxSourceCollection(wildcardPath, macroModuleOverride, filter);
             collection.PrivatePatch(settings =>
             {
                 var preprocessor = settings as C.ICommonPreprocessorSettings;
@@ -232,12 +266,12 @@ namespace C.Cxx
         }
 
         /// <summary>
-        /// Extend a container of C++ object files with another, potentially from another module. Note that module types must match.
+        /// Extend a collection of C++ object files with another, potentially from another module. Note that module types must match.
         /// Private patches are inherited.
         /// Public patches are both used internally, and also forwarded onto any callers of this module.
         /// </summary>
-        /// <typeparam name="DependentModule">Container module type to embed into the specified container.</typeparam>
-        /// <param name="affectedSource">Container to be extended.</param>
+        /// <typeparam name="DependentModule">Collection module type to embed into the specified collection.</typeparam>
+        /// <param name="affectedSource">Collection to be extended.</param>
         public void
         ExtendSourcePublicly<DependentModule>(
             ObjectFileCollection affectedSource) where DependentModule : ObjectFileCollection, new()

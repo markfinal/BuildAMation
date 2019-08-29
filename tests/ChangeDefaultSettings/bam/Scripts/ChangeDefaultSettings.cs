@@ -78,7 +78,7 @@ namespace ChangeDefaultSettings
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            this.CreateCSourceCollection("$(packagedir)/source/*.c");
         }
     }
 }

@@ -37,7 +37,7 @@ namespace DoNotCompileTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/*.c");
 
             // impl.c is #included into main.c, so should not be compiled
             // but should appear in IDEs
@@ -54,7 +54,7 @@ namespace DoNotCompileTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/*.c");
 
             // impl.c is #included into library.c, so should not be compiled
             // but should appear in IDEs

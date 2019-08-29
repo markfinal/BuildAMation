@@ -40,8 +40,8 @@ namespace Test13
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test13: Example dynamic library A");
 
-            this.CreateHeaderContainer("$(packagedir)/include/dynamicLibraryA.h");
-            this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryA.c");
+            this.CreateHeaderCollection("$(packagedir)/include/dynamicLibraryA.h");
+            this.CreateCSourceCollection("$(packagedir)/source/dynamicLibraryA.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
                     if (settings is C.ICommonPreprocessorSettings preprocessor)
@@ -63,8 +63,8 @@ namespace Test13
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test13: Example dynamic library B");
 
-            this.CreateHeaderContainer("$(packagedir)/include/dynamicLibraryB.h");
-            this.CreateCSourceContainer("$(packagedir)/source/dynamicLibraryB.c");
+            this.CreateHeaderCollection("$(packagedir)/include/dynamicLibraryB.h");
+            this.CreateCSourceCollection("$(packagedir)/source/dynamicLibraryB.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
                     if (settings is C.ICommonPreprocessorSettings preprocessor)
@@ -85,7 +85,7 @@ namespace Test13
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/main.c");
 
             this.PrivatePatch(settings =>
                 {

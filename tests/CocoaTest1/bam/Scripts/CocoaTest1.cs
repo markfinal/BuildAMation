@@ -38,7 +38,7 @@ namespace CocoaTest1
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/library.c");
+            this.CreateCSourceCollection("$(packagedir)/source/library.c");
         }
     }
 
@@ -51,7 +51,7 @@ namespace CocoaTest1
         {
             base.Init();
 
-            this.CreateObjectiveCSourceContainer("$(packagedir)/source/main.m");
+            this.CreateObjectiveCSourceCollection("$(packagedir)/source/main.m");
 
             this.LinkAgainst<CLibrary>();
 

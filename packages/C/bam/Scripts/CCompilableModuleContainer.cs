@@ -30,11 +30,21 @@
 namespace C
 {
     /// <summary>
-    /// Base class for containers of homogenous object files. Provides methods that automatically
+    /// Base class for a collection of homogenous object files. Provides methods that automatically
     /// generate modules of the correct type given the source paths.
     /// </summary>
+    [System.Obsolete("Please use CCompilableModuleCollection instead", true)]
     public abstract class CCompilableModuleContainer<ChildModuleType> :
-        CModuleContainer<ChildModuleType>
+        CCompilableModuleCollection<ChildModuleType>
+        where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
+    { }
+
+    /// <summary>
+    /// Base class for a collection of homogenous object files. Provides methods that automatically
+    /// generate modules of the correct type given the source paths.
+    /// </summary>
+    public abstract class CCompilableModuleCollection<ChildModuleType> :
+        CModuleCollection<ChildModuleType>
         where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
     {
         /// <summary>

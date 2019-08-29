@@ -37,8 +37,8 @@ namespace Test2
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/library.h");
-            this.CreateCSourceContainer("$(packagedir)/source/library.c");
+            this.CreateHeaderCollection("$(packagedir)/include/library.h");
+            this.CreateCSourceCollection("$(packagedir)/source/library.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
                     if (settings is C.ICommonPreprocessorSettings preprocessor)
@@ -57,7 +57,7 @@ namespace Test2
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/application.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/application.c");
 
             this.CompileAndLinkAgainst<Library>(source);
             this.CompileAndLinkAgainst<Test3.Library2>(source);

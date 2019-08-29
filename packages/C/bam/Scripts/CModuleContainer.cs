@@ -31,10 +31,20 @@ using System.Linq;
 namespace C
 {
     /// <summary>
-    /// Base class for containers of C files, be they compilable source or header files. Provides methods that automatically
+    /// Base class for collections of C files, be they compilable source or header files. Provides methods that automatically
     /// generate modules of the correct type given the source paths.
     /// </summary>
+    [System.Obsolete("Use CModuleCollection instead", true)]
     public abstract class CModuleContainer<ChildModuleType> :
+        CModuleCollection<ChildModuleType>
+        where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
+    { }
+
+    /// <summary>
+    /// Base class for collections of C files, be they compilable source or header files. Provides methods that automatically
+    /// generate modules of the correct type given the source paths.
+    /// </summary>
+    public abstract class CModuleCollection<ChildModuleType> :
         CModule, // TODO: should this be here? it has no headers, nor version number
         Bam.Core.IModuleGroup,
         IAddFiles
@@ -82,7 +92,7 @@ namespace C
         }
 
         /// <summary>
-        /// Add a single object file, given the source path, to the container. Path must resolve to a single file.
+        /// Add a single object file, given the source path, to the collection. Path must resolve to a single file.
         /// If the path contains a wildcard (*) character, an exception is thrown.
         /// </summary>
         /// <returns>The object file module, in order to manage patches.</returns>
@@ -130,7 +140,7 @@ namespace C
         }
 
         /// <summary>
-        /// Add a single object file, given the source path, to the container. Path must resolve to a single file.
+        /// Add a single object file, given the source path, to the collection. Path must resolve to a single file.
         /// </summary>
         /// <returns>The object file module, in order to manage patches.</returns>
         /// <param name="path">Path.</param>
@@ -214,22 +224,22 @@ namespace C
         }
 
         /// <summary>
-        /// Take a container of source, and clone each of its children and embed them into a container of the same type.
+        /// Take a collection of source, and clone each of its children and embed them into a collection of the same type.
         /// This is a mechanism for essentially embedding the object files that would be in a static library into a dynamic
         /// library in a cross-platform way.
-        /// In the clone, private patches are copied both from the container, and also from each child in turn.
+        /// In the clone, private patches are copied both from the collection, and also from each child in turn.
         /// No use of any public patches is made here.
         /// </summary>
-        /// <param name="otherSource">The container of object files to embed into the current container.</param>
+        /// <param name="otherSource">The collection of object files to embed into the current collection.</param>
         public void
         ExtendWith(
-            CModuleContainer<ChildModuleType> otherSource)
+            CModuleCollection<ChildModuleType> otherSource)
         {
             foreach (var child in otherSource.Children)
             {
                 var clonedChild = Bam.Core.Module.CloneWithPrivatePatches(child, this);
 
-                // attach the cloned object file into the container so parentage is clear for macros
+                // attach the cloned object file into the collection so parentage is clear for macros
                 (clonedChild as Bam.Core.IChildModule).Parent = this;
                 this.children.Add(clonedChild);
                 this.DependsOn(clonedChild);
@@ -256,7 +266,7 @@ namespace C
                 {
                     throw new Bam.Core.Exception(
                         new System.NotImplementedException(),
-                        $"Container does not include objects implementing the interface '{typeof(IRequiresSourceModule).ToString()}'");
+                        $"Collection does not include objects implementing the interface '{typeof(IRequiresSourceModule).ToString()}'");
                 }
             }
         }
@@ -264,7 +274,7 @@ namespace C
         // note that this is 'new' to hide the version in Bam.Core.Module
         // C# does not support return type covariance (https://en.wikipedia.org/wiki/Covariant_return_type)
         /// <summary>
-        /// Return a read-only collection of the children of this container, using the ChildModuleType generic type for each module in the collection.
+        /// Return a read-only collection of the children of this collection, using the ChildModuleType generic type for each module in the collection.
         /// </summary>
         public new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType> Children => new System.Collections.ObjectModel.ReadOnlyCollection<ChildModuleType>(base.Children.Select(item => item as ChildModuleType).ToList());
 

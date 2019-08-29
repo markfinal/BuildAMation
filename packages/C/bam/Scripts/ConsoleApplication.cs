@@ -87,10 +87,10 @@ namespace C
 
                 if (!this.IsPrebuilt)
                 {
-                    var rcContainer = this.CreateWinResourceContainer();
+                    var rcCollection = this.CreateWinResourceCollection();
                     if (this.ThirdpartyWindowsVersionResourcePath != null)
                     {
-                        var versionRC = rcContainer.AddFiles(this.ThirdpartyWindowsVersionResourcePath);
+                        var versionRC = rcCollection.AddFiles(this.ThirdpartyWindowsVersionResourcePath);
                         this.WindowsVersionResource = versionRC[0] as WinResource;
                     }
                     else
@@ -100,7 +100,7 @@ namespace C
                                 module.BinaryModule = this;
                                 module.InputPath = this.CreateTokenizedString("$(packagebuilddir)/$(config)/$(OutputName)_version.rc");
                             });
-                        var versionRC = rcContainer.AddFile(versionSource);
+                        var versionRC = rcCollection.AddFile(versionSource);
                         this.WindowsVersionResource = versionRC;
                     }
                 }
@@ -169,75 +169,143 @@ namespace C
             };
 
         /// <summary>
-        /// Create a container for matching source files, for preprocessed assembly.
+        /// Create a collection for matching source files, for preprocessed assembly.
         /// </summary>
-        /// <returns>The assembled source container.</returns>
+        /// <returns>The assembled source collection.</returns>
         /// <param name="wildcardPath">Wildcard path.</param>
         /// <param name="macroModuleOverride">Macro module override.</param>
         /// <param name="filter">Filter.</param>
+        [System.Obsolete("Please use CreateAssemblerSourceCollection instead", true)]
         public virtual AssembledObjectFileCollection
         CreateAssemblerSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<AssembledObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, null);
+            return this.CreateAssemblerSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a collection for matching source files, for preprocessed assembly.
+        /// </summary>
+        /// <returns>The assembled source collection.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
+        public virtual AssembledObjectFileCollection
+        CreateAssemblerSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var source = this.InternalCreateCollection<AssembledObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, null);
             this.sourceModules.Add(source);
             return source;
         }
 
         /// <summary>
-        /// Create a container for matching source files, to compile as C.
+        /// Create a collection for matching source files, to compile as C.
         /// </summary>
-        /// <returns>The C source container.</returns>
+        /// <returns>The C source collection.</returns>
         /// <param name="wildcardPath">Wildcard path.</param>
         /// <param name="macroModuleOverride">Macro module override.</param>
         /// <param name="filter">Filter.</param>
+        [System.Obsolete("Please use CreateCSourceCollection instead", true)]
         public virtual CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
+            return this.CreateCSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a collection for matching source files, to compile as C.
+        /// </summary>
+        /// <returns>The C source collection.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
+        public virtual CObjectFileCollection
+        CreateCSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
             var applicationPreprocessor = this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) ? this.ConsolePreprocessor : null;
-            var source = this.InternalCreateContainer<CObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, applicationPreprocessor);
+            var source = this.InternalCreateCollection<CObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, applicationPreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
 
         /// <summary>
-        /// Create a container for matching source files, to compile as ObjectiveC.
+        /// Create a collection for matching source files, to compile as ObjectiveC.
         /// </summary>
-        /// <returns>The objective C source container.</returns>
+        /// <returns>The objective C source collection.</returns>
         /// <param name="wildcardPath">Wildcard path.</param>
         /// <param name="macroModuleOverride">Macro module override.</param>
         /// <param name="filter">Filter.</param>
+        [System.Obsolete("Please use CreateObjectiveCSourceCollection instead", true)]
         public C.ObjC.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
+            return this.CreateObjectiveCSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a collection for matching source files, to compile as ObjectiveC.
+        /// </summary>
+        /// <returns>The objective C source collection.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
+        public C.ObjC.ObjectFileCollection
+        CreateObjectiveCSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
             var applicationPreprocessor = this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) ? this.ConsolePreprocessor : null;
-            var source = this.InternalCreateContainer<C.ObjC.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, applicationPreprocessor);
+            var source = this.InternalCreateCollection<C.ObjC.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, applicationPreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
 
         /// <summary>
-        /// Create a container for matching Windows resource files.
+        /// Create a collection for matching Windows resource files.
         /// </summary>
-        /// <returns>The window resource container.</returns>
+        /// <returns>The window resource collection.</returns>
         /// <param name="wildcardPath">Wildcard path.</param>
         /// <param name="macroModuleOverride">Macro module override.</param>
         /// <param name="filter">Filter.</param>
+        [System.Obsolete("Please use CreateWinResourceCollection instead", true)]
         public virtual WinResourceCollection
         CreateWinResourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<WinResourceCollection>(false, wildcardPath, macroModuleOverride, filter);
+            return this.CreateWinResourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a collection for matching Windows resource files.
+        /// </summary>
+        /// <returns>The window resource collection.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
+        public virtual WinResourceCollection
+        CreateWinResourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var source = this.InternalCreateCollection<WinResourceCollection>(false, wildcardPath, macroModuleOverride, filter);
             this.sourceModules.Add(source);
             return source;
         }
@@ -421,18 +489,18 @@ namespace C
         }
 
         /// <summary>
-        /// Extend a container of C object files with another, potentially from another module. Note that module types must match.
+        /// Extend a collection of C object files with another, potentially from another module. Note that module types must match.
         /// Private patches are inherited.
         /// Public patches are used internally to compile against, but are not exposed further.
         /// Note that the referenced module in DependentModule will have its source files marked as PerformCompilation=false
         /// so that it is not attempted to be built standalone.
         /// </summary>
-        /// <typeparam name="DependentModule">Container module type to embed into the specified container.</typeparam>
-        /// <param name="affectedSource">Container to be extended.</param>
+        /// <typeparam name="DependentModule">Collection module type to embed into the specified collection.</typeparam>
+        /// <param name="affectedSource">Collection to be extended.</param>
         public void
         ExtendSource<DependentModule>(
-            CModuleContainer<ObjectFile> affectedSource)
-            where DependentModule : CModuleContainer<ObjectFile>, new()
+            CModuleCollection<ObjectFile> affectedSource)
+            where DependentModule : CModuleCollection<ObjectFile>, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -440,9 +508,9 @@ namespace C
                 return;
             }
 
-            // as the referenced container of source is to be shoehorned into
-            // this module, make sure that the external container isn't built standalone
-            // note that the referenced container will float to the top of the dependency
+            // as the referenced collection of source is to be shoehorned into
+            // this module, make sure that the external collection isn't built standalone
+            // note that the referenced collection will float to the top of the dependency
             // graph, but just won't do anything
             foreach (var child in dependent.Children)
             {

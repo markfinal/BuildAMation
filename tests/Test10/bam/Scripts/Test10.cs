@@ -37,7 +37,7 @@ namespace Test10
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/stlib.c");
+            this.CreateCSourceCollection("$(packagedir)/source/stlib.c");
         }
     }
 
@@ -52,7 +52,7 @@ namespace Test10
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test10: Example dynamic library");
 
-            this.CreateCSourceContainer("$(packagedir)/source/dylib.c");
+            this.CreateCSourceCollection("$(packagedir)/source/dylib.c");
         }
     }
 
@@ -64,7 +64,7 @@ namespace Test10
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/standaloneapp.c");
+            this.CreateCSourceCollection("$(packagedir)/source/standaloneapp.c");
 
             this.LinkAgainst<MyStaticLibrary>();
         }
@@ -78,7 +78,7 @@ namespace Test10
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/dlldependentapp.c");
+            this.CreateCSourceCollection("$(packagedir)/source/dlldependentapp.c");
 
             this.PrivatePatch(settings =>
                 {

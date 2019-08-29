@@ -37,8 +37,8 @@ namespace PublishingTest1
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/source/dynamiclib.h");
-            this.CreateCSourceContainer("$(packagedir)/source/dynamiclib.c");
+            this.CreateHeaderCollection("$(packagedir)/source/dynamiclib.h");
+            this.CreateCSourceCollection("$(packagedir)/source/dynamiclib.c");
         }
     }
 
@@ -50,7 +50,7 @@ namespace PublishingTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/main.c");
             this.CompileAndLinkAgainst<SimpleDynamicLib>(source);
 
             if (this.Linker is GccCommon.LinkerBase)

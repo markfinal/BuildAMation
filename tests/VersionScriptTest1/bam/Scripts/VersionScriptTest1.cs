@@ -38,7 +38,7 @@ namespace VersionScriptTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/application/main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/application/main.c");
             this.CompileAndLinkAgainst<Library>(source);
 
             this.PrivatePatch(settings =>
@@ -59,7 +59,7 @@ namespace VersionScriptTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/library/library.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/library/library.c");
             source.PrivatePatch(settings =>
                 {
                     // make everything visible

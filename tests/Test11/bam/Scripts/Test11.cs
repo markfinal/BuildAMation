@@ -38,7 +38,7 @@ namespace Test11
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/main.c");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 source.AddFile("$(packagedir)/source/win/win.c");

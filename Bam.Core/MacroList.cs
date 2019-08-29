@@ -30,7 +30,7 @@
 namespace Bam.Core
 {
     /// <summary>
-    /// Container of key-values pairs representing macro replacement in strings (usually paths)
+    /// Collection of key-values pairs representing macro replacement in strings (usually paths)
     /// </summary>
     public sealed class MacroList
     {

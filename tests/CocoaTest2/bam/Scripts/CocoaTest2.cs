@@ -38,7 +38,7 @@ namespace CocoaTest2
         {
             base.Init();
 
-            this.CreateObjectiveCSourceContainer("$(packagedir)/source/main.m");
+            this.CreateObjectiveCSourceCollection("$(packagedir)/source/main.m");
 
             this.PrivatePatch(settings =>
                 {

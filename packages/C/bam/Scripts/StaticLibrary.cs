@@ -91,91 +91,176 @@ namespace C
         System.Collections.ObjectModel.ReadOnlyCollection<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps.ToReadOnlyCollection();
 
         /// <summary>
-        /// Create a container for assembler
+        /// Create a collection for assembler
         /// </summary>
         /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
         /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
         /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
         /// <returns></returns>
+        [System.Obsolete("Please use CreateAssemblerSourceCollection instead", true)]
         public AssembledObjectFileCollection
         CreateAssemblerSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<AssembledObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
-            this.sourceModules.Add(source);
-            return source;
+            return this.CreateAssemblerSourceCollection(wildcardPath, macroModuleOverride, filter);
         }
 
         /// <summary>
-        /// Create a container for C source
+        /// Create a collection for assembler
         /// </summary>
         /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
         /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
         /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
         /// <returns></returns>
+        public AssembledObjectFileCollection
+        CreateAssemblerSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var source = this.InternalCreateCollection<AssembledObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
+            this.sourceModules.Add(source);
+            return source;
+        }
+
+        /// <summary>
+        /// Create a collection for C source
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
+        /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
+        /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
+        /// <returns></returns>
+        [System.Obsolete("Please use CreateCSourceCollection instead", true)]
         public CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<CObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
-            this.sourceModules.Add(source);
-            return source;
+            return this.CreateCSourceCollection(wildcardPath, macroModuleOverride, filter);
         }
 
         /// <summary>
-        /// Create a container for C++ source
+        /// Create a collection for C source
         /// </summary>
         /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
         /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
         /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
         /// <returns></returns>
+        public CObjectFileCollection
+        CreateCSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var source = this.InternalCreateCollection<CObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
+            this.sourceModules.Add(source);
+            return source;
+        }
+
+        /// <summary>
+        /// Create a collection for C++ source
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
+        /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
+        /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
+        /// <returns></returns>
+        [System.Obsolete("Please use CreateCxxSourceCollection instead", true)]
         public Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<Cxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
-            this.sourceModules.Add(source);
-            return source;
+            return this.CreateCxxSourceCollection(wildcardPath, macroModuleOverride, filter);
         }
 
         /// <summary>
-        /// Create a container for ObjectiveC source
+        /// Create a collection for C++ source
         /// </summary>
         /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
         /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
         /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
         /// <returns></returns>
+        public Cxx.ObjectFileCollection
+        CreateCxxSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var source = this.InternalCreateCollection<Cxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
+            this.sourceModules.Add(source);
+            return source;
+        }
+
+        /// <summary>
+        /// Create a collection for ObjectiveC source
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
+        /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
+        /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
+        /// <returns></returns>
+        [System.Obsolete("Please use CreateObjectiveCSourceCollection instead", true)]
         public C.ObjC.ObjectFileCollection
         CreateObjectiveCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<C.ObjC.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
-            this.sourceModules.Add(source);
-            return source;
+            return this.CreateObjectiveCSourceCollection(wildcardPath, macroModuleOverride, filter);
         }
 
         /// <summary>
-        /// Create a container for ObjectiveC++ source
+        /// Create a collection for ObjectiveC source
         /// </summary>
         /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
         /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
         /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
         /// <returns></returns>
+        public C.ObjC.ObjectFileCollection
+        CreateObjectiveCSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var source = this.InternalCreateCollection<C.ObjC.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
+            this.sourceModules.Add(source);
+            return source;
+        }
+
+        /// <summary>
+        /// Create a collection for ObjectiveC++ source
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
+        /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
+        /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
+        /// <returns></returns>
+        [System.Obsolete("Please use CreateObjectiveCxxSourceCollection instead", true)]
         public C.ObjCxx.ObjectFileCollection
         CreateObjectiveCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var source = this.InternalCreateContainer<C.ObjCxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
+            return this.CreateObjectiveCxxSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a collection for ObjectiveC++ source
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match files. Default to null.</param>
+        /// <param name="macroModuleOverride">Optional module to use as macro sources. Default to null.</param>
+        /// <param name="filter">Optional regular expression to remove matches in the paths found. Default to null.</param>
+        /// <returns></returns>
+        public C.ObjCxx.ObjectFileCollection
+        CreateObjectiveCxxSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var source = this.InternalCreateCollection<C.ObjCxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter);
             this.sourceModules.Add(source);
             return source;
         }

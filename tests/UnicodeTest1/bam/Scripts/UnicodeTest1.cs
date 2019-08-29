@@ -39,7 +39,7 @@ namespace UnicodeTest1
         {
             base.Init();
 
-            this.Source = this.CreateCxxSourceContainer("$(packagedir)/source/main.cpp");
+            this.Source = this.CreateCxxSourceCollection("$(packagedir)/source/main.cpp");
             this.Source.PrivatePatch(settings =>
             {
                 var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;

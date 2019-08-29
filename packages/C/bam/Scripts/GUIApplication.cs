@@ -64,24 +64,41 @@ namespace C
             };
 
         /// <summary>
-        /// Create a source container for C compilation
+        /// Create a source collection for C compilation
         /// </summary>
         /// <param name="wildcardPath"></param>
         /// <param name="macroModuleOverride"></param>
         /// <param name="filter"></param>
         /// <returns></returns>
+        [System.Obsolete("Please use CreateCSourceCollection instead", true)]
         public sealed override CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var container = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
+            return this.CreateCSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a source collection for C compilation
+        /// </summary>
+        /// <param name="wildcardPath"></param>
+        /// <param name="macroModuleOverride"></param>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        public sealed override CObjectFileCollection
+        CreateCSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var collection = base.CreateCSourceCollection(wildcardPath, macroModuleOverride, filter);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                container.PrivatePatch(this.WindowsPreprocessor);
+                collection.PrivatePatch(this.WindowsPreprocessor);
             }
-            return container;
+            return collection;
         }
     }
 }

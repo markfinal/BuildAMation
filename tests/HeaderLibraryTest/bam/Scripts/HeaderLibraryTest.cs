@@ -44,7 +44,7 @@ namespace HeaderLibraryTest
         {
             base.Init();
 
-            var headers = this.CreateHeaderContainer("$(packagedir)/include/unusedmacros.h");
+            var headers = this.CreateHeaderCollection("$(packagedir)/include/unusedmacros.h");
 
             var genHeader = Bam.Core.Graph.Instance.FindReferencedModule<GeneratedHeader>();
             headers.AddFile(genHeader);
@@ -68,7 +68,7 @@ namespace HeaderLibraryTest
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/main.c");
 
             this.CompileAgainst<HeaderLibrary>(source);
         }
@@ -83,7 +83,7 @@ namespace HeaderLibraryTest
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/lib1/stringifymacro.h");
+            this.CreateHeaderCollection("$(packagedir)/include/lib1/stringifymacro.h");
 
             this.PublicPatch((settings, appliedTo) =>
             {
@@ -104,7 +104,7 @@ namespace HeaderLibraryTest
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/lib2/stringifymacrovalue.h");
+            this.CreateHeaderCollection("$(packagedir)/include/lib2/stringifymacrovalue.h");
 
             this.CompileAgainst<StringifyMacro>();
 
@@ -126,7 +126,7 @@ namespace HeaderLibraryTest
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/lib.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/lib.c");
 
             this.CompileAgainst<StringifyMacroValue>(source);
         }
@@ -141,7 +141,7 @@ namespace HeaderLibraryTest
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/level1/**.h");
+            this.CreateHeaderCollection("$(packagedir)/include/level1/**.h");
 
             this.PublicPatch((settings, appliedTo) =>
                 {
@@ -161,7 +161,7 @@ namespace HeaderLibraryTest
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/deeplib.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/deeplib.c");
 
             this.CompileAgainst<DeepHeaderLib>(source);
         }

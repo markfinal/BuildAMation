@@ -41,10 +41,10 @@ namespace C
         {
             if (module is Bam.Core.IModuleGroup)
             {
-                if (!(module is C.CCompilableModuleContainer<ChildModuleType>))
+                if (!(module is CCompilableModuleCollection<ChildModuleType>))
                 {
                     throw new Bam.Core.Exception(
-                        $"Group module type, '{module.GetType().ToString()}', is not a compilable of type '{typeof(C.CCompilableModuleContainer<ChildModuleType>).ToString()}'"
+                        $"Group module type, '{module.GetType().ToString()}', is not a compilable of type '{typeof(CCompilableModuleCollection<ChildModuleType>).ToString()}'"
                     );
                 }
             }
@@ -73,7 +73,7 @@ namespace C
         {
             CheckIsCompilable<ChildModuleType>(module);
             var compilerUsed = (module is Bam.Core.IModuleGroup) ?
-              (module as C.CCompilableModuleContainer<ChildModuleType>).Compiler :
+              (module as CCompilableModuleCollection<ChildModuleType>).Compiler :
               (module as ObjectFile).Compiler;
             return compilerUsed;
         }
@@ -91,7 +91,7 @@ namespace C
         {
             CheckIsCompilable<ChildModuleType>(module);
             var bitDepth = (module is Bam.Core.IModuleGroup) ?
-              (module as C.CCompilableModuleContainer<ChildModuleType>).BitDepth :
+              (module as CCompilableModuleCollection<ChildModuleType>).BitDepth :
               (module as ObjectFile).BitDepth;
             return bitDepth;
         }

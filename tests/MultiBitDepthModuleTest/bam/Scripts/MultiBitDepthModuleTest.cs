@@ -43,7 +43,7 @@ namespace MultiBitDepthModuleTest
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            this.CreateCSourceCollection("$(packagedir)/source/main.c");
         }
     }
 
@@ -61,7 +61,7 @@ namespace MultiBitDepthModuleTest
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            this.CreateCSourceCollection("$(packagedir)/source/main.c");
         }
     }
 }

@@ -33,7 +33,7 @@ namespace C.ObjCxx
     /// Collection of one or more object files compiled against ObjectiveC++.
     /// </summary>
     public class ObjectFileCollection :
-        C.CCompilableModuleContainer<ObjectFile>
+        C.CCompilableModuleCollection<ObjectFile>
     {
         /// <summary>
         /// Initialize this collection

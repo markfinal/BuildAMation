@@ -38,7 +38,7 @@ namespace InstallerTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/*.cpp");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/*.cpp");
 
             this.CompileAndLinkAgainst<CStaticLibrary>(source);
             this.CompileAndLinkAgainst<CDynamicLibrary>(source);
@@ -67,7 +67,7 @@ namespace InstallerTest1
         {
             base.Init();
 
-            var source = this.CreateCxxSourceContainer("$(packagedir)/source/*.cpp");
+            var source = this.CreateCxxSourceCollection("$(packagedir)/source/*.cpp");
 
             this.CompileAndLinkAgainst<CxxStaticLibrary>(source);
             this.CompileAndLinkAgainst<CxxDynamicLibrary>(source);

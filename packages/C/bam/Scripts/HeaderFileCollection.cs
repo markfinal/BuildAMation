@@ -33,7 +33,7 @@ namespace C
     /// Collection of header files
     /// </summary>
     public class HeaderFileCollection :
-        CModuleContainer<HeaderFile>
+        CModuleCollection<HeaderFile>
     {
         /// <summary>
         /// Add a header file to this collection

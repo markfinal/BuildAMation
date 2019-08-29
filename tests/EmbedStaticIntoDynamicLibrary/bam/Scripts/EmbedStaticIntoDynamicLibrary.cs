@@ -100,7 +100,7 @@ namespace EmbedStaticIntoDynamicLibrary
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("EmbedStaticIntoDynamicLibrary: Example C dynamic library");
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamic/*.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/dynamic/*.c");
             source.PrivatePatch(settings =>
                 {
                     var preprocessor = settings as C.ICommonPreprocessorSettings;
@@ -131,7 +131,7 @@ namespace EmbedStaticIntoDynamicLibrary
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("EmbedStaticIntoDynamicLibrary: Example C++ dynamic library");
 
-            var source = this.CreateCxxSourceContainer("$(packagedir)/source/dynamic/*.c");
+            var source = this.CreateCxxSourceCollection("$(packagedir)/source/dynamic/*.c");
             source.PrivatePatch(settings =>
                 {
                     var preprocessor = settings as C.ICommonPreprocessorSettings;
@@ -159,7 +159,7 @@ namespace EmbedStaticIntoDynamicLibrary
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/app/*.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/app/*.c");
             this.CompileAndLinkAgainst<CDynamicLibrary>(source);
 
             if (this.Linker is GccCommon.LinkerBase)
@@ -182,7 +182,7 @@ namespace EmbedStaticIntoDynamicLibrary
         {
             base.Init();
 
-            var source = this.CreateCxxSourceContainer("$(packagedir)/source/app/*.c");
+            var source = this.CreateCxxSourceCollection("$(packagedir)/source/app/*.c");
             this.CompileAndLinkAgainst<CxxDynamicLibrary>(source);
 
             if (this.Linker is GccCommon.LinkerBase)

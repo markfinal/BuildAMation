@@ -37,8 +37,8 @@ namespace HeaderLibraryTest2
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/baselib/*.h");
-            this.CreateCSourceContainer("$(packagedir)/source/baselib/*.c");
+            this.CreateHeaderCollection("$(packagedir)/include/baselib/*.h");
+            this.CreateCSourceCollection("$(packagedir)/source/baselib/*.c");
 
             this.PublicPatch((settings, appliedTo) =>
                 {
@@ -58,7 +58,7 @@ namespace HeaderLibraryTest2
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/headerlib/*.h");
+            this.CreateHeaderCollection("$(packagedir)/include/headerlib/*.h");
 
             this.CompileAgainst<BaseLibrary>();
 
@@ -80,8 +80,8 @@ namespace HeaderLibraryTest2
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/middlelib/*.h");
-            var source = this.CreateCSourceContainer("$(packagedir)/source/middlelib/*.c");
+            this.CreateHeaderCollection("$(packagedir)/include/middlelib/*.h");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/middlelib/*.c");
 
             this.CompileAgainst<HeaderLibrary>(source);
 
@@ -103,7 +103,7 @@ namespace HeaderLibraryTest2
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/app/*.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/app/*.c");
 
             this.CompileAndLinkAgainst<MiddleLibrary>(source);
         }

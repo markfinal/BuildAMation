@@ -37,8 +37,8 @@ namespace InstallerTest1
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/source/staticlib/*.h");
-            this.CreateCxxSourceContainer("$(packagedir)/source/staticlib/*.cpp");
+            this.CreateHeaderCollection("$(packagedir)/source/staticlib/*.h");
+            this.CreateCxxSourceCollection("$(packagedir)/source/staticlib/*.cpp");
 
             this.PublicPatch((settings, appliedTo) =>
             {
@@ -58,8 +58,8 @@ namespace InstallerTest1
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/source/staticlib/*.h");
-            this.CreateCSourceContainer("$(packagedir)/source/staticlib/*.cpp");
+            this.CreateHeaderCollection("$(packagedir)/source/staticlib/*.h");
+            this.CreateCSourceCollection("$(packagedir)/source/staticlib/*.cpp");
 
             this.PublicPatch((settings, appliedTo) =>
             {

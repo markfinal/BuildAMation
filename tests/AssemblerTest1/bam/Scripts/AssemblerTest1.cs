@@ -38,7 +38,7 @@ namespace AssemblerTest1
         {
             base.Init();
 
-            var source = this.CreateAssemblerSourceContainer();
+            var source = this.CreateAssemblerSourceCollection();
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 if (this.Linker is MingwCommon.LinkerBase)
@@ -136,7 +136,7 @@ namespace AssemblerTest1
         {
             base.Init();
 
-            var source = this.CreateAssemblerSourceContainer();
+            var source = this.CreateAssemblerSourceCollection();
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 if (this.Librarian is MingwCommon.Librarian)

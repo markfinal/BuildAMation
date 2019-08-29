@@ -30,7 +30,7 @@
 namespace C
 {
     /// <summary>
-    /// Interface for containers that need to add files.
+    /// Interface for collections that need to add files.
     /// </summary>
     public interface IAddFiles
     {

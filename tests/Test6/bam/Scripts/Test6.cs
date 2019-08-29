@@ -37,10 +37,10 @@ namespace Test6
         {
             base.Init();
 
-            var headers = this.CreateHeaderContainer("$(packagedir)/include/header.h");
+            var headers = this.CreateHeaderCollection("$(packagedir)/include/header.h");
             headers.AddFile("$(packagedir)/include/platform/platform.h");
 
-            var source = this.CreateCSourceContainer();
+            var source = this.CreateCSourceCollection();
             source.PrivatePatch(settings =>
                 {
                     var preprocessor = settings as C.ICommonPreprocessorSettings;

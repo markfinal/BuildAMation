@@ -81,12 +81,12 @@ namespace ExternalSourceGeneratorTest1
             var python_generator = Bam.Core.Module.Create<PythonSourceGenerator>();
             ConfigurePythonGenerator(python_generator);
 
-            var source = this.CreateCxxSourceContainer("$(packagedir)/source/main.cpp");
+            var source = this.CreateCxxSourceCollection("$(packagedir)/source/main.cpp");
             source.DependsOn(python_generator);
             source.UsePublicPatches(python_generator);
             source.AddFile(python_generator.ExpectedOutputFiles["source"]);
 
-            var headers = this.CreateHeaderContainer();
+            var headers = this.CreateHeaderCollection();
             headers.AddFile(python_generator.ExpectedOutputFiles["header"]);
         }
     }

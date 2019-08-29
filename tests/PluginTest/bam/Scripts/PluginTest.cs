@@ -38,7 +38,7 @@ namespace PluginTest
         {
             base.Init();
 
-            var source = this.CreateCxxSourceContainer("$(packagedir)/source/application/main.cpp");
+            var source = this.CreateCxxSourceCollection("$(packagedir)/source/application/main.cpp");
             source.PrivatePatch(settings =>
                 {
                     var cxxCompiler = settings as C.ICxxOnlyCompilerSettings;
@@ -69,7 +69,7 @@ namespace PluginTest
             this.Macros[C.ModuleMacroNames.PluginPrefix] = Bam.Core.TokenizedString.CreateVerbatim("test");
             this.Macros[C.ModuleMacroNames.PluginFileExtension] = Bam.Core.TokenizedString.CreateVerbatim(".plugin");
 
-            var source = this.CreateCxxSourceContainer("$(packagedir)/source/plugin/pluginmain.cpp");
+            var source = this.CreateCxxSourceCollection("$(packagedir)/source/plugin/pluginmain.cpp");
             source.PrivatePatch(settings =>
                 {
                     var preprocessor = settings as C.ICommonPreprocessorSettings;

@@ -37,8 +37,8 @@ namespace PublishingTest3
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/source/dynamiclib.h");
-            this.CreateCSourceContainer("$(packagedir)/source/dynamiclib.c");
+            this.CreateHeaderCollection("$(packagedir)/source/dynamiclib.h");
+            this.CreateCSourceCollection("$(packagedir)/source/dynamiclib.c");
         }
     }
 
@@ -50,7 +50,7 @@ namespace PublishingTest3
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main1.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/main1.c");
             this.CompileAndLinkAgainst<SimpleDynamicLib>(source);
         }
     }
@@ -63,7 +63,7 @@ namespace PublishingTest3
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main2.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/main2.c");
             this.CompileAndLinkAgainst<SimpleDynamicLib>(source);
         }
     }

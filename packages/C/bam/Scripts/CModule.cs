@@ -245,17 +245,40 @@ namespace C
         }
 
         /// <summary>
-        /// Create the container.
+        /// Create the collection.
         /// </summary>
-        /// <typeparam name="T">Type of the container.</typeparam>
+        /// <typeparam name="T">Type of the colletion.</typeparam>
         /// <param name="requires">Children are added as a requirement rather than a dependency.</param>
         /// <param name="wildcardPath">Wildcarded path to find children.</param>
         /// <param name="macroModuleOverride">Optional module to serve as macro source. Default to null.</param>
         /// <param name="filter">Optional regular expression filter to remove matches from the path search. Default to null.</param>
         /// <param name="privatePatch">Optional private patch delegate to run against collection. Default to null.</param>
-        /// <returns>The new Container Module</returns>
+        /// <returns>The new collection Module</returns>
+        [System.Obsolete("Please use InternalCreateCollection instead", true)]
         protected T
         InternalCreateContainer<T>(
+            bool requires,
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null,
+            Bam.Core.Module.PrivatePatchDelegate privatePatch = null)
+            where T : CModule, IAddFiles, new()
+        {
+            return this.InternalCreateCollection<T>(requires, wildcardPath, macroModuleOverride, filter, privatePatch);
+        }
+
+        /// <summary>
+        /// Create the collection.
+        /// </summary>
+        /// <typeparam name="T">Type of the colletion.</typeparam>
+        /// <param name="requires">Children are added as a requirement rather than a dependency.</param>
+        /// <param name="wildcardPath">Wildcarded path to find children.</param>
+        /// <param name="macroModuleOverride">Optional module to serve as macro source. Default to null.</param>
+        /// <param name="filter">Optional regular expression filter to remove matches from the path search. Default to null.</param>
+        /// <param name="privatePatch">Optional private patch delegate to run against collection. Default to null.</param>
+        /// <returns>The new collection Module</returns>
+        protected T
+        InternalCreateCollection<T>(
             bool requires,
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
@@ -293,13 +316,30 @@ namespace C
         /// <param name="macroModuleOverride">Optional module to serve as macro source. Default to null.</param>
         /// <param name="filter">Optional regular expression to filter on the path search. Default to null.</param>
         /// <returns>A collection of header files.</returns>
+        [System.Obsolete("Please use CreateHeaderCollection instead", true)]
         public HeaderFileCollection
         CreateHeaderContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var headers = this.InternalCreateContainer<HeaderFileCollection>(true, wildcardPath, macroModuleOverride, filter);
+            return this.CreateHeaderCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a collection of header files.
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to search for matches. Default to null.</param>
+        /// <param name="macroModuleOverride">Optional module to serve as macro source. Default to null.</param>
+        /// <param name="filter">Optional regular expression to filter on the path search. Default to null.</param>
+        /// <returns>A collection of header files.</returns>
+        public HeaderFileCollection
+        CreateHeaderCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var headers = this.InternalCreateCollection<HeaderFileCollection>(true, wildcardPath, macroModuleOverride, filter);
             this.headerModules.Add(headers);
             return headers;
         }

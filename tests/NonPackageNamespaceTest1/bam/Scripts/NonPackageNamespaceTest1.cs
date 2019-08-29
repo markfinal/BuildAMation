@@ -42,8 +42,8 @@ namespace NonPackageNamespaceTest1
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/*.h");
-            var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            this.CreateHeaderCollection("$(packagedir)/include/*.h");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/*.c");
 
             source.SetVisualCWarningLevel(level: 4);
             source.SetClangWarningOptions(allWarnings:true, extraWarnings: true, pedantic: true);
@@ -72,7 +72,7 @@ namespace NonPackageNamespaceTest1
             {
                 base.Init();
 
-                var source = this.CreateCSourceContainer("$(packagedir)/tests/test1.c");
+                var source = this.CreateCSourceCollection("$(packagedir)/tests/test1.c");
                 this.CompileAndLinkAgainst<Library>(source);
 
                 source.SetVisualCWarningLevel(level: 4);
@@ -93,7 +93,7 @@ namespace NonPackageNamespaceTest1
             {
                 base.Init();
 
-                var source = this.CreateCSourceContainer("$(packagedir)/tests/test2.c");
+                var source = this.CreateCSourceCollection("$(packagedir)/tests/test2.c");
                 this.CompileAndLinkAgainst<Library>(source);
 
                 source.SetVisualCWarningLevel(level: 4);

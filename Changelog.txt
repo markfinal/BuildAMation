@@ -1,3 +1,30 @@
+29-Aug-2019 Fixes #597. BREAKING CHANGE. Deprecated classes and functions that generate a *Container in favour of *Collection. This seems to be the more C# way.
+Classes renamed:
+* C.CCompilableModuleContainer -> C.CCompilableModuleCollection
+* C.CModuleContainer -> C.CModuleCollection
+
+Functions renamed:
+* C.CModule.InternalCreateContainer -> C.CModule.InternalCreateCollection
+* C.CModule.CreateHeaderContainer -> C.CModule.CreateHeaderCollection
+* C.ConsoleApplication.CreateAssemblerSourceContainer -> C.ConsoleApplication.CreateAssemblerSourceCollection
+* C.ConsoleApplication.CreateCSourceContainer -> C.ConsoleApplication.CreateCSourceCollection
+* C.ConsoleApplication.CreateObjectiveCSourceContainer -> C.ConsoleApplication.CreateObjectiveCSourceCollection
+* C.ConsoleApplication.CreateWinResourceContainer -> C.Configuration.CreateWinResourceCollection
+* C.CxxConsoleApplication.CreateCxxSourceContainer -> C.CxxConsoleApplication.CreateCxxSourceCollection
+* C.CxxConsoleApplication.CreateObjectiveCxxSourceContainer -> C.CxxConsoleApplication.CreateObjectiveCxxSourceCollection
+* C.CxxDynamicLibrary.CreateCSourceContainer -> C.CxxDynamicLibrary.CreateCSourceCollection
+* C.CxxDynamicLibrary.CreateCxxSourceContainer -> C.CxxDynamicLibrary.CreateCxxSourceCollection
+* C.CxxGUIApplication.CreateCSourceContainer -> C.CxxGUIApplication.CreateCSourceCollection
+* C.CxxGUIApplication.CreateCxxSourceContainer -> C.CxxGUIApplication.CreateCxxSourceCollection
+* C.DynamicLibrary.CreateCSourceContainer -> C.DynamicLibrary.CreateCSourceCollection
+* C.DynamicLibrary.CreateAssemblerSourceContainer -> C.DynamicLibrary.CreateAssemblerSourceCollection
+* C.GUIApplication.CreateCSourceContainer -> C.GUIApplication.CreateCSourceCollection
+* C.StaticLibrary.CreateAssemblerSourceContainer -> C.StaticLibrary.CreateAssemblerSourceCollection
+* C.StaticLibrary.CreateCSourceContainer -> C.StaticLibrary.CreateCSourceCollection
+* C.StaticLibrary.CreateCxxSourceContainer -> C.StaticLibrary.CreateCxxSourceCollection
+* C.StaticLibrary.CreateObjectiveCSourceContainer -> C.StaticLibrary.CreateObjectiveCSourceCollection
+* C.StaticLibrary.CreateObjectiveCxxSourceContainer -> C.StaticLibrary.CreateObjectiveCxxSourceContainer
+
 28-Aug-2019 Fixes #378. Fixed regression in being able to generate Xcode projects on non-macOS platforms.
 
 27-Aug-2019 Fixes #623. Publisher.InstallNameModule now implements a common ExecuteInternal override, rather than it being duplicated in each derived Module. Also, fixed the MakeFile implementation to actually call install_name_tool.

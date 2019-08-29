@@ -65,45 +65,79 @@ namespace C.Cxx
         };
 
         /// <summary>
-        /// Create a container whose matching source files compile against C.
+        /// Create a collection whose matching source files compile against C.
         /// </summary>
-        /// <returns>The C source container.</returns>
+        /// <returns>The C source collection.</returns>
         /// <param name="wildcardPath">Wildcard path.</param>
         /// <param name="macroModuleOverride">Macro module override.</param>
         /// <param name="filter">Filter.</param>
+        [System.Obsolete("Please use CreateCSourceCollection instead", true)]
         public sealed override C.CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var container = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-            {
-                container.PrivatePatch(this.WindowsPreprocessor);
-            }
-            return container;
+            return this.CreateCSourceCollection(wildcardPath, macroModuleOverride, filter);
         }
 
         /// <summary>
-        /// Create a container whose matching source files compile against C++>
+        /// Create a collection whose matching source files compile against C.
         /// </summary>
-        /// <returns>The cxx source container.</returns>
+        /// <returns>The C source collection.</returns>
         /// <param name="wildcardPath">Wildcard path.</param>
         /// <param name="macroModuleOverride">Macro module override.</param>
         /// <param name="filter">Filter.</param>
+        public sealed override C.CObjectFileCollection
+        CreateCSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var collection = base.CreateCSourceCollection(wildcardPath, macroModuleOverride, filter);
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+            {
+                collection.PrivatePatch(this.WindowsPreprocessor);
+            }
+            return collection;
+        }
+
+        /// <summary>
+        /// Create a collection whose matching source files compile against C++
+        /// </summary>
+        /// <returns>The C++ source collection.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
+        [System.Obsolete("Please use CreateCxxSourceCollection instead", true)]
         public sealed override Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var container = base.CreateCxxSourceContainer(wildcardPath, macroModuleOverride, filter);
+            return this.CreateCxxSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a collection whose matching source files compile against C++
+        /// </summary>
+        /// <returns>The C++ source collection.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
+        public sealed override Cxx.ObjectFileCollection
+        CreateCxxSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var collection = base.CreateCxxSourceCollection(wildcardPath, macroModuleOverride, filter);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                container.PrivatePatch(this.WindowsPreprocessor);
+                collection.PrivatePatch(this.WindowsPreprocessor);
             }
-            return container;
+            return collection;
         }
     }
 }

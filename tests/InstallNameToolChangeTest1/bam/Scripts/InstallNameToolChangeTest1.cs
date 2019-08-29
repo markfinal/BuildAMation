@@ -38,7 +38,7 @@ namespace InstallNameToolChangeTest1
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/lib/*.c");
+            this.CreateCSourceCollection("$(packagedir)/source/lib/*.c");
 
             this.PublicPatch((settings, appliedTo) =>
             {
@@ -58,7 +58,7 @@ namespace InstallNameToolChangeTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/app/*.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/app/*.c");
             this.CompileAndLinkAgainst<DynamicLib>(source);
         }
     }

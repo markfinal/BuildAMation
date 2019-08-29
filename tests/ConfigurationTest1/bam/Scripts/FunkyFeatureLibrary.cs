@@ -38,8 +38,8 @@ namespace ConfigurationTest1
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/funkyfeature/*.h");
-            this.CreateCSourceContainer("$(packagedir)/source/funkyfeature.c");
+            this.CreateHeaderCollection("$(packagedir)/include/funkyfeature/*.h");
+            this.CreateCSourceCollection("$(packagedir)/source/funkyfeature.c");
 
             this.PublicPatch((settings, appliedTo) =>
                 {

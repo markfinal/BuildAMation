@@ -63,8 +63,8 @@ namespace ConfigurationTest1
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/configurablelibrary/*.h");
-            var source = this.CreateCSourceContainer("$(packagedir)/source/library.c");
+            this.CreateHeaderCollection("$(packagedir)/include/configurablelibrary/*.h");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/library.c");
 
             this.PublicPatch((settings, appliedTo) =>
                 {

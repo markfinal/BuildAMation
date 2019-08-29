@@ -39,7 +39,7 @@ namespace CodeGenTest
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/codegentool/main.c");
+            this.CreateCSourceCollection("$(packagedir)/source/codegentool/main.c");
         }
 
         public System.Type SettingsType => typeof(GeneratedSourceSettings);

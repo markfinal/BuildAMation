@@ -30,7 +30,7 @@
 namespace Bam.Core
 {
     /// <summary>
-    /// Container representing a 'ranked' collection of modules
+    /// Collection representing a 'ranked' sequence of modules
     /// </summary>
     public sealed class ModuleCollection :
         System.Collections.Generic.IEnumerable<Module>

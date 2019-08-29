@@ -79,16 +79,16 @@ namespace Test9
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/*.h");
+            this.CreateHeaderCollection("$(packagedir)/include/*.h");
 
-            var cSource = this.CreateCSourceContainer("$(packagedir)/source/library_c.c");
+            var cSource = this.CreateCSourceCollection("$(packagedir)/source/library_c.c");
             cSource.PrivatePatch(settings =>
                 {
                     var preprocessor = settings as C.ICommonPreprocessorSettings;
                     preprocessor.IncludePaths.Add(this.CreateTokenizedString("$(packagedir)/include"));
                 });
 
-            var cxxSource = this.CreateCxxSourceContainer();
+            var cxxSource = this.CreateCxxSourceCollection();
             cxxSource.AddFile("$(packagedir)/source/library_cpp.c");
             cxxSource.AddFile("$(packagedir)/source/appmain_cpp.c");
             cxxSource.PrivatePatch(settings =>
@@ -109,9 +109,9 @@ namespace Test9
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/library_c.h");
+            this.CreateHeaderCollection("$(packagedir)/include/library_c.h");
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/library_c.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/library_c.c");
             source.PrivatePatch(settings =>
                 {
                     var preprocessor = settings as C.ICommonPreprocessorSettings;
@@ -128,9 +128,9 @@ namespace Test9
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/library_cpp.h");
+            this.CreateHeaderCollection("$(packagedir)/include/library_cpp.h");
 
-            var source = this.CreateCxxSourceContainer("$(packagedir)/source/library_cpp.c");
+            var source = this.CreateCxxSourceCollection("$(packagedir)/source/library_cpp.c");
             source.PrivatePatch(settings =>
             {
                 var preprocessor = settings as C.ICommonPreprocessorSettings;
@@ -153,9 +153,9 @@ namespace Test9
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test9: Example C dynamic library");
 
-            this.CreateHeaderContainer("$(packagedir)/include/library_c.h");
+            this.CreateHeaderCollection("$(packagedir)/include/library_c.h");
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/library_c.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/library_c.c");
             source.PrivatePatch(settings =>
                 {
                     var preprocessor = settings as C.ICommonPreprocessorSettings;
@@ -175,9 +175,9 @@ namespace Test9
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test9: Example C++ dynamic library");
 
-            this.CreateHeaderContainer("$(packagedir)/include/library_cpp.h");
+            this.CreateHeaderCollection("$(packagedir)/include/library_cpp.h");
 
-            var source = this.CreateCxxSourceContainer("$(packagedir)/source/library_cpp.c");
+            var source = this.CreateCxxSourceCollection("$(packagedir)/source/library_cpp.c");
             source.PrivatePatch(settings =>
             {
                 var preprocessor = settings as C.ICommonPreprocessorSettings;

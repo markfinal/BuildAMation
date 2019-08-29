@@ -60,7 +60,7 @@ namespace Test8
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/main.c");
             this.RequiredToExist<Test7.ExplicitDynamicLibrary>(source);
 
             source["main.c"].ForEach(item => item.PrivatePatch(SuppressC4091));

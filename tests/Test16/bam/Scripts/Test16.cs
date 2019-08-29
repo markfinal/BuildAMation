@@ -37,7 +37,7 @@ namespace Test16
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/static_main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/static_main.c");
 
             this.CompileAndLinkAgainst<Test15.StaticLibrary2>(source);
         }
@@ -51,7 +51,7 @@ namespace Test16
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamic_main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/dynamic_main.c");
 
             this.CompileAndLinkAgainst<Test15.DynamicLibrary2>(source);
 
@@ -75,7 +75,7 @@ namespace Test16
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamic_main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/dynamic_main.c");
 
             this.CompileAndLinkAgainst<Test15.DynamicLibrary2NonPublicForwarder>(source);
 

@@ -38,10 +38,10 @@ namespace AssemblerTest2
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/*.c");
-            this.CreateHeaderContainer("$(packagedir)/source/*.h");
+            this.CreateCSourceCollection("$(packagedir)/source/*.c");
+            this.CreateHeaderCollection("$(packagedir)/source/*.h");
 
-            var asmSource = this.CreateAssemblerSourceContainer();
+            var asmSource = this.CreateAssemblerSourceCollection();
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 if (this.Linker is MingwCommon.LinkerBase)

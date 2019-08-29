@@ -38,7 +38,7 @@ namespace LinkPrebuiltLibrary
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/library/*.c");
+            this.CreateCSourceCollection("$(packagedir)/source/library/*.c");
         }
     }
 
@@ -50,7 +50,7 @@ namespace LinkPrebuiltLibrary
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/*.c");
             this.CompileAndLinkAgainst<TestLib>(source);
 
             this.PrivatePatch(settings =>

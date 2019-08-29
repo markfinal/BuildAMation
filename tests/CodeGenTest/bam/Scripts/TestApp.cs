@@ -38,7 +38,7 @@ namespace CodeGenTest
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/testapp/main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/testapp/main.c");
 
             /*var generatedSourceTuple = */source.GenerateSource();
         }

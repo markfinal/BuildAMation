@@ -38,7 +38,7 @@ namespace Test12
         {
             base.Init();
 
-            var source = this.CreateCxxSourceContainer("$(packagedir)/source/main.cpp");
+            var source = this.CreateCxxSourceCollection("$(packagedir)/source/main.cpp");
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 source.AddFile("$(packagedir)/source/win/win.cpp");

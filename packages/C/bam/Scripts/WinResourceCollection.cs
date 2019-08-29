@@ -33,7 +33,7 @@ namespace C
     /// Collection of one or more resource files.
     /// </summary>
     public class WinResourceCollection :
-        CCompilableModuleContainer<WinResource>
+        CCompilableModuleCollection<WinResource>
     {
         /// <summary>
         /// Initialize this module

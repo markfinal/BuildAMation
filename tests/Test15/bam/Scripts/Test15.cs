@@ -37,8 +37,8 @@ namespace Test15
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/staticlibrary2.h");
-            var source = this.CreateCSourceContainer("$(packagedir)/source/staticlibrary2.c");
+            this.CreateHeaderCollection("$(packagedir)/include/staticlibrary2.h");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/staticlibrary2.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
                     if (settings is C.ICommonPreprocessorSettings preprocessor)
@@ -62,8 +62,8 @@ namespace Test15
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test15: Example dynamic library");
 
-            this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary2.h");
-            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary2.c");
+            this.CreateHeaderCollection("$(packagedir)/include/dynamiclibrary2.h");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/dynamiclibrary2.c");
             this.PublicPatch((settings, appliedTo) =>
             {
                 if (settings is C.ICommonPreprocessorSettings preprocessor)
@@ -90,8 +90,8 @@ namespace Test15
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test15: Example dynamic library (non public forwarder)");
 
-            this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary2.h");
-            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary2.c");
+            this.CreateHeaderCollection("$(packagedir)/include/dynamiclibrary2.h");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/dynamiclibrary2.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
                     if (settings is C.ICommonPreprocessorSettings preprocessor)

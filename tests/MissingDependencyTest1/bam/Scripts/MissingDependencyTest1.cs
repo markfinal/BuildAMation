@@ -37,7 +37,7 @@ namespace MissingDependencyTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/main.c");
             this.CompileAndLinkAgainst<Dependent>(source);
         }
     }
@@ -50,7 +50,7 @@ namespace MissingDependencyTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/main.c");
             this.CompileAndLinkAgainst<Library>(source);
         }
     }
@@ -63,7 +63,7 @@ namespace MissingDependencyTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/library.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/library.c");
             this.CompileAgainst<Dependent>(source);
         }
     }
@@ -88,7 +88,7 @@ namespace MissingDependencyTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/plugin.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/plugin.c");
 
             this.CompileAndLinkAgainst<Dependent>(source);
         }
@@ -102,7 +102,7 @@ namespace MissingDependencyTest1
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/plugintest.c");
+            this.CreateCSourceCollection("$(packagedir)/source/plugintest.c");
 
             this.RequiredToExist<Plugin>();
         }

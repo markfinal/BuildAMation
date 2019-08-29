@@ -127,7 +127,7 @@ namespace Test
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            this.CreateCSourceCollection("$(packagedir)/source/main.c");
         }
     }
 
@@ -139,7 +139,7 @@ namespace Test
         {
             base.Init();
 
-            this.CreateCxxSourceContainer("$(packagedir)/source/main.c");
+            this.CreateCxxSourceCollection("$(packagedir)/source/main.c");
         }
     }
 
@@ -152,7 +152,7 @@ namespace Test
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/main.c");
             source.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
@@ -161,7 +161,7 @@ namespace Test
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                this.CreateWinResourceContainer("$(packagedir)/resources/win32.rc");
+                this.CreateWinResourceCollection("$(packagedir)/resources/win32.rc");
             }
         }
     }

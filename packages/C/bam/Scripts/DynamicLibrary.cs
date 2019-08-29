@@ -115,13 +115,30 @@ namespace C
         /// <param name="macroModuleOverride">Optional Module to use as macros source. Defaults to null.</param>
         /// <param name="filter">Optional regular expression filter to remove source files. Default to null.</param>
         /// <returns>The collection</returns>
+        [System.Obsolete("Please use CreateCSourceCollection instead", true)]
         public sealed override CObjectFileCollection
         CreateCSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            var collection = base.CreateCSourceContainer(wildcardPath, macroModuleOverride, filter);
+            return this.CreateCSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a source collection for C compilation
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match source files. Defaults to null.</param>
+        /// <param name="macroModuleOverride">Optional Module to use as macros source. Defaults to null.</param>
+        /// <param name="filter">Optional regular expression filter to remove source files. Default to null.</param>
+        /// <returns>The collection</returns>
+        public sealed override CObjectFileCollection
+        CreateCSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            var collection = base.CreateCSourceCollection(wildcardPath, macroModuleOverride, filter);
             collection.PrivatePatch(settings =>
             {
                 var preprocessor = settings as C.ICommonPreprocessorSettings;
@@ -138,11 +155,31 @@ namespace C
         /// <param name="macroModuleOverride">Optional Module to use as macros source. Defaults to null.</param>
         /// <param name="filter">Optional regular expression filter to remove source files. Default to null.</param>
         /// <returns>The collection</returns>
+        [System.Obsolete("Please use CreateAssemblerSourceCollection instead", true)]
         public sealed override AssembledObjectFileCollection
         CreateAssemblerSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
-            System.Text.RegularExpressions.Regex filter = null) => base.CreateAssemblerSourceContainer(wildcardPath, macroModuleOverride, filter);
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            return this.CreateAssemblerSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a source collection for assembly.
+        /// </summary>
+        /// <param name="wildcardPath">Optional wildcarded path to match source files. Defaults to null.</param>
+        /// <param name="macroModuleOverride">Optional Module to use as macros source. Defaults to null.</param>
+        /// <param name="filter">Optional regular expression filter to remove source files. Default to null.</param>
+        /// <returns>The collection</returns>
+        public sealed override AssembledObjectFileCollection
+        CreateAssemblerSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
+            return base.CreateAssemblerSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
 
         /// <summary>
         /// Specified sources compile against DependentModule, and re-exports the public patches
@@ -226,12 +263,12 @@ namespace C
         }
 
         /// <summary>
-        /// Extend a container of C object files with another, potentially from another module. Note that module types must match.
+        /// Extend a collection of C object files with another, potentially from another module. Note that module types must match.
         /// Private patches are inherited.
         /// Public patches are both used internally, and also forwarded onto any callers of this module.
         /// </summary>
-        /// <typeparam name="DependentModule">Container module type to embed into the specified container.</typeparam>
-        /// <param name="affectedSource">Container to be extended.</param>
+        /// <typeparam name="DependentModule">Collection module type to embed into the specified collection.</typeparam>
+        /// <param name="affectedSource">Collection to be extended.</param>
         public void
         ExtendSourcePublicly<DependentModule>(
             CObjectFileCollection affectedSource) where DependentModule : CObjectFileCollection, new()

@@ -37,7 +37,7 @@ namespace ProcessNamedHeaderTest
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/main.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/main.c");
 
             source.PrivatePatch(settings =>
                 {

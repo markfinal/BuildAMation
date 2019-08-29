@@ -47,56 +47,90 @@ namespace C.Cxx
         }
 
         /// <summary>
-        /// Create a container whose matching sources compile against C++.
+        /// Create a collection whose matching sources compile against C++.
         /// </summary>
-        /// <returns>The cxx source container.</returns>
+        /// <returns>The cxx source collection.</returns>
         /// <param name="wildcardPath">Wildcard path.</param>
         /// <param name="macroModuleOverride">Macro module override.</param>
         /// <param name="filter">Filter.</param>
+        [System.Obsolete("Please use CreateCxxSourceCollection", true)]
         public virtual Cxx.ObjectFileCollection
         CreateCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
+            return this.CreateCxxSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a collection whose matching sources compile against C++.
+        /// </summary>
+        /// <returns>The cxx source collection.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
+        public virtual Cxx.ObjectFileCollection
+        CreateCxxSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
             var applicationPreprocessor = this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) ? this.ConsolePreprocessor : null;
-            var source = this.InternalCreateContainer<Cxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, applicationPreprocessor);
+            var source = this.InternalCreateCollection<Cxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, applicationPreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
 
         /// <summary>
-        /// Create a container whose matching sources compile against Objective C++.
+        /// Create a collection whose matching sources compile against Objective C++.
         /// </summary>
-        /// <returns>The objective cxx source container.</returns>
+        /// <returns>The objective cxx source collection.</returns>
         /// <param name="wildcardPath">Wildcard path.</param>
         /// <param name="macroModuleOverride">Macro module override.</param>
         /// <param name="filter">Filter.</param>
+        [System.Obsolete("Please use CreateObjectiveCxxSourceCollection", true)]
         public C.ObjCxx.ObjectFileCollection
         CreateObjectiveCxxSourceContainer(
             string wildcardPath = null,
             Bam.Core.Module macroModuleOverride = null,
             System.Text.RegularExpressions.Regex filter = null)
         {
+            return this.CreateObjectiveCxxSourceCollection(wildcardPath, macroModuleOverride, filter);
+        }
+
+        /// <summary>
+        /// Create a collection whose matching sources compile against Objective C++.
+        /// </summary>
+        /// <returns>The objective cxx source collection.</returns>
+        /// <param name="wildcardPath">Wildcard path.</param>
+        /// <param name="macroModuleOverride">Macro module override.</param>
+        /// <param name="filter">Filter.</param>
+        public C.ObjCxx.ObjectFileCollection
+        CreateObjectiveCxxSourceCollection(
+            string wildcardPath = null,
+            Bam.Core.Module macroModuleOverride = null,
+            System.Text.RegularExpressions.Regex filter = null)
+        {
             var applicationPreprocessor = this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) ? this.ConsolePreprocessor : null;
-            var source = this.InternalCreateContainer<C.ObjCxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, applicationPreprocessor);
+            var source = this.InternalCreateCollection<C.ObjCxx.ObjectFileCollection>(false, wildcardPath, macroModuleOverride, filter, applicationPreprocessor);
             this.sourceModules.Add(source);
             return source;
         }
 
         /// <summary>
-        /// Extend a container of C++ object files with another, potentially from another module. Note that module types must match.
+        /// Extend a collection of C++ object files with another, potentially from another module. Note that module types must match.
         /// Private patches are inherited.
         /// Public patches are used internally to compile against, but are not exposed further.
         /// Note that the referenced module in DependentModule will have its source files marked as PerformCompilation=false
         /// so that it is not attempted to be built standalone.
         /// </summary>
-        /// <typeparam name="DependentModule">Container module type to embed into the specified container.</typeparam>
-        /// <param name="affectedSource">Container to be extended.</param>
+        /// <typeparam name="DependentModule">Collection module type to embed into the specified collection.</typeparam>
+        /// <param name="affectedSource">Collection to be extended.</param>
         public void
         ExtendSource<DependentModule>(
-            CModuleContainer<ObjectFile> affectedSource)
-            where DependentModule : CModuleContainer<ObjectFile>, new()
+            CModuleCollection<ObjectFile> affectedSource)
+            where DependentModule : CModuleCollection<ObjectFile>, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
@@ -104,9 +138,9 @@ namespace C.Cxx
                 return;
             }
 
-            // as the referenced container of source is to be shoehorned into
-            // this module, make sure that the external container isn't built standalone
-            // note that the referenced container will float to the top of the dependency
+            // as the referenced collection of source is to be shoehorned into
+            // this module, make sure that the external collection isn't built standalone
+            // note that the referenced collection will float to the top of the dependency
             // graph, but just won't do anything
             foreach (var child in dependent.Children)
             {

@@ -37,8 +37,8 @@ namespace Test14
         {
             base.Init();
 
-            this.CreateHeaderContainer("$(packagedir)/include/staticlibrary1.h");
-            this.CreateCSourceContainer("$(packagedir)/source/staticlibrary1.c");
+            this.CreateHeaderCollection("$(packagedir)/include/staticlibrary1.h");
+            this.CreateCSourceCollection("$(packagedir)/source/staticlibrary1.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
                     if (settings is C.ICommonPreprocessorSettings preprocessor)
@@ -60,8 +60,8 @@ namespace Test14
             this.SetSemanticVersion(Bam.Core.Graph.Instance.ProcessState as Bam.Core.ISemanticVersion);
             this.Macros["Description"] = Bam.Core.TokenizedString.CreateVerbatim("Test14: Example dynamic library");
 
-            this.CreateHeaderContainer("$(packagedir)/include/dynamiclibrary1.h");
-            this.CreateCSourceContainer("$(packagedir)/source/dynamiclibrary1.c");
+            this.CreateHeaderCollection("$(packagedir)/include/dynamiclibrary1.h");
+            this.CreateCSourceCollection("$(packagedir)/source/dynamiclibrary1.c");
             this.PublicPatch((settings, appliedTo) =>
                 {
                     if (settings is C.ICommonPreprocessorSettings preprocessor)

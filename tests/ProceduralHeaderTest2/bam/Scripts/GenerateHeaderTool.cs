@@ -38,7 +38,7 @@ namespace ProceduralHeaderTest2
         {
             base.Init();
 
-            this.CreateCSourceContainer("$(packagedir)/source/generateheadertool/main.c");
+            this.CreateCSourceCollection("$(packagedir)/source/generateheadertool/main.c");
         }
 
         public System.Type SettingsType => null;

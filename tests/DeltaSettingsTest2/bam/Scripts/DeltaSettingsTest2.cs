@@ -37,7 +37,7 @@ namespace DeltaSettingsTest2
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/*.c");
             source.PrivatePatch(settings =>
             {
                 var cCompiler = settings as C.ICOnlyCompilerSettings;

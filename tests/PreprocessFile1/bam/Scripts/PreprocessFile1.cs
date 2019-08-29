@@ -60,7 +60,7 @@ namespace PreprocessFile1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/*.c");
 
             var preprocessedFile = Bam.Core.Module.Create<PreprocessSourceDef>(preInitCallback: module =>
             {

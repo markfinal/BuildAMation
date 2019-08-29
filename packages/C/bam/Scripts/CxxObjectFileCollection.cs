@@ -30,10 +30,10 @@
 namespace C.Cxx
 {
     /// <summary>
-    /// Container of one or more object files compiled against C++.
+    /// Collection of one or more object files compiled against C++.
     /// </summary>
     public class ObjectFileCollection :
-        C.CCompilableModuleContainer<ObjectFile>
+        C.CCompilableModuleCollection<ObjectFile>
     {
         /// <summary>
         /// Initialize the object file collection

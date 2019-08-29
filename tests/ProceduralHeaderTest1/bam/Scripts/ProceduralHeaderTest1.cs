@@ -37,7 +37,7 @@ namespace ProceduralHeaderTest1
         {
             base.Init();
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/*.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/*.c");
 
             var genHeader = Bam.Core.Graph.Instance.FindReferencedModule<GenHeader>();
             source.DependsOn(genHeader);

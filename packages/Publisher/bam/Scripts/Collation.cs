@@ -779,7 +779,7 @@ namespace Publisher
             ICollatedObject anchor,
             System.Text.RegularExpressions.Regex filter = null)
         {
-            // Note: very similar to that code in C.CModuleContainer.AddFiles
+            // Note: very similar to that code in C.CModuleCollection.AddFiles
             if (!wildcardedSourcePath.IsParsed)
             {
                 wildcardedSourcePath.Parse();
@@ -880,7 +880,7 @@ namespace Publisher
             System.Text.RegularExpressions.Regex filter = null,
             string renameLeaf = null)
         {
-            // Note: very similar to that code in C.CModuleContainer.AddFiles
+            // Note: very similar to that code in C.CModuleCollection.AddFiles
             if (!wildcardedSourcePath.IsParsed)
             {
                 wildcardedSourcePath.Parse();

@@ -47,7 +47,7 @@ namespace Test5
                     }
                 });
 
-            var source = this.CreateCSourceContainer("$(packagedir)/source/dynamicmain.c");
+            var source = this.CreateCSourceCollection("$(packagedir)/source/dynamicmain.c");
 
             this.LinkAgainst<Test4.MyStaticLib>();
             this.CompileAndLinkAgainst<Test4.MyDynamicLib>(source);

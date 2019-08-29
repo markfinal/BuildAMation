@@ -82,7 +82,7 @@ namespace Cxx11Test1
         {
             base.Init();
 
-            var source = this.CreateCxxSourceContainer("$(packagedir)/source/main.cpp");
+            var source = this.CreateCxxSourceCollection("$(packagedir)/source/main.cpp");
 
             source.PrivatePatch(settings =>
                 {
