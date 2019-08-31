@@ -28,6 +28,11 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
+
+// this assembly attribute allows the dynamic assembly generated for shared and delta
+// settings for IDE projects to see the internal classes of the master package assembly
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("IDESharedSettings")]
+
 namespace C
 {
     /// <summary>
