@@ -29,7 +29,7 @@
 #endregion // License
 namespace ZipTest1
 {
-    public sealed class ZippedDirectory :
+    sealed class ZippedDirectory :
         Installer.ZipModule
     {
         protected override void

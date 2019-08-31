@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace CodeGenTest
 {
-    public sealed class BuildCodeGenTool :
+    sealed class BuildCodeGenTool :
         C.ConsoleApplication,
         Bam.Core.ICommandLineTool
     {

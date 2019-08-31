@@ -50,7 +50,7 @@ namespace CocoaTest2
         }
     }
 
-    public sealed class Runtime :
+    sealed class Runtime :
         Publisher.Collation
     {
         protected override void

@@ -36,7 +36,7 @@ namespace HeaderLibraryTest
         protected override string Contents => "#define GENERATED_HEADER";
     }
 
-    public sealed class HeaderLibrary :
+    sealed class HeaderLibrary :
         C.HeaderLibrary
     {
         protected override void
@@ -60,7 +60,7 @@ namespace HeaderLibraryTest
         }
     }
 
-    public sealed class Application :
+    sealed class Application :
         C.ConsoleApplication
     {
         protected override void

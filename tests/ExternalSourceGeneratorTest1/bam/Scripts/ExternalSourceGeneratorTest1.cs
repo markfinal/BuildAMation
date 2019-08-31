@@ -50,7 +50,7 @@ namespace ExternalSourceGeneratorTest1
         }
     }
 
-    public sealed class TestApp :
+    sealed class TestApp :
         C.Cxx.ConsoleApplication
     {
         private static void

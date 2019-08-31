@@ -74,7 +74,7 @@ namespace Cxx11Test1
         }
     }
 
-    public sealed class TestProg :
+    sealed class TestProg :
         C.Cxx.ConsoleApplication
     {
         protected override void

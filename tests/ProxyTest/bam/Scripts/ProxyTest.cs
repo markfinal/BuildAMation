@@ -30,7 +30,7 @@
 [assembly:Bam.Core.PackageDirectoryRedirect("ProxyTest", "../FakePackage")]
 namespace ProxyTest
 {
-    public sealed class ProxiedObjectFile :
+    sealed class ProxiedObjectFile :
         C.ObjectFile
     {
         protected override void
@@ -42,7 +42,7 @@ namespace ProxyTest
         }
     }
 
-    public sealed class ProxiedObjectFileCollection :
+    sealed class ProxiedObjectFileCollection :
         C.CObjectFileCollection
     {
         protected override void

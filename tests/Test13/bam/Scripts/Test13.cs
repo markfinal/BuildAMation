@@ -101,7 +101,7 @@ namespace Test13
         }
     }
 
-    public sealed class RuntimePackage :
+    sealed class RuntimePackage :
         Publisher.Collation
     {
         protected override void

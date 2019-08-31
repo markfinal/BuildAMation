@@ -30,7 +30,7 @@
 using CodeGenTest.CodeGenExtension;
 namespace CodeGenTest
 {
-    public sealed class TestApp :
+    sealed class TestApp :
         C.ConsoleApplication
     {
         protected override void

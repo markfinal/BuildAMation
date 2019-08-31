@@ -31,7 +31,7 @@ namespace CodeGenTest
 {
     namespace CodeGenExtension
     {
-        public static class CodeGenExtension
+        static class CodeGenExtension
         {
             public static System.Tuple<Bam.Core.Module, Bam.Core.Module>
             GenerateSource(

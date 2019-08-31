@@ -78,7 +78,7 @@ namespace PluginTest
         }
     }
 
-    public sealed class RuntimePackage :
+    sealed class RuntimePackage :
         Publisher.Collation
     {
         protected override void

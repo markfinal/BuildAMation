@@ -50,7 +50,7 @@ namespace ExternalSourceGeneratorTest2
         }
     }
 
-    public sealed class SpecificPythonGenerator :
+    sealed class SpecificPythonGenerator :
         PythonSourceGenerator
     {
         protected override void
@@ -75,7 +75,7 @@ namespace ExternalSourceGeneratorTest2
         }
     }
 
-    public sealed class TestApp :
+    sealed class TestApp :
         C.Cxx.ConsoleApplication
     {
         protected override void

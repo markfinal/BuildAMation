@@ -29,7 +29,7 @@
 #endregion // License
 namespace ProceduralHeaderTest2
 {
-    public sealed class GenerateHeaderTool :
+    sealed class GenerateHeaderTool :
         C.ConsoleApplication,
         Bam.Core.ICommandLineTool
     {
