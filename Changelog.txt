@@ -1,3 +1,5 @@
+31-Aug-2019 Fixes #652. Added --dry-run/-n option to Python test harness, to stop after the BAM step. This is only really useful for project generation modes, to validate master package assembly generation, and running the build. Native build mode will always compile the code.
+
 31-Aug-2019 Fixes #612. Removed public accessor from classes in the standard packages folder. Since package scripts get accumulated into a single assembly at build time, the default accessor (internal) suffices. This does mean that end-user packages should no longer use public accessors on Module derivations, and just leave the default.
 
 29-Aug-2019 Fixes #589. Sealed classes that are not expected to be derived from.

@@ -210,7 +210,7 @@ def execute_test_instance(instance, options, output_buffer, stats, the_builder):
             start_time = os.times()
             _pre_execute(the_builder)
             returncode, arg_list = _run_buildamation(options, instance, extra_args, output_messages, error_messages)
-            if returncode == 0:
+            if returncode == 0 and not options.dryrun:
                 if the_builder.repeat_no_clean:
                     no_clean_options = copy.deepcopy(options)
                     no_clean_options.noInitialClean = True
@@ -313,6 +313,7 @@ if __name__ == "__main__":
     optParser.add_option("--dumpprojects", dest="dumpprojects", action="store_true", default=False, help="Dump generated project files to stdout")
     optParser.add_option("--prefix", dest="prefix", action="store", default=None, help="Prefix command to each bam process")
     optParser.add_option("--keepgoing", dest="keepgoing", action="store_true", default=False, help="Keep going after test failures.")
+    optParser.add_option("--dry-run", "-n", dest="dryrun", action="store_true", default=False, help="Dry run - don't execute any builder actions.")
     test_option_setup(optParser)
     (options, args) = optParser.parse_args()
 
