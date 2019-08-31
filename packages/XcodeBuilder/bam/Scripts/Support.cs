@@ -33,7 +33,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Support classes for Xcode projet generation
     /// </summary>
-    public static partial class Support
+    static partial class Support
     {
         private static void
         AddModuleDirectoryCreationShellCommands(

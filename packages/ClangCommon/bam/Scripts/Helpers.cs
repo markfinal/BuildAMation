@@ -32,7 +32,7 @@ namespace ClangCommon.Helpers
     /// <summary>
     /// Extension class for helping with Clang settings
     /// </summary>
-    public static class HelperClasses
+    static class HelperClasses
     {
         public static void
         SetClangWarningOptions(

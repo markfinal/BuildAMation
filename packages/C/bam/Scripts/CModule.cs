@@ -35,7 +35,7 @@ namespace C
     /// Defines versioning macros.
     /// Defines the default bit-depth.
     /// </summary>
-    public abstract class CModule :
+    abstract class CModule :
         Bam.Core.Module
     {
         /// <summary>

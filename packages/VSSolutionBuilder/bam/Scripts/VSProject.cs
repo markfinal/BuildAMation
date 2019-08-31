@@ -33,7 +33,7 @@ namespace VSSolutionBuilder
     /// <summary>
     /// Class representing a .vcxproj on disk.
     /// </summary>
-    public sealed class VSProject :
+    sealed class VSProject :
         HasGuid
     {
         private VSSolution Solution { get; set; }

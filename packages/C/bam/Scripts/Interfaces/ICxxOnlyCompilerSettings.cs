@@ -33,7 +33,7 @@ namespace C
     /// C++ only compilation settings.
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.Cxx.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICxxOnlyCompilerSettings :
+    interface ICxxOnlyCompilerSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

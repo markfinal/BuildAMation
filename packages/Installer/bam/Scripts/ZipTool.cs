@@ -33,14 +33,14 @@ namespace Installer
     /// <summary>
     /// Abstract call for all zip tools
     /// </summary>
-    public abstract class ZipTool :
+    abstract class ZipTool :
         Bam.Core.PreBuiltTool
     {}
 
     /// <summary>
     /// Posix zip tool
     /// </summary>
-    public sealed class ZipPosix :
+    sealed class ZipPosix :
         ZipTool
     {
         /// <summary>
@@ -95,7 +95,7 @@ namespace Installer
     /// <summary>
     /// Windows zip tool
     /// </summary>
-    public sealed class ZipWin :
+    sealed class ZipWin :
         ZipTool
     {
         protected override void

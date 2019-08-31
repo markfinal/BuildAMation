@@ -32,7 +32,7 @@ namespace Mingw
     /// <summary>
     /// Class representing metadata for this version of Mingw
     /// </summary>
-    public sealed class MetaData :
+    sealed class MetaData :
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
     {

@@ -32,7 +32,7 @@ namespace MakeFileBuilder
     /// <summary>
     /// Metadata for the builder class
     /// </summary>
-    public sealed class MakeFileMeta :
+    sealed class MakeFileMeta :
         Bam.Core.IBuildModeMetaData
     {
         private static Bam.Core.Array<MakeFileMeta> allMeta = new Bam.Core.Array<MakeFileMeta>();

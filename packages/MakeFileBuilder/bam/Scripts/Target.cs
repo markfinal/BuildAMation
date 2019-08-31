@@ -32,7 +32,7 @@ namespace MakeFileBuilder
     /// <summary>
     /// Class representing a target in a MakeFile
     /// </summary>
-    public sealed class Target
+    sealed class Target
     {
         private static object UniqueCounterGuard = new object();
         private static int UniqueCounter = 0; // TODO: this is probably not the best way of creating a unique name for all unreferenced modules

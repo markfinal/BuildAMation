@@ -33,7 +33,7 @@ namespace C
     /// <summary>
     /// Utility class for accessing toolchain registration
     /// </summary>
-    public static class DefaultToolchain
+    static class DefaultToolchain
     {
         private static readonly Options.DefaultToolchainCommand SelectDefaultToolChainCommand = new Options.DefaultToolchainCommand();
         private static readonly System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray> C_Compilers = new System.Collections.Generic.Dictionary<EBit, Bam.Core.TypeArray>();

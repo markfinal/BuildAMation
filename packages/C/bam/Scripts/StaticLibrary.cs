@@ -33,7 +33,7 @@ namespace C
     /// <summary>
     /// Derive from this module to create a static library of object files, in any language.
     /// </summary>
-    public class StaticLibrary :
+    class StaticLibrary :
         CModule,
         IForwardedLibraries
     {

@@ -32,7 +32,7 @@ namespace ClangCommon
     /// <summary>
     /// Abstract class for common Clang C compiler settings
     /// </summary>
-    public abstract class CommonCCompilerSettings :
+    abstract class CommonCCompilerSettings :
         CommonCompilerSettings,
         C.ICOnlyCompilerSettings
     {

@@ -32,7 +32,7 @@ namespace MingwCommon
     /// <summary>
     /// Abstract class representing the common Mingw C++ compiler settings
     /// </summary>
-    public abstract class CommonCxxCompilerSettings :
+    abstract class CommonCxxCompilerSettings :
         MingwCommon.CommonCompilerSettings,
         C.ICxxOnlyCompilerSettings
     {

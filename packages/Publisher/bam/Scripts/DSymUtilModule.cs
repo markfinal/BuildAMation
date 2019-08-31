@@ -32,7 +32,7 @@ namespace Publisher
     /// <summary>
     /// Module representing a file having had dsymutil run on it
     /// </summary>
-    public class DSymUtilModule :
+    class DSymUtilModule :
         Bam.Core.Module,
         ICollatedObject
     {

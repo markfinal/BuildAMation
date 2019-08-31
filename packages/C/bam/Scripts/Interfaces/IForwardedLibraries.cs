@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Implemented by modules that need to forward modules as extra link dependencies.
     /// </summary>
-    public interface IForwardedLibraries
+    interface IForwardedLibraries
     {
         /// <summary>
         /// Collection of Modules that will need forwarding when the Module implementing this

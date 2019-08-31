@@ -32,7 +32,7 @@ namespace MingwCommon
     /// <summary>
     /// Abstract base class for Mingw linkers
     /// </summary>
-    public abstract class LinkerBase :
+    abstract class LinkerBase :
         C.LinkerTool
     {
         protected LinkerBase()
@@ -133,7 +133,7 @@ namespace MingwCommon
     /// 32-bit C linker
     /// </summary>
     [C.RegisterCLinker("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class Linker :
+    sealed class Linker :
         LinkerBase
     {
         public Linker() => this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-gcc$(LinkerSuffix).exe"));
@@ -143,7 +143,7 @@ namespace MingwCommon
     /// 32-bit C++ linkger
     /// </summary>
     [C.RegisterCxxLinker("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class LinkerCxx :
+    sealed class LinkerCxx :
         LinkerBase
     {
         public LinkerCxx() => this.Macros.Add("LinkerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-g++.exe"));

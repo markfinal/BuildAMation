@@ -33,7 +33,7 @@ namespace Publisher
     /// Settings interface for Linux objcopy tool (copying sections out of elfs)
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface IObjCopyToolSettings :
+    interface IObjCopyToolSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

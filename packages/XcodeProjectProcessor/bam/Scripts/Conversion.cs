@@ -33,7 +33,7 @@ namespace XcodeProjectProcessor
     /// <summary>
     /// Handles conversion from BAM settings into Xcode projects.
     /// </summary>
-    public static class XcodeConversion
+    static class XcodeConversion
     {
         private static void
         HandleFrameworks(

@@ -33,7 +33,7 @@ namespace VisualStudioProcessor
     /// Attribute representing inputs to a module
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = false)]
-    public sealed class InputPathsAttribute :
+    sealed class InputPathsAttribute :
         BaseAttribute
     {
         /// <summary>

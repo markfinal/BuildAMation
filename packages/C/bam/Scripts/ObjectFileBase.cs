@@ -33,7 +33,7 @@ namespace C
     /// <summary>
     /// Generic object file.
     /// </summary>
-    public abstract class ObjectFileBase :
+    abstract class ObjectFileBase :
         CModule,
         Bam.Core.IChildModule,
         Bam.Core.IInputPath,

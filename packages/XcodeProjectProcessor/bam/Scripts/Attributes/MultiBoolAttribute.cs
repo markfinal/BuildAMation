@@ -32,7 +32,7 @@ namespace XcodeProjectProcessor
     /// <summary>
     /// Attribute representing a multi-valued Boolean property in Xcode.
     /// </summary>
-    public sealed class MultiBoolAttribute :
+    sealed class MultiBoolAttribute :
         BoolAttribute
     {
         /// <summary>

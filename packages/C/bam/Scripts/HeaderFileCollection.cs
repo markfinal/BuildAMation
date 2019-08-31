@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Collection of header files
     /// </summary>
-    public class HeaderFileCollection :
+    class HeaderFileCollection :
         CModuleCollection<HeaderFile>
     {
         /// <summary>

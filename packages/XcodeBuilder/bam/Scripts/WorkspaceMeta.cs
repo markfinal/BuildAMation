@@ -32,7 +32,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Meta data for workspaces
     /// </summary>
-    public sealed class WorkspaceMeta
+    sealed class WorkspaceMeta
     {
         private readonly bool ProjectPerModule = false;
         private readonly System.Collections.Generic.Dictionary<string, Project> ProjectMap = new System.Collections.Generic.Dictionary<string, Project>();

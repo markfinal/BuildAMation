@@ -33,7 +33,7 @@ namespace VisualCCommon
     /// <summary>
     /// Meta data class for this package
     /// </summary>
-    public abstract class MetaData :
+    abstract class MetaData :
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
     {

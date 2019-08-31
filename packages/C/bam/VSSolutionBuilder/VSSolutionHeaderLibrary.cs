@@ -33,7 +33,7 @@ namespace C
     /// <summary>
     /// Utility class offering support for VisualStudio project generation
     /// </summary>
-    public static partial class VSSolutionSupport
+    static partial class VSSolutionSupport
     {
         /// <summary>
         /// Generate a project representing a header only library

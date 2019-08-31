@@ -33,7 +33,7 @@ namespace XcodeProjectProcessor
     /// Attribute representing preprocessor definitions in Xcode.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class PreprocessorDefinesAttribute :
+    sealed class PreprocessorDefinesAttribute :
         BaseAttribute
     {
         /// <summary>

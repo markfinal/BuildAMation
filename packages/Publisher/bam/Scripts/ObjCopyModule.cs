@@ -33,7 +33,7 @@ namespace Publisher
     /// <summary>
     /// Abstract module representing a file that has had sections copied from another
     /// </summary>
-    public abstract class ObjCopyModule :
+    abstract class ObjCopyModule :
         Bam.Core.Module,
         ICollatedObject
     {
@@ -145,7 +145,7 @@ namespace Publisher
     /// <summary>
     /// Module that makes a debug symbol file
     /// </summary>
-    public sealed class MakeDebugSymbolFile :
+    sealed class MakeDebugSymbolFile :
         ObjCopyModule
     {
         /// <summary>
@@ -243,7 +243,7 @@ namespace Publisher
     /// <summary>
     /// Module that links debug symbol files back to the original executable
     /// </summary>
-    public sealed class LinkBackDebugSymbolFile :
+    sealed class LinkBackDebugSymbolFile :
         ObjCopyModule
     {
         /// <summary>

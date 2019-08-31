@@ -46,7 +46,7 @@ namespace Publisher
     /// All collated paths are specified as absolute next to the publishing root using TokenizedStrings.
     /// This class has properties that expose standad locations, e.g. ExecutableDir, PluginDir.
     /// </summary>
-    public abstract class Collation :
+    abstract class Collation :
         Bam.Core.Module
     {
         protected override void

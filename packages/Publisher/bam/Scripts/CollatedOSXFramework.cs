@@ -32,7 +32,7 @@ namespace Publisher
     /// <summary>
     /// Collated object representing a macos Framework
     /// </summary>
-    public sealed class CollatedOSXFramework :
+    sealed class CollatedOSXFramework :
         CollatedObject
     {
         protected override void

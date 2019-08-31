@@ -32,7 +32,7 @@ namespace VisualC
     /// <summary>
     /// Class representing the archiver settings for this version of VisualC
     /// </summary>
-    public sealed class ArchiverSettings :
+    sealed class ArchiverSettings :
         VisualCCommon.CommonArchiverSettings
     {}
 }

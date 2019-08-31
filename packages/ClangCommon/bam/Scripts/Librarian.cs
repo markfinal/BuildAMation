@@ -34,7 +34,7 @@ namespace ClangCommon
     /// </summary>
     [C.RegisterLibrarian("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterLibrarian("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
-    public sealed class Librarian :
+    sealed class Librarian :
         C.LibrarianTool
     {
         /// <summary>

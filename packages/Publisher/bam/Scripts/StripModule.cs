@@ -32,7 +32,7 @@ namespace Publisher
     /// <summary>
     /// Collated module that has had symbol stripping performed on it
     /// </summary>
-    public class StripModule :
+    class StripModule :
         Bam.Core.Module,
         ICollatedObject
     {

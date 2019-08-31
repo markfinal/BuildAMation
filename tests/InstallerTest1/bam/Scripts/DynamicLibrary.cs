@@ -29,7 +29,7 @@
 #endregion // License
 namespace InstallerTest1
 {
-    public class CDynamicLibrary :
+    class CDynamicLibrary :
         C.DynamicLibrary
     {
         protected override void
@@ -53,7 +53,7 @@ namespace InstallerTest1
         }
     }
 
-    public class CxxDynamicLibrary :
+    class CxxDynamicLibrary :
         C.Cxx.DynamicLibrary
     {
         protected override void

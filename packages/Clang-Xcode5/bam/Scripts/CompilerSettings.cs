@@ -32,7 +32,7 @@ namespace Clang
     /// <summary>
     /// Class for C compiler settings in Clang
     /// </summary>
-    public sealed class CCompilerSettings :
+    sealed class CCompilerSettings :
         ClangCommon.CommonCCompilerSettings
     {}
 }

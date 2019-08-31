@@ -33,7 +33,7 @@ namespace Publisher
     /// Settings interface for rsync (file/directory copying)
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface IRsyncSettings :
+    interface IRsyncSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

@@ -33,7 +33,7 @@ namespace C
     /// <summary>
     /// Tool for making shared object symbolic links
     /// </summary>
-    public sealed class SharedObjectSymbolicLinkTool :
+    sealed class SharedObjectSymbolicLinkTool :
         Bam.Core.PreBuiltTool
     {
         /// <summary>

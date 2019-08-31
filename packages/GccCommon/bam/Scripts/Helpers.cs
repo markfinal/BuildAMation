@@ -32,7 +32,7 @@ namespace GccCommon.Helpers
     /// <summary>
     /// Helper glasses for Gcc settings
     /// </summary>
-    public static class HelperClasses
+    static class HelperClasses
     {
         public static void
         SetGccWarningOptions(

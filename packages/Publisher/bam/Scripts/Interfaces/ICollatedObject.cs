@@ -33,7 +33,7 @@ namespace Publisher
     /// <summary>
     /// Interface representing an object that has been collated
     /// </summary>
-    public interface ICollatedObject
+    interface ICollatedObject
     {
         /// <summary>
         /// The Module which originated this object before collation

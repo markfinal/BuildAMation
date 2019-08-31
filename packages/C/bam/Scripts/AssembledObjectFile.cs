@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Object file assembled from preprocessed assembly.
     /// </summary>
-    public class AssembledObjectFile :
+    class AssembledObjectFile :
         ObjectFileBase
     {
         /// <summary>

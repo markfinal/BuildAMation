@@ -35,7 +35,7 @@ namespace Publisher
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedFrameworkKey, "", path_modifier: "@dir($(0))")]
     [CommandLineProcessor.InputPaths(C.OSXFramework.FrameworkKey, "")]
     [CommandLineProcessor.InputPaths(CollatedObject.CopiedFrameworkKey, "")]
-    public sealed class RsyncSettings :
+    sealed class RsyncSettings :
         Bam.Core.Settings,
         IRsyncSettings
     {

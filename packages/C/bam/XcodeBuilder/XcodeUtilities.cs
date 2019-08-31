@@ -33,7 +33,7 @@ namespace C
     /// <summary>
     /// Utility class offering support for Xcode project generation
     /// </summary>
-    public static partial class XcodeSupport
+    static partial class XcodeSupport
     {
         /// <summary>
         /// Generate an Xcode Target that has been the result of a link or an archive

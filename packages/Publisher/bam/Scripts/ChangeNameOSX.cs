@@ -32,7 +32,7 @@ namespace Publisher
     /// <summary>
     /// Module representing a file having had install_name_tool --change applied to it
     /// </summary>
-    public class ChangeNameOSX :
+    class ChangeNameOSX :
         InstallNameModule
     {}
 }

@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Utility class for use with settings
     /// </summary>
-    public static class SettingsUtilities
+    static class SettingsUtilities
     {
         /// <summary>
         /// Get the intersection between two bool values.

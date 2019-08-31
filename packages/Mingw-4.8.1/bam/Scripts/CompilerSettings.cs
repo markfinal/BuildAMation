@@ -32,7 +32,7 @@ namespace Mingw
     /// <summary>
     /// Settings class for C compiling for this Mingw version
     /// </summary>
-    public sealed class CCompilerSettings :
+    sealed class CCompilerSettings :
         MingwCommon.CommonCompilerSettings
     {}
 }

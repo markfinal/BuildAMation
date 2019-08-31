@@ -36,7 +36,7 @@ namespace Publisher
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedDirectoryKey, "")]
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedRenamedDirectoryKey, "")]
     [CommandLineProcessor.AnyInputFile("", path_modifier_if_directory: "$(0)/.")]
-    public sealed class PosixCopyFileSettings :
+    sealed class PosixCopyFileSettings :
         Bam.Core.Settings,
         ICopyFileSettings
     {
@@ -68,7 +68,7 @@ namespace Publisher
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedDirectoryKey, "", path_modifier: "$(0)/")]
     [CommandLineProcessor.OutputPath(CollatedObject.CopiedRenamedDirectoryKey, "", path_modifier: "$(0)/")]
     [CommandLineProcessor.AnyInputFile("")]
-    public sealed class WinCopyFileSettings :
+    sealed class WinCopyFileSettings :
         Bam.Core.Settings,
         ICopyFileSettings
     {

@@ -33,7 +33,7 @@ namespace VSSolutionBuilder
     /// <summary>
     /// Utility class offering more useful functions for writing .vcxprojs
     /// </summary>
-    static public partial class Support
+    static partial class Support
     {
         static private void
         AddModuleDirectoryCreationShellCommands(

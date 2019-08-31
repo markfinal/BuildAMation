@@ -32,7 +32,7 @@ namespace XcodeProjectProcessor
     /// <summary>
     /// Base class to all Xcode attribute associated with settings properties.
     /// </summary>
-    public abstract class BaseAttribute :
+    abstract class BaseAttribute :
         System.Attribute
     {
         /// <summary>

@@ -30,7 +30,7 @@
 using System.Linq;
 namespace ExternalSourceGeneratorTest2
 {
-    public class PythonSourceGenerator :
+    class PythonSourceGenerator :
         C.ExternalSourceGenerator
     {
         protected override void

@@ -32,7 +32,7 @@ namespace MingwCommon
     /// <summary>
     /// Extension class for compiler enumerations
     /// </summary>
-    public static class SettingsUtilities
+    static class SettingsUtilities
     {
         public static EVisibility?
         Intersect(

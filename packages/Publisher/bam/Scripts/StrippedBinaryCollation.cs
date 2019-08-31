@@ -41,7 +41,7 @@ namespace Publisher
     /// On Linux, strip and objcopy is used to strip binaries, but link back to already hived off debug symbol files.
     /// On OSX, strip is used to strip binaries.
     /// </summary>
-    public abstract class StrippedBinaryCollation :
+    abstract class StrippedBinaryCollation :
         Bam.Core.Module
     {
         /// <summary>

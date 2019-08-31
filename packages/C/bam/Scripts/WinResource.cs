@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Compile a Windows resource file into the compiled resource.
     /// </summary>
-    public class WinResource :
+    class WinResource :
         ObjectFileBase
     {
         /// <summary>

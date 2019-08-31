@@ -33,7 +33,7 @@ namespace VisualStudioProcessor
     /// Settings attribute for boolean properties.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class BoolAttribute :
+    sealed class BoolAttribute :
         BaseAttribute
     {
         /// <summary>

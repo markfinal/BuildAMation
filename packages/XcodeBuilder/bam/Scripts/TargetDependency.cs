@@ -32,7 +32,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class representing a PBXTargetDependency in the Xcode project
     /// </summary>
-    public sealed class TargetDependency :
+    sealed class TargetDependency :
         Object
     {
         /// <summary>

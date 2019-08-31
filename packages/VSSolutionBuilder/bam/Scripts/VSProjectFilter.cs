@@ -33,7 +33,7 @@ namespace VSSolutionBuilder
     /// <summary>
     /// Class representing the filter files associated with VisualStudio project files
     /// </summary>
-    public sealed class VSProjectFilter
+    sealed class VSProjectFilter
     {
         private System.Collections.Generic.Dictionary<string, Bam.Core.Array<VSSettingsGroup>> Filters = new System.Collections.Generic.Dictionary<string, Bam.Core.Array<VSSettingsGroup>>();
 

@@ -33,7 +33,7 @@ namespace C
     /// <summary>
     /// Derive against this module to create a dynamic library, linking against the C runtime library.
     /// </summary>
-    public class DynamicLibrary :
+    class DynamicLibrary :
         ConsoleApplication,
         IDynamicLibrary,
         IForwardedLibraries

@@ -32,7 +32,7 @@ namespace Mingw
     /// <summary>
     /// Settings class for archiving for this Mingw version
     /// </summary>
-    public sealed class ArchiverSettings :
+    sealed class ArchiverSettings :
         MingwCommon.CommonArchiverSettings
     {}
 }

@@ -33,7 +33,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class representing a PBXNativeTarget in an Xcode project
     /// </summary>
-    public sealed class Target :
+    sealed class Target :
         Object
     {
         /// <summary>

@@ -37,7 +37,7 @@ namespace MakeFileBuilder
     /// <summary>
     /// Shared metadata for all objects in MakeFiles
     /// </summary>
-    public sealed class MakeFileCommonMetaData
+    sealed class MakeFileCommonMetaData
     {
         /// <summary>
         /// Is NMAKE the MakeFile chosen format?

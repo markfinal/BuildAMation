@@ -32,7 +32,7 @@ namespace Clang
     /// <summary>
     /// Class for Objective C++ compiler settings in Clang
     /// </summary>
-    public sealed class ObjectiveCxxCompilerSettings :
+    sealed class ObjectiveCxxCompilerSettings :
         ClangCommon.CommonObjectiveCxxCompilerSettings
     {
         protected override void

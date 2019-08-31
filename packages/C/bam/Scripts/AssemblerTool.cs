@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Abstract class that can be used as a tool to assemble code.
     /// </summary>
-    public abstract class AssemblerTool :
+    abstract class AssemblerTool :
         Bam.Core.PreBuiltTool
     {
         /// <summary>

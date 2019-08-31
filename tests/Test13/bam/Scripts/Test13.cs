@@ -29,7 +29,7 @@
 #endregion // License
 namespace Test13
 {
-    public class DynamicLibraryA :
+    class DynamicLibraryA :
         C.DynamicLibrary
     {
         protected override void
@@ -52,7 +52,7 @@ namespace Test13
         }
     }
 
-    public class DynamicLibraryB :
+    class DynamicLibraryB :
         C.DynamicLibrary
     {
         protected override void
@@ -77,7 +77,7 @@ namespace Test13
         }
     }
 
-    public class Application :
+    class Application :
         C.ConsoleApplication
     {
         protected override void

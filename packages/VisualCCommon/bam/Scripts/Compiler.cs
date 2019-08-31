@@ -33,7 +33,7 @@ namespace VisualCCommon
     /// <summary>
     /// Abstract base call for all VisualC compilers
     /// </summary>
-    public abstract class CompilerBase :
+    abstract class CompilerBase :
         C.CompilerTool
     {
         private string
@@ -102,7 +102,7 @@ namespace VisualCCommon
     /// Class for 32-bit C compilers
     /// </summary>
     [C.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public class Compiler32 :
+    class Compiler32 :
         CompilerBase
     {
         /// <summary>
@@ -123,7 +123,7 @@ namespace VisualCCommon
     /// Class for 32-bit C++ compilers
     /// </summary>
     [C.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class CxxCompiler32 :
+    sealed class CxxCompiler32 :
         Compiler32
     {
         /// <summary>
@@ -136,7 +136,7 @@ namespace VisualCCommon
     /// Class for 64-bit C compilers
     /// </summary>
     [C.RegisterCCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
-    public class Compiler64 :
+    class Compiler64 :
         CompilerBase
     {
         /// <summary>
@@ -157,7 +157,7 @@ namespace VisualCCommon
     /// Class for 64-bit C++ compilers
     /// </summary>
     [C.RegisterCxxCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
-    public sealed class CxxCompiler64 :
+    sealed class CxxCompiler64 :
         Compiler64
     {
         /// <summary>

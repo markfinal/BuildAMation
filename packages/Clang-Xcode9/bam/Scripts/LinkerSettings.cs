@@ -29,7 +29,7 @@
 #endregion // License
 namespace Clang
 {
-    public sealed class CLinkerSettings :
+    sealed class CLinkerSettings :
         ClangCommon.CommonLinkerSettings
     {}
 }

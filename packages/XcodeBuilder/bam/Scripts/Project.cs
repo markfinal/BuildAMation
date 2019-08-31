@@ -33,7 +33,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class representing a PBXProject in an Xcode project
     /// </summary>
-    public sealed class Project :
+    sealed class Project :
         Object
     {
         /// <summary>

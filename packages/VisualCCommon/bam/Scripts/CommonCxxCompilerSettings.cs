@@ -32,7 +32,7 @@ namespace VisualCCommon
     /// <summary>
     /// Abstract class for common C++ compiler settings
     /// </summary>
-    public abstract class CommonCxxCompilerSettings :
+    abstract class CommonCxxCompilerSettings :
         CommonCompilerSettings,
         C.ICxxOnlyCompilerSettings
     {

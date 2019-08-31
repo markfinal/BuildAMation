@@ -33,7 +33,7 @@ namespace Publisher
     /// <summary>
     /// Abstract prebuilt tool that performs file copying
     /// </summary>
-    public abstract class CopyFileTool :
+    abstract class CopyFileTool :
         Bam.Core.PreBuiltTool
     {
         /// <summary>
@@ -65,7 +65,7 @@ namespace Publisher
     /// <summary>
     /// Prebuilt tool module, mapping to Posix' cp
     /// </summary>
-    public sealed class CopyFilePosix :
+    sealed class CopyFilePosix :
         CopyFileTool
     {
         /// <summary>
@@ -144,7 +144,7 @@ namespace Publisher
     /// <summary>
     /// Prebuilt tool module, mapping to Windows' xcopy
     /// </summary>
-    public sealed class CopyFileWin :
+    sealed class CopyFileWin :
         CopyFileTool
     {
         /// <summary>

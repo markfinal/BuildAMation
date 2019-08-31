@@ -33,7 +33,7 @@ namespace C
     /// <summary>
     /// Utility class offering support for Xcode project generation
     /// </summary>
-    public static class XcodeSharedSettings
+    static class XcodeSharedSettings
     {
         /// <summary>
         /// Tweak the settings based on some criteria.

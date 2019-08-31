@@ -33,7 +33,7 @@ namespace GccCommon
     /// Interface for Gcc specific archiver settings
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonArchiverSettings :
+    interface ICommonArchiverSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

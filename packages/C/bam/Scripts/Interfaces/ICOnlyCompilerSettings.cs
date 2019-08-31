@@ -33,7 +33,7 @@ namespace C
     /// Compilation settings only for C code
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICOnlyCompilerSettings :
+    interface ICOnlyCompilerSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

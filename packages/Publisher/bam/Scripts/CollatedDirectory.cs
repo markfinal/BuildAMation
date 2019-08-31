@@ -32,7 +32,7 @@ namespace Publisher
     /// <summary>
     /// Class representing any collated directory
     /// </summary>
-    public sealed class CollatedDirectory :
+    sealed class CollatedDirectory :
         CollatedObject
     {
         protected override void

@@ -33,7 +33,7 @@ namespace ClangCommon
     /// Interface for clang assemblers
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonAssemblerSettings :
+    interface ICommonAssemblerSettings :
         Bam.Core.ISettingsBase
     {}
 }

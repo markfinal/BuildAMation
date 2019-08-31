@@ -32,7 +32,7 @@ namespace Clang
     /// <summary>
     /// Class for C++ linker settings in Clang
     /// </summary>
-    public sealed class CxxLinkerSettings :
+    sealed class CxxLinkerSettings :
         ClangCommon.CommonCxxLinkerSettings
     {
         protected override void

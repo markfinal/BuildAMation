@@ -33,7 +33,7 @@ namespace MingwCommon
     /// Mingw specific Windows resource compilation settings
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonWinResourceCompilerSettings :
+    interface ICommonWinResourceCompilerSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

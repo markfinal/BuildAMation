@@ -32,7 +32,7 @@ namespace VisualC
     /// <summary>
     /// Class representing the C++ compiler settings for this version of VisualC
     /// </summary>
-    public sealed class CxxCompilerSettings :
+    sealed class CxxCompilerSettings :
         VisualCCommon.CommonCxxCompilerSettings,
         C.ICxxOnlyCompilerSettings
     {}

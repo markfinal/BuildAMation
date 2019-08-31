@@ -33,7 +33,7 @@ namespace VSSolutionBuilder
     /// <summary>
     /// Class representing a VisualStudio solution.
     /// </summary>
-    public sealed class VSSolution
+    sealed class VSSolution
     {
         private System.Collections.Generic.Dictionary<System.Type, VSProject> ProjectMap = new System.Collections.Generic.Dictionary<System.Type, VSProject>();
         private System.Collections.Generic.Dictionary<string, VSSolutionFolder> SolutionFolders = new System.Collections.Generic.Dictionary<string, VSSolutionFolder>();

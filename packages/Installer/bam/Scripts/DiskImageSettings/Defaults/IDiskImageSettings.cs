@@ -32,7 +32,7 @@ namespace Installer.DefaultSettings
     /// <summary>
     /// Extension class for default settings for IDiskImageSettings
     /// </summary>
-    public static partial class DefaultSettingsExtensions
+    static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(

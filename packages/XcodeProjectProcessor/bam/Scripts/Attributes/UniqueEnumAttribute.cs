@@ -32,7 +32,7 @@ namespace XcodeProjectProcessor
     /// <summary>
     /// Attribute corresponding to a single value enumeration property.
     /// </summary>
-    public sealed class UniqueEnumAttribute :
+    sealed class UniqueEnumAttribute :
         EnumAttribute
     {
         /// <summary>

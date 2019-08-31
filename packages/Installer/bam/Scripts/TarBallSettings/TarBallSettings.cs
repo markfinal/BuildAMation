@@ -36,7 +36,7 @@ namespace Installer
     [CommandLineProcessor.OutputPath(TarBall.TarBallKey, "-f ")]
     [CommandLineProcessor.InputPaths(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey, "")]
     [CommandLineProcessor.InputPaths(Publisher.DebugSymbolCollation.DebugSymbolsDirectoryKey, "")]
-    public sealed class TarBallSettings :
+    sealed class TarBallSettings :
         Bam.Core.Settings,
         ITarBallSettings
     {

@@ -33,7 +33,7 @@ namespace C
     /// Windows specific linker settings
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonLinkerSettingsWin :
+    interface ICommonLinkerSettingsWin :
         Bam.Core.ISettingsBase
     {
         /// <summary>

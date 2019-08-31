@@ -29,7 +29,7 @@
 #endregion // License
 namespace Clang
 {
-    public sealed class PreprocessorSettings :
+    sealed class PreprocessorSettings :
         ClangCommon.CommonPreprocessorSettings
     {}
 }

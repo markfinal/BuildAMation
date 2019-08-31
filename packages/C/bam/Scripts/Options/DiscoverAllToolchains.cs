@@ -32,7 +32,7 @@ namespace C.Options
     /// <summary>
     /// Command line option to allow all toolchains, not just limited to the host OS, to be discovered.
     /// </summary>
-    public sealed class DiscoverAllToolchains :
+    sealed class DiscoverAllToolchains :
         Bam.Core.IBooleanCommandLineArgument
     {
         string Bam.Core.ICommandLineArgument.ContextHelp => "Allow all toolchains to be discovered (no platform filtering)";

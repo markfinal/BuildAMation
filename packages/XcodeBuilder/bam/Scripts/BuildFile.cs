@@ -32,7 +32,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class corresponding to the PBXBuildFile object in Xcode projects.
     /// </summary>
-    public sealed class BuildFile :
+    sealed class BuildFile :
         Object
     {
         /// <summary>

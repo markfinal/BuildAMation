@@ -32,7 +32,7 @@ namespace GccCommon
     /// <summary>
     /// Abstract class representing the common Gcc C++ compiler settings
     /// </summary>
-    public abstract class CommonCxxCompilerSettings :
+    abstract class CommonCxxCompilerSettings :
         CommonCompilerSettings,
         C.ICxxOnlyCompilerSettings
     {

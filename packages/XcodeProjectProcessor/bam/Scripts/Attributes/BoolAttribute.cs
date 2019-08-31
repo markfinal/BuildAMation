@@ -33,7 +33,7 @@ namespace XcodeProjectProcessor
     /// Attribute to use for Boolean Settings properties to convert to Xcode data.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public abstract class BoolAttribute :
+    abstract class BoolAttribute :
         BaseAttribute
     {
         /// <summary>

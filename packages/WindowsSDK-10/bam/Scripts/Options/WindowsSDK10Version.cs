@@ -33,7 +33,7 @@ namespace WindowsSDK.Options
     /// <summary>
     /// Class representing the command line option to override the choice of Windows10 SDK version.
     /// </summary>
-    public sealed class WindowsSDK10Version :
+    sealed class WindowsSDK10Version :
         Bam.Core.IStringCommandLineArgument,
         Bam.Core.ICommandLineArgumentDefault<string>
     {

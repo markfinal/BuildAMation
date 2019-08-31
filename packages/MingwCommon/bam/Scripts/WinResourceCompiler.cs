@@ -33,7 +33,7 @@ namespace MingwCommon
     /// 32-bit Mingw Windows resource compiler
     /// </summary>
     [C.RegisterWinResourceCompiler("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class WinResourceCompiler :
+    sealed class WinResourceCompiler :
         C.WinResourceCompilerTool
     {
         public WinResourceCompiler()

@@ -34,7 +34,7 @@ namespace MingwCommon
     /// </summary>
     [CommandLineProcessor.OutputPath(C.PreprocessedFile.PreprocessedFileKey, "", ignore: true)]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-E ", max_file_count: 1)]
-    public abstract class CommonPreprocessorSettings :
+    abstract class CommonPreprocessorSettings :
         C.SettingsBase,
         C.ICommonPreprocessorSettings
     {

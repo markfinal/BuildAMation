@@ -34,7 +34,7 @@ namespace VSSolutionBuilder
     /// Class representing the builder meta data.
     /// Although this is project related data, it needs to be named after the builder
     /// </summary>
-    public class VSSolutionMeta :
+    class VSSolutionMeta :
         Bam.Core.IBuildModeMetaData
     {
         /// <summary>

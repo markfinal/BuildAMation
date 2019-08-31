@@ -34,7 +34,7 @@ namespace C
     /// is run on it.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=false)]
-    public class PrebuiltAttribute :
+    class PrebuiltAttribute :
         System.Attribute
     {}
 }

@@ -33,7 +33,7 @@ namespace VisualCCommon
     /// <summary>
     /// Abstract base class representing a preprocessor tool
     /// </summary>
-    public abstract class PreprocessorBase :
+    abstract class PreprocessorBase :
         C.PreprocessorTool
     {
         private string
@@ -102,7 +102,7 @@ namespace VisualCCommon
     /// Class representing a 32-bit preprocessor.
     /// </summary>
     [C.RegisterPreprocessor("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class Preprocessor32 :
+    sealed class Preprocessor32 :
         PreprocessorBase
     {
         /// <summary>
@@ -123,7 +123,7 @@ namespace VisualCCommon
     /// Class representing a 64-bit preprocessor.
     /// </summary>
     [C.RegisterPreprocessor("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
-    public sealed class Preprocessor64 :
+    sealed class Preprocessor64 :
         PreprocessorBase
     {
         /// <summary>

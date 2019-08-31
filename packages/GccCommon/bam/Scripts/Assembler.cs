@@ -32,7 +32,7 @@ namespace GccCommon
     /// <summary>
     /// Abstract class representing any Gcc assembler tool
     /// </summary>
-    public abstract class AssemblerBase :
+    abstract class AssemblerBase :
         C.AssemblerTool
     {
         protected AssemblerBase()
@@ -62,7 +62,7 @@ namespace GccCommon
     /// </summary>
     [C.RegisterAssembler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterAssembler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
-    public sealed class Assembler :
+    sealed class Assembler :
         AssemblerBase
     {
         /// <summary>

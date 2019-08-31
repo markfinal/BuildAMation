@@ -30,7 +30,7 @@
 using System.Linq;
 namespace PluginTest
 {
-    public class Application :
+    class Application :
         C.Cxx.ConsoleApplication
     {
         protected override void
@@ -58,7 +58,7 @@ namespace PluginTest
         }
     }
 
-    public class Plugin :
+    class Plugin :
         C.Cxx.Plugin
     {
         protected override void

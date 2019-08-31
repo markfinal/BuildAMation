@@ -32,7 +32,7 @@ namespace Mingw
     /// <summary>
     /// Settings class for linking for this Mingw version
     /// </summary>
-    public sealed class LinkerSettings :
+    sealed class LinkerSettings :
         MingwCommon.CommonLinkerSettings
     {}
 }

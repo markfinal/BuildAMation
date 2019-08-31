@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Collection of one or more object files compiled against C.
     /// </summary>
-    public class CObjectFileCollection :
+    class CObjectFileCollection :
         CCompilableModuleCollection<ObjectFile>
     {
         /// <summary>

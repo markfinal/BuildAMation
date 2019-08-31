@@ -32,7 +32,7 @@ namespace VSSolutionBuilder
     /// <summary>
     /// Base abstract class for all subclasses that have a GUID
     /// </summary>
-    public abstract class HasGuid
+    abstract class HasGuid
     {
         /// <summary>
         /// Construct an instance

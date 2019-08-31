@@ -33,7 +33,7 @@ namespace VisualCCommon
     /// VisualC specific settings for the archiver
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonArchiverSettings :
+    interface ICommonArchiverSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

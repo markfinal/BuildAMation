@@ -35,7 +35,7 @@ namespace Installer
     /// </summary>
     [CommandLineProcessor.OutputPath(DiskImage.DMGKey, "-o ")]
     [CommandLineProcessor.InputPaths(Publisher.StrippedBinaryCollation.StripBinaryDirectoryKey, "-srcfolder ")]
-    public sealed class DiskImageSettings :
+    sealed class DiskImageSettings :
         Bam.Core.Settings,
         IDiskImageSettings
     {

@@ -34,7 +34,7 @@ namespace WindowsSDKCommon
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
     [Bam.Core.SettingsPrecedence(System.Int32.MaxValue)]
-    public interface ICommonWinResourceCompilerSettings :
+    interface ICommonWinResourceCompilerSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

@@ -33,7 +33,7 @@ namespace Publisher
     /// <summary>
     /// Prebuilt tool for running macOS dsymutil
     /// </summary>
-    public sealed class DSymUtilTool :
+    sealed class DSymUtilTool :
         Bam.Core.PreBuiltTool
     {
         private readonly Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();

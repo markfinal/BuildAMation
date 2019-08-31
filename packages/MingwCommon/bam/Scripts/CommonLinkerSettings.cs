@@ -35,7 +35,7 @@ namespace MingwCommon
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-o ")]
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.ImportLibraryKey, "-Wl,--out-implib,")]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
-    public abstract class CommonLinkerSettings :
+    abstract class CommonLinkerSettings :
         C.SettingsBase,
         C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,

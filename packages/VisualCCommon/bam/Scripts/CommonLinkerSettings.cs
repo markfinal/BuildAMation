@@ -40,7 +40,7 @@ namespace VisualCCommon
     [VisualStudioProcessor.OutputPath(C.ConsoleApplication.PDBKey, "ProgramDatabaseFile")]
     [VisualStudioProcessor.OutputPath(C.ConsoleApplication.ImportLibraryKey, "ImportLibrary")]
     [VisualStudioProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "", handledByMetaData: true)]
-    public abstract class CommonLinkerSettings :
+    abstract class CommonLinkerSettings :
         C.SettingsBase,
         C.ICommonLinkerSettingsWin,
         C.ICommonLinkerSettings,

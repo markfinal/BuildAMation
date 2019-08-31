@@ -39,7 +39,7 @@ namespace Publisher
     /// On Linux, this uses objcopy to extract the symbol data.
     /// On OSX, this uses dsymutil to extract symbol bundles.
     /// </summary>
-    public abstract class DebugSymbolCollation :
+    abstract class DebugSymbolCollation :
         Bam.Core.Module
     {
         /// <summary>

@@ -32,7 +32,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Abstract class for the base class of workspace settings
     /// </summary>
-    public abstract class WorkspaceSettings
+    abstract class WorkspaceSettings
     {
         /// <summary>
         /// Create a key-value pair in XML

@@ -33,7 +33,7 @@ namespace GccCommon
     /// Interface for Gcc specific assembler settings
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonAssemblerSettings :
+    interface ICommonAssemblerSettings :
         Bam.Core.ISettingsBase
     {}
 }

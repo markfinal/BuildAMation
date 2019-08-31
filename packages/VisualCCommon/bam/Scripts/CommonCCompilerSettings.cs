@@ -33,7 +33,7 @@ namespace VisualCCommon
     /// <summary>
     /// Abstract class for common C compiler settings
     /// </summary>
-    public abstract class CommonCCompilerSettings :
+    abstract class CommonCCompilerSettings :
         CommonCompilerSettings,
         C.ICOnlyCompilerSettings
     {

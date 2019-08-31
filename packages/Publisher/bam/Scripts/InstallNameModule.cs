@@ -32,7 +32,7 @@ namespace Publisher
     /// <summary>
     /// Abstract module representing a file having had install_name_tool run on it
     /// </summary>
-    public abstract class InstallNameModule :
+    abstract class InstallNameModule :
         Bam.Core.Module
     {
         /// <summary>

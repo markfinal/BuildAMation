@@ -33,7 +33,7 @@ namespace MakeFileBuilder
     /// <summary>
     /// Class representing rules in a MakeFile
     /// </summary>
-    public sealed class Rule
+    sealed class Rule
     {
         /// <summary>
         /// Create an instance of a rule

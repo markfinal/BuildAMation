@@ -33,7 +33,7 @@ namespace Publisher
     /// <summary>
     /// Pre-built tool for performing stripping of binaries
     /// </summary>
-    public sealed class StripTool :
+    sealed class StripTool :
         Bam.Core.PreBuiltTool
     {
         private readonly Bam.Core.TokenizedString ExecutablePath;

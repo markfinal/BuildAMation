@@ -32,7 +32,7 @@ namespace ClangCommon
     /// <summary>
     /// Abstract class for common Clang C++ linker settings
     /// </summary>
-    public abstract class CommonCxxLinkerSettings :
+    abstract class CommonCxxLinkerSettings :
         ClangCommon.CommonLinkerSettings,
         C.ICxxOnlyLinkerSettings
     {

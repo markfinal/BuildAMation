@@ -33,7 +33,7 @@ namespace C
     /// <summary>
     /// Derive this module to represent an OSX framework.
     /// </summary>
-    public abstract class OSXFramework :
+    abstract class OSXFramework :
         CModule
     {
         /// <summary>

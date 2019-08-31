@@ -36,7 +36,7 @@ namespace C
     /// On Windows, a versioning resource file is generated and linked into this binary. If a macro 'Description'
     /// exists on this module, then it is used for the 'FileDescription' field in the resource file.
     /// </summary>
-    public class ConsoleApplication :
+    class ConsoleApplication :
         CModule
     {
         /// <summary>

@@ -34,7 +34,7 @@ namespace C
     /// generate modules of the correct type given the source paths.
     /// </summary>
     [System.Obsolete("Please use CCompilableModuleCollection instead", true)]
-    public abstract class CCompilableModuleContainer<ChildModuleType> :
+    abstract class CCompilableModuleContainer<ChildModuleType> :
         CCompilableModuleCollection<ChildModuleType>
         where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
     { }
@@ -43,7 +43,7 @@ namespace C
     /// Base class for a collection of homogenous object files. Provides methods that automatically
     /// generate modules of the correct type given the source paths.
     /// </summary>
-    public abstract class CCompilableModuleCollection<ChildModuleType> :
+    abstract class CCompilableModuleCollection<ChildModuleType> :
         CModuleCollection<ChildModuleType>
         where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
     {

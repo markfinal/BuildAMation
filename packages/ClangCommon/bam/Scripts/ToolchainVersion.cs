@@ -32,7 +32,7 @@ namespace ClangCommon
     /// <summary>
     /// Clang toolchain version wrapper.
     /// </summary>
-    public sealed class ToolchainVersion :
+    sealed class ToolchainVersion :
         C.ToolchainVersion
     {
         /// <summary>

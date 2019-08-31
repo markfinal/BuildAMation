@@ -32,7 +32,7 @@ namespace Publisher
     /// <summary>
     /// Module that has install_name_tool --id run on it
     /// </summary>
-    public class IdNameOSX :
+    class IdNameOSX :
         InstallNameModule
     {}
 }

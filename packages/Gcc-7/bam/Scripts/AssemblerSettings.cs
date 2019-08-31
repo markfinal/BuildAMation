@@ -32,7 +32,7 @@ namespace Gcc
     /// <summary>
     /// Class representing the assembler settings for this version of Gcc
     /// </summary>
-    public sealed class AssemblerSettings :
+    sealed class AssemblerSettings :
         GccCommon.CommonAssemblerSettings
     {}
 }

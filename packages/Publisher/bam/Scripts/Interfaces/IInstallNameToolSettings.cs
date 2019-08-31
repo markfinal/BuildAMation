@@ -33,7 +33,7 @@ namespace Publisher
     /// Settings interface for macOS installnametool
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface IInstallNameToolSettings :
+    interface IInstallNameToolSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

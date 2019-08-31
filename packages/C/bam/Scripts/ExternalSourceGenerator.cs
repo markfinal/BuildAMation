@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Generate source from an external program
     /// </summary>
-    public class ExternalSourceGenerator :
+    class ExternalSourceGenerator :
         Bam.Core.Module
     {
         /// <summary>

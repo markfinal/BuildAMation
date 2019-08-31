@@ -32,7 +32,7 @@ namespace Publisher
     /// <summary>
     /// Class representing an ICommandLineTool that has been collated
     /// </summary>
-    public class CollatedCommandLineTool :
+    class CollatedCommandLineTool :
         CollatedFile,
         Bam.Core.ICommandLineTool
     {

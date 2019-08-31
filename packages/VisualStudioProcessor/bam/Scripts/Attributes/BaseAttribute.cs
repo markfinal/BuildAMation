@@ -32,7 +32,7 @@ namespace VisualStudioProcessor
     /// <summary>
     /// Base class for all settings attributes for VisualStudio
     /// </summary>
-    public abstract class BaseAttribute :
+    abstract class BaseAttribute :
         System.Attribute
     {
         /// <summary>

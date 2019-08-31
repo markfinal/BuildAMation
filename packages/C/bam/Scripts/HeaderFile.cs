@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Module representing a header file
     /// </summary>
-    public class HeaderFile :
+    class HeaderFile :
         Bam.Core.Module,
         Bam.Core.IInputPath,
         Bam.Core.IChildModule

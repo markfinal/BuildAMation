@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Attribute to register a C++ linker tool.
     /// </summary>
-    public sealed class RegisterCxxLinkerAttribute :
+    sealed class RegisterCxxLinkerAttribute :
         ToolRegistrationAttribute
     {
         /// <summary>

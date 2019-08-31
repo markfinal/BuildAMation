@@ -33,7 +33,7 @@ namespace ClangCommon
     /// <summary>
     /// Helper class for configuring clang
     /// </summary>
-    public static class ConfigureUtilities
+    static class ConfigureUtilities
     {
         static ConfigureUtilities()
         {

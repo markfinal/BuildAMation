@@ -32,7 +32,7 @@ namespace VisualCCommon.DefaultSettings
     /// <summary>
     /// Extension class for default settings to ICommonAssemblerSettings
     /// </summary>
-    public static partial class DefaultSettingsExtensions
+    static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(

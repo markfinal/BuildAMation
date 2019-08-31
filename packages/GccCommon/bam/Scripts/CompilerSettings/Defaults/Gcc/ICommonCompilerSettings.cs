@@ -33,7 +33,7 @@ namespace GccCommon.DefaultSettings
     /// <summary>
     /// Extension class for setting Gcc compiler defaults
     /// </summary>
-    public static partial class DefaultSettingsExtensions
+    static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(

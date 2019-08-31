@@ -33,7 +33,7 @@ namespace CommandLineProcessor
     /// Abstract base class for any attribute representing a settings property
     /// for command line conversion
     /// </summary>
-    public abstract class BaseAttribute :
+    abstract class BaseAttribute :
         System.Attribute
     {
         /// <summary>

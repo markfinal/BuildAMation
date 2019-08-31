@@ -33,7 +33,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class representing the .xcscheme cache file
     /// </summary>
-    public sealed class ProjectSchemeCache
+    sealed class ProjectSchemeCache
     {
         /// <summary>
         /// Create an instance

@@ -32,7 +32,7 @@ namespace ClangCommon
     /// <summary>
     /// Abstract class for all preprocessor tools
     /// </summary>
-    public abstract class PreprocessorBase :
+    abstract class PreprocessorBase :
         C.PreprocessorTool
     {
         /// <summary>
@@ -65,7 +65,7 @@ namespace ClangCommon
     /// </summary>
     [C.RegisterPreprocessor("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterPreprocessor("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
-    public sealed class Preprocessor :
+    sealed class Preprocessor :
         PreprocessorBase
     {
         public Preprocessor() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));

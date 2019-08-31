@@ -33,7 +33,7 @@ namespace Publisher
     /// Class representing chrpath tool settings
     /// </summary>
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "")]
-    public sealed class ChangeRPathSettings :
+    sealed class ChangeRPathSettings :
         Bam.Core.Settings,
         IChangeRPathSettings
     {

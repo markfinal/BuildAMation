@@ -29,7 +29,7 @@
 #endregion // License
 namespace InstallerTest1
 {
-    public sealed class CExecutableRuntime :
+    sealed class CExecutableRuntime :
         Publisher.Collation
     {
         protected override void
@@ -55,7 +55,7 @@ namespace InstallerTest1
         }
     }
 
-    public sealed class CxxExecutableRuntime :
+    sealed class CxxExecutableRuntime :
         Publisher.Collation
     {
         protected override void

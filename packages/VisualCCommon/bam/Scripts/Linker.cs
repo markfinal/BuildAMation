@@ -33,7 +33,7 @@ namespace VisualCCommon
     /// <summary>
     /// Class representing any VisualC linker tool
     /// </summary>
-    public abstract class LinkerBase :
+    abstract class LinkerBase :
         C.LinkerTool
     {
         private string
@@ -170,7 +170,7 @@ namespace VisualCCommon
     /// </summary>
     [C.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
     [C.RegisterCxxLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class Linker32 :
+    sealed class Linker32 :
         LinkerBase
     {
         /// <summary>
@@ -187,7 +187,7 @@ namespace VisualCCommon
     /// </summary>
     [C.RegisterCLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
     [C.RegisterCxxLinker("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
-    public sealed class Linker64 :
+    sealed class Linker64 :
         LinkerBase
     {
         /// <summary>

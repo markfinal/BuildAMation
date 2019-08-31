@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Tool for librarian activities
     /// </summary>
-    public abstract class LibrarianTool :
+    abstract class LibrarianTool :
         Bam.Core.PreBuiltTool
     {
         /// <summary>

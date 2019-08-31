@@ -32,7 +32,7 @@ namespace C.Cxx
     /// <summary>
     /// Compile a source file against C++.
     /// </summary>
-    public class ObjectFile :
+    class ObjectFile :
         C.ObjectFile
     {
         /// <summary>

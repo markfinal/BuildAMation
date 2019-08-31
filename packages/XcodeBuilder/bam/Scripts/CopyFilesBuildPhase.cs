@@ -33,7 +33,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class corresponding to a PBXCopyFilesBuildPhase in the Xcode project.
     /// </summary>
-    public sealed class CopyFilesBuildPhase :
+    sealed class CopyFilesBuildPhase :
         BuildPhase
     {
         /// <summary>

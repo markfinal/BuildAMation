@@ -32,7 +32,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class corresponding to a PBXContainerItemProxy in an Xcode project.
     /// </summary>
-    public sealed class ContainerItemProxy :
+    sealed class ContainerItemProxy :
         Object
     {
         private ContainerItemProxy(

@@ -32,7 +32,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class representing the workspace settings on disk.
     /// </summary>
-    public sealed class SharedWorkspaceSettings :
+    sealed class SharedWorkspaceSettings :
         WorkspaceSettings
     {
         /// <summary>

@@ -29,7 +29,7 @@
 #endregion // License
 namespace Installer.DefaultSettings
 {
-    public static partial class DefaultSettingsExtensions
+    static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(

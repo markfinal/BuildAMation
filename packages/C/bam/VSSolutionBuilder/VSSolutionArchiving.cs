@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Utility class offering support for VisualStudio project generation
     /// </summary>
-    public static partial class VSSolutionSupport
+    static partial class VSSolutionSupport
     {
         /// <summary>
         /// Create a StaticLibrary VisualStudio project

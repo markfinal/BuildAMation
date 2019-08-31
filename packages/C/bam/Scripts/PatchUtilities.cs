@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Utility class containing functions useful for running inside patches.
     /// </summary>
-    public static class PatchUtilities
+    static class PatchUtilities
     {
         private static void
         CheckIsCompilable<ChildModuleType>(

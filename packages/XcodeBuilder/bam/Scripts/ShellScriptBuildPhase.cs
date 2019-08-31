@@ -33,7 +33,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class representing a PBXShellScriptBuildPhase in an Xcode project
     /// </summary>
-    public sealed class ShellScriptBuildPhase :
+    sealed class ShellScriptBuildPhase :
         BuildPhase
     {
         /// <summary>

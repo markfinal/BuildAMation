@@ -33,7 +33,7 @@ namespace Publisher
     /// <summary>
     /// Prebuilt tool representing chrpath
     /// </summary>
-    public sealed class ChangeRPathTool :
+    sealed class ChangeRPathTool :
         Bam.Core.PreBuiltTool
     {
         /// <summary>

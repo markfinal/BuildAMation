@@ -33,7 +33,7 @@ namespace Installer
     /// Interface settings for zip
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface IZipSettings :
+    interface IZipSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

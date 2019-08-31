@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Attribute to register a librarian tool.
     /// </summary>
-    public sealed class RegisterLibrarianAttribute :
+    sealed class RegisterLibrarianAttribute :
         ToolRegistrationAttribute
     {
         /// <summary>

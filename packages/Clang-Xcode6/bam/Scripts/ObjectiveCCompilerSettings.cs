@@ -32,7 +32,7 @@ namespace Clang
     /// <summary>
     /// Class for Objective C compiler settings in Clang
     /// </summary>
-    public sealed class ObjectiveCCompilerSettings :
+    sealed class ObjectiveCCompilerSettings :
         ClangCommon.CommonObjectiveCCompilerSettings
     {}
 }

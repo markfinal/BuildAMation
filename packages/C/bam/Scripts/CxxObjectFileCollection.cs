@@ -32,7 +32,7 @@ namespace C.Cxx
     /// <summary>
     /// Collection of one or more object files compiled against C++.
     /// </summary>
-    public class ObjectFileCollection :
+    class ObjectFileCollection :
         C.CCompilableModuleCollection<ObjectFile>
     {
         /// <summary>

@@ -33,7 +33,7 @@ namespace VSSolutionBuilder
     /// Make a GUID that is determinstic across builds, so that regenerating .vcxprojs will just
     /// update existing solutions and projects
     /// </summary>
-    public sealed class DeterministicGuid
+    sealed class DeterministicGuid
     {
         /// <summary>
         /// Construct the GUID

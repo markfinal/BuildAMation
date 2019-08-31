@@ -35,7 +35,7 @@ namespace Publisher
     [CommandLineProcessor.OutputPath(MakeDebugSymbolFile.DebugSymbolFileKey, "")]
     [CommandLineProcessor.InputPaths(StripModule.StripBinaryKey, "", max_file_count: 1)]
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
-    public sealed class MakeDebugSymbolFileSettings :
+    sealed class MakeDebugSymbolFileSettings :
         Bam.Core.Settings,
         IObjCopyToolSettings
     {
@@ -59,7 +59,7 @@ namespace Publisher
     /// </summary>
     [CommandLineProcessor.OutputPath(LinkBackDebugSymbolFile.UpdateOriginalExecutable, "")]
     [CommandLineProcessor.InputPaths(MakeDebugSymbolFile.DebugSymbolFileKey, "--add-gnu-debuglink=", max_file_count: 1)]
-    public sealed class LinkBackDebugSymbolFileSettings :
+    sealed class LinkBackDebugSymbolFileSettings :
         Bam.Core.Settings,
         IObjCopyToolSettings
     {

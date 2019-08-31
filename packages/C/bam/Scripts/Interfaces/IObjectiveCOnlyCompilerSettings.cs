@@ -33,7 +33,7 @@ namespace C
     /// Objective C specific compiler settings
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.ObjC.DefaultSettings.DefaultSettingsExtensions))]
-    public interface IObjectiveCOnlyCompilerSettings :
+    interface IObjectiveCOnlyCompilerSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

@@ -32,7 +32,7 @@ namespace VisualC
     /// <summary>
     /// Class representing the assembler settings for this version of VisualC
     /// </summary>
-    public sealed class AssemblerSettings :
+    sealed class AssemblerSettings :
         VisualCCommon.CommonAssemblerSettings
     {}
 }

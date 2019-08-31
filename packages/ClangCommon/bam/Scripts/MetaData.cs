@@ -32,7 +32,7 @@ namespace ClangCommon
     /// <summary>
     /// Abstract class for all Clang meta data
     /// </summary>
-    public abstract class MetaData :
+    abstract class MetaData :
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
     {

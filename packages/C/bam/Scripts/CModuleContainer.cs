@@ -35,7 +35,7 @@ namespace C
     /// generate modules of the correct type given the source paths.
     /// </summary>
     [System.Obsolete("Use CModuleCollection instead", true)]
-    public abstract class CModuleContainer<ChildModuleType> :
+    abstract class CModuleContainer<ChildModuleType> :
         CModuleCollection<ChildModuleType>
         where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
     { }
@@ -44,7 +44,7 @@ namespace C
     /// Base class for collections of C files, be they compilable source or header files. Provides methods that automatically
     /// generate modules of the correct type given the source paths.
     /// </summary>
-    public abstract class CModuleCollection<ChildModuleType> :
+    abstract class CModuleCollection<ChildModuleType> :
         CModule, // TODO: should this be here? it has no headers, nor version number
         Bam.Core.IModuleGroup,
         IAddFiles

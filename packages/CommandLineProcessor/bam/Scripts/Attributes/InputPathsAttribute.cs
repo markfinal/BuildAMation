@@ -33,7 +33,7 @@ namespace CommandLineProcessor
     /// Attribute representing input files.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple = true)] // there may be different types of input files
-    public class InputPathsAttribute :
+    class InputPathsAttribute :
         BaseAttribute
     {
         /// <summary>

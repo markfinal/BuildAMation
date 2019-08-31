@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Abstract class for compiling code.
     /// </summary>
-    public abstract class CompilerTool :
+    abstract class CompilerTool :
         Bam.Core.PreBuiltTool
     {
         /// <summary>

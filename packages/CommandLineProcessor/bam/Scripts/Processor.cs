@@ -33,7 +33,7 @@ namespace CommandLineProcessor
     /// <summary>
     /// Utility function wrapping executing command lines.
     /// </summary>
-    public static class Processor
+    static class Processor
     {
         /// <summary>
         /// Convert the features of an ICommandLineTool to a command line.

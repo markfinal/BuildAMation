@@ -32,7 +32,7 @@ namespace MingwCommon.DefaultSettings
     /// <summary>
     /// Extension class to default settings for ICommonArchiverSettings
     /// </summary>
-    public static partial class DefaultSettingsExtensions
+    static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(

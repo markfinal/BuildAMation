@@ -33,7 +33,7 @@ namespace VisualCCommon
     /// VisualC specific settings for the linker
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonLinkerSettings : Bam.Core.ISettingsBase
+    interface ICommonLinkerSettings : Bam.Core.ISettingsBase
     {
         /// <summary>
         /// Get or set whether the logo is displayed

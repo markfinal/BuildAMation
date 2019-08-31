@@ -32,7 +32,7 @@ namespace C.Options
     /// <summary>
     /// Command line option to override the default bit-depth to build against.
     /// </summary>
-    public sealed class DefaultBitDepth :
+    sealed class DefaultBitDepth :
         Bam.Core.IIntegerCommandLineArgument
     {
         string Bam.Core.ICommandLineArgument.ContextHelp => "Change the default bit depth of the builds. Default is 64.";

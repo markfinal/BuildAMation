@@ -34,7 +34,7 @@ namespace C
     /// Base class for all concrete settings classes. This is tuned towards compilation settings
     /// which can be delta'd in project generation.
     /// </summary>
-    public abstract class SettingsBase :
+    abstract class SettingsBase :
         Bam.Core.Settings
     {
         /// <summary>

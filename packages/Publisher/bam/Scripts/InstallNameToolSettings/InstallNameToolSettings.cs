@@ -33,7 +33,7 @@ namespace Publisher
     /// Class representing install_name_tool tool settings
     /// </summary>
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "")]
-    public sealed class InstallNameToolSettings :
+    sealed class InstallNameToolSettings :
         Bam.Core.Settings,
         IInstallNameToolSettings
     {

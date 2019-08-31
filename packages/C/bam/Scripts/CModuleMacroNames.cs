@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Common macro names used for Modules.
     /// </summary>
-    public static class ModuleMacroNames
+    static class ModuleMacroNames
     {
         /// <summary>
         /// Major version number of the Module.

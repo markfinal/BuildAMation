@@ -42,7 +42,7 @@ namespace C
     /// Derived classes should construct a mapping of source path (in the source collection applied to) to warning suppressions
     /// in the derived constructor, using the helper functions in SuppressWarningsDelegate.
     /// </summary>
-    public abstract class SuppressWarningsDelegate
+    abstract class SuppressWarningsDelegate
     {
         private sealed class Conditions
         {

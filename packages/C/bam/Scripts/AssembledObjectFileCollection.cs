@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Collection of one or more object files assembled from preprocessed assembly.
     /// </summary>
-    public class AssembledObjectFileCollection :
+    class AssembledObjectFileCollection :
         CCompilableModuleCollection<AssembledObjectFile>
     {
         /// <summary>

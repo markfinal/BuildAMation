@@ -32,7 +32,7 @@ namespace WindowsSDK
     /// <summary>
     /// Base class for all versions of the compiler tool
     /// </summary>
-    public abstract class WinResourceCompilerBase :
+    abstract class WinResourceCompilerBase :
         C.WinResourceCompilerTool
     {
         /// <summary>
@@ -96,7 +96,7 @@ namespace WindowsSDK
     /// 32-bit resource compiler
     /// </summary>
     [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class WinResourceCompiler32 :
+    sealed class WinResourceCompiler32 :
         WinResourceCompilerBase
     {
         /// <summary>
@@ -117,7 +117,7 @@ namespace WindowsSDK
     /// 64-bit resource compiler
     /// </summary>
     [C.RegisterWinResourceCompiler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
-    public sealed class WinResourceCompiler64 :
+    sealed class WinResourceCompiler64 :
         WinResourceCompilerBase
     {
         /// <summary>

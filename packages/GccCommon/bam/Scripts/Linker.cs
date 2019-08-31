@@ -33,7 +33,7 @@ namespace GccCommon
     /// <summary>
     /// Abstract class representing any Gcc linker tool
     /// </summary>
-    public abstract class LinkerBase :
+    abstract class LinkerBase :
         C.LinkerTool
     {
         protected LinkerBase()
@@ -211,7 +211,7 @@ namespace GccCommon
     /// </summary>
     [C.RegisterCLinker("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterCLinker("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
-    public sealed class Linker :
+    sealed class Linker :
         LinkerBase
     {
         public Linker() => this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
@@ -222,7 +222,7 @@ namespace GccCommon
     /// </summary>
     [C.RegisterCxxLinker("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterCxxLinker("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
-    public sealed class LinkerCxx :
+    sealed class LinkerCxx :
         LinkerBase
     {
         public LinkerCxx() => this.Macros.Add("LinkerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));

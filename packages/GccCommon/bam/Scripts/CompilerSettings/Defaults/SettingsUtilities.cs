@@ -32,7 +32,7 @@ namespace GccCommon
     /// <summary>
     /// Extension class for Gcc enum properties
     /// </summary>
-    public static class SettingsUtilities
+    static class SettingsUtilities
     {
         public static EVisibility?
         Intersect(

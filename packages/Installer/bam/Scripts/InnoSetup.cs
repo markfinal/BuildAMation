@@ -147,7 +147,7 @@ namespace Installer
     /// Settings for InnoSetup
     /// </summary>
     [CommandLineProcessor.InputPaths(InnoSetupScript.ScriptKey, "")]
-    public sealed class InnoSetupCompilerSettings :
+    sealed class InnoSetupCompilerSettings :
         Bam.Core.Settings
     {
         /// <summary>
@@ -162,7 +162,7 @@ namespace Installer
     /// <summary>
     /// Compiler tool for InnoSetup
     /// </summary>
-    public sealed class InnoSetupCompiler :
+    sealed class InnoSetupCompiler :
         Bam.Core.PreBuiltTool
     {
         protected override void
@@ -194,7 +194,7 @@ namespace Installer
     /// Derive from this module to create an InnoSetup installer of the specified files.
     /// </summary>
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
-    public abstract class InnoSetupInstaller :
+    abstract class InnoSetupInstaller :
         Bam.Core.Module
     {
         private InnoSetupScript ScriptModule;

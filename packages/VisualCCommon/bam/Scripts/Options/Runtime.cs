@@ -32,7 +32,7 @@ namespace VisualCCommon.Options
     /// <summary>
     /// Command line option to select the runtime library to compile against
     /// </summary>
-    public sealed class Runtime :
+    sealed class Runtime :
         Bam.Core.IRegExCommandLineArgument
     {
         string Bam.Core.ICommandLineArgument.ContextHelp => "Choose the default VisualStudio runtime library";

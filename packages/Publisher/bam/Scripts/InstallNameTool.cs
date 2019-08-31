@@ -33,7 +33,7 @@ namespace Publisher
     /// <summary>
     /// Prebuilt tool for running install_name_tool
     /// </summary>
-    public sealed class InstallNameTool :
+    sealed class InstallNameTool :
         Bam.Core.PreBuiltTool
     {
         private readonly Bam.Core.TokenizedStringArray arguments = new Bam.Core.TokenizedStringArray();

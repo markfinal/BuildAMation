@@ -32,7 +32,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Base class for all objects in the Xcode project.
     /// </summary>
-    public abstract class Object
+    abstract class Object
     {
         /// <summary>
         /// Construct an instance.

@@ -32,7 +32,7 @@ namespace ClangCommon
     /// <summary>
     /// Abstract class for all linker tools
     /// </summary>
-    public abstract class LinkerBase :
+    abstract class LinkerBase :
         C.LinkerTool
     {
         /// <summary>
@@ -134,7 +134,7 @@ namespace ClangCommon
     /// </summary>
     [C.RegisterCLinker("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterCLinker("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
-    public sealed class Linker :
+    sealed class Linker :
         LinkerBase
     {
         public Linker() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
@@ -150,7 +150,7 @@ namespace ClangCommon
     /// </summary>
     [C.RegisterCxxLinker("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterCxxLinker("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
-    public sealed class LinkerCxx :
+    sealed class LinkerCxx :
         LinkerBase
     {
         public LinkerCxx() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));

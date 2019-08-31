@@ -32,7 +32,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class representing the user data in the workspace
     /// </summary>
-    public sealed class UserWorkspaceSettings :
+    sealed class UserWorkspaceSettings :
         WorkspaceSettings
     {
         /// <summary>

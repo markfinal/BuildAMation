@@ -32,7 +32,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Meta data for the Xcode builder
     /// </summary>
-    public sealed class XcodeMeta :
+    sealed class XcodeMeta :
         Bam.Core.IBuildModeMetaData
     {
         /// <summary>

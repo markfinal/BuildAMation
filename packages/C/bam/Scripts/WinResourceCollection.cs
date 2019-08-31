@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Collection of one or more resource files.
     /// </summary>
-    public class WinResourceCollection :
+    class WinResourceCollection :
         CCompilableModuleCollection<WinResource>
     {
         /// <summary>

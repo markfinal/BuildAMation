@@ -33,7 +33,7 @@ namespace VSSolutionBuilder
     /// <summary>
     /// Class respresenting an abstraction of a project configuration, consisting of platform and configuration
     /// </summary>
-    public sealed class VSProjectConfiguration
+    sealed class VSProjectConfiguration
     {
         /// <summary>
         /// Type of output

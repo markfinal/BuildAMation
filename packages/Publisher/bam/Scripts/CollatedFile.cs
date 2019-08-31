@@ -32,7 +32,7 @@ namespace Publisher
     /// <summary>
     /// Class representing any collated file
     /// </summary>
-    public class CollatedFile :
+    class CollatedFile :
         CollatedObject
     {
         protected override void

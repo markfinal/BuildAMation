@@ -36,7 +36,7 @@ namespace VisualCCommon
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "-c ")]
     [VisualStudioProcessor.OutputPath(C.AssembledObjectFile.ObjectFileKey, "ObjectFileName", handledByMetaData: true)] // if deeper than just $(IntDir)myobj.obj, MASM seems to fail
     [VisualStudioProcessor.InputPaths(C.SourceFile.SourceFileKey, "", handledByMetaData: true)]
-    public abstract class CommonAssemblerSettings :
+    abstract class CommonAssemblerSettings :
         C.SettingsBase,
         C.ICommonAssemblerSettings,
         C.IAdditionalSettings,

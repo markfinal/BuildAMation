@@ -32,7 +32,7 @@ namespace Clang
     /// <summary>
     /// Class for assembler settings in Clang
     /// </summary>
-    public sealed class AssemblerSettings :
+    sealed class AssemblerSettings :
         ClangCommon.CommonAssemblerSettings
     {
         public override void

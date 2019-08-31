@@ -33,7 +33,7 @@ namespace C
     /// Assembler settings common to OSX.
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonAssemblerSettingsOSX :
+    interface ICommonAssemblerSettingsOSX :
         Bam.Core.ISettingsBase
     {
         /// <summary>

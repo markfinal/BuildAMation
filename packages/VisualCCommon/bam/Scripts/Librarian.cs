@@ -33,7 +33,7 @@ namespace VisualCCommon
     /// <summary>
     /// Abstract class representing any librarian
     /// </summary>
-    public abstract class LibrarianBase :
+    abstract class LibrarianBase :
         C.LibrarianTool
     {
         private string
@@ -102,7 +102,7 @@ namespace VisualCCommon
     /// Class representing a 32-bit VisualC librarian
     /// </summary>
     [C.RegisterLibrarian("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class Librarian32 :
+    sealed class Librarian32 :
         LibrarianBase
     {
         /// <summary>
@@ -118,7 +118,7 @@ namespace VisualCCommon
     /// Class representing a 64-bit VisualC librarian
     /// </summary>
     [C.RegisterLibrarian("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
-    public sealed class Librarian64 :
+    sealed class Librarian64 :
         LibrarianBase
     {
         /// <summary>

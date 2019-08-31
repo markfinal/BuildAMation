@@ -33,7 +33,7 @@ namespace VisualStudioProcessor
     /// <summary>
     /// Utility class for converting settings to VisualStudio projects
     /// </summary>
-    public static class VSSolutionConversion
+    static class VSSolutionConversion
     {
         /// <summary>
         /// Convert a settings object to VisualStudio.

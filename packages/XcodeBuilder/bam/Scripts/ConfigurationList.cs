@@ -33,7 +33,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class corresponding to a XCConfigurationList in an Xcode project.
     /// </summary>
-    public sealed class ConfigurationList :
+    sealed class ConfigurationList :
         Object,
         System.Collections.Generic.IEnumerable<Configuration>
     {

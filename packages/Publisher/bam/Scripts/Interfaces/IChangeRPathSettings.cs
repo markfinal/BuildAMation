@@ -33,7 +33,7 @@ namespace Publisher
     /// Settings interface for changing a Linux RPath
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface IChangeRPathSettings :
+    interface IChangeRPathSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

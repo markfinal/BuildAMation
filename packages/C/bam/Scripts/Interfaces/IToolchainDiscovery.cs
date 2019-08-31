@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Implement this interface when your class performs toolchain discovery.
     /// </summary>
-    public interface IToolchainDiscovery
+    interface IToolchainDiscovery
     {
         /// <summary>
         /// Perform discovery for the toolchain for use with the specified bit-depth.

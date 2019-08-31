@@ -151,7 +151,7 @@ namespace Installer
     /// <summary>
     /// Prebuilt tool module for tar
     /// </summary>
-    public sealed class TarCompiler :
+    sealed class TarCompiler :
         Bam.Core.PreBuiltTool
     {
         /// <summary>
@@ -169,7 +169,7 @@ namespace Installer
     /// Derive from this module to create a tarball of the specified files.
     /// </summary>
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Linux | Bam.Core.EPlatform.OSX)]
-    public abstract class TarBall :
+    abstract class TarBall :
         Bam.Core.Module
     {
         /// <summary>

@@ -33,7 +33,7 @@ namespace Publisher
     /// Settings interface for the strip tool (remove sections from binaries)
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface IStripToolSettings :
+    interface IStripToolSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

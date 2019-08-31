@@ -33,7 +33,7 @@ namespace C
     /// Linker settings that are common for OSX builds.
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonLinkerSettingsOSX :
+    interface ICommonLinkerSettingsOSX :
         Bam.Core.ISettingsBase
     {
         /// <summary>

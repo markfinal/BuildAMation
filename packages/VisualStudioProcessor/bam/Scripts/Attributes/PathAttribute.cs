@@ -33,7 +33,7 @@ namespace VisualStudioProcessor
     /// Attribute associated with a path
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class PathAttribute :
+    sealed class PathAttribute :
         BaseAttribute
     {
         /// <summary>

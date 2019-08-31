@@ -36,7 +36,7 @@ namespace WindowsSDKCommon
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     [VisualStudioProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "", handledByMetaData: true)]
     [VisualStudioProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1, handledByMetaData: true)]
-    public abstract class CommonWinResourceCompilerSettings :
+    abstract class CommonWinResourceCompilerSettings :
         C.SettingsBase,
         C.ICommonWinResourceCompilerSettings,
         C.IAdditionalSettings,

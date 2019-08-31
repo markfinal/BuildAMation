@@ -36,12 +36,12 @@ namespace C
     /// using appropriate data to identify a version. The version must be collapsable to a single
     /// integer that is ordered in the same manner as the source format of the version.
     /// </summary>
-    public abstract class ToolchainVersion
+    abstract class ToolchainVersion
     {
         /// <summary>
         /// Exceptions of this type are thrown when two different types of toolchain versions are compared.
         /// </summary>
-        public sealed class IncompatibleTypesException :
+        sealed class IncompatibleTypesException :
             Bam.Core.Exception
         {
             /// <summary>

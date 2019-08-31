@@ -33,7 +33,7 @@ namespace C
     /// <summary>
     /// Derive against this module to create a GUI application linking against the C runtime library.
     /// </summary>
-    public class GUIApplication :
+    class GUIApplication :
         ConsoleApplication
     {
         /// <summary>

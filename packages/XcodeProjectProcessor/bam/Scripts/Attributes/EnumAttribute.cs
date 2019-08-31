@@ -33,7 +33,7 @@ namespace XcodeProjectProcessor
     /// Attribute to use for enumeration Settings properties to convert to Xcode data.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = true)]
-    public abstract class EnumAttribute :
+    abstract class EnumAttribute :
         BaseAttribute
     {
         /// <summary>

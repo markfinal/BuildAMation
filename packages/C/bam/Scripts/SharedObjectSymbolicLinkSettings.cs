@@ -34,7 +34,7 @@ namespace C
     /// </summary>
     [CommandLineProcessor.OutputPath(C.SharedObjectSymbolicLink.SOSymLinkKey, "", path_modifier: "@filename($(0))")]
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1, path_modifier: "@filename($(0))")]
-    public sealed class SharedObjectSymbolicLinkSettings :
+    sealed class SharedObjectSymbolicLinkSettings :
         Bam.Core.Settings,
         ISharedObjectSymbolicLinkSettings
     {

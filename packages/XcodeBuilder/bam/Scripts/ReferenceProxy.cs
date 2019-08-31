@@ -32,7 +32,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class representing a PBXReferenceProxy in an Xcode project
     /// </summary>
-    public sealed class ReferenceProxy :
+    sealed class ReferenceProxy :
         Object
     {
         /// <summary>

@@ -33,7 +33,7 @@ namespace Publisher
     /// <summary>
     /// Abstract base class for any collated object
     /// </summary>
-    public abstract class CollatedObject :
+    abstract class CollatedObject :
         Bam.Core.Module,
         ICollatedObject
     {

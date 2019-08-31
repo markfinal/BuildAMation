@@ -34,7 +34,7 @@ namespace GccCommon
     /// </summary>
     [CommandLineProcessor.OutputPath(C.ConsoleApplication.ExecutableKey, "-o ")]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
-    public abstract class CommonLinkerSettings :
+    abstract class CommonLinkerSettings :
         C.SettingsBase,
         C.ICommonLinkerSettings,
         C.IAdditionalSettings,

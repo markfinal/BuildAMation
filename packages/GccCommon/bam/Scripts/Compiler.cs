@@ -32,7 +32,7 @@ namespace GccCommon
     /// <summary>
     /// Abstract class representing any Gcc compiler
     /// </summary>
-    public abstract class CompilerBase :
+    abstract class CompilerBase :
         C.CompilerTool
     {
         protected CompilerBase()
@@ -69,7 +69,7 @@ namespace GccCommon
     /// </summary>
     [C.RegisterCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
-    public sealed class CCompiler :
+    sealed class CCompiler :
         CompilerBase
     {
         public CCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
@@ -85,7 +85,7 @@ namespace GccCommon
     /// </summary>
     [C.RegisterCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
-    public sealed class CxxCompiler :
+    sealed class CxxCompiler :
         CompilerBase
     {
         public CxxCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));
@@ -101,7 +101,7 @@ namespace GccCommon
     /// </summary>
     [C.RegisterObjectiveCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterObjectiveCCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
-    public sealed class ObjectiveCCompiler :
+    sealed class ObjectiveCCompiler :
         CompilerBase
     {
         public ObjectiveCCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));
@@ -117,7 +117,7 @@ namespace GccCommon
     /// </summary>
     [C.RegisterObjectiveCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterObjectiveCxxCompiler("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
-    public sealed class ObjectiveCxxCompiler :
+    sealed class ObjectiveCxxCompiler :
         CompilerBase
     {
         public ObjectiveCxxCompiler() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GxxPath));

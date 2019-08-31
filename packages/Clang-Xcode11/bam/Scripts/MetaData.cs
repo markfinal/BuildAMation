@@ -32,7 +32,7 @@ namespace Clang
     /// <summary>
     /// Meta data for this version of Clang
     /// </summary>
-    public sealed class MetaData :
+    sealed class MetaData :
         ClangCommon.MetaData
     {
         public MetaData()

@@ -33,7 +33,7 @@ namespace Publisher
     /// <summary>
     /// Prebuilt tool for running rsync
     /// </summary>
-    public sealed class RsyncTool :
+    sealed class RsyncTool :
         CopyFileTool
     {
         /// <summary>

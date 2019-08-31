@@ -32,7 +32,7 @@ namespace XcodeProjectProcessor
     /// <summary>
     /// Attribute corresponding to a Boolean property with a single value.
     /// </summary>
-    public sealed class UniqueBoolAttribute :
+    sealed class UniqueBoolAttribute :
         BoolAttribute
     {
         /// <summary>

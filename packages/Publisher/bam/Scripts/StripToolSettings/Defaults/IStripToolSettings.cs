@@ -33,7 +33,7 @@ namespace Publisher.DefaultSettings
     /// <summary>
     /// Extension class for setting defaults of IStripToolSettings
     /// </summary>
-    public static partial class DefaultSettingsExtensions
+    static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(

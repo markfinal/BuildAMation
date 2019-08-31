@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Tool for linking code.
     /// </summary>
-    public abstract class LinkerTool :
+    abstract class LinkerTool :
         Bam.Core.PreBuiltTool
     {
         /// <summary>

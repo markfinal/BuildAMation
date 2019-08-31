@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Interface for collections that need to add files.
     /// </summary>
-    public interface IAddFiles
+    interface IAddFiles
     {
         /// <summary>
         /// Add files patching the path.

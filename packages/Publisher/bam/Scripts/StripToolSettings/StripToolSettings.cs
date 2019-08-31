@@ -35,7 +35,7 @@ namespace Publisher
     /// </summary>
     [CommandLineProcessor.OutputPath(StripModule.StripBinaryKey, "-o ")]
     [CommandLineProcessor.InputPaths(CollatedObject.CopiedFileKey, "", max_file_count: 1)]
-    public sealed class StripToolSettings :
+    sealed class StripToolSettings :
         Bam.Core.Settings,
         IStripToolSettings
     {

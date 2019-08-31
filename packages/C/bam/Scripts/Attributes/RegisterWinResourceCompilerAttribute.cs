@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Attribute to register a Windows resource compiler tool.
     /// </summary>
-    public sealed class RegisterWinResourceCompilerAttribute :
+    sealed class RegisterWinResourceCompilerAttribute :
         ToolRegistrationAttribute
     {
         /// <summary>

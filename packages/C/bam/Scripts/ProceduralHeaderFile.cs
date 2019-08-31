@@ -36,7 +36,7 @@ namespace C
     /// A hash of the contents is persisted on disk, so that changes to the contents will cause the file to be rebuilt.
     /// </summary>
     [Bam.Core.EvaluationRequired(true)]
-    public abstract class ProceduralHeaderFile :
+    abstract class ProceduralHeaderFile :
         C.HeaderFile
     {
         /// <summary>

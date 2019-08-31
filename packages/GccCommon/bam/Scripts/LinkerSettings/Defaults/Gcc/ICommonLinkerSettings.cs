@@ -32,7 +32,7 @@ namespace GccCommon.DefaultSettings
     /// <summary>
     /// Extension class for setting Gcc linker defaults
     /// </summary>
-    public static partial class DefaultSettingsExtensions
+    static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(

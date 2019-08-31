@@ -33,7 +33,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class corresponding to the XCBuildConfiguration in an Xcode project.
     /// </summary>
-    public sealed class Configuration :
+    sealed class Configuration :
         Object
     {
         private readonly System.Collections.Generic.Dictionary<string, ConfigurationValue> Settings = new System.Collections.Generic.Dictionary<string, ConfigurationValue>();

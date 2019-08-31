@@ -30,7 +30,7 @@
 using Bam.Core;
 namespace InstallerTest1
 {
-    public class CExecutable :
+    class CExecutable :
         C.GUIApplication
     {
         protected override void
@@ -59,7 +59,7 @@ namespace InstallerTest1
         }
     }
 
-    public class CxxExecutable :
+    class CxxExecutable :
         C.Cxx.GUIApplication
     {
         protected override void

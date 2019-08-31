@@ -29,7 +29,7 @@
 #endregion // License
 namespace Clang
 {
-    public sealed class AssemblerSettings :
+    sealed class AssemblerSettings :
         ClangCommon.CommonAssemblerSettings
     {}
 }

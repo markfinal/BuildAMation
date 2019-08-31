@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Attribute to register a preprocessor tool.
     /// </summary>
-    public sealed class RegisterPreprocessorAttribute :
+    sealed class RegisterPreprocessorAttribute :
         ToolRegistrationAttribute
     {
         /// <summary>

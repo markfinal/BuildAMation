@@ -33,7 +33,7 @@ namespace C
     /// Symbolic link generator settings
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ISharedObjectSymbolicLinkSettings :
+    interface ISharedObjectSymbolicLinkSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

@@ -32,7 +32,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class representing a PBXSourcesBuildPhase in the Xcode project
     /// </summary>
-    public sealed class SourcesBuildPhase :
+    sealed class SourcesBuildPhase :
         BuildPhase
     {
         /// <summary>

@@ -33,7 +33,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class corresponding to a generic build phase. Concrete classes inherit from this.
     /// </summary>
-    public abstract class BuildPhase :
+    abstract class BuildPhase :
         Object
     {
         /// <summary>

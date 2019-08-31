@@ -34,7 +34,7 @@ namespace MingwCommon
     /// </summary>
     [CommandLineProcessor.OutputPath(C.WinResource.ObjectFileKey, "-o ")]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
-    public abstract class CommonWinResourceCompilerSettings :
+    abstract class CommonWinResourceCompilerSettings :
         C.SettingsBase,
         C.ICommonWinResourceCompilerSettings,
         C.IAdditionalSettings,

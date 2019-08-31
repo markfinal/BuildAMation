@@ -33,7 +33,7 @@ namespace Publisher
     /// <summary>
     /// Prebuilt tool module for copying elf sections
     /// </summary>
-    public sealed class ObjCopyTool :
+    sealed class ObjCopyTool :
         Bam.Core.PreBuiltTool
     {
         private readonly Bam.Core.TokenizedString ExecutablePath;

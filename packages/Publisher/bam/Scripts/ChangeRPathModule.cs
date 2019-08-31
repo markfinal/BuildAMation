@@ -32,7 +32,7 @@ namespace Publisher
     /// <summary>
     /// Module class representing a file with a changed RPATH
     /// </summary>
-    public class ChangeRPathModule :
+    class ChangeRPathModule :
         Bam.Core.Module
     {
         private C.ConsoleApplication TheSource;

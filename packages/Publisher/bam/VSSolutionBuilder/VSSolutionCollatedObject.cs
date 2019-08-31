@@ -32,7 +32,7 @@ namespace Publisher
     /// <summary>
     /// Helper function for writing VisualStudio projects with collation
     /// </summary>
-    public static partial class VSSolutionSupport
+    static partial class VSSolutionSupport
     {
         public static void
         CollateObject(

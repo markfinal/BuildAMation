@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Attribute to register a Objective C++ compiler tool.
     /// </summary>
-    public sealed class RegisterObjectiveCxxCompilerAttribute :
+    sealed class RegisterObjectiveCxxCompilerAttribute :
         ToolRegistrationAttribute
     {
         /// <summary>

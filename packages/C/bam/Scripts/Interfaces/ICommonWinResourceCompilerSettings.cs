@@ -33,7 +33,7 @@ namespace C
     /// Common resource compiler settings.
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonWinResourceCompilerSettings :
+    interface ICommonWinResourceCompilerSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

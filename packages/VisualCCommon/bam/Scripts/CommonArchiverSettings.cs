@@ -36,7 +36,7 @@ namespace VisualCCommon
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     [VisualStudioProcessor.OutputPath(C.StaticLibrary.LibraryKey, "", handledByMetaData: true)]
     [VisualStudioProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "", handledByMetaData: true)]
-    public abstract class CommonArchiverSettings :
+    abstract class CommonArchiverSettings :
         C.SettingsBase,
         C.IAdditionalSettings,
         ICommonArchiverSettings

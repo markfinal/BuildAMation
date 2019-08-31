@@ -32,7 +32,7 @@ namespace VisualCCommon
     /// <summary>
     /// Extension class for compiler settings
     /// </summary>
-    public static class SettingsUtilities
+    static class SettingsUtilities
     {
         public static ERuntimeLibrary?
         Intersect(

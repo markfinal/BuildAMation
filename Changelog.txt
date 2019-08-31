@@ -1,3 +1,5 @@
+31-Aug-2019 Fixes #612. Removed public accessor from classes in the standard packages folder. Since package scripts get accumulated into a single assembly at build time, the default accessor (internal) suffices.
+
 29-Aug-2019 Fixes #589. Sealed classes that are not expected to be derived from.
 
 29-Aug-2019 Fixes #641. BREAKING CHANGE. Replaced ReadOnlyCollections with generic IEnumerable where possible (avoids allocating a new object). The following public APIs have changed:

@@ -33,7 +33,7 @@ namespace GccCommon
     /// Interface for Gcc specific linker settings
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonLinkerSettings :
+    interface ICommonLinkerSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

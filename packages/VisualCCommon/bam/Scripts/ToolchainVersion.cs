@@ -33,7 +33,7 @@ namespace VisualCCommon
     /// <summary>
     /// VisualC toolchain version wrapper.
     /// </summary>
-    public sealed class ToolchainVersion :
+    sealed class ToolchainVersion :
         C.ToolchainVersion
     {
         /// <summary>

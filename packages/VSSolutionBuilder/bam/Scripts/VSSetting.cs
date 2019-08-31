@@ -33,7 +33,7 @@ namespace VSSolutionBuilder
     /// <summary>
     /// Class representing an individual setting within a group
     /// </summary>
-    public sealed class VSSetting
+    sealed class VSSetting
     {
         /// <summary>
         /// Construct a new setting.

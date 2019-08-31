@@ -34,7 +34,7 @@ namespace GccCommon
     /// </summary>
     [CommandLineProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "-o ")]
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
-    public abstract class CommonCompilerSettings :
+    abstract class CommonCompilerSettings :
         C.SettingsBase,
         C.ICommonPreprocessorSettings,
         C.ICommonCompilerSettings,

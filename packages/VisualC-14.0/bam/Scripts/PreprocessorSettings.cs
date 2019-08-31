@@ -32,7 +32,7 @@ namespace VisualC
     /// <summary>
     /// Class representing the preprocessor settings for this version of VisualC
     /// </summary>
-    public sealed class PreprocessorSettings :
+    sealed class PreprocessorSettings :
         VisualCCommon.CommonPreprocessorSettings
     {}
 }

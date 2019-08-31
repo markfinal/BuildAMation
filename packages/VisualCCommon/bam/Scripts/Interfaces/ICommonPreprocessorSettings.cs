@@ -33,7 +33,7 @@ namespace VisualCCommon
     /// VisualC specific settings for the preprocessor
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonPreprocessorSettings :
+    interface ICommonPreprocessorSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

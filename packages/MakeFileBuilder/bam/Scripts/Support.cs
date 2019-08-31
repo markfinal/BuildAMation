@@ -33,7 +33,7 @@ namespace MakeFileBuilder
     /// <summary>
     /// Helper class for writing MakeFiles
     /// </summary>
-    public static partial class Support
+    static partial class Support
     {
         public static void
         AddArbitraryTool(

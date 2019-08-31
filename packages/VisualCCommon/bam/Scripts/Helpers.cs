@@ -32,7 +32,7 @@ namespace VisualCCommon.Helpers
     /// <summary>
     /// Extension class helpers
     /// </summary>
-    public static class HelperClasses
+    static class HelperClasses
     {
         /// <summary>
         /// Set the warning level

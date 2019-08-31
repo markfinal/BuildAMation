@@ -32,7 +32,7 @@ namespace VisualCCommon
     /// <summary>
     /// Interface to specify the paths of the C and C++ runtimes
     /// </summary>
-    public interface IRuntimeLibraryPathMeta
+    interface IRuntimeLibraryPathMeta
     {
         /// <summary>
         /// Get where the C runtime are

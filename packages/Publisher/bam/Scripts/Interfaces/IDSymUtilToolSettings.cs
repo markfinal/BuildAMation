@@ -33,7 +33,7 @@ namespace Publisher
     /// Settings interface for the dsymutil tool (macOS symbol generator)
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface IDSymUtilToolSettings :
+    interface IDSymUtilToolSettings :
         Bam.Core.ISettingsBase
     {}
 }

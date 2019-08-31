@@ -33,7 +33,7 @@ namespace Installer
     /// <summary>
     /// Compiler tool for hdiutil
     /// </summary>
-    public sealed class DiskImageCompiler :
+    sealed class DiskImageCompiler :
         Bam.Core.PreBuiltTool
     {
         /// <summary>
@@ -51,7 +51,7 @@ namespace Installer
     /// Derive from this module to create an OSX disk image.
     /// </summary>
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.OSX)]
-    public abstract class DiskImage :
+    abstract class DiskImage :
         Bam.Core.Module
     {
         /// <summary>

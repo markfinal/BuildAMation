@@ -29,7 +29,7 @@
 #endregion // License
 namespace InstallerTest1
 {
-    public class CxxStaticLibrary :
+    class CxxStaticLibrary :
         C.StaticLibrary
     {
         protected override void
@@ -50,7 +50,7 @@ namespace InstallerTest1
         }
     }
 
-    public class CStaticLibrary :
+    class CStaticLibrary :
         C.StaticLibrary
     {
         protected override void

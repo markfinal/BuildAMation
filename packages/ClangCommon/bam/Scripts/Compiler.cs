@@ -32,7 +32,7 @@ namespace ClangCommon
     /// <summary>
     /// Abstract class for all compiler tools
     /// </summary>
-    public abstract class CompilerBase :
+    abstract class CompilerBase :
         C.CompilerTool
     {
         /// <summary>
@@ -67,7 +67,7 @@ namespace ClangCommon
     /// </summary>
     [C.RegisterCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
-    public sealed class CCompiler :
+    sealed class CCompiler :
         CompilerBase
     {
         public CCompiler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
@@ -83,7 +83,7 @@ namespace ClangCommon
     /// </summary>
     [C.RegisterCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
-    public sealed class CxxCompiler :
+    sealed class CxxCompiler :
         CompilerBase
     {
         public CxxCompiler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));
@@ -99,7 +99,7 @@ namespace ClangCommon
     /// </summary>
     [C.RegisterObjectiveCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterObjectiveCCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
-    public sealed class ObjectiveCCompiler :
+    sealed class ObjectiveCCompiler :
         CompilerBase
     {
         public ObjectiveCCompiler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang"));
@@ -115,7 +115,7 @@ namespace ClangCommon
     /// </summary>
     [C.RegisterObjectiveCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.ThirtyTwo)]
     [C.RegisterObjectiveCxxCompiler("Clang", Bam.Core.EPlatform.OSX, C.EBit.SixtyFour)]
-    public sealed class ObjectiveCxxCompiler :
+    sealed class ObjectiveCxxCompiler :
     CompilerBase
     {
         public ObjectiveCxxCompiler() => this.arguments.Add(Bam.Core.TokenizedString.CreateVerbatim("clang++"));

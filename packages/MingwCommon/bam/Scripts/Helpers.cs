@@ -32,7 +32,7 @@ namespace MingwCommon.Helpers
     /// <summary>
     /// Extension classes to help Mingw compiler settings
     /// </summary>
-    public static class HelperClasses
+    static class HelperClasses
     {
         public static void
         SetMingwWarningOptions(

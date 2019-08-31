@@ -32,7 +32,7 @@ namespace GccCommon
     /// <summary>
     /// Abstract class representing the common Gcc Objective C compiler settings
     /// </summary>
-    public abstract class CommonObjectiveCCompilerSettings :
+    abstract class CommonObjectiveCCompilerSettings :
         CommonCCompilerSettings,
         C.IObjectiveCOnlyCompilerSettings
     {

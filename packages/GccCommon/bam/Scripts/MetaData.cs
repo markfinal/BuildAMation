@@ -33,7 +33,7 @@ namespace GccCommon
     /// <summary>
     /// Abstract class for common Gcc package metadata
     /// </summary>
-    public abstract class MetaData :
+    abstract class MetaData :
         Bam.Core.PackageMetaData,
         C.IToolchainDiscovery
     {

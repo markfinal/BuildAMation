@@ -33,7 +33,7 @@ namespace Installer
     /// Settings class for 7zip
     /// </summary>
     [CommandLineProcessor.OutputPath(ZipModule.ZipKey, "")]
-    public sealed class SevenZipSettings :
+    sealed class SevenZipSettings :
         Bam.Core.Settings,
         IZipSettings
     {
@@ -59,7 +59,7 @@ namespace Installer
     /// Settings class for zip
     /// </summary>
     [CommandLineProcessor.OutputPath(ZipModule.ZipKey, "")]
-    public sealed class ZipSettings :
+    sealed class ZipSettings :
         Bam.Core.Settings,
         IZipSettings
     {

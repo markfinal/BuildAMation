@@ -32,7 +32,7 @@ namespace C.ObjCxx
     /// <summary>
     /// Object file compiled against ObjectiveC++.
     /// </summary>
-    public class ObjectFile :
+    class ObjectFile :
         C.ObjectFile
     {
         /// <summary>

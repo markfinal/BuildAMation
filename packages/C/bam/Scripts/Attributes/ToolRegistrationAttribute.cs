@@ -33,7 +33,7 @@ namespace C
     /// Abstract attribute class allowing any tool to be registered from a toolset.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Class, AllowMultiple=true)]
-    public abstract class ToolRegistrationAttribute :
+    abstract class ToolRegistrationAttribute :
         System.Attribute
     {
         /// <summary>

@@ -32,7 +32,7 @@ namespace Mingw
     /// <summary>
     /// Settings class for preprocessor for this Mingw version
     /// </summary>
-    public sealed class PreprocessorSettings :
+    sealed class PreprocessorSettings :
         MingwCommon.CommonPreprocessorSettings
     {}
 }

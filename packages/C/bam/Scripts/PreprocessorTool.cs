@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Preprocessor tool
     /// </summary>
-    public abstract class PreprocessorTool :
+    abstract class PreprocessorTool :
         Bam.Core.PreBuiltTool
     {
         /// <summary>

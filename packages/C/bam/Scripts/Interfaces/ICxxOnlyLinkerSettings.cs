@@ -33,7 +33,7 @@ namespace C
     /// C++ only linker settings.
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(C.DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICxxOnlyLinkerSettings :
+    interface ICxxOnlyLinkerSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

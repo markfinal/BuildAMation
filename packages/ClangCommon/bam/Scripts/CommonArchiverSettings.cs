@@ -34,7 +34,7 @@ namespace ClangCommon
     /// </summary>
     [CommandLineProcessor.OutputPath(C.StaticLibrary.LibraryKey, "")]
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
-    public abstract class CommonArchiverSettings :
+    abstract class CommonArchiverSettings :
         C.SettingsBase,
         C.IAdditionalSettings,
         ICommonArchiverSettings

@@ -32,7 +32,7 @@ namespace ClangCommon
     /// <summary>
     /// Abstract class for common Clang Objective C++ compiler settings
     /// </summary>
-    public abstract class CommonObjectiveCxxCompilerSettings :
+    abstract class CommonObjectiveCxxCompilerSettings :
         CommonCxxCompilerSettings,
         C.IObjectiveCxxOnlyCompilerSettings
     {

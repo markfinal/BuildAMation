@@ -33,7 +33,7 @@ namespace C.Cxx
     /// <summary>
     /// Derive from this module to create a C++ dynamic library, linking against the C++ runtime.
     /// </summary>
-    public class DynamicLibrary :
+    class DynamicLibrary :
         ConsoleApplication,
         IDynamicLibrary,
         IForwardedLibraries

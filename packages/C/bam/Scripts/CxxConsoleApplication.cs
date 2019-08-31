@@ -33,7 +33,7 @@ namespace C.Cxx
     /// <summary>
     /// Derive from this module to create a C++ application, linking against the C++ runtime library.
     /// </summary>
-    public class ConsoleApplication :
+    class ConsoleApplication :
         C.ConsoleApplication
     {
         /// <summary>

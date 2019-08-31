@@ -33,7 +33,7 @@ namespace MingwCommon
     /// 32-bit Mingw librarian
     /// </summary>
     [C.RegisterLibrarian("Mingw", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class Librarian :
+    sealed class Librarian :
         C.LibrarianTool
     {
         public Librarian()

@@ -33,7 +33,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Base class to all Configuration values.
     /// </summary>
-    public abstract class ConfigurationValue
+    abstract class ConfigurationValue
     {
         private static char[] SpecialChars = { '$', '@', '=', '+', ' ' };
 
@@ -59,7 +59,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class corresponding to a value with just a single value.
     /// </summary>
-    public sealed class UniqueConfigurationValue :
+    sealed class UniqueConfigurationValue :
         ConfigurationValue
     {
         /// <summary>
@@ -112,7 +112,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class corresponding to a value with multiple entries.
     /// </summary>
-    public sealed class MultiConfigurationValue :
+    sealed class MultiConfigurationValue :
         ConfigurationValue
     {
         /// <summary>

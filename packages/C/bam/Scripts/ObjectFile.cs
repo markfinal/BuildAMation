@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Object file compiled against C.
     /// </summary>
-    public class ObjectFile :
+    class ObjectFile :
         ObjectFileBase
     {
         /// <summary>

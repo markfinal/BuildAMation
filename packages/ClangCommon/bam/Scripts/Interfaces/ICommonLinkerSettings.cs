@@ -33,7 +33,7 @@ namespace ClangCommon
     /// Interface for clang linkers
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonLinkerSettings :
+    interface ICommonLinkerSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

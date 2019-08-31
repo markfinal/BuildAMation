@@ -36,7 +36,7 @@ namespace VisualCCommon
     [CommandLineProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1)]
     [VisualStudioProcessor.OutputPath(C.ObjectFileBase.ObjectFileKey, "ObjectFileName")]
     [VisualStudioProcessor.InputPaths(C.SourceFile.SourceFileKey, "", max_file_count: 1, handledByMetaData: true)]
-    public abstract class CommonCompilerSettings :
+    abstract class CommonCompilerSettings :
         C.SettingsBase,
         C.ICommonPreprocessorSettings,
         C.ICommonCompilerSettingsWin,

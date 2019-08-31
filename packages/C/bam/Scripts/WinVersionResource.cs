@@ -33,7 +33,7 @@ namespace C
     /// Windows binary version resource file
     /// </summary>
     [Bam.Core.EvaluationRequired(true)]
-    public class WinVersionResource :
+    class WinVersionResource :
         SourceFile
     {
         /// <summary>

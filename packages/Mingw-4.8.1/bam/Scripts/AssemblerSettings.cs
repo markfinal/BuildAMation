@@ -32,7 +32,7 @@ namespace Mingw
     /// <summary>
     /// Settings class for assembling for this Mingw version
     /// </summary>
-    public sealed class AssemblerSettings :
+    sealed class AssemblerSettings :
         MingwCommon.CommonAssemblerSettings
     {}
 }

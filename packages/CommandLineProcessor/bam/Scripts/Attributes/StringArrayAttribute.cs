@@ -33,7 +33,7 @@ namespace CommandLineProcessor
     /// Attribute corresponding to array of strings to convert to command line
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class StringArrayAttribute :
+    sealed class StringArrayAttribute :
         BaseAttribute
     {
         /// <summary>

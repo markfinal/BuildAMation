@@ -34,7 +34,7 @@ namespace GccCommon
     /// </summary>
     [C.RegisterLibrarian("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterLibrarian("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
-    public sealed class Librarian :
+    sealed class Librarian :
         C.LibrarianTool
     {
         public Librarian()

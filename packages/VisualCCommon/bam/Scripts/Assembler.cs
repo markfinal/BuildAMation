@@ -33,7 +33,7 @@ namespace VisualCCommon
     /// <summary>
     /// Abstract base class for VisualC assemblers
     /// </summary>
-    public abstract class AssemblerBase :
+    abstract class AssemblerBase :
         C.AssemblerTool
     {
         private string
@@ -99,7 +99,7 @@ namespace VisualCCommon
     /// Class for 32-bit assembler
     /// </summary>
     [C.RegisterAssembler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.ThirtyTwo)]
-    public sealed class Assembler32 :
+    sealed class Assembler32 :
         AssemblerBase
     {
         /// <summary>
@@ -120,7 +120,7 @@ namespace VisualCCommon
     /// Class for 64-bit assembler
     /// </summary>
     [C.RegisterAssembler("VisualC", Bam.Core.EPlatform.Windows, C.EBit.SixtyFour)]
-    public sealed class Assembler64 :
+    sealed class Assembler64 :
         AssemblerBase
     {
         /// <summary>

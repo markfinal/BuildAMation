@@ -33,7 +33,7 @@ namespace CommandLineProcessor
     /// Attribute corresponding to a single string property to convert to command line.
     /// </summary>
     [System.AttributeUsage(System.AttributeTargets.Property, AllowMultiple = false)]
-    public sealed class StringAttribute :
+    sealed class StringAttribute :
         BaseAttribute
     {
         /// <summary>

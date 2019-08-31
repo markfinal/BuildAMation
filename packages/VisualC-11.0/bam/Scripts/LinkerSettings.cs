@@ -32,7 +32,7 @@ namespace VisualC
     /// <summary>
     /// Class representing the linker settings for this version of VisualC
     /// </summary>
-    public sealed class LinkerSettings :
+    sealed class LinkerSettings :
         VisualCCommon.CommonLinkerSettings
     {}
 }

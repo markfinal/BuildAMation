@@ -32,7 +32,7 @@ namespace VisualC
     /// <summary>
     /// Class representing meta data for this package
     /// </summary>
-    public sealed class MetaData :
+    sealed class MetaData :
         VisualCCommon.MetaData,
         VisualCCommon.IRuntimeLibraryPathMeta
     {

@@ -32,7 +32,7 @@ namespace ClangCommon
     /// <summary>
     /// Extension class for configuring Clang settings
     /// </summary>
-    public static class SettingsUtilities
+    static class SettingsUtilities
     {
         public static EVisibility?
         Intersect(

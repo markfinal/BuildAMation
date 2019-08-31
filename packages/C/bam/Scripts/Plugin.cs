@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Derive from this module to create a runtime loadable plugin linked against the C runtime library.
     /// </summary>
-    public abstract class Plugin :
+    abstract class Plugin :
         DynamicLibrary
     {
         /// <summary>

@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Derive from this module to create a library with only header files (i.e. no compilation, archiving or linking).
     /// </summary>
-    public abstract class HeaderLibrary :
+    abstract class HeaderLibrary :
         CModule,
         IForwardedLibraries
     {

@@ -32,7 +32,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Extensions to convert enumerations to strings.
     /// </summary>
-    public static class EnumToStringExtensions
+    static class EnumToStringExtensions
     {
         /// <summary>
         /// Extension function to convert FileReference.FileType to string.
@@ -148,7 +148,7 @@ namespace XcodeBuilder
     /// <summary>
     /// Class representing a PBXFileReference in an Xcode project.
     /// </summary>
-    public sealed class FileReference :
+    sealed class FileReference :
         Object
     {
         /// <summary>

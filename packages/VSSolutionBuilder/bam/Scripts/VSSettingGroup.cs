@@ -33,7 +33,7 @@ namespace VSSolutionBuilder
     /// <summary>
     /// Class representing a group of settings with a given meaning
     /// </summary>
-    public sealed class VSSettingsGroup
+    sealed class VSSettingsGroup
     {
         /// <summary>
         /// What type of group is represented

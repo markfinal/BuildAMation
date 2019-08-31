@@ -29,7 +29,7 @@
 #endregion // License
 namespace Clang
 {
-    public sealed class ObjectiveCxxCompilerSettings :
+    sealed class ObjectiveCxxCompilerSettings :
         ClangCommon.CommonObjectiveCxxCompilerSettings
     {}
 }

@@ -34,7 +34,7 @@ namespace Publisher
     /// </summary>
     [CommandLineProcessor.OutputPath(DSymUtilModule.DSymBundleKey, "-o ")]
     [CommandLineProcessor.InputPaths(C.ConsoleApplication.ExecutableKey, "", max_file_count: 1)]
-    public sealed class DSymUtilToolSettings :
+    sealed class DSymUtilToolSettings :
         Bam.Core.Settings,
         IDSymUtilToolSettings
     {

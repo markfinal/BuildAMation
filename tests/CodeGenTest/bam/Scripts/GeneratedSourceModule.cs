@@ -29,7 +29,7 @@
 #endregion // License
 namespace CodeGenTest
 {
-    public class GeneratedSourceModule :
+    class GeneratedSourceModule :
         C.SourceFile
     {
         protected override void

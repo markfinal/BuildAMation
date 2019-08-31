@@ -32,7 +32,7 @@ namespace MakeFileBuilder.Options
     /// <summary>
     /// Command line option to choose the MakeFile format
     /// </summary>
-    public sealed class ChooseFormat :
+    sealed class ChooseFormat :
         Bam.Core.IStringCommandLineArgument,
         Bam.Core.ICommandLineArgumentDefault<string>
     {

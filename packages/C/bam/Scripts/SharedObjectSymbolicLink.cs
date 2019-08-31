@@ -33,7 +33,7 @@ namespace C
     /// <summary>
     /// Module for the symbolic links for shared objects
     /// </summary>
-    public class SharedObjectSymbolicLink :
+    class SharedObjectSymbolicLink :
         Bam.Core.Module
     {
         /// <summary>

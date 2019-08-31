@@ -32,7 +32,7 @@ namespace Gcc
     /// <summary>
     /// Class representing the C compiler settings for this version of Gcc
     /// </summary>
-    public sealed class CCompilerSettings :
+    sealed class CCompilerSettings :
         GccCommon.CommonCCompilerSettings
     {}
 }

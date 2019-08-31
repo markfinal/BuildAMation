@@ -33,7 +33,7 @@ namespace Publisher
     /// Settings interface for copying a file
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICopyFileSettings :
+    interface ICopyFileSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

@@ -32,7 +32,7 @@ namespace WindowsSDK
     /// <summary>
     /// Settings used with the windows resource compiler
     /// </summary>
-    public sealed class WinResourceCompilerSettings :
+    sealed class WinResourceCompilerSettings :
         WindowsSDKCommon.CommonWinResourceCompilerSettings
     {
         /// <summary>

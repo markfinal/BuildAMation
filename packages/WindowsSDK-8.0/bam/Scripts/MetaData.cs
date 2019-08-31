@@ -32,7 +32,7 @@ namespace WindowsSDK
     /// <summary>
     /// Metadata for WindowsSDK
     /// </summary>
-    public sealed class MetaData :
+    sealed class MetaData :
         WindowsSDKCommon.MetaData
     { }
 }

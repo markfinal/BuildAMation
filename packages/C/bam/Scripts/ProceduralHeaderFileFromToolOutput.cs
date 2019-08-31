@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Produce a header file from the standard out of a tool
     /// </summary>
-    public abstract class ProceduralHeaderFileFromToolOutput :
+    abstract class ProceduralHeaderFileFromToolOutput :
         C.HeaderFile
     {
         /// <summary>

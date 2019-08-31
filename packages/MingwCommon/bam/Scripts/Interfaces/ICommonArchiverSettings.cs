@@ -33,7 +33,7 @@ namespace MingwCommon
     /// Mingw specific archiver options
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    public interface ICommonArchiverSettings :
+    interface ICommonArchiverSettings :
         Bam.Core.ISettingsBase
     {
         /// <summary>

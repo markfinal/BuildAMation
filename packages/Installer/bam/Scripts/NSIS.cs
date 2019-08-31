@@ -129,7 +129,7 @@ namespace Installer
     /// NSIS compiler settings
     /// </summary>
     [CommandLineProcessor.InputPaths(NSISScript.ScriptKey, "")]
-    public sealed class NSISCompilerSettings :
+    sealed class NSISCompilerSettings :
         Bam.Core.Settings
     {
         /// <summary>
@@ -144,7 +144,7 @@ namespace Installer
     /// <summary>
     /// NSIS compiler tool
     /// </summary>
-    public sealed class NSISCompiler :
+    sealed class NSISCompiler :
         Bam.Core.PreBuiltTool
     {
         protected override void
@@ -176,7 +176,7 @@ namespace Installer
     /// Derive from this module to create an NSIS installer
     /// </summary>
     [Bam.Core.PlatformFilter(Bam.Core.EPlatform.Windows)]
-    public abstract class NSISInstaller :
+    abstract class NSISInstaller :
         Bam.Core.Module
     {
         private NSISScript ScriptModule;

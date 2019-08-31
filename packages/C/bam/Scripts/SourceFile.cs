@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Module representing a source file
     /// </summary>
-    public class SourceFile :
+    class SourceFile :
         Bam.Core.Module,
         Bam.Core.IInputPath
     {

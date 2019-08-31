@@ -32,7 +32,7 @@ namespace XcodeProjectProcessor
     /// <summary>
     /// Attribute representing a multi-valued enumeration property in Xcode.
     /// </summary>
-    public sealed class MultiEnumAttribute :
+    sealed class MultiEnumAttribute :
         EnumAttribute
     {
         /// <summary>

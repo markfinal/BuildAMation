@@ -33,7 +33,7 @@ namespace CommandLineProcessor
     /// <summary>
     /// Helper class for converting Settings to command lines.
     /// </summary>
-    public static class NativeConversion
+    static class NativeConversion
     {
         private static void
         HandleEnum(

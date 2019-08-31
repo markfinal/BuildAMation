@@ -32,7 +32,7 @@ namespace C
     /// <summary>
     /// Attribute to register a C compiler tool.
     /// </summary>
-    public sealed class RegisterCCompilerAttribute :
+    sealed class RegisterCCompilerAttribute :
         ToolRegistrationAttribute
     {
         /// <summary>

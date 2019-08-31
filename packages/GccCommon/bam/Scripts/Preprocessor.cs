@@ -32,7 +32,7 @@ namespace GccCommon
     /// <summary>
     /// Abstract class representing any Gcc preprocessor tool
     /// </summary>
-    public abstract class PreprocessorBase :
+    abstract class PreprocessorBase :
         C.PreprocessorTool
     {
         protected PreprocessorBase()
@@ -61,7 +61,7 @@ namespace GccCommon
     /// </summary>
     [C.RegisterPreprocessor("GCC", Bam.Core.EPlatform.Linux, C.EBit.ThirtyTwo)]
     [C.RegisterPreprocessor("GCC", Bam.Core.EPlatform.Linux, C.EBit.SixtyFour)]
-    public sealed class Preprocessor :
+    sealed class Preprocessor :
         PreprocessorBase
     {
         public Preprocessor() => this.Macros.Add("CompilerPath", Bam.Core.TokenizedString.CreateVerbatim(this.GccMetaData.GccPath));

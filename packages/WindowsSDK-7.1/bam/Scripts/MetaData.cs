@@ -32,7 +32,7 @@ namespace WindowsSDK
     /// <summary>
     /// Metadata for WindowsSDK
     /// </summary>
-    public sealed class MetaData :
+    sealed class MetaData :
         Bam.Core.PackageMetaData
     {
         private readonly System.Collections.Generic.Dictionary<string, object> Meta = new System.Collections.Generic.Dictionary<string, object>();
