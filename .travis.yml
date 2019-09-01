@@ -167,30 +167,30 @@ matrix:
       - BAM_TOOLCHAIN_VERSION=Xcode11
       - EXTRA_TEST_ARGS=--C.bitdepth=64 # Xcode 10+ no longer builds 32-bit targets
   - os: osx
-    osx_image: xcode10.2
+    osx_image: xcode10.3
     mono: none
     dotnet: 2.1.401
-    name: MacOS (Xcode 10.2) Native
+    name: MacOS (Xcode 10.3) Native
     env:
       - BAM_BUILD_MODE=Native
       - BAM_TOOLCHAIN_NAME=Clang
       - BAM_TOOLCHAIN_VERSION=Xcode10
       - EXTRA_TEST_ARGS=--C.bitdepth=64 # Xcode 10+ no longer builds 32-bit targets
   - os: osx
-    osx_image: xcode10.2
+    osx_image: xcode10.3
     mono: none
     dotnet: 2.1.401
-    name: MacOS (Xcode 10.2) MakeFile
+    name: MacOS (Xcode 10.3) MakeFile
     env:
       - BAM_BUILD_MODE=MakeFile
       - BAM_TOOLCHAIN_NAME=Clang
       - BAM_TOOLCHAIN_VERSION=Xcode10
       - EXTRA_TEST_ARGS=--C.bitdepth=64 # Xcode 10+ no longer builds 32-bit targets
   - os: osx
-    osx_image: xcode10.2
+    osx_image: xcode10.3
     mono: none
     dotnet: 2.1.401
-    name: MacOS (Xcode 10.2) Xcode
+    name: MacOS (Xcode 10.3) Xcode
     env:
       - BAM_BUILD_MODE=Xcode
       - BAM_TOOLCHAIN_NAME=Clang
