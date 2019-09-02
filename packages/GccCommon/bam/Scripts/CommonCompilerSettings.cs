@@ -52,10 +52,10 @@ namespace GccCommon
         [CommandLineProcessor.PreprocessorDefines("-D")]
         C.PreprocessorDefinitions C.ICommonPreprocessorSettings.PreprocessorDefines { get; set; }
 
-        [CommandLineProcessor.PathArray("-iquote")]
+        [CommandLineProcessor.PathArray("-I")]
         Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.IncludePaths { get; set; }
 
-        [CommandLineProcessor.PathArray("-isystem")]
+        [CommandLineProcessor.PathArray("-I")]
         Bam.Core.TokenizedStringArray C.ICommonPreprocessorSettings.SystemIncludePaths { get; set; }
 
         [CommandLineProcessor.StringArray("-U")]

@@ -528,8 +528,8 @@ namespace XcodeBuilder
                 // headermaps confuse multi-configuration projects, so disable
                 projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");
 
-                // forces a distinction between user and system include paths
-                projectConfig["ALWAYS_SEARCH_USER_PATHS"] = new UniqueConfigurationValue("NO");
+                // no distinction between user and system include paths
+                projectConfig["ALWAYS_SEARCH_USER_PATHS"] = new UniqueConfigurationValue("YES");
 
                 var isXcode10 = clangMeta.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
                 if (isXcode10)
