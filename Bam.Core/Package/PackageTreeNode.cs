@@ -278,6 +278,45 @@ namespace Bam.Core
         }
 
         /// <summary>
+        /// Enumerate all packages (including duplicates) that match the specified name
+        /// </summary>
+        /// <param name="name">Name of the package to find instances of</param>
+        /// <returns>Enumeration of tree nodes</returns>
+        public System.Collections.Generic.IEnumerable<PackageTreeNode>
+        MatchingPackages(
+            string name)
+        {
+            var packages = new Array<PackageTreeNode>();
+
+            void getMatchingPackageNames(
+                Array<PackageTreeNode> parents,
+                PackageTreeNode node)
+            {
+                if (node.Name == name)
+                {
+                    packages.AddUnique(node);
+                }
+                foreach (var child in node.InternalChildren)
+                {
+                    // check for cyclic dependencies
+                    if (parents.Contains(child))
+                    {
+                        continue;
+                    }
+                    parents.Add(node);
+                    getMatchingPackageNames(parents, child);
+                }
+                if (parents.Any())
+                {
+                    parents.Remove(parents.Last());
+                }
+            }
+
+            getMatchingPackageNames(new Array<PackageTreeNode>(), this);
+            return packages;
+        }
+
+        /// <summary>
         /// Enumerate all package repository paths recursively.
         /// </summary>
         public System.Collections.Generic.IEnumerable<string> PackageRepositoryPaths

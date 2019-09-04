@@ -440,15 +440,36 @@ namespace Bam.Core
         }
 
         private static void
+        ValidatePackageSpecifiers(
+            PackageTreeNode rootNode,
+            Array<StringArray> packageVersionSpecifiers)
+        {
+            foreach (var specifier in packageVersionSpecifiers)
+            {
+                var matches = rootNode.MatchingPackages(specifier.First());
+                var matchingVersions = matches.Select(item => item.Version);
+                if (!matchingVersions.Contains(specifier.Last()))
+                {
+                    var message = new System.Text.StringBuilder();
+                    message.AppendLine($"Command line version specifier --{specifier.First()}.version={specifier.Last()} does not match any packages in the definition file:");
+                    foreach (var match in matches)
+                    {
+                        message.AppendLine($"\t{match.Name}-{match.Version}");
+                    }
+                    throw new Exception(message.ToString());
+                }
+            }
+        }
+
+        private static void
         ResolveDuplicatePackages(
             PackageTreeNode rootNode,
-            PackageDefinition masterDefinitionFile)
+            PackageDefinition masterDefinitionFile,
+            Array<StringArray> packageVersionSpecifiers)
         {
             var duplicatePackageNames = rootNode.DuplicatePackageNames;
             if (duplicatePackageNames.Any())
             {
-                var packageVersionSpecifiers = CommandLineProcessor.Evaluate(new Options.PackageDefaultVersion());
-
                 Log.DebugMessage("Duplicate packages found");
                 foreach (var name in duplicatePackageNames)
                 {
@@ -577,13 +598,17 @@ namespace Bam.Core
             var secondCount = packageMap.Count;
 
             var rootNode = packageMap.First(item => item.Key == masterDefn).Value;
+
+            var packageVersionSpecifiers = CommandLineProcessor.Evaluate(new Options.PackageDefaultVersion());
+            ValidatePackageSpecifiers(rootNode, packageVersionSpecifiers);
+
             DumpTree(rootNode);
 
             if (!allowDuplicates)
             {
                 // resolve duplicates before trying to find packages that weren't found
                 // otherwise you may use package roots for packages that will be discarded
-                ResolveDuplicatePackages(rootNode, masterDefinitionFile);
+                ResolveDuplicatePackages(rootNode, masterDefinitionFile, packageVersionSpecifiers);
             }
 
             DumpTree(rootNode);
@@ -614,7 +639,7 @@ namespace Bam.Core
                 secondCount = packageMap.Count;
                 if (!allowDuplicates)
                 {
-                    ResolveDuplicatePackages(rootNode, masterDefinitionFile);
+                    ResolveDuplicatePackages(rootNode, masterDefinitionFile, packageVersionSpecifiers);
                 }
                 DumpTree(rootNode);
 

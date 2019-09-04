@@ -1,3 +1,5 @@
+04-Sep-2019 Fixes #655. Fixed regression that specifying a package version on the command line that did not match any package versions in the definition file was silently ignored.
+
 01-Sep-2019 Fixes #650. Updated the following Nugets:
 * Microsoft.Extensions.Configuration.EnvironmentVariables to 2.2.4
 * SharpCompress to 0.24.0
