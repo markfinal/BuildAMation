@@ -436,8 +436,8 @@ namespace VSSolutionBuilder
             var group = document.CreateVSElement(this.GetGroupName(), parentEl: parentEl);
             if (null != this.Path)
             {
-                var rel_path = this.Configuration.ToRelativePath(this.Path);
-                group.SetAttribute("Include", rel_path);
+                // cannot use relative paths with macros here, see https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-file-structure?view=vs-2015
+                group.SetAttribute("Include", this.Path.ToString());
             }
             foreach (var setting in this.Settings.OrderBy(pair => pair.Name))
             {

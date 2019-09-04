@@ -1,3 +1,5 @@
+04-Sep-2019 Fixes #654. Cannot use macros in 'ClCompile Include="path"' style .vcxproj elements, as it's not guaranteed to work. See https://docs.microsoft.com/en-us/cpp/build/reference/vcxproj-file-structure?view=vs-2015.
+
 04-Sep-2019 Fixes #655. Fixed regression that specifying a package version on the command line that did not match any package versions in the definition file was silently ignored.
 
 01-Sep-2019 Fixes #650. Updated the following Nugets:
