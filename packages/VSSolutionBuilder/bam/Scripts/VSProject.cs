@@ -227,6 +227,7 @@ namespace VSSolutionBuilder
             {
                 this.Sources.AddUnique(source);
             }
+            AddToFilter(source);
         }
 
         /// <summary>
