@@ -448,6 +448,11 @@ namespace Bam.Core
             {
                 var matches = rootNode.MatchingPackages(specifier.First());
                 var matchingVersions = matches.Select(item => item.Version);
+                if (!matchingVersions.Any())
+                {
+                    Log.Info($"Warning: Command line version specifier --{specifier.First()}.version={specifier.Last()} is redundant. Ignoring.");
+                    continue;
+                }
                 if (!matchingVersions.Contains(specifier.Last()))
                 {
                     var message = new System.Text.StringBuilder();
