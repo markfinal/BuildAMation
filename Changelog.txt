@@ -1,3 +1,5 @@
+09-Sep-2019 ======== Version 2.0.0 Release ========
+
 06-Sep-2019 ======== Version 2.0.0 beta 3 Release ========
 
 04-Sep-2019 Fixes #656. Generated .vcxprojs were missing filters for source files.
