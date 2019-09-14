@@ -5,6 +5,8 @@
 * C.DynamicLibrary.CompileAgainstPublicly
 * C.StaticLibrary.CompileAgainst
 
+14-Sep-2019 Bumping to version v2.0.1
+
 09-Sep-2019 ======== Version 2.0.0 Release ========
 
 06-Sep-2019 ======== Version 2.0.0 beta 3 Release ========
