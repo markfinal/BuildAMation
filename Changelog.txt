@@ -1,3 +1,10 @@
+14-Sep-2019 Fixes #659. Removed temporary array allocation and CopyTo use, replaced with a local function as an iterator, in:
+* C.ConsoleApplication.CompileAgainst
+* C.ConsoleApplication.CompileAndLinkAgainst
+* C.CxxDynamicLibrary.CompileAgainstPublicly
+* C.DynamicLibrary.CompileAgainstPublicly
+* C.StaticLibrary.CompileAgainst
+
 09-Sep-2019 ======== Version 2.0.0 Release ========
 
 06-Sep-2019 ======== Version 2.0.0 beta 3 Release ========

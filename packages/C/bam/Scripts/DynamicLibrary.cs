@@ -200,13 +200,18 @@ namespace C
                 return;
             }
             this.DependsOn(dependent);
-            var sources = new CModule[additionalSources.Length + 1];
-            sources[0] = affectedSource;
-            if (additionalSources.Length > 0)
+            System.Collections.Generic.IEnumerable<CModule>
+            EnumerateSources(
+                CModule affectedSourceLocal,
+                params CModule[] additionalSourcesLocal)
             {
-                additionalSources.CopyTo(sources, 1);
+                yield return affectedSourceLocal;
+                foreach (var source in additionalSourcesLocal)
+                {
+                    yield return source;
+                }
             }
-            foreach (var source in sources)
+            foreach (var source in EnumerateSources(affectedSource, additionalSources))
             {
                 source?.UsePublicPatches(dependent);
             }
