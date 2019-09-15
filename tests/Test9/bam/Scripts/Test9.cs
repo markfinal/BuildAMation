@@ -37,7 +37,10 @@ namespace Test9
         {
             base.Init();
 
-            this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main_c.c");
+            (this as C.IRequiresSourceModule).Source = Bam.Core.Module.Create<C.SourceFile>(preInitCallback: module =>
+            {
+                module.InputPath = this.CreateTokenizedString("$(packagedir)/source/main_c.c");
+            });
         }
     }
 
@@ -61,7 +64,10 @@ namespace Test9
         {
             base.Init();
 
-            this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main_cpp.c");
+            (this as C.IRequiresSourceModule).Source = Bam.Core.Module.Create<C.SourceFile>(preInitCallback: module =>
+            {
+                module.InputPath = this.CreateTokenizedString("$(packagedir)/source/main_cpp.c");
+            });
             this.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICxxOnlyCompilerSettings;

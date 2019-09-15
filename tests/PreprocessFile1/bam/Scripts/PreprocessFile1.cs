@@ -64,7 +64,10 @@ namespace PreprocessFile1
 
             var preprocessedFile = Bam.Core.Module.Create<PreprocessSourceDef>(preInitCallback: module =>
             {
-                module.InputPath = this.CreateTokenizedString("$(packagedir)/source/source.def");
+                (module as C.IRequiresSourceModule).Source = Bam.Core.Module.Create<C.SourceFile>(preInitCallback: module2 =>
+                {
+                    module2.InputPath = this.CreateTokenizedString("$(packagedir)/source/source.def");
+                });
             });
             preprocessedFile.PrivatePatch(settings =>
             {

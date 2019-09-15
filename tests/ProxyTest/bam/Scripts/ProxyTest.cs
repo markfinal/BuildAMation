@@ -38,7 +38,10 @@ namespace ProxyTest
         {
             base.Init();
 
-            this.InputPath = this.CreateTokenizedString("$(packagedir)/main.c");
+            (this as C.IRequiresSourceModule).Source = Bam.Core.Module.Create<C.SourceFile>(preInitCallback: module =>
+            {
+                module.InputPath = this.CreateTokenizedString("$(packagedir)/main.c");
+            });
         }
     }
 

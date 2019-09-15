@@ -57,7 +57,10 @@ namespace Test
         Init()
         {
             base.Init();
-            this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
+            (this as C.IRequiresSourceModule).Source = Bam.Core.Module.Create<C.SourceFile>(preInitCallback: module =>
+            {
+                module.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
+            });
         }
     }
 
@@ -68,7 +71,10 @@ namespace Test
         Init()
         {
             base.Init();
-            this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
+            (this as C.IRequiresSourceModule).Source = Bam.Core.Module.Create<C.SourceFile>(preInitCallback: module =>
+            {
+                module.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
+            });
             try
             {
                 if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
@@ -94,7 +100,10 @@ namespace Test
         Init()
         {
             base.Init();
-            this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
+            (this as C.IRequiresSourceModule).Source = Bam.Core.Module.Create<C.SourceFile>(preInitCallback: module =>
+            {
+                module.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
+            });
             this.PrivatePatch(settings =>
             {
                 var compiler = settings as C.ICommonCompilerSettings;
@@ -110,7 +119,10 @@ namespace Test
         Init()
         {
             base.Init();
-            this.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
+            (this as C.IRequiresSourceModule).Source = Bam.Core.Module.Create<C.SourceFile>(preInitCallback: module =>
+            {
+                module.InputPath = this.CreateTokenizedString("$(packagedir)/source/main.c");
+            });
             this.PrivatePatch(settings =>
                 {
                     var compiler = settings as C.ICommonCompilerSettings;
