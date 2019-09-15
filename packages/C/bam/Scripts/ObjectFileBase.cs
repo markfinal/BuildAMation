@@ -36,7 +36,6 @@ namespace C
     abstract class ObjectFileBase :
         CModule,
         Bam.Core.IChildModule,
-        Bam.Core.IInputPath,
         IRequiresSourceModule
     {
         /// <summary>
@@ -90,39 +89,6 @@ namespace C
                         value.GeneratedPaths[SourceFile.SourceFileKey]
                     )
                 );
-            }
-        }
-
-        /// <summary>
-        /// Set the input path to compile.
-        /// </summary>
-        public Bam.Core.TokenizedString InputPath
-        {
-            get
-            {
-                if (null == this.SourceModule)
-                {
-                    throw new Bam.Core.Exception("Source module not yet set on this object file");
-                }
-                return this.SourceModule.InputPath;
-            }
-            set
-            {
-                if (null != this.SourceModule)
-                {
-                    this.SourceModule.InputPath.Parse();
-                    throw new Bam.Core.Exception(
-                        $"Source module already set on this object file, to '{this.SourceModule.InputPath.ToString()}'"
-                    );
-                }
-
-                // this cannot be a referenced module, since there will be more than one object
-                // of this type (generally)
-                // but this does mean there may be many instances of this 'type' of module
-                // and for multi-configuration builds there may be many instances of the same path
-                var source = Bam.Core.Module.Create<SourceFile>();
-                source.InputPath = value;
-                (this as IRequiresSourceModule).Source = source;
             }
         }
 
@@ -251,19 +217,19 @@ namespace C
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
                     this.GeneratedPaths[ObjectFileKey],
-                    this.InputPath
+                    this.SourceModule.InputPath
                 );
                 return;
             }
 
             // is the source file newer than the object file?
-            var sourcePath = this.InputPath.ToString();
+            var sourcePath = this.SourceModule.InputPath.ToString();
             var sourceWriteTime = System.IO.File.GetLastWriteTime(sourcePath);
             if (sourceWriteTime > objectFileWriteTime)
             {
                 this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
                     this.GeneratedPaths[ObjectFileKey],
-                    this.InputPath
+                    this.SourceModule.InputPath
                 );
                 return;
             }
@@ -292,7 +258,7 @@ namespace C
 
             var includeSearchPaths = (this.Settings as C.ICommonPreprocessorSettings).IncludePaths;
             // implicitly search the same directory as the source path, as this is not needed to be explicitly on the include path list
-            var currentDir = this.CreateTokenizedString("@dir($(0))", this.InputPath);
+            var currentDir = this.CreateTokenizedString("@dir($(0))", this.SourceModule.InputPath);
             currentDir.Parse();
             includeSearchPaths.AddUnique(currentDir);
 

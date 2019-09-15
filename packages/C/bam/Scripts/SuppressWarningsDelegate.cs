@@ -357,7 +357,7 @@ namespace C
         /// <param name="module">Collection module to apply to</param>
         public void
         Execute<ChildModuleType>(
-            CModuleCollection<ChildModuleType> module) where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
+            CModuleCollection<ChildModuleType> module) where ChildModuleType : Bam.Core.Module, Bam.Core.IChildModule, IRequiresSourceModule, new()
         {
             foreach (var item in this.suppressions)
             {

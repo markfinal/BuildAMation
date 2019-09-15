@@ -37,7 +37,7 @@ namespace C
         private static void
         CheckIsCompilable<ChildModuleType>(
             Bam.Core.Module module)
-            where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
+            where ChildModuleType : Bam.Core.Module, Bam.Core.IChildModule, IRequiresSourceModule, new()
         {
             if (module is Bam.Core.IModuleGroup)
             {
@@ -69,7 +69,7 @@ namespace C
         public static CompilerTool
         GetCompiler<ChildModuleType>(
             Bam.Core.Module module)
-            where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
+            where ChildModuleType : Bam.Core.Module, Bam.Core.IChildModule, IRequiresSourceModule, new()
         {
             CheckIsCompilable<ChildModuleType>(module);
             var compilerUsed = (module is Bam.Core.IModuleGroup) ?
@@ -87,7 +87,7 @@ namespace C
         public static C.EBit
         GetBitDepth<ChildModuleType>(
             Bam.Core.Module module)
-            where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
+            where ChildModuleType : Bam.Core.Module, Bam.Core.IChildModule, IRequiresSourceModule, new()
         {
             CheckIsCompilable<ChildModuleType>(module);
             var bitDepth = (module is Bam.Core.IModuleGroup) ?

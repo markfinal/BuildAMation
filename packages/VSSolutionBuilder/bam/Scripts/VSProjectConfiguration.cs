@@ -389,7 +389,7 @@ namespace VSSolutionBuilder
             var resourceGroup = this.Project.GetUniqueSettingsGroup(
                 this.Module,
                 VSSettingsGroup.ESettingsGroup.Resource,
-                resource.InputPath
+                (resource as C.IRequiresSourceModule).Source.InputPath
             );
             this.ResourceFiles.AddUnique(resourceGroup);
             this.Project.AddResourceFile(resourceGroup);
@@ -420,7 +420,7 @@ namespace VSSolutionBuilder
             var assemblyGroup = this.Project.GetUniqueSettingsGroup(
                 this.Module,
                 VSSettingsGroup.ESettingsGroup.CustomBuild,
-                assembler.InputPath
+                (assembler as C.IRequiresSourceModule).Source.InputPath
             );
             this.AssemblyFiles.AddUnique(assemblyGroup);
             this.Project.AddAssemblyFile(assemblyGroup);

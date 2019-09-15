@@ -37,7 +37,7 @@ namespace C
     [System.Obsolete("Use CModuleCollection instead", true)]
     abstract class CModuleContainer<ChildModuleType> :
         CModuleCollection<ChildModuleType>
-        where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
+        where ChildModuleType : Bam.Core.Module, Bam.Core.IChildModule, IRequiresSourceModule, new()
     { }
 
     /// <summary>
@@ -48,125 +48,26 @@ namespace C
         CModule, // TODO: should this be here? it has no headers, nor version number
         Bam.Core.IModuleGroup,
         IAddFiles
-        where ChildModuleType : Bam.Core.Module, Bam.Core.IInputPath, Bam.Core.IChildModule, new()
+        where ChildModuleType : Bam.Core.Module, Bam.Core.IChildModule, new()
     {
         /// <summary>
         /// list of child Modules
         /// </summary>
         protected System.Collections.Generic.List<ChildModuleType> children = new System.Collections.Generic.List<ChildModuleType>();
 
-        private SourceFileType
-        CreateSourceFile<SourceFileType>(
-            string path,
-            Bam.Core.Module macroModuleOverride,
-            bool verbatim)
-            where SourceFileType : Bam.Core.Module, Bam.Core.IInputPath, new()
-        {
-            // explicitly make a source file
-            var sourceFile = Bam.Core.Module.Create<SourceFileType>(postInitCallback: (module) =>
-                {
-                    if (verbatim)
-                    {
-                        (module as SourceFileType).InputPath = Bam.Core.TokenizedString.CreateVerbatim(path);
-                    }
-                    else
-                    {
-                        var macroModule = macroModuleOverride ?? this;
-                        (module as SourceFileType).InputPath = macroModule.CreateTokenizedString(path);
-                    }
-                });
-            return sourceFile;
-        }
-
-        private SourceFileType
-        CreateSourceFile<SourceFileType>(
-            Bam.Core.TokenizedString path)
-            where SourceFileType : Bam.Core.Module, Bam.Core.IInputPath, new()
-        {
-            // explicitly make a source file
-            var sourceFile = Bam.Core.Module.Create<SourceFileType>(postInitCallback: (module) =>
-            {
-                (module as SourceFileType).InputPath = path;
-            });
-            return sourceFile;
-        }
-
         /// <summary>
-        /// Add a single object file, given the source path, to the collection. Path must resolve to a single file.
+        /// Add a single child module, given the source path, to the collection. Path must resolve to a single file.
         /// If the path contains a wildcard (*) character, an exception is thrown.
         /// </summary>
-        /// <returns>The object file module, in order to manage patches.</returns>
-        /// <param name="path">Path.</param>
+        /// <returns>The child module, in order to manage patches.</returns>
+        /// <param name="path">Path to the child file.</param>
         /// <param name="macroModuleOverride">Macro module override.</param>
         /// <param name="verbatim">If set to <c>true</c> verbatim.</param>
-        public ChildModuleType
+        public abstract ChildModuleType
         AddFile(
             string path,
             Bam.Core.Module macroModuleOverride = null,
-            bool verbatim = false)
-        {
-            if (path.Contains('*'))
-            {
-                throw new Bam.Core.Exception(
-                    $"Single path '{path}' cannot contain a wildcard character. Use AddFiles instead of AddFile"
-                );
-            }
-            // TODO: how can I distinguish between creating a child module that inherits it's parents settings
-            // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
-            var child = Bam.Core.Module.Create<ChildModuleType>(this);
-
-            if (child is IRequiresSourceModule requiresSourceModule)
-            {
-                var source = this.CreateSourceFile<SourceFile>(path, macroModuleOverride, verbatim);
-                requiresSourceModule.Source = source;
-            }
-            else
-            {
-                if (verbatim)
-                {
-                    child.InputPath = Bam.Core.TokenizedString.CreateVerbatim(path);
-                }
-                else
-                {
-                    var macroModule = macroModuleOverride ?? this;
-                    child.InputPath = macroModule.CreateTokenizedString(path);
-                }
-            }
-
-            (child as Bam.Core.IChildModule).Parent = this;
-            this.children.Add(child);
-            this.DependsOn(child);
-            return child;
-        }
-
-        /// <summary>
-        /// Add a single object file, given the source path, to the collection. Path must resolve to a single file.
-        /// </summary>
-        /// <returns>The object file module, in order to manage patches.</returns>
-        /// <param name="path">Path.</param>
-        public ChildModuleType
-        AddFile(
-            Bam.Core.TokenizedString path)
-        {
-            // TODO: how can I distinguish between creating a child module that inherits it's parents settings
-            // and from a standalone object of type ChildModuleType which should have it's own copy of the settings?
-            var child = Bam.Core.Module.Create<ChildModuleType>(this);
-
-            if (child is IRequiresSourceModule requiresSourceModule)
-            {
-                var source = this.CreateSourceFile<SourceFile>(path);
-                requiresSourceModule.Source = source;
-            }
-            else
-            {
-                child.InputPath = path;
-            }
-
-            (child as Bam.Core.IChildModule).Parent = this;
-            this.children.Add(child);
-            this.DependsOn(child);
-            return child;
-        }
+            bool verbatim = false);
 
         /// <summary>
         /// Add multiple object files, given a wildcarded source path.
@@ -223,53 +124,6 @@ namespace C
             return modulesCreated;
         }
 
-        /// <summary>
-        /// Take a collection of source, and clone each of its children and embed them into a collection of the same type.
-        /// This is a mechanism for essentially embedding the object files that would be in a static library into a dynamic
-        /// library in a cross-platform way.
-        /// In the clone, private patches are copied both from the collection, and also from each child in turn.
-        /// No use of any public patches is made here.
-        /// </summary>
-        /// <param name="otherSource">The collection of object files to embed into the current collection.</param>
-        public void
-        ExtendWith(
-            CModuleCollection<ChildModuleType> otherSource)
-        {
-            foreach (var child in otherSource.Children)
-            {
-                var clonedChild = Bam.Core.Module.CloneWithPrivatePatches(child, this);
-
-                // attach the cloned object file into the collection so parentage is clear for macros
-                (clonedChild as Bam.Core.IChildModule).Parent = this;
-                this.children.Add(clonedChild);
-                this.DependsOn(clonedChild);
-
-                // source might be a buildable module (derived from C.SourceFile), or non-buildable module (C.SourceFile), or just a path
-                if (clonedChild is IRequiresSourceModule clonedChildRequiresSource)
-                {
-                    var sourceOfChild = (child as IRequiresSourceModule).Source;
-                    if (sourceOfChild is Bam.Core.ICloneModule sourceOfChildIsCloned)
-                    {
-                        sourceOfChildIsCloned.Clone(this, (newModule) =>
-                            {
-                                // associate the cloned source, to the cloned object file
-                                // might need to happen prior to type-specific post-cloning ops
-                                clonedChildRequiresSource.Source = newModule as SourceFile;
-                            });
-                    }
-                    else
-                    {
-                        clonedChildRequiresSource.Source = sourceOfChild;
-                    }
-                }
-                else
-                {
-                    throw new Bam.Core.Exception(
-                        new System.NotImplementedException(),
-                        $"Collection does not include objects implementing the interface '{typeof(IRequiresSourceModule).ToString()}'");
-                }
-            }
-        }
 
         // note that this is 'new' to hide the version in Bam.Core.Module
         // C# does not support return type covariance (https://en.wikipedia.org/wiki/Covariant_return_type)
@@ -291,19 +145,20 @@ namespace C
             {
                 var truePath = filename.Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
                 var validSources = this.children.Where(child =>
+                {
+                    var requiresSourceModule = child as IRequiresSourceModule;
+                    if (!requiresSourceModule.Source.InputPath.IsParsed)
                     {
-                        if (!child.InputPath.IsParsed)
-                        {
-                            child.InputPath.Parse();
-                        }
-                        return child.InputPath.ToString().Contains(truePath);
-                    });
+                        requiresSourceModule.Source.InputPath.Parse();
+                    }
+                    return requiresSourceModule.Source.InputPath.ToString().Contains(truePath);
+                });
                 if (!validSources.Any())
                 {
                     var list_of_valid_source = new System.Text.StringBuilder();
                     foreach (var child in this.children)
                     {
-                        list_of_valid_source.AppendLine($"\t{child.InputPath.ToString()}");
+                        list_of_valid_source.AppendLine($"\t{(child as IRequiresSourceModule).Source.InputPath.ToString()}");
                     }
                     if (!filename.Equals(truePath, System.StringComparison.Ordinal))
                     {

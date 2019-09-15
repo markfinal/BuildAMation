@@ -129,8 +129,8 @@ namespace C.Cxx
         /// <param name="affectedSource">Collection to be extended.</param>
         public void
         ExtendSource<DependentModule>(
-            CModuleCollection<ObjectFile> affectedSource)
-            where DependentModule : CModuleCollection<ObjectFile>, new()
+            CCompilableModuleCollection<ObjectFile> affectedSource)
+            where DependentModule : CCompilableModuleCollection<ObjectFile>, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
