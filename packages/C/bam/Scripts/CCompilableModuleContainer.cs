@@ -122,6 +122,7 @@ namespace C
             return sourceFile;
         }
 
+        /// /copydoc C.CModuleCollection.AddFile
         public override ChildModuleType
         AddFile(
             string path,

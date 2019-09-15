@@ -59,6 +59,7 @@ namespace C
             return child;
         }
 
+        /// /copydoc C.CModuleCollection.AddFile
         public override ChildModuleType
         AddFile(
             string path,
