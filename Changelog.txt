@@ -1,3 +1,5 @@
+18-Sep-2019 Fixes #663. The command line option for whether the 'tests' namespace in the master package is queried for top-level modules was executed far too often (in the Module constructor!). This is now cached at Bam startup in Bam.Core.Graph.UseTestsNamespace (boolean). It is also exposed in the generated main.cs for debug projects.
+
 15-Sep-2019 Fixes #660. C.ObjectFileBase no longer implements Bam.Core.IInputPath (the C.SourceFile it's associated with via C.IRequiresSourceModule does that).
 C.CCompilableModuleCollection now requires a child module type that implements C.IRequiresSourceModule rather than Bam.Core.IInputPath. Some methods associated with making source modules and extending source have moved from C.CModuleCollection to C.CCompilableModuleCollection.
 C.CModuleCollection no longer assumes the child module type implements Bam.Core.IInputPath. This makes it a better fit as a base class for both modules that do implement IInputPath (e.g. HeaderFile) and those that implement IRequiresSourceModule (e.g. ObjectFileBase).

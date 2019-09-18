@@ -64,6 +64,7 @@ namespace Bam
                 writer.WriteLine($"{indent(3)}Core.Graph.Instance.CompileWithDebugSymbols = true;");
                 writer.WriteLine($"{indent(3)}Core.Graph.Instance.BuildRoot = \"debug_build\";");
                 writer.WriteLine($"{indent(3)}Core.Graph.Instance.Mode = \"Native\";");
+                writer.WriteLine($"{indent(3)}Core.Graph.Instance.UseTestsNamespace = false;");
                 writer.WriteLine($"{indent(3)}var debug = new Core.Environment");
                 writer.WriteLine($"{indent(3)}{{");
                 writer.WriteLine($"{indent(4)}Configuration = Core.EConfiguration.Debug");

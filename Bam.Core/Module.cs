@@ -89,8 +89,7 @@ namespace Bam.Core
                 var packageDefinition = graph.Packages.FirstOrDefault(item => item.Name.Equals(packageNameSpace, System.StringComparison.Ordinal));
                 if (null == packageDefinition)
                 {
-                    var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
-                    if (includeTests && packageNameSpace.EndsWith(".tests", System.StringComparison.Ordinal))
+                    if (graph.UseTestsNamespace && packageNameSpace.EndsWith(".tests", System.StringComparison.Ordinal))
                     {
                         packageNameSpace = packageNameSpace.Replace(".tests", string.Empty);
                         packageDefinition = graph.Packages.FirstOrDefault(item => item.Name.Equals(packageNameSpace, System.StringComparison.Ordinal));

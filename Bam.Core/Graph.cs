@@ -279,11 +279,10 @@ namespace Bam.Core
             Environment env,
             string ns)
         {
-            var includeTests = CommandLineProcessor.Evaluate(new Options.UseTests());
             var allTypes = assembly.GetTypes();
             var allModuleTypesInPackage = allTypes.Where(type =>
                 (System.String.Equals(ns, type.Namespace, System.StringComparison.Ordinal) ||
-                (includeTests && System.String.Equals(ns + ".tests", type.Namespace, System.StringComparison.Ordinal))) &&
+                (this.UseTestsNamespace && System.String.Equals(ns + ".tests", type.Namespace, System.StringComparison.Ordinal))) &&
                 type.IsSubclassOf(typeof(Module))
             );
             if (!allModuleTypesInPackage.Any())
@@ -399,6 +398,11 @@ namespace Bam.Core
         /// </summary>
         /// <value>The mode.</value>
         public string Mode { get; set; }
+
+        /// <summary>
+        /// Whether the 'tests' namespace of the master package is to be queried for top-level modules.
+        /// </summary>
+        public bool UseTestsNamespace { get; set; }
 
         /// <summary>
         /// Obtain global macros.

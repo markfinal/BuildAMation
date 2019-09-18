@@ -103,13 +103,11 @@ namespace Bam.Core
             var packageMetaDataProfile = new TimeProfile(ETimingProfiles.PackageMetaData);
             packageMetaDataProfile.StartProfile();
 
-            var testModeEnabled = CommandLineProcessor.Evaluate(new Options.UseTests());
-
             // validate that there is at most one local policy
             // if test mode is enabled, then the '.tests' sub-namespaces are also checked
             {
                 var localPolicyTypes = graph.ScriptAssembly.GetTypes().Where(t => typeof(ISitePolicy).IsAssignableFrom(t));
-                if (!testModeEnabled)
+                if (!graph.UseTestsNamespace)
                 {
                     localPolicyTypes = localPolicyTypes.Where(item => !item.Namespace.EndsWith(".tests", System.StringComparison.Ordinal));
                 }
@@ -238,7 +236,7 @@ namespace Bam.Core
                         }
                         else
                         {
-                            if (testModeEnabled)
+                            if (graph.UseTestsNamespace)
                             {
                                 // prefer test namespace overrides
                                 if (1 == testNamespaces.Count())

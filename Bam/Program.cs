@@ -131,6 +131,7 @@ namespace Bam
                 {
                     throw new Core.Exception("No build mode specified");
                 }
+                Core.Graph.Instance.UseTestsNamespace = Core.CommandLineProcessor.Evaluate(new Core.Options.UseTests());
 
                 var configs = new Core.Array<Core.Environment>();
                 var requestedConfigs = Core.CommandLineProcessor.Evaluate(new Core.Options.BuildConfigurations());
