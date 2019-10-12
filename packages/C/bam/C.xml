@@ -3,6 +3,7 @@
   <Description>Compilers, linkers, archivers, applications, dynamic and static libraries - all for C, C++, ObjectiveC and ObjectiveC++.</Description>
   <Dependents>
     <Package name="CommandLineProcessor" />
+    <Package name="Publisher" />
   </Dependents>
   <BamAssemblies>
     <BamAssembly name="Bam.Core" major="2" minor="0" patch="0" />

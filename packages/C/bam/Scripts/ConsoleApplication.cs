@@ -353,6 +353,7 @@ namespace C
         AddLinkDependency(
             Bam.Core.Module dependent)
         {
+            this.linkedModules.AddUnique(dependent);
             if (dependent is IDynamicLibrary dynamicLib)
             {
                 if (dynamicLib.LinkerNameSymbolicLink != null)
@@ -474,6 +475,42 @@ namespace C
         }
 
         /// <summary>
+        /// Use an SDK to compile against sources and link against.
+        /// </summary>
+        /// <param name="affectedSource">Required source module.</param>
+        /// <param name="additionalSources">Optional list of additional sources.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
+        public void
+        UseSDK<DependentModule>(
+            CModule affectedSource,
+            params CModule[] additionalSources) where DependentModule : SDKTemplate, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
+            System.Collections.Generic.IEnumerable<CModule>
+            EnumerateSources(
+                CModule affectedSourceLocal,
+                params CModule[] additionalSourcesLocal)
+            {
+                yield return affectedSourceLocal;
+                foreach (var source in additionalSourcesLocal)
+                {
+                    yield return source;
+                }
+            }
+            foreach (var source in EnumerateSources(affectedSource, additionalSources))
+            {
+                source.DependsOn(dependent);
+                source.UsePublicPatches(dependent);
+            }
+            this.UsePublicPatchesPrivately(dependent);
+            this.AddLinkDependency(dependent);
+        }
+
+        /// <summary>
         /// Add link dependencies to all forwarded modules.
         /// </summary>
         /// <param name="module">Module to find forwarded libraries from.</param>
@@ -481,20 +518,15 @@ namespace C
         LinkAllForwardedDependenciesFromLibraries(
             Bam.Core.Module module)
         {
-            this.linkedModules.AddUnique(module);
-            var withForwarded = module as IForwardedLibraries;
-            if (null == withForwarded)
+            if (module is IForwardedLibraries withForwarded)
             {
-                return;
-            }
-
-            // recursive
-            foreach (var forwarded in withForwarded.ForwardedLibraries)
-            {
-                this.AddLinkDependency(forwarded);
-                this.AddRuntimeDependency(forwarded);
-                this.linkedModules.AddUnique(forwarded);
-                this.LinkAllForwardedDependenciesFromLibraries(forwarded);
+                // recursive
+                foreach (var forwarded in withForwarded.ForwardedLibraries)
+                {
+                    this.AddLinkDependency(forwarded);
+                    this.AddRuntimeDependency(forwarded);
+                    this.LinkAllForwardedDependenciesFromLibraries(forwarded);
+                }
             }
         }
 
