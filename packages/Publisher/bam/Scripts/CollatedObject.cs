@@ -61,6 +61,7 @@ namespace Publisher
         private string sourcePathKey;
         private Bam.Core.TokenizedString publishingDirectory;
         private ICollatedObject anchor = null;
+        private ICollation encapsulatingCollation;
 
         private readonly System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject>();
 
@@ -104,6 +105,15 @@ namespace Publisher
                     // anchor should exist first
                     this.DependsOn(anchor as Bam.Core.Module);
                 }
+            }
+        }
+
+        ICollation ICollatedObject.EncapsulatingCollation => this.encapsulatingCollation;
+        public ICollation EncapsulatingCollation
+        {
+            set
+            {
+                this.encapsulatingCollation = value;
             }
         }
 

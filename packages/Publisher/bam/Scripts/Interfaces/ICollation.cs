@@ -27,37 +27,9 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-using Bam.Core;
 namespace Publisher
 {
-    /// <summary>
-    /// Interface representing an object that has been collated
-    /// </summary>
-    interface ICollatedObject
+    interface ICollation
     {
-        /// <summary>
-        /// The Module which originated this object before collation
-        /// </summary>
-        Bam.Core.Module SourceModule { get; }
-
-        /// <summary>
-        /// The path key in that source module for this object
-        /// </summary>
-        string SourcePathKey { get; }
-
-        /// <summary>
-        /// The publishing direction where this object is collated to
-        /// </summary>
-        Bam.Core.TokenizedString PublishingDirectory { get; }
-
-        /// <summary>
-        /// The anchor collated object, for which all child collated objects are relative
-        /// </summary>
-        ICollatedObject Anchor { get; }
-
-        /// <summary>
-        /// The encapulsating Collation holding this particular object.
-        /// </summary>
-        ICollation EncapsulatingCollation { get; }
     }
 }

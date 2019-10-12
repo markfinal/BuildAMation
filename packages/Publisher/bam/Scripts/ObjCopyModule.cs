@@ -52,6 +52,8 @@ namespace Publisher
         /// </summary>
         protected ICollatedObject anchor = null;
 
+        protected ICollation encapsulatingCollation;
+
         /// <summary>
         /// Initialize this module
         /// </summary>
@@ -140,6 +142,15 @@ namespace Publisher
                 this.anchor = value;
             }
         }
+
+        ICollation ICollatedObject.EncapsulatingCollation => this.encapsulatingCollation;
+        public ICollation EncapsulatingCollation
+        {
+            set
+            {
+                this.encapsulatingCollation = value;
+            }
+        }
     }
 
     /// <summary>
@@ -225,6 +236,7 @@ namespace Publisher
                     module.SourceModule = strippedCollatedObject;
                     module.SourcePathKey = StripModule.StripBinaryKey;
                     module.Macros.Add("publishingdir", strippedCollatedObject.Macros["publishingdir"].Clone(module));
+                    module.EncapsulatingCollation = (strippedCollatedObject as ICollatedObject).EncapsulatingCollation;
                 });
             linkDebugSymbols.DependsOn(strippedCollatedObject);
 

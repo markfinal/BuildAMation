@@ -44,62 +44,86 @@ namespace Publisher
             }
 
             var collatedInterface = module as ICollatedObject;
-            System.Diagnostics.Debug.Assert(null != collatedInterface.SourceModule);
-            if (module.IsAnchor && !(collatedInterface.SourceModule is PreExistingObject))
-            {
-                // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
-                // a no-op also applies to stripped executable copies
-                return;
-            }
+            var collation = collatedInterface.EncapsulatingCollation;
 
-            var projectModule = collatedInterface.SourceModule;
-            var arePostBuildCommands = true;
-            // check for runtime dependencies that won't have projects, use their anchor
-            if (null == projectModule.MetaData)
+            if (collation is Collation realCollation && realCollation.PublishingType == Collation.EPublishingType.Library)
             {
-                if (null != collatedInterface.Anchor)
+                var projectModule = realCollation;
+
+                var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+                var theproject = solution.EnsureProjectExists(realCollation.GetType(), realCollation.BuildEnvironment);
+                var theconfig = theproject.GetConfiguration(realCollation);
+                theconfig.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
+
+                if (collatedInterface.SourceModule is PreExistingFile)
                 {
-                    projectModule = collatedInterface.Anchor.SourceModule;
+                    theconfig.AddOtherFile(module.GeneratedPaths[CollatedObject.CopiedFileKey]);
                 }
-                else
-                {
-                    if (collatedInterface.SourceModule is PreExistingObject)
-                    {
-                        projectModule = (collatedInterface.SourceModule as PreExistingObject).ParentOfCollationModule;
 
-                        // ensure a project configuration exists, as this collation may be visited prior to
-                        // the source which invoked it
-                        var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-                        var theproject = solution.EnsureProjectExists(projectModule.GetType(), projectModule.BuildEnvironment);
-                        theproject.GetConfiguration(projectModule);
-
-                        arePostBuildCommands = false;
-                    }
-                    else
-                    {
-                        throw new Bam.Core.Exception(
-                            $"No anchor set on '{module.GetType().ToString()}' with source path '{module.SourcePath}'"
-                        );
-                    }
-                }
-            }
-
-            var project = projectModule.MetaData as VSSolutionBuilder.VSProject;
-            var config = project.GetConfiguration(projectModule);
-
-            if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility && arePostBuildCommands)
-            {
-                VSSolutionBuilder.Support.AddPostBuildSteps(
+                VSSolutionBuilder.Support.AddPreBuildSteps(
                     module,
-                    config: config
+                    config: theconfig
                 );
             }
             else
             {
-                VSSolutionBuilder.Support.AddPreBuildSteps(
-                    module,
-                    config: config
-                );
+                System.Diagnostics.Debug.Assert(null != collatedInterface.SourceModule);
+                if (module.IsAnchor && !(collatedInterface.SourceModule is PreExistingObject))
+                {
+                    // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
+                    // a no-op also applies to stripped executable copies
+                    return;
+                }
+
+                var projectModule = collatedInterface.SourceModule;
+                var arePostBuildCommands = true;
+                // check for runtime dependencies that won't have projects, use their anchor
+                if (null == projectModule.MetaData)
+                {
+                    if (null != collatedInterface.Anchor)
+                    {
+                        projectModule = collatedInterface.Anchor.SourceModule;
+                    }
+                    else
+                    {
+                        if (collatedInterface.SourceModule is PreExistingObject)
+                        {
+                            projectModule = (collatedInterface.SourceModule as PreExistingObject).ParentOfCollationModule;
+
+                            // ensure a project configuration exists, as this collation may be visited prior to
+                            // the source which invoked it
+                            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+                            var theproject = solution.EnsureProjectExists(projectModule.GetType(), projectModule.BuildEnvironment);
+                            theproject.GetConfiguration(projectModule);
+
+                            arePostBuildCommands = false;
+                        }
+                        else
+                        {
+                            throw new Bam.Core.Exception(
+                                $"No anchor set on '{module.GetType().ToString()}' with source path '{module.SourcePath}'"
+                            );
+                        }
+                    }
+                }
+
+                var project = projectModule.MetaData as VSSolutionBuilder.VSProject;
+                var config = project.GetConfiguration(projectModule);
+
+                if (config.Type != VSSolutionBuilder.VSProjectConfiguration.EType.Utility && arePostBuildCommands)
+                {
+                    VSSolutionBuilder.Support.AddPostBuildSteps(
+                        module,
+                        config: config
+                    );
+                }
+                else
+                {
+                    VSSolutionBuilder.Support.AddPreBuildSteps(
+                        module,
+                        config: config
+                    );
+                }
             }
         }
     }

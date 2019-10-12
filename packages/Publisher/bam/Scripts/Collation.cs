@@ -47,7 +47,8 @@ namespace Publisher
     /// This class has properties that expose standad locations, e.g. ExecutableDir, PluginDir.
     /// </summary>
     abstract class Collation :
-        Bam.Core.Module
+        Bam.Core.Module,
+        ICollation
     {
         protected override void
         Init()
@@ -75,6 +76,27 @@ namespace Publisher
 #if D_PACKAGE_MAKEFILEBUILDER
                 case "MakeFile":
                     MakeFileBuilder.Support.AddCheckpoint(this);
+                    break;
+#endif
+
+#if D_PACKAGE_VSSOLUTIONBUILDER
+                case "VSSolution":
+                    {
+                        var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+                        var project = solution.EnsureProjectExists(this.GetType(), this.BuildEnvironment);
+                        var config = project.GetConfiguration(this);
+                        config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
+                        foreach (var req in this.Requirements)
+                        {
+                            if (req is ICollatedObject reqCollationObject)
+                            {
+                                if (reqCollationObject.SourceModule.MetaData is VSSolutionBuilder.VSProject reqProject)
+                                {
+                                    config.RequiresProject(reqProject);
+                                }
+                            }
+                        }
+                    }
                     break;
 #endif
 
@@ -654,7 +676,7 @@ namespace Publisher
             var tuple = System.Tuple.Create(dependent, key);
             try
             {
-                if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+                if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable && this.PublishingType != EPublishingType.Library)
                 {
                     // a dependency may be copied for each anchor that references it in order
                     // to make that anchor fully resolved and debuggable
@@ -1057,12 +1079,13 @@ namespace Publisher
                     module.SourcePathKey = key;
                     module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
                     module.Anchor = anchor;
+                    module.EncapsulatingCollation = this;
                     if (null != renameLeaf)
                     {
                         module.Macros.AddVerbatim("RenameLeaf", renameLeaf);
                     }
                 });
-            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable && this.PublishingType != EPublishingType.Library)
             {
                 // the publishdir is different for each anchor, so dependents may be duplicated
                 // if referenced by multiple anchors
@@ -1084,7 +1107,7 @@ namespace Publisher
             // for PublishBesideExecutable, a custom anchor publish root won't work, as the debugger won't run any file
             // other than that built, and if copied elsewhere (as would expect from a custom anchor publish root), so
             // will it's dependencies, which won't be found by the debugged executable
-            if (null != anchorPublishRoot && !Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            if (null != anchorPublishRoot && !Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable && this.PublishingType != EPublishingType.Library)
             {
                 collatedFile.Macros.Add("publishdir", collatedFile.CreateTokenizedString("$(0)", anchorPublishRoot));
             }
@@ -1111,9 +1134,10 @@ namespace Publisher
                     module.SourcePathKey = key;
                     module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
                     module.Anchor = anchor;
+                    module.EncapsulatingCollation = this;
                 });
 
-            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable && this.PublishingType != EPublishingType.Library)
             {
                 // the publishdir is different for each anchor, so dependents may be duplicated
                 // if referenced by multiple anchors
@@ -1135,7 +1159,7 @@ namespace Publisher
             // for PublishBesideExecutable, a custom anchor publish root won't work, as the debugger won't run any file
             // other than that built, and if copied elsewhere (as would expect from a custom anchor publish root), so
             // will it's dependencies, which won't be found by the debugged executable
-            if (null != anchorPublishRoot && !Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable)
+            if (null != anchorPublishRoot && !Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable && this.PublishingType != EPublishingType.Library)
             {
                 collatedFramework.Macros.Add("publishdir", collatedFramework.CreateTokenizedString("$(0)", anchorPublishRoot));
             }

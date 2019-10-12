@@ -40,7 +40,8 @@ namespace Publisher
     /// On OSX, this uses dsymutil to extract symbol bundles.
     /// </summary>
     abstract class DebugSymbolCollation :
-        Bam.Core.Module
+        Bam.Core.Module,
+        ICollation
     {
         /// <summary>
         /// Path key to the debug symbol collation directory
@@ -111,6 +112,7 @@ namespace Publisher
                     module.SourceModule = collatedFile.SourceModule;
                     module.SourcePathKey = collatedFile.SourcePathKey;
                     module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
+                    module.EncapsulatingCollation = this;
                 });
             this.Requires(createDebugSymbols);
 
@@ -131,6 +133,7 @@ namespace Publisher
                     module.SourceModule = collatedFile.SourceModule;
                     module.SourcePathKey = collatedFile.SourcePathKey;
                     module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
+                    module.EncapsulatingCollation = this;
                 });
             this.Requires(createDebugSymbols);
 
@@ -155,6 +158,7 @@ namespace Publisher
                     // TODO: there has not been a check whether this is a valid path or not (i.e. were debug symbols enabled for link?)
                     module.SourcePathKey = C.ConsoleApplication.PDBKey;
                     module.SetPublishingDirectory("$(0)", collatedFile.PublishingDirectory.Clone(module));
+                    module.EncapsulatingCollation = this;
                 });
             this.Requires(copyPDBModule);
 
