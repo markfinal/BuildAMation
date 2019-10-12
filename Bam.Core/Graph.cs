@@ -673,23 +673,33 @@ namespace Bam.Core
             Module module,
             Array<Module> visited)
         {
+            var indent = new string(' ', depth);
+            builder.Append(indent);
             if (prefix.HasValue)
             {
-                builder.Append($"{new string(' ', depth)}{prefix.Value}{module.ToString()}");
+                builder.Append(prefix.Value);
+            }
+            if (Graph.Instance.IsReferencedModule(module))
+            {
+                builder.Append(module.ToString());
             }
             else
             {
-                builder.Append($"{new string(' ', depth)}{module.ToString()}");
+                builder.Append($"({module.ToString()})");
             }
             if (visited.Contains(module))
             {
-                builder.AppendLine("*");
+                builder.AppendLine("");
                 return;
             }
             visited.Add(module);
             if (module is IInputPath inputPath)
             {
-                builder.AppendLine($" {inputPath.InputPath.ToString()}");
+                builder.AppendLine($" <= {inputPath.InputPath.ToString()}");
+            }
+            else
+            {
+                builder.AppendLine("*");
             }
             foreach (var req in module.Requirements)
             {
