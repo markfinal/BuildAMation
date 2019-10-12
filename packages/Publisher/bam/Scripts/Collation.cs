@@ -82,17 +82,20 @@ namespace Publisher
 #if D_PACKAGE_VSSOLUTIONBUILDER
                 case "VSSolution":
                     {
-                        var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
-                        var project = solution.EnsureProjectExists(this.GetType(), this.BuildEnvironment);
-                        var config = project.GetConfiguration(this);
-                        config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
-                        foreach (var req in this.Requirements)
+                        if (this.PublishingType == EPublishingType.Library)
                         {
-                            if (req is ICollatedObject reqCollationObject)
+                            var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
+                            var project = solution.EnsureProjectExists(this.GetType(), this.BuildEnvironment);
+                            var config = project.GetConfiguration(this);
+                            config.SetType(VSSolutionBuilder.VSProjectConfiguration.EType.Utility);
+                            foreach (var req in this.Requirements)
                             {
-                                if (reqCollationObject.SourceModule.MetaData is VSSolutionBuilder.VSProject reqProject)
+                                if (req is ICollatedObject reqCollationObject)
                                 {
-                                    config.RequiresProject(reqProject);
+                                    if (reqCollationObject.SourceModule.MetaData is VSSolutionBuilder.VSProject reqProject)
+                                    {
+                                        config.RequiresProject(reqProject);
+                                    }
                                 }
                             }
                         }
