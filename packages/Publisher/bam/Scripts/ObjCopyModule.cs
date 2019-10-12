@@ -52,6 +52,9 @@ namespace Publisher
         /// </summary>
         protected ICollatedObject anchor = null;
 
+        /// <summary>
+        /// The collation interface for the collation that encapsulates this Module
+        /// </summary>
         protected ICollation encapsulatingCollation;
 
         /// <summary>
@@ -144,6 +147,9 @@ namespace Publisher
         }
 
         ICollation ICollatedObject.EncapsulatingCollation => this.encapsulatingCollation;
+        /// <summary>
+        /// Set the collation that encapsulates this collated object.
+        /// </summary>
         public ICollation EncapsulatingCollation
         {
             set

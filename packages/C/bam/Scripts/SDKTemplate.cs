@@ -30,13 +30,23 @@
 using System.Linq;
 namespace C
 {
+    /// <summary>
+    /// Module representing a template to follow for creating SDKs.
+    /// </summary>
     abstract class SDKTemplate :
         Publisher.Collation
     {
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedHeaders = new Bam.Core.Array<Publisher.ICollatedObject>();
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedLibs = new Bam.Core.Array<Publisher.ICollatedObject>();
 
+        /// <summary>
+        /// Return a list of paths to header files to include in the SDK.
+        /// </summary>
         protected abstract Bam.Core.TokenizedStringArray HeaderFiles { get; }
+
+        /// <summary>
+        /// Return a list of Module types that are the libraries to include in the SDK.
+        /// </summary>
         protected abstract Bam.Core.TypeArray LibraryModuleTypes { get; }
 
         protected override void

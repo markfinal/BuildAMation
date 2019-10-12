@@ -135,6 +135,9 @@ namespace Publisher
         }
 
         ICollation ICollatedObject.EncapsulatingCollation => this.encapsulatingCollation;
+        /// <summary>
+        /// Set the collation that encapsulates this collated object.
+        /// </summary>
         public ICollation EncapsulatingCollation
         {
             set
