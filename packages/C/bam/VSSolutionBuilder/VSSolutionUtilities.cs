@@ -63,6 +63,10 @@ namespace C
                     {
                         throw new Bam.Core.Exception($"Frameworks are not supported on Windows: {input.ToString()}");
                     }
+                    else if (input is SDKTemplate)
+                    {
+                        config.RequiresProject(solution.EnsureProjectExists(input.GetType(), input.BuildEnvironment));
+                    }
                     else
                     {
                         throw new Bam.Core.Exception($"Don't know how to handle this buildable library module, {input.ToString()}");
