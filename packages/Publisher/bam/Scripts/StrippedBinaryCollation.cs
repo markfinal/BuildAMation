@@ -42,7 +42,8 @@ namespace Publisher
     /// On OSX, strip is used to strip binaries.
     /// </summary>
     abstract class StrippedBinaryCollation :
-        Bam.Core.Module
+        Bam.Core.Module,
+        ICollation
     {
         /// <summary>
         /// Path key for the stripped binary collation
@@ -114,6 +115,7 @@ namespace Publisher
                     System.Diagnostics.Debug.Assert(1 == (collatedFile as Bam.Core.Module).GeneratedPaths.Count());
                     module.SourcePathKey = (collatedFile as Bam.Core.Module).GeneratedPaths.First().Key;
                     module.Macros.Add("publishingdir", collatedFile.PublishingDirectory.Clone(module));
+                    module.EncapsulatingCollation = this;
                 });
 
             this.Requires(stripBinary);
@@ -143,6 +145,7 @@ namespace Publisher
                     System.Diagnostics.Debug.Assert(1 == (collatedObject as Bam.Core.Module).GeneratedPaths.Count());
                     module.SourcePathKey = (collatedObject as Bam.Core.Module).GeneratedPaths.First().Key;
                     module.SetPublishingDirectory("$(0)", collatedObject.PublishingDirectory.Clone(module));
+                    module.EncapsulatingCollation = this;
                 });
             this.Requires(clonedFile);
 
@@ -353,6 +356,7 @@ namespace Publisher
                     module.SourcePathKey = key;
                     module.Anchor = anchor;
                     module.SetPublishingDirectory("$(0)", new[] { modulePublishDir });
+                    module.EncapsulatingCollation = this;
                 });
 
             var strippedAnchor = this.findAnchor(anchor);

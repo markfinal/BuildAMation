@@ -44,6 +44,7 @@ namespace Publisher
         private Bam.Core.Module sourceModule;
         private string sourcePathKey;
         private ICollatedObject anchor = null;
+        private ICollation encapsulatingCollation;
 
         protected override void
         Init()
@@ -130,6 +131,15 @@ namespace Publisher
             set
             {
                 this.anchor = value;
+            }
+        }
+
+        ICollation ICollatedObject.EncapsulatingCollation => this.encapsulatingCollation;
+        public ICollation EncapsulatingCollation
+        {
+            set
+            {
+                this.encapsulatingCollation = value;
             }
         }
 
