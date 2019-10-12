@@ -6,7 +6,7 @@ install:
   - cmd: echo "Testing BAM branch '%BAM_BRANCH_TESTED%'"
   - ps: Start-FileDownload "https://ci.appveyor.com/api/projects/markfinal/buildamation/artifacts/bam.tar?branch=$env:BAM_BRANCH_TESTED&job=Image%3A%20Visual%20Studio%202017"
   - cmd: 7z x bam.tar -oc:\BuildAMation
-environment:
+#environment:
   #global:
   #  EXTRA_TEST_ARGS: -t Test2
   #matrix:
