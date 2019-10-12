@@ -762,7 +762,7 @@ namespace Bam.Core
 
         /// <summary>
         /// Determine if the module is a top-level module, i.e. is from the package in which Bam was invoked,
-        /// and nothing depends on it.
+        /// and nothing depends on it, and is sealed.
         /// </summary>
         /// <value><c>true</c> if top level; otherwise, <c>false</c>.</value>
         public bool TopLevel
@@ -771,7 +771,8 @@ namespace Bam.Core
             {
                 var isTopLevel = !this.DependeesList.Any() &&
                     !this.RequiredDependeesList.Any() &&
-                    (this.PackageDefinition == Graph.Instance.MasterPackage);
+                    (this.PackageDefinition == Graph.Instance.MasterPackage) &&
+                    this.GetType().IsSealed;
                 return isTopLevel;
             }
         }
