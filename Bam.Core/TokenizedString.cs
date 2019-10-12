@@ -474,6 +474,14 @@ namespace Bam.Core
                 message.AppendLine();
                 message.AppendLine("Created at:");
                 message.AppendLine(this.CreationStackTrace);
+                message.AppendLine($"Module with macros: {this.ModuleWithMacros}");
+                if (this.ModuleWithMacros != null)
+                {
+                    foreach (var macro in this.ModuleWithMacros.Macros.Dict)
+                    {
+                        message.AppendLine($"\t{macro.Key} = {macro.Value.OriginalString}");
+                    }
+                }
                 throw new Exception(message.ToString());
             }
             return this.ParsedString;
