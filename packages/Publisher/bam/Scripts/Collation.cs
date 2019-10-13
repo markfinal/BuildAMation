@@ -137,7 +137,6 @@ namespace Publisher
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
         private readonly System.Collections.Generic.Dictionary<(Bam.Core.Module module, string pathKey), ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<(Bam.Core.Module module, string pathKey), ICollatedObject>();
-        private readonly System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>> preExistingCollatedObjects = new System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>>();
 
         private Bam.Core.TokenizedString PublishRoot { get; set; }
 
@@ -1200,12 +1199,6 @@ namespace Publisher
                 {
                     anchorDelegate(this, collatedObjectInterface, customData);
                 }
-            }
-            foreach (var obj in this.preExistingCollatedObjects)
-            {
-                // TODO: this is slightly more expensive, as it may end up iterating over
-                // this.collatedObjects for the preexisting objects
-                anchorDelegate(this, obj.Item1, customData);
             }
         }
 
