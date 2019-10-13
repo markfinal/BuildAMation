@@ -28,6 +28,7 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
 using System.Linq;
+using Bam.Core;
 namespace C
 {
     /// <summary>
@@ -65,7 +66,7 @@ namespace C
             {
                 var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(type);
                 var copiedBin = includeFn.Invoke(this, new[] { DynamicLibrary.ExecutableKey, null }) as Publisher.ICollatedObject;
-                if (this.BuildEnvironment.Platform.HasFlag(Bam.Core.EPlatform.Windows))
+                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                 {
                     var copiedLib = includeFn.Invoke(this, new[] { DynamicLibrary.ImportLibraryKey, null }) as Publisher.ICollatedObject;
                     copiedLibs.Add(copiedLib);
@@ -86,7 +87,7 @@ namespace C
                 {
                     foreach (var lib in this.copiedLibs)
                     {
-                        if (this.BuildEnvironment.Platform.HasFlag(Bam.Core.EPlatform.Windows))
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                         {
                             linker.LibraryPaths.AddUnique((lib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ImportLibraryDir));
                         }
