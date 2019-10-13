@@ -48,8 +48,6 @@ namespace Publisher
 
             if (collation is Collation realCollation && realCollation.PublishingType == Collation.EPublishingType.Library)
             {
-                var projectModule = realCollation;
-
                 var solution = Bam.Core.Graph.Instance.MetaData as VSSolutionBuilder.VSSolution;
                 var theproject = solution.EnsureProjectExists(realCollation.GetType(), realCollation.BuildEnvironment);
                 var theconfig = theproject.GetConfiguration(realCollation);
