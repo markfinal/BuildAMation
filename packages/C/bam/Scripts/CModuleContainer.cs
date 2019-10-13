@@ -217,7 +217,7 @@ namespace C
                                 }
 
                             default:
-                                throw new Bam.Core.Exception($"Unknown reason, {child.ReasonToExecute.Reason.ToString()}");
+                                throw new Bam.Core.Exception($"The child module {child.ToString()}, to {this.ToString()}, had an unhandled execute reason, {child.ReasonToExecute.Reason.ToString()}. Failing.");
                         }
                     }
                 }

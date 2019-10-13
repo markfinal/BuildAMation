@@ -694,7 +694,7 @@ namespace C
                             return;
 
                         default:
-                            throw new Bam.Core.Exception($"Unknown reason, {source.ReasonToExecute.Reason.ToString()}");
+                            throw new Bam.Core.Exception($"The linked module {source.ToString()}, to {this.ToString()}, had an unhandled execute reason, {source.ReasonToExecute.Reason.ToString()}. Failing.");
                     }
                 }
                 // TODO: there could be a chance that a library is up-to-date from a previous build, and yet
@@ -718,7 +718,7 @@ namespace C
                             return;
 
                         default:
-                            throw new Bam.Core.Exception($"Unknown reason, {source.ReasonToExecute.Reason.ToString()}");
+                            throw new Bam.Core.Exception($"The source module {source.ToString()}, to {this.ToString()}, had an unhandled execute reason, {source.ReasonToExecute.Reason.ToString()}. Failing.");
                     }
                 }
                 else
