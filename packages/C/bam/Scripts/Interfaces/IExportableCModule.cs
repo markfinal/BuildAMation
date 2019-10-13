@@ -29,8 +29,14 @@
 #endregion // License
 namespace C
 {
+    /// <summary>
+    /// Apply this interface to make a CModule exportable with CompileAndLinkAgainst and LinkAgainst
+    /// </summary>
     interface IExportableCModule
     {
+        /// <summary>
+        /// Provide the public patch to export with
+        /// </summary>
         Bam.Core.Module.PublicPatchDelegate ExportPatch { get; }
     }
 }
