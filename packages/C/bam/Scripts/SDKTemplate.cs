@@ -94,12 +94,12 @@ namespace C
                         {
                             linker.LibraryPaths.AddUnique((lib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
                         }
-                        var libPath = (appliedTo.Tool as LinkerTool).GetLibraryPath(lib.SourceModule as CModule);
-                        if (!libPath.IsParsed)
+                        var outputPath = (lib as Bam.Core.Module).GeneratedPaths[Publisher.CollatedFile.CopiedFileKey];
+                        if (!outputPath.IsParsed)
                         {
-                            libPath.Parse();
+                            outputPath.Parse();
                         }
-                        linker.Libraries.Add(libPath.ToString());
+                        linker.Libraries.Add(outputPath.ToString());
                     }
                 }
             });
