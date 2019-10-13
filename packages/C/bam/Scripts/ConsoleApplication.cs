@@ -393,13 +393,16 @@ namespace C
         /// </summary>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
         public void
-        LinkAgainst<DependentModule>() where DependentModule : CModule, new()
+        LinkAgainst<DependentModule>() where DependentModule : CModule, IExportableCModule, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
                 return;
             }
+
+            dependent.PublicPatch((dependent as IExportableCModule).ExportPatch);
+
             this.AddLinkDependency(dependent);
             this.AddRuntimeDependency(dependent);
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
@@ -446,13 +449,16 @@ namespace C
         public void
         CompileAndLinkAgainst<DependentModule>(
             CModule affectedSource,
-            params CModule[] additionalSources) where DependentModule : CModule, new()
+            params CModule[] additionalSources) where DependentModule : CModule, IExportableCModule, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
                 return;
             }
+
+            dependent.PublicPatch((dependent as IExportableCModule).ExportPatch);
+
             this.AddLinkDependency(dependent);
             this.AddRuntimeDependency(dependent);
             System.Collections.Generic.IEnumerable<CModule>
