@@ -612,7 +612,10 @@ namespace C
                         linker.Libraries = new Bam.Core.StringArray();
                         foreach (var library in this.Libraries)
                         {
-                            (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, library as CModule);
+                            if (library is CModule libraryCModule)
+                            {
+                                (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, libraryCModule);
+                            }
                         }
                         linker.Libraries.AddRange(externalLibs);
 
