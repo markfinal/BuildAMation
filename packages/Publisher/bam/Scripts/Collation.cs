@@ -64,7 +64,24 @@ namespace Publisher
         protected sealed override void
         EvaluateInternal()
         {
-            // TODO
+            this.ReasonToExecute = null;
+            foreach (var depKV in this.collatedObjects)
+            {
+                var collatedDep = depKV.Value as CollatedObject;
+                switch (collatedDep.ReasonToExecute?.Reason)
+                {
+                    case null:
+                        break;
+
+                    case Bam.Core.ExecuteReasoning.EReason.FileDoesNotExist:
+                    case Bam.Core.ExecuteReasoning.EReason.InputFileIsNewer:
+                        this.ReasonToExecute = collatedDep.ReasonToExecute;
+                        break;
+
+                    default:
+                        throw new Bam.Core.Exception($"Unable to determine execute reason for collated object {collatedDep.ToString()}");
+                }
+            }
         }
 
         protected sealed override void
