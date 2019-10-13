@@ -63,7 +63,7 @@ namespace Publisher
         private ICollatedObject anchor = null;
         private ICollation encapsulatingCollation;
 
-        private readonly System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> dependents = new System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject>();
+        private readonly System.Collections.Generic.Dictionary<(Bam.Core.Module module, string pathKey), ICollatedObject> dependents = new System.Collections.Generic.Dictionary<(Bam.Core.Module module, string pathKey), ICollatedObject>();
 
         Bam.Core.Module ICollatedObject.SourceModule => this.sourceModule;
         /// <summary>
@@ -193,7 +193,7 @@ namespace Publisher
         /// <summary>
         /// Get the dependent collations on this collated object
         /// </summary>
-        public System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> DependentCollations => this.dependents;
+        public System.Collections.Generic.Dictionary<(Bam.Core.Module module, string pathKey), ICollatedObject> DependentCollations => this.dependents;
 
         /// <summary>
         /// Get the source path of this collated object

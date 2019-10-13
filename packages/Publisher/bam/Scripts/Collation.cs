@@ -136,7 +136,7 @@ namespace Publisher
 
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
-        private readonly System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<System.Tuple<Bam.Core.Module, string>, ICollatedObject>();
+        private readonly System.Collections.Generic.Dictionary<(Bam.Core.Module module, string pathKey), ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<(Bam.Core.Module module, string pathKey), ICollatedObject>();
         private readonly System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>> preExistingCollatedObjects = new System.Collections.Generic.List<System.Tuple<CollatedObject, Bam.Core.TokenizedString>>();
 
         private Bam.Core.TokenizedString PublishRoot { get; set; }
@@ -479,27 +479,27 @@ namespace Publisher
         EncodeDependentModuleAndPathKey(
             Bam.Core.Module dependent,
             System.Collections.Generic.Dictionary<Bam.Core.Module, string> allDependents,
-            System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, string>> toDealWith)
+            System.Collections.Generic.Queue<(Bam.Core.Module module, string pathKey)> toDealWith)
         {
             var runtimePathKey = this.Mapping.GetRuntimePathKey(dependent);
             if (null == runtimePathKey)
             {
                 // no explicit mapping, but the dependency may contain more dependencies that are
-                toDealWith.Enqueue(System.Tuple.Create(dependent, runtimePathKey));
+                toDealWith.Enqueue((dependent, runtimePathKey));
                 return;
             }
             if (allDependents.ContainsKey(dependent))
             {
                 return;
             }
-            toDealWith.Enqueue(System.Tuple.Create(dependent, runtimePathKey));
+            toDealWith.Enqueue((dependent, runtimePathKey));
         }
 
         private void
         FindPublishableDependents(
             Bam.Core.Module module,
             System.Collections.Generic.Dictionary<Bam.Core.Module, string> allDependents,
-            System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, string>> toDealWith)
+            System.Collections.Generic.Queue<(Bam.Core.Module module, string pathKey)> toDealWith)
         {
             // now look at all the dependencies and accumulate a list of child dependencies
             // TODO: need a configurable list of types, not just C.DynamicLibrary, that the user can specify to find
@@ -521,24 +521,24 @@ namespace Publisher
             Bam.Core.TokenizedString anchorPublishRoot)
         {
             var allDependents = new System.Collections.Generic.Dictionary<Bam.Core.Module, string>();
-            var toDealWith = new System.Collections.Generic.Queue<System.Tuple<Bam.Core.Module, string>>();
-            toDealWith.Enqueue(System.Tuple.Create(initialModule, key));
+            var toDealWith = new System.Collections.Generic.Queue<(Bam.Core.Module module, string pathKey)>();
+            toDealWith.Enqueue((initialModule, key));
             // iterate over each dependent, stepping into each of their dependencies
             while (toDealWith.Count > 0)
             {
                 var next = toDealWith.Dequeue();
-                this.FindPublishableDependents(next.Item1, allDependents, toDealWith);
-                if (next.Item1 == initialModule)
+                this.FindPublishableDependents(next.module, allDependents, toDealWith);
+                if (next.module == initialModule)
                 {
                     continue;
                 }
                 if (null == next.Item2)
                 {
-                    Bam.Core.Log.DebugMessage($"Ignoring '{next.Item1.ToString()}' for collation, with no string path key");
+                    Bam.Core.Log.DebugMessage($"Ignoring '{next.module.ToString()}' for collation, with no string path key");
                     continue;
                 }
                 var moduleShouldBePublished = true;
-                moduleShouldBePublished &= !allDependents.ContainsKey(next.Item1);
+                moduleShouldBePublished &= !allDependents.ContainsKey(next.module);
                 moduleShouldBePublished &= !this.collatedObjects.ContainsKey(next);
                 if (anchor != null)
                 {
@@ -547,7 +547,7 @@ namespace Publisher
                 }
                 if (moduleShouldBePublished)
                 {
-                    allDependents.Add(next.Item1, next.Item2);
+                    allDependents.Add(next.module, next.pathKey);
                 }
             }
             // now add each as a publishable dependent
@@ -670,13 +670,13 @@ namespace Publisher
         public ModuleOutputDefaultPublishingPathMapping Mapping { get; private set; }
 
         private void
-        recordCollatedObject(
+        RecordCollatedObject(
             ICollatedObject collatedFile,
             Bam.Core.Module dependent,
             string key,
             ICollatedObject anchor)
         {
-            var tuple = System.Tuple.Create(dependent, key);
+            var tuple = (dependent, key);
             try
             {
                 if (Bam.Core.Graph.Instance.BuildModeMetaData.PublishBesideExecutable && this.PublishingType != EPublishingType.Library)
@@ -747,7 +747,7 @@ namespace Publisher
                     anchorPublishRoot
                 );
             }
-            this.recordCollatedObject(
+            this.RecordCollatedObject(
                 collatedFile,
                 dependent,
                 key,
@@ -1012,7 +1012,7 @@ namespace Publisher
                 anchor,
                 null
             );
-            this.recordCollatedObject(
+            this.RecordCollatedObject(
                 collatedFile,
                 preexisting,
                 PreExistingFile.ExistingFileKey,
@@ -1050,7 +1050,7 @@ namespace Publisher
                 null,
                 renameLeaf: renameLeaf
             );
-            this.recordCollatedObject(
+            this.RecordCollatedObject(
                 collatedDir,
                 preexisting,
                 PreExistingDirectory.ExistingDirectoryKey,
