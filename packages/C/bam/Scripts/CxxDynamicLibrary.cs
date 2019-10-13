@@ -231,7 +231,7 @@ namespace C.Cxx
         public void
         CompilePubliclyAndLinkAgainst<DependentModule>(
             CModule affectedSource,
-            params CModule[] additionalSources) where DependentModule : CModule, new()
+            params CModule[] additionalSources) where DependentModule : CModule, IExportableCModule, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
