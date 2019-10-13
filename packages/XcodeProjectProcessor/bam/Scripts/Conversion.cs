@@ -144,22 +144,16 @@ namespace XcodeProjectProcessor
         {
             // TODO: should support .tbd files (text based definition)
             var target = module.MetaData as XcodeBuilder.Target;
-            var project = target.Project;
             foreach (var library in libraries)
             {
                 if (System.IO.Path.IsPathRooted(library))
                 {
-                    var directoryName = System.IO.Path.GetDirectoryName(library);
-                    if (true)//librarySearchPaths.Contains(directoryName))
-                    {
-                        var baseName = System.IO.Path.GetFileNameWithoutExtension(library);
-                        target.EnsureFrameworksBuildFileExists(
-                            Bam.Core.TokenizedString.CreateVerbatim($"-l{baseName}"),
-                            XcodeBuilder.FileReference.EFileType.DynamicLibrary,
-                            XcodeBuilder.FileReference.ESourceTree.Group
-                        );
-                        continue;
-                    }
+                    target.EnsureFrameworksBuildFileExists(
+                        Bam.Core.TokenizedString.CreateVerbatim(library),
+                        XcodeBuilder.FileReference.EFileType.DynamicLibrary,
+                        XcodeBuilder.FileReference.ESourceTree.Absolute
+                    );
+                    continue;
                 }
 
                 var stripped_library_name = library.Replace("-l", System.String.Empty);
