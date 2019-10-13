@@ -120,6 +120,33 @@ namespace Publisher
                     break;
 #endif
 
+
+#if D_PACKAGE_XCODEBUILDER
+                case "Xcode":
+                    {
+                        if (this.PublishingType == EPublishingType.Library)
+                        {
+                            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+                            var target = workspace.EnsureTargetExists(this);
+                            target.SetType(XcodeBuilder.Target.EProductType.Utility);
+                            var configuration = target.GetConfiguration(this);
+                            configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+
+                            foreach (var req in this.Requirements)
+                            {
+                                if (req is ICollatedObject reqCollationObject)
+                                {
+                                    if (reqCollationObject.SourceModule.MetaData is XcodeBuilder.Target reqTarget)
+                                    {
+                                        target.Requires(reqTarget);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+#endif
+
                 default:
                     // does not need to do anything
                     break;

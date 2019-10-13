@@ -64,7 +64,15 @@ namespace Publisher
 
                 var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
                 var target = workspace.EnsureTargetExists(realCollation);
+                target.SetType(XcodeBuilder.Target.EProductType.Utility);
                 var configuration = target.GetConfiguration(realCollation);
+                configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
+
+                if (collatedInterface.SourceModule is PreExistingFile)
+                {
+                    target.EnsureHeaderFileExists(module.GeneratedPaths[CollatedObject.CopiedFileKey]);
+                }
+
                 target.AddPreBuildCommands(commands, configuration, null);
             }
             else

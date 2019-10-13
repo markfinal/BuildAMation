@@ -88,7 +88,6 @@ namespace XcodeProjectProcessor
 
         private static bool
         FindLibrary(
-            string stripped_library_name,
             string proposed_library_filename,
             Bam.Core.TokenizedStringArray librarySearchPaths,
             XcodeBuilder.Target target,
@@ -148,10 +147,24 @@ namespace XcodeProjectProcessor
             var project = target.Project;
             foreach (var library in libraries)
             {
+                if (System.IO.Path.IsPathRooted(library))
+                {
+                    var directoryName = System.IO.Path.GetDirectoryName(library);
+                    if (true)//librarySearchPaths.Contains(directoryName))
+                    {
+                        var baseName = System.IO.Path.GetFileNameWithoutExtension(library);
+                        target.EnsureFrameworksBuildFileExists(
+                            Bam.Core.TokenizedString.CreateVerbatim($"-l{baseName}"),
+                            XcodeBuilder.FileReference.EFileType.DynamicLibrary,
+                            XcodeBuilder.FileReference.ESourceTree.Group
+                        );
+                        continue;
+                    }
+                }
+
                 var stripped_library_name = library.Replace("-l", System.String.Empty);
                 var proposed_library_filename = $"lib{stripped_library_name}.dylib";
                 if (FindLibrary(
-                        stripped_library_name,
                         proposed_library_filename,
                         librarySearchPaths,
                         target,
@@ -162,7 +175,6 @@ namespace XcodeProjectProcessor
                 }
                 proposed_library_filename = $"lib{stripped_library_name}.a";
                 if (FindLibrary(
-                        stripped_library_name,
                         proposed_library_filename,
                         librarySearchPaths,
                         target,
