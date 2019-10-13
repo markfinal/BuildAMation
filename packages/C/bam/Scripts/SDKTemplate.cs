@@ -64,9 +64,16 @@ namespace C
             foreach (var type in this.LibraryModuleTypes)
             {
                 var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(type);
-                includeFn.Invoke(this, new[] { DynamicLibrary.ExecutableKey, null });
-                var copiedLib = includeFn.Invoke(this, new[] { DynamicLibrary.ImportLibraryKey, null }) as Publisher.ICollatedObject;
-                copiedLibs.Add(copiedLib);
+                var copiedBin = includeFn.Invoke(this, new[] { DynamicLibrary.ExecutableKey, null }) as Publisher.ICollatedObject;
+                if (this.BuildEnvironment.Platform.HasFlag(Bam.Core.EPlatform.Windows))
+                {
+                    var copiedLib = includeFn.Invoke(this, new[] { DynamicLibrary.ImportLibraryKey, null }) as Publisher.ICollatedObject;
+                    copiedLibs.Add(copiedLib);
+                }
+                else
+                {
+                    copiedLibs.Add(copiedBin);
+                }
             }
 
             this.PublicPatch((settings, appliedTo) =>
@@ -79,7 +86,14 @@ namespace C
                 {
                     foreach (var lib in this.copiedLibs)
                     {
-                        linker.LibraryPaths.AddUnique((lib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ImportLibraryDir));
+                        if (this.BuildEnvironment.Platform.HasFlag(Bam.Core.EPlatform.Windows))
+                        {
+                            linker.LibraryPaths.AddUnique((lib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ImportLibraryDir));
+                        }
+                        else
+                        {
+                            linker.LibraryPaths.AddUnique((lib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
+                        }
                         var libPath = (appliedTo.Tool as LinkerTool).GetLibraryPath(lib.SourceModule as CModule);
                         if (!libPath.IsParsed)
                         {
