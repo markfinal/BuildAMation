@@ -45,84 +45,109 @@ namespace Publisher
             }
 
             var collatedInterface = module as ICollatedObject;
-            var targetModule = collatedInterface.SourceModule;
-            var arePostBuildCommands = true;
-            if (null == targetModule.MetaData)
+            var collation = collatedInterface.EncapsulatingCollation;
+
+            if (collation is Collation realCollation && realCollation.PublishingType == Collation.EPublishingType.Library)
             {
-                if (null != collatedInterface.Anchor)
+                var copyFileTool = module.Tool as CopyFileTool;
+
+                var commands = new Bam.Core.StringArray();
+                foreach (var dir in module.OutputDirectories)
                 {
-                    // this can happen for prebuilt frameworks
-                    targetModule = collatedInterface.Anchor.SourceModule;
+                    var escapedDir = copyFileTool.EscapePath(dir.ToString());
+                    commands.Add($"[[ ! -d {escapedDir} ]] && mkdir -p {escapedDir}");
                 }
-                else
-                {
-                    if (collatedInterface.SourceModule is PreExistingObject)
-                    {
-                        targetModule = (collatedInterface.SourceModule as PreExistingObject).ParentOfCollationModule;
+                var toolAsString = CommandLineProcessor.Processor.StringifyTool(copyFileTool as Bam.Core.ICommandLineTool);
+                var toolSettings = CommandLineProcessor.NativeConversion.Convert(module.Settings, module).ToString(' ');
+                var toolPostamble = CommandLineProcessor.Processor.TerminatingArgs(copyFileTool as Bam.Core.ICommandLineTool);
+                commands.Add($"{toolAsString} {toolSettings} {toolPostamble}");
 
-                        var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-                        workspace.EnsureTargetExists(targetModule);
-
-                        arePostBuildCommands = false;
-                    }
-                    else
-                    {
-                        throw new Bam.Core.Exception(
-                            $"No anchor set on '{module.GetType().ToString()}' with source path '{module.SourcePath}'"
-                        );
-                    }
-                }
-            }
-
-            var target = targetModule.MetaData as XcodeBuilder.Target;
-
-            System.Diagnostics.Debug.Assert(null != collatedInterface.SourceModule);
-            if (module.IsAnchor && !(collatedInterface.SourceModule is PreExistingObject))
-            {
-                if (module.IsAnchorAnApplicationBundle)
-                {
-                    // application bundles are a different output type in Xcode
-                    target.MakeApplicationBundle();
-                }
-
-                // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
-                return;
-            }
-
-            if (module.IsInAnchorPackage)
-            {
-                // additionally, any built module-based dependents in the same package as the anchor do not need copying as they
-                // are built into the right directory (since Xcode module build dirs do not include the module name)
-                System.Diagnostics.Debug.Assert(1 == module.OutputDirectories.Count());
-                var output_dir = module.OutputDirectories.First().ToString();
-                var input_dir = System.IO.Path.GetDirectoryName(module.SourcePath.ToString());
-                if (output_dir.Equals(input_dir, System.StringComparison.Ordinal))
-                {
-                    return;
-                }
-            }
-
-            var copyFileTool = module.Tool as CopyFileTool;
-
-            var commands = new Bam.Core.StringArray();
-            foreach (var dir in module.OutputDirectories)
-            {
-                var escapedDir = copyFileTool.EscapePath(dir.ToString());
-                commands.Add($"[[ ! -d {escapedDir} ]] && mkdir -p {escapedDir}");
-            }
-            var toolAsString = CommandLineProcessor.Processor.StringifyTool(copyFileTool as Bam.Core.ICommandLineTool);
-            var toolSettings = CommandLineProcessor.NativeConversion.Convert(module.Settings, module).ToString(' ');
-            var toolPostamble = CommandLineProcessor.Processor.TerminatingArgs(copyFileTool as Bam.Core.ICommandLineTool);
-            commands.Add($"{toolAsString} {toolSettings} {toolPostamble}");
-
-            var configuration = target.GetConfiguration(targetModule);
-            if (!target.IsUtilityType && arePostBuildCommands)
-            {
-                target.AddPostBuildCommands(commands, configuration);
+                var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+                var target = workspace.EnsureTargetExists(realCollation);
+                var configuration = target.GetConfiguration(realCollation);
+                target.AddPreBuildCommands(commands, configuration, null);
             }
             else
             {
-                target.AddPreBuildCommands(commands, configuration, null);
+                var targetModule = collatedInterface.SourceModule;
+                var arePostBuildCommands = true;
+                if (null == targetModule.MetaData)
+                {
+                    if (null != collatedInterface.Anchor)
+                    {
+                        // this can happen for prebuilt frameworks
+                        targetModule = collatedInterface.Anchor.SourceModule;
+                    }
+                    else
+                    {
+                        if (collatedInterface.SourceModule is PreExistingObject)
+                        {
+                            targetModule = (collatedInterface.SourceModule as PreExistingObject).ParentOfCollationModule;
+
+                            var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
+                            workspace.EnsureTargetExists(targetModule);
+
+                            arePostBuildCommands = false;
+                        }
+                        else
+                        {
+                            throw new Bam.Core.Exception(
+                                $"No anchor set on '{module.GetType().ToString()}' with source path '{module.SourcePath}'"
+                            );
+                        }
+                    }
+                }
+
+                var target = targetModule.MetaData as XcodeBuilder.Target;
+
+                System.Diagnostics.Debug.Assert(null != collatedInterface.SourceModule);
+                if (module.IsAnchor && !(collatedInterface.SourceModule is PreExistingObject))
+                {
+                    if (module.IsAnchorAnApplicationBundle)
+                    {
+                        // application bundles are a different output type in Xcode
+                        target.MakeApplicationBundle();
+                    }
+
+                    // since all dependents are copied _beside_ their anchor, the anchor copy is a no-op
+                    return;
+                }
+
+                if (module.IsInAnchorPackage)
+                {
+                    // additionally, any built module-based dependents in the same package as the anchor do not need copying as they
+                    // are built into the right directory (since Xcode module build dirs do not include the module name)
+                    System.Diagnostics.Debug.Assert(1 == module.OutputDirectories.Count());
+                    var output_dir = module.OutputDirectories.First().ToString();
+                    var input_dir = System.IO.Path.GetDirectoryName(module.SourcePath.ToString());
+                    if (output_dir.Equals(input_dir, System.StringComparison.Ordinal))
+                    {
+                        return;
+                    }
+                }
+
+                var copyFileTool = module.Tool as CopyFileTool;
+
+                var commands = new Bam.Core.StringArray();
+                foreach (var dir in module.OutputDirectories)
+                {
+                    var escapedDir = copyFileTool.EscapePath(dir.ToString());
+                    commands.Add($"[[ ! -d {escapedDir} ]] && mkdir -p {escapedDir}");
+                }
+                var toolAsString = CommandLineProcessor.Processor.StringifyTool(copyFileTool as Bam.Core.ICommandLineTool);
+                var toolSettings = CommandLineProcessor.NativeConversion.Convert(module.Settings, module).ToString(' ');
+                var toolPostamble = CommandLineProcessor.Processor.TerminatingArgs(copyFileTool as Bam.Core.ICommandLineTool);
+                commands.Add($"{toolAsString} {toolSettings} {toolPostamble}");
+
+                var configuration = target.GetConfiguration(targetModule);
+                if (!target.IsUtilityType && arePostBuildCommands)
+                {
+                    target.AddPostBuildCommands(commands, configuration);
+                }
+                else
+                {
+                    target.AddPreBuildCommands(commands, configuration, null);
+                }
             }
         }
     }

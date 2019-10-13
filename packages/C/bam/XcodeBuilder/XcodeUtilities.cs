@@ -276,6 +276,13 @@ namespace C
                 {
                     // frameworks are dealt with elsewhere
                 }
+                else if (library is C.SDKTemplate)
+                {
+                    foreach (var dir in library.OutputDirectories)
+                    {
+                        linker.LibraryPaths.AddUnique(dir);
+                    }
+                }
                 else
                 {
                     throw new Bam.Core.Exception(
@@ -289,9 +296,17 @@ namespace C
                 var libAsCModule = library as C.CModule;
                 if (null == libAsCModule)
                 {
-                    throw new Bam.Core.Exception(
-                        $"Don't know how to handle library module of type '{library.GetType().ToString()}'"
-                    );
+                    if (library is C.SDKTemplate)
+                    {
+                        target.Requires(library.MetaData as XcodeBuilder.Target);
+                        continue;
+                    }
+                    else
+                    {
+                        throw new Bam.Core.Exception(
+                            $"Don't know how to handle library module of type '{library.GetType().ToString()}'"
+                        );
+                    }
                 }
                 if (libAsCModule.IsPrebuilt)
                 {
