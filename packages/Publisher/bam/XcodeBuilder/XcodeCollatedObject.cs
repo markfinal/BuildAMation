@@ -73,7 +73,11 @@ namespace Publisher
                     target.EnsureHeaderFileExists(module.GeneratedPaths[CollatedObject.CopiedFileKey]);
                 }
 
-                target.AddPreBuildCommands(commands, configuration, null);
+                target.AddPreBuildCommands(
+                    commands,
+                    configuration,
+                    new Bam.Core.TokenizedStringArray { module.GeneratedPaths[CollatedObject.CopiedFileKey] }
+                );
             }
             else
             {
