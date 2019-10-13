@@ -65,9 +65,9 @@ namespace C
             public AssemblerTool           assembler = null;
             public PreprocessorTool        preprocessor = null;
         };
-        private static readonly  System.Collections.Generic.Dictionary<EBit, ToolModules> Default = new System.Collections.Generic.Dictionary<EBit, ToolModules>();
+        private static readonly System.Collections.Generic.Dictionary<EBit, ToolModules> Default = new System.Collections.Generic.Dictionary<EBit, ToolModules>();
 
-        private static System.Collections.Generic.IEnumerable<System.Tuple<System.Type,T>>
+        private static System.Collections.Generic.IEnumerable<(System.Type type,T attribute)>
         GetToolsFromMetaData<T>()
             where T : ToolRegistrationAttribute
         {
@@ -86,7 +86,7 @@ namespace C
                     {
                         continue;
                     }
-                    yield return new System.Tuple<System.Type, T>(type, tool);
+                    yield return (type, tool);
                 }
             }
         }
@@ -100,7 +100,7 @@ namespace C
             var graph = Bam.Core.Graph.Instance;
             foreach (var toolData in GetToolsFromMetaData<AttributeType>())
             {
-                var bits = toolData.Item2.BitDepth;
+                var bits = toolData.attribute.BitDepth;
                 if (!collection.ContainsKey(bits))
                 {
                     collection[bits] = new Bam.Core.TypeArray(toolData.Item1);
