@@ -433,7 +433,7 @@ namespace C
                             return;
 
                         default:
-                            throw new Bam.Core.Exception($"Unknown reason, {source.ReasonToExecute.Reason.ToString()}");
+                            throw new Bam.Core.Exception($"The source module {source.ToString()}, to {this.ToString()}, had an unhandled execute reason, {source.ReasonToExecute.Reason.ToString()}. Failing.");
                     }
                 }
                 else
