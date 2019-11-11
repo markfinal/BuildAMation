@@ -127,9 +127,8 @@ namespace Publisher
                         if (this.PublishingType == EPublishingType.Library)
                         {
                             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-                            var project = workspace.EnsureProjectExists(this, this.PackageDefinition.FullName);
+                            var project = workspace.EnsureProjectExists(this, this.ToString());
                             var target = workspace.EnsureTargetExists(this, project);
-                            target.SetType(XcodeBuilder.Target.EProductType.Utility);
                             var configuration = target.GetConfiguration(this);
                             configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
 
