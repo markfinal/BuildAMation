@@ -34,11 +34,16 @@ namespace XcodeBuilder
     /// </summary>
     sealed class WorkspaceMeta
     {
-        private readonly bool ProjectPerModule = false;
         private readonly System.Collections.Generic.Dictionary<string, Project> ProjectMap = new System.Collections.Generic.Dictionary<string, Project>();
         private readonly System.Collections.Generic.Dictionary<System.Type, Target> TargetMap = new System.Collections.Generic.Dictionary<System.Type, Target>();
 
-        private Project
+        /// <summary>
+        /// Ensure that a project exists, associated with the given key.
+        /// </summary>
+        /// <param name="module">Module linked to the project</param>
+        /// <param name="key">String key associated with the project</param>
+        /// <returns>The project, either new or existing and matching</returns>
+        public Project
         EnsureProjectExists(
             Bam.Core.Module module,
             string key)
@@ -60,27 +65,18 @@ namespace XcodeBuilder
         /// Ensure that a target exists on the workspace
         /// </summary>
         /// <param name="module">Module associated with target</param>
+        /// <param name="project">The project to add the new Target to</param>
         /// <returns>Target created</returns>
         public Target
         EnsureTargetExists(
-            Bam.Core.Module module)
+            Bam.Core.Module module,
+            Project project)
         {
             var moduleType = module.GetType();
             lock (this.TargetMap)
             {
                 if (!this.TargetMap.ContainsKey(moduleType))
                 {
-                    Project project = null;
-                    // TODO: remember projects, both by a Module or by a Package
-                    if (this.ProjectPerModule)
-                    {
-                        throw new System.NotSupportedException();
-                    }
-                    else
-                    {
-                        project = this.EnsureProjectExists(module, module.PackageDefinition.FullName);
-                    }
-
                     var target = new Target(module, project);
                     this.TargetMap.Add(moduleType, target);
 

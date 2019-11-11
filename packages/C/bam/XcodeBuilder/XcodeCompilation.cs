@@ -44,7 +44,8 @@ namespace C
         {
             var encapsulating = module.EncapsulatingModule;
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            var target = workspace.EnsureTargetExists(encapsulating);
+            var project = workspace.EnsureProjectExists(encapsulating, encapsulating.PackageDefinition.FullName);
+            var target = workspace.EnsureTargetExists(encapsulating, project);
 
             XcodeBuilder.FileReference.EFileType fileType;
             if (module is C.AssembledObjectFile)

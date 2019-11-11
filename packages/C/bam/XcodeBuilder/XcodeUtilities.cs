@@ -65,7 +65,8 @@ namespace C
             }
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            var target = workspace.EnsureTargetExists(module);
+            var project = workspace.EnsureProjectExists(module, module.PackageDefinition.FullName);
+            var target = workspace.EnsureTargetExists(module, project);
             var output_filename = module.CreateTokenizedString(
                 "@filename($(0))",
                 outputPath
