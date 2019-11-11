@@ -63,9 +63,8 @@ namespace Publisher
                 commands.Add($"{toolAsString} {toolSettings} {toolPostamble}");
 
                 var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-                var project = workspace.EnsureProjectExists(realCollation, realCollation.PackageDefinition.FullName);
+                var project = workspace.EnsureProjectExists(realCollation, realCollation.ToString());
                 var target = workspace.EnsureTargetExists(realCollation, project);
-                target.SetType(XcodeBuilder.Target.EProductType.Utility);
                 var configuration = target.GetConfiguration(realCollation);
                 configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
 
@@ -73,7 +72,14 @@ namespace Publisher
                 {
                     target.EnsureHeaderFileExists(module.GeneratedPaths[CollatedObject.CopiedFileKey]);
                 }
-
+                else
+                {
+                    target.EnsureOutputFileReferenceExists(
+                        module.GeneratedPaths[CollatedObject.CopiedFileKey],
+                        XcodeBuilder.FileReference.EFileType.DynamicLibrary,
+                        XcodeBuilder.Target.EProductType.DynamicLibrary
+                    );
+                }
                 target.AddPreBuildCommands(
                     commands,
                     configuration,
