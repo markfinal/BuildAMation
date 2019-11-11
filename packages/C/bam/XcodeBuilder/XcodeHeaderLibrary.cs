@@ -49,7 +49,8 @@ namespace C
             }
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            var target = workspace.EnsureTargetExists(module);
+            var project = workspace.EnsureProjectExists(module, module.PackageDefinition.FullName);
+            var target = workspace.EnsureTargetExists(module, project);
             target.SetType(XcodeBuilder.Target.EProductType.Utility);
             var configuration = target.GetConfiguration(module);
             configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));

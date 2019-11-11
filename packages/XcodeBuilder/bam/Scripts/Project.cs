@@ -47,7 +47,7 @@ namespace XcodeBuilder
             :
             base(null, name, "PBXProject")
         {
-            this.ProjectDir = module.CreateTokenizedString("$(buildroot)/$(packagename).xcodeproj");
+            this.ProjectDir = module.CreateTokenizedString($"$(buildroot)/{name}.xcodeproj");
             module.Macros.Add("xcodeprojectdir", this.ProjectDir);
 
             var projectPath = module.CreateTokenizedString("$(xcodeprojectdir)/project.pbxproj");

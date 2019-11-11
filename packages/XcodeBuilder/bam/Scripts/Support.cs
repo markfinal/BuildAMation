@@ -163,7 +163,8 @@ namespace XcodeBuilder
 #endif
 
             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-            target = workspace.EnsureTargetExists(encapsulating);
+            var project = workspace.EnsureProjectExists(encapsulating, encapsulating.PackageDefinition.FullName);
+            target = workspace.EnsureTargetExists(encapsulating, project);
             configuration = target.GetConfiguration(encapsulating);
         }
 

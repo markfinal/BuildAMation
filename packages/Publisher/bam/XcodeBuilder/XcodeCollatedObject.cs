@@ -63,7 +63,8 @@ namespace Publisher
                 commands.Add($"{toolAsString} {toolSettings} {toolPostamble}");
 
                 var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-                var target = workspace.EnsureTargetExists(realCollation);
+                var project = workspace.EnsureProjectExists(realCollation, realCollation.PackageDefinition.FullName);
+                var target = workspace.EnsureTargetExists(realCollation, project);
                 target.SetType(XcodeBuilder.Target.EProductType.Utility);
                 var configuration = target.GetConfiguration(realCollation);
                 configuration.SetProductName(Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}"));
@@ -97,7 +98,8 @@ namespace Publisher
                             targetModule = (collatedInterface.SourceModule as PreExistingObject).ParentOfCollationModule;
 
                             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-                            workspace.EnsureTargetExists(targetModule);
+                            var project = workspace.EnsureProjectExists(targetModule, targetModule.PackageDefinition.FullName);
+                            workspace.EnsureTargetExists(targetModule, project);
 
                             arePostBuildCommands = false;
                         }

@@ -56,7 +56,8 @@ namespace C
                 if (null == encapsulating.MetaData)
                 {
                     var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
-                    var target = workspace.EnsureTargetExists(encapsulating);
+                    var project = workspace.EnsureProjectExists(encapsulating, encapsulating.PackageDefinition.FullName);
+                    var target = workspace.EnsureTargetExists(encapsulating, project);
                 }
                 toolMeta = encapsulating.MetaData;
                 if (null == toolMeta)
