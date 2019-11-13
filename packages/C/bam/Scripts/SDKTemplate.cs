@@ -62,6 +62,7 @@ namespace C
                 copiedHeaders.AddRange(this.IncludeFiles(header, this.HeaderDir, null));
             }
 
+            var isPrimaryOutput = true;
             foreach (var type in this.LibraryModuleTypes)
             {
                 var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(type);
@@ -70,11 +71,22 @@ namespace C
                 {
                     var copiedLib = includeFn.Invoke(this, new[] { DynamicLibrary.ImportLibraryKey, null }) as Publisher.ICollatedObject;
                     copiedLibs.Add(copiedLib);
+                    this.RegisterGeneratedFile(
+                        DynamicLibrary.ImportLibraryKey,
+                        (copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
+                        isPrimaryOutput
+                    );
                 }
                 else
                 {
                     copiedLibs.Add(copiedBin);
+                    this.RegisterGeneratedFile(
+                        DynamicLibrary.ExecutableKey,
+                        (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
+                        isPrimaryOutput
+                    );
                 }
+                isPrimaryOutput = false;
             }
 
             this.PublicPatch((settings, appliedTo) =>
