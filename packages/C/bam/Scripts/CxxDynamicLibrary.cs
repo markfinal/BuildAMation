@@ -55,14 +55,15 @@ namespace C.Cxx
                 ExecutableKey,
                 this.CreateTokenizedString(
                     "$(packagebuilddir)/$(moduleoutputdir)/$(dynamicprefix)$(OutputName)$(dynamicext)"
-                )
+                ),
+                true
             );
             this.Macros.Add("LinkOutput", this.GeneratedPaths[ExecutableKey]);
 
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
                 this.Macros.Add("ImportLibraryName", Bam.Core.TokenizedString.Create("$(OutputName)", null));
-                this.RegisterGeneratedFile(ImportLibraryKey, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(ImportLibraryName)$(libext)"));
+                this.RegisterGeneratedFile(ImportLibraryKey, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(ImportLibraryName)$(libext)"), false);
             }
             else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
             {

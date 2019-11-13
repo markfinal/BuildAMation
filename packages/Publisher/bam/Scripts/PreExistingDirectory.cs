@@ -45,7 +45,7 @@ namespace Publisher
         {
             base.Init();
 
-            this.RegisterGeneratedFile(ExistingDirectoryKey, this.Macros["ExistingDirectory"]);
+            this.RegisterGeneratedFile(ExistingDirectoryKey, this.Macros["ExistingDirectory"], true);
         }
     }
 }

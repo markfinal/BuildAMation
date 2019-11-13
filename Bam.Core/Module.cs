@@ -400,15 +400,18 @@ namespace Bam.Core
 
         /// <summary>
         /// Register a path against a particular key for the module. Useful for output paths that are referenced in dependents.
+        /// Specify whether this is the primary output from the module (this can only be done once).
         /// Will throw an exception if the key has already been registered and parsed, otherwise it can be replaced, for example
         /// in Module subclasses that share a path key.
         /// </summary>
         /// <param name="key">Key.</param>
         /// <param name="path">Path.</param>
+        /// <param name="isPrimaryOutput">Whether this is the primary output from the Module</param>
         protected void
         RegisterGeneratedFile(
             string key,
-            TokenizedString path)
+            TokenizedString path,
+            bool isPrimaryOutput)
         {
             if (this._GeneratedPaths.ContainsKey(key))
             {
@@ -435,15 +438,17 @@ namespace Bam.Core
                     this.CreateTokenizedString("@dir($(0))", path)
                 );
             }
+            if (isPrimaryOutput)
+            {
+                if (null != this.PrimaryOutputPathKey)
+                {
+                    throw new Exception(
+                        $"Primary output key for Module {this.ToString()} already set to {this.PrimaryOutputPathKey}"
+                    );
+                }
+                this.PrimaryOutputPathKey = key;
+            }
         }
-
-        /// <summary>
-        /// Register an empty path against a given key.
-        /// </summary>
-        /// <param name="key">Key.</param>
-        private void
-        RegisterGeneratedFile(
-            string key) => this.RegisterGeneratedFile(key, null);
 
         private void
         InternalDependsOn(
@@ -1208,5 +1213,14 @@ namespace Bam.Core
         /// or the call site for Tool execution can specify it.
         /// </summary>
         public virtual TokenizedString WorkingDirectory => null;
+
+        /// <summary>
+        /// Get the path key for the primary output from this Module
+        /// </summary>
+        public string PrimaryOutputPathKey
+        {
+            get;
+            private set;
+        }
     }
 }

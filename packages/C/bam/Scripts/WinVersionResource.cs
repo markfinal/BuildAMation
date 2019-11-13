@@ -50,7 +50,8 @@ namespace C
             base.Init();
             this.RegisterGeneratedFile(
                 HashFileKey,
-                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@filename($(0)).hash", this.InputPath)
+                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/@filename($(0)).hash", this.InputPath),
+                false
             );
         }
 

@@ -53,7 +53,8 @@ namespace C
                 this.CreateTokenizedString(
                     "$(0)/$(1)",
                     new[] { this.FrameworkPath, this.FrameworkBundleName }
-                )
+                ),
+                true
             );
 
             if (!frameworkPath.IsParsed)

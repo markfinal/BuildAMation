@@ -62,7 +62,8 @@ namespace Publisher
 
             this.RegisterGeneratedFile(
                 DebugSymbolsDirectoryKey,
-                this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)")
+                this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"),
+                true
             );
 
             // one value, as debug symbols are not generated in IDE projects

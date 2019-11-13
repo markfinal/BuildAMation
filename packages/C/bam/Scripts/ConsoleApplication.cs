@@ -69,7 +69,8 @@ namespace C
             base.Init();
             this.RegisterGeneratedFile(
                 ExecutableKey,
-                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)")
+                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(OutputName)$(exeext)"),
+                true
             );
             this.Linker = DefaultToolchain.C_Linker(this.BitDepth);
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
@@ -81,8 +82,9 @@ namespace C
                         PDBKey,
                         this.IsPrebuilt ?
                             null :
-                            this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[ExecutableKey])
-                        );
+                            this.CreateTokenizedString("@changeextension($(0),$(pdbext))", this.GeneratedPaths[ExecutableKey]),
+                        false
+                    );
                 }
 
                 if (!this.IsPrebuilt)

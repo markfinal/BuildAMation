@@ -46,7 +46,8 @@ namespace C
                 ExecutableKey,
                 this.CreateTokenizedString(
                     "$(packagebuilddir)/$(moduleoutputdir)/$(pluginprefix)$(OutputName)$(pluginext)"
-                )
+                ),
+                true
             );
         }
     }

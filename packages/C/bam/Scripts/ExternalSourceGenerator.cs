@@ -131,7 +131,7 @@ namespace C
                 throw new Bam.Core.Exception($"Expected output file with key '{name}' has already been registered");
             }
             this.InternalExpectedOutputFileDictionary.Add(name, path);
-            this.RegisterGeneratedFile(name, path);
+            this.RegisterGeneratedFile(name, path, false);
         }
 
         /// <summary>

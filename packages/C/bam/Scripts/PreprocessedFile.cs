@@ -316,7 +316,8 @@ namespace C
                     this.CreateTokenizedString(
                         "$(packagebuilddir)/$(moduleoutputdir)/@changeextension(@isrelative(@trimstart(@relativeto($(0),$(packagedir)),../),@filename($(0))),.c)",
                         value.GeneratedPaths[SourceFile.SourceFileKey]
-                    )
+                    ),
+                    true
                 );
             }
         }

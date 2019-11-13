@@ -77,7 +77,7 @@ namespace C
                 {
                     throw new Bam.Core.Exception("Source path has already been set");
                 }
-                this.RegisterGeneratedFile(SourceFileKey, value);
+                this.RegisterGeneratedFile(SourceFileKey, value, true);
             }
         }
     }

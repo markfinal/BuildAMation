@@ -55,7 +55,8 @@ namespace C
             this.Librarian = DefaultToolchain.Librarian(this.BitDepth);
             this.RegisterGeneratedFile(
                 LibraryKey,
-                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)")
+                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(OutputName)$(libext)"),
+                true
             );
         }
 
