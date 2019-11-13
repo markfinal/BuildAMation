@@ -440,10 +440,10 @@ namespace Bam.Core
             }
             if (isPrimaryOutput)
             {
-                if (null != this.PrimaryOutputPathKey)
+                if (null != this.PrimaryOutputPathKey && this.PrimaryOutputPathKey != key)
                 {
                     throw new Exception(
-                        $"Primary output key for Module {this.ToString()} already set to {this.PrimaryOutputPathKey}"
+                        $"Primary output key for Module {this.ToString()} already set to {this.PrimaryOutputPathKey}. Cannot set to {key}"
                     );
                 }
                 this.PrimaryOutputPathKey = key;
