@@ -254,7 +254,8 @@ namespace Publisher
                             this.publishingDirectory,
                             this.SourcePath
                         }
-                    )
+                    ),
+                    true
                 );
             }
             else if (this is CollatedDirectory)
@@ -269,7 +270,8 @@ namespace Publisher
                             {
                                 this.publishingDirectory
                             }
-                        )
+                        ),
+                        true
                     );
                 }
                 else
@@ -283,7 +285,8 @@ namespace Publisher
                                 this.publishingDirectory,
                                 this.SourcePath
                             }
-                        )
+                        ),
+                        true
                     );
                 }
             }
@@ -298,7 +301,8 @@ namespace Publisher
                             this.publishingDirectory,
                             this.SourcePath
                         }
-                    )
+                    ),
+                    true
                 );
             }
             else

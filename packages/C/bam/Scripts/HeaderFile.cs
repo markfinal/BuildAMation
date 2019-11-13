@@ -76,7 +76,8 @@ namespace C
             {
                 this.RegisterGeneratedFile(
                     HeaderFileKey,
-                    value
+                    value,
+                    true
                 );
             }
         }

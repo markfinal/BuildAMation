@@ -46,7 +46,8 @@ namespace C.Cxx
                 ExecutableKey,
                 this.CreateTokenizedString(
                     "$(packagebuilddir)/$(moduleoutputdir)/$(pluginprefix)$(OutputName)$(pluginext)"
-                )
+                ),
+                true
             );
         }
     }

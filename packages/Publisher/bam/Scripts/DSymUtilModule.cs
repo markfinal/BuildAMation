@@ -57,7 +57,8 @@ namespace Publisher
                 this.CreateTokenizedString(
                     "$(0)/@filename($(1)).dsym",
                     new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
-                )
+                ),
+                true
             );
         }
 

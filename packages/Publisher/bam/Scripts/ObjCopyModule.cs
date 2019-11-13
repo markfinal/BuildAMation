@@ -195,7 +195,8 @@ namespace Publisher
                     this.CreateTokenizedString(
                         "$(0)/@filename($(1)).debug",
                         new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
-                    )
+                    ),
+                    true
                 );
             }
             else
@@ -205,7 +206,8 @@ namespace Publisher
                     this.CreateTokenizedString(
                         "$(0)/@basename($(1)).debug",
                         new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
-                    )
+                    ),
+                    true
                 );
             }
         }
@@ -279,7 +281,8 @@ namespace Publisher
 
             this.RegisterGeneratedFile(
                 UpdateOriginalExecutable,
-                this.sourceModule.GeneratedPaths[this.sourcePathKey]
+                this.sourceModule.GeneratedPaths[this.sourcePathKey],
+                true
             );
         }
 

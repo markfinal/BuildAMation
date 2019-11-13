@@ -57,7 +57,8 @@ namespace Publisher
                 this.CreateTokenizedString(
                     "$(0)/@filename($(1))",
                     new[] { this.Macros["publishingdir"], this.sourceModule.GeneratedPaths[this.sourcePathKey] }
-                )
+                ),
+                true
             );
 
             this.Requires(this.sourceModule);

@@ -64,7 +64,8 @@ namespace Publisher
 
             this.RegisterGeneratedFile(
                 StripBinaryDirectoryKey,
-                this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)")
+                this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"),
+                true
             );
 
             // one value, as stripped binaries are not generated in IDE projects

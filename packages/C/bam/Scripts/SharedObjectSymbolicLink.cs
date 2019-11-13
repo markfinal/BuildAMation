@@ -58,10 +58,13 @@ namespace C
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<SharedObjectSymbolicLinkTool>();
             this.IsPrebuilt = (this.GetType().GetCustomAttributes(typeof(PrebuiltAttribute), true).Length > 0);
 
-            this.RegisterGeneratedFile(SOSymLinkKey,
-                                       this.CreateTokenizedString("@dir($(0))/$(1)",
-                                                                  this.SharedObject.GeneratedPaths[ConsoleApplication.ExecutableKey],
-                                                                  this.Macros["SymlinkFilename"]));
+            this.RegisterGeneratedFile(
+                SOSymLinkKey,
+                this.CreateTokenizedString("@dir($(0))/$(1)",
+                                            this.SharedObject.GeneratedPaths[ConsoleApplication.ExecutableKey],
+                                            this.Macros["SymlinkFilename"]),
+                true
+            );
         }
 
         /// <summary>
