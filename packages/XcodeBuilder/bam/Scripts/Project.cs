@@ -551,13 +551,22 @@ namespace XcodeBuilder
                 );
                 projectConfig["SRCROOT"] = new UniqueConfigurationValue(relativeSourcePath);
 
+                var isXcode10 = clangMeta.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
                 // set the SYMROOT (where built products reside)
                 var builtProductsDir = this.BuiltProductsDir.ToString();
-                var relativeSymRoot = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
-                    Bam.Core.Graph.Instance.BuildRoot,
-                    builtProductsDir
-                );
-                projectConfig["SYMROOT"] = new UniqueConfigurationValue(relativeSymRoot);
+                if (isXcode10)
+                {
+                    // an absolute path is needed, or there are mkdir errors
+                    projectConfig["SYMROOT"] = new UniqueConfigurationValue(builtProductsDir);
+                }
+                else
+                {
+                    var relativeSymRoot = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                        Bam.Core.Graph.Instance.BuildRoot,
+                        builtProductsDir
+                    );
+                    projectConfig["SYMROOT"] = new UniqueConfigurationValue(relativeSymRoot);
+                }
 
                 // match the configuration build dir to where the built products reside (as BAM is handling any kind of configuration)
                 projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(BUILD_DIR)");
