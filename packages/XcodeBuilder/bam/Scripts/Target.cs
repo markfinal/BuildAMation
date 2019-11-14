@@ -805,5 +805,16 @@ namespace XcodeBuilder
                 return newConfig;
             }
         }
+
+        /// <summary>
+        /// Override the name of the Target
+        /// </summary>
+        /// <param name="name">New name</param>
+        public void
+        OverrideName(
+            string name)
+        {
+            this.Name = name;
+        }
     }
 }

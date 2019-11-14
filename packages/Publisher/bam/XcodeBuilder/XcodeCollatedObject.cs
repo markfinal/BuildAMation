@@ -79,6 +79,7 @@ namespace Publisher
                         XcodeBuilder.FileReference.EFileType.DynamicLibrary,
                         XcodeBuilder.Target.EProductType.DynamicLibrary
                     );
+                    target.OverrideName(System.IO.Path.GetFileNameWithoutExtension(module.GeneratedPaths[CollatedObject.CopiedFileKey].ToString()));
                 }
                 target.AddPreBuildCommands(
                     commands,

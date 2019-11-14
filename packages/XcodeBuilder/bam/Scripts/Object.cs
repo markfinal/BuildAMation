@@ -113,7 +113,7 @@ namespace XcodeBuilder
         /// <summary>
         /// Get the name of the Object.
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; protected set; }
 
         /// <summary>
         /// Get the IsA type of the object.
