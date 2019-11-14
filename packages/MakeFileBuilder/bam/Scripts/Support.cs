@@ -92,6 +92,9 @@ namespace MakeFileBuilder
             Bam.Core.Module module,
             string excludingGeneratedPath = null)
         {
+            // TODO: this does not seem to be necessary for a successfuly Make build
+            // but it is used in StrippedBinaryCollation, so need to check further
+            /*
             if (module.GeneratedPaths.Any(item => (null == excludingGeneratedPath) || !item.Key.Equals(excludingGeneratedPath, System.StringComparison.Ordinal)))
             {
                 var message = new System.Text.StringBuilder();
@@ -102,6 +105,7 @@ namespace MakeFileBuilder
                 }
                 throw new Bam.Core.Exception(message.ToString());
             }
+            */
             if (!Bam.Core.Graph.Instance.IsReferencedModule(module))
             {
                 throw new Bam.Core.Exception(
