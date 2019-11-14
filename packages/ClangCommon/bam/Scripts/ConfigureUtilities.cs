@@ -131,7 +131,7 @@ namespace ClangCommon
                 if (!IsSDKValid(availableSDKs, sdk))
                 {
                     throw new Bam.Core.Exception(
-                        $"SDK {sdk} was not available in the Xcode installation on this machine."
+                        $"SDK {sdk} was not among those in the current Xcode installation on this machine:\n{installedSDKOutput}"
                     );
                 }
             }
