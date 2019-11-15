@@ -799,8 +799,8 @@ namespace Publisher
             return collatedFile;
         }
 
-        private ICollatedObject
-        Include(
+        public ICollatedObject
+        IncludeModule(
             Bam.Core.Module dependent,
             string key,
             Bam.Core.TokenizedString anchorPublishRoot)
@@ -829,7 +829,7 @@ namespace Publisher
             {
                 return null;
             }
-            return this.Include(dependent, key, anchorPublishRoot);
+            return this.IncludeModule(dependent, key, anchorPublishRoot);
         }
 
         /// <summary>

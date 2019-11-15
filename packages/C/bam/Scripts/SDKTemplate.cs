@@ -85,6 +85,15 @@ namespace C
                         (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
                         isPrimaryOutput
                     );
+
+                    var typeModule = Bam.Core.Graph.Instance.GetReferencedModule(this.BuildEnvironment, type);
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) && typeModule is IDynamicLibrary dynamicLib)
+                    {
+                        var copiedSOName = this.IncludeModule(dynamicLib.SONameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
+                        copiedLibs.Add(copiedSOName);
+                        var copiedLinkName = this.IncludeModule(dynamicLib.LinkerNameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
+                        copiedLibs.Add(copiedLinkName);
+                    }
                 }
                 isPrimaryOutput = false;
             }
