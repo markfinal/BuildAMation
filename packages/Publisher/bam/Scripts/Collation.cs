@@ -799,11 +799,18 @@ namespace Publisher
             return collatedFile;
         }
 
+        /// <summary>
+        /// Include a Module into the Collation when an instance of the Module is available.
+        /// </summary>
+        /// <param name="dependent">Instance of the Module to collate.</param>
+        /// <param name="key">Path key of the Module to collate.</param>
+        /// <param name="anchorPublishRoot">Optional custom directory to use as the root for the anchor's publishing, or null (the default) to use the default anchor root.</param>
+        /// <returns></returns>
         public ICollatedObject
         IncludeModule(
             Bam.Core.Module dependent,
             string key,
-            Bam.Core.TokenizedString anchorPublishRoot)
+            Bam.Core.TokenizedString anchorPublishRoot = null)
         {
             var modulePublishDir = this.Mapping.FindPublishDirectory(dependent, key);
             var collatedFile = this.IncludeNoGather(dependent, key, modulePublishDir, null, anchorPublishRoot);
