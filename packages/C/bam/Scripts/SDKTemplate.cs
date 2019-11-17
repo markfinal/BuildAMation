@@ -75,7 +75,15 @@ namespace C
                 // found the SDK directory on disk
 
                 includeDir = this.CreateTokenizedString("$(0)/include", publishRoot);
-                libraryDirs.AddUnique(this.CreateTokenizedString("$(0)/lib", publishRoot));
+                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                {
+                    libraryDirs.AddUnique(this.CreateTokenizedString("$(0)/lib", publishRoot));
+                }
+                else
+                {
+                    libraryDirs.AddUnique(this.CreateTokenizedString("$(0)/bin", publishRoot));
+                }
+
                 foreach (var libType in this.LibraryModuleTypes)
                 {
                     // create an instance of the module, but NEVER add it to the dependency graph so it isn't built
@@ -92,12 +100,12 @@ namespace C
                         {
                             var linkNameSO = dynamicLib.LinkerNameSymbolicLink;
                             var linkNameSOPath = linkNameSO.GeneratedPaths[SharedObjectSymbolicLink.SOSymLinkKey];
-                            libs.AddUnique(this.CreateTokenizedString("-l@basename($(0))", linkNameSOPath));
+                            libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", linkNameSOPath));
                         }
                         else
                         {
                             var dylib = libraryModule.GeneratedPaths[DynamicLibrary.ExecutableKey];
-                            libs.AddUnique(this.CreateTokenizedString("-l@filename($(0))", dylib));
+                            libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", dylib));
                         }
                     }
                 }
