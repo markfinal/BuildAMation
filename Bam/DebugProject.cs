@@ -63,6 +63,7 @@ namespace Bam
                 writer.WriteLine($"{indent(3)}Core.Graph.Instance.VerbosityLevel = Core.EVerboseLevel.Full;");
                 writer.WriteLine($"{indent(3)}Core.Graph.Instance.CompileWithDebugSymbols = true;");
                 writer.WriteLine($"{indent(3)}Core.Graph.Instance.BuildRoot = \"debug_build\";");
+                writer.WriteLine($"{indent(3)}Core.Graph.Instance.PrebuiltSDKsRoot = \"debug_prebuiltsdks\";");
                 writer.WriteLine($"{indent(3)}Core.Graph.Instance.Mode = \"Native\";");
                 writer.WriteLine($"{indent(3)}Core.Graph.Instance.UseTestsNamespace = false;");
                 writer.WriteLine($"{indent(3)}var debug = new Core.Environment");

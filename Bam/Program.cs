@@ -126,6 +126,7 @@ namespace Bam
 
                 // configure
                 Core.Graph.Instance.BuildRoot = Core.CommandLineProcessor.Evaluate(new Core.Options.BuildRoot());
+                Core.Graph.Instance.PrebuiltSDKsRoot = "prebuiltsdks";
                 Core.Graph.Instance.Mode = Core.CommandLineProcessor.Evaluate(new Core.Options.BuildMode());
                 if (null == Core.Graph.Instance.Mode)
                 {
