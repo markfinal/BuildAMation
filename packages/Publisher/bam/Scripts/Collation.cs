@@ -1154,7 +1154,14 @@ namespace Publisher
             else
             {
                 // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
-                collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+                if (this.PublishingType == EPublishingType.Library)
+                {
+                    collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(prebuiltsdksroot)/$(OutputName)"));
+                }
+                else
+                {
+                    collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+                }
             }
 
             // for PublishBesideExecutable, a custom anchor publish root won't work, as the debugger won't run any file
@@ -1206,7 +1213,14 @@ namespace Publisher
             else
             {
                 // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
-                collatedFramework.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+                if (this.PublishingType == EPublishingType.Library)
+                {
+                    collatedFramework.Macros.Add("publishroot", this.CreateTokenizedString("$(prebuiltsdksroot)/$(OutputName)"));
+                }
+                else
+                {
+                    collatedFramework.Macros.Add("publishroot", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
+                }
             }
 
             // for PublishBesideExecutable, a custom anchor publish root won't work, as the debugger won't run any file

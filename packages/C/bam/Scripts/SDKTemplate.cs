@@ -57,77 +57,129 @@ namespace C
 
             this.SetDefaultMacrosAndMappings(EPublishingType.Library);
 
-            foreach (var header in this.HeaderFiles)
+            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim(this.GetType().Namespace);
+
+            Bam.Core.TokenizedString includeDir;
+            var libraryDirs = new Bam.Core.TokenizedStringArray();
+            var libs = new Bam.Core.TokenizedStringArray();
+
+            // TODO: would be nice to re-use publishroot, but it doesn't exist
+            var publishRoot = this.CreateTokenizedString("$(prebuiltsdksroot)/$(OutputName)");
+            if (!publishRoot.IsParsed)
             {
-                copiedHeaders.AddRange(this.IncludeFiles(header, this.HeaderDir, null));
+                publishRoot.Parse();
             }
 
-            var isPrimaryOutput = true;
-            foreach (var type in this.LibraryModuleTypes)
+            if (System.IO.Directory.Exists(publishRoot.ToString()))
             {
-                var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(type);
-                var copiedBin = includeFn.Invoke(this, new[] { DynamicLibrary.ExecutableKey, null }) as Publisher.ICollatedObject;
-                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                // found the SDK directory on disk
+
+                includeDir = this.CreateTokenizedString("$(0)/include", publishRoot);
+                libraryDirs.AddUnique(this.CreateTokenizedString("$(0)/lib", publishRoot));
+                foreach (var libType in this.LibraryModuleTypes)
                 {
-                    var copiedLib = includeFn.Invoke(this, new[] { DynamicLibrary.ImportLibraryKey, null }) as Publisher.ICollatedObject;
-                    copiedLibs.Add(copiedLib);
-                    this.RegisterGeneratedFile(
-                        DynamicLibrary.ImportLibraryKey,
-                        (copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
-                        isPrimaryOutput
-                    );
-                }
-                else
-                {
-                    var typeModule = Bam.Core.Graph.Instance.GetReferencedModule(this.BuildEnvironment, type);
-                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) && typeModule is IDynamicLibrary dynamicLib)
+                    // create an instance of the module, but NEVER add it to the dependency graph so it isn't built
+                    var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
+                    var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
-                        var copiedSOName = this.IncludeModule(dynamicLib.SONameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
-                        var copiedLinkName = this.IncludeModule(dynamicLib.LinkerNameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
-                        copiedLibs.Add(copiedLinkName);
-                        this.RegisterGeneratedFile(
-                            SharedObjectSymbolicLink.SOSymLinkKey,
-                            (copiedLinkName as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
-                            isPrimaryOutput
-                        );
+                        var importLibPath = libraryModule.GeneratedPaths[DynamicLibrary.ImportLibraryKey];
+                        libs.AddUnique(this.CreateTokenizedString("@filename($(0))", importLibPath));
                     }
                     else
                     {
-                        copiedLibs.Add(copiedBin);
-                        this.RegisterGeneratedFile(
-                            DynamicLibrary.ExecutableKey,
-                            (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
-                            isPrimaryOutput
-                        );
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) && libraryModule is IDynamicLibrary dynamicLib)
+                        {
+                            var linkNameSO = dynamicLib.LinkerNameSymbolicLink;
+                            var linkNameSOPath = linkNameSO.GeneratedPaths[SharedObjectSymbolicLink.SOSymLinkKey];
+                            libs.AddUnique(this.CreateTokenizedString("-l@basename($(0))", linkNameSOPath));
+                        }
+                        else
+                        {
+                            var dylib = libraryModule.GeneratedPaths[DynamicLibrary.ExecutableKey];
+                            libs.AddUnique(this.CreateTokenizedString("-l@filename($(0))", dylib));
+                        }
                     }
                 }
-                isPrimaryOutput = false;
+            }
+            else
+            {
+                // need to construct the SDK contents
+
+                foreach (var header in this.HeaderFiles)
+                {
+                    copiedHeaders.AddRange(this.IncludeFiles(header, this.HeaderDir, null));
+                }
+                includeDir = (this.copiedHeaders.First() as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.HeaderDir);
+
+                var isPrimaryOutput = true;
+                foreach (var type in this.LibraryModuleTypes)
+                {
+                    var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(type);
+                    var copiedBin = includeFn.Invoke(this, new[] { DynamicLibrary.ExecutableKey, null }) as Publisher.ICollatedObject;
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                    {
+                        var copiedLib = includeFn.Invoke(this, new[] { DynamicLibrary.ImportLibraryKey, null }) as Publisher.ICollatedObject;
+                        copiedLibs.Add(copiedLib);
+                        libraryDirs.AddUnique((copiedLib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ImportLibraryDir));
+                        this.RegisterGeneratedFile(
+                            DynamicLibrary.ImportLibraryKey,
+                            (copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
+                            isPrimaryOutput
+                        );
+                        libs.AddUnique((copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                    }
+                    else
+                    {
+                        var typeModule = Bam.Core.Graph.Instance.GetReferencedModule(this.BuildEnvironment, type);
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) && typeModule is IDynamicLibrary dynamicLib)
+                        {
+                            var copiedSOName = this.IncludeModule(dynamicLib.SONameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
+                            var copiedLinkName = this.IncludeModule(dynamicLib.LinkerNameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
+                            copiedLibs.Add(copiedLinkName);
+                            libraryDirs.AddUnique((copiedLinkName as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
+                            this.RegisterGeneratedFile(
+                                SharedObjectSymbolicLink.SOSymLinkKey,
+                                (copiedLinkName as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
+                                isPrimaryOutput
+                            );
+                            libs.AddUnique((copiedLinkName as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                        }
+                        else
+                        {
+                            copiedLibs.Add(copiedBin);
+                            libraryDirs.AddUnique((copiedBin as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
+                            this.RegisterGeneratedFile(
+                                DynamicLibrary.ExecutableKey,
+                                (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
+                                isPrimaryOutput
+                            );
+                            libs.AddUnique((copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                        }
+                    }
+                    isPrimaryOutput = false;
+                }
             }
 
             this.PublicPatch((settings, appliedTo) =>
             {
                 if (settings is ICommonPreprocessorSettings preprocessor)
                 {
-                    preprocessor.IncludePaths.AddUnique((this.copiedHeaders.First() as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.HeaderDir));
+                    preprocessor.IncludePaths.AddUnique(includeDir);
                 }
                 else if (settings is ICommonLinkerSettings linker)
                 {
-                    foreach (var lib in this.copiedLibs)
+                    foreach (var libDir in libraryDirs)
                     {
-                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
+                        linker.LibraryPaths.AddUnique(libDir);
+                    }
+                    foreach (var lib in libs)
+                    {
+                        if (!lib.IsParsed)
                         {
-                            linker.LibraryPaths.AddUnique((lib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ImportLibraryDir));
+                            lib.Parse();
                         }
-                        else
-                        {
-                            linker.LibraryPaths.AddUnique((lib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
-                        }
-                        var outputPath = (lib as Bam.Core.Module).GeneratedPaths[Publisher.CollatedFile.CopiedFileKey];
-                        if (!outputPath.IsParsed)
-                        {
-                            outputPath.Parse();
-                        }
-                        linker.Libraries.Add(outputPath.ToString());
+                        linker.Libraries.Add(lib.ToString());
                     }
                 }
             });

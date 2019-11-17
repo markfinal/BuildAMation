@@ -38,6 +38,7 @@ namespace Bam.Core
         System.Collections.Generic.IEnumerable<ModuleCollection>
     {
         private string TheBuildRoot;
+        private string ThePrebuiltSDKsRoot;
 
         static Graph()
         {
@@ -999,6 +1000,33 @@ namespace Bam.Core
                 );
                 this.TheBuildRoot = absoluteBuildRootPath;
                 this.Macros.AddVerbatim(GraphMacroNames.BuildRoot, absoluteBuildRootPath);
+            }
+        }
+
+        /// <summary>
+        /// Get or set the prebuild SDKs root to read or write all SDKs from/to.
+        /// Macros added to the graph:
+        /// 'prebuiltsdksroot'
+        /// </summary>
+        /// <value>The prebuilt SDKs root.</value>
+        public string PrebuiltSDKsRoot
+        {
+            get
+            {
+                return this.ThePrebuiltSDKsRoot;
+            }
+            set
+            {
+                if (null != this.ThePrebuiltSDKsRoot)
+                {
+                    throw new Exception("The prebuilt SDKs root has already been set");
+                }
+                var absolutePath = RelativePathUtilities.ConvertRelativePathToAbsolute(
+                    Graph.Instance.ProcessState.WorkingDirectory,
+                    value
+                );
+                this.ThePrebuiltSDKsRoot = absolutePath;
+                this.Macros.AddVerbatim(GraphMacroNames.PrebuiltSDKsRoot, ThePrebuiltSDKsRoot);
             }
         }
 

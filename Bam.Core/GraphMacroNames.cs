@@ -43,5 +43,10 @@ namespace Bam.Core
         /// Root directory of where build outputs are written, i.e. this.Macros[use name here] (where this is a Module)
         /// </summary>
         public const string BuildRoot = "buildroot";
+
+        /// <summary>
+        /// Root directory of where prebuilt SDKs are read or written.
+        /// </summary>
+        public const string PrebuiltSDKsRoot = "prebuiltsdksroot";
     }
 }
