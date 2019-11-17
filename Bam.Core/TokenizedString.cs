@@ -905,9 +905,14 @@ namespace Bam.Core
                         }
                         var original = split[0];
                         var totrim = split[1];
-                        while (original.StartsWith(totrim, System.StringComparison.Ordinal))
+                        while (true)
                         {
-                            original = original.Replace(totrim, string.Empty);
+                            var index = original.IndexOf(totrim);
+                            if (index != 0)
+                            {
+                                break;
+                            }
+                            original = original.Substring(index + totrim.Length);
                         }
                         return original;
                     }
