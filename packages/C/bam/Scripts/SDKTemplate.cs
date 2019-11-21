@@ -90,6 +90,7 @@ namespace C
                     var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
                     var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
                     this.UsePublicPatches(libraryModule);
+                    this.DependsOn(libraryModule);
 
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
@@ -127,6 +128,7 @@ namespace C
                 {
                     var libraryModule = Bam.Core.Graph.Instance.GetReferencedModule(this.BuildEnvironment, libType);
                     this.UsePublicPatches(libraryModule);
+                    this.DependsOn(libraryModule);
 
                     var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(libType);
                     var copiedBin = includeFn.Invoke(this, new[] { DynamicLibrary.ExecutableKey, null }) as Publisher.ICollatedObject;
