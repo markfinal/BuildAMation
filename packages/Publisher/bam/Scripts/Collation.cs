@@ -801,6 +801,7 @@ namespace Publisher
 
         /// <summary>
         /// Include a Module into the Collation when an instance of the Module is available.
+        /// When the publishing type is Library, the dependency tree is not walked for copying dependents.
         /// </summary>
         /// <param name="dependent">Instance of the Module to collate.</param>
         /// <param name="key">Path key of the Module to collate.</param>
@@ -815,7 +816,10 @@ namespace Publisher
             var modulePublishDir = this.Mapping.FindPublishDirectory(dependent, key);
             var collatedFile = this.IncludeNoGather(dependent, key, modulePublishDir, null, anchorPublishRoot);
             (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros[Bam.Core.ModuleMacroNames.OutputName]);
-            this.gatherAllDependencies(dependent, key, collatedFile, anchorPublishRoot);
+            if (this.PublishingType != EPublishingType.Library)
+            {
+                this.gatherAllDependencies(dependent, key, collatedFile, anchorPublishRoot);
+            }
             return collatedFile;
         }
 
