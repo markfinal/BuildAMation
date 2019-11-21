@@ -482,21 +482,15 @@ namespace C
             this.UsePublicPatchesPrivately(dependent);
         }
 
-        /// <summary>
-        /// Use an SDK to compile against sources and link against.
-        /// </summary>
-        /// <param name="affectedSource">Required source module.</param>
-        /// <param name="additionalSources">Optional list of additional sources.</param>
-        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public void
-        UseSDK<DependentModule>(
+        Bam.Core.Module
+        UseSDKInternal<DependentModule>(
             CModule affectedSource,
             params CModule[] additionalSources) where DependentModule : SDKTemplate, new()
         {
             var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
             if (null == dependent)
             {
-                return;
+                return null;
             }
             System.Collections.Generic.IEnumerable<CModule>
             EnumerateSources(
@@ -514,8 +508,47 @@ namespace C
                 source.DependsOn(dependent);
                 source.UsePublicPatches(dependent);
             }
-            this.UsePublicPatchesPrivately(dependent);
             this.AddLinkDependency(dependent);
+            return dependent;
+        }
+
+        /// <summary>
+        /// Use an SDK to compile against sources and link against.
+        /// </summary>
+        /// <param name="affectedSource">Required source module.</param>
+        /// <param name="additionalSources">Optional list of additional sources.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
+        public void
+        UseSDK<DependentModule>(
+            CModule affectedSource,
+            params CModule[] additionalSources) where DependentModule : SDKTemplate, new()
+        {
+            var dependent = this.UseSDKInternal<DependentModule>(affectedSource, additionalSources);
+            if (null == dependent)
+            {
+                return;
+            }
+            this.UsePublicPatchesPrivately(dependent);
+        }
+
+        /// <summary>
+        /// Use an SDK to compile against sources and link against.
+        /// Public patches on the SDK are incorporated into this Module's public patches.
+        /// </summary>
+        /// <param name="affectedSource">Required source module.</param>
+        /// <param name="additionalSources">Optional list of additional sources.</param>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
+        public void
+        UseSDKPublicly<DependentModule>(
+            CModule affectedSource,
+            params CModule[] additionalSources) where DependentModule : SDKTemplate, new()
+        {
+            var dependent = this.UseSDKInternal<DependentModule>(affectedSource, additionalSources);
+            if (null == dependent)
+            {
+                return;
+            }
+            this.UsePublicPatches(dependent);
         }
 
         /// <summary>

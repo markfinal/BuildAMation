@@ -89,6 +89,8 @@ namespace C
                     // create an instance of the module, but NEVER add it to the dependency graph so it isn't built
                     var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
                     var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
+                    this.UsePublicPatches(libraryModule);
+
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
                         var importLibPath = libraryModule.GeneratedPaths[DynamicLibrary.ImportLibraryKey];
@@ -121,9 +123,12 @@ namespace C
                 includeDir = (this.copiedHeaders.First() as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.HeaderDir);
 
                 var isPrimaryOutput = true;
-                foreach (var type in this.LibraryModuleTypes)
+                foreach (var libType in this.LibraryModuleTypes)
                 {
-                    var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(type);
+                    var libraryModule = Bam.Core.Graph.Instance.GetReferencedModule(this.BuildEnvironment, libType);
+                    this.UsePublicPatches(libraryModule);
+
+                    var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(libType);
                     var copiedBin = includeFn.Invoke(this, new[] { DynamicLibrary.ExecutableKey, null }) as Publisher.ICollatedObject;
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
@@ -139,8 +144,7 @@ namespace C
                     }
                     else
                     {
-                        var typeModule = Bam.Core.Graph.Instance.GetReferencedModule(this.BuildEnvironment, type);
-                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) && typeModule is IDynamicLibrary dynamicLib)
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) && libraryModule is IDynamicLibrary dynamicLib)
                         {
                             var copiedSOName = this.IncludeModule(dynamicLib.SONameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
                             var copiedLinkName = this.IncludeModule(dynamicLib.LinkerNameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
