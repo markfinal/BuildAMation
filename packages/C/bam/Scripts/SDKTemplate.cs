@@ -125,7 +125,8 @@ namespace C
                 var isPrimaryOutput = true;
                 foreach (var libType in this.LibraryModuleTypes)
                 {
-                    var libraryModule = Bam.Core.Graph.Instance.GetReferencedModule(this.BuildEnvironment, libType);
+                    var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
+                    var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
                     this.UsePublicPatches(libraryModule);
 
                     var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(libType);
