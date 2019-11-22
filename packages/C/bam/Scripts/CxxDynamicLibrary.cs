@@ -332,5 +332,20 @@ namespace C.Cxx
                 this.soNameSymLink = value;
             }
         }
+
+        void
+        IDynamicLibrary.ChangeExecutableRootPath(
+            Bam.Core.TokenizedString newRoot
+        )
+        {
+            this.RegisterGeneratedFile(
+                ExecutableKey,
+                this.CreateTokenizedString(
+                    "$(0)/$(dynamicprefix)$(OutputName)$(dynamicext)",
+                    newRoot
+                ),
+                true
+            );
+        }
     }
 }

@@ -43,5 +43,14 @@ namespace C
         /// Get the symbolic link for the SO name.
         /// </summary>
         SharedObjectSymbolicLink SONameSymbolicLink { get; }
+
+        /// <summary>
+        /// Modify the root of the output executable path.
+        /// </summary>
+        /// <param name="newRoot">New root directory.</param>
+        void
+        ChangeExecutableRootPath(
+            Bam.Core.TokenizedString newRoot
+        );
     }
 }

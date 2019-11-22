@@ -1222,5 +1222,12 @@ namespace Bam.Core
             get;
             private set;
         }
+
+        /// <summary>
+        /// Specify whether this Module must build or not.
+        /// Default is true.
+        /// Disabling the build of a Module in the dependency graph is a special case.
+        /// </summary>
+        public bool Build { get; set; } = true;
     }
 }
