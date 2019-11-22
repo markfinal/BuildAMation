@@ -75,21 +75,32 @@ namespace C
                 // found the SDK directory on disk
 
                 includeDir = this.CreateTokenizedString("$(0)/include", publishRoot);
+                var sdkLibDir = this.CreateTokenizedString("$(0)/lib", publishRoot);
+                var sdkBinDir = this.CreateTokenizedString("$(0)/bin", publishRoot);
                 if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                 {
-                    libraryDirs.AddUnique(this.CreateTokenizedString("$(0)/lib", publishRoot));
+                    libraryDirs.AddUnique(sdkLibDir);
                 }
                 else
                 {
-                    libraryDirs.AddUnique(this.CreateTokenizedString("$(0)/bin", publishRoot));
+                    libraryDirs.AddUnique(sdkBinDir);
                 }
 
                 foreach (var libType in this.LibraryModuleTypes)
                 {
-                    // create an instance of the module, but NEVER add it to the dependency graph so it isn't built
+                    // when using the SDK, we don't need its component Modules to be built
+                    // but do need it in the graph for collation to find it as a dependent
                     var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
                     var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
                     this.UsePublicPatches(libraryModule);
+                    this.DependsOn(libraryModule);
+                    libraryModule.Build = false;
+
+                    // update the library so that its binaries refer to those in the SDK
+                    if (libraryModule is IDynamicLibrary dynLibraryModule)
+                    {
+                        dynLibraryModule.ChangeExecutableRootPath(sdkBinDir);
+                    }
 
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {

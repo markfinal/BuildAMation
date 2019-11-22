@@ -488,6 +488,10 @@ namespace Bam.Core
             Module module,
             int rankIndex)
         {
+            if (!module.Build)
+            {
+                return;
+            }
             if (map.ContainsKey(module))
             {
                 throw new Exception($"Module {module.ToString()} rank initialized more than once");
@@ -643,7 +647,10 @@ namespace Bam.Core
             while (modulesToProcess.Any())
             {
                 var module = modulesToProcess.Dequeue();
-                ProcessModule(moduleRanks, modulesToProcess, module, moduleRanks[module]);
+                if (module.Build)
+                {
+                    ProcessModule(moduleRanks, modulesToProcess, module, moduleRanks[module]);
+                }
                 Log.DetailProgress("{0,3}%", (int)((++progress) * scale));
             }
             // moduleRanks[*].Value is now sparse - there may be gaps between successive ranks with modules
@@ -687,6 +694,10 @@ namespace Bam.Core
             else
             {
                 builder.Append($"({module.ToString()})");
+            }
+            if (!module.Build)
+            {
+                builder.Append("[X]");
             }
             if (visited.Contains(module))
             {
@@ -780,6 +791,10 @@ namespace Bam.Core
         {
             foreach (var c in modules)
             {
+                if (!c.Build)
+                {
+                    continue;
+                }
                 var childCollection = c.OwningRank;
                 if (null == childCollection)
                 {
