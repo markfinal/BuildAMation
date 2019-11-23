@@ -59,7 +59,7 @@ namespace C
 
             this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim(this.GetType().Namespace);
 
-            Bam.Core.TokenizedString includeDir;
+            Bam.Core.TokenizedString includeDir = null;
             var libraryDirs = new Bam.Core.TokenizedStringArray();
             var libs = new Bam.Core.TokenizedStringArray();
 
@@ -131,7 +131,10 @@ namespace C
                 {
                     copiedHeaders.AddRange(this.IncludeFiles(header, this.HeaderDir, null));
                 }
-                includeDir = (this.copiedHeaders.First() as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.HeaderDir);
+                if (this.copiedHeaders.Any())
+                {
+                    includeDir = (this.copiedHeaders.First() as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.HeaderDir);
+                }
 
                 var isPrimaryOutput = true;
                 foreach (var libType in this.LibraryModuleTypes)
@@ -189,7 +192,10 @@ namespace C
             {
                 if (settings is ICommonPreprocessorSettings preprocessor)
                 {
-                    preprocessor.IncludePaths.AddUnique(includeDir);
+                    if (null != includeDir)
+                    {
+                        preprocessor.IncludePaths.AddUnique(includeDir);
+                    }
                 }
                 else if (settings is ICommonLinkerSettings linker)
                 {
