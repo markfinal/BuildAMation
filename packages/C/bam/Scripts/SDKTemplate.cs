@@ -46,6 +46,11 @@ namespace C
         protected abstract Bam.Core.TokenizedStringArray HeaderFiles { get; }
 
         /// <summary>
+        /// Return a list of Module types that are the generated headers to include in the SDK.
+        /// </summary>
+        protected abstract Bam.Core.TypeArray GeneratedHeaderTypes { get; }
+
+        /// <summary>
         /// Return a list of Module types that are the libraries to include in the SDK.
         /// </summary>
         protected abstract Bam.Core.TypeArray LibraryModuleTypes { get; }
@@ -130,6 +135,15 @@ namespace C
                 foreach (var header in this.HeaderFiles)
                 {
                     copiedHeaders.AddRange(this.IncludeFiles(header, this.HeaderDir, null));
+                }
+                if (this.GeneratedHeaderTypes.Any())
+                {
+                    foreach (var genHeaderType in this.GeneratedHeaderTypes)
+                    {
+                        var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(genHeaderType);
+                        var copiedHeader = includeFn.Invoke(this, new[] { HeaderFile.HeaderFileKey, null }) as Publisher.ICollatedObject;
+                        copiedHeaders.Add(copiedHeader);
+                    }
                 }
                 if (this.copiedHeaders.Any())
                 {
