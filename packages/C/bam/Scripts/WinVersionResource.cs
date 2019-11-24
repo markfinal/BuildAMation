@@ -87,7 +87,19 @@ namespace C
                 contents.AppendLine("#include \"winver.h\"");
                 contents.AppendLine("VS_VERSION_INFO VERSIONINFO");
                 // note that these are comma separated
-                contents.AppendLine($"FILEVERSION {binaryMajorVersion},{binaryMinorVersion},{binaryPatchVersion}");
+                if (!System.Int32.TryParse(binaryMajorVersion, out int realBinaryMajorVersion))
+                {
+                    realBinaryMajorVersion = 0;
+                }
+                if (!System.Int32.TryParse(binaryMinorVersion, out int realBinaryMinorVersion))
+                {
+                    realBinaryMinorVersion = 0;
+                }
+                if (!System.Int32.TryParse(binaryMinorVersion, out int realBinaryPatchVersion))
+                {
+                    realBinaryPatchVersion = 0;
+                }
+                contents.AppendLine($"FILEVERSION {realBinaryMajorVersion},{realBinaryMinorVersion},{realBinaryPatchVersion}");
                 if (null != productDefinition)
                 {
                     contents.AppendLine($"PRODUCTVERSION {productDefinition.MajorVersion ?? 0},{productDefinition.MinorVersion ?? 0},{productDefinition.PatchVersion ?? 0}");
