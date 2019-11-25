@@ -343,6 +343,10 @@ namespace C
                 ),
                 true
             );
+            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            {
+                (this as IDynamicLibrary).LinkerNameSymbolicLink.ChangeSymbolicLinkRootPath(newRoot);
+            }
         }
     }
 }
