@@ -89,8 +89,21 @@ namespace C
                     // but do need it in the graph for collation to find it as a dependent
                     var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
                     var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
+                    var originalLibraryModule = libraryModule;
+
+                    var dependOnLinkerLibrary = true;
+                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) && libraryModule is IDynamicLibrary dlm)
+                    {
+                        libraryModule.Build = false;
+                        libraryModule = dlm.LinkerNameSymbolicLink;
+                        dependOnLinkerLibrary = false;
+                    }
+
                     this.UsePublicPatches(libraryModule);
-                    this.DependsOn(libraryModule);
+                    if (dependOnLinkerLibrary)
+                    {
+                        this.DependsOn(libraryModule);
+                    }
                     libraryModule.Build = false;
 
                     // update the library so that its binaries refer to those in the SDK
@@ -98,9 +111,18 @@ namespace C
                     {
                         dynLibraryModule.ChangeExecutableRootPath(sdkBinDir);
                     }
-                    else
+                    else if (libraryModule is SharedObjectSymbolicLink symLink)
                     {
-                        (libraryModule as StaticLibrary).ChangeLibraryRootPath(sdkLibDir);
+                        (originalLibraryModule as IDynamicLibrary).ChangeExecutableRootPath(sdkBinDir);
+                        symLink.ChangeSymbolicLinkRootPath(sdkBinDir);
+
+                        var soNameLink = (originalLibraryModule as IDynamicLibrary).SONameSymbolicLink;
+                        soNameLink.ChangeSymbolicLinkRootPath(sdkBinDir);
+                        this.DependsOn(soNameLink);
+                    }
+                    else if (libraryModule is StaticLibrary staticLib)
+                    {
+                        staticLib.ChangeLibraryRootPath(sdkLibDir);
                     }
 
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
