@@ -213,7 +213,7 @@ namespace C
                             copiedLibs.Add(copiedBin);
                             libraryDirs.AddUnique((copiedBin as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
                             this.RegisterGeneratedFile(
-                                DynamicLibrary.ExecutableKey,
+                                libraryModule.PrimaryOutputPathKey,
                                 (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
                                 isPrimaryOutput
                             );
