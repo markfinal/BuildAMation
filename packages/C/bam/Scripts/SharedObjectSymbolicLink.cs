@@ -177,5 +177,23 @@ namespace C
         /// Set the working directory for this Module
         /// </summary>
         public override Bam.Core.TokenizedString WorkingDirectory => this.OutputDirectories.First(); // since ln needs this for relative paths
+
+        /// <summary>
+        /// Modify the root of the output symbolic link path.
+        /// </summary>
+        /// <param name="newRoot">New root directory.</param>
+        public void
+        ChangeSymbolicLinkRootPath(
+            Bam.Core.TokenizedString newRoot
+        )
+        {
+            this.RegisterGeneratedFile(
+                SOSymLinkKey,
+                this.CreateTokenizedString("$(0)/$(1)",
+                                           newRoot,
+                                           this.Macros["SymlinkFilename"]),
+                true
+            );
+        }
     }
 }
