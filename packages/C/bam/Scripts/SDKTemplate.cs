@@ -188,7 +188,7 @@ namespace C
                                 (copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
                                 isPrimaryOutput
                             );
-                            libs.AddUnique((copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                            libs.AddUnique(this.CreateTokenizedString("@filename($(0))", (copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
                         }
                         else
                         {
@@ -199,7 +199,7 @@ namespace C
                                 (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
                                 isPrimaryOutput
                             );
-                            libs.AddUnique((copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                            libs.AddUnique(this.CreateTokenizedString("@filename($(0))", (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
                         }
                     }
                     else
