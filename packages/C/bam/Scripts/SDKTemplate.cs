@@ -48,7 +48,7 @@ namespace C
         /// <summary>
         /// Return a list of Module types that are the generated headers to include in the SDK.
         /// </summary>
-        protected abstract Bam.Core.TypeArray GeneratedHeaderTypes { get; }
+        protected virtual Bam.Core.TypeArray GeneratedHeaderTypes { get; } = null;
 
         /// <summary>
         /// Return a list of Module types that are the libraries to include in the SDK.
@@ -136,7 +136,7 @@ namespace C
                 {
                     copiedHeaders.AddRange(this.IncludeFiles(header, this.HeaderDir, null));
                 }
-                if (this.GeneratedHeaderTypes.Any())
+                if ((null != this.GeneratedHeaderTypes) && this.GeneratedHeaderTypes.Any())
                 {
                     foreach (var genHeaderType in this.GeneratedHeaderTypes)
                     {
