@@ -109,8 +109,16 @@ namespace C
 
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
-                        var importLibPath = libraryModule.GeneratedPaths[DynamicLibrary.ImportLibraryKey];
-                        libs.AddUnique(this.CreateTokenizedString("@filename($(0))", importLibPath));
+                        if (libraryModule is IDynamicLibrary)
+                        {
+                            var importLibPath = libraryModule.GeneratedPaths[DynamicLibrary.ImportLibraryKey];
+                            libs.AddUnique(this.CreateTokenizedString("@filename($(0))", importLibPath));
+                        }
+                        else
+                        {
+                            var importLibPath = libraryModule.GeneratedPaths[libraryModule.PrimaryOutputPathKey];
+                            libs.AddUnique(this.CreateTokenizedString("@filename($(0))", importLibPath));
+                        }
                     }
                     else
                     {
@@ -158,18 +166,32 @@ namespace C
                     this.UsePublicPatches(libraryModule);
 
                     var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(libType);
-                    var copiedBin = includeFn.Invoke(this, new[] { DynamicLibrary.ExecutableKey, null }) as Publisher.ICollatedObject;
+                    var copiedBin = includeFn.Invoke(this, new[] {libraryModule.PrimaryOutputPathKey, null }) as Publisher.ICollatedObject;
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
-                        var copiedLib = includeFn.Invoke(this, new[] { DynamicLibrary.ImportLibraryKey, null }) as Publisher.ICollatedObject;
-                        copiedLibs.Add(copiedLib);
-                        libraryDirs.AddUnique((copiedLib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ImportLibraryDir));
-                        this.RegisterGeneratedFile(
-                            DynamicLibrary.ImportLibraryKey,
-                            (copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
-                            isPrimaryOutput
-                        );
-                        libs.AddUnique((copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                        if (libraryModule is IDynamicLibrary)
+                        {
+                            var copiedLib = includeFn.Invoke(this, new[] { DynamicLibrary.ImportLibraryKey, null }) as Publisher.ICollatedObject;
+                            copiedLibs.Add(copiedLib);
+                            libraryDirs.AddUnique((copiedLib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ImportLibraryDir));
+                            this.RegisterGeneratedFile(
+                                DynamicLibrary.ImportLibraryKey,
+                                (copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
+                                isPrimaryOutput
+                            );
+                            libs.AddUnique((copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                        }
+                        else
+                        {
+                            copiedLibs.Add(copiedBin);
+                            libraryDirs.AddUnique((copiedBin as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ImportLibraryDir));
+                            this.RegisterGeneratedFile(
+                                libraryModule.PrimaryOutputPathKey,
+                                (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
+                                isPrimaryOutput
+                            );
+                            libs.AddUnique((copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                        }
                     }
                     else
                     {
