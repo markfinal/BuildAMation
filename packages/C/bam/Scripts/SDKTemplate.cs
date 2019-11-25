@@ -80,16 +80,8 @@ namespace C
                 // found the SDK directory on disk
 
                 includeDir = this.CreateTokenizedString("$(0)/include", publishRoot);
-                var sdkLibDir = this.CreateTokenizedString("$(0)/lib", publishRoot);
                 var sdkBinDir = this.CreateTokenizedString("$(0)/bin", publishRoot);
-                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
-                {
-                    libraryDirs.AddUnique(sdkLibDir);
-                }
-                else
-                {
-                    libraryDirs.AddUnique(sdkBinDir);
-                }
+                var sdkLibDir = this.CreateTokenizedString("$(0)/lib", publishRoot);
 
                 foreach (var libType in this.LibraryModuleTypes)
                 {
@@ -106,6 +98,10 @@ namespace C
                     {
                         dynLibraryModule.ChangeExecutableRootPath(sdkBinDir);
                     }
+                    else
+                    {
+                        (libraryModule as StaticLibrary).ChangeLibraryRootPath(sdkLibDir);
+                    }
 
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                     {
@@ -113,25 +109,38 @@ namespace C
                         {
                             var importLibPath = libraryModule.GeneratedPaths[DynamicLibrary.ImportLibraryKey];
                             libs.AddUnique(this.CreateTokenizedString("@filename($(0))", importLibPath));
+                            libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", importLibPath));
                         }
                         else
                         {
-                            var importLibPath = libraryModule.GeneratedPaths[libraryModule.PrimaryOutputPathKey];
-                            libs.AddUnique(this.CreateTokenizedString("@filename($(0))", importLibPath));
+                            var libPath = libraryModule.GeneratedPaths[libraryModule.PrimaryOutputPathKey];
+                            libs.AddUnique(this.CreateTokenizedString("@filename($(0))", libPath));
+                            libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", libPath));
                         }
                     }
                     else
                     {
-                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) && libraryModule is IDynamicLibrary dynamicLib)
+                        if (libraryModule is IDynamicLibrary dynamicLib)
                         {
-                            var linkNameSO = dynamicLib.LinkerNameSymbolicLink;
-                            var linkNameSOPath = linkNameSO.GeneratedPaths[SharedObjectSymbolicLink.SOSymLinkKey];
-                            libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", linkNameSOPath));
+                            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+                            {
+                                var linkNameSO = dynamicLib.LinkerNameSymbolicLink;
+                                var linkNameSOPath = linkNameSO.GeneratedPaths[SharedObjectSymbolicLink.SOSymLinkKey];
+                                libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", linkNameSOPath));
+                                libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", linkNameSOPath));
+                            }
+                            else
+                            {
+                                var dylib = libraryModule.GeneratedPaths[DynamicLibrary.ExecutableKey];
+                                libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", dylib));
+                                libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", dylib));
+                            }
                         }
                         else
                         {
-                            var dylib = libraryModule.GeneratedPaths[DynamicLibrary.ExecutableKey];
-                            libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", dylib));
+                            var libPath = libraryModule.GeneratedPaths[libraryModule.PrimaryOutputPathKey];
+                            libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", libPath));
+                            libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", libPath));
                         }
                     }
                 }
@@ -195,23 +204,36 @@ namespace C
                     }
                     else
                     {
-                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) && libraryModule is IDynamicLibrary dynamicLib)
+                        if (libraryModule is IDynamicLibrary dynamicLib)
                         {
-                            var copiedSOName = this.IncludeModule(dynamicLib.SONameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
-                            var copiedLinkName = this.IncludeModule(dynamicLib.LinkerNameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
-                            copiedLibs.Add(copiedLinkName);
-                            libraryDirs.AddUnique((copiedLinkName as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
-                            this.RegisterGeneratedFile(
-                                SharedObjectSymbolicLink.SOSymLinkKey,
-                                (copiedLinkName as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
-                                isPrimaryOutput
-                            );
-                            libs.AddUnique((copiedLinkName as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+                            {
+                                var copiedSOName = this.IncludeModule(dynamicLib.SONameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
+                                var copiedLinkName = this.IncludeModule(dynamicLib.LinkerNameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
+                                copiedLibs.Add(copiedLinkName);
+                                libraryDirs.AddUnique((copiedLinkName as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
+                                this.RegisterGeneratedFile(
+                                    SharedObjectSymbolicLink.SOSymLinkKey,
+                                    (copiedLinkName as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
+                                    isPrimaryOutput
+                                );
+                                libs.AddUnique((copiedLinkName as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                            }
+                            else
+                            {
+                                copiedLibs.Add(copiedBin);
+                                libraryDirs.AddUnique((copiedBin as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
+                                this.RegisterGeneratedFile(
+                                    libraryModule.PrimaryOutputPathKey,
+                                    (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
+                                    isPrimaryOutput
+                                );
+                                libs.AddUnique((copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                            }
                         }
                         else
                         {
-                            copiedLibs.Add(copiedBin);
-                            libraryDirs.AddUnique((copiedBin as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
+                            libraryDirs.AddUnique((copiedBin as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.StaticLibraryDir));
                             this.RegisterGeneratedFile(
                                 libraryModule.PrimaryOutputPathKey,
                                 (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],

@@ -472,5 +472,24 @@ namespace C
                 }
             }
         }
+
+        /// <summary>
+        /// Modify the root of the output library path.
+        /// </summary>
+        /// <param name="newRoot">New root directory.</param>
+        public void
+        ChangeLibraryRootPath(
+            Bam.Core.TokenizedString newRoot
+        )
+        {
+            this.RegisterGeneratedFile(
+                LibraryKey,
+                this.CreateTokenizedString(
+                    "$(0)/$(libprefix)$(OutputName)$(libext)",
+                    newRoot
+                ),
+                true
+            );
+        }
     }
 }
