@@ -34,6 +34,7 @@ namespace C
     /// </summary>
     interface IDynamicLibrary
     {
+#if false
         /// <summary>
         /// Get the symbolic link for the dynamic library's linker name.
         /// </summary>
@@ -43,6 +44,7 @@ namespace C
         /// Get the symbolic link for the SO name.
         /// </summary>
         SharedObjectSymbolicLink SONameSymbolicLink { get; }
+#endif
 
         /// <summary>
         /// Modify the root of the output executable path.

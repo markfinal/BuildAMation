@@ -30,6 +30,7 @@
 using System.Linq;
 namespace C
 {
+#if false
     /// <summary>
     /// Tool for making shared object symbolic links
     /// </summary>
@@ -46,4 +47,5 @@ namespace C
         /// </summary>
         public override Bam.Core.TokenizedString Executable => Bam.Core.TokenizedString.CreateVerbatim(Bam.Core.OSUtilities.GetInstallLocation("ln").First());
     }
+#endif
 }

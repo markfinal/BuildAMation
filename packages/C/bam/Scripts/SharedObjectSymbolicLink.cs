@@ -30,6 +30,7 @@
 using System.Linq;
 namespace C
 {
+#if false
     /// <summary>
     /// Module for the symbolic links for shared objects
     /// </summary>
@@ -196,4 +197,5 @@ namespace C
             );
         }
     }
+#endif
 }

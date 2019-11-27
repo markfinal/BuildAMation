@@ -29,6 +29,7 @@
 #endregion // License
 namespace C
 {
+#if false
     /// <summary>
     /// Settings for shared object symbolic links
     /// </summary>
@@ -52,4 +53,5 @@ namespace C
         [CommandLineProcessor.Bool("-s", "")]
         bool ISharedObjectSymbolicLinkSettings.SoftLink { get; set; }
     }
+#endif
 }

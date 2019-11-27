@@ -92,12 +92,14 @@ namespace C
                     var originalLibraryModule = libraryModule;
 
                     var dependOnLinkerLibrary = true;
+#if false
                     if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) && libraryModule is IDynamicLibrary dlm)
                     {
                         libraryModule.Build = false;
                         libraryModule = dlm.LinkerNameSymbolicLink;
                         dependOnLinkerLibrary = false;
                     }
+#endif
 
                     this.UsePublicPatches(libraryModule);
                     if (dependOnLinkerLibrary)
@@ -111,6 +113,7 @@ namespace C
                     {
                         dynLibraryModule.ChangeExecutableRootPath(sdkBinDir);
                     }
+#if false
                     else if (libraryModule is SharedObjectSymbolicLink symLink)
                     {
                         (originalLibraryModule as IDynamicLibrary).ChangeExecutableRootPath(sdkBinDir);
@@ -120,6 +123,7 @@ namespace C
                         soNameLink.ChangeSymbolicLinkRootPath(sdkBinDir);
                         this.DependsOn(soNameLink);
                     }
+#endif
                     else if (libraryModule is StaticLibrary staticLib)
                     {
                         staticLib.ChangeLibraryRootPath(sdkLibDir);
@@ -144,6 +148,7 @@ namespace C
                     {
                         if (libraryModule is IDynamicLibrary dynamicLib)
                         {
+#if false
                             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                             {
                                 var linkNameSO = dynamicLib.LinkerNameSymbolicLink;
@@ -152,10 +157,19 @@ namespace C
                                 libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", linkNameSOPath));
                             }
                             else
+#endif
                             {
                                 var dylib = libraryModule.GeneratedPaths[DynamicLibrary.ExecutableKey];
-                                libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", dylib));
-                                libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", dylib));
+                                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+                                {
+                                    // without symbolic links, need the full path
+                                    libs.AddUnique(dylib);
+                                }
+                                else
+                                {
+                                    libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", dylib));
+                                    libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", dylib));
+                                }
                             }
                         }
                         else
@@ -228,6 +242,7 @@ namespace C
                     {
                         if (libraryModule is IDynamicLibrary dynamicLib)
                         {
+#if false
                             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                             {
                                 var copiedSOName = this.IncludeModule(dynamicLib.SONameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
@@ -242,6 +257,7 @@ namespace C
                                 libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", (copiedLinkName as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
                             }
                             else
+#endif
                             {
                                 copiedLibs.Add(copiedBin);
                                 libraryDirs.AddUnique((copiedBin as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
@@ -250,7 +266,15 @@ namespace C
                                     (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
                                     isPrimaryOutput
                                 );
-                                libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
+                                if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+                                {
+                                    // without symbolic links, need the full path
+                                    libs.AddUnique((copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                                }
+                                else
+                                {
+                                    libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
+                                }
                             }
                         }
                         else
