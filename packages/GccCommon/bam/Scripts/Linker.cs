@@ -89,10 +89,12 @@ namespace GccCommon
             foreach (var dep in (dynamicModule as C.CModule).Dependents)
             {
                 var dependent = dep;
+#if false
                 if (dependent is C.SharedObjectSymbolicLink symlinkDep)
                 {
                     dependent = symlinkDep.SharedObject;
                 }
+#endif
                 if (!(dependent is C.IDynamicLibrary))
                 {
                     continue;
@@ -152,6 +154,7 @@ namespace GccCommon
             {
                 // TODO: @filenamenoext
                 var libraryPath = library.GeneratedPaths[C.DynamicLibrary.ExecutableKey].ToString();
+#if false
                 var linkerNameSymLink = (library as C.IDynamicLibrary).LinkerNameSymbolicLink;
                 // TODO: I think there's a problem when there's no linkerName symlink - i.e. taking the full shared object path
                 var libraryName = (linkerNameSymLink != null) ?
@@ -161,6 +164,10 @@ namespace GccCommon
                     GetLPrefixLibraryName(
                         libraryPath
                     );
+#else
+                // with no symlink, you need to full path
+                var libraryName = libraryPath;
+#endif
                 // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
                 if (linker.Libraries.Contains(libraryName))
                 {

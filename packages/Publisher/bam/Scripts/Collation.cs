@@ -429,7 +429,9 @@ namespace Publisher
             {
                 this.Mapping.Register(typeof(C.DynamicLibrary), C.DynamicLibrary.ImportLibraryKey, this.ImportLibraryDir, false);
             }
+#if false
             this.Mapping.Register(typeof(C.SharedObjectSymbolicLink), C.SharedObjectSymbolicLink.SOSymLinkKey, this.DynamicLibraryDir, true);
+#endif
             this.Mapping.Register(typeof(C.Cxx.ConsoleApplication), C.Cxx.ConsoleApplication.ExecutableKey, this.ExecutableDir, true);
             this.Mapping.Register(typeof(C.ConsoleApplication), C.ConsoleApplication.ExecutableKey, this.ExecutableDir, true);
             this.Mapping.Register(typeof(C.StaticLibrary), C.StaticLibrary.LibraryKey, this.StaticLibraryDir, false);
