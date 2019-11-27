@@ -36,9 +36,9 @@ namespace GccCommon
     [CommandLineProcessor.InputPaths(C.ObjectFileBase.ObjectFileKey, "")]
     abstract class CommonLinkerSettings :
         C.SettingsBase,
+        C.ICommonLinkerSettingsLinux,
         C.ICommonLinkerSettings,
-        C.IAdditionalSettings,
-        ICommonLinkerSettings
+        C.IAdditionalSettings
     {
         /// <summary>
         /// Default constructor
@@ -47,6 +47,21 @@ namespace GccCommon
             :
             base(ELayout.Inputs_Cmds_Outputs)
         {}
+
+        [CommandLineProcessor.Bool("-Wl,-z,origin", "")]
+        bool C.ICommonLinkerSettingsLinux.CanUseOrigin { get; set; }
+
+        [CommandLineProcessor.PathArray("-Wl,-rpath,")]
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsLinux.RPath { get; set; }
+
+        [CommandLineProcessor.PathArray("-Wl,-rpath-link,")]
+        Bam.Core.TokenizedStringArray C.ICommonLinkerSettingsLinux.RPathLink { get; set; }
+
+        [CommandLineProcessor.Path("-Wl,--version-script=")]
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsLinux.VersionScript { get; set; }
+
+        [CommandLineProcessor.Path("-Wl,-soname,")] // ensure that the NEEDED flag is set to the expected symlink for the shared object
+        Bam.Core.TokenizedString C.ICommonLinkerSettingsLinux.SharedObjectName { get; set; }
 
         [CommandLineProcessor.Enum(C.EBit.ThirtyTwo, "-m32")]
         [CommandLineProcessor.Enum(C.EBit.SixtyFour, "-m64")]
@@ -67,20 +82,5 @@ namespace GccCommon
 
         [CommandLineProcessor.StringArray("")]
         Bam.Core.StringArray C.IAdditionalSettings.AdditionalSettings { get; set; }
-
-        [CommandLineProcessor.Bool("-Wl,-z,origin", "")]
-        bool ICommonLinkerSettings.CanUseOrigin { get; set; }
-
-        [CommandLineProcessor.PathArray("-Wl,-rpath,")]
-        Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPath { get; set; }
-
-        [CommandLineProcessor.PathArray("-Wl,-rpath-link,")]
-        Bam.Core.TokenizedStringArray ICommonLinkerSettings.RPathLink { get; set; }
-
-        [CommandLineProcessor.Path("-Wl,--version-script=")]
-        Bam.Core.TokenizedString ICommonLinkerSettings.VersionScript { get; set; }
-
-        [CommandLineProcessor.Path("-Wl,-soname,")] // ensure that the NEEDED flag is set to the expected symlink for the shared object
-        Bam.Core.TokenizedString ICommonLinkerSettings.SharedObjectName { get; set; }
     }
 }

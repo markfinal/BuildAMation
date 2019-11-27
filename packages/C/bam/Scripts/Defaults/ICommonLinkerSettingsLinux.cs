@@ -27,16 +27,16 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon.DefaultSettings
+namespace C.DefaultSettings
 {
     /// <summary>
-    /// Extension class for setting Gcc linker defaults
+    /// Extension class for setting Linux linker defaults
     /// </summary>
     static partial class DefaultSettingsExtensions
     {
         public static void
         Defaults(
-            this GccCommon.ICommonLinkerSettings settings)
+            this C.ICommonLinkerSettingsLinux settings)
         {
             settings.CanUseOrigin = false;
             settings.RPath = new Bam.Core.TokenizedStringArray();

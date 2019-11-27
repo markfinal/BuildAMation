@@ -79,10 +79,10 @@ namespace GccCommon.Helpers
         {
             app.PrivatePatch(settings =>
             {
-                if (settings is ICommonLinkerSettings gccLinker)
+                if (settings is C.ICommonLinkerSettingsLinux linuxLinker)
                 {
-                    gccLinker.CanUseOrigin = true;
-                    gccLinker.RPath.Add("$ORIGIN");
+                    linuxLinker.CanUseOrigin = true;
+                    linuxLinker.RPath.Add("$ORIGIN");
                 }
             });
         }
