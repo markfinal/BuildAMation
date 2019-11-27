@@ -175,15 +175,15 @@ namespace GccCommon
                 }
                 linker.Libraries.Add(libraryName);
 
-                var gccLinker = executable.Settings as GccCommon.ICommonLinkerSettings;
+                var linuxLinker = executable.Settings as C.ICommonLinkerSettingsLinux;
                 foreach (var dir in library.OutputDirectories)
                 {
                     linker.LibraryPaths.AddUnique(dir);
                     // if an explicit link occurs in this executable/shared object, the library path
                     // does not need to be on the rpath-link
-                    if (gccLinker.RPathLink.Contains(dir))
+                    if (linuxLinker.RPathLink.Contains(dir))
                     {
-                        gccLinker.RPathLink.Remove(dir);
+                        linuxLinker.RPathLink.Remove(dir);
                     }
                 }
 
@@ -195,7 +195,7 @@ namespace GccCommon
                         // only need to add to rpath-link, if there's been no explicit link to the library already
                         if (!linker.LibraryPaths.Contains(dir))
                         {
-                            gccLinker.RPathLink.AddUnique(dir);
+                            linuxLinker.RPathLink.AddUnique(dir);
                         }
                     }
                 }
