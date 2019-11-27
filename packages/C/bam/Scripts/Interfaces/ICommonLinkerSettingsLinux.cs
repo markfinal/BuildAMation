@@ -27,13 +27,13 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
-namespace GccCommon
+namespace C
 {
     /// <summary>
-    /// Interface for Gcc specific linker settings
+    /// Interface for Linux specific linker settings
     /// </summary>
     [Bam.Core.SettingsExtensions(typeof(DefaultSettings.DefaultSettingsExtensions))]
-    interface ICommonLinkerSettings :
+    interface ICommonLinkerSettingsLinux :
         Bam.Core.ISettingsBase
     {
         /// <summary>
