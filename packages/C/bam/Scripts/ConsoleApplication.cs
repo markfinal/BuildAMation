@@ -358,11 +358,13 @@ namespace C
             this.linkedModules.AddUnique(dependent);
             if (dependent is IDynamicLibrary dynamicLib)
             {
+#if false
                 if (dynamicLib.LinkerNameSymbolicLink != null)
                 {
                     this.DependsOn(dynamicLib.LinkerNameSymbolicLink);
                 }
                 // else is non-Linux platforms
+#endif
             }
             else
             {
@@ -380,11 +382,13 @@ namespace C
         {
             if (dependent is IDynamicLibrary dynamicLib)
             {
+#if false
                 if (dynamicLib.SONameSymbolicLink != null)
                 {
                     this.Requires(dynamicLib.SONameSymbolicLink);
                     return;
                 }
+#endif
             }
             this.Requires(dependent);
         }

@@ -39,8 +39,10 @@ namespace C.Cxx
         IForwardedLibraries
     {
         private Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
+#if false
         private SharedObjectSymbolicLink linkerNameSymLink = null;
         private SharedObjectSymbolicLink soNameSymLink = null;
+#endif
 
         /// <summary>
         /// Initialize the dynamic library
@@ -69,6 +71,7 @@ namespace C.Cxx
             {
                 if (!(this is Plugin) && !this.IsPrebuilt)
                 {
+#if false
                     var linkerName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
                         {
                             module.Macros.Add("SymlinkFilename", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)"));
@@ -93,6 +96,7 @@ namespace C.Cxx
                             });
 #endif
                     }
+#endif
                 }
             }
 
@@ -309,6 +313,7 @@ namespace C.Cxx
 
         System.Collections.Generic.IEnumerable<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps;
 
+#if false
         SharedObjectSymbolicLink IDynamicLibrary.LinkerNameSymbolicLink => this.linkerNameSymLink;
         /// <summary>
         /// Get the linker name symbolic link
@@ -332,6 +337,7 @@ namespace C.Cxx
                 this.soNameSymLink = value;
             }
         }
+#endif
 
         void
         IDynamicLibrary.ChangeExecutableRootPath(
