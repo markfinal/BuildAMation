@@ -524,7 +524,7 @@ namespace Bam.Core
             // this is where earlier versions would be read
             // and immediately written back to update to the latest schema
 
-            throw new Exception($"An error occurred while reading a package or package definition file '{this.XMLFilename}' does not satisfy any of the package definition schemas");
+            throw new Exception($"An error occurred while reading a package definition file '{this.XMLFilename}' does not satisfy any of the package definition schemas");
         }
 
         private bool
@@ -992,10 +992,6 @@ namespace Bam.Core
             {
                 // the XML does not match the schema
                 throw new Exception(xmlEx, $"Error while reading {this.XMLFilename}");
-            }
-            catch (System.Exception)
-            {
-                return false;
             }
 
             return true;
