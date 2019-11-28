@@ -61,6 +61,40 @@ namespace Publisher
             this.PublishRoot = Bam.Core.TokenizedString.Create("$(publishdir)", null);
         }
 
+        public override void
+        PostInit()
+        {
+            var graph = Bam.Core.Graph.Instance;
+
+            // record any symbolic links to collate for runtime
+            var toCollate = new Bam.Core.Array<C.SharedObjectSymbolicLink>();
+            foreach (var dynLib in this.dynamicLibraries)
+            {
+                if (dynLib.Settings is C.ICommonLinkerSettingsLinux linuxLinker)
+                {
+                    if (linuxLinker.SharedObjectName != null)
+                    {
+                        foreach (var symlinkModule in graph.FindModules<C.SONameSymbolicLink>(dynLib.BuildEnvironment))
+                        {
+                            if (symlinkModule.SharedObject == dynLib)
+                            {
+                                toCollate.Add(symlinkModule);
+                            }
+                        }
+                    }
+                }
+            }
+
+            // only deploy SOname symbolic links
+            graph.CommonModuleType.Push(this.GetType());
+            foreach (var symlinkModule in toCollate)
+            {
+                // don't gather to avoid picking up duplicates
+                this.IncludeModule(symlinkModule, C.SharedObjectSymbolicLink.SOSymLinkKey, gatherDependencies: false);
+            }
+            graph.CommonModuleType.Pop();
+        }
+
         protected sealed override void
         EvaluateInternal()
         {
@@ -181,6 +215,8 @@ namespace Publisher
         // this is doubling up the cost of the this.Requires list, but at less runtime cost
         // for expanding each CollatedObject to peek as it's properties
         private readonly System.Collections.Generic.Dictionary<(Bam.Core.Module module, string pathKey), ICollatedObject> collatedObjects = new System.Collections.Generic.Dictionary<(Bam.Core.Module module, string pathKey), ICollatedObject>();
+
+        private readonly Bam.Core.Array<Bam.Core.Module> dynamicLibraries = new Bam.Core.Array<Bam.Core.Module>();
 
         private Bam.Core.TokenizedString PublishRoot { get; set; }
 
@@ -429,9 +465,7 @@ namespace Publisher
             {
                 this.Mapping.Register(typeof(C.DynamicLibrary), C.DynamicLibrary.ImportLibraryKey, this.ImportLibraryDir, false);
             }
-#if false
             this.Mapping.Register(typeof(C.SharedObjectSymbolicLink), C.SharedObjectSymbolicLink.SOSymLinkKey, this.DynamicLibraryDir, true);
-#endif
             this.Mapping.Register(typeof(C.Cxx.ConsoleApplication), C.Cxx.ConsoleApplication.ExecutableKey, this.ExecutableDir, true);
             this.Mapping.Register(typeof(C.ConsoleApplication), C.ConsoleApplication.ExecutableKey, this.ExecutableDir, true);
             this.Mapping.Register(typeof(C.StaticLibrary), C.StaticLibrary.LibraryKey, this.StaticLibraryDir, false);
@@ -556,6 +590,11 @@ namespace Publisher
             foreach (var req in module.Requirements)
             {
                 this.EncodeDependentModuleAndPathKey(req, allDependents, toDealWith);
+            }
+            // record dynamic libraries since they may need a symbolic link published alongside them
+            if (module is C.IDynamicLibrary)
+            {
+                this.dynamicLibraries.AddUnique(module);
             }
         }
 
@@ -809,17 +848,19 @@ namespace Publisher
         /// <param name="dependent">Instance of the Module to collate.</param>
         /// <param name="key">Path key of the Module to collate.</param>
         /// <param name="anchorPublishRoot">Optional custom directory to use as the root for the anchor's publishing, or null (the default) to use the default anchor root.</param>
+        /// <param name="gatherDependencies">Optional, whether dependencies of this Module are gathered for collation. Default is true.</param>
         /// <returns></returns>
         public ICollatedObject
         IncludeModule(
             Bam.Core.Module dependent,
             string key,
-            Bam.Core.TokenizedString anchorPublishRoot = null)
+            Bam.Core.TokenizedString anchorPublishRoot = null,
+            bool gatherDependencies = true)
         {
             var modulePublishDir = this.Mapping.FindPublishDirectory(dependent, key);
             var collatedFile = this.IncludeNoGather(dependent, key, modulePublishDir, null, anchorPublishRoot);
             (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros[Bam.Core.ModuleMacroNames.OutputName]);
-            if (this.PublishingType != EPublishingType.Library)
+            if (this.PublishingType != EPublishingType.Library && gatherDependencies)
             {
                 this.gatherAllDependencies(dependent, key, collatedFile, anchorPublishRoot);
             }
