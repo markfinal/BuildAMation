@@ -39,6 +39,7 @@ namespace C
     {
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedHeaders = new Bam.Core.Array<Publisher.ICollatedObject>();
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedLibs = new Bam.Core.Array<Publisher.ICollatedObject>();
+        private readonly Bam.Core.Array<Bam.Core.Module> realLibraryModules = new Bam.Core.Array<Bam.Core.Module>();
 
         /// <summary>
         /// Return a list of paths to header files to include in the SDK.
@@ -75,7 +76,8 @@ namespace C
                 publishRoot.Parse();
             }
 
-            if (System.IO.Directory.Exists(publishRoot.ToString()))
+            var useExistingSDK = System.IO.Directory.Exists(publishRoot.ToString());
+            if (useExistingSDK)
             {
                 UsePrebuiltSDK(publishRoot, out includeDir, libs, libraryDirs);
             }
@@ -111,6 +113,53 @@ namespace C
             });
         }
 
+        public override void
+        PostInit()
+        {
+            base.PostInit();
+
+            foreach (var libraryModule in this.realLibraryModules)
+            {
+                if (libraryModule.Settings is C.ICommonLinkerSettingsLinux linuxLinker)
+                {
+                    if (linuxLinker.SharedObjectName != null)
+                    {
+                        var graph = Bam.Core.Graph.Instance;
+                        SharedObjectSymbolicLink linkerName;
+                        SharedObjectSymbolicLink soName;
+                        graph.CommonModuleType.Push(libraryModule.GetType());
+                        try
+                        {
+                            linkerName = Bam.Core.Module.Create<LinkerNameSymbolicLink>(preInitCallback: module =>
+                            {
+                                module.Macros.Add("SymlinkFilename", libraryModule.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)"));
+                                module.SharedObject = libraryModule as C.ConsoleApplication;
+                            });
+                            soName = Bam.Core.Module.Create<SONameSymbolicLink>(preInitCallback: module =>
+                            {
+                                module.Macros.Add("SymlinkFilename", libraryModule.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
+                                module.SharedObject = libraryModule as C.ConsoleApplication;
+                            });
+                        }
+                        finally
+                        {
+                            graph.CommonModuleType.Pop();
+                        }
+                        graph.CommonModuleType.Push(this.GetType());
+                        try
+                        {
+                            this.copiedLibs.Add(this.IncludeModule(linkerName, SharedObjectSymbolicLink.SOSymLinkKey));
+                            this.copiedLibs.Add(this.IncludeModule(soName, SharedObjectSymbolicLink.SOSymLinkKey));
+                        }
+                        finally
+                        {
+                            graph.CommonModuleType.Pop();
+                        }
+                    }
+                }
+            }
+        }
+
         private void
         UsePrebuiltSDK(
             Bam.Core.TokenizedString publishRoot,
@@ -129,6 +178,7 @@ namespace C
                 // but do need it in the graph for collation to find it as a dependent
                 var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
                 var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
+                realLibraryModules.Add(libraryModule);
                 var originalLibraryModule = libraryModule;
 
                 var dependOnLinkerLibrary = true;
@@ -257,6 +307,7 @@ namespace C
             {
                 var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
                 var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
+                realLibraryModules.Add(libraryModule);
                 this.UsePublicPatches(libraryModule);
 
                 var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(libType);
