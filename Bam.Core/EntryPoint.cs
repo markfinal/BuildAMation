@@ -62,13 +62,12 @@ namespace Bam.Core
         /// - compile all package scripts into an assembly (unless in a debug project)
         /// - generate metadata for each package
         /// - create top-level modules, i.e. modules in the package in which Bam was invoked (performed by namespace lookup
-        /// and all sealed module classes), without any knowledge of inter-dependencies
-        /// - invoke the Init functions on each created module, and begin sorting modules into rank collections, and creating
-        /// instances of non-top-level modules that are required. If a module has a tool, the default settings are created for
-        /// each module.
+        /// and all sealed module classes), execute their Init functions, which will recursively create all Modules required
+        /// - assign default settings for Modules using a Tool, and execute the settings patches where they exist, so that
+        /// module settings are now configured as the user specified them
+        /// - begin sorting modules into rank collections
         /// - validate the dependencies created, so that there are no cyclic dependencies, or modules in the wrong rank to
         /// satisfy their dependencies
-        /// - execute the settings patches where they exist, so that module settings are now configured as the user specified them
         /// - expand all TokenizedStrings that have been created
         /// - (display the dependency graph if the user specified the command line option)
         /// - execute the dependency graph, from highest rank to lowest rank, using the build mode specified by the user.
@@ -277,6 +276,9 @@ namespace Bam.Core
             findBuildableModulesProfile.StartProfile();
 
             // Phase 1: Instantiate all modules in the namespace of the package in which the tool was invoked
+            // The side-effect of this is that ALL Modules in the Graph will be created, and their Init functions
+            // invoked.
+            // The end result is a linear list of Modules per build environment.
             Log.Detail("Creating modules...");
             foreach (var env in environments)
             {
@@ -285,22 +287,7 @@ namespace Bam.Core
 
             findBuildableModulesProfile.StopProfile();
 
-            var populateGraphProfile = new TimeProfile(ETimingProfiles.PopulateGraph);
-            populateGraphProfile.StartProfile();
-            // Phase 2: Graph now has a linear list of modules; create a dependency graph
-            // NB: all those modules with 0 dependees are the top-level modules
-            // NB: default settings have already been defined here
-            // not only does this generate the dependency graph, but also creates the default settings for each module, and completes them
-            graph.SortDependencies();
-            populateGraphProfile.StopProfile();
-
-            // TODO: make validation optional, if it starts showing on profiles
-            var validateGraphProfile = new TimeProfile(ETimingProfiles.ValidateGraph);
-            validateGraphProfile.StartProfile();
-            graph.Validate();
-            validateGraphProfile.StopProfile();
-
-            // Phase 3: (Create default settings, and ) apply patches (build + shared) to each module
+            // Phase 2: Create default settings, and apply patches (build + shared) to each module
             // NB: some builders can use the patch directly for child objects, so this may be dependent upon the builder
             // Toolchains for modules need to be set here, as they might append macros into each module in order to evaluate paths
             // TODO: a parallel thread can be spawned here, that can check whether command lines have changed
@@ -311,6 +298,20 @@ namespace Bam.Core
             createPatchesProfile.StartProfile();
             graph.ApplySettingsPatches();
             createPatchesProfile.StopProfile();
+
+            var populateGraphProfile = new TimeProfile(ETimingProfiles.PopulateGraph);
+            populateGraphProfile.StartProfile();
+            // Phase 3: Graph now has a linear list of modules; create a dependency graph
+            // NB: all those modules with 0 dependees are the top-level modules
+            // NB: default settings and their patches have already been assigned by now
+            graph.SortDependencies();
+            populateGraphProfile.StopProfile();
+
+            // TODO: make validation optional, if it starts showing on profiles
+            var validateGraphProfile = new TimeProfile(ETimingProfiles.ValidateGraph);
+            validateGraphProfile.StartProfile();
+            graph.Validate();
+            validateGraphProfile.StopProfile();
 
             // expand paths after patching settings, because some of the patches may contain tokenized strings
             // TODO: a thread can be spawned, to check for whether files were in date or not, which will
