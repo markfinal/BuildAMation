@@ -30,11 +30,24 @@
 using System.Linq;
 namespace C
 {
-#if false
+    /// <summary>
+    /// Module specifically for symbolic links for SONames
+    /// </summary>
+    class SONameSymbolicLink :
+        SharedObjectSymbolicLink
+    { }
+
+    /// <summary>
+    /// Module specifically for symbolic links for LinkerNames
+    /// </summary>
+    class LinkerNameSymbolicLink :
+        SharedObjectSymbolicLink
+    { }
+
     /// <summary>
     /// Module for the symbolic links for shared objects
     /// </summary>
-    class SharedObjectSymbolicLink :
+    abstract class SharedObjectSymbolicLink :
         Bam.Core.Module
     {
         /// <summary>
@@ -197,5 +210,4 @@ namespace C
             );
         }
     }
-#endif
 }
