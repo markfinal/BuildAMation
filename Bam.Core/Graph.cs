@@ -117,6 +117,19 @@ namespace Bam.Core
         public PeekableStack<Module> ModuleStack { get; private set; }
 
         /// <summary>
+        /// Find all modules of the given type in the graph.
+        /// </summary>
+        /// <param name="env">The environment to find Modules from.</param>
+        /// <returns>All modules of the given type</returns>
+        /// <typeparam name="T">The type of the Modules to find</typeparam>
+        public System.Collections.Generic.IEnumerable<T>
+        FindModules<T>(
+            Environment env) where T : Module
+        {
+            return this.Modules[env].Where(item => item.GetType() == typeof(T)).Cast<T>();
+        }
+
+        /// <summary>
         /// A referenced module is one that is referenced by it's class type. This is normally in use when specifying
         /// a dependency. There can be one and only one copy, in a build environment, of this type of module.
         /// A non-referenced module, is one that is never referred to explicitly in user scripts, but are created behind
@@ -369,21 +382,84 @@ namespace Bam.Core
             }
         }
 
+        private void
+        MakeSettingsAndApplyPatches(
+            Module module)
+        {
+            if (module.Tool != null)
+            {
+                module.Requires(module.Tool);
+                var child = module as IChildModule;
+                if ((null == child) || (null == child.Parent))
+                {
+                    // children inherit the settings from their parents
+                    module.UsePublicPatches(module.Tool);
+                }
+
+                try
+                {
+                    // this handles connecting the module to the settings and vice versa too
+                    var settings = module.MakeSettings();
+                    settings?.SetModuleAndDefaultPropertyValues(module);
+                }
+                catch (System.TypeInitializationException ex)
+                {
+                    throw ex.InnerException;
+                }
+                catch (System.Reflection.TargetInvocationException ex)
+                {
+                    var realException = ex.InnerException;
+                    if (null == realException)
+                    {
+                        realException = ex;
+                    }
+                    throw new Exception(realException, "Settings creation:");
+                }
+            }
+
+            module.ApplySettingsPatches();
+        }
+
         /// <summary>
         /// Apply any patches associated with modules.
+        /// Once all patches have been applied, PostInit functions for Modules are then executed.
+        /// This is an opportunity to act on logic based on a Module's Settings.
         /// </summary>
         public void
         ApplySettingsPatches()
         {
             Log.Detail("Apply settings to modules...");
-            var scale = 100.0f / Module.Count;
+            var scale = 100.0f / (2 * Module.Count); // iterated twice
             var count = 0;
-            foreach (var rank in this.DependencyGraph.Reverse())
+            foreach (var env in this.Modules.Keys)
             {
-                foreach (var module in rank.Value)
+                var originalModuleCount = this.Modules[env].Count;
+                // first create all settings and apply patches
+                for (var i = 0; i < originalModuleCount; ++i)
                 {
-                    module.ApplySettingsPatches();
+                    var module = this.Modules[env][i];
+                    this.MakeSettingsAndApplyPatches(module);
                     Log.DetailProgress("{0,3}%", (int)(++count * scale));
+                }
+                // then post-init all modules now that settings are in place
+                for (var i = 0; i < originalModuleCount; ++i)
+                {
+                    var module = this.Modules[env][i];
+                    this.BuildEnvironment = env;
+                    module.PostInit();
+                    this.BuildEnvironment = null;
+                    Log.DetailProgress("{0,3}%", (int)(++count * scale));
+                }
+                if (this.Modules[env].Count > originalModuleCount)
+                {
+                    for (var i = originalModuleCount; i < this.Modules[env].Count; ++i)
+                    {
+                        var module = this.Modules[env][i];
+                        this.MakeSettingsAndApplyPatches(module);
+                        this.BuildEnvironment = env;
+                        module.PostInit();
+                        this.BuildEnvironment = null;
+                    }
                 }
             }
         }
@@ -434,8 +510,11 @@ namespace Bam.Core
                 this.BuildEnvironmentInternal = value;
                 if (null != value)
                 {
-                    this.Modules.Add(value, new System.Collections.Generic.List<Module>());
-                    this.ReferencedModules.Add(value, new Array<Module>());
+                    if (!this.Modules.ContainsKey(value))
+                    {
+                        this.Modules.Add(value, new System.Collections.Generic.List<Module>());
+                        this.ReferencedModules.Add(value, new Array<Module>());
+                    }
                 }
             }
         }
@@ -543,39 +622,6 @@ namespace Bam.Core
             Module module,
             int rankIndex)
         {
-            if (module.Tool != null)
-            {
-                if (null == module.Settings)
-                {
-                    module.Requires(module.Tool);
-                    var child = module as IChildModule;
-                    if ((null == child) || (null == child.Parent))
-                    {
-                        // children inherit the settings from their parents
-                        module.UsePublicPatches(module.Tool);
-                    }
-
-                    try
-                    {
-                        // this handles connecting the module to the settings and vice versa too
-                        var settings = module.MakeSettings();
-                        settings?.SetModuleAndDefaultPropertyValues(module);
-                    }
-                    catch (System.TypeInitializationException ex)
-                    {
-                        throw ex.InnerException;
-                    }
-                    catch (System.Reflection.TargetInvocationException ex)
-                    {
-                        var realException = ex.InnerException;
-                        if (null == realException)
-                        {
-                            realException = ex;
-                        }
-                        throw new Exception(realException, "Settings creation:");
-                    }
-                }
-            }
             if (!module.Dependents.Any() && !module.Requirements.Any())
             {
                 return;
