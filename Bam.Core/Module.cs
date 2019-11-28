@@ -1229,5 +1229,15 @@ namespace Bam.Core
         /// Disabling the build of a Module in the dependency graph is a special case.
         /// </summary>
         public bool Build { get; set; } = true;
+
+        /// <summary>
+        /// Run after Init() and after Settings are assigned and patches run on the Settings.
+        /// This is an opportunity to add more Modules that depend on Settings.
+        /// </summary>
+        public virtual void
+        PostInit()
+        {
+            // do nothing
+        }
     }
 }
