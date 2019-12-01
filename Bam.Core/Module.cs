@@ -1003,7 +1003,10 @@ namespace Bam.Core
         /// </summary>
         public Module EncapsulatingModule { get; private set; }
 
-        private void
+        /// <summary>
+        /// Complete this Module.
+        /// </summary>
+        public void
         Complete()
         {
             // modules that are encapsulated, that have settings, and aren't a child (as their parent is also encapsulated,
