@@ -461,10 +461,18 @@ namespace Bam.Core
                     var rank = maxRank;
                     foreach (var dep in module.Dependents)
                     {
+                        if (!this.moduleRanks.ContainsKey(dep))
+                        {
+                            continue;
+                        }
                         rank = this.moduleRanks[dep] < rank ? this.moduleRanks[dep] : rank;
                     }
                     foreach (var dep in module.Requirements)
                     {
+                        if (!this.moduleRanks.ContainsKey(dep))
+                        {
+                            continue;
+                        }
                         rank = this.moduleRanks[dep] < rank ? this.moduleRanks[dep] : rank;
                     }
                     this.SetModuleRank(module, rank);
@@ -537,7 +545,8 @@ namespace Bam.Core
         /// <value>The dependency graph.</value>
         public DependencyGraph DependencyGraph { get; private set; }
 
-        private void ApplyGroupDependenciesToChildren(
+        private void
+        ApplyGroupDependenciesToChildren(
             Module module,
             System.Collections.Generic.IEnumerable<Module> children,
             System.Collections.Generic.IEnumerable<Module> dependencies)
@@ -555,7 +564,8 @@ namespace Bam.Core
             }
         }
 
-        private void ApplyGroupRequirementsToChildren(
+        private void
+        ApplyGroupRequirementsToChildren(
             Module module,
             System.Collections.Generic.IEnumerable<Module> children,
             System.Collections.Generic.IEnumerable<Module> dependencies)
@@ -580,6 +590,8 @@ namespace Bam.Core
         {
             if (!module.Build)
             {
+                // even though it's not in the graph, settings may be required
+                this.MakeSettingsAndApplyPatches(module);
                 return;
             }
             if (this.moduleRanks.ContainsKey(module))
