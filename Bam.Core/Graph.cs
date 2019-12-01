@@ -429,37 +429,49 @@ namespace Bam.Core
         ApplySettingsPatches()
         {
             Log.Detail("Apply settings to modules...");
-            var scale = 100.0f / (2 * Module.Count); // iterated twice
+            var scale = 100.0f / Module.Count;
             var count = 0;
+            var originalModuleCount = new System.Collections.Generic.Dictionary<Environment, int>();
             foreach (var env in this.Modules.Keys)
             {
-                var originalModuleCount = this.Modules[env].Count;
-                // first create all settings and apply patches
-                for (var i = 0; i < originalModuleCount; ++i)
+                originalModuleCount.Add(env, this.Modules[env].Count);
+            }
+            foreach (var rank in this.DependencyGraph.Reverse())
+            {
+                foreach (var module in rank.Value)
                 {
-                    var module = this.Modules[env][i];
                     this.MakeSettingsAndApplyPatches(module);
-                    Log.DetailProgress("{0,3}%", (int)(++count * scale));
-                }
-                // then post-init all modules now that settings are in place
-                for (var i = 0; i < originalModuleCount; ++i)
-                {
-                    var module = this.Modules[env][i];
-                    this.BuildEnvironment = env;
+                    this.BuildEnvironment = module.BuildEnvironment;
                     module.PostInit();
                     this.BuildEnvironment = null;
                     Log.DetailProgress("{0,3}%", (int)(++count * scale));
                 }
-                if (this.Modules[env].Count > originalModuleCount)
+            }
+            // for all post-init created modules, add them to the graph and create their settings
+            var maxRank = this.DependencyGraph.Count();
+            foreach (var env in this.Modules.Keys)
+            {
+                if (this.Modules[env].Count == originalModuleCount[env])
                 {
-                    for (var i = originalModuleCount; i < this.Modules[env].Count; ++i)
+                    continue;
+                }
+                for (int i = originalModuleCount[env]; i < this.Modules[env].Count; ++i)
+                {
+                    var module = this.Modules[env][i];
+                    var rank = maxRank;
+                    foreach (var dep in module.Dependents)
                     {
-                        var module = this.Modules[env][i];
-                        this.MakeSettingsAndApplyPatches(module);
-                        this.BuildEnvironment = env;
-                        module.PostInit();
-                        this.BuildEnvironment = null;
+                        rank = this.moduleRanks[dep] < rank ? this.moduleRanks[dep] : rank;
                     }
+                    foreach (var dep in module.Requirements)
+                    {
+                        rank = this.moduleRanks[dep] < rank ? this.moduleRanks[dep] : rank;
+                    }
+                    this.SetModuleRank(module, rank);
+                    var rankCollection = this.DependencyGraph[rank];
+                    rankCollection.Add(module);
+                    this.MakeSettingsAndApplyPatches(module);
+                    module.Complete();
                 }
             }
         }
@@ -563,7 +575,6 @@ namespace Bam.Core
 
         private void
         SetModuleRank(
-            System.Collections.Generic.Dictionary<Module, int> map,
             Module module,
             int rankIndex)
         {
@@ -571,54 +582,50 @@ namespace Bam.Core
             {
                 return;
             }
-            if (map.ContainsKey(module))
+            if (this.moduleRanks.ContainsKey(module))
             {
                 throw new Exception($"Module {module.ToString()} rank initialized more than once");
             }
-            map.Add(module, rankIndex);
+            this.moduleRanks.Add(module, rankIndex);
         }
 
         private void
         MoveModuleRankBy(
-            System.Collections.Generic.Dictionary<Module, int> map,
             Module module,
             int rankDelta)
         {
-            if (!map.ContainsKey(module))
+            if (!this.moduleRanks.ContainsKey(module))
             {
                 // a dependency hasn't yet been initialized, so don't try to move it
                 return;
             }
-            map[module] += rankDelta;
+            this.moduleRanks[module] += rankDelta;
             foreach (var dep in module.Dependents)
             {
-                MoveModuleRankBy(map, dep, rankDelta);
+                this.MoveModuleRankBy(dep, rankDelta);
             }
             foreach (var dep in module.Requirements)
             {
-                MoveModuleRankBy(map, dep, rankDelta);
+                this.MoveModuleRankBy(dep, rankDelta);
             }
         }
 
         private void
         MoveModuleRankTo(
-            System.Collections.Generic.Dictionary<Module, int> map,
             Module module,
             int rankIndex)
         {
-            if (!map.ContainsKey(module))
+            if (!this.moduleRanks.ContainsKey(module))
             {
                 throw new Exception($"Module {module.ToString()} has yet to be initialized");
             }
-            var currentRank = map[module];
+            var currentRank = this.moduleRanks[module];
             var rankDelta = rankIndex - currentRank;
-            MoveModuleRankBy(map, module, rankDelta);
+            this.MoveModuleRankBy(module, rankDelta);
         }
 
         private void
         ProcessModule(
-            System.Collections.Generic.Dictionary<Module, int> map,
-            System.Collections.Generic.Queue<Module> toProcess,
             Module module,
             int rankIndex)
         {
@@ -635,35 +642,38 @@ namespace Bam.Core
             var nextRankIndex = rankIndex + 1;
             foreach (var dep in module.Dependents)
             {
-                if (map.ContainsKey(dep))
+                if (this.moduleRanks.ContainsKey(dep))
                 {
-                    if (map[dep] < nextRankIndex)
+                    if (this.moduleRanks[dep] < nextRankIndex)
                     {
-                        MoveModuleRankTo(map, dep, nextRankIndex);
+                        this.MoveModuleRankTo(dep, nextRankIndex);
                     }
                 }
                 else
                 {
-                    SetModuleRank(map, dep, nextRankIndex);
-                    toProcess.Enqueue(dep);
+                    this.SetModuleRank(dep, nextRankIndex);
+                    this.modulesToProcess.Enqueue(dep);
                 }
             }
             foreach (var dep in module.Requirements)
             {
-                if (map.ContainsKey(dep))
+                if (this.moduleRanks.ContainsKey(dep))
                 {
-                    if (map[dep] < nextRankIndex)
+                    if (this.moduleRanks[dep] < nextRankIndex)
                     {
-                        MoveModuleRankTo(map, dep, nextRankIndex);
+                        this.MoveModuleRankTo(dep, nextRankIndex);
                     }
                 }
                 else
                 {
-                    SetModuleRank(map, dep, nextRankIndex);
-                    toProcess.Enqueue(dep);
+                    this.SetModuleRank(dep, nextRankIndex);
+                    this.modulesToProcess.Enqueue(dep);
                 }
             }
         }
+
+        private readonly System.Collections.Generic.Dictionary<Module, int> moduleRanks = new System.Collections.Generic.Dictionary<Module, int>();
+        private readonly System.Collections.Generic.Queue<Module> modulesToProcess = new System.Collections.Generic.Queue<Module>();
 
         /// <summary>
         /// Sort all dependencies, invoking Init functions, creating all additional dependencies, placing
@@ -674,8 +684,6 @@ namespace Bam.Core
         SortDependencies()
         {
             Log.Detail("Analysing module dependencies...");
-            var moduleRanks = new System.Collections.Generic.Dictionary<Module, int>();
-            var modulesToProcess = new System.Collections.Generic.Queue<Module>();
             var totalProgress = 3 * Module.Count; // all modules are iterated over three times (twice in here, and once in CompleteModules)
             var scale = 100.0f / totalProgress;
             // initialize the map with top-level modules
@@ -684,28 +692,28 @@ namespace Bam.Core
             Log.DetailProgress("{0,3}%", (int)(progress * scale));
             foreach (var module in this.TopLevelModules)
             {
-                SetModuleRank(moduleRanks, module, 0);
-                ProcessModule(moduleRanks, modulesToProcess, module, 0);
+                this.SetModuleRank(module, 0);
+                this.ProcessModule(module, 0);
                 Log.DetailProgress("{0,3}%", (int)((++progress) * scale));
             }
             // process all modules by initializing them to a best-guess rank
             // but then potentially moving them to a higher rank if they re-appear as dependencies
-            while (modulesToProcess.Any())
+            while (this.modulesToProcess.Any())
             {
-                var module = modulesToProcess.Dequeue();
+                var module = this.modulesToProcess.Dequeue();
                 if (module.Build)
                 {
-                    ProcessModule(moduleRanks, modulesToProcess, module, moduleRanks[module]);
+                    this.ProcessModule(module, this.moduleRanks[module]);
                 }
                 Log.DetailProgress("{0,3}%", (int)((++progress) * scale));
             }
-            // moduleRanks[*].Value is now sparse - there may be gaps between successive ranks with modules
+            // this.moduleRanks[*].Value is now sparse - there may be gaps between successive ranks with modules
             // this needs to be collapsed so that the rank indices are contiguous (the order is correct, the indices are just wrong)
 
             // assign modules, for each rank index, into collections
             var contiguousRankIndex = 0;
             var lastRankIndex = 0;
-            foreach (var nextModule in moduleRanks.OrderBy(item => item.Value))
+            foreach (var nextModule in this.moduleRanks.OrderBy(item => item.Value))
             {
                 if (lastRankIndex != nextModule.Value)
                 {

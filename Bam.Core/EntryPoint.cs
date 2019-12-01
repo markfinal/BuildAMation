@@ -287,7 +287,22 @@ namespace Bam.Core
 
             findBuildableModulesProfile.StopProfile();
 
-            // Phase 2: Create default settings, and apply patches (build + shared) to each module
+            var populateGraphProfile = new TimeProfile(ETimingProfiles.PopulateGraph);
+            populateGraphProfile.StartProfile();
+            // Phase 2: Graph now has a linear list of modules; create a dependency graph
+            // NB: all those modules with 0 dependees are the top-level modules
+            // NB: no settings have been assigned to modules, nor have patches been applied to settings
+            graph.SortDependencies();
+            populateGraphProfile.StopProfile();
+
+            // TODO: make validation optional, if it starts showing on profiles
+            var validateGraphProfile = new TimeProfile(ETimingProfiles.ValidateGraph);
+            validateGraphProfile.StartProfile();
+            graph.Validate();
+            validateGraphProfile.StopProfile();
+
+            // Phase 3: Create default settings, and apply patches (build + shared) to each module
+            // Also apply post-init functions to Modules now that they're in dependency order.
             // NB: some builders can use the patch directly for child objects, so this may be dependent upon the builder
             // Toolchains for modules need to be set here, as they might append macros into each module in order to evaluate paths
             // TODO: a parallel thread can be spawned here, that can check whether command lines have changed
@@ -298,20 +313,6 @@ namespace Bam.Core
             createPatchesProfile.StartProfile();
             graph.ApplySettingsPatches();
             createPatchesProfile.StopProfile();
-
-            var populateGraphProfile = new TimeProfile(ETimingProfiles.PopulateGraph);
-            populateGraphProfile.StartProfile();
-            // Phase 3: Graph now has a linear list of modules; create a dependency graph
-            // NB: all those modules with 0 dependees are the top-level modules
-            // NB: default settings and their patches have already been assigned by now
-            graph.SortDependencies();
-            populateGraphProfile.StopProfile();
-
-            // TODO: make validation optional, if it starts showing on profiles
-            var validateGraphProfile = new TimeProfile(ETimingProfiles.ValidateGraph);
-            validateGraphProfile.StartProfile();
-            graph.Validate();
-            validateGraphProfile.StopProfile();
 
             // expand paths after patching settings, because some of the patches may contain tokenized strings
             // TODO: a thread can be spawned, to check for whether files were in date or not, which will
