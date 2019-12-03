@@ -178,7 +178,7 @@ namespace C
                 // but do need it in the graph for collation to find it as a dependent
                 var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
                 var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
-                realLibraryModules.Add(libraryModule);
+                this.realLibraryModules.Add(libraryModule);
                 var originalLibraryModule = libraryModule;
 
                 var dependOnLinkerLibrary = true;
@@ -307,7 +307,7 @@ namespace C
             {
                 var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
                 var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
-                realLibraryModules.Add(libraryModule);
+                this.realLibraryModules.Add(libraryModule);
                 this.UsePublicPatches(libraryModule);
 
                 var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(libType);
