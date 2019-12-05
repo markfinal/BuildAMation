@@ -39,10 +39,6 @@ namespace C
         IForwardedLibraries
     {
         private readonly Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
-#if false
-        private SharedObjectSymbolicLink linkerNameSymLink = null;
-        private SharedObjectSymbolicLink soNameSymLink = null;
-#endif
 
         /// <summary>
         /// Initialize the dynamic library
@@ -64,38 +60,6 @@ namespace C
             {
                 this.Macros.Add("ImportLibraryName", Bam.Core.TokenizedString.Create("$(OutputName)", null));
                 this.RegisterGeneratedFile(ImportLibraryKey, this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(libprefix)$(ImportLibraryName)$(libext)"), false);
-            }
-            else if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-            {
-                if (!(this is Plugin) && !this.IsPrebuilt)
-                {
-#if false
-                    var linkerName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback:module=>
-                        {
-                            module.Macros.Add("SymlinkFilename", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)"));
-                            module.SharedObject = this;
-                        });
-                    this.LinkerNameSymbolicLink = linkerName;
-
-                    if (this.Macros.Contains(ModuleMacroNames.MinorVersion))
-                    {
-                        var SOName = Bam.Core.Module.Create<SharedObjectSymbolicLink>(preInitCallback: module =>
-                             {
-                                 module.Macros.Add("SymlinkFilename", this.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
-                                 module.SharedObject = this;
-                             });
-                        this.SONameSymbolicLink = SOName;
-
-#if D_PACKAGE_GCCCOMMON
-                        this.PrivatePatch(settings =>
-                            {
-                                var gccLinker = settings as GccCommon.ICommonLinkerSettings;
-                                gccLinker.SharedObjectName = SOName.Macros["SymlinkFilename"];
-                            });
-#endif
-                    }
-#endif
-                }
             }
 
             this.PrivatePatch(settings =>
@@ -309,32 +273,6 @@ namespace C
         }
 
         System.Collections.Generic.IEnumerable<Bam.Core.Module> IForwardedLibraries.ForwardedLibraries => this.forwardedDeps;
-
-#if false
-        SharedObjectSymbolicLink IDynamicLibrary.LinkerNameSymbolicLink => this.linkerNameSymLink;
-        /// <summary>
-        /// Get the linker name symbolic link
-        /// </summary>
-        protected SharedObjectSymbolicLink LinkerNameSymbolicLink
-        {
-            set
-            {
-                this.linkerNameSymLink = value;
-            }
-        }
-
-        SharedObjectSymbolicLink IDynamicLibrary.SONameSymbolicLink => this.soNameSymLink;
-        /// <summary>
-        /// Get the SO name symbolic link
-        /// </summary>
-        protected SharedObjectSymbolicLink SONameSymbolicLink
-        {
-            set
-            {
-                this.soNameSymLink = value;
-            }
-        }
-#endif
 
         void
         IDynamicLibrary.ChangeRootPaths(
