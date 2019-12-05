@@ -34,34 +34,16 @@ namespace C
     /// </summary>
     interface IDynamicLibrary
     {
-#if false
         /// <summary>
-        /// Get the symbolic link for the dynamic library's linker name.
+        /// Modify the root of the output paths.
+        /// On Windows, this modifies both DLL and import library paths.
         /// </summary>
-        SharedObjectSymbolicLink LinkerNameSymbolicLink { get; }
-
-        /// <summary>
-        /// Get the symbolic link for the SO name.
-        /// </summary>
-        SharedObjectSymbolicLink SONameSymbolicLink { get; }
-#endif
-
-        /// <summary>
-        /// Modify the root of the output executable path.
-        /// </summary>
-        /// <param name="newRoot">New root directory.</param>
+        /// <param name="binDirectory">New bin directory.</param>
+        /// <param name="libDirectory">New lib directory.</param>
         void
-        ChangeExecutableRootPath(
-            Bam.Core.TokenizedString newRoot
-        );
-
-        /// <summary>
-        /// Modify the root of the output Windows import library path.
-        /// </summary>
-        /// <param name="newRoot">New root directory.</param>
-        void
-        ChangeWindowsImportLibraryRootPath(
-            Bam.Core.TokenizedString newRoot
+        ChangeRootPaths(
+            Bam.Core.TokenizedString binDirectory,
+            Bam.Core.TokenizedString libDirectory
         );
     }
 }

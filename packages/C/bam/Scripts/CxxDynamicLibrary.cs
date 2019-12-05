@@ -340,37 +340,30 @@ namespace C.Cxx
 #endif
 
         void
-        IDynamicLibrary.ChangeExecutableRootPath(
-            Bam.Core.TokenizedString newRoot
+        IDynamicLibrary.ChangeRootPaths(
+            Bam.Core.TokenizedString binDirectory,
+            Bam.Core.TokenizedString libDirectory
         )
         {
             this.RegisterGeneratedFile(
                 ExecutableKey,
                 this.CreateTokenizedString(
                     "$(0)/$(dynamicprefix)$(OutputName)$(dynamicext)",
-                    newRoot
+                    binDirectory
                 ),
                 true
             );
-        }
-
-        void
-        IDynamicLibrary.ChangeWindowsImportLibraryRootPath(
-            Bam.Core.TokenizedString newRoot
-        )
-        {
-            if (!this.GeneratedPaths.ContainsKey(ImportLibraryKey))
+            if (this.GeneratedPaths.ContainsKey(ImportLibraryKey))
             {
-                return;
+                this.RegisterGeneratedFile(
+                    ImportLibraryKey,
+                    this.CreateTokenizedString(
+                        "$(0)/$(libprefix)$(ImportLibraryName)$(libext)",
+                        libDirectory
+                    ),
+                    false
+                );
             }
-            this.RegisterGeneratedFile(
-                ImportLibraryKey,
-                this.CreateTokenizedString(
-                    "$(0)/$(libprefix)$(ImportLibraryName)$(libext)",
-                    newRoot
-                ),
-                false
-            );
         }
 
         /// <summary>
