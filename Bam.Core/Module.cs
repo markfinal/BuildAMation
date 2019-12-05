@@ -1242,5 +1242,41 @@ namespace Bam.Core
         {
             // do nothing
         }
+
+        /// <summary>
+        /// Filters dependents and requirements when the Module is marked as to not build.
+        /// </summary>
+        /// <value>Array of types of dependents and requirements that can filter through to the graph in no build scenarios.</value>
+        protected virtual System.Type[] NoBuildDependentsFilter
+        {
+            get
+            {
+                return System.Type.EmptyTypes;
+            }
+        }
+
+        /// <summary>
+        /// Gets this Module's dependents, but filtered in a non-build context.
+        /// </summary>
+        /// <value>Enumeration of filtered dependents.</value>
+        public System.Collections.Generic.IEnumerable<Module> DependentsFilteredForNoBuilds
+        {
+            get
+            {
+                return this.Dependents.Where(item => this.Build || this.NoBuildDependentsFilter.Any(filterType => filterType.IsAssignableFrom(item.GetType())));
+            }
+        }
+
+        /// <summary>
+        /// Gets this Module's requirements, but filtered in a non-build context.
+        /// </summary>
+        /// <value>Enumeration of filtered requirements.</value>
+        public System.Collections.Generic.IEnumerable<Module> RequirementsFilteredForNoBuilds
+        {
+            get
+            {
+                return this.Requirements.Where(item => this.Build || this.NoBuildDependentsFilter.Any(filterType => filterType.IsAssignableFrom(item.GetType())));
+            }
+        }
     }
 }
