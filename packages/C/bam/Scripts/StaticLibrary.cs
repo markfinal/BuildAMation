@@ -492,6 +492,9 @@ namespace C
             );
         }
 
+        /// <summary>
+        /// /copydoc Bam.Core.Module.NoBuildDependentsFilter
+        /// </summary>
         protected override System.Type[] NoBuildDependentsFilter
         {
             get
