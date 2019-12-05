@@ -353,5 +353,13 @@ namespace C.Cxx
                 true
             );
         }
+
+        protected override System.Type[] NoBuildDependentsFilter
+        {
+            get
+            {
+                return new System.Type[] { typeof(SDKTemplate), typeof(HeaderFileCollection) };
+            }
+        }
     }
 }
