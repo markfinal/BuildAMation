@@ -54,5 +54,14 @@ namespace C
         ChangeExecutableRootPath(
             Bam.Core.TokenizedString newRoot
         );
+
+        /// <summary>
+        /// Modify the root of the output Windows import library path.
+        /// </summary>
+        /// <param name="newRoot">New root directory.</param>
+        void
+        ChangeWindowsImportLibraryRootPath(
+            Bam.Core.TokenizedString newRoot
+        );
     }
 }
