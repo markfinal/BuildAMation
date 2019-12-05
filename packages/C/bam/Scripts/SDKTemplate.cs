@@ -214,27 +214,15 @@ namespace C
                 {
                     if (libraryModule is IDynamicLibrary dynamicLib)
                     {
-#if false
-                            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-                            {
-                                var linkNameSO = dynamicLib.LinkerNameSymbolicLink;
-                                var linkNameSOPath = linkNameSO.GeneratedPaths[SharedObjectSymbolicLink.SOSymLinkKey];
-                                libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", linkNameSOPath));
-                                libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", linkNameSOPath));
-                            }
-                            else
-#endif
+                        var dylib = libraryModule.GeneratedPaths[DynamicLibrary.ExecutableKey];
+                        libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", dylib));
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                         {
-                            var dylib = libraryModule.GeneratedPaths[DynamicLibrary.ExecutableKey];
-                            libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", dylib));
-                            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-                            {
-                                libs.AddUnique(this.CreateTokenizedString("-l$(0)", libraryModule.Macros[Bam.Core.ModuleMacroNames.OutputName]));
-                            }
-                            else
-                            {
-                                libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", dylib));
-                            }
+                            libs.AddUnique(this.CreateTokenizedString("-l$(0)", libraryModule.Macros[Bam.Core.ModuleMacroNames.OutputName]));
+                        }
+                        else
+                        {
+                            libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", dylib));
                         }
                     }
                     else
@@ -317,38 +305,20 @@ namespace C
                 {
                     if (libraryModule is IDynamicLibrary dynamicLib)
                     {
-#if false
-                            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-                            {
-                                var copiedSOName = this.IncludeModule(dynamicLib.SONameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
-                                var copiedLinkName = this.IncludeModule(dynamicLib.LinkerNameSymbolicLink, SharedObjectSymbolicLink.SOSymLinkKey, null);
-                                copiedLibs.Add(copiedLinkName);
-                                libraryDirs.AddUnique((copiedLinkName as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
-                                this.RegisterGeneratedFile(
-                                    SharedObjectSymbolicLink.SOSymLinkKey,
-                                    (copiedLinkName as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
-                                    isPrimaryOutput
-                                );
-                                libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", (copiedLinkName as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
-                            }
-                            else
-#endif
+                        copiedLibs.Add(copiedBin);
+                        libraryDirs.AddUnique((copiedBin as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
+                        this.RegisterGeneratedFile(
+                            libraryModule.PrimaryOutputPathKey,
+                            (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
+                            isPrimaryOutput
+                        );
+                        if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                         {
-                            copiedLibs.Add(copiedBin);
-                            libraryDirs.AddUnique((copiedBin as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ExecutableDir));
-                            this.RegisterGeneratedFile(
-                                libraryModule.PrimaryOutputPathKey,
-                                (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
-                                isPrimaryOutput
-                            );
-                            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
-                            {
-                                libs.AddUnique(this.CreateTokenizedString("-l$(0)", libraryModule.Macros[Bam.Core.ModuleMacroNames.OutputName]));
-                            }
-                            else
-                            {
-                                libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
-                            }
+                            libs.AddUnique(this.CreateTokenizedString("-l$(0)", libraryModule.Macros[Bam.Core.ModuleMacroNames.OutputName]));
+                        }
+                        else
+                        {
+                            libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
                         }
                     }
                     else
