@@ -226,15 +226,14 @@ namespace C
 #endif
                         {
                             var dylib = libraryModule.GeneratedPaths[DynamicLibrary.ExecutableKey];
+                            libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", dylib));
                             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                             {
-                                // without symbolic links, need the full path
-                                libs.AddUnique(dylib);
+                                libs.AddUnique(this.CreateTokenizedString("-l$(0)", libraryModule.Macros[Bam.Core.ModuleMacroNames.OutputName]));
                             }
                             else
                             {
                                 libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", dylib));
-                                libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", dylib));
                             }
                         }
                     }
@@ -344,8 +343,7 @@ namespace C
                             );
                             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                             {
-                                // without symbolic links, need the full path
-                                libs.AddUnique((copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]);
+                                libs.AddUnique(this.CreateTokenizedString("-l$(0)", libraryModule.Macros[Bam.Core.ModuleMacroNames.OutputName]));
                             }
                             else
                             {
