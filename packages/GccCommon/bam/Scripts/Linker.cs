@@ -89,12 +89,6 @@ namespace GccCommon
             foreach (var dep in (dynamicModule as C.CModule).Dependents)
             {
                 var dependent = dep;
-#if false
-                if (dependent is C.SharedObjectSymbolicLink symlinkDep)
-                {
-                    dependent = symlinkDep.SharedObject;
-                }
-#endif
                 if (!(dependent is C.IDynamicLibrary))
                 {
                     continue;
