@@ -350,26 +350,13 @@ namespace C
         /// <summary>
         /// Add a module as a link dependency.
         /// </summary>
-        /// <param name="dependent">Module to add</param>
+        /// <param name="dependent">Module to add as a link-time dependency.</param>
         protected void
         AddLinkDependency(
             Bam.Core.Module dependent)
         {
             this.linkedModules.AddUnique(dependent);
-            if (dependent is IDynamicLibrary dynamicLib)
-            {
-#if false
-                if (dynamicLib.LinkerNameSymbolicLink != null)
-                {
-                    this.DependsOn(dynamicLib.LinkerNameSymbolicLink);
-                }
-                // else is non-Linux platforms
-#endif
-            }
-            else
-            {
-                this.DependsOn(dependent);
-            }
+            this.DependsOn(dependent);
         }
 
         /// <summary>
@@ -380,16 +367,6 @@ namespace C
         AddRuntimeDependency(
             Bam.Core.Module dependent)
         {
-            if (dependent is IDynamicLibrary dynamicLib)
-            {
-#if false
-                if (dynamicLib.SONameSymbolicLink != null)
-                {
-                    this.Requires(dynamicLib.SONameSymbolicLink);
-                    return;
-                }
-#endif
-            }
             this.Requires(dependent);
         }
 

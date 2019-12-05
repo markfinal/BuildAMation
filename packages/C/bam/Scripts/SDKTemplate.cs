@@ -181,21 +181,8 @@ namespace C
                 this.realLibraryModules.Add(libraryModule);
                 var originalLibraryModule = libraryModule;
 
-                var dependOnLinkerLibrary = true;
-#if false
-                    if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux) && libraryModule is IDynamicLibrary dlm)
-                    {
-                        libraryModule.Build = false;
-                        libraryModule = dlm.LinkerNameSymbolicLink;
-                        dependOnLinkerLibrary = false;
-                    }
-#endif
-
                 this.UsePublicPatches(libraryModule);
-                if (dependOnLinkerLibrary)
-                {
-                    this.DependsOn(libraryModule);
-                }
+                this.DependsOn(libraryModule);
                 libraryModule.Build = false;
 
                 // update the library so that its binaries refer to those in the SDK
@@ -203,17 +190,6 @@ namespace C
                 {
                     dynLibraryModule.ChangeRootPaths(sdkBinDir, sdkLibDir);
                 }
-#if false
-                    else if (libraryModule is SharedObjectSymbolicLink symLink)
-                    {
-                        (originalLibraryModule as IDynamicLibrary).ChangeExecutableRootPath(sdkBinDir);
-                        symLink.ChangeSymbolicLinkRootPath(sdkBinDir);
-
-                        var soNameLink = (originalLibraryModule as IDynamicLibrary).SONameSymbolicLink;
-                        soNameLink.ChangeSymbolicLinkRootPath(sdkBinDir);
-                        this.DependsOn(soNameLink);
-                    }
-#endif
                 else if (libraryModule is StaticLibrary staticLib)
                 {
                     staticLib.ChangeLibraryRootPath(sdkLibDir);
