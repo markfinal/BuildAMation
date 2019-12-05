@@ -357,6 +357,25 @@ namespace C
 #endif
         }
 
+        void
+        IDynamicLibrary.ChangeWindowsImportLibraryRootPath(
+            Bam.Core.TokenizedString newRoot
+        )
+        {
+            if (!this.GeneratedPaths.ContainsKey(ImportLibraryKey))
+            {
+                return;
+            }
+            this.RegisterGeneratedFile(
+                ImportLibraryKey,
+                this.CreateTokenizedString(
+                    "$(0)/$(libprefix)$(ImportLibraryName)$(libext)",
+                    newRoot
+                ),
+                false
+            );
+        }
+
         /// <summary>
         /// /copydoc Bam.Core.Module.NoBuildDependentsFilter
         /// </summary>

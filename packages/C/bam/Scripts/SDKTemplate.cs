@@ -202,6 +202,7 @@ namespace C
                 if (libraryModule is IDynamicLibrary dynLibraryModule)
                 {
                     dynLibraryModule.ChangeExecutableRootPath(sdkBinDir);
+                    dynLibraryModule.ChangeWindowsImportLibraryRootPath(sdkLibDir);
                 }
 #if false
                     else if (libraryModule is SharedObjectSymbolicLink symLink)
