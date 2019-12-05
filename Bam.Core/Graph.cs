@@ -652,7 +652,7 @@ namespace Bam.Core
                 this.ApplyGroupRequirementsToChildren(module, children, module.Requirements);
             }
             var nextRankIndex = rankIndex + 1;
-            foreach (var dep in module.Dependents)
+            foreach (var dep in module.DependentsFilteredForNoBuilds)
             {
                 if (this.moduleRanks.ContainsKey(dep))
                 {
@@ -667,7 +667,7 @@ namespace Bam.Core
                     this.modulesToProcess.Enqueue(dep);
                 }
             }
-            foreach (var dep in module.Requirements)
+            foreach (var dep in module.RequirementsFilteredForNoBuilds)
             {
                 if (this.moduleRanks.ContainsKey(dep))
                 {
@@ -713,10 +713,8 @@ namespace Bam.Core
             while (this.modulesToProcess.Any())
             {
                 var module = this.modulesToProcess.Dequeue();
-                if (module.Build)
-                {
-                    this.ProcessModule(module, this.moduleRanks[module]);
-                }
+                var initialRank = module.Build ? this.moduleRanks[module] : this.moduleRanks.Values.Max();
+                this.ProcessModule(module, initialRank);
                 Log.DetailProgress("{0,3}%", (int)((++progress) * scale));
             }
             // this.moduleRanks[*].Value is now sparse - there may be gaps between successive ranks with modules
@@ -864,7 +862,7 @@ namespace Bam.Core
                 var childCollection = c.OwningRank;
                 if (null == childCollection)
                 {
-                    throw new Exception("Dependency has no rank");
+                    throw new Exception($"Dependency {c.ToString()} has no rank");
                 }
                 try
                 {
@@ -894,8 +892,15 @@ namespace Bam.Core
             {
                 foreach (var m in rank.Value)
                 {
-                    this.InternalValidateGraph(rank.Key, m.Dependents);
-                    this.InternalValidateGraph(rank.Key, m.Requirements);
+                    try
+                    {
+                        this.InternalValidateGraph(rank.Key, m.Dependents);
+                        this.InternalValidateGraph(rank.Key, m.Requirements);
+                    }
+                    catch (Exception e)
+                    {
+                        throw new Exception(e, $"Validation failed while processing {m.ToString()}");
+                    }
                 }
             }
             Log.DebugMessage("Used packages:");
