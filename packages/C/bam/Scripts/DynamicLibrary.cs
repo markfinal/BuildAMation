@@ -337,43 +337,30 @@ namespace C
 #endif
 
         void
-        IDynamicLibrary.ChangeExecutableRootPath(
-            Bam.Core.TokenizedString newRoot
+        IDynamicLibrary.ChangeRootPaths(
+            Bam.Core.TokenizedString binDirectory,
+            Bam.Core.TokenizedString libDirectory
         )
         {
             this.RegisterGeneratedFile(
                 ExecutableKey,
                 this.CreateTokenizedString(
                     "$(0)/$(dynamicprefix)$(OutputName)$(dynamicext)",
-                    newRoot
+                    binDirectory
                 ),
                 true
             );
-#if false
-            if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
+            if (this.GeneratedPaths.ContainsKey(ImportLibraryKey))
             {
-                (this as IDynamicLibrary).LinkerNameSymbolicLink.ChangeSymbolicLinkRootPath(newRoot);
+                this.RegisterGeneratedFile(
+                    ImportLibraryKey,
+                    this.CreateTokenizedString(
+                        "$(0)/$(libprefix)$(ImportLibraryName)$(libext)",
+                        libDirectory
+                    ),
+                    false
+                );
             }
-#endif
-        }
-
-        void
-        IDynamicLibrary.ChangeWindowsImportLibraryRootPath(
-            Bam.Core.TokenizedString newRoot
-        )
-        {
-            if (!this.GeneratedPaths.ContainsKey(ImportLibraryKey))
-            {
-                return;
-            }
-            this.RegisterGeneratedFile(
-                ImportLibraryKey,
-                this.CreateTokenizedString(
-                    "$(0)/$(libprefix)$(ImportLibraryName)$(libext)",
-                    newRoot
-                ),
-                false
-            );
         }
 
         /// <summary>

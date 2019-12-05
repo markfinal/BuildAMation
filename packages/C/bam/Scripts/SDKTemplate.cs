@@ -201,8 +201,7 @@ namespace C
                 // update the library so that its binaries refer to those in the SDK
                 if (libraryModule is IDynamicLibrary dynLibraryModule)
                 {
-                    dynLibraryModule.ChangeExecutableRootPath(sdkBinDir);
-                    dynLibraryModule.ChangeWindowsImportLibraryRootPath(sdkLibDir);
+                    dynLibraryModule.ChangeRootPaths(sdkBinDir, sdkLibDir);
                 }
 #if false
                     else if (libraryModule is SharedObjectSymbolicLink symLink)
