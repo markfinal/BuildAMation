@@ -69,11 +69,9 @@ namespace GccCommon
 
         private static string
         GetLPrefixLibraryName(
-            string fullLibraryPath)
+            Bam.Core.Module library)
         {
-            var libName = System.IO.Path.GetFileNameWithoutExtension(fullLibraryPath);
-            libName = libName.Substring(3); // trim off lib prefix
-            return $"-l{libName}";
+            return $"-l{library.Macros[Bam.Core.ModuleMacroNames.OutputName]}";
         }
 
         private static Bam.Core.Array<C.CModule>
@@ -127,18 +125,17 @@ namespace GccCommon
             C.CModule library)
         {
             var linker = executable.Settings as C.ICommonLinkerSettings;
+
+            // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
+            var libraryName = GetLPrefixLibraryName(library);
+            if (linker.Libraries.Contains(libraryName))
+            {
+                linker.Libraries.Remove(libraryName);
+            }
+            linker.Libraries.Add(libraryName);
+
             if (library is C.StaticLibrary)
             {
-                // TODO: @filenamenoext
-                var libraryPath = library.GeneratedPaths[C.StaticLibrary.LibraryKey].ToString();
-                // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
-                var libraryName = GetLPrefixLibraryName(libraryPath);
-                if (linker.Libraries.Contains(libraryName))
-                {
-                    linker.Libraries.Remove(libraryName);
-                }
-                linker.Libraries.Add(libraryName);
-
                 foreach (var dir in library.OutputDirectories)
                 {
                     linker.LibraryPaths.AddUnique(dir);
@@ -146,17 +143,6 @@ namespace GccCommon
             }
             else if (library is C.IDynamicLibrary)
             {
-                // TODO: @filenamenoext
-                var libraryPath = library.GeneratedPaths[C.DynamicLibrary.ExecutableKey].ToString();
-                // TODO: I think there's a problem when there's no linkerName symlink - i.e. taking the full shared object path
-                var libraryName = GetLPrefixLibraryName(libraryPath);
-                // order matters on libraries - the last occurrence is always the one that matters to resolve all symbols
-                if (linker.Libraries.Contains(libraryName))
-                {
-                    linker.Libraries.Remove(libraryName);
-                }
-                linker.Libraries.Add(libraryName);
-
                 var linuxLinker = executable.Settings as C.ICommonLinkerSettingsLinux;
                 foreach (var dir in library.OutputDirectories)
                 {
