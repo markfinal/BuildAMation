@@ -299,24 +299,34 @@ namespace C
                 {
                     if (library is C.SDKTemplate)
                     {
-                        target.Requires(library.MetaData as XcodeBuilder.Target);
-                        foreach (var forwarded in (library as IForwardedLibraries).ForwardedLibraries)
+                        if (library.MetaData is XcodeBuilder.Target libraryTarget)
                         {
-                            if (forwarded is C.IDynamicLibrary)
+                            target.Requires(libraryTarget);
+                            foreach (var forwarded in (library as IForwardedLibraries).ForwardedLibraries)
                             {
-                                target.EnsureFrameworksBuildFileExists(
-                                    (forwarded as Bam.Core.Module).GeneratedPaths[C.DynamicLibrary.ExecutableKey],
-                                    XcodeBuilder.FileReference.EFileType.DynamicLibrary,
-                                    XcodeBuilder.FileReference.ESourceTree.Absolute
-                                );
+                                if (forwarded is C.IDynamicLibrary)
+                                {
+                                    target.EnsureFrameworksBuildFileExists(
+                                        (forwarded as Bam.Core.Module).GeneratedPaths[C.DynamicLibrary.ExecutableKey],
+                                        XcodeBuilder.FileReference.EFileType.DynamicLibrary,
+                                        XcodeBuilder.FileReference.ESourceTree.Absolute
+                                    );
+                                }
+                                else if (forwarded is C.StaticLibrary)
+                                {
+                                    target.EnsureFrameworksBuildFileExists(
+                                        (forwarded as Bam.Core.Module).GeneratedPaths[C.StaticLibrary.LibraryKey],
+                                        XcodeBuilder.FileReference.EFileType.Archive,
+                                        XcodeBuilder.FileReference.ESourceTree.Absolute
+                                    );
+                                }
                             }
-                            else if (forwarded is C.StaticLibrary)
+                        }
+                        else
+                        {
+                            foreach (var forwarded in (library as IForwardedLibraries).ForwardedLibraries)
                             {
-                                target.EnsureFrameworksBuildFileExists(
-                                    (forwarded as Bam.Core.Module).GeneratedPaths[C.StaticLibrary.LibraryKey],
-                                    XcodeBuilder.FileReference.EFileType.Archive,
-                                    XcodeBuilder.FileReference.ESourceTree.Absolute
-                                );
+                                (module.Tool as C.LinkerTool).ProcessLibraryDependency(module as CModule, forwarded as CModule);
                             }
                         }
                         continue;
