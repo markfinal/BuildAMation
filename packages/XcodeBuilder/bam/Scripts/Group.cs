@@ -159,15 +159,12 @@ namespace XcodeBuilder
                 text.AppendLine($"{indent}{this.GUID} = {{");
             }
             text.AppendLine($"{indent2}isa = {this.IsA};");
-            if (this.Children.Any())
+            text.AppendLine($"{indent2}children = (");
+            foreach (var child in this.Children.OrderBy(item => item.Name))
             {
-                text.AppendLine($"{indent2}children = (");
-                foreach (var child in this.Children.OrderBy(item => item.Name))
-                {
-                    text.AppendLine($"{indent3}{child.GUID} /* {this.CleansePaths(child.Name)} */,");
-                }
-                text.AppendLine($"{indent2});");
+                text.AppendLine($"{indent3}{child.GUID} /* {System.IO.Path.GetFileName(this.CleansePaths(child.Name))} */,");
             }
+            text.AppendLine($"{indent2});");
             if (null != this.Name)
             {
                 text.AppendLine($"{indent2}name = \"{this.Name}\";");
