@@ -35,7 +35,8 @@ namespace C
     /// Module representing a template to follow for creating SDKs.
     /// </summary>
     abstract class SDKTemplate :
-        Publisher.Collation
+        Publisher.Collation,
+        IForwardedLibraries
     {
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedHeaders = new Bam.Core.Array<Publisher.ICollatedObject>();
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedLibs = new Bam.Core.Array<Publisher.ICollatedObject>();
@@ -95,6 +96,7 @@ namespace C
                         preprocessor.IncludePaths.AddUnique(includeDir);
                     }
                 }
+                /*
                 else if (settings is ICommonLinkerSettings linker)
                 {
                     foreach (var libDir in libraryDirs)
@@ -110,6 +112,7 @@ namespace C
                         linker.Libraries.Add(lib.ToString());
                     }
                 }
+                */
             });
         }
 
@@ -159,6 +162,8 @@ namespace C
                 }
             }
         }
+
+        System.Collections.Generic.IEnumerable<Module> IForwardedLibraries.ForwardedLibraries => this.realLibraryModules;
 
         private void
         UsePrebuiltSDK(

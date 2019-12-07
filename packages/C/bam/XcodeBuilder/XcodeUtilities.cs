@@ -300,6 +300,13 @@ namespace C
                     if (library is C.SDKTemplate)
                     {
                         target.Requires(library.MetaData as XcodeBuilder.Target);
+                        foreach (var forwarded in (library as IForwardedLibraries).ForwardedLibraries)
+                        {
+                            (module.Tool as C.LinkerTool).ProcessLibraryDependency(
+                                module as CModule,
+                                forwarded as CModule
+                            );
+                        }
                         continue;
                     }
                     else
