@@ -177,9 +177,17 @@ namespace XcodeProjectProcessor
                 {
                     continue;
                 }
-                throw new Bam.Core.Exception(
-                    $"Unable to locate library on any system or user search path: {stripped_library_name}"
-                );
+                var message = new System.Text.StringBuilder();
+                message.AppendLine($"Unable to locate library '{stripped_library_name}' on any system or user search path");
+                if (librarySearchPaths.Any())
+                {
+                    message.AppendLine("User search paths are:");
+                    foreach (var path in librarySearchPaths)
+                    {
+                        message.AppendLine($"\t{path.ToString()}");
+                    }
+                }
+                throw new Bam.Core.Exception(message.ToString());
             }
         }
 
