@@ -37,7 +37,7 @@ namespace Clang
     {
         public MetaData()
             :
-            base("0900", new Bam.Core.StringArray("macosx10.13"), pbxprojObjectVersion: 50)
+            base("0900", new Bam.Core.StringArray("macosx10.13"))
         {}
     }
 }
