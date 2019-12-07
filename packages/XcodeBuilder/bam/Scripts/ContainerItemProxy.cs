@@ -128,10 +128,10 @@ namespace XcodeBuilder
             }
             else
             {
-                text.AppendLine($"{indent}{this.GUID} = {{");
+                text.AppendLine($"{indent}{this.GUID} /* PBXContainerItemProxy */ = {{");
             }
             text.AppendLine($"{indent2}isa = {this.IsA};");
-            text.AppendLine($"{indent2}containerPortal = {this.ContainerPortal.GUID} /* {this.ContainerPortal.Name} */;");
+            text.AppendLine($"{indent2}containerPortal = {this.ContainerPortal.GUID} /* {System.IO.Path.GetFileName(this.ContainerPortal.Name)} */;");
             text.AppendLine($"{indent2}proxyType = {this.ProxyType};");
             text.AppendLine($"{indent2}remoteGlobalIDString = {this.Remote.GUID};");
             var remoteInfo = this.RemoteName ?? this.Remote.Name;
