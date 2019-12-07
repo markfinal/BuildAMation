@@ -158,7 +158,7 @@ namespace Publisher
 #if D_PACKAGE_XCODEBUILDER
                 case "Xcode":
                     {
-                        if (this.PublishingType == EPublishingType.Library)
+                        if (this.PublishingType == EPublishingType.Library && this.PrimaryOutputPathKey != null)
                         {
                             var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
                             var project = workspace.EnsureProjectExists(this, this.ToString());
