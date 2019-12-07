@@ -158,10 +158,8 @@ namespace VisualCCommon
                 }
             }
             linker.Libraries.AddUnique(libFilename.ToString());
-            foreach (var dir in library.OutputDirectories)
-            {
-                linker.LibraryPaths.AddUnique(dir);
-            }
+            var libDir = library.CreateTokenizedString("@dir($(0))", fullLibraryPath);
+            linker.LibraryPaths.AddUnique(libDir);
         }
     }
 
