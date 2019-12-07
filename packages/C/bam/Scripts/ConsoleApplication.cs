@@ -632,6 +632,17 @@ namespace C
                             {
                                 (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, libraryCModule);
                             }
+                            else if (library is IForwardedLibraries forwardedLibs)
+                            {
+                                // e.g. in an SDK
+                                foreach (var fwd in forwardedLibs.ForwardedLibraries)
+                                {
+                                    if (fwd is CModule fwdCModule)
+                                    {
+                                        (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, fwdCModule);
+                                    }
+                                }
+                            }
                         }
                         linker.Libraries.AddRange(externalLibs);
 
@@ -654,6 +665,17 @@ namespace C
                             if (library is CModule libraryCModule)
                             {
                                 (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, libraryCModule);
+                            }
+                            else if (library is IForwardedLibraries forwardedLibs)
+                            {
+                                // e.g. in an SDK
+                                foreach (var fwd in forwardedLibs.ForwardedLibraries)
+                                {
+                                    if (fwd is CModule fwdCModule)
+                                    {
+                                        (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, fwdCModule);
+                                    }
+                                }
                             }
                         }
                         linker.Libraries.AddRange(externalLibs);

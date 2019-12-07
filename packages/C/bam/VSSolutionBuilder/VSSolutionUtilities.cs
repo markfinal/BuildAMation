@@ -66,6 +66,13 @@ namespace C
                     else if (input is SDKTemplate)
                     {
                         config.RequiresProject(solution.EnsureProjectExists(input.GetType(), input.BuildEnvironment));
+                        foreach (var forwarded in (input as IForwardedLibraries).ForwardedLibraries)
+                        {
+                            (module.Tool as C.LinkerTool).ProcessLibraryDependency(
+                                module as CModule,
+                                forwarded as CModule
+                            );
+                        }
                     }
                     else
                     {
