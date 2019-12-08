@@ -155,8 +155,12 @@ namespace C
                         graph.CommonModuleType.Push(this.GetType());
                         try
                         {
-                            this.copiedLibs.Add(this.IncludeModule(linkerName, SharedObjectSymbolicLink.SOSymLinkKey));
-                            this.copiedLibs.Add(this.IncludeModule(soName, SharedObjectSymbolicLink.SOSymLinkKey));
+                            var copiedLinkerName = this.IncludeModule(linkerName, SharedObjectSymbolicLink.SOSymLinkKey);
+                            (copiedLinkerName as Bam.Core.Module).Build = !this.useExistingSDK;
+                            var copiedSOName = this.IncludeModule(soName, SharedObjectSymbolicLink.SOSymLinkKey);
+                            (copiedSOName as Bam.Core.Module).Build = !this.useExistingSDK;
+                            this.copiedLibs.Add(copiedLinkerName);
+                            this.copiedLibs.Add(copiedSOName);
                         }
                         finally
                         {

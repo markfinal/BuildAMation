@@ -102,6 +102,10 @@ namespace Publisher
             foreach (var depKV in this.collatedObjects)
             {
                 var collatedDep = depKV.Value as CollatedObject;
+                if (!collatedDep.Build)
+                {
+                    continue;
+                }
                 switch (collatedDep.ReasonToExecute?.Reason)
                 {
                     case null:
