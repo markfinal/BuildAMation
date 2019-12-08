@@ -475,9 +475,12 @@ namespace Bam.Core
                         }
                         rank = this.moduleRanks[dep] < rank ? this.moduleRanks[dep] : rank;
                     }
-                    this.SetModuleRank(module, rank);
-                    var rankCollection = this.DependencyGraph[rank];
-                    rankCollection.Add(module);
+                    if (module.Build)
+                    {
+                        this.SetModuleRank(module, rank);
+                        var rankCollection = this.DependencyGraph[rank];
+                        rankCollection.Add(module);
+                    }
                     this.MakeSettingsAndApplyPatches(module);
                     module.Complete();
                 }
