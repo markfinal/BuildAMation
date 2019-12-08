@@ -41,6 +41,7 @@ namespace C
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedHeaders = new Bam.Core.Array<Publisher.ICollatedObject>();
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedLibs = new Bam.Core.Array<Publisher.ICollatedObject>();
         private readonly Bam.Core.Array<Bam.Core.Module> realLibraryModules = new Bam.Core.Array<Bam.Core.Module>();
+        private bool useExistingSDK;
 
         /// <summary>
         /// Return a list of paths to header files to include in the SDK.
@@ -77,8 +78,8 @@ namespace C
                 publishRoot.Parse();
             }
 
-            var useExistingSDK = System.IO.Directory.Exists(publishRoot.ToString());
-            if (useExistingSDK)
+            this.useExistingSDK = System.IO.Directory.Exists(publishRoot.ToString());
+            if (this.useExistingSDK)
             {
                 UsePrebuiltSDK(publishRoot, out includeDir, libs, libraryDirs);
             }
@@ -121,6 +122,7 @@ namespace C
         {
             base.PostInit();
 
+            // generate Linux linkername and SOname symbolic links when making the SDK
             foreach (var libraryModule in this.realLibraryModules)
             {
                 if (libraryModule.Settings is C.ICommonLinkerSettingsLinux linuxLinker)
@@ -138,11 +140,13 @@ namespace C
                                 module.Macros.Add("SymlinkFilename", libraryModule.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(linkernameext)"));
                                 module.SharedObject = libraryModule as C.ConsoleApplication;
                             });
+                            linkerName.Build = !this.useExistingSDK;
                             soName = Bam.Core.Module.Create<SONameSymbolicLink>(preInitCallback: module =>
                             {
                                 module.Macros.Add("SymlinkFilename", libraryModule.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
                                 module.SharedObject = libraryModule as C.ConsoleApplication;
                             });
+                            soName.Build = !this.useExistingSDK;
                         }
                         finally
                         {
