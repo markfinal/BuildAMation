@@ -97,23 +97,6 @@ namespace C
                         preprocessor.IncludePaths.AddUnique(includeDir);
                     }
                 }
-                /*
-                else if (settings is ICommonLinkerSettings linker)
-                {
-                    foreach (var libDir in libraryDirs)
-                    {
-                        linker.LibraryPaths.AddUnique(libDir);
-                    }
-                    foreach (var lib in libs)
-                    {
-                        if (!lib.IsParsed)
-                        {
-                            lib.Parse();
-                        }
-                        linker.Libraries.Add(lib.ToString());
-                    }
-                }
-                */
             });
         }
 
