@@ -86,14 +86,23 @@ namespace GccCommon
 
             foreach (var dep in (dynamicModule as C.CModule).Dependents)
             {
-                var dependent = dep;
-                if (!(dependent is C.IDynamicLibrary))
+                if (dep is C.IDynamicLibrary dynDep)
                 {
-                    continue;
+                    dynamicDeps.AddUnique(dep as C.CModule);
+                    dynamicDeps.AddRangeUnique(FindAllDynamicDependents(dynDep));
                 }
-                var dynDep = dependent as C.CModule;
-                dynamicDeps.AddUnique(dynDep);
-                dynamicDeps.AddRangeUnique(FindAllDynamicDependents(dynDep as C.IDynamicLibrary));
+
+                if (dep is C.IForwardedLibraries fwd)
+                {
+                    foreach (var fwdDep in fwd.ForwardedLibraries)
+                    {
+                        if (fwdDep is C.IDynamicLibrary fwdDynDep)
+                        {
+                            dynamicDeps.AddUnique(fwdDep as C.CModule);
+                            dynamicDeps.AddRangeUnique(FindAllDynamicDependents(fwdDynDep));
+                        }
+                    }
+                }
             }
             return dynamicDeps;
         }
