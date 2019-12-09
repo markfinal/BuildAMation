@@ -72,7 +72,8 @@ namespace C
             var libs = new Bam.Core.TokenizedStringArray();
 
             // TODO: would be nice to re-use publishroot, but it doesn't exist
-            var publishRoot = this.CreateTokenizedString("$(prebuiltsdksroot)/$(OutputName)");
+            // this is not the definition of where to write files - it's in Publisher's Collation.cs
+            var publishRoot = this.CreateTokenizedString("$(prebuiltsdksroot)/$(OutputName)/$(config)");
             if (!publishRoot.IsParsed)
             {
                 publishRoot.Parse();

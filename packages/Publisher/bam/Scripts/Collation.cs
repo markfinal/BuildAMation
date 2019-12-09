@@ -1208,7 +1208,7 @@ namespace Publisher
                 // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
                 if (this.PublishingType == EPublishingType.Library)
                 {
-                    collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(prebuiltsdksroot)/$(OutputName)"));
+                    collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(prebuiltsdksroot)/$(OutputName)/$(config)"));
                 }
                 else
                 {
@@ -1267,7 +1267,7 @@ namespace Publisher
                 // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
                 if (this.PublishingType == EPublishingType.Library)
                 {
-                    collatedFramework.Macros.Add("publishroot", this.CreateTokenizedString("$(prebuiltsdksroot)/$(OutputName)"));
+                    collatedFramework.Macros.Add("publishroot", this.CreateTokenizedString("$(prebuiltsdksroot)/$(OutputName)/$(config)"));
                 }
                 else
                 {
