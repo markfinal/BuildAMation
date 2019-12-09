@@ -181,7 +181,7 @@ class Stats(object):
 def execute_test_instance(instance, options, output_buffer, stats, the_builder):
     print_message(128 * '=')
     if instance.runnable():
-        print_message("* Running  %s\t%s\t%s" % (instance.package_name(), instance.flavour(), ' '.join(instance.variation_arguments())))
+        print_message("* Running\tName:%s\tFlavour:%s\tArgs:%s" % (instance.package_name(), instance.flavour(), ' '.join(instance.variation_arguments())))
         if options.excludedVariations:
             print_message(" (excluding %s)" % options.excludedVariations)
     else:
