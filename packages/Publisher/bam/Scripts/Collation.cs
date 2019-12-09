@@ -106,6 +106,7 @@ namespace Publisher
                 {
                     continue;
                 }
+                collatedDep.EvaluationTask?.Wait();
                 switch (collatedDep.ReasonToExecute?.Reason)
                 {
                     case null:
@@ -117,7 +118,7 @@ namespace Publisher
                         break;
 
                     default:
-                        throw new Bam.Core.Exception($"Unable to determine execute reason for collated object {collatedDep.ToString()}");
+                        throw new Bam.Core.Exception($"Unable to determine execute reason for collated object {collatedDep.ToString()} ({collatedDep.SourcePath}) needed by {this.ToString()}");
                 }
             }
         }
