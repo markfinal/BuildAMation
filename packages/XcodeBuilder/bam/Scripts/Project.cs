@@ -94,11 +94,6 @@ namespace XcodeBuilder
                     $"Cannot create Xcode project for Module {this.Module.ToString()} as it has no registered outputs"
                 );
             }
-            this.BuiltProductsDir = this.Module.CreateTokenizedString("@dir($(0))", this.Module.GeneratedPaths[this.Module.PrimaryOutputPathKey]);
-            if (!this.BuiltProductsDir.IsParsed)
-            {
-                this.BuiltProductsDir.Parse();
-            }
         }
 
         private readonly System.Collections.Generic.Dictionary<string, Object> ExistingGUIDs = new System.Collections.Generic.Dictionary<string, Object>();
@@ -148,7 +143,6 @@ namespace XcodeBuilder
         /// Get the path to the project file
         /// </summary>
         public string ProjectPath { get; private set; }
-        private readonly Bam.Core.TokenizedString BuiltProductsDir;
         private Bam.Core.Module Module { get; set; }
         private System.Collections.Generic.Dictionary<System.Type, Target> Targets
         {
@@ -552,18 +546,22 @@ namespace XcodeBuilder
                 projectConfig["SRCROOT"] = new UniqueConfigurationValue(relativeSourcePath);
 
                 var isXcode10 = clangMeta.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
-                // set the SYMROOT (where built products reside)
-                var builtProductsDir = this.BuiltProductsDir.ToString();
+                // set the SYMROOT (where built products reside for this Module's configuration)
+                var builtProductsDir = module.CreateTokenizedString("@dir($(0))", module.GeneratedPaths[module.PrimaryOutputPathKey]);
+                if (!builtProductsDir.IsParsed)
+                {
+                    builtProductsDir.Parse();
+                }
                 if (isXcode10)
                 {
                     // an absolute path is needed, or there are mkdir errors
-                    projectConfig["SYMROOT"] = new UniqueConfigurationValue(builtProductsDir);
+                    projectConfig["SYMROOT"] = new UniqueConfigurationValue(builtProductsDir.ToString());
                 }
                 else
                 {
                     var relativeSymRoot = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
                         Bam.Core.Graph.Instance.BuildRoot,
-                        builtProductsDir
+                        builtProductsDir.ToString()
                     );
                     projectConfig["SYMROOT"] = new UniqueConfigurationValue(relativeSymRoot);
                 }
