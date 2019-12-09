@@ -193,6 +193,10 @@ def execute_test_instance(instance, options, output_buffer, stats, the_builder):
 
     if options.verbose:
         print_message("\tPackage Description : %s" % instance.package_description())
+        print_message("\tCleaning package directory : %s" % instance.package_path())
+
+    clean_process = subprocess.Popen(['git', 'clean', '-x', '-d', '-f'], cwd=instance.package_path())
+    clean_process.wait()
 
     non_kwargs = []
     exit_code = 0
