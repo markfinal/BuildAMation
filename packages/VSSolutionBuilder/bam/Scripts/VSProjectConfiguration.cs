@@ -634,7 +634,10 @@ namespace VSSolutionBuilder
                 if (!string.IsNullOrEmpty(targetName))
                 {
                     var filenameTS = this.Module.CreateTokenizedString("@filename($(0))", this.OutputFile);
-                    filenameTS.Parse();
+                    if (!filenameTS.IsParsed)
+                    {
+                        filenameTS.Parse();
+                    }
                     var filename = filenameTS.ToString();
                     var ext = filename.Replace(targetName, string.Empty);
 
@@ -767,8 +770,10 @@ namespace VSSolutionBuilder
                 // get relative paths to interesting macros
                 // KEY=macro, VALUE=original path
                 // projects without output, e.g. headerlibrary projects, will not have a valid OutputDirectory property
-                var mapping = new System.Collections.Generic.Dictionary<string, string>();
-                mapping.Add("$(ProjectDir)", this.Project.ProjectPath);
+                var mapping = new System.Collections.Generic.Dictionary<string, string>
+                {
+                    { "$(ProjectDir)", this.Project.ProjectPath }
+                };
                 if (null != this.OutputDirectory && !isOutputDir)
                 {
                     mapping.Add("$(OutDir)", this.OutputDirectory.ToString());
