@@ -11,7 +11,9 @@ import StringIO
 import subprocess
 import sys
 from testconfigurations import test_option_setup
+from testconfigurations import TestSDKSetup
 from testinstance import TestInstance
+from testinstance import TestSDKInstance
 import time
 import tempfile
 import xml.etree.ElementTree as ET
@@ -221,6 +223,13 @@ def execute_test_instance(instance, options, output_buffer, stats, the_builder):
                     returncode, _ = _run_buildamation(no_clean_options, instance, extra_args, output_messages, error_messages)
                 if returncode == 0:
                     returncode = _post_execute(the_builder, options, instance, output_messages, error_messages)
+                    if isinstance(instance, TestSDKInstance):
+                        # SDK testing gets run again from clean, to use the prebuilts from the last runs
+                        returncode, _ = _run_buildamation(options, instance, extra_args, output_messages, error_messages)
+                        if the_builder.repeat_no_clean and returncode == 0:
+                            returncode, _ = _run_buildamation(no_clean_options, instance, extra_args, output_messages, error_messages)
+                        if returncode == 0:
+                            returncode = _post_execute(the_builder, options, instance, output_messages, error_messages)
             end_time = os.times()
         except Exception, e:
             print_message("Popen exception: '%s'" % str(e))
@@ -386,8 +395,12 @@ if __name__ == "__main__":
                     variations = config.get_variations(options.buildmode, options.excludedVariations, options.bitDepth)
                 except KeyError:
                     variations = [None]
-                for variation in variations:
-                    test_instances.add(TestInstance(test, '+'.join(set(options.configurations)), variation, config.get_package_options(), config.get_alias()))
+                if isinstance(config, TestSDKSetup):
+                    for variation in variations:
+                        test_instances.add(TestSDKInstance(test, '+'.join(set(options.configurations)), variation, config.get_package_options(), config.get_alias()))
+                else:
+                    for variation in variations:
+                        test_instances.add(TestInstance(test, '+'.join(set(options.configurations)), variation, config.get_package_options(), config.get_alias()))
         if options.verbose:
             print "Test instances are:"
             for instance in sorted(test_instances, key=lambda instance: str(instance)):

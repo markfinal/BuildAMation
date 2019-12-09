@@ -3,7 +3,7 @@ import platform
 import sys
 
 
-class TestSetup:
+class TestSetup(object):
     _win = {}
     _linux = {}
     _osx = {}
@@ -58,6 +58,11 @@ class TestSetup:
                 if bitdepth == "*" or bitdepth == i.arch():
                     variations.add(i)
         return variations
+
+
+class TestSDKSetup(TestSetup):
+    def __init__(self, win=None, linux=None, osx=None, options=None, alias=None):
+        super(TestSDKSetup, self).__init__(win, linux, osx, options, alias)
 
 
 def test_option_setup(opt_parser):

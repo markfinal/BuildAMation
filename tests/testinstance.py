@@ -2,7 +2,7 @@
 
 import copy
 
-class TestInstance:
+class TestInstance(object):
     """
     A TestInstance is a runnable instance of the test, encompasing all the details it needs
     in order to generate a command line.
@@ -44,3 +44,12 @@ class TestInstance:
             return "[%s] %s-%s-%s" % (self._alias, self._package.get_name(), self._flavour, str(self._variation))
         else:
             return "%s-%s-%s" % (self._package.get_name(), self._flavour, str(self._variation))
+
+
+class TestSDKInstance(TestInstance):
+    """
+    A TestSDKInstance is a runnable instance of an SDK test.
+    """
+
+    def __init__(self, package, flavour, variation, package_options, alias=None):
+        super(TestSDKInstance, self).__init__(package, flavour, variation, package_options, alias)
