@@ -1,8 +1,8 @@
 echo "Launching Travis project: bam-compress"
-curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"master\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-compress/requests
+curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"%APPVEYOR_REPO_BRANCH%\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-compress/requests
 
 echo "Launching Travis project: bam-imageformats"
-curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"master\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-imageformats/requests
+curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"%APPVEYOR_REPO_BRANCH%\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-imageformats/requests
 
 EXIT /B
 
