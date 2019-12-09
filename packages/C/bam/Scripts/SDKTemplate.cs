@@ -73,7 +73,8 @@ namespace C
 
             // TODO: would be nice to re-use publishroot, but it doesn't exist
             // this is not the definition of where to write files - it's in Publisher's Collation.cs
-            var publishRoot = this.CreateTokenizedString("$(prebuiltsdksroot)/$(OutputName)/$(config)");
+            var bitDepth = Bam.Core.CommandLineProcessor.Evaluate(new C.Options.DefaultBitDepth());
+            var publishRoot = this.CreateTokenizedString($"$(prebuiltsdksroot)/$(OutputName)/$(config){bitDepth}");
             if (!publishRoot.IsParsed)
             {
                 publishRoot.Parse();

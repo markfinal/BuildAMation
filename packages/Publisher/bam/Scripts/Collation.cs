@@ -1208,7 +1208,8 @@ namespace Publisher
                 // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
                 if (this.PublishingType == EPublishingType.Library)
                 {
-                    collatedFile.Macros.Add("publishroot", this.CreateTokenizedString("$(prebuiltsdksroot)/$(OutputName)/$(config)"));
+                    var bitDepth = Bam.Core.CommandLineProcessor.Evaluate(new C.Options.DefaultBitDepth());
+                    collatedFile.Macros.Add("publishroot", this.CreateTokenizedString($"$(prebuiltsdksroot)/$(OutputName)/$(config){bitDepth}"));
                 }
                 else
                 {
@@ -1267,7 +1268,8 @@ namespace Publisher
                 // publishdir is the same for all anchors, and thus all dependents are unique for all anchors
                 if (this.PublishingType == EPublishingType.Library)
                 {
-                    collatedFramework.Macros.Add("publishroot", this.CreateTokenizedString("$(prebuiltsdksroot)/$(OutputName)/$(config)"));
+                    var bitDepth = Bam.Core.CommandLineProcessor.Evaluate(new C.Options.DefaultBitDepth());
+                    collatedFramework.Macros.Add("publishroot", this.CreateTokenizedString($"$(prebuiltsdksroot)/$(OutputName)/$(config){bitDepth}"));
                 }
                 else
                 {
