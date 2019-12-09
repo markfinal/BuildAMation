@@ -26,7 +26,7 @@ artifacts:
   - path: ubuntu_install_scripts.tar
     name: Ubuntu install scripts for continuous integration
 on_success:
-    #cmd: CI\remote_jobs.bat
+    cmd: CI\remote_jobs.bat
 on_finish:
   - ps: |
       $wc = New-Object 'System.Net.WebClient'
