@@ -774,7 +774,14 @@ namespace Bam.Core
             visited.Add(module);
             if (module is IInputPath inputPath)
             {
-                builder.AppendLine($" <= {inputPath.InputPath.ToString()}");
+                try
+                {
+                    builder.AppendLine($" <= {inputPath.InputPath.ToString()}");
+                }
+                catch (Exception)
+                {
+                    builder.AppendLine($" <= <cannnot parse input path>");
+                }
             }
             else
             {
@@ -822,7 +829,14 @@ namespace Bam.Core
                     }
                     foreach (var s in m.GeneratedPaths)
                     {
-                        text.AppendLine($"\t{s.Key} : {s.Value}");
+                        try
+                        {
+                            text.AppendLine($"\t{s.Key} : {s.Value}");
+                        }
+                        catch (Exception)
+                        {
+                            text.AppendLine($"\t{s.Key} : Unable to parse path");
+                        }
                     }
                 }
                 Log.Message(this.VerbosityLevel, text.ToString());
