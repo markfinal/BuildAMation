@@ -706,6 +706,12 @@ namespace Publisher
                 Bam.Core.Module module,
                 string modulePathKey)
             {
+                if (null == modulePathKey)
+                {
+                    throw new Bam.Core.Exception(
+                        $"Path key requested from Module {module.ToString()} is null. Unable to find publish directory."
+                    );
+                }
                 foreach (var mod in this.mapping)
                 {
                     if (!mod.type.IsInstanceOfType(module))
