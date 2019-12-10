@@ -40,8 +40,12 @@ namespace C
     {
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedHeaders = new Bam.Core.Array<Publisher.ICollatedObject>();
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedLibs = new Bam.Core.Array<Publisher.ICollatedObject>();
-        protected readonly Bam.Core.Array<Bam.Core.Module> realLibraryModules = new Bam.Core.Array<Bam.Core.Module>();
         private bool useExistingSDK;
+
+        /// <summary>
+        /// List of the actual Modules used to populate the SDK
+        /// </summary>
+        protected readonly Bam.Core.Array<Bam.Core.Module> realLibraryModules = new Bam.Core.Array<Bam.Core.Module>();
 
         /// <summary>
         /// Return a list of partial-paths (relative to the package dir) to header files to include in the SDK.
