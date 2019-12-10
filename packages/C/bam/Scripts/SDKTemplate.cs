@@ -183,6 +183,11 @@ namespace C
                 this.DependsOn(libraryModule);
                 libraryModule.Build = false;
 
+                if (libraryModule is HeaderLibrary)
+                {
+                    continue;
+                }
+
                 // update the library so that its binaries refer to those in the SDK
                 if (libraryModule is IDynamicLibrary dynLibraryModule)
                 {
@@ -270,6 +275,11 @@ namespace C
                 var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
                 this.realLibraryModules.Add(libraryModule);
                 this.UsePublicPatches(libraryModule);
+
+                if (libraryModule is HeaderLibrary)
+                {
+                    continue;
+                }
 
                 var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(libType);
                 var copiedBin = includeFn.Invoke(this, new[] { libraryModule.PrimaryOutputPathKey, null }) as Publisher.ICollatedObject;
