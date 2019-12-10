@@ -53,6 +53,11 @@ namespace C
         protected abstract Bam.Core.StringArray HeaderFiles { get; }
 
         /// <summary>
+        /// Whether the header file directory structure is honoured upon copy to the SDK.
+        /// </summary>
+        protected virtual bool HonourHeaderFileLayout { get; } = true;
+
+        /// <summary>
         /// Return a list of Module types that are the generated headers to include in the SDK.
         /// </summary>
         protected virtual Bam.Core.TypeArray GeneratedHeaderTypes { get; } = null;
@@ -273,7 +278,9 @@ namespace C
                 foreach (var file in files)
                 {
                     var relativePath = System.IO.Path.GetRelativePath(packageDir, file);
-                    var dst = this.CreateTokenizedString($"$(0)/{System.IO.Path.GetDirectoryName(relativePath)}", this.HeaderDir);
+                    var dst = this.HonourHeaderFileLayout ?
+                        this.CreateTokenizedString($"$(0)/{System.IO.Path.GetDirectoryName(relativePath)}", this.HeaderDir) :
+                        this.CreateTokenizedString($"$(0)", this.HeaderDir);
                     copiedHeaders.AddRange(this.IncludeFiles(Bam.Core.TokenizedString.CreateVerbatim(file), dst, null));
                 }
             }
