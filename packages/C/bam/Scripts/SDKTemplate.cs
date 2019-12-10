@@ -44,9 +44,9 @@ namespace C
         private bool useExistingSDK;
 
         /// <summary>
-        /// Return a list of paths to header files to include in the SDK.
+        /// Return a list of partial-paths (relative to the package dir) to header files to include in the SDK.
         /// </summary>
-        protected abstract Bam.Core.TokenizedStringArray HeaderFiles { get; }
+        protected abstract Bam.Core.StringArray HeaderFiles { get; }
 
         /// <summary>
         /// Return a list of Module types that are the generated headers to include in the SDK.
@@ -246,9 +246,32 @@ namespace C
             Bam.Core.TokenizedStringArray libraryDirs
         )
         {
-            foreach (var header in this.HeaderFiles)
+            if (!this.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].IsParsed)
             {
-                copiedHeaders.AddRange(this.IncludeFiles(header, this.HeaderDir, null));
+                this.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].Parse();
+            }
+            var packageDir = this.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].ToString();
+            foreach (var headerPath in this.HeaderFiles)
+            {
+                var src = System.IO.Path.Combine(packageDir, headerPath);
+                var option = src.Contains("**") ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
+                var files = System.IO.Directory.GetFiles(
+                    System.IO.Path.GetDirectoryName(src),
+                    System.IO.Path.GetFileName(src),
+                    option
+                );
+                if (0 == files.Length)
+                {
+                    throw new Bam.Core.Exception(
+                        $"No matches found for the header path '{src}'"
+                    );
+                }
+                foreach (var file in files)
+                {
+                    var relativePath = System.IO.Path.GetRelativePath(packageDir, file);
+                    var dst = this.CreateTokenizedString($"$(0)/{System.IO.Path.GetDirectoryName(relativePath)}", this.HeaderDir);
+                    copiedHeaders.AddRange(this.IncludeFiles(Bam.Core.TokenizedString.CreateVerbatim(file), dst, null));
+                }
             }
             if ((null != this.GeneratedHeaderTypes) && this.GeneratedHeaderTypes.Any())
             {
@@ -261,6 +284,7 @@ namespace C
             }
             if (this.copiedHeaders.Any())
             {
+                // can't juse be this.HeaderDir, as it needs to resolve publishdir
                 includeDir = (this.copiedHeaders.First() as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.HeaderDir);
             }
             else
