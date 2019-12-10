@@ -40,7 +40,7 @@ namespace C
     {
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedHeaders = new Bam.Core.Array<Publisher.ICollatedObject>();
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedLibs = new Bam.Core.Array<Publisher.ICollatedObject>();
-        private readonly Bam.Core.Array<Bam.Core.Module> realLibraryModules = new Bam.Core.Array<Bam.Core.Module>();
+        protected readonly Bam.Core.Array<Bam.Core.Module> realLibraryModules = new Bam.Core.Array<Bam.Core.Module>();
         private bool useExistingSDK;
 
         /// <summary>
