@@ -165,7 +165,7 @@ namespace C
             }
         }
 
-        System.Collections.Generic.IEnumerable<Module> IForwardedLibraries.ForwardedLibraries => this.realLibraryModules;
+        System.Collections.Generic.IEnumerable<Module> IForwardedLibraries.ForwardedLibraries => this.realLibraryModules.Where(item => !(item is HeaderLibrary));
 
         private void
         UsePrebuiltSDK(
