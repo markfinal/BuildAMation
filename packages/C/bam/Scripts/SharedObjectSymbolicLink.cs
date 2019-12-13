@@ -94,7 +94,9 @@ namespace C
             set
             {
                 this.sharedObject = value;
-                this.DependsOn(value);
+                // the symbolic link can be created *before* the executable, which ensures that
+                // the symlinks are present when a dependency is made onto the executable
+                value.DependsOn(this);
 
                 // ensure that the symlink is called the same as what it is linking to
                 this.Macros[Bam.Core.ModuleMacroNames.OutputName] = value.Macros[Bam.Core.ModuleMacroNames.OutputName];
@@ -182,8 +184,7 @@ namespace C
         {
             get
             {
-                System.Diagnostics.Debug.Assert(1 == this.Dependents.Count());
-                yield return (this.Dependents.First(), C.DynamicLibrary.ExecutableKey);
+                yield return (this.SharedObject, DynamicLibrary.ExecutableKey);
             }
         }
 
