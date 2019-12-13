@@ -92,11 +92,11 @@ namespace C
             this.useExistingSDK = System.IO.Directory.Exists(publishRoot.ToString());
             if (this.useExistingSDK)
             {
-                UsePrebuiltSDK(publishRoot, out includeDir, libs, libraryDirs);
+                this.UsePrebuiltSDK(publishRoot, out includeDir, libs, libraryDirs);
             }
             else
             {
-                GenerateSDK(publishRoot, out includeDir, libs, libraryDirs);
+                this.GenerateSDK(out includeDir, libs, libraryDirs);
             }
 
             this.PublicPatch((settings, appliedTo) =>
@@ -248,11 +248,8 @@ namespace C
         }
 
         private void
-        GenerateSDK(
-            Bam.Core.TokenizedString publishRoot,
-            out Bam.Core.TokenizedString includeDir,
-            Bam.Core.TokenizedStringArray libs,
-            Bam.Core.TokenizedStringArray libraryDirs
+        GenerateSDKHeaders(
+            out Bam.Core.TokenizedString includeDir
         )
         {
             if (!this.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].IsParsed)
@@ -302,7 +299,15 @@ namespace C
             {
                 includeDir = null;
             }
+        }
 
+        private void
+        GenerateSDK(
+            out Bam.Core.TokenizedString includeDir,
+            Bam.Core.TokenizedStringArray libs,
+            Bam.Core.TokenizedStringArray libraryDirs
+        )
+        {
             var isPrimaryOutput = true;
             foreach (var libType in this.LibraryModuleTypes)
             {
@@ -377,6 +382,7 @@ namespace C
                 }
                 isPrimaryOutput = false;
             }
+            this.GenerateSDKHeaders(out includeDir);
         }
     }
 }
