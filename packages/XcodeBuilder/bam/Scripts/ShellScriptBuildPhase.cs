@@ -39,8 +39,9 @@ namespace XcodeBuilder
         // There appears to be a limit on the number of output files associated with these
         // build phases. When this is exceeded, you get this useful error:
         // "Build operation failed without specifying any errors. Individual build tasks may have failed for unknown reasons."
-        // 1634 seems to be the good number for single configuration, but 2 configurations seems to need 1600 (not sure why)
-        const int maxOutputFiles = 1600;
+        // 1634 seems to be the good number for single configuration, but 2 configurations seems to need at most 1600 (not sure why)
+        // Continuous integration failed at 1600.
+        const int maxOutputFiles = 1500;
 
         /// <summary>
         /// Construct an instance.
