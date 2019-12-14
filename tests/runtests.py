@@ -224,7 +224,7 @@ def execute_test_instance(instance, options, output_buffer, stats, the_builder):
                     returncode, _ = _run_buildamation(no_clean_options, instance, extra_args, output_messages, error_messages)
                 if returncode == 0:
                     returncode = _post_execute(the_builder, options, instance, output_messages, error_messages)
-                    if isinstance(instance, TestSDKInstance):
+                    if isinstance(instance, TestSDKInstance) and returncode == 0:
                         # SDK testing gets run again from clean, to use the prebuilts from the last runs
                         returncode, _ = _run_buildamation(options, instance, extra_args, output_messages, error_messages)
                         if the_builder.repeat_no_clean and returncode == 0:
