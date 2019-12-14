@@ -4,13 +4,13 @@ curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -
 echo "Launching Travis project: bam-imageformats"
 curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"%APPVEYOR_REPO_BRANCH%\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-imageformats/requests
 
+echo "Launching Travis project: bam-boost"
+curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"%APPVEYOR_REPO_BRANCH%\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-boost/requests
+
 EXIT /B
 
 echo "Launching Travis project: BuildAMation"
 curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"master\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2FBuildAMation/requests
-
-echo "Launching Travis project: bam-boost"
-curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"master\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-boost/requests
 
 echo "Launching Travis project: bam-graphicssdk"
 curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"master\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-graphicssdk/requests
