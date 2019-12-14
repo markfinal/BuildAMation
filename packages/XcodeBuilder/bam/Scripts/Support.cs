@@ -169,17 +169,15 @@ namespace XcodeBuilder
         }
 
         /// <summary>
-        /// Add pre build commands to the target.
+        /// Add pre build commands to the configuration.
         /// </summary>
         /// <param name="module">Module associated with</param>
-        /// <param name="target">Target to add the commands to</param>
-        /// <param name="configuration">Configuration within the Target</param>
+        /// <param name="configuration">Configuration to add commands to.</param>
         /// <param name="commandLine">Command line to add</param>
         /// <param name="outputPaths">Any output paths to add.</param>
         public static void
         AddPreBuildCommands(
             Bam.Core.Module module,
-            Target target,
             Configuration configuration,
             string commandLine,
             Bam.Core.TokenizedStringArray outputPaths = null)
@@ -191,10 +189,10 @@ namespace XcodeBuilder
             shellCommandLines.Add($"\t{commandLine}");
             AddNewerThanPostamble(module, shellCommandLines);
 
-            target.AddPreBuildCommands(
+            configuration.AppendPreBuildCommands(
                 shellCommandLines,
-                configuration,
-                outputPaths
+                outputPaths,
+                System.Linq.Enumerable.Empty<string>()
             );
         }
 
@@ -246,10 +244,10 @@ namespace XcodeBuilder
                 AddNewerThanPostamble(module, shellCommandLines);
             }
 
-            target.AddPreBuildCommands(
+            configuration.AppendPreBuildCommands(
                 shellCommandLines,
-                configuration,
-                outputPaths
+                outputPaths,
+                System.Linq.Enumerable.Empty<string>()
             );
 
             if (addOrderOnlyDependencyOnTool)
@@ -314,13 +312,11 @@ namespace XcodeBuilder
         /// Add post build commands
         /// </summary>
         /// <param name="module">Module associated with</param>
-        /// <param name="target">Target added to</param>
         /// <param name="configuration">Configuration added to</param>
         /// <param name="customCommands">Custom command lines</param>
         public static void
         AddPostBuildCommands(
             Bam.Core.Module module,
-            Target target,
             Configuration configuration,
             Bam.Core.StringArray customCommands)
         {
@@ -328,9 +324,10 @@ namespace XcodeBuilder
             AddModuleDirectoryCreationShellCommands(module, shellCommandLines);
             shellCommandLines.AddRange(customCommands);
 
-            target.AddPostBuildCommands(
+            configuration.AppendPostBuildCommands(
                 shellCommandLines,
-                configuration
+                null,
+                System.Linq.Enumerable.Empty<string>()
             );
         }
 
@@ -370,9 +367,10 @@ namespace XcodeBuilder
             }
             AddNewerThanPostamble(module, shellCommandLines);
 
-            target.AddPostBuildCommands(
+            configuration.AppendPostBuildCommands(
                 shellCommandLines,
-                configuration
+                null,
+                System.Linq.Enumerable.Empty<string>()
             );
         }
     }

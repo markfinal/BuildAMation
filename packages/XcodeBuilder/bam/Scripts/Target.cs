@@ -86,34 +86,6 @@ namespace XcodeBuilder
                     this.AppendBuildPhase(phase);
                     return phase;
                 });
-            this.PreBuildBuildPhase = new System.Lazy<ShellScriptBuildPhase>(() =>
-                {
-                    return new ShellScriptBuildPhase(this, "Pre Build", (target) =>
-                        {
-                            var content = new System.Text.StringBuilder();
-                            foreach (var config in target.ConfigurationList)
-                            {
-                                content.Append($"if [ \\\"$CONFIGURATION\\\" = \\\"{config.Name}\\\" ]; then\\n\\n");
-                                config.SerializePreBuildCommands(content, 1);
-                                content.Append("fi\\n\\n");
-                            }
-                            return content.ToString();
-                        });
-                });
-            this.PostBuildBuildPhase = new System.Lazy<ShellScriptBuildPhase>(() =>
-                {
-                    return new ShellScriptBuildPhase(this, "Post Build", (target) =>
-                        {
-                            var content = new System.Text.StringBuilder();
-                            foreach (var config in target.ConfigurationList)
-                            {
-                                content.Append($"if [ \\\"$CONFIGURATION\\\" = \\\"{config.Name}\\\" ]; then\\n\\n");
-                                config.SerializePostBuildCommands(content, 1);
-                                content.Append("fi\\n\\n");
-                            }
-                            return content.ToString();
-                        });
-                });
         }
 
         /// <summary>
@@ -164,11 +136,6 @@ namespace XcodeBuilder
         /// </summary>
         public System.Lazy<SourcesBuildPhase> SourcesBuildPhase { get; private set; }
         private System.Lazy<FrameworksBuildPhase> FrameworksBuildPhase { get; set; }
-        private System.Lazy<ShellScriptBuildPhase> PreBuildBuildPhase { get; set; }
-        /// <summary>
-        /// Get the shell script build phase
-        /// </summary>
-        public System.Lazy<ShellScriptBuildPhase> PostBuildBuildPhase { get; private set; }
 
         /// <summary>
         /// Set the type of the Target
@@ -588,50 +555,6 @@ namespace XcodeBuilder
         }
 
         /// <summary>
-        /// Add prebuild commands to the Target
-        /// </summary>
-        /// <param name="commands">List of commands</param>
-        /// <param name="configuration">Configuration to add to</param>
-        /// <param name="outputPaths">List of output paths</param>
-        public void
-        AddPreBuildCommands(
-            Bam.Core.StringArray commands,
-            Configuration configuration,
-            Bam.Core.TokenizedStringArray outputPaths)
-        {
-            if (!this.PreBuildBuildPhase.IsValueCreated)
-            {
-                this.Project.AppendShellScriptsBuildPhase(this.PreBuildBuildPhase.Value);
-                // do not add PreBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
-            }
-
-            configuration.AppendPreBuildCommands(commands);
-            if (null != outputPaths)
-            {
-                this.PreBuildBuildPhase.Value.AddOutputPaths(outputPaths);
-            }
-        }
-
-        /// <summary>
-        /// Add post build commands
-        /// </summary>
-        /// <param name="commands">Commands to add</param>
-        /// <param name="configuration">Configuration to add to</param>
-        public void
-        AddPostBuildCommands(
-            Bam.Core.StringArray commands,
-            Configuration configuration)
-        {
-            if (!this.PostBuildBuildPhase.IsValueCreated)
-            {
-                this.Project.AppendShellScriptsBuildPhase(this.PostBuildBuildPhase.Value);
-                // do not add PostBuildBuildPhase to this.BuildPhases, so that it can be serialized in the right order
-            }
-
-            configuration.AppendPostBuildCommands(commands);
-        }
-
-        /// <summary>
         /// Make this Target into an application bundle
         /// </summary>
         public void
@@ -696,39 +619,26 @@ namespace XcodeBuilder
             text.AppendLine($"{indent}{this.GUID} /* {this.Name} */ = {{");
             text.AppendLine($"{indent2}isa = {this.IsA};");
             text.AppendLine($"{indent2}buildConfigurationList = {this.ConfigurationList.GUID} /* Build configuration list for {this.ConfigurationList.Parent.IsA} \"{this.ConfigurationList.Parent.Name}\" */;");
-            if (this.BuildPhases.IsValueCreated ||
-                this.PreBuildBuildPhase.IsValueCreated ||
-                (null != this.PostBuildBuildPhase))
+            text.AppendLine($"{indent2}buildPhases = (");
+            foreach (var config in this.ConfigurationList)
             {
-                // make sure that pre-build phases appear first
-                // then any regular build phases
-                // and then post-build phases.
-                // any of these can be missing
-
-                text.AppendLine($"{indent2}buildPhases = (");
-                void
-                dumpPhase(
-                    BuildPhase phase)
+                foreach (var buildPhase in config.EnumeratePreBuildBuildPhases)
                 {
-                    text.AppendLine($"{indent3}{phase.GUID} /* {phase.Name} */,");
+                    text.AppendLine($"{indent3}{buildPhase.GUID} /* {buildPhase.Name} */,");
                 }
-                if (this.PreBuildBuildPhase.IsValueCreated)
-                {
-                    dumpPhase(this.PreBuildBuildPhase.Value);
-                }
-                if (this.BuildPhases.IsValueCreated)
-                {
-                    foreach (var phase in this.BuildPhases.Value)
-                    {
-                        dumpPhase(phase);
-                    }
-                }
-                if (this.PostBuildBuildPhase.IsValueCreated)
-                {
-                    dumpPhase(this.PostBuildBuildPhase.Value);
-                }
-                text.AppendLine($"{indent2});");
             }
+            foreach (var buildPhase in this.BuildPhases.Value)
+            {
+                text.AppendLine($"{indent3}{buildPhase.GUID} /* {buildPhase.Name} */,");
+            }
+            foreach (var config in this.ConfigurationList)
+            {
+                foreach (var buildPhase in config.EnumeratePostBuildBuildPhases)
+                {
+                    text.AppendLine($"{indent3}{buildPhase.GUID} /* {buildPhase.Name} */,");
+                }
+            }
+            text.AppendLine($"{indent2});");
             text.AppendLine($"{indent2}buildRules = (");
             text.AppendLine($"{indent2});");
             text.AppendLine($"{indent2}dependencies = (");
@@ -765,7 +675,7 @@ namespace XcodeBuilder
                 // if a new target config is needed, then a new project config is needed too
                 project.EnsureProjectConfigurationExists(module);
 
-                var newConfig = new Configuration(module.BuildEnvironment.Configuration, project, this);
+                var newConfig = new TargetConfiguration(module.BuildEnvironment.Configuration, this);
                 project.AppendAllConfigurations(newConfig);
                 configList.AddConfiguration(newConfig);
 

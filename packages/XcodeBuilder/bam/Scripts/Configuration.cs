@@ -31,9 +31,47 @@ using System.Linq;
 namespace XcodeBuilder
 {
     /// <summary>
+    /// Project configurations
+    /// </summary>
+    sealed class ProjectConfiguration :
+        Configuration
+    {
+        /// <summary>
+        /// Create an instance of the ProjectConfiguration.
+        /// </summary>
+        /// <param name="config">The Bam EConfiguration corresponding to this Configuration.</param>
+        /// <param name="project">The Project that the Configuration belongs.</param>
+        public ProjectConfiguration(
+            Bam.Core.EConfiguration config,
+            Project project)
+            :
+            base(config, project)
+        { }
+    }
+
+    /// <summary>
+    /// Target configurations
+    /// </summary>
+    sealed class TargetConfiguration :
+        Configuration
+    {
+        /// <summary>
+        /// Create an instance of the TargetConfiguration.
+        /// </summary>
+        /// <param name="config">The Bam EConfiguration corresponding to this Configuration.</param>
+        /// <param name="target">The Target that the Configuration belongs to.</param>
+        public TargetConfiguration(
+            Bam.Core.EConfiguration config,
+            Target target)
+            :
+            base(config, target.Project, target)
+        { }
+    }
+
+    /// <summary>
     /// Class corresponding to the XCBuildConfiguration in an Xcode project.
     /// </summary>
-    sealed class Configuration :
+    abstract class Configuration :
         Object
     {
         private readonly System.Collections.Generic.Dictionary<string, ConfigurationValue> Settings = new System.Collections.Generic.Dictionary<string, ConfigurationValue>();
@@ -43,17 +81,15 @@ namespace XcodeBuilder
         /// </summary>
         /// <param name="config">The Bam EConfiguration corresponding to this Configuration.</param>
         /// <param name="project">The Project that the Configuration belongs.</param>
-        /// <param name="target">The Target that the Configuration belongs.</param>
-        public Configuration(
+        /// <param name="target">Optional Target for the Configuration. The default is null, indicating a Project configuration.</param>
+        protected Configuration(
             Bam.Core.EConfiguration config,
             Project project,
-            Target target)
+            Target target = null)
             :
-            base(project, config.ToString(), "XCBuildConfiguration", project.GUID, (target != null) ? target.GUID : string.Empty)
+            base(project, config.ToString(), "XCBuildConfiguration", project.GUID, target?.GUID)
         {
             this.Config = config;
-            this.PreBuildCommands = new Bam.Core.StringArray();
-            this.PostBuildCommands = new Bam.Core.StringArray();
             this.BuildFiles = new Bam.Core.Array<BuildFile>();
         }
 
@@ -61,36 +97,103 @@ namespace XcodeBuilder
         /// Get the EConfiguration associated with this Configuration.
         /// </summary>
         public Bam.Core.EConfiguration Config { get; private set; }
-        private Bam.Core.StringArray PreBuildCommands { get; set; }
+
+        private void
+        AppendBuildCommands(
+            Bam.Core.StringArray commands,
+            Bam.Core.TokenizedStringArray outputPaths,
+            System.Collections.Generic.IEnumerable<string> directories,
+            string prefix,
+            Bam.Core.Array<ShellScriptBuildPhase> collection)
+        {
+            lock (collection)
+            {
+                if (!collection.Any() ||
+                    (null != outputPaths) && !collection.Last().HasSufficientSpace(outputPaths.Count))
+                {
+                    var name = $"{prefix} {this.Config.ToString()}";
+                    if (collection.Any())
+                    {
+                        name += $" {collection.Count + 1}";
+                    }
+                    var buildPhase = new ShellScriptBuildPhase(this, name);
+                    collection.Add(buildPhase);
+                    this.Project.AppendShellScriptsBuildPhase(buildPhase);
+                }
+
+                var current = collection.Last();
+                current.AddCommands(commands);
+                current.AddOutputPaths(outputPaths);
+                current.AddDirectories(directories);
+            }
+        }
+
+        private readonly Bam.Core.Array<ShellScriptBuildPhase> PreBuildBuildPhases = new Bam.Core.Array<ShellScriptBuildPhase>();
+
+        /// <summary>
+        /// Enumerate all pre-build build phases
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<ShellScriptBuildPhase> EnumeratePreBuildBuildPhases
+        {
+            get
+            {
+                return this.PreBuildBuildPhases;
+            }
+        }
 
         /// <summary>
         /// Append pre-build commands to this configuration.
         /// </summary>
         /// <param name="commands">Array of shell commands.</param>
+        /// <param name="outputPaths">Array of output paths generated from those commands</param>
+        /// <param name="directories">Enumeration of directory strings to create</param>
         public void
         AppendPreBuildCommands(
-            Bam.Core.StringArray commands)
+            Bam.Core.StringArray commands,
+            Bam.Core.TokenizedStringArray outputPaths,
+            System.Collections.Generic.IEnumerable<string> directories)
         {
-            lock (this.PreBuildCommands)
-            {
-                this.PreBuildCommands.AddRange(commands);
-            }
+            this.AppendBuildCommands(
+                commands,
+                outputPaths,
+                directories,
+                "Pre Build",
+                this.PreBuildBuildPhases
+            );
         }
 
-        private Bam.Core.StringArray PostBuildCommands { get; set; }
+        private readonly Bam.Core.Array<ShellScriptBuildPhase> PostBuildBuildPhases = new Bam.Core.Array<ShellScriptBuildPhase>();
+
+        /// <summary>
+        /// Enumerate all post-build build phases
+        /// </summary>
+        public System.Collections.Generic.IEnumerable<ShellScriptBuildPhase> EnumeratePostBuildBuildPhases
+        {
+            get
+            {
+                return this.PostBuildBuildPhases;
+            }
+        }
 
         /// <summary>
         /// Append post-build commands to this configuration.
         /// </summary>
         /// <param name="commands">Array of shell commands.</param>
+        /// <param name="outputPaths">Array of output paths generated from those commands</param>
+        /// <param name="directories">Enumeration of directory strings to create</param>
         public void
         AppendPostBuildCommands(
-            Bam.Core.StringArray commands)
+            Bam.Core.StringArray commands,
+            Bam.Core.TokenizedStringArray outputPaths,
+            System.Collections.Generic.IEnumerable<string> directories)
         {
-            lock (this.PostBuildCommands)
-            {
-                this.PostBuildCommands.AddRange(commands);
-            }
+            this.AppendBuildCommands(
+                commands,
+                outputPaths,
+                directories,
+                "Post Build",
+                this.PostBuildBuildPhases
+            );
         }
 
         /// <summary>
@@ -165,45 +268,6 @@ namespace XcodeBuilder
             text.AppendLine($"{indent2}}};");
             text.AppendLine($"{indent2}name = {this.Name};");
             text.AppendLine($"{indent}}};");
-        }
-
-        private void
-        SerializeCommmandList(
-            System.Text.StringBuilder text,
-            int indentLevel,
-            Bam.Core.StringArray commandList)
-        {
-            var indent = new string(' ', 2 * indentLevel);
-            foreach (var line in commandList)
-            {
-                text.Append($"{indent}{line.Replace("\\", "\\\\").Replace("\"", "\\\"")}\\n");
-            }
-        }
-
-        /// <summary>
-        /// Serialize the pre-build commands for the Configuration.
-        /// </summary>
-        /// <param name="text">StringBuilder into which to write.</param>
-        /// <param name="indentLevel">Number of tabs to indent by.</param>
-        public void
-        SerializePreBuildCommands(
-            System.Text.StringBuilder text,
-            int indentLevel)
-        {
-            this.SerializeCommmandList(text, indentLevel, this.PreBuildCommands);
-        }
-
-        /// <summary>
-        /// Serialize the post-build commands for the Configuration.
-        /// </summary>
-        /// <param name="text">StringBuilder into which to write.</param>
-        /// <param name="indentLevel">Number of tabs to indent by.</param>
-        public void
-        SerializePostBuildCommands(
-            System.Text.StringBuilder text,
-            int indentLevel)
-        {
-            this.SerializeCommmandList(text, indentLevel, this.PostBuildCommands);
         }
     }
 }

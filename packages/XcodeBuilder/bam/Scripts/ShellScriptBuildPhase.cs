@@ -36,35 +36,29 @@ namespace XcodeBuilder
     sealed class ShellScriptBuildPhase :
         BuildPhase
     {
-        /// <summary>
-        /// Delegate for generating scripts.
-        /// </summary>
-        /// <param name="target">Target associated with the script</param>
-        /// <returns>Delegate return</returns>
-        public delegate string GenerateScriptDelegate(Target target);
+        // There appears to be a limit on the number of output files associated with these
+        // build phases. When this is exceeded, you get this useful error:
+        // "Build operation failed without specifying any errors. Individual build tasks may have failed for unknown reasons."
+        // 1634 seems to be the good number for single configuration, but 2 configurations seems to need 1600 (not sure why)
+        const int maxOutputFiles = 1600;
 
         /// <summary>
         /// Construct an instance.
         /// </summary>
-        /// <param name="target">Target containing the build phase.</param>
+        /// <param name="configuration">Configuration for this build phase</param>
         /// <param name="name">Name of the build phase</param>
-        /// <param name="generateScript">Delegate to generate the script.</param>
         public ShellScriptBuildPhase(
-            Target target,
-            string name,
-            GenerateScriptDelegate generateScript)
+            Configuration configuration,
+            string name)
             :
-            base(target.Project, name, "PBXShellScriptBuildPhase", target.GUID, generateScript.ToString())
+            base(configuration.Project, name, "PBXShellScriptBuildPhase", configuration.GUID)
         {
             this.ShellPath = "/bin/sh";
             this.ShowEnvironmentInLog = true;
             this.InputPaths = new Bam.Core.TokenizedStringArray();
             this.OutputPaths = new Bam.Core.TokenizedStringArray();
-            this.AssociatedTarget = target;
-            this.GenerateScript = generateScript;
+            this.AssociatedConfiguration = configuration;
         }
-
-        private readonly GenerateScriptDelegate GenerateScript;
 
         /// <summary>
         /// Get the build action mask.
@@ -89,23 +83,71 @@ namespace XcodeBuilder
         private Bam.Core.TokenizedStringArray InputPaths { get; set; }
         private Bam.Core.TokenizedStringArray OutputPaths { get; set; }
 
+        private Configuration AssociatedConfiguration { get; set; }
+
+        private Bam.Core.StringArray DirectoriesToCreate { get; set; } = new Bam.Core.StringArray();
+        private Bam.Core.StringArray CommandLines { get; set; } = new Bam.Core.StringArray();
+
         /// <summary>
-        /// Get the associated Target to the build phase.
+        /// Add directories to create to the build phase.
+        /// These are added uniquely, to reduce duplicate calls to directory creation.
         /// </summary>
-        public Target AssociatedTarget { get; private set; }
+        /// <param name="dirs">Enumeration of strings of directories to create.</param>
+        public void
+        AddDirectories(
+            System.Collections.Generic.IEnumerable<string> dirs)
+        {
+            lock (this.DirectoriesToCreate)
+            {
+                this.DirectoriesToCreate.AddRangeUnique(dirs);
+            }
+        }
+
+        /// <summary>
+        /// Add lines of commands to the build phase.
+        /// </summary>
+        /// <param name="commands">Array of strings representing command lines to add.</param>
+        public void
+        AddCommands(
+            Bam.Core.StringArray commands)
+        {
+            lock (this.CommandLines)
+            {
+                foreach (var cmd in commands)
+                {
+                    this.CommandLines.Add(cmd);
+                }
+            }
+        }
 
         /// <summary>
         /// Add output paths to the build phase.
         /// </summary>
-        /// <param name="outputPaths">Paths to add</param>
+        /// <param name="outputPaths">Array of paths to add</param>
         public void
         AddOutputPaths(
             Bam.Core.TokenizedStringArray outputPaths)
         {
+            if (null == outputPaths)
+            {
+                return;
+            }
             lock (this.OutputPaths)
             {
                 this.OutputPaths.AddRangeUnique(outputPaths);
             }
+        }
+
+        /// <summary>
+        /// Query whether the build phase has sufficient space to add new data.
+        /// </summary>
+        /// <param name="numOutputPaths">Number of output paths to add.</param>
+        /// <returns>True if there is enough space, false if not.</returns>
+        public bool
+        HasSufficientSpace(
+            int numOutputPaths)
+        {
+            return this.OutputPaths.Count + numOutputPaths <= maxOutputFiles;
         }
 
         /// <summary>
@@ -158,7 +200,15 @@ namespace XcodeBuilder
             var scriptContent = new System.Text.StringBuilder();
             scriptContent.AppendLine("set -e"); // set -e on bash will fail the script if any command returns a non-zero exit code
             scriptContent.AppendLine("set -x"); // set -x on bash will trace the commands
-            scriptContent.AppendLine(this.GenerateScript(this.AssociatedTarget));
+            scriptContent.AppendLine($"if [ \\\"$CONFIGURATION\\\" != \\\"{this.AssociatedConfiguration.Config.ToString()}\\\" ]; then exit 0; fi");
+            foreach (var dir in this.DirectoriesToCreate)
+            {
+                scriptContent.AppendLine($"mkdir -p {dir}");
+            }
+            foreach (var command in this.CommandLines)
+            {
+                scriptContent.AppendLine($"{command.Replace("\\", "\\\\").Replace("\"", "\\\"")}");
+            }
             text.AppendLine($"{indent2}shellScript = \"{this.CleansePaths(scriptContent.ToString())}\";");
             if (!this.ShowEnvironmentInLog)
             {

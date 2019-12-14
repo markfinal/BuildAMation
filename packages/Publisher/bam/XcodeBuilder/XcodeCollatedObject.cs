@@ -51,16 +51,13 @@ namespace Publisher
             {
                 var copyFileTool = module.Tool as CopyFileTool;
 
-                var commands = new Bam.Core.StringArray();
-                foreach (var dir in module.OutputDirectories)
-                {
-                    var escapedDir = copyFileTool.EscapePath(dir.ToString());
-                    commands.Add($"[[ ! -d {escapedDir} ]] && mkdir -p {escapedDir}");
-                }
                 var toolAsString = CommandLineProcessor.Processor.StringifyTool(copyFileTool as Bam.Core.ICommandLineTool);
                 var toolSettings = CommandLineProcessor.NativeConversion.Convert(module.Settings, module).ToString(' ');
                 var toolPostamble = CommandLineProcessor.Processor.TerminatingArgs(copyFileTool as Bam.Core.ICommandLineTool);
-                commands.Add($"{toolAsString} {toolSettings} {toolPostamble}");
+                var commands = new Bam.Core.StringArray
+                {
+                    $"{toolAsString} {toolSettings} {toolPostamble}"
+                };
 
                 var workspace = Bam.Core.Graph.Instance.MetaData as XcodeBuilder.WorkspaceMeta;
                 var project = workspace.EnsureProjectExists(realCollation, realCollation.ToString());
@@ -81,10 +78,10 @@ namespace Publisher
                     );
                     target.OverrideName(System.IO.Path.GetFileNameWithoutExtension(module.GeneratedPaths[CollatedObject.CopiedFileKey].ToString()));
                 }
-                target.AddPreBuildCommands(
+                configuration.AppendPreBuildCommands(
                     commands,
-                    configuration,
-                    new Bam.Core.TokenizedStringArray { module.GeneratedPaths[CollatedObject.CopiedFileKey] }
+                    new Bam.Core.TokenizedStringArray { module.GeneratedPaths[CollatedObject.CopiedFileKey] },
+                    module.OutputDirectories.Select(item => new string(copyFileTool.EscapePath(item.ToString())))
                 );
             }
             else
@@ -150,11 +147,6 @@ namespace Publisher
                 var copyFileTool = module.Tool as CopyFileTool;
 
                 var commands = new Bam.Core.StringArray();
-                foreach (var dir in module.OutputDirectories)
-                {
-                    var escapedDir = copyFileTool.EscapePath(dir.ToString());
-                    commands.Add($"[[ ! -d {escapedDir} ]] && mkdir -p {escapedDir}");
-                }
                 var toolAsString = CommandLineProcessor.Processor.StringifyTool(copyFileTool as Bam.Core.ICommandLineTool);
                 var toolSettings = CommandLineProcessor.NativeConversion.Convert(module.Settings, module).ToString(' ');
                 var toolPostamble = CommandLineProcessor.Processor.TerminatingArgs(copyFileTool as Bam.Core.ICommandLineTool);
@@ -163,11 +155,19 @@ namespace Publisher
                 var configuration = target.GetConfiguration(targetModule);
                 if (!target.IsUtilityType && arePostBuildCommands)
                 {
-                    target.AddPostBuildCommands(commands, configuration);
+                    configuration.AppendPostBuildCommands(
+                        commands,
+                        null,
+                        module.OutputDirectories.Select(item => new string(copyFileTool.EscapePath(item.ToString())))
+                    );
                 }
                 else
                 {
-                    target.AddPreBuildCommands(commands, configuration, null);
+                    configuration.AppendPreBuildCommands(
+                        commands,
+                        null,
+                        module.OutputDirectories.Select(item => new string(copyFileTool.EscapePath(item.ToString())))
+                    );
                 }
             }
         }

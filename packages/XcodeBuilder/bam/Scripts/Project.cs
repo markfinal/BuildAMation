@@ -529,7 +529,7 @@ namespace XcodeBuilder
                 var clangMeta = Bam.Core.Graph.Instance.PackageMetaData<Clang.MetaData>("Clang");
 
                 // add configuration to project
-                var projectConfig = new Configuration(config, this, null);
+                var projectConfig = new ProjectConfiguration(config, this);
 
                 // headermaps confuse multi-configuration projects, so disable
                 projectConfig["USE_HEADERMAP"] = new UniqueConfigurationValue("NO");

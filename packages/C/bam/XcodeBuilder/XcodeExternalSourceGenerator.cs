@@ -61,7 +61,6 @@ namespace C
             var cmd_line = $"{module.Executable.ToStringQuoteIfNecessary()} {module.Arguments.ToString(' ')}";
             XcodeBuilder.Support.AddPreBuildCommands(
                 module,
-                target,
                 configuration,
                 cmd_line,
                 new Bam.Core.TokenizedStringArray(module.ExpectedOutputFiles.Values)
