@@ -34,19 +34,18 @@ namespace Bam.Core
     /// </summary>
     public static class Log
     {
-        static private bool SupportsCursorManagement;
+        static private readonly bool ProgressLogEnabled = !CommandLineProcessor.Evaluate(new Options.DisableProgressLogging());
 
         static Log()
         {
             try
             {
                 System.Console.SetCursorPosition(System.Console.CursorLeft, System.Console.CursorTop);
-                SupportsCursorManagement = true;
             }
             catch (System.Exception)
             {
                 // TravisCI reports System.ArgumentOutOfRangeException for the 'left' parameter
-                SupportsCursorManagement = false;
+                ProgressLogEnabled = false;
             }
             if (OSUtilities.IsLinuxHosting)
             {
@@ -54,7 +53,7 @@ namespace Bam.Core
                 {
                     // Linux, .NET core 2.1, X windows - SetCursorPosition is _really_ slow
                     // https://github.com/dotnet/corefx/issues/32174
-                    SupportsCursorManagement = false;
+                    ProgressLogEnabled = false;
                 }
             }
         }
@@ -89,7 +88,7 @@ namespace Bam.Core
                 {
                     if (isProgressMeter)
                     {
-                        if (SupportsCursorManagement)
+                        if (ProgressLogEnabled)
                         {
                             System.Console.Write(messageValue);
                             // there seems to be some issues (the cursor position not updating) in .NET core

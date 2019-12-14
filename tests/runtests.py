@@ -136,6 +136,7 @@ def _run_buildamation(options, instance, extra_args, output_messages, error_mess
     if options.injected:
         for inject in options.injected:
             arg_list.append("--injectdefaultpackage=%s" % inject)
+    arg_list.append('--noprogress');
     print_message('%s: %s' % (datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d(%H:%M:%S)'), " ".join(arg_list)))
     if options.verbose:
         p = subprocess.Popen(arg_list, cwd=instance.package_path())
