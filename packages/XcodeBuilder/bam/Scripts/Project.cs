@@ -546,12 +546,8 @@ namespace XcodeBuilder
                 projectConfig["SRCROOT"] = new UniqueConfigurationValue(relativeSourcePath);
 
                 var isXcode10 = clangMeta.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
-                // set the SYMROOT (where built products reside for this Module's configuration)
-                var builtProductsDir = module.CreateTokenizedString("@dir($(0))", module.GeneratedPaths[module.PrimaryOutputPathKey]);
-                if (!builtProductsDir.IsParsed)
-                {
-                    builtProductsDir.Parse();
-                }
+                // set the SYMROOT, which isn't where we want per-Module output to go
+                var builtProductsDir = Bam.Core.Graph.Instance.Macros[Bam.Core.GraphMacroNames.BuildRoot];
                 if (isXcode10)
                 {
                     // an absolute path is needed, or there are mkdir errors
@@ -565,9 +561,6 @@ namespace XcodeBuilder
                     );
                     projectConfig["SYMROOT"] = new UniqueConfigurationValue(relativeSymRoot);
                 }
-
-                // match the configuration build dir to where the built products reside (as BAM is handling any kind of configuration)
-                projectConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue("$(BUILD_DIR)");
 
                 this.GetProjectConfiguratonList().AddConfiguration(projectConfig);
                 this.AppendAllConfigurations(projectConfig);
