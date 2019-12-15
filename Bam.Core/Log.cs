@@ -34,18 +34,21 @@ namespace Bam.Core
     /// </summary>
     public static class Log
     {
-        static private readonly bool ProgressLogEnabled = !CommandLineProcessor.Evaluate(new Options.DisableProgressLogging());
+        static private readonly bool ProgressLogEnabled;
 
         static Log()
         {
             try
             {
+                // check for support
                 System.Console.SetCursorPosition(System.Console.CursorLeft, System.Console.CursorTop);
+                // check if the user requested it
+                ProgressLogEnabled |= CommandLineProcessor.Evaluate(new Options.EnableProgressLogging());
             }
             catch (System.Exception)
             {
                 // TravisCI reports System.ArgumentOutOfRangeException for the 'left' parameter
-                ProgressLogEnabled = false;
+                // intentional silent fallthrough
             }
             if (OSUtilities.IsLinuxHosting)
             {
@@ -53,7 +56,6 @@ namespace Bam.Core
                 {
                     // Linux, .NET core 2.1, X windows - SetCursorPosition is _really_ slow
                     // https://github.com/dotnet/corefx/issues/32174
-                    ProgressLogEnabled = false;
                 }
             }
         }

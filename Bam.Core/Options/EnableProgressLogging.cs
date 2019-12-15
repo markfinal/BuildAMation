@@ -30,13 +30,15 @@
 namespace Bam.Core.Options
 {
     /// <summary>
-    /// Command line option to disable progress logging. Useful for automated testing.
+    /// Command line option to enable progress logging.
+    /// Progress logging significantly slows down processing, so use it sparingly.
+    /// Note that enabling this feature is dependent on OS support.
     /// </summary>
-    public sealed class DisableProgressLogging :
+    public sealed class EnableProgressLogging :
         IBooleanCommandLineArgument
     {
         string ICommandLineArgument.ShortName => null;
-        string ICommandLineArgument.LongName => "--noprogress";
-        string ICommandLineArgument.ContextHelp => "Disable progress logging (useful for automated testing)";
+        string ICommandLineArgument.LongName => "--progress";
+        string ICommandLineArgument.ContextHelp => "Enable progress logging. Note that this does slow down progressing, so use sparingly. OS support required.";
     }
 }
