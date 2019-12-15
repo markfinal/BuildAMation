@@ -45,7 +45,7 @@ namespace C.DefaultSettings
             var module = (settings as Bam.Core.Settings).Module;
             settings.Bits = (module as CModule).BitDepth;
             settings.DebugSymbols = (0 != (module.BuildEnvironment.Configuration & (Bam.Core.EConfiguration.Debug | Bam.Core.EConfiguration.Profile)));
-            settings.WarningsAsErrors = true;
+            settings.WarningsAsErrors = false;
             settings.IncludePaths = new Bam.Core.TokenizedStringArray();
             settings.PreprocessorDefines = new PreprocessorDefinitions();
         }

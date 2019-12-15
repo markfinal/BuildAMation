@@ -48,7 +48,7 @@ namespace C.DefaultSettings
             settings.DebugSymbols = (0 != (module.BuildEnvironment.Configuration & (Bam.Core.EConfiguration.Debug | Bam.Core.EConfiguration.Profile)));
             settings.Optimization = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug)) ? EOptimization.Speed : EOptimization.Off;
             settings.OmitFramePointer = (0 != (module.BuildEnvironment.Configuration & Bam.Core.EConfiguration.NotDebug));
-            settings.WarningsAsErrors = true;
+            settings.WarningsAsErrors = false;
             settings.DisableWarnings = new Bam.Core.StringArray();
             settings.NamedHeaders = new Bam.Core.StringArray();
             settings.PreprocessOnly = false;
