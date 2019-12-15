@@ -74,7 +74,8 @@ namespace C
 
             this.SetDefaultMacrosAndMappings(EPublishingType.Library);
 
-            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim(this.GetType().Namespace);
+            var SDKname = this.GetType().Namespace;
+            this.Macros["OutputName"] = Bam.Core.TokenizedString.CreateVerbatim(SDKname);
 
             Bam.Core.TokenizedString includeDir = null;
             var libraryDirs = new Bam.Core.TokenizedStringArray();
@@ -89,7 +90,10 @@ namespace C
                 publishRoot.Parse();
             }
 
-            this.useExistingSDK = System.IO.Directory.Exists(publishRoot.ToString());
+            var prebuiltExists = System.IO.Directory.Exists(publishRoot.ToString());
+            var sdkBuildOptions = Bam.Core.CommandLineProcessor.Evaluate(new Options.SDKBuild());
+            this.useExistingSDK = prebuiltExists &&
+                !sdkBuildOptions.Any(item => item.Contains("*", System.StringComparer.Ordinal) || item.Contains(SDKname, System.StringComparer.OrdinalIgnoreCase));
             if (this.useExistingSDK)
             {
                 this.UsePrebuiltSDK(publishRoot, out includeDir, libs, libraryDirs);
