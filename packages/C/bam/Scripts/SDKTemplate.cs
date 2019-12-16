@@ -303,12 +303,34 @@ namespace C
                     copiedHeaders.Add(copiedHeader);
                 }
             }
-            foreach (var libraryModule in this.realLibraryModules)
+            var allLibsToGatherHeadersFrom = new Bam.Core.Array<IPublicHeaders>();
+            void recurse(
+                Bam.Core.Module module)
             {
-                if (libraryModule is IPublicHeaders publicHeaders)
+                if (!(module is CModule))
                 {
-                    publishHeaders(publicHeaders.PublicHeaders);
+                    return;
                 }
+                if (module is IPublicHeaders pubHeaders)
+                {
+                    allLibsToGatherHeadersFrom.AddUnique(pubHeaders);
+                }
+                foreach (var dep in module.Dependents)
+                {
+                    recurse(dep);
+                }
+                foreach (var req in module.Requirements)
+                {
+                    recurse(req);
+                }
+            }
+            foreach (var lib in this.realLibraryModules)
+            {
+                recurse(lib);
+            }
+            foreach (var libraryModule in allLibsToGatherHeadersFrom)
+            {
+                publishHeaders(libraryModule.PublicHeaders);
             }
             if (this.copiedHeaders.Any())
             {
