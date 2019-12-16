@@ -303,34 +303,12 @@ namespace C
                     copiedHeaders.Add(copiedHeader);
                 }
             }
-            var allLibsToGatherHeadersFrom = new Bam.Core.Array<IPublicHeaders>();
-            void recurse(
-                Bam.Core.Module module)
+            foreach (var libraryModule in this.realLibraryModules)
             {
-                if (!(module is CModule))
+                if (libraryModule is IPublicHeaders publicHeaders)
                 {
-                    return;
+                    publishHeaders(publicHeaders.PublicHeaders);
                 }
-                if (module is IPublicHeaders pubHeaders)
-                {
-                    allLibsToGatherHeadersFrom.AddUnique(pubHeaders);
-                }
-                foreach (var dep in module.Dependents)
-                {
-                    recurse(dep);
-                }
-                foreach (var req in module.Requirements)
-                {
-                    recurse(req);
-                }
-            }
-            foreach (var lib in this.realLibraryModules)
-            {
-                recurse(lib);
-            }
-            foreach (var libraryModule in allLibsToGatherHeadersFrom)
-            {
-                publishHeaders(libraryModule.PublicHeaders);
             }
             if (this.copiedHeaders.Any())
             {
@@ -344,12 +322,54 @@ namespace C
         }
 
         private void
+        GatherAllLibrariesForSDK()
+        {
+            // make modules for each of those types explicitly requested
+            foreach (var libType in this.LibraryModuleTypes)
+            {
+                var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
+                var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
+                this.realLibraryModules.Add(libraryModule);
+            }
+
+            var allLibrariesInSDK = new Bam.Core.Array<Bam.Core.Module>();
+            void recurse(
+                Bam.Core.Module module)
+            {
+                if (!(module is CModule))
+                {
+                    return;
+                }
+                if (module.GetType().Namespace != this.GetType().Namespace)
+                {
+                    return;
+                }
+                allLibrariesInSDK.AddUnique(module);
+                foreach (var dep in module.Dependents)
+                {
+                    recurse(dep);
+                }
+                foreach (var req in module.Requirements)
+                {
+                    recurse(req);
+                }
+            }
+            foreach (var lib in this.realLibraryModules)
+            {
+                recurse(lib);
+            }
+            this.realLibraryModules.AddRangeUnique(allLibrariesInSDK);
+        }
+
+        private void
         GenerateSDK(
             out Bam.Core.TokenizedString includeDir,
             Bam.Core.TokenizedStringArray libs,
             Bam.Core.TokenizedStringArray libraryDirs
         )
         {
+            this.GatherAllLibrariesForSDK();
+
             var isPrimaryOutput = true;
             foreach (var libType in this.LibraryModuleTypes)
             {
