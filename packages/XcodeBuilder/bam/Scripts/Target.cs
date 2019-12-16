@@ -689,25 +689,28 @@ namespace XcodeBuilder
                     // set the minimum version of macOS/iOS to run against
                     newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(clangMeta.MacOSXMinimumVersionSupported);
 
-                    var isXcode10 = clangMeta.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
-                    // set the CONFIGURATION_BUILD_DIR (where built products reside for this Module's configuration)
-                    var builtProductsDir = module.CreateTokenizedString("@dir($(0))", module.GeneratedPaths[module.PrimaryOutputPathKey]);
-                    if (!builtProductsDir.IsParsed)
+                    if (null != module.PrimaryOutputPathKey)
                     {
-                        builtProductsDir.Parse();
-                    }
-                    if (isXcode10)
-                    {
-                        // an absolute path is needed, or there are mkdir errors
-                        newConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue(builtProductsDir.ToString());
-                    }
-                    else
-                    {
-                        var relativeSymRoot = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
-                            Bam.Core.Graph.Instance.BuildRoot,
-                            builtProductsDir.ToString()
-                        );
-                        newConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue(relativeSymRoot);
+                        var isXcode10 = clangMeta.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
+                        // set the CONFIGURATION_BUILD_DIR (where built products reside for this Module's configuration)
+                        var builtProductsDir = module.CreateTokenizedString("@dir($(0))", module.GeneratedPaths[module.PrimaryOutputPathKey]);
+                        if (!builtProductsDir.IsParsed)
+                        {
+                            builtProductsDir.Parse();
+                        }
+                        if (isXcode10)
+                        {
+                            // an absolute path is needed, or there are mkdir errors
+                            newConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue(builtProductsDir.ToString());
+                        }
+                        else
+                        {
+                            var relativeSymRoot = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
+                                Bam.Core.Graph.Instance.BuildRoot,
+                                builtProductsDir.ToString()
+                            );
+                            newConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue(relativeSymRoot);
+                        }
                     }
                 }
                 catch (System.Collections.Generic.KeyNotFoundException)
@@ -732,14 +735,17 @@ namespace XcodeBuilder
                         newConfig["MACOSX_DEPLOYMENT_TARGET"] = new UniqueConfigurationValue(sdk_version);
                     }
 
-                    // set the CONFIGURATION_BUILD_DIR (where built products reside for this Module's configuration)
-                    var builtProductsDir = module.CreateTokenizedString("@dir($(0))", module.GeneratedPaths[module.PrimaryOutputPathKey]);
-                    if (!builtProductsDir.IsParsed)
+                    if (null != module.PrimaryOutputPathKey)
                     {
-                        builtProductsDir.Parse();
+                        // set the CONFIGURATION_BUILD_DIR (where built products reside for this Module's configuration)
+                        var builtProductsDir = module.CreateTokenizedString("@dir($(0))", module.GeneratedPaths[module.PrimaryOutputPathKey]);
+                        if (!builtProductsDir.IsParsed)
+                        {
+                            builtProductsDir.Parse();
+                        }
+                        // an absolute path is needed, or there are mkdir errors
+                        newConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue(builtProductsDir.ToString());
                     }
-                    // an absolute path is needed, or there are mkdir errors
-                    newConfig["CONFIGURATION_BUILD_DIR"] = new UniqueConfigurationValue(builtProductsDir.ToString());
                 }
 
                 return newConfig;
