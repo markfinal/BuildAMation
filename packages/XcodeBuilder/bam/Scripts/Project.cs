@@ -87,13 +87,6 @@ namespace XcodeBuilder
 
             // add the project's configuration list first
             this.AppendConfigurationList(new ConfigurationList(this));
-
-            if (null == this.Module.PrimaryOutputPathKey)
-            {
-                throw new Bam.Core.Exception(
-                    $"Cannot create Xcode project for Module {this.Module.ToString()} as it has no registered outputs"
-                );
-            }
         }
 
         private readonly System.Collections.Generic.Dictionary<string, Object> ExistingGUIDs = new System.Collections.Generic.Dictionary<string, Object>();
