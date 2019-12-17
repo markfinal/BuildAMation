@@ -172,6 +172,46 @@ namespace C
         System.Collections.Generic.IEnumerable<Module> IForwardedLibraries.ForwardedLibraries => this.realLibraryModules.Where(item => !(item is HeaderLibrary));
 
         private void
+        GatherAllLibrariesForSDK()
+        {
+            // make modules for each of those types explicitly requested
+            foreach (var libType in this.LibraryModuleTypes)
+            {
+                var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
+                var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
+                this.realLibraryModules.Add(libraryModule);
+            }
+
+            var allLibrariesInSDK = new Bam.Core.Array<Bam.Core.Module>();
+            void recurse(
+                Bam.Core.Module module)
+            {
+                if (!(module is CModule))
+                {
+                    return;
+                }
+                if (module.GetType().Namespace != this.GetType().Namespace)
+                {
+                    return;
+                }
+                allLibrariesInSDK.AddUnique(module);
+                foreach (var dep in module.Dependents)
+                {
+                    recurse(dep);
+                }
+                foreach (var req in module.Requirements)
+                {
+                    recurse(req);
+                }
+            }
+            foreach (var lib in this.realLibraryModules)
+            {
+                recurse(lib);
+            }
+            this.realLibraryModules.AddRangeUnique(allLibrariesInSDK);
+        }
+
+        private void
         UsePrebuiltSDK(
             Bam.Core.TokenizedString publishRoot,
             out Bam.Core.TokenizedString includeDir,
@@ -183,15 +223,12 @@ namespace C
             var sdkBinDir = this.CreateTokenizedString("$(0)/bin", publishRoot);
             var sdkLibDir = this.CreateTokenizedString("$(0)/lib", publishRoot);
 
-            foreach (var libType in this.LibraryModuleTypes)
+            this.GatherAllLibrariesForSDK();
+
+            foreach (var libraryModule in this.realLibraryModules)
             {
                 // when using the SDK, we don't need its component Modules to be built
                 // but do need it in the graph for collation to find it as a dependent
-                var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
-                var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
-                this.realLibraryModules.Add(libraryModule);
-                var originalLibraryModule = libraryModule;
-
                 this.UsePublicPatches(libraryModule);
                 this.DependsOn(libraryModule);
                 libraryModule.Build = false;
@@ -319,46 +356,6 @@ namespace C
             {
                 includeDir = null;
             }
-        }
-
-        private void
-        GatherAllLibrariesForSDK()
-        {
-            // make modules for each of those types explicitly requested
-            foreach (var libType in this.LibraryModuleTypes)
-            {
-                var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
-                var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
-                this.realLibraryModules.Add(libraryModule);
-            }
-
-            var allLibrariesInSDK = new Bam.Core.Array<Bam.Core.Module>();
-            void recurse(
-                Bam.Core.Module module)
-            {
-                if (!(module is CModule))
-                {
-                    return;
-                }
-                if (module.GetType().Namespace != this.GetType().Namespace)
-                {
-                    return;
-                }
-                allLibrariesInSDK.AddUnique(module);
-                foreach (var dep in module.Dependents)
-                {
-                    recurse(dep);
-                }
-                foreach (var req in module.Requirements)
-                {
-                    recurse(req);
-                }
-            }
-            foreach (var lib in this.realLibraryModules)
-            {
-                recurse(lib);
-            }
-            this.realLibraryModules.AddRangeUnique(allLibrariesInSDK);
         }
 
         private void
