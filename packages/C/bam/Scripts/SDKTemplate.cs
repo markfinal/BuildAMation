@@ -371,11 +371,8 @@ namespace C
             this.GatherAllLibrariesForSDK();
 
             var isPrimaryOutput = true;
-            foreach (var libType in this.LibraryModuleTypes)
+            foreach (var libraryModule in this.realLibraryModules)
             {
-                var findFn = Bam.Core.Graph.Instance.GetType().GetMethod("FindReferencedModule", System.Type.EmptyTypes).MakeGenericMethod(libType);
-                var libraryModule = findFn.Invoke(Bam.Core.Graph.Instance, null) as Bam.Core.Module;
-                this.realLibraryModules.Add(libraryModule);
                 this.UsePublicPatches(libraryModule);
 
                 if (libraryModule is HeaderLibrary)
@@ -383,13 +380,12 @@ namespace C
                     continue;
                 }
 
-                var includeFn = this.GetType().GetMethod("Include").MakeGenericMethod(libType);
-                var copiedBin = includeFn.Invoke(this, new[] { libraryModule.PrimaryOutputPathKey, null }) as Publisher.ICollatedObject;
+                var copiedBin = this.IncludeModule(libraryModule, libraryModule.PrimaryOutputPathKey);
                 if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
                 {
                     if (libraryModule is IDynamicLibrary)
                     {
-                        var copiedLib = includeFn.Invoke(this, new[] { DynamicLibrary.ImportLibraryKey, null }) as Publisher.ICollatedObject;
+                        var copiedLib = this.IncludeModule(libraryModule, DynamicLibrary.ImportLibraryKey);
                         copiedLibs.Add(copiedLib);
                         libraryDirs.AddUnique((copiedLib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ImportLibraryDir));
                         this.RegisterGeneratedFile(
