@@ -57,9 +57,6 @@ namespace XcodeBuilder
             var sourceRoot = module.CreateTokenizedString("$(packagedir)/");
             sourceRoot.Parse();
             this.SourceRoot = sourceRoot.ToString();
-            var buildRoot = module.CreateTokenizedString("$(buildroot)");
-            buildRoot.Parse();
-            this.BuildRoot = buildRoot.ToString();
 
             this.Module = module;
             this.Targets = new System.Collections.Generic.Dictionary<System.Type, Target>();
@@ -125,7 +122,6 @@ namespace XcodeBuilder
         /// Get the source root of the Project
         /// </summary>
         public string SourceRoot { get; private set; }
-        private string BuildRoot { get; set; }
 
         /// <summary>
         /// Get the project directory
