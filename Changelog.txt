@@ -1,3 +1,5 @@
+19-Dec-2019 Fixes #675. Implementations of Bam.Core.IOverrideModuleConfiguration in 'tests' namespaces are no longer considered when not in test mode.
+
 17-Nov-2019 Fixes #669. Bam.Core.TokenizedString 'trimstart' function no longer replaces ALL occurrences of the string. Only those that start at the front of the string.
 
 18-Sep-2019 Fixes #663. The command line option for whether the 'tests' namespace in the master package is queried for top-level modules was executed far too often (in the Module constructor!). This is now cached at Bam startup in Bam.Core.Graph.UseTestsNamespace (boolean). It is also exposed in the generated main.cs for debug projects.

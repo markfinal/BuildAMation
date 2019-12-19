@@ -216,6 +216,14 @@ namespace Bam.Core
             // look for module configuration override
             {
                 var overrides = graph.ScriptAssembly.GetTypes().Where(t => typeof(IOverrideModuleConfiguration).IsAssignableFrom(t));
+                if (graph.UseTestsNamespace)
+                {
+                    overrides = overrides.Where(item => item.Namespace.Contains(".tests"));
+                }
+                else
+                {
+                    overrides = overrides.Where(item => !item.Namespace.Contains(".tests"));
+                }
                 var numOverrides = overrides.Count();
                 if (numOverrides > 0)
                 {
