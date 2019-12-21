@@ -65,7 +65,20 @@ namespace C
         /// <summary>
         /// Return a list of Module types that are the libraries to include in the SDK.
         /// </summary>
-        public abstract Bam.Core.TypeArray LibraryModuleTypes { get; }
+        protected abstract Bam.Core.TypeArray LibraryModuleTypes { get; }
+
+        /// <summary>
+        /// Get an array (that's modifiable) of all module types of libraries populated in the SDK.
+        /// </summary>
+        /// <returns>Array of library Module types.</returns>
+        public Bam.Core.TypeArray
+        SDKLibraryTypes()
+        {
+            var array = new Bam.Core.TypeArray(
+                this.realLibraryModules.Where(item => !(item is HeaderLibrary)).Select(item => item.GetType())
+            );
+            return array;
+        }
 
         protected override void
         Init()

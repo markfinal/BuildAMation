@@ -518,7 +518,7 @@ namespace C
                     $"Module {this.ToString()} has already used SDK {dependent.ToString()}"
                 );
             }
-            var sdkLibraryTypes = new Bam.Core.TypeArray(dependent.LibraryModuleTypes);
+            var sdkLibraryTypes = dependent.SDKLibraryTypes();
             this.sdkLibraryLinksAllowed.Add(dependent, sdkLibraryTypes);
             return sdkLibraryTypes;
         }
@@ -548,7 +548,7 @@ namespace C
                     $"Module {this.ToString()} has already used SDK {dependent.ToString()}"
                 );
             }
-            var sdkLibraryTypes = new Bam.Core.TypeArray(dependent.LibraryModuleTypes);
+            var sdkLibraryTypes = dependent.SDKLibraryTypes();
             this.sdkLibraryLinksAllowed.Add(dependent, sdkLibraryTypes);
             return sdkLibraryTypes;
         }
