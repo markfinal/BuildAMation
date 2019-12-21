@@ -297,12 +297,12 @@ namespace C
                 var libAsCModule = library as C.CModule;
                 if (null == libAsCModule)
                 {
-                    if (library is C.SDKTemplate)
+                    if (library is C.SDKTemplate sdkLibrary)
                     {
                         if (library.MetaData is XcodeBuilder.Target libraryTarget)
                         {
                             target.Requires(libraryTarget);
-                            foreach (var forwarded in (library as IForwardedLibraries).ForwardedLibraries)
+                            foreach (var forwarded in module.SDKLibrariesToLinkAgainst(sdkLibrary))
                             {
                                 if (forwarded is C.IDynamicLibrary)
                                 {

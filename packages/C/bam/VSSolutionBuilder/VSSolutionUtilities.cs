@@ -63,14 +63,14 @@ namespace C
                     {
                         throw new Bam.Core.Exception($"Frameworks are not supported on Windows: {input.ToString()}");
                     }
-                    else if (input is SDKTemplate)
+                    else if (input is SDKTemplate sdkInput)
                     {
                         config.RequiresProject(solution.EnsureProjectExists(input.GetType(), input.BuildEnvironment));
-                        foreach (var forwarded in (input as IForwardedLibraries).ForwardedLibraries)
+                        foreach (var sdkLib in module.SDKLibrariesToLinkAgainst(sdkInput))
                         {
                             (module.Tool as C.LinkerTool).ProcessLibraryDependency(
                                 module as CModule,
-                                forwarded as CModule
+                                sdkLib as CModule
                             );
                         }
                     }

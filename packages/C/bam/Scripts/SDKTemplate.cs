@@ -65,7 +65,7 @@ namespace C
         /// <summary>
         /// Return a list of Module types that are the libraries to include in the SDK.
         /// </summary>
-        protected abstract Bam.Core.TypeArray LibraryModuleTypes { get; }
+        public abstract Bam.Core.TypeArray LibraryModuleTypes { get; }
 
         protected override void
         Init()

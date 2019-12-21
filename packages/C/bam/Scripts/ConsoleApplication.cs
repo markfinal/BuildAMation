@@ -44,6 +44,7 @@ namespace C
         /// </summary>
         protected Bam.Core.Array<Bam.Core.Module> sourceModules = new Bam.Core.Array<Bam.Core.Module>();
         private readonly Bam.Core.Array<Bam.Core.Module> linkedModules = new Bam.Core.Array<Bam.Core.Module>();
+        private System.Collections.Generic.Dictionary<SDKTemplate, Bam.Core.TypeArray> sdkLibraryLinksAllowed = new System.Collections.Generic.Dictionary<SDKTemplate, Bam.Core.TypeArray>();
 
         /// <summary>
         /// Path key representing the executable
@@ -463,7 +464,7 @@ namespace C
             this.UsePublicPatchesPrivately(dependent);
         }
 
-        Bam.Core.Module
+        DependentModule
         UseSDKInternal<DependentModule>(
             CModule affectedSource,
             params CModule[] additionalSources) where DependentModule : SDKTemplate, new()
@@ -499,7 +500,8 @@ namespace C
         /// <param name="affectedSource">Required source module.</param>
         /// <param name="additionalSources">Optional list of additional sources.</param>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public void
+        /// <returns>Array of types for the SDK libraries to link against. This can be modified to reduce the number of libraries to link. Default is all the libraries the SDK is configured to build.</returns>
+        public Bam.Core.TypeArray
         UseSDK<DependentModule>(
             CModule affectedSource,
             params CModule[] additionalSources) where DependentModule : SDKTemplate, new()
@@ -507,9 +509,18 @@ namespace C
             var dependent = this.UseSDKInternal<DependentModule>(affectedSource, additionalSources);
             if (null == dependent)
             {
-                return;
+                return null;
             }
             this.UsePublicPatchesPrivately(dependent);
+            if (this.sdkLibraryLinksAllowed.ContainsKey(dependent))
+            {
+                throw new Bam.Core.Exception(
+                    $"Module {this.ToString()} has already used SDK {dependent.ToString()}"
+                );
+            }
+            var sdkLibraryTypes = new Bam.Core.TypeArray(dependent.LibraryModuleTypes);
+            this.sdkLibraryLinksAllowed.Add(dependent, sdkLibraryTypes);
+            return sdkLibraryTypes;
         }
 
         /// <summary>
@@ -519,7 +530,8 @@ namespace C
         /// <param name="affectedSource">Required source module.</param>
         /// <param name="additionalSources">Optional list of additional sources.</param>
         /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
-        public void
+        /// <returns>Array of types for the SDK libraries to link against. This can be modified to reduce the number of libraries to link. Default is all the libraries the SDK is configured to build.</returns>
+        public Bam.Core.TypeArray
         UseSDKPublicly<DependentModule>(
             CModule affectedSource,
             params CModule[] additionalSources) where DependentModule : SDKTemplate, new()
@@ -527,9 +539,18 @@ namespace C
             var dependent = this.UseSDKInternal<DependentModule>(affectedSource, additionalSources);
             if (null == dependent)
             {
-                return;
+                return null;
             }
             this.UsePublicPatches(dependent);
+            if (this.sdkLibraryLinksAllowed.ContainsKey(dependent))
+            {
+                throw new Bam.Core.Exception(
+                    $"Module {this.ToString()} has already used SDK {dependent.ToString()}"
+                );
+            }
+            var sdkLibraryTypes = new Bam.Core.TypeArray(dependent.LibraryModuleTypes);
+            this.sdkLibraryLinksAllowed.Add(dependent, sdkLibraryTypes);
+            return sdkLibraryTypes;
         }
 
         /// <summary>
@@ -634,12 +655,24 @@ namespace C
                             }
                             else if (library is IForwardedLibraries forwardedLibs)
                             {
-                                // e.g. in an SDK
-                                foreach (var fwd in forwardedLibs.ForwardedLibraries)
+                                if (library is SDKTemplate sdk)
                                 {
-                                    if (fwd is CModule fwdCModule)
+                                    foreach (var fwd in this.SDKLibrariesToLinkAgainst(sdk))
                                     {
-                                        (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, fwdCModule);
+                                        if (fwd is CModule fwdCModule)
+                                        {
+                                            (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, fwdCModule);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (var fwd in forwardedLibs.ForwardedLibraries)
+                                    {
+                                        if (fwd is CModule fwdCModule)
+                                        {
+                                            (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, fwdCModule);
+                                        }
                                     }
                                 }
                             }
@@ -668,12 +701,24 @@ namespace C
                             }
                             else if (library is IForwardedLibraries forwardedLibs)
                             {
-                                // e.g. in an SDK
-                                foreach (var fwd in forwardedLibs.ForwardedLibraries)
+                                if (library is SDKTemplate sdk)
                                 {
-                                    if (fwd is CModule fwdCModule)
+                                    foreach (var fwd in this.SDKLibrariesToLinkAgainst(sdk))
                                     {
-                                        (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, fwdCModule);
+                                        if (fwd is CModule fwdCModule)
+                                        {
+                                            (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, fwdCModule);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (var fwd in forwardedLibs.ForwardedLibraries)
+                                    {
+                                        if (fwd is CModule fwdCModule)
+                                        {
+                                            (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, fwdCModule);
+                                        }
                                     }
                                 }
                             }
@@ -804,5 +849,51 @@ namespace C
         /// This can be used to attach local patches or dependencies, e.g. to satisfy header search paths.
         /// </summary>
         public WinResource WindowsVersionResource { get; private set; }
+
+        /// <summary>
+        /// Return enumeration of the SDK libraries that this Module has requested to link against.
+        /// </summary>
+        /// <param name="sdk">Linked SDK that is filtered</param>
+        /// <returns>Enumeration of libraries to link against</returns>
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        SDKLibrariesToLinkAgainst(
+            SDKTemplate sdk)
+        {
+            if (!this.sdkLibraryLinksAllowed.ContainsKey(sdk))
+            {
+                throw new Bam.Core.Exception($"Unable to locate SDK {sdk.ToString()}");
+            }
+            var sdkLibraries = (sdk as IForwardedLibraries).ForwardedLibraries;
+            var filteredLibraryTypes = this.sdkLibraryLinksAllowed[sdk];
+            if (!filteredLibraryTypes.Any())
+            {
+                throw new Bam.Core.Exception(
+                    $"Module {this.ToString()} has removed all libraries to link against for SDK {sdk.ToString()}"
+                );
+            }
+            foreach (var requestedLibType in filteredLibraryTypes)
+            {
+                var found = false;
+                foreach (var lib in sdkLibraries)
+                {
+                    if (lib.GetType() == requestedLibType)
+                    {
+                        found = true;
+                        yield return lib;
+                        break;
+                    }
+                }
+                if (!found)
+                {
+                    var message = new System.Text.StringBuilder();
+                    message.AppendLine($"Module {this.ToString()} has requested linking against library {requestedLibType.ToString()} in SDK {sdk.ToString()} but only the following libraries are available:");
+                    foreach (var lib in sdkLibraries)
+                    {
+                        message.AppendLine($"\t{lib.ToString()}");
+                    }
+                    throw new Bam.Core.Exception(message.ToString());
+                }
+            }
+        }
     }
 }
