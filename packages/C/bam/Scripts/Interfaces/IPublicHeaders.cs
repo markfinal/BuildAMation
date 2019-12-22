@@ -35,9 +35,14 @@ namespace C
     interface IPublicHeaders
     {
         /// <summary>
-        /// A list of partial-paths (relative to the package dir) to header files associated with the Module
+        /// Root directory for all source header files. If null, defaults to the $(packagedir).
+        /// </summary>
+        Bam.Core.TokenizedString SourceRootDirectory { get; }
+
+        /// <summary>
+        /// A list of partial-paths (relative to the SourceRootDirectory) to header files associated with the Module
         /// implemented upon that is included in an SDK
         /// </summary>
-        Bam.Core.StringArray PublicHeaders { get; }
+        Bam.Core.StringArray PublicHeaderPaths { get; }
     }
 }

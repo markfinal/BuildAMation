@@ -307,13 +307,13 @@ namespace C
             out Bam.Core.TokenizedString includeDir
         )
         {
-            void publishHeaders(
+            void publishHeadersInternal(
+                string srcRootDir,
                 Bam.Core.StringArray paths)
             {
-                var packageDir = this.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].ToString();
                 foreach (var headerPath in paths)
                 {
-                    var src = System.IO.Path.Combine(packageDir, headerPath);
+                    var src = System.IO.Path.Combine(srcRootDir, headerPath);
                     var option = src.Contains("**") ? System.IO.SearchOption.AllDirectories : System.IO.SearchOption.TopDirectoryOnly;
                     var files = System.IO.Directory.GetFiles(
                         System.IO.Path.GetDirectoryName(src),
@@ -328,7 +328,7 @@ namespace C
                     }
                     foreach (var file in files)
                     {
-                        var relativePath = System.IO.Path.GetRelativePath(packageDir, file);
+                        var relativePath = System.IO.Path.GetRelativePath(srcRootDir, file);
                         var dst = this.HonourHeaderFileLayout ?
                             this.CreateTokenizedString($"$(0)/{System.IO.Path.GetDirectoryName(relativePath)}", this.HeaderDir) :
                             this.CreateTokenizedString($"$(0)", this.HeaderDir);
@@ -336,13 +336,29 @@ namespace C
                     }
                 }
             }
+            void publishHeaders(
+                IPublicHeaders pubHeaders)
+            {
+                var srcRootDir = pubHeaders.SourceRootDirectory ?? this.Macros[Bam.Core.ModuleMacroNames.PackageDirectory];
+                if (!srcRootDir.IsParsed)
+                {
+                    srcRootDir.Parse();
+                }
+                publishHeadersInternal(srcRootDir.ToString(), pubHeaders.PublicHeaderPaths);
+            }
+            void publishPaths(
+                Bam.Core.StringArray paths)
+            {
+                var packageDir = this.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].ToString();
+                publishHeadersInternal(packageDir, paths);
+            }
             if (!this.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].IsParsed)
             {
                 this.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].Parse();
             }
             if (null != this.ExtraHeaderFiles)
             {
-                publishHeaders(this.ExtraHeaderFiles);
+                publishPaths(this.ExtraHeaderFiles);
             }
             if ((null != this.GeneratedHeaderTypes) && this.GeneratedHeaderTypes.Any())
             {
@@ -357,7 +373,7 @@ namespace C
             {
                 if (libraryModule is IPublicHeaders publicHeaders)
                 {
-                    publishHeaders(publicHeaders.PublicHeaders);
+                    publishHeaders(publicHeaders);
                 }
             }
             if (this.copiedHeaders.Any())
