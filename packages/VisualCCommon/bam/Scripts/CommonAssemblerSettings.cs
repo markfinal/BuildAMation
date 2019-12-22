@@ -61,7 +61,7 @@ namespace VisualCCommon
         [VisualStudioProcessor.Bool("GenerateDebugInformation")]
         bool C.ICommonAssemblerSettings.DebugSymbols { get; set; }
 
-        [CommandLineProcessor.Bool("-WX", "-WX-")]
+        [CommandLineProcessor.Bool("-WX", "")]
         [VisualStudioProcessor.Bool("TreatWarningsAsErrors")]
         bool C.ICommonAssemblerSettings.WarningsAsErrors { get; set; }
 
