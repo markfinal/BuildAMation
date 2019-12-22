@@ -479,6 +479,7 @@ namespace Publisher
                 this.Mapping.Register(typeof(C.OSXFramework), C.OSXFramework.FrameworkKey, this.Macros["macOSAppBundleFrameworksDir"], true);
             }
             this.Mapping.Register(typeof(C.HeaderFile), C.HeaderFile.HeaderFileKey, this.HeaderDir, false);
+            this.Mapping.Register(typeof(C.PreprocessedFile), C.PreprocessedFile.PreprocessedFileKey, this.HeaderDir, false);
         }
 
         /// <summary>
