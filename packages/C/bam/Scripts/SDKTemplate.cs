@@ -154,7 +154,7 @@ namespace C
                             linkerName.Build = !this.useExistingSDK;
                             soName = Bam.Core.Module.Create<SONameSymbolicLink>(preInitCallback: module =>
                             {
-                                module.Macros.Add("SymlinkFilename", libraryModule.CreateTokenizedString("$(dynamicprefix)$(OutputName)$(sonameext)"));
+                                module.Macros.Add("SymlinkFilename", linuxLinker.SharedObjectName);
                                 module.SharedObject = libraryModule as C.ConsoleApplication;
                             });
                             soName.Build = !this.useExistingSDK;
