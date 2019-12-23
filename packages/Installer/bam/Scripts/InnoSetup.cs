@@ -54,7 +54,8 @@ namespace Installer
                 this.CreateTokenizedString(
                     "$(buildroot)/$(0)/$(config)/script.iss",
                     new[] { parentModule.Macros[Bam.Core.ModuleMacroNames.ModuleName] }
-                )
+                ),
+                true
             );
         }
 

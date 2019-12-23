@@ -69,7 +69,8 @@ namespace Installer
 
             this.RegisterGeneratedFile(
                 DMGKey,
-                this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).dmg")
+                this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName).dmg"),
+                true
             );
 
             this.Tool = Bam.Core.Graph.Instance.FindReferencedModule<DiskImageCompiler>();

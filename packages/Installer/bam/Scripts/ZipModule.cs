@@ -60,7 +60,8 @@ namespace Installer
             }
             this.RegisterGeneratedFile(
                 ZipKey,
-                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(zipoutputbasename).zip")
+                this.CreateTokenizedString("$(packagebuilddir)/$(moduleoutputdir)/$(zipoutputbasename).zip"),
+                true
             );
 
             this.InputPath = this.Macros["pathtozip"];

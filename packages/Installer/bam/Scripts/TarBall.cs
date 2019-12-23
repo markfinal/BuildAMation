@@ -189,7 +189,8 @@ namespace Installer
 
             this.RegisterGeneratedFile(
                 TarBallKey,
-                this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName)$(tarext)")
+                this.CreateTokenizedString("$(buildroot)/$(config)/$(OutputName)$(tarext)"),
+                true
             );
 
             this.InputFiles = Bam.Core.Module.Create<TarInputFiles>();
