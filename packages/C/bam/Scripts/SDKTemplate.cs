@@ -68,16 +68,22 @@ namespace C
         protected abstract Bam.Core.TypeArray LibraryModuleTypes { get; }
 
         /// <summary>
+        /// Allow filtering of the libraries passed into SDK for those that are exposed.
+        /// </summary>
+        /// <returns>Enumeration of Modules that are exposed from the SDK.</returns>
+        protected virtual System.Collections.Generic.IEnumerable<Module> LibraryFilter()
+        {
+            return this.realLibraryModules.Where(item => !(item is HeaderLibrary) && !(item is Plugin) && !(item is Cxx.Plugin));
+        }
+
+        /// <summary>
         /// Get an array (that's modifiable) of all module types of libraries populated in the SDK.
         /// </summary>
         /// <returns>Array of library Module types.</returns>
         public Bam.Core.TypeArray
         SDKLibraryTypes()
         {
-            var array = new Bam.Core.TypeArray(
-                this.realLibraryModules.Where(item => !(item is HeaderLibrary)).Select(item => item.GetType())
-            );
-            return array;
+            return new Bam.Core.TypeArray(this.LibraryFilter().Select(item => item.GetType()));
         }
 
         protected override void
@@ -182,7 +188,7 @@ namespace C
             }
         }
 
-        System.Collections.Generic.IEnumerable<Module> IForwardedLibraries.ForwardedLibraries => this.realLibraryModules.Where(item => !(item is HeaderLibrary));
+        System.Collections.Generic.IEnumerable<Module> IForwardedLibraries.ForwardedLibraries => this.LibraryFilter();
 
         private void
         GatherAllLibrariesForSDK()
