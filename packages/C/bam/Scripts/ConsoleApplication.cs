@@ -394,6 +394,25 @@ namespace C
         }
 
         /// <summary>
+        /// Application is only linked against the DependentModule type.
+        /// No publi patches of DependentModule are used.
+        /// </summary>
+        /// <typeparam name="DependentModule">The 1st type parameter.</typeparam>
+        public void
+        LinkOnlyAgainst<DependentModule>() where DependentModule : CModule, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
+
+            this.AddLinkDependency(dependent);
+            this.AddRuntimeDependency(dependent);
+            this.LinkAllForwardedDependenciesFromLibraries(dependent);
+        }
+
+        /// <summary>
         /// Application requires the DependentModule type to exist.
         /// The affected sources list for applying the dependent's public patch to is optional.
         /// </summary>
