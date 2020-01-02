@@ -271,9 +271,12 @@ namespace C
                 {
                     if (libraryModule is IDynamicLibrary)
                     {
-                        var importLibPath = libraryModule.GeneratedPaths[DynamicLibrary.ImportLibraryKey];
-                        libs.AddUnique(this.CreateTokenizedString("@filename($(0))", importLibPath));
-                        libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", importLibPath));
+                        if (!(libraryModule is Plugin || libraryModule is Cxx.Plugin))
+                        {
+                            var importLibPath = libraryModule.GeneratedPaths[DynamicLibrary.ImportLibraryKey];
+                            libs.AddUnique(this.CreateTokenizedString("@filename($(0))", importLibPath));
+                            libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", importLibPath));
+                        }
                     }
                     else
                     {
@@ -417,15 +420,18 @@ namespace C
                 {
                     if (libraryModule is IDynamicLibrary)
                     {
-                        var copiedLib = this.IncludeModule(libraryModule, DynamicLibrary.ImportLibraryKey);
-                        copiedLibs.Add(copiedLib);
-                        libraryDirs.AddUnique((copiedLib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ImportLibraryDir));
-                        this.RegisterGeneratedFile(
-                            DynamicLibrary.ImportLibraryKey,
-                            (copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
-                            isPrimaryOutput
-                        );
-                        libs.AddUnique(this.CreateTokenizedString("@filename($(0))", (copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
+                        if (!(libraryModule is Plugin || libraryModule is Cxx.Plugin))
+                        {
+                            var copiedLib = this.IncludeModule(libraryModule, DynamicLibrary.ImportLibraryKey);
+                            copiedLibs.Add(copiedLib);
+                            libraryDirs.AddUnique((copiedLib as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ImportLibraryDir));
+                            this.RegisterGeneratedFile(
+                                DynamicLibrary.ImportLibraryKey,
+                                (copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
+                                isPrimaryOutput
+                            );
+                            libs.AddUnique(this.CreateTokenizedString("@filename($(0))", (copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
+                        }
                     }
                     else
                     {
