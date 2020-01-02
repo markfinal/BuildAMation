@@ -238,6 +238,7 @@ namespace C
             Bam.Core.TokenizedStringArray libraryDirs
         )
         {
+            // TODO: none of these cope with customisations to the output locations
             includeDir = this.CreateTokenizedString("$(0)/include", publishRoot);
             var sdkBinDir = this.CreateTokenizedString("$(0)/bin", publishRoot);
             var sdkLibDir = this.CreateTokenizedString("$(0)/lib", publishRoot);
