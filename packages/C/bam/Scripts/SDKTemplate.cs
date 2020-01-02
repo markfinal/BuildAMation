@@ -437,7 +437,7 @@ namespace C
                     else
                     {
                         copiedLibs.Add(copiedBin);
-                        libraryDirs.AddUnique((copiedBin as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.ImportLibraryDir));
+                        libraryDirs.AddUnique((copiedBin as Publisher.CollatedObject).CreateTokenizedString("$(0)", this.StaticLibraryDir));
                         this.RegisterGeneratedFile(
                             libraryModule.PrimaryOutputPathKey,
                             (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey],
