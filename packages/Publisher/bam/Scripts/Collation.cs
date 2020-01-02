@@ -223,7 +223,10 @@ namespace Publisher
 
         private readonly Bam.Core.Array<Bam.Core.Module> dynamicLibraries = new Bam.Core.Array<Bam.Core.Module>();
 
-        protected Bam.Core.TokenizedString PublishRoot { get; set; }
+        /// <summary>
+        /// Get the publishing root of this collation.
+        /// </summary>
+        protected Bam.Core.TokenizedString PublishRoot { get; private set; }
 
         /// <summary>
         /// Set or get the directory where executables are published.
