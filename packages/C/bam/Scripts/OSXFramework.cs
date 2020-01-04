@@ -65,7 +65,7 @@ namespace C
                 Bam.Core.OSUtilities.GetInstallLocation("xcrun").First(),
                 $"--sdk {clangMeta["SDK"]} otool -DX {frameworkPath.ToString()}" // should use clangMeta.SDK, but this avoids a compile time dependency
             ).StandardOutput;
-            this.Macros["IDName"] = Bam.Core.TokenizedString.CreateVerbatim(idName);
+            this.Macros.GetUnformatted("IDName").SetVerbatim(idName);
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace C
         Init()
         {
             base.Init();
-            this.Macros["FrameworkLibraryPath"] = this.FrameworkLibraryPath;
+            this.Macros.Add("FrameworkLibraryPath", this.FrameworkLibraryPath);
             this.GetIDName();
         }
 

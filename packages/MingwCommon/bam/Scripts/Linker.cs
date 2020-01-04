@@ -53,13 +53,13 @@ namespace MingwCommon
             this.Macros.AddVerbatim(C.ModuleMacroNames.LibraryFileExtension, ".a");
 
             this.InheritedEnvironmentVariables.Add("TEMP");
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros["BinPath"]));
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros.GetUnformatted("BinPath")));
         }
 
         /// <summary>
         /// Executable path to tool
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros["LinkerPath"];
+        public override Bam.Core.TokenizedString Executable => this.Macros.GetUnformatted("LinkerPath");
 
         /// <summary>
         /// Command line switch to identify response file

@@ -41,7 +41,7 @@ namespace Publisher
             // copy just when the destination doesn't exist
             // TODO: since this doesn't cope with changes in the original, extend with hash information?
             this.ReasonToExecute = null;
-            var pathKey = this.Macros.Contains("RenameLeaf") ? CopiedRenamedDirectoryKey : CopiedDirectoryKey;
+            var pathKey = this.Macros.ContainsUnformatted("RenameLeaf") ? CopiedRenamedDirectoryKey : CopiedDirectoryKey;
             var copiedPath = this.GeneratedPaths[pathKey].ToString();
             var exists = System.IO.Directory.Exists(copiedPath);
             if (!exists)

@@ -185,7 +185,7 @@ namespace Publisher
             }
             else
             {
-                this.publishingDirectory.Set(original, positional);
+                this.publishingDirectory.Set(original, this, positional);
             }
         }
 
@@ -260,7 +260,7 @@ namespace Publisher
             }
             else if (this is CollatedDirectory)
             {
-                if (this.Macros.Contains("RenameLeaf"))
+                if (this.Macros.ContainsUnformatted("RenameLeaf"))
                 {
                     this.RegisterGeneratedFile(
                         CopiedRenamedDirectoryKey,

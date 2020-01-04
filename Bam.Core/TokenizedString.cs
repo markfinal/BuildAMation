@@ -140,7 +140,7 @@ namespace Bam.Core
         private TokenizedStringArray PositionalTokens = null;
         private string CreationStackTrace = null;
         private int RefCount = 1;
-        private readonly EFlags Flags = EFlags.None;
+        private EFlags Flags = EFlags.None;
         private long hash = 0;
         private string parsedStackTrace = null;
 
@@ -241,16 +241,8 @@ namespace Bam.Core
             TokenizedStringArray positionalTokens,
             EFlags flags)
         {
-            this.ModuleWithMacros = moduleWithMacros;
-            this.Verbatim = verbatim;
             this.Flags |= flags;
-            this.SetInternal(original, (null != positionalTokens) ? positionalTokens.ToArray() : null);
-
-            if (verbatim)
-            {
-                this.ParsedString = original;
-                this.parsedStackTrace = GetStacktrace();
-            }
+            this.SetInternal(original, moduleWithMacros, positionalTokens?.ToArray(), verbatim);
         }
 
         private static System.Int64
@@ -474,12 +466,18 @@ namespace Bam.Core
                 message.AppendLine();
                 message.AppendLine("Created at:");
                 message.AppendLine(this.CreationStackTrace);
-                message.AppendLine($"Module with macros: {this.ModuleWithMacros}");
                 if (this.ModuleWithMacros != null)
                 {
-                    foreach (var macro in this.ModuleWithMacros.Macros.Dict)
+                    message.AppendLine($"Module with macros: {this.ModuleWithMacros}");
+                    message.AppendLine("\tParsed:");
+                    foreach (var (key,value) in this.ModuleWithMacros.Macros.Where(item => item.Value.IsParsed))
                     {
-                        message.AppendLine($"\t{macro.Key} = {macro.Value.OriginalString}");
+                        message.AppendLine($"\t\t{key} = {value.ToString()}");
+                    }
+                    message.AppendLine("\tUnparsed:");
+                    foreach (var (key, _) in this.ModuleWithMacros.Macros.Where(item => !item.Value.IsParsed))
+                    {
+                        message.AppendLine($"\t\t{key}");
                     }
                 }
                 throw new Exception(message.ToString());
@@ -689,19 +687,19 @@ namespace Bam.Core
                 }
 
                 // step 2 : try to resolve with custom macros passed to the Parse function
-                if (null != customMacroArray?.FirstOrDefault(item => item.Dict.ContainsKey(token)))
+                if (null != customMacroArray?.FirstOrDefault(item => item.ContainsFormatted(token)))
                 {
-                    var containingMacroList = customMacroArray.First(item => item.Dict.ContainsKey(token));
-                    var customTokenStr = containingMacroList.Dict[token];
+                    var containingMacroList = customMacroArray.First(item => item.ContainsFormatted(token));
+                    var customTokenStr = containingMacroList.GetFormatted(token);
                     tokens.Remove(token);
                     this.ExtendParsedStringWrapper(customTokenStr, parsedString, customMacroArray, tokens, index);
                     continue;
                 }
 
                 // step 3 : try macros in the global Graph, common to all modules
-                if (graph.Macros.Dict.ContainsKey(token))
+                if (graph.Macros.ContainsFormatted(token))
                 {
-                    var graphTokenStr = graph.Macros.Dict[token];
+                    var graphTokenStr = graph.Macros.GetFormatted(token);
                     tokens.Remove(token);
                     this.ExtendParsedStringWrapper(graphTokenStr, parsedString, customMacroArray, tokens, index);
                     continue;
@@ -711,17 +709,17 @@ namespace Bam.Core
                 {
                     var tool = this.ModuleWithMacros.Tool;
                     // step 4 : try macros in the specific module
-                    if (this.ModuleWithMacros.Macros.Dict.ContainsKey(token))
+                    if (this.ModuleWithMacros.Macros.ContainsFormatted(token))
                     {
-                        var moduleMacroStr = this.ModuleWithMacros.Macros.Dict[token];
+                        var moduleMacroStr = this.ModuleWithMacros.Macros.GetFormatted(token);
                         tokens.Remove(token);
                         this.ExtendParsedStringWrapper(moduleMacroStr, parsedString, customMacroArray, tokens, index);
                         continue;
                     }
                     // step 5 : try macros in the Tool attached to the specific module
-                    else if (null != tool && tool.Macros.Dict.ContainsKey(token))
+                    else if (null != tool && tool.Macros.ContainsFormatted(token))
                     {
-                        var moduleToolMacroStr = tool.Macros.Dict[token];
+                        var moduleToolMacroStr = tool.Macros.GetFormatted(token);
                         tokens.Remove(token);
                         this.ExtendParsedStringWrapper(moduleToolMacroStr, parsedString, customMacroArray, tokens, index);
                         continue;
@@ -1097,12 +1095,12 @@ namespace Bam.Core
                 return (positionalIndex <= this.PositionalTokens.Count);
             }
             // step 2 : try to resolve with custom macros passed to the Parse function
-            else if (null != customMacroArray?.FirstOrDefault(item => item.Dict.ContainsKey(token)))
+            else if (null != customMacroArray?.FirstOrDefault(item => item.ContainsFormatted(token)))
             {
                 return true;
             }
             // step 3 : try macros in the global Graph, common to all modules
-            else if (Graph.Instance.Macros.Dict.ContainsKey(token))
+            else if (Graph.Instance.Macros.ContainsFormatted(token))
             {
                 return true;
             }
@@ -1110,12 +1108,12 @@ namespace Bam.Core
             {
                 var tool = this.ModuleWithMacros.Tool;
                 // step 4 : try macros in the specific module
-                if (this.ModuleWithMacros.Macros.Dict.ContainsKey(token))
+                if (this.ModuleWithMacros.Macros.ContainsFormatted(token))
                 {
                     return true;
                 }
                 // step 5 : try macros in the Tool attached to the specific module
-                else if (null != tool && tool.Macros.Dict.ContainsKey(token))
+                else if (null != tool && tool.Macros.ContainsFormatted(token))
                 {
                     return true;
                 }
@@ -1276,9 +1274,13 @@ namespace Bam.Core
         RefersToMacro(
             string macro)
         {
+            if (this.Verbatim)
+            {
+                return false;
+            }
             if (!(macro.StartsWith(TokenizedString.TokenPrefix, System.StringComparison.Ordinal) && macro.EndsWith(TokenizedString.TokenSuffix, System.StringComparison.Ordinal)))
             {
-                throw new Exception($"Invalid macro key: {macro}");
+                throw new Exception($"Unable to check if string '{this.OriginalString}' contains macro '{macro}' since that key is invalid");
             }
             var inString = this.OriginalString.Contains(macro);
             if (inString)
@@ -1298,13 +1300,19 @@ namespace Bam.Core
         private void
         SetInternal(
             string newString,
-            TokenizedString[] positionalTokens)
+            Module moduleWithMacros,
+            TokenizedString[] positionalTokens,
+            bool verbatim)
         {
             if (null != this.ParsedString)
             {
-                throw new Exception(
-                    $"Cannot change the TokenizedString '{this.OriginalString}' to '{newString}' as it has been parsed already"
-                );
+                // verbatim strings can just be replaced
+                if (!this.Verbatim)
+                {
+                    throw new Exception(
+                        $"Cannot change the TokenizedString '{this.OriginalString}' to '{newString}' as it has been parsed already"
+                    );
+                }
             }
             this.CreationStackTrace = GetStacktrace();
             this.PositionalTokens = new TokenizedStringArray();
@@ -1313,29 +1321,30 @@ namespace Bam.Core
                 this.PositionalTokens.AddRange(positionalTokens);
             }
             this.OriginalString = newString;
+            this.ModuleWithMacros = moduleWithMacros;
+            this.Verbatim = verbatim;
+            if (this.Verbatim)
+            {
+                this.ParsedString = newString;
+                this.parsedStackTrace = GetStacktrace();
+            }
+            else
+            {
+                this.ParsedString = null;
+                this.parsedStackTrace = null;
+            }
         }
 
-        /// <summary>
-        /// Change an existing TokenizedString's definition. This is only possible when the string has yet to be parsed.
-        /// </summary>
-        /// <param name="newString">Unparsed token based string to use.</param>
-        /// <param name="positionalTokens">Any positional arguments referenced in the unparsed string.</param>
-        public void
-        Set(
-            string newString,
-            TokenizedString[] positionalTokens)
+        private void
+        RemoveFromCache()
         {
-            this.SetInternal(newString, positionalTokens);
-            var newHash = CalculateHash(this.OriginalString, this.ModuleWithMacros, this.Verbatim, this.PositionalTokens);
             if (0 == (Flags & EFlags.NoCache))
             {
-                // update previous caches
                 if (this.Verbatim)
                 {
                     lock (VerbatimCacheMap)
                     {
                         VerbatimCacheMap.Remove(this.hash);
-                        VerbatimCacheMap.Add(newHash, this);
                     }
                 }
                 else
@@ -1344,11 +1353,78 @@ namespace Bam.Core
                     lock (cache)
                     {
                         cache.Remove(this.hash);
-                        cache.Add(newHash, this);
+                    }
+                }
+            }
+        }
+
+        private void
+        AddModifiedToCache()
+        {
+            var newHash = CalculateHash(this.OriginalString, this.ModuleWithMacros, this.Verbatim, this.PositionalTokens);
+            if (0 == (Flags & EFlags.NoCache))
+            {
+                if (this.Verbatim)
+                {
+                    lock (VerbatimCacheMap)
+                    {
+                        if (!VerbatimCacheMap.ContainsKey(newHash))
+                        {
+                            VerbatimCacheMap.Add(newHash, this);
+                        }
+                        else
+                        {
+                            this.Flags |= EFlags.NoCache;
+                        }
+                    }
+                }
+                else
+                {
+                    var cache = (this.ModuleWithMacros != null) ? this.ModuleWithMacros.TokenizedStringCacheMap : NoModuleCacheMap;
+                    lock (cache)
+                    {
+                        if (!cache.ContainsKey(newHash))
+                        {
+                            cache.Add(newHash, this);
+                        }
+                        else
+                        {
+                            this.Flags |= EFlags.NoCache;
+                        }
                     }
                 }
             }
             this.hash = newHash;
+        }
+
+        /// <summary>
+        /// Change an existing TokenizedString's definition to a verbatim. This is only possible when the string has yet to be parsed.
+        /// </summary>
+        /// <param name="newString">Unparsed token based string to use.</param>
+        public void
+        SetVerbatim(
+            string newString)
+        {
+            this.RemoveFromCache();
+            this.SetInternal(newString, null, null, true);
+            this.AddModifiedToCache();
+        }
+
+        /// <summary>
+        /// Change an existing TokenizedString's definition to a non-verbatim string. This is only possible when the string has yet to be parsed.
+        /// </summary>
+        /// <param name="newString">Unparsed token based string to use.</param>
+        /// <param name="moduleWithMacros">Module to use to search for macros. May be null.</param>
+        /// <param name="positionalTokens">Optional, positional arguments referenced in the unparsed string. Default is null.</param>
+        public void
+        Set(
+            string newString,
+            Module moduleWithMacros,
+            TokenizedString[] positionalTokens = null)
+        {
+            this.RemoveFromCache();
+            this.SetInternal(newString, moduleWithMacros, positionalTokens, false);
+            this.AddModifiedToCache();
         }
 
         /// <summary>

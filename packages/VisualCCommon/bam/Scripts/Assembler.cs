@@ -87,7 +87,7 @@ namespace VisualCCommon
         /// <summary>
         /// Executable path for the tool
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros["AssemblerPath"];
+        public override Bam.Core.TokenizedString Executable => this.Macros.GetUnformatted("AssemblerPath");
 
         /// <summary>
         /// Command line switch for response files

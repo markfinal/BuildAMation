@@ -76,7 +76,7 @@ namespace C
                 SOSymLinkKey,
                 this.CreateTokenizedString("@dir($(0))/$(1)",
                                             this.SharedObject.GeneratedPaths[ConsoleApplication.ExecutableKey],
-                                            this.Macros["SymlinkFilename"]),
+                                            this.Macros.GetUnformatted("SymlinkFilename")),
                 true
             );
         }
@@ -99,7 +99,11 @@ namespace C
                 value.DependsOn(this);
 
                 // ensure that the symlink is called the same as what it is linking to
-                this.Macros[Bam.Core.ModuleMacroNames.OutputName] = value.Macros[Bam.Core.ModuleMacroNames.OutputName];
+                this.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.OutputName).Set(
+                    "$(0)",
+                    null,
+                    new[] { value.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.OutputName) }
+                );
             }
         }
 
@@ -206,7 +210,7 @@ namespace C
                 SOSymLinkKey,
                 this.CreateTokenizedString("$(0)/$(1)",
                                            newRoot,
-                                           this.Macros["SymlinkFilename"]),
+                                           this.Macros.GetUnformatted("SymlinkFilename")),
                 true
             );
         }

@@ -527,7 +527,7 @@ namespace XcodeBuilder
                 projectConfig["ALWAYS_SEARCH_USER_PATHS"] = new UniqueConfigurationValue("YES");
 
                 // reset SRCROOT, or it is taken to be where the workspace is
-                var pkgdir = this.Module.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].ToString() + "/";
+                var pkgdir = this.Module.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.PackageDirectory).ToString() + "/";
                 var relativeSourcePath = Bam.Core.RelativePathUtilities.GetRelativePathFromRoot(
                     System.IO.Path.GetDirectoryName(this.ProjectDir.ToString()),
                     pkgdir
@@ -536,7 +536,7 @@ namespace XcodeBuilder
 
                 var isXcode10 = clangMeta.ToolchainVersion.AtLeast(ClangCommon.ToolchainVersion.Xcode_10);
                 // set the SYMROOT, which isn't where we want per-Module output to go
-                var builtProductsDir = Bam.Core.Graph.Instance.Macros[Bam.Core.GraphMacroNames.BuildRoot];
+                var builtProductsDir = Bam.Core.Graph.Instance.Macros.GetUnformatted(Bam.Core.GraphMacroNames.BuildRoot);
                 if (isXcode10)
                 {
                     // an absolute path is needed, or there are mkdir errors
@@ -583,8 +583,8 @@ namespace XcodeBuilder
                         foreach (var file in diff)
                         {
                             var fullPath = file.FileRef.Path.ToString();
-                            var package_build_dir = this.Module.Macros[Bam.Core.ModuleMacroNames.PackageBuildDirectory].ToString();
-                            var srcRoot = this.Module.Macros[Bam.Core.ModuleMacroNames.PackageDirectory].ToString();
+                            var package_build_dir = this.Module.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.PackageBuildDirectory).ToString();
+                            var srcRoot = this.Module.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.PackageDirectory).ToString();
                             if (fullPath.StartsWith(package_build_dir))
                             {
                                 var excluded_path = "$(SYMROOT)" + fullPath.Replace(package_build_dir, "");

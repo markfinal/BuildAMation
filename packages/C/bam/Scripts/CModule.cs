@@ -112,10 +112,24 @@ namespace C
             string minor,
             string patch)
         {
-            this.Macros[ModuleMacroNames.MajorVersion] = Bam.Core.TokenizedString.CreateVerbatim(major);
+            if (this.Macros.ContainsUnformatted(ModuleMacroNames.MajorVersion))
+            {
+                this.Macros.GetUnformatted(ModuleMacroNames.MajorVersion).SetVerbatim(major);
+            }
+            else
+            {
+                this.Macros.AddVerbatim(ModuleMacroNames.MajorVersion, major);
+            }
             if (minor != null)
             {
-                this.Macros[ModuleMacroNames.MinorVersion] = Bam.Core.TokenizedString.CreateVerbatim(minor);
+                if (this.Macros.ContainsUnformatted(ModuleMacroNames.MinorVersion))
+                {
+                    this.Macros.GetUnformatted(ModuleMacroNames.MinorVersion).SetVerbatim(minor);
+                }
+                else
+                {
+                    this.Macros.AddVerbatim(ModuleMacroNames.MinorVersion, minor);
+                }
             }
             else
             {

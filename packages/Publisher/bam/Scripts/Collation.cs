@@ -229,114 +229,79 @@ namespace Publisher
         protected Bam.Core.TokenizedString PublishRoot { get; private set; }
 
         /// <summary>
-        /// Set or get the directory where executables are published.
+        /// Get the directory where executables are published.
         /// </summary>
         public Bam.Core.TokenizedString ExecutableDir
         {
             get
             {
-                return this.Macros["ExecutableDir"];
-            }
-
-            set
-            {
-                this.Macros["ExecutableDir"] = value;
+                return this.Macros.GetUnformatted("ExecutableDir");
             }
         }
 
         /// <summary>
-        /// Set or get the directory where dynamic libraries are published.
+        /// Get the directory where dynamic libraries are published.
         /// </summary>
         public Bam.Core.TokenizedString DynamicLibraryDir
         {
             get
             {
-                return this.Macros["DynamicLibraryDir"];
-            }
-
-            set
-            {
-                this.Macros["DynamicLibraryDir"] = value;
+                return this.Macros.GetUnformatted("DynamicLibraryDir");
             }
         }
 
         /// <summary>
-        /// Set or get the directory where static libraries are published.
+        /// Get the directory where static libraries are published.
         /// </summary>
         public Bam.Core.TokenizedString StaticLibraryDir
         {
             get
             {
-                return this.Macros["StaticLibraryDir"];
-            }
-
-            set
-            {
-                this.Macros["StaticLibraryDir"] = value;
+                return this.Macros.GetUnformatted("StaticLibraryDir");
             }
         }
 
         /// <summary>
-        /// Set or get the directory where Windows import libraries are published.
+        /// Get the directory where Windows import libraries are published.
         /// </summary>
         public Bam.Core.TokenizedString ImportLibraryDir
         {
             get
             {
-                return this.Macros["ImportLibraryDir"];
-            }
-
-            set
-            {
-                this.Macros["ImportLibraryDir"] = value;
+                return this.Macros.GetUnformatted("ImportLibraryDir");
             }
         }
 
         /// <summary>
-        /// Set or get the directory where plugins are published.
+        /// Get the directory where plugins are published.
         /// </summary>
         public Bam.Core.TokenizedString PluginDir
         {
             get
             {
-                return this.Macros["PluginDir"];
-            }
-
-            set
-            {
-                this.Macros["PluginDir"] = value;
+                return this.Macros.GetUnformatted("PluginDir");
             }
         }
 
         /// <summary>
-        /// Set or get the directory where resource files are published.
+        /// Get the directory where resource files are published.
         /// </summary>
         public Bam.Core.TokenizedString ResourceDir
         {
             get
             {
-                return this.Macros["ResourceDir"];
-            }
-
-            set
-            {
-                this.Macros["ResourceDir"] = value;
+                return this.Macros.GetUnformatted("ResourceDir");
             }
         }
 
         /// <summary>
-        /// Set or get the directory where header files are published.
+        /// Get the directory where header files are published.
         /// </summary>
         public Bam.Core.TokenizedString HeaderDir
         {
             get
             {
-                return this.Macros["HeaderDir"];
-            }
-
-            set
-            {
-                this.Macros["HeaderDir"] = value;
+                return this.Macros.GetUnformatted("HeaderDir");
             }
         }
 
@@ -479,7 +444,7 @@ namespace Publisher
             this.Mapping.Register(typeof(C.StaticLibrary), C.StaticLibrary.LibraryKey, this.StaticLibraryDir, false);
             if (Bam.Core.OSUtilities.IsOSXHosting && EPublishingType.WindowedApplication == type)
             {
-                this.Mapping.Register(typeof(C.OSXFramework), C.OSXFramework.FrameworkKey, this.Macros["macOSAppBundleFrameworksDir"], true);
+                this.Mapping.Register(typeof(C.OSXFramework), C.OSXFramework.FrameworkKey, this.Macros.GetUnformatted("macOSAppBundleFrameworksDir"), true);
             }
             this.Mapping.Register(typeof(C.HeaderFile), C.HeaderFile.HeaderFileKey, this.HeaderDir, false);
             this.Mapping.Register(typeof(C.PreprocessedFile), C.PreprocessedFile.PreprocessedFileKey, this.HeaderDir, false);
@@ -651,7 +616,7 @@ namespace Publisher
                 var dependentCollation = this.IncludeNoGather(dep.Key, dep.Value, modulePublishDir, anchor, anchorPublishRoot);
 
                 // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
-                (dependentCollation as CollatedObject).Macros.Add("AnchorOutputName", (anchor as CollatedObject).Macros["AnchorOutputName"]);
+                (dependentCollation as CollatedObject).Macros.Add("AnchorOutputName", (anchor as CollatedObject).Macros.GetUnformatted("AnchorOutputName"));
             }
         }
 
@@ -874,7 +839,7 @@ namespace Publisher
         {
             var modulePublishDir = this.Mapping.FindPublishDirectory(dependent, key);
             var collatedFile = this.IncludeNoGather(dependent, key, modulePublishDir, null, anchorPublishRoot);
-            (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros[Bam.Core.ModuleMacroNames.OutputName]);
+            (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.OutputName));
             if (this.PublishingType != EPublishingType.Library && gatherDependencies)
             {
                 this.gatherAllDependencies(dependent, key, collatedFile, anchorPublishRoot);
@@ -1115,7 +1080,7 @@ namespace Publisher
             var preexisting = Bam.Core.Module.Create<PreExistingFile>(
                 preInitCallback: module =>
                 {
-                    module.Macros.Add("ExistingFile", sourcePath);
+                    module.Macros.AddVerbatim("ExistingFile", sourcePath);
                 }
             );
             var collatedFile = this.CreateCollatedModuleGeneratedFile<CollatedFile>(
@@ -1136,7 +1101,7 @@ namespace Publisher
                 // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
                 (collatedFile as CollatedObject).Macros.Add(
                     "AnchorOutputName",
-                    (anchor as Bam.Core.Module).Macros["AnchorOutputName"]
+                    (anchor as Bam.Core.Module).Macros.GetUnformatted("AnchorOutputName")
                 );
             }
             return collatedFile;
@@ -1152,7 +1117,7 @@ namespace Publisher
             var preexisting = Bam.Core.Module.Create<PreExistingDirectory>(
                 preInitCallback: module =>
                 {
-                    module.Macros.Add("ExistingDirectory", sourcePath);
+                    module.Macros.AddVerbatim("ExistingDirectory", sourcePath);
                 }
             );
             var collatedDir = this.CreateCollatedModuleGeneratedFile<CollatedDirectory>(
@@ -1174,7 +1139,7 @@ namespace Publisher
                 // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
                 (collatedDir as CollatedObject).Macros.Add(
                     "AnchorOutputName",
-                    (anchor as Bam.Core.Module).Macros["AnchorOutputName"]
+                    (anchor as Bam.Core.Module).Macros.GetUnformatted("AnchorOutputName")
                 );
             }
             return collatedDir;

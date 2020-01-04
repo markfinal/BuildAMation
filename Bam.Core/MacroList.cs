@@ -27,12 +27,14 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #endregion // License
+using System.Linq;
 namespace Bam.Core
 {
     /// <summary>
     /// Collection of key-values pairs representing macro replacement in strings (usually paths)
     /// </summary>
-    public sealed class MacroList
+    public sealed class MacroList :
+        System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, TokenizedString>>
     {
         /// <summary>
         /// Construct an instance of a MacroList.
@@ -42,7 +44,7 @@ namespace Bam.Core
         public MacroList(
             string owner = null)
         {
-            this.EditableDict = new System.Collections.Generic.Dictionary<string, TokenizedString>();
+            this.editableDict = new System.Collections.Generic.Dictionary<string, TokenizedString>();
             this.Owner = owner;
         }
 
@@ -56,42 +58,49 @@ namespace Bam.Core
         }
 
         /// <summary>
-        /// Get or set the macro defined by the given key.
+        /// Get the macro defined by the given formatted key.
+        /// An exception is thrown if the key is not found in the macrolist.
         /// </summary>
-        /// <param name="key">Key.</param>
-        public TokenizedString this[string key]
+        /// <param name="key">Formatted key, beginning with $( and ending with )</param>
+        /// <returns>TokenizedString associated with the given key.</returns>
+        public TokenizedString
+        GetFormatted(
+            string key)
         {
-            get
+            if (!this.editableDict.ContainsKey(key))
             {
-                var fKey = FormattedKey(key);
-                if (!this.Dict.ContainsKey(fKey))
+                var message = new System.Text.StringBuilder();
+                var owningModule = this.Owner ?? "unknown";
+                message.AppendLine(
+                    $"Module '{owningModule}', does not include a macro with the key '{key}'."
+                );
+                message.AppendLine("Parsed macros available:");
+                foreach (var (macroName, macroString) in this.editableDict.Where(item => item.Value.IsParsed))
                 {
-                    var message = new System.Text.StringBuilder();
-                    var owningModule = this.Owner ?? "unknown";
-                    message.AppendLine(
-                        $"Module '{owningModule}', does not include a macro with the key '{fKey}'. Available macros are (*=not yet parsed):"
-                    );
-                    foreach (var macro in this.Dict)
-                    {
-                        if (macro.Value.IsParsed)
-                        {
-                            message.AppendLine($"\t{macro.Key} -> '{macro.Value.ToString()}'");
-                        }
-                        else
-                        {
-                            message.AppendLine($"\t{macro.Key} *");
-                        }
-                    }
-                    throw new Exception(
-                        message.ToString()
-                    );
+                    message.AppendLine($"\t{macroName} -> '{macroString.ToString()}'");
                 }
-                return this.Dict[fKey];
+                message.AppendLine("Unparsed macros available:");
+                foreach (var (macroName, _) in this.editableDict.Where(item => !item.Value.IsParsed))
+                {
+                    message.AppendLine($"\t{macroName}");
+                }
+                throw new Exception(message.ToString());
             }
-            set
-            {
-                this.EditableDict[FormattedKey(key)] = value;
-            }
+            return this.editableDict[key];
+        }
+
+        /// <summary>
+        /// Get the macro defined by the given unformatted key.
+        /// An additional string allocation is made during this call.
+        /// An exception is thrown if the key is not found in the macrolist.
+        /// </summary>
+        /// <param name="key">Unformatted key, not beginning with $( nor ending with )</param>
+        /// <returns>TokenizedString associated with the given key.</returns>
+        public TokenizedString
+        GetUnformatted(
+            string key)
+        {
+            return this.GetFormatted(FormattedKey(key));
         }
 
         /// <summary>
@@ -120,20 +129,7 @@ namespace Bam.Core
                     $"Circular reference; cannnot assign macro '{key}' when it is referred to in TokenizedString or one of it's positional strings"
                 );
             }
-            this.EditableDict[FormattedKey(key)] = value;
-        }
-
-        /// <summary>
-        /// Add a non-verbatim macro.
-        /// </summary>
-        /// <param name="key">Key.</param>
-        /// <param name="value">Value.</param>
-        public void
-        Add(
-            string key,
-            string value)
-        {
-            this.Add(key, TokenizedString.Create(value, null));
+            this.editableDict[FormattedKey(key)] = value;
         }
 
         /// <summary>
@@ -157,28 +153,46 @@ namespace Bam.Core
         Remove(
             string key)
         {
-            this.EditableDict.Remove(FormattedKey(key));
+            this.editableDict.Remove(FormattedKey(key));
         }
 
-        private System.Collections.Generic.Dictionary<string, TokenizedString> EditableDict { get; set; }
+        private System.Collections.Generic.Dictionary<string, TokenizedString> editableDict { get; set; }
 
         /// <summary>
-        /// Obtain a read only view of the key-value pair dictionary.
-        /// Note that the keys have been formatted, so that they are pre- and post-pended with the Token prefix and suffix
-        /// so any lookup must use these.
+        /// Query if the dictionary contains the given key-token.
+        /// This is additionally expensive since a new string must be allocated.
         /// </summary>
-        /// <value>The dict.</value>
-        public System.Collections.Generic.IReadOnlyDictionary<string, TokenizedString> Dict => this.EditableDict;
+        /// <param name="token">Token (not starting with $( nor ending with )).</param>
+        public bool
+        ContainsUnformatted(
+            string token)
+        {
+            return this.editableDict.ContainsKey(FormattedKey(token));
+        }
 
         /// <summary>
         /// Query if the dictionary contains the given key-token.
         /// </summary>
-        /// <param name="token">Token (not starting with $( nor ending with )).</param>
+        /// <param name="token">Token (starting with $( and ending with )).</param>
         public bool
-        Contains(
+        ContainsFormatted(
             string token)
         {
-            return this.Dict.ContainsKey(FormattedKey(token));
+            return this.editableDict.ContainsKey(token);
+        }
+
+        /// <summary>
+        /// Get the enumerator of string-TokenizedString pairs for this macro list.
+        /// </summary>
+        /// <returns>The macrolist enumerator</returns>
+        public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, TokenizedString>> GetEnumerator()
+        {
+            return this.editableDict.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.editableDict.GetEnumerator();
         }
     }
 }

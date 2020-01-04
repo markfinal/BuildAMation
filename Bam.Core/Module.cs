@@ -105,14 +105,20 @@ namespace Bam.Core
                 this.AddRedirectedPackageDirectory(this);
                 this.Macros.AddVerbatim(ModuleMacroNames.PackageName, packageDefinition.Name);
                 this.Macros.AddVerbatim(ModuleMacroNames.PackageBuildDirectory, packageDefinition.GetBuildDirectory());
-                Graph.Instance.Macros.Add($"{packageDefinition.Name}.packagedir", this.Macros[ModuleMacroNames.PackageDirectory]);
+                Graph.Instance.Macros.Add(
+                    $"{packageDefinition.Name}.packagedir",
+                    this.Macros.GetUnformatted(ModuleMacroNames.PackageDirectory)
+                );
             }
             catch (System.NullReferenceException)
             {
                 // graph.Packages can be null during unittests
             }
             this.Macros.AddVerbatim(ModuleMacroNames.ModuleName, this.GetType().Name);
-            this.Macros.Add(ModuleMacroNames.OutputName, this.Macros[ModuleMacroNames.ModuleName]);
+            this.Macros.Add(
+                ModuleMacroNames.OutputName,
+                this.Macros.GetUnformatted(ModuleMacroNames.ModuleName)
+            );
 
             this.OwningRank = null;
             this.Tool = null;

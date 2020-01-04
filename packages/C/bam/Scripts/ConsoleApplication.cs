@@ -77,7 +77,7 @@ namespace C
             if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows) &&
                 Bam.Core.Graph.Instance.Mode != "Xcode")
             {
-                if (this.Linker.Macros.Contains("pdbext"))
+                if (this.Linker.Macros.ContainsUnformatted("pdbext"))
                 {
                     this.RegisterGeneratedFile(
                         PDBKey,

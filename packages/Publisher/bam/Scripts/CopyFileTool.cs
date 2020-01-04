@@ -117,11 +117,11 @@ namespace Publisher
             if (module is CollatedDirectory)
             {
                 // Posix cp only requires the destination to be added when there is a rename
-                if (module.Macros.Contains("RenameLeaf"))
+                if (module.Macros.ContainsUnformatted("RenameLeaf"))
                 {
                     var dirSep = System.IO.Path.DirectorySeparatorChar;
                     resolvedSourcePath = $"{inSourcePath.ToString()}{dirSep}*";
-                    resolvedDestinationDir = $"{inPublishingPath.ToString()}{dirSep}{module.Macros["RenameLeaf"].ToString()}{dirSep}";
+                    resolvedDestinationDir = $"{inPublishingPath.ToString()}{dirSep}{module.Macros.GetUnformatted("RenameLeaf").ToString()}{dirSep}";
                 }
                 else
                 {
@@ -171,9 +171,9 @@ namespace Publisher
             {
                 var dirSep = System.IO.Path.DirectorySeparatorChar;
                 // Windows XCOPY requires the directory name to be added to the destination regardless
-                if (module.Macros.Contains("RenameLeaf"))
+                if (module.Macros.ContainsUnformatted("RenameLeaf"))
                 {
-                    resolvedDestinationDir = $"{inPublishingPath.ToString()}{dirSep}{module.Macros["RenameLeaf"].ToString()}{dirSep}";
+                    resolvedDestinationDir = $"{inPublishingPath.ToString()}{dirSep}{module.Macros.GetUnformatted("RenameLeaf").ToString()}{dirSep}";
                 }
                 else
                 {

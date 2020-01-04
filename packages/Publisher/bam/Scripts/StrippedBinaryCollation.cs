@@ -123,7 +123,7 @@ namespace Publisher
             stripBinary.DependsOn(collatedFile as Bam.Core.Module);
 
             // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
-            stripBinary.Macros.Add("AnchorOutputName", (collatedFile as CollatedObject).Macros["AnchorOutputName"]);
+            stripBinary.Macros.Add("AnchorOutputName", (collatedFile as CollatedObject).Macros.GetUnformatted("AnchorOutputName"));
 
             stripBinary.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
@@ -155,7 +155,7 @@ namespace Publisher
             clonedFile.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
             // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
-            clonedFile.Macros.Add("AnchorOutputName", (collatedObject as CollatedObject).Macros["AnchorOutputName"]);
+            clonedFile.Macros.Add("AnchorOutputName", (collatedObject as CollatedObject).Macros.GetUnformatted("AnchorOutputName"));
 
             this.collatedObjects.Add(collatedObject, clonedFile);
 
@@ -229,7 +229,7 @@ namespace Publisher
 
             if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                if (sourceModule.Tool.Macros.Contains("pdbext"))
+                if (sourceModule.Tool.Macros.ContainsUnformatted("pdbext"))
                 {
                     this.CloneFile(collatedObj);
                 }
@@ -362,10 +362,10 @@ namespace Publisher
 
             var strippedAnchor = this.findAnchor(anchor);
 
-            collatedFile.Macros.Add("publishdir", strippedAnchor.Macros["publishdir"]);
+            collatedFile.Macros.Add("publishdir", strippedAnchor.Macros.GetUnformatted("publishdir"));
 
             // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
-            collatedFile.Macros.Add("AnchorOutputName", (anchor as CollatedObject).Macros["AnchorOutputName"]);
+            collatedFile.Macros.Add("AnchorOutputName", (anchor as CollatedObject).Macros.GetUnformatted("AnchorOutputName"));
 
             this.Requires(collatedFile);
             return collatedFile;
