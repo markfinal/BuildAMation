@@ -68,7 +68,7 @@ namespace WindowsSDK
         /// <summary>
         /// Get the executable path to the compiler
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros["CompilerPath"];
+        public override Bam.Core.TokenizedString Executable => this.Macros.FromName("CompilerPath");
 
         /// <summary>
         /// \copydoc Bam.Core.ITool.SettingsType
