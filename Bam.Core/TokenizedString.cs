@@ -376,6 +376,15 @@ namespace Bam.Core
             string verboseString) => CreateInternal(verboseString, null, true, null, EFlags.None);
 
         /// <summary>
+        /// Utility method to create a TokenizedString with no macro replacement that does not use the cache, so can be a duplicate.
+        /// </summary>
+        /// <returns>The verbatim.</returns>
+        /// <param name="verboseString">Verbose string.</param>
+        public static TokenizedString
+        CreateUncachedVerbatim(
+            string verboseString) => CreateInternal(verboseString, null, true, null, EFlags.NoCache);
+
+        /// <summary>
         /// Utility method to create a TokenizedString that can be inlined into other TokenizedStrings
         /// , or return a cached version.
         /// </summary>

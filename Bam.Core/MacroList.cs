@@ -138,12 +138,14 @@ namespace Bam.Core
         /// </summary>
         /// <param name="name">Key name. No token markup, must not start with $( nor end with ).</param>
         /// <param name="macroString">The TokenizedString macro to associate with the name.</param>
+        /// <param name="cached">Optional whether to use TokenizedString caching. Default to true.</param>
         public void
         AddVerbatim(
             string name,
-            string macroString)
+            string macroString,
+            bool cached = true)
         {
-            this.Add(name, TokenizedString.CreateVerbatim(macroString));
+            this.Add(name, cached ? TokenizedString.CreateVerbatim(macroString) : TokenizedString.CreateUncachedVerbatim(macroString));
         }
 
         /// <summary>

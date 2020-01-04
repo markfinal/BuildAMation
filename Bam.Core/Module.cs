@@ -105,6 +105,8 @@ namespace Bam.Core
                 this.AddRedirectedPackageDirectory(this);
                 this.Macros.AddVerbatim(ModuleMacroNames.PackageName, packageDefinition.Name);
                 this.Macros.AddVerbatim(ModuleMacroNames.PackageBuildDirectory, packageDefinition.GetBuildDirectory());
+
+                // this is an intentional alias, so if one changes, both do
                 Graph.Instance.Macros.Add(
                     $"{packageDefinition.Name}.packagedir",
                     this.Macros.FromName(ModuleMacroNames.PackageDirectory)
@@ -114,11 +116,9 @@ namespace Bam.Core
             {
                 // graph.Packages can be null during unittests
             }
+            // these are intentional duplicates, so that they don't alias
             this.Macros.AddVerbatim(ModuleMacroNames.ModuleName, this.GetType().Name);
-            this.Macros.Add(
-                ModuleMacroNames.OutputName,
-                this.Macros.FromName(ModuleMacroNames.ModuleName)
-            );
+            this.Macros.AddVerbatim(ModuleMacroNames.OutputName, this.GetType().Name, cached: false);
 
             this.OwningRank = null;
             this.Tool = null;
