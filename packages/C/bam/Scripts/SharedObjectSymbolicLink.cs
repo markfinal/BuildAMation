@@ -167,7 +167,7 @@ namespace C
                 {
                     this.ReasonToExecute = Bam.Core.ExecuteReasoning.InputFileNewer(
                         this.GeneratedPaths[SOSymLinkKey],
-                        this.SharedObject.Macros[this.GeneratedPaths["SymlinkUsage"].ToString()]
+                        this.SharedObject.Macros.FromName(this.GeneratedPaths["SymlinkUsage"].ToString())
                     );
                     return;
                 }
