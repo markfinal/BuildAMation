@@ -62,6 +62,6 @@ namespace GccCommon
         /// <summary>
         /// Get the executable path to the tool
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros.GetUnformatted("LibrarianPath");
+        public override Bam.Core.TokenizedString Executable => this.Macros.FromName("LibrarianPath");
     }
 }

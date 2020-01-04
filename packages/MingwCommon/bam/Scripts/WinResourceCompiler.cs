@@ -52,7 +52,7 @@ namespace MingwCommon
         /// <summary>
         /// Path to the executable
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros.GetUnformatted("CompilerPath");
+        public override Bam.Core.TokenizedString Executable => this.Macros.FromName("CompilerPath");
 
         /// <summary>
         /// Command line switch to identify a response file

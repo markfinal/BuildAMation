@@ -120,7 +120,7 @@ namespace Publisher
             createDebugSymbols.Macros.Add("publishdir", this.CreateTokenizedString("$(buildroot)/$(modulename)-$(config)"));
 
             // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
-            createDebugSymbols.Macros.Add("AnchorOutputName", (collatedFile as CollatedObject).Macros.GetUnformatted("AnchorOutputName"));
+            createDebugSymbols.Macros.Add("AnchorOutputName", (collatedFile as CollatedObject).Macros.FromName("AnchorOutputName"));
 
             this.collatedObjects.Add(createDebugSymbols);
         }
@@ -203,7 +203,7 @@ namespace Publisher
 
             if (sourceModule.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))
             {
-                if (sourceModule.Tool.Macros.ContainsUnformatted("pdbext"))
+                if (sourceModule.Tool.Macros.ContainsName("pdbext"))
                 {
                     this.CopyPDB(collatedObj);
                 }

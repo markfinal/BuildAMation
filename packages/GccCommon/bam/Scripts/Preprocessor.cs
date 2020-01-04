@@ -53,7 +53,7 @@ namespace GccCommon
         /// <summary>
         /// Executable path to this tool
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros.GetUnformatted("CompilerPath");
+        public override Bam.Core.TokenizedString Executable => this.Macros.FromName("CompilerPath");
     }
 
     /// <summary>

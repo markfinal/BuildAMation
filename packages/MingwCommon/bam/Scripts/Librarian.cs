@@ -53,7 +53,7 @@ namespace MingwCommon
         /// <summary>
         /// Executable path to tool
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros.GetUnformatted("ArchiverPath");
+        public override Bam.Core.TokenizedString Executable => this.Macros.FromName("ArchiverPath");
 
         /// <summary>
         /// Command line switch to use response file

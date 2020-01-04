@@ -284,7 +284,7 @@ namespace MakeFileBuilder
             System.Text.StringBuilder output,
             System.Collections.Generic.Dictionary<string, string> packageMap)
         {
-            this.AppendVariable(output, Bam.Core.Graph.Instance.Macros.GetUnformatted(Bam.Core.GraphMacroNames.BuildRoot).ToString(), "BUILDROOT");
+            this.AppendVariable(output, Bam.Core.Graph.Instance.Macros.FromName(Bam.Core.GraphMacroNames.BuildRoot).ToString(), "BUILDROOT");
             foreach (var pkg in packageMap)
             {
                 var packageVar = VariableForPackageDir(pkg.Key);

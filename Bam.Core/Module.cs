@@ -107,7 +107,7 @@ namespace Bam.Core
                 this.Macros.AddVerbatim(ModuleMacroNames.PackageBuildDirectory, packageDefinition.GetBuildDirectory());
                 Graph.Instance.Macros.Add(
                     $"{packageDefinition.Name}.packagedir",
-                    this.Macros.GetUnformatted(ModuleMacroNames.PackageDirectory)
+                    this.Macros.FromName(ModuleMacroNames.PackageDirectory)
                 );
             }
             catch (System.NullReferenceException)
@@ -117,7 +117,7 @@ namespace Bam.Core
             this.Macros.AddVerbatim(ModuleMacroNames.ModuleName, this.GetType().Name);
             this.Macros.Add(
                 ModuleMacroNames.OutputName,
-                this.Macros.GetUnformatted(ModuleMacroNames.ModuleName)
+                this.Macros.FromName(ModuleMacroNames.ModuleName)
             );
 
             this.OwningRank = null;

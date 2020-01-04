@@ -260,7 +260,7 @@ namespace Publisher
             }
             else if (this is CollatedDirectory)
             {
-                if (this.Macros.ContainsUnformatted("RenameLeaf"))
+                if (this.Macros.ContainsName("RenameLeaf"))
                 {
                     this.RegisterGeneratedFile(
                         CopiedRenamedDirectoryKey,

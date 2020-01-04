@@ -687,19 +687,19 @@ namespace Bam.Core
                 }
 
                 // step 2 : try to resolve with custom macros passed to the Parse function
-                if (null != customMacroArray?.FirstOrDefault(item => item.ContainsFormatted(token)))
+                if (null != customMacroArray?.FirstOrDefault(item => item.ContainsToken(token)))
                 {
-                    var containingMacroList = customMacroArray.First(item => item.ContainsFormatted(token));
-                    var customTokenStr = containingMacroList.GetFormatted(token);
+                    var containingMacroList = customMacroArray.First(item => item.ContainsToken(token));
+                    var customTokenStr = containingMacroList.FromToken(token);
                     tokens.Remove(token);
                     this.ExtendParsedStringWrapper(customTokenStr, parsedString, customMacroArray, tokens, index);
                     continue;
                 }
 
                 // step 3 : try macros in the global Graph, common to all modules
-                if (graph.Macros.ContainsFormatted(token))
+                if (graph.Macros.ContainsToken(token))
                 {
-                    var graphTokenStr = graph.Macros.GetFormatted(token);
+                    var graphTokenStr = graph.Macros.FromToken(token);
                     tokens.Remove(token);
                     this.ExtendParsedStringWrapper(graphTokenStr, parsedString, customMacroArray, tokens, index);
                     continue;
@@ -709,17 +709,17 @@ namespace Bam.Core
                 {
                     var tool = this.ModuleWithMacros.Tool;
                     // step 4 : try macros in the specific module
-                    if (this.ModuleWithMacros.Macros.ContainsFormatted(token))
+                    if (this.ModuleWithMacros.Macros.ContainsToken(token))
                     {
-                        var moduleMacroStr = this.ModuleWithMacros.Macros.GetFormatted(token);
+                        var moduleMacroStr = this.ModuleWithMacros.Macros.FromToken(token);
                         tokens.Remove(token);
                         this.ExtendParsedStringWrapper(moduleMacroStr, parsedString, customMacroArray, tokens, index);
                         continue;
                     }
                     // step 5 : try macros in the Tool attached to the specific module
-                    else if (null != tool && tool.Macros.ContainsFormatted(token))
+                    else if (null != tool && tool.Macros.ContainsToken(token))
                     {
-                        var moduleToolMacroStr = tool.Macros.GetFormatted(token);
+                        var moduleToolMacroStr = tool.Macros.FromToken(token);
                         tokens.Remove(token);
                         this.ExtendParsedStringWrapper(moduleToolMacroStr, parsedString, customMacroArray, tokens, index);
                         continue;
@@ -1095,12 +1095,12 @@ namespace Bam.Core
                 return (positionalIndex <= this.PositionalTokens.Count);
             }
             // step 2 : try to resolve with custom macros passed to the Parse function
-            else if (null != customMacroArray?.FirstOrDefault(item => item.ContainsFormatted(token)))
+            else if (null != customMacroArray?.FirstOrDefault(item => item.ContainsToken(token)))
             {
                 return true;
             }
             // step 3 : try macros in the global Graph, common to all modules
-            else if (Graph.Instance.Macros.ContainsFormatted(token))
+            else if (Graph.Instance.Macros.ContainsToken(token))
             {
                 return true;
             }
@@ -1108,12 +1108,12 @@ namespace Bam.Core
             {
                 var tool = this.ModuleWithMacros.Tool;
                 // step 4 : try macros in the specific module
-                if (this.ModuleWithMacros.Macros.ContainsFormatted(token))
+                if (this.ModuleWithMacros.Macros.ContainsToken(token))
                 {
                     return true;
                 }
                 // step 5 : try macros in the Tool attached to the specific module
-                else if (null != tool && tool.Macros.ContainsFormatted(token))
+                else if (null != tool && tool.Macros.ContainsToken(token))
                 {
                     return true;
                 }

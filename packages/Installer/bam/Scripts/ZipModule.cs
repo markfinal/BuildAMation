@@ -64,7 +64,7 @@ namespace Installer
                 true
             );
 
-            this.InputPath = this.Macros["pathtozip"];
+            this.InputPath = this.Macros.FromName("pathtozip");
         }
 
         protected override void

@@ -121,7 +121,7 @@ namespace Installer
         /// <summary>
         /// Executable path to the tool
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros["toolPath"];
+        public override Bam.Core.TokenizedString Executable => this.Macros.FromName("toolPath");
 
         /// <summary>
         /// Arguments to follow Module settings to the tool

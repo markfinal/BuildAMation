@@ -132,7 +132,7 @@ namespace Publisher
             }
         }
 
-        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory => this.Macros.GetUnformatted("publishingdir");
+        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory => this.Macros.FromName("publishingdir");
 
         ICollatedObject ICollatedObject.Anchor => this.anchor;
         /// <summary>
@@ -194,7 +194,7 @@ namespace Publisher
                     DebugSymbolFileKey,
                     this.CreateTokenizedString(
                         "$(0)/@filename($(1)).debug",
-                        new[] { this.Macros.GetUnformatted("publishingdir"), this.sourceModule.GeneratedPaths[this.sourcePathKey] }
+                        new[] { this.Macros.FromName("publishingdir"), this.sourceModule.GeneratedPaths[this.sourcePathKey] }
                     ),
                     true
                 );
@@ -205,7 +205,7 @@ namespace Publisher
                     DebugSymbolFileKey,
                     this.CreateTokenizedString(
                         "$(0)/@basename($(1)).debug",
-                        new[] { this.Macros.GetUnformatted("publishingdir"), this.sourceModule.GeneratedPaths[this.sourcePathKey] }
+                        new[] { this.Macros.FromName("publishingdir"), this.sourceModule.GeneratedPaths[this.sourcePathKey] }
                     ),
                     true
                 );
@@ -243,12 +243,12 @@ namespace Publisher
                     module.DebugSymbolModule = this;
                     module.SourceModule = strippedCollatedObject;
                     module.SourcePathKey = StripModule.StripBinaryKey;
-                    module.Macros.Add("publishingdir", strippedCollatedObject.Macros.GetUnformatted("publishingdir").Clone(module));
+                    module.Macros.Add("publishingdir", strippedCollatedObject.Macros.FromName("publishingdir").Clone(module));
                     module.EncapsulatingCollation = (strippedCollatedObject as ICollatedObject).EncapsulatingCollation;
                 });
             linkDebugSymbols.DependsOn(strippedCollatedObject);
 
-            linkDebugSymbols.Macros.Add("publishdir", this.Macros.GetUnformatted("publishdir"));
+            linkDebugSymbols.Macros.Add("publishdir", this.Macros.FromName("publishdir"));
 
             linkDebugSymbols.PrivatePatch(settings =>
                 {

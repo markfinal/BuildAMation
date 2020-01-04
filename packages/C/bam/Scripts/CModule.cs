@@ -112,9 +112,9 @@ namespace C
             string minor,
             string patch)
         {
-            if (this.Macros.ContainsUnformatted(ModuleMacroNames.MajorVersion))
+            if (this.Macros.ContainsName(ModuleMacroNames.MajorVersion))
             {
-                this.Macros.GetUnformatted(ModuleMacroNames.MajorVersion).SetVerbatim(major);
+                this.Macros.FromName(ModuleMacroNames.MajorVersion).SetVerbatim(major);
             }
             else
             {
@@ -122,9 +122,9 @@ namespace C
             }
             if (minor != null)
             {
-                if (this.Macros.ContainsUnformatted(ModuleMacroNames.MinorVersion))
+                if (this.Macros.ContainsName(ModuleMacroNames.MinorVersion))
                 {
-                    this.Macros.GetUnformatted(ModuleMacroNames.MinorVersion).SetVerbatim(minor);
+                    this.Macros.FromName(ModuleMacroNames.MinorVersion).SetVerbatim(minor);
                 }
                 else
                 {

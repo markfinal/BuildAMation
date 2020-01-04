@@ -58,7 +58,7 @@ namespace Installer
             var parentModule = Bam.Core.Graph.Instance.ModuleStack.Peek();
             this.ScriptPath = this.CreateTokenizedString(
                 "$(buildroot)/$(0)/$(config)/tarinput.txt",
-                new[] { parentModule.Macros[Bam.Core.ModuleMacroNames.ModuleName] }
+                new[] { parentModule.Macros.FromName(Bam.Core.ModuleMacroNames.ModuleName) }
             );
         }
 

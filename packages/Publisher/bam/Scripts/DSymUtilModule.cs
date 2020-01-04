@@ -56,7 +56,7 @@ namespace Publisher
                 DSymBundleKey,
                 this.CreateTokenizedString(
                     "$(0)/@filename($(1)).dsym",
-                    new[] { this.Macros.GetUnformatted("publishingdir"), this.sourceModule.GeneratedPaths[this.sourcePathKey] }
+                    new[] { this.Macros.FromName("publishingdir"), this.sourceModule.GeneratedPaths[this.sourcePathKey] }
                 ),
                 true
             );
@@ -121,7 +121,7 @@ namespace Publisher
             }
         }
 
-        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory => this.Macros.GetUnformatted("publishingdir");
+        Bam.Core.TokenizedString ICollatedObject.PublishingDirectory => this.Macros.FromName("publishingdir");
 
         ICollatedObject ICollatedObject.Anchor => this.anchor;
         /// <summary>

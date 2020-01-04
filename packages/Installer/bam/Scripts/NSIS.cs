@@ -53,7 +53,7 @@ namespace Installer
                 ScriptKey,
                 this.CreateTokenizedString(
                     "$(buildroot)/$(0)/$(config)/script.nsi",
-                    new[] { parentModule.Macros[Bam.Core.ModuleMacroNames.ModuleName] }
+                    new[] { parentModule.Macros.FromName(Bam.Core.ModuleMacroNames.ModuleName) }
                 ),
                 true
             );
@@ -100,7 +100,7 @@ namespace Installer
             var path = this.GeneratedPaths[ScriptKey].ToString();
             var dir = System.IO.Path.GetDirectoryName(path);
             Bam.Core.IOWrapper.CreateDirectoryIfNotExists(dir);
-            var outputName = this.EncapsulatingModule.Macros[Bam.Core.ModuleMacroNames.OutputName];
+            var outputName = this.EncapsulatingModule.Macros.FromName(Bam.Core.ModuleMacroNames.OutputName);
             using (var scriptWriter = new System.IO.StreamWriter(path))
             {
                 scriptWriter.WriteLine($"Name \"{outputName.ToString()}\"");
@@ -170,7 +170,7 @@ namespace Installer
         /// <summary>
         /// Executable path to the tool
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros["toolPath"];
+        public override Bam.Core.TokenizedString Executable => this.Macros.FromName("toolPath");
     }
 
     /// <summary>

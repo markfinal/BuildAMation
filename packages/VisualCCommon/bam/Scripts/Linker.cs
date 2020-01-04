@@ -100,7 +100,7 @@ namespace VisualCCommon
         /// <summary>
         /// Get the executable for the tool
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros.GetUnformatted("LinkerPath");
+        public override Bam.Core.TokenizedString Executable => this.Macros.FromName("LinkerPath");
 
         /// <summary>
         /// Get the command line option for response files

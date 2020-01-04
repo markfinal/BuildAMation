@@ -50,13 +50,13 @@ namespace MingwCommon
             this.Macros.Add("AssemblerPath", this.CreateTokenizedString(@"$(BinPath)\mingw32-gcc$(AssemblerSuffix).exe"));
             this.Macros.AddVerbatim(C.ModuleMacroNames.ObjectFileExtension, ".o");
 
-            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros.GetUnformatted("BinPath")));
+            this.EnvironmentVariables.Add("PATH", new Bam.Core.TokenizedStringArray(this.Macros.FromName("BinPath")));
         }
 
         /// <summary>
         /// Executable path to the tool
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros.GetUnformatted("AssemblerPath");
+        public override Bam.Core.TokenizedString Executable => this.Macros.FromName("AssemblerPath");
 
         /// <summary>
         /// Command line switch for response files

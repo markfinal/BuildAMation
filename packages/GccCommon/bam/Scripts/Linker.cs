@@ -71,7 +71,7 @@ namespace GccCommon
         GetLPrefixLibraryName(
             Bam.Core.Module library)
         {
-            return $"-l{library.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.OutputName)}";
+            return $"-l{library.Macros.FromName(Bam.Core.ModuleMacroNames.OutputName)}";
         }
 
         private static Bam.Core.Array<C.CModule>
@@ -187,7 +187,7 @@ namespace GccCommon
         /// <summary>
         /// Get the executable for this tool
         /// </summary>
-        public override Bam.Core.TokenizedString Executable => this.Macros.GetUnformatted("LinkerPath");
+        public override Bam.Core.TokenizedString Executable => this.Macros.FromName("LinkerPath");
     }
 
     /// <summary>

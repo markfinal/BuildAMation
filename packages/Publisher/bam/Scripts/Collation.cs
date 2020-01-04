@@ -235,7 +235,7 @@ namespace Publisher
         {
             get
             {
-                return this.Macros.GetUnformatted("ExecutableDir");
+                return this.Macros.FromName("ExecutableDir");
             }
         }
 
@@ -246,7 +246,7 @@ namespace Publisher
         {
             get
             {
-                return this.Macros.GetUnformatted("DynamicLibraryDir");
+                return this.Macros.FromName("DynamicLibraryDir");
             }
         }
 
@@ -257,7 +257,7 @@ namespace Publisher
         {
             get
             {
-                return this.Macros.GetUnformatted("StaticLibraryDir");
+                return this.Macros.FromName("StaticLibraryDir");
             }
         }
 
@@ -268,7 +268,7 @@ namespace Publisher
         {
             get
             {
-                return this.Macros.GetUnformatted("ImportLibraryDir");
+                return this.Macros.FromName("ImportLibraryDir");
             }
         }
 
@@ -279,7 +279,7 @@ namespace Publisher
         {
             get
             {
-                return this.Macros.GetUnformatted("PluginDir");
+                return this.Macros.FromName("PluginDir");
             }
         }
 
@@ -290,7 +290,7 @@ namespace Publisher
         {
             get
             {
-                return this.Macros.GetUnformatted("ResourceDir");
+                return this.Macros.FromName("ResourceDir");
             }
         }
 
@@ -301,7 +301,7 @@ namespace Publisher
         {
             get
             {
-                return this.Macros.GetUnformatted("HeaderDir");
+                return this.Macros.FromName("HeaderDir");
             }
         }
 
@@ -444,7 +444,7 @@ namespace Publisher
             this.Mapping.Register(typeof(C.StaticLibrary), C.StaticLibrary.LibraryKey, this.StaticLibraryDir, false);
             if (Bam.Core.OSUtilities.IsOSXHosting && EPublishingType.WindowedApplication == type)
             {
-                this.Mapping.Register(typeof(C.OSXFramework), C.OSXFramework.FrameworkKey, this.Macros.GetUnformatted("macOSAppBundleFrameworksDir"), true);
+                this.Mapping.Register(typeof(C.OSXFramework), C.OSXFramework.FrameworkKey, this.Macros.FromName("macOSAppBundleFrameworksDir"), true);
             }
             this.Mapping.Register(typeof(C.HeaderFile), C.HeaderFile.HeaderFileKey, this.HeaderDir, false);
             this.Mapping.Register(typeof(C.PreprocessedFile), C.PreprocessedFile.PreprocessedFileKey, this.HeaderDir, false);
@@ -616,7 +616,7 @@ namespace Publisher
                 var dependentCollation = this.IncludeNoGather(dep.Key, dep.Value, modulePublishDir, anchor, anchorPublishRoot);
 
                 // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
-                (dependentCollation as CollatedObject).Macros.Add("AnchorOutputName", (anchor as CollatedObject).Macros.GetUnformatted("AnchorOutputName"));
+                (dependentCollation as CollatedObject).Macros.Add("AnchorOutputName", (anchor as CollatedObject).Macros.FromName("AnchorOutputName"));
             }
         }
 
@@ -839,7 +839,7 @@ namespace Publisher
         {
             var modulePublishDir = this.Mapping.FindPublishDirectory(dependent, key);
             var collatedFile = this.IncludeNoGather(dependent, key, modulePublishDir, null, anchorPublishRoot);
-            (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.OutputName));
+            (collatedFile as Bam.Core.Module).Macros.Add("AnchorOutputName", dependent.Macros.FromName(Bam.Core.ModuleMacroNames.OutputName));
             if (this.PublishingType != EPublishingType.Library && gatherDependencies)
             {
                 this.gatherAllDependencies(dependent, key, collatedFile, anchorPublishRoot);
@@ -1101,7 +1101,7 @@ namespace Publisher
                 // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
                 (collatedFile as CollatedObject).Macros.Add(
                     "AnchorOutputName",
-                    (anchor as Bam.Core.Module).Macros.GetUnformatted("AnchorOutputName")
+                    (anchor as Bam.Core.Module).Macros.FromName("AnchorOutputName")
                 );
             }
             return collatedFile;
@@ -1139,7 +1139,7 @@ namespace Publisher
                 // dependents might reference the anchor's OutputName macro, e.g. dylibs copied into an application bundle
                 (collatedDir as CollatedObject).Macros.Add(
                     "AnchorOutputName",
-                    (anchor as Bam.Core.Module).Macros.GetUnformatted("AnchorOutputName")
+                    (anchor as Bam.Core.Module).Macros.FromName("AnchorOutputName")
                 );
             }
             return collatedDir;

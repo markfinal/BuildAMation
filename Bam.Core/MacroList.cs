@@ -44,130 +44,132 @@ namespace Bam.Core
         public MacroList(
             string owner = null)
         {
-            this.editableDict = new System.Collections.Generic.Dictionary<string, TokenizedString>();
+            this.TokenToMacroDict = new System.Collections.Generic.Dictionary<string, TokenizedString>();
             this.Owner = owner;
         }
 
         private string Owner { get; set; }
 
         private static string
-        FormattedKey(
-            string key)
+        NameToToken(
+            string name)
         {
-            return $"{TokenizedString.TokenPrefix}{key}{TokenizedString.TokenSuffix}";
+            return $"{TokenizedString.TokenPrefix}{name}{TokenizedString.TokenSuffix}";
         }
 
         /// <summary>
-        /// Get the macro defined by the given formatted key.
-        /// An exception is thrown if the key is not found in the macrolist.
+        /// Get the macro defined by the given token.
+        /// An exception is thrown if the token is not found in the macrolist.
         /// </summary>
-        /// <param name="key">Formatted key, beginning with $( and ending with )</param>
-        /// <returns>TokenizedString associated with the given key.</returns>
+        /// <param name="token">Token, beginning with $( and ending with )</param>
+        /// <returns>TokenizedString associated with the given token.</returns>
         public TokenizedString
-        GetFormatted(
-            string key)
+        FromToken(
+            string token)
         {
-            if (!this.editableDict.ContainsKey(key))
+            if (!this.TokenToMacroDict.ContainsKey(token))
             {
                 var message = new System.Text.StringBuilder();
                 var owningModule = this.Owner ?? "unknown";
                 message.AppendLine(
-                    $"Module '{owningModule}', does not include a macro with the key '{key}'."
+                    $"Module '{owningModule}', does not include a macro with the key '{token}'."
                 );
                 message.AppendLine("Parsed macros available:");
-                foreach (var (macroName, macroString) in this.editableDict.Where(item => item.Value.IsParsed))
+                foreach (var (macroName, macroString) in this.TokenToMacroDict.Where(item => item.Value.IsParsed))
                 {
                     message.AppendLine($"\t{macroName} -> '{macroString.ToString()}'");
                 }
                 message.AppendLine("Unparsed macros available:");
-                foreach (var (macroName, _) in this.editableDict.Where(item => !item.Value.IsParsed))
+                foreach (var (macroName, _) in this.TokenToMacroDict.Where(item => !item.Value.IsParsed))
                 {
                     message.AppendLine($"\t{macroName}");
                 }
                 throw new Exception(message.ToString());
             }
-            return this.editableDict[key];
+            return this.TokenToMacroDict[token];
         }
 
         /// <summary>
-        /// Get the macro defined by the given unformatted key.
+        /// Get the macro defined by the given key name (no token markup).
         /// An additional string allocation is made during this call.
-        /// An exception is thrown if the key is not found in the macrolist.
+        /// An exception is thrown if the name is not found in the macrolist.
         /// </summary>
-        /// <param name="key">Unformatted key, not beginning with $( nor ending with )</param>
-        /// <returns>TokenizedString associated with the given key.</returns>
+        /// <param name="name">Name of macro without token markup, i.e. not beginning with $( nor ending with )</param>
+        /// <returns>TokenizedString associated with the given name.</returns>
         public TokenizedString
-        GetUnformatted(
-            string key)
+        FromName(
+            string name)
         {
-            return this.GetFormatted(FormattedKey(key));
+            return this.FromToken(NameToToken(name));
         }
 
         /// <summary>
-        /// Add the TokenizedString against the key provided.
+        /// Add the TokenizedString against the key name provided.
+        /// An additional string allocation is made.
         /// </summary>
-        /// <param name="key">Key. Must not start with $( nor end with ).</param>
-        /// <param name="value">Value.</param>
+        /// <param name="name">Key name. No token markup, must not start with $( nor end with ).</param>
+        /// <param name="macroString">The TokenizedString macro to associate with the name.</param>
         public void
         Add(
-            string key,
-            TokenizedString value)
+            string name,
+            TokenizedString macroString)
         {
-            if (key.StartsWith(TokenizedString.TokenPrefix, System.StringComparison.Ordinal) ||
-                key.EndsWith(TokenizedString.TokenSuffix, System.StringComparison.Ordinal))
+            if (null == macroString)
             {
-                throw new Exception($"Invalid macro key: {key}");
+                throw new Exception($"Cannot assign null to macro key name '{name}'");
             }
-            if (null == value)
+            if (name.StartsWith(TokenizedString.TokenPrefix, System.StringComparison.Ordinal) ||
+                name.EndsWith(TokenizedString.TokenSuffix, System.StringComparison.Ordinal))
             {
-                throw new Exception($"Cannot assign null to macro '{key}'");
+                throw new Exception($"Invalid macro key name: {name}");
             }
-            var tokenizedMacro = FormattedKey(key);
-            if (value.RefersToMacro(tokenizedMacro))
+            var token = NameToToken(name);
+            if (macroString.RefersToMacro(token))
             {
                 throw new Exception(
-                    $"Circular reference; cannnot assign macro '{key}' when it is referred to in TokenizedString or one of it's positional strings"
+                    $"Circular reference; cannnot assign macro '{name}' when it is referred to in TokenizedString or one of it's positional strings"
                 );
             }
-            this.editableDict[FormattedKey(key)] = value;
+            this.TokenToMacroDict[NameToToken(name)] = macroString;
         }
 
         /// <summary>
         /// Add a verbatim macro.
         /// </summary>
-        /// <param name="key">Key.</param>
-        /// <param name="value">Value.</param>
+        /// <param name="name">Key name. No token markup, must not start with $( nor end with ).</param>
+        /// <param name="macroString">The TokenizedString macro to associate with the name.</param>
         public void
         AddVerbatim(
-            string key,
-            string value)
+            string name,
+            string macroString)
         {
-            this.Add(key, TokenizedString.CreateVerbatim(value));
+            this.Add(name, TokenizedString.CreateVerbatim(macroString));
         }
 
         /// <summary>
-        /// Remove the macro associated with the provided key.
+        /// Remove the macro associated with the provided key name.
+        /// An additional string allocation is made.
         /// </summary>
-        /// <param name="key">Key.</param>
+        /// <param name="name">Key name. No token markup, must not start with $( nor end with ).</param>
         public void
         Remove(
-            string key)
+            string name)
         {
-            this.editableDict.Remove(FormattedKey(key));
+            this.TokenToMacroDict.Remove(NameToToken(name));
         }
 
-        private System.Collections.Generic.Dictionary<string, TokenizedString> editableDict { get; set; }
+        private System.Collections.Generic.Dictionary<string, TokenizedString> TokenToMacroDict { get; set; }
 
         /// <summary>
-        /// Query if the dictionary contains the given key-token.
+        /// Query if the dictionary contains the given key name..
         /// This is additionally expensive since a new string must be allocated.
         /// </summary>
-        /// <param name="token">Token (not starting with $( nor ending with )).</param>
+        /// <param name="name">Name of key to look up macro for (without token markup, i.e. not starting with $( nor ending with )).</param>
         public bool
-        ContainsUnformatted(
-            string token)
+        ContainsName(
+            string name)
         {
-            return this.editableDict.ContainsKey(FormattedKey(token));
+            return this.TokenToMacroDict.ContainsKey(NameToToken(name));
         }
 
         /// <summary>
@@ -175,24 +177,24 @@ namespace Bam.Core
         /// </summary>
         /// <param name="token">Token (starting with $( and ending with )).</param>
         public bool
-        ContainsFormatted(
+        ContainsToken(
             string token)
         {
-            return this.editableDict.ContainsKey(token);
+            return this.TokenToMacroDict.ContainsKey(token);
         }
 
         /// <summary>
-        /// Get the enumerator of string-TokenizedString pairs for this macro list.
+        /// Get the enumerator of token-TokenizedString pairs for this macro list.
         /// </summary>
         /// <returns>The macrolist enumerator</returns>
         public System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, TokenizedString>> GetEnumerator()
         {
-            return this.editableDict.GetEnumerator();
+            return this.TokenToMacroDict.GetEnumerator();
         }
 
         System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
         {
-            return this.editableDict.GetEnumerator();
+            return this.TokenToMacroDict.GetEnumerator();
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Publisher
         {
             base.Init();
 
-            this.RegisterGeneratedFile(ExistingFileKey, this.Macros.GetUnformatted("ExistingFile"), true);
+            this.RegisterGeneratedFile(ExistingFileKey, this.Macros.FromName("ExistingFile"), true);
         }
     }
 }

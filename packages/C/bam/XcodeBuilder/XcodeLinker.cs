@@ -45,7 +45,7 @@ namespace C
             Bam.Core.TokenizedString productName;
             if (module is IDynamicLibrary && !((module is Plugin) || (module is C.Cxx.Plugin)))
             {
-                if (module.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.OutputName).ToString().Equals(module.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.ModuleName).ToString(), System.StringComparison.Ordinal))
+                if (module.Macros.FromName(Bam.Core.ModuleMacroNames.OutputName).ToString().Equals(module.Macros.FromName(Bam.Core.ModuleMacroNames.ModuleName).ToString(), System.StringComparison.Ordinal))
                 {
                     productName = module.CreateTokenizedString("${TARGET_NAME}.$(MajorVersion)");
 
@@ -57,13 +57,13 @@ namespace C
             }
             else
             {
-                if (module.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.OutputName).ToString().Equals(module.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.ModuleName).ToString(), System.StringComparison.Ordinal))
+                if (module.Macros.FromName(Bam.Core.ModuleMacroNames.OutputName).ToString().Equals(module.Macros.FromName(Bam.Core.ModuleMacroNames.ModuleName).ToString(), System.StringComparison.Ordinal))
                 {
                     productName = Bam.Core.TokenizedString.CreateVerbatim("${TARGET_NAME}");
                 }
                 else
                 {
-                    productName = module.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.OutputName);
+                    productName = module.Macros.FromName(Bam.Core.ModuleMacroNames.OutputName);
                 }
             }
 

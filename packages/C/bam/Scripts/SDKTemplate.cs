@@ -94,7 +94,7 @@ namespace C
             this.SetDefaultMacrosAndMappings(EPublishingType.Library);
 
             var SDKname = this.GetType().Namespace;
-            this.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.OutputName).SetVerbatim(SDKname);
+            this.Macros.FromName(Bam.Core.ModuleMacroNames.OutputName).SetVerbatim(SDKname);
 
             Bam.Core.TokenizedString includeDir = null;
             var libraryDirs = new Bam.Core.TokenizedStringArray();
@@ -294,7 +294,7 @@ namespace C
                         libraryDirs.AddUnique(this.CreateTokenizedString("@dir($(0))", dylib));
                         if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                         {
-                            libs.AddUnique(this.CreateTokenizedString("-l$(0)", libraryModule.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.OutputName)));
+                            libs.AddUnique(this.CreateTokenizedString("-l$(0)", libraryModule.Macros.FromName(Bam.Core.ModuleMacroNames.OutputName)));
                         }
                         else
                         {
@@ -349,7 +349,7 @@ namespace C
             void publishHeaders(
                 IPublicHeaders pubHeaders)
             {
-                var srcRootDir = pubHeaders.SourceRootDirectory ?? this.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.PackageDirectory);
+                var srcRootDir = pubHeaders.SourceRootDirectory ?? this.Macros.FromName(Bam.Core.ModuleMacroNames.PackageDirectory);
                 if (!srcRootDir.IsParsed)
                 {
                     srcRootDir.Parse();
@@ -359,12 +359,12 @@ namespace C
             void publishPaths(
                 Bam.Core.StringArray paths)
             {
-                var packageDir = this.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.PackageDirectory).ToString();
+                var packageDir = this.Macros.FromName(Bam.Core.ModuleMacroNames.PackageDirectory).ToString();
                 publishHeadersInternal(packageDir, paths);
             }
-            if (!this.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.PackageDirectory).IsParsed)
+            if (!this.Macros.FromName(Bam.Core.ModuleMacroNames.PackageDirectory).IsParsed)
             {
-                this.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.PackageDirectory).Parse();
+                this.Macros.FromName(Bam.Core.ModuleMacroNames.PackageDirectory).Parse();
             }
             if (null != this.ExtraHeaderFiles)
             {
@@ -459,7 +459,7 @@ namespace C
                         );
                         if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Linux))
                         {
-                            libs.AddUnique(this.CreateTokenizedString("-l$(0)", libraryModule.Macros.GetUnformatted(Bam.Core.ModuleMacroNames.OutputName)));
+                            libs.AddUnique(this.CreateTokenizedString("-l$(0)", libraryModule.Macros.FromName(Bam.Core.ModuleMacroNames.OutputName)));
                         }
                         else
                         {
