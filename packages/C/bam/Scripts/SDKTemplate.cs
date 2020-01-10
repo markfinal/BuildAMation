@@ -67,14 +67,15 @@ namespace C
         /// </summary>
         protected abstract Bam.Core.TypeArray LibraryModuleTypes { get; }
 
-        /// <summary>
-        /// Allow filtering of the libraries passed into SDK for those that are exposed.
-        /// </summary>
-        /// <returns>Enumeration of Modules that are exposed from the SDK.</returns>
-        protected virtual System.Collections.Generic.IEnumerable<Module> LibraryFilter()
+        private System.Collections.Generic.IEnumerable<Module> LibraryFilter()
         {
             return this.realLibraryModules.Where(item => !(item is HeaderLibrary) && !(item is Plugin) && !(item is Cxx.Plugin));
         }
+
+        /// <summary>
+        /// Module types in the SDK that are internal, and not to be published by the SDK.
+        /// </summary>
+        protected Bam.Core.TypeArray InternalSDKModuleTypes = new Bam.Core.TypeArray();
 
         /// <summary>
         /// Get an array (that's modifiable) of all module types of libraries populated in the SDK.
@@ -432,6 +433,11 @@ namespace C
                                 isPrimaryOutput
                             );
                             libs.AddUnique(this.CreateTokenizedString("@filename($(0))", (copiedLib as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
+                            if (this.InternalSDKModuleTypes.Contains(libraryModule.GetType()))
+                            {
+                                (copiedBin as Publisher.CollatedObject).Ignore = true;
+                                (copiedLib as Publisher.CollatedObject).Ignore = true;
+                            }
                         }
                     }
                     else
@@ -444,6 +450,10 @@ namespace C
                             isPrimaryOutput
                         );
                         libs.AddUnique(this.CreateTokenizedString("@filename($(0))", (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
+                        if (this.InternalSDKModuleTypes.Contains(libraryModule.GetType()))
+                        {
+                            (copiedBin as Publisher.CollatedObject).Ignore = true;
+                        }
                     }
                 }
                 else
@@ -464,6 +474,10 @@ namespace C
                         else
                         {
                             libs.AddUnique(this.CreateTokenizedString("-l@trimstart(@basename($(0)),lib)", (copiedBin as Publisher.CollatedObject).GeneratedPaths[Publisher.CollatedObject.CopiedFileKey]));
+                        }
+                        if (this.InternalSDKModuleTypes.Contains(libraryModule.GetType()))
+                        {
+                            (copiedBin as Publisher.CollatedObject).Ignore = true;
                         }
                     }
                     else
