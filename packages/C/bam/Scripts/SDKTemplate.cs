@@ -259,14 +259,14 @@ namespace C
                     continue;
                 }
 
-                // update the library so that its binaries refer to those in the SDK
-                if (libraryModule is IDynamicLibrary dynLibraryModule)
+                // update the library so that its output paths refer to those in the SDK
+                if (libraryModule is ConsoleApplication consoleApp)
                 {
-                    dynLibraryModule.ChangeRootPaths(sdkBinDir, sdkLibDir);
+                    consoleApp.ChangeOutputRootPaths(sdkBinDir, sdkLibDir);
                 }
                 else if (libraryModule is StaticLibrary staticLib)
                 {
-                    staticLib.ChangeLibraryRootPath(sdkLibDir);
+                    staticLib.ChangeOutputRootPaths(sdkLibDir);
                 }
 
                 if (this.BuildEnvironment.Platform.Includes(Bam.Core.EPlatform.Windows))

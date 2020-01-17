@@ -33,17 +33,5 @@ namespace C
     /// Interface that dynamic libraries are required.
     /// </summary>
     interface IDynamicLibrary
-    {
-        /// <summary>
-        /// Modify the root of the output paths.
-        /// On Windows, this modifies both DLL and import library paths.
-        /// </summary>
-        /// <param name="binDirectory">New bin directory.</param>
-        /// <param name="libDirectory">New lib directory.</param>
-        void
-        ChangeRootPaths(
-            Bam.Core.TokenizedString binDirectory,
-            Bam.Core.TokenizedString libDirectory
-        );
-    }
+    {}
 }

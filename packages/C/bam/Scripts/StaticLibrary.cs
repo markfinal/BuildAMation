@@ -476,17 +476,16 @@ namespace C
         /// <summary>
         /// Modify the root of the output library path.
         /// </summary>
-        /// <param name="newRoot">New root directory.</param>
+        /// <param name="libDirectory">New root directory for libraries.</param>
         public void
-        ChangeLibraryRootPath(
-            Bam.Core.TokenizedString newRoot
-        )
+        ChangeOutputRootPaths(
+            Bam.Core.TokenizedString libDirectory)
         {
             this.RegisterGeneratedFile(
                 LibraryKey,
                 this.CreateTokenizedString(
                     "$(0)/$(libprefix)$(OutputName)$(libext)",
-                    newRoot
+                    libDirectory
                 ),
                 true
             );

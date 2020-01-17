@@ -914,5 +914,25 @@ namespace C
                 }
             }
         }
+
+        /// <summary>
+        /// Modify the root of the output library paths
+        /// </summary>
+        /// <param name="binDirectory">New root directory for executables.</param>
+        /// <param name="libDirectory">New root directory for libraries.</param>
+        public virtual void
+        ChangeOutputRootPaths(
+            Bam.Core.TokenizedString binDirectory,
+            Bam.Core.TokenizedString libDirectory)
+        {
+            this.RegisterGeneratedFile(
+                ExecutableKey,
+                this.CreateTokenizedString(
+                    "$(0)/$(OutputName)$(exeext)",
+                    binDirectory
+                ),
+                true
+            );
+        }
     }
 }
