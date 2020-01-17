@@ -87,6 +87,18 @@ namespace C
             return new Bam.Core.TypeArray(this.LibraryFilter().Select(item => item.GetType()));
         }
 
+        /// <summary>
+        /// Get a Module and path key component by name from the SDK.
+        /// </summary>
+        /// <param name="name">Name of the component to get.</param>
+        /// <returns>The Module and path key that the component refers to.</returns>
+        public virtual (Bam.Core.Module, string)
+        Component(
+            string name)
+        {
+            throw new Bam.Core.Exception($"Override the Component function in {this.GetType().ToString()} to use components");
+        }
+
         protected override void
         Init()
         {

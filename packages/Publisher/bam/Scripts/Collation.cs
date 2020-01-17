@@ -1071,6 +1071,28 @@ namespace Publisher
             return this.IncludeDirectories(dependent.CreateTokenizedString(wildcardedSourcePath), destinationDir, anchor, filter, renameLeaf);
         }
 
+        /// <summary>
+        /// Include the SDK in the type in the collation.
+        /// </summary>
+        /// <typeparam name="DependentModule">SDK type to include</typeparam>
+        /// <param name="components">Optional list of components to include from the SDK.</param>
+        public void
+        IncludeSDK<DependentModule>(
+            params string[] components) where DependentModule : C.SDKTemplate, new()
+        {
+            var dependent = Bam.Core.Graph.Instance.FindReferencedModule<DependentModule>();
+            if (null == dependent)
+            {
+                return;
+            }
+            this.DependsOn(dependent);
+            foreach (var name in components)
+            {
+                var (component,pathkey) = dependent.Component(name);
+                this.IncludeModule(component, pathkey);
+            }
+        }
+
         private ICollatedObject
         CreateCollatedPreExistingFile(
             string sourcePath,
