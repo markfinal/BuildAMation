@@ -591,7 +591,7 @@ namespace Publisher
                 {
                     continue;
                 }
-                if (null == next.Item2)
+                if (null == next.pathKey)
                 {
                     Bam.Core.Log.DebugMessage($"Ignoring '{next.module.ToString()}' for collation, with no string path key");
                     continue;
