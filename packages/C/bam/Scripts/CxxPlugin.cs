@@ -50,5 +50,25 @@ namespace C.Cxx
                 true
             );
         }
+
+        /// <summary>
+        /// Modify the root of the output library paths
+        /// </summary>
+        /// <param name="binDirectory">New root directory for executables.</param>
+        /// <param name="libDirectory">New root directory for libraries.</param>
+        public override void
+        ChangeOutputRootPaths(
+            Bam.Core.TokenizedString binDirectory,
+            Bam.Core.TokenizedString libDirectory)
+        {
+            this.RegisterGeneratedFile(
+                ExecutableKey,
+                this.CreateTokenizedString(
+                    "$(0)/$(pluginprefix)$(OutputName)$(pluginext)",
+                    binDirectory
+                ),
+                true
+            );
+        }
     }
 }
