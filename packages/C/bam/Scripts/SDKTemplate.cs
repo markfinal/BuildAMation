@@ -259,16 +259,13 @@ namespace C
                 // when using the SDK, we don't need its component Modules to be built
                 // but do need it in the graph for collation to find it as a dependent
                 //this.UsePublicPatches(libraryModule); // for transient dependencies
-                //this.DependsOn(libraryModule);
+                this.DependsOn(libraryModule);
                 libraryModule.Build = false;
 
                 if (libraryModule is HeaderLibrary)
                 {
                     continue;
                 }
-
-                var collated = this.IncludeModule(libraryModule, libraryModule.PrimaryOutputPathKey);
-                (collated as Bam.Core.Module).Build = false;
 
                 // update the library so that its output paths refer to those in the SDK
                 if (libraryModule is ConsoleApplication consoleApp)
