@@ -876,6 +876,7 @@ namespace Bam.Core
         DottedModule(
             Module module,
             System.Text.StringBuilder dot,
+            System.Collections.Generic.HashSet<string> modulesDotted,
             bool onlyReferencedModules = true /* only because it's really complicated otherwise */)
         {
             if (onlyReferencedModules && !this.IsReferencedModule(module))
@@ -891,7 +892,9 @@ namespace Bam.Core
                 }
                 var depName = (null != dep.PrimaryOutputPathKey) ? dep.GeneratedPaths[dep.PrimaryOutputPathKey].ToString().Replace('\\', '/') : (this.IsReferencedModule(dep) ? dep.ToString() : $"{dep.EncapsulatingModule.ToString()}.{dep.ToString()}");
                 dot.AppendLine($"\t\"{moduleName}\" -> \"{depName}\";");
-                this.DottedModule(dep, dot);
+                modulesDotted.Add(moduleName);
+                modulesDotted.Add(depName);
+                this.DottedModule(dep, dot, modulesDotted);
             }
             foreach (var req in module.Requirements)
             {
@@ -901,7 +904,13 @@ namespace Bam.Core
                 }
                 var reqName = (null != req.PrimaryOutputPathKey) ? req.GeneratedPaths[req.PrimaryOutputPathKey].ToString().Replace('\\', '/') : (this.IsReferencedModule(req) ? req.ToString() : $"{req.EncapsulatingModule.ToString()}.{req.ToString()}");
                 dot.AppendLine($"\t\"{moduleName}\" -> \"{reqName}\" [style=dotted];");
-                this.DottedModule(req, dot);
+                modulesDotted.Add(moduleName);
+                modulesDotted.Add(reqName);
+                this.DottedModule(req, dot, modulesDotted);
+            }
+            if (!modulesDotted.Contains(moduleName))
+            {
+                dot.AppendLine($"\t\"{moduleName}\";");
             }
         }
 
@@ -916,9 +925,10 @@ namespace Bam.Core
             var dot = new System.Text.StringBuilder();
             dot.AppendLine("digraph BAMGraph");
             dot.AppendLine("{");
+            var modulesDotted = new System.Collections.Generic.HashSet<string>();
             foreach (var module in this.TopLevelModules)
             {
-                this.DottedModule(module, dot);
+                this.DottedModule(module, dot, modulesDotted);
             }
             dot.AppendLine("}");
             var path = Bam.Core.TokenizedString.Create("$(buildroot)/bamgraph.dot", null);
