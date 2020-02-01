@@ -873,6 +873,63 @@ namespace Bam.Core
         }
 
         private void
+        DottedModule(
+            Module module,
+            System.Text.StringBuilder dot,
+            bool onlyReferencedModules = true /* only because it's really complicated otherwise */)
+        {
+            if (onlyReferencedModules && !this.IsReferencedModule(module))
+            {
+                return;
+            }
+            var moduleName = (null != module.PrimaryOutputPathKey) ? module.GeneratedPaths[module.PrimaryOutputPathKey].ToString().Replace('\\', '/') : (this.IsReferencedModule(module) ? module.ToString() : $"{module.EncapsulatingModule.ToString()}.{module.ToString()}");
+            foreach (var dep in module.Dependents)
+            {
+                if (onlyReferencedModules && !this.IsReferencedModule(dep))
+                {
+                    continue;
+                }
+                var depName = (null != dep.PrimaryOutputPathKey) ? dep.GeneratedPaths[dep.PrimaryOutputPathKey].ToString().Replace('\\', '/') : (this.IsReferencedModule(dep) ? dep.ToString() : $"{dep.EncapsulatingModule.ToString()}.{dep.ToString()}");
+                dot.AppendLine($"\t\"{moduleName}\" -> \"{depName}\";");
+                this.DottedModule(dep, dot);
+            }
+            foreach (var req in module.Requirements)
+            {
+                if (onlyReferencedModules && !this.IsReferencedModule(req))
+                {
+                    continue;
+                }
+                var reqName = (null != req.PrimaryOutputPathKey) ? req.GeneratedPaths[req.PrimaryOutputPathKey].ToString().Replace('\\', '/') : (this.IsReferencedModule(req) ? req.ToString() : $"{req.EncapsulatingModule.ToString()}.{req.ToString()}");
+                dot.AppendLine($"\t\"{moduleName}\" -> \"{reqName}\" [style=dotted];");
+                this.DottedModule(req, dot);
+            }
+        }
+
+        /// <summary>
+        /// Write a representation of the dependency graph to a dot file called bamgraph.dot in the build root.
+        /// A hard direct dependency is indicated by a solid edge.
+        /// A loose indirect dependency is indicated by a dotted edge.
+        /// </summary>
+        public void
+        WriteDotDependencyFile()
+        {
+            var dot = new System.Text.StringBuilder();
+            dot.AppendLine("digraph BAMGraph");
+            dot.AppendLine("{");
+            foreach (var module in this.TopLevelModules)
+            {
+                this.DottedModule(module, dot);
+            }
+            dot.AppendLine("}");
+            var path = Bam.Core.TokenizedString.Create("$(buildroot)/bamgraph.dot", null);
+            path.Parse();
+            using (System.IO.StreamWriter file = new System.IO.StreamWriter(path.ToString()))
+            {
+                file.WriteLine(dot.ToString());
+            }
+        }
+
+        private void
         InternalValidateGraph(
             int parentRankIndex,
             System.Collections.Generic.IEnumerable<Module> modules)

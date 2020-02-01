@@ -330,6 +330,12 @@ namespace Bam.Core
             TokenizedString.ParseAll();
             parseStringsProfile.StopProfile();
 
+            if (CommandLineProcessor.Evaluate(new Options.WriteDotFile()))
+            {
+                // must come after all strings are parsed, in order to display useful paths
+                graph.WriteDotDependencyFile();
+            }
+
             if (CommandLineProcessor.Evaluate(new Options.ViewDependencyGraph()))
             {
                 // must come after all strings are parsed, in order to display useful paths
