@@ -388,7 +388,6 @@ namespace C
             dependent.PublicPatch((dependent as IExportableCModule).ExportPatch);
 
             this.AddLinkDependency(dependent);
-            this.AddRuntimeDependency(dependent);
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
             this.UsePublicPatchesPrivately(dependent);
         }
@@ -408,7 +407,6 @@ namespace C
             }
 
             this.AddLinkDependency(dependent);
-            this.AddRuntimeDependency(dependent);
             this.LinkAllForwardedDependenciesFromLibraries(dependent);
         }
 
@@ -463,7 +461,6 @@ namespace C
             dependent.PublicPatch((dependent as IExportableCModule).ExportPatch);
 
             this.AddLinkDependency(dependent);
-            this.AddRuntimeDependency(dependent);
             System.Collections.Generic.IEnumerable<CModule>
             EnumerateSources(
                 CModule affectedSourceLocal,
@@ -586,7 +583,6 @@ namespace C
                 foreach (var forwarded in withForwarded.ForwardedLibraries)
                 {
                     this.AddLinkDependency(forwarded);
-                    this.AddRuntimeDependency(forwarded);
                     this.LinkAllForwardedDependenciesFromLibraries(forwarded);
                 }
             }
