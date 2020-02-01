@@ -30,8 +30,17 @@
 namespace Test2
 {
     sealed class Library :
-        C.StaticLibrary
+        C.StaticLibrary,
+        C.IExportableCModule
     {
+        Bam.Core.Module.PublicPatchDelegate C.IExportableCModule.ExportPatch => (settings, appliedTo) =>
+        {
+            if (settings is C.ICommonPreprocessorSettings preprocessor)
+            {
+                preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
+            }
+        };
+
         protected override void
         Init()
         {
@@ -39,13 +48,6 @@ namespace Test2
 
             this.CreateHeaderCollection("$(packagedir)/include/library.h");
             this.CreateCSourceCollection("$(packagedir)/source/library.c");
-            this.PublicPatch((settings, appliedTo) =>
-                {
-                    if (settings is C.ICommonPreprocessorSettings preprocessor)
-                    {
-                        preprocessor.IncludePaths.AddUnique(this.CreateTokenizedString("$(packagedir)/include"));
-                    }
-                });
         }
     }
 
