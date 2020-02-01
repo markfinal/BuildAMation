@@ -179,7 +179,7 @@ namespace C
             }
             foreach (var dep in this.Dependents)
             {
-                if (!(dep is SourceFile) && !dep.Executed)
+                if (!(dep is SourceFile) && !dep.Executed && !(dep is Bam.Core.PreBuiltTool))
                 {
                     // TODO: need to revisit this
                     // it's odd to spinlock on the ExecutionTask, and then do an additional double check

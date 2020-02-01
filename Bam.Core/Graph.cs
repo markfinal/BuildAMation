@@ -388,7 +388,14 @@ namespace Bam.Core
         {
             if (module.Tool != null)
             {
-                module.Requires(module.Tool);
+                if (module.Tool is PreBuiltTool)
+                {
+                    module.Requires(module.Tool);
+                }
+                else
+                {
+                    module.DependsOn(module.Tool);
+                }
                 var child = module as IChildModule;
                 if ((null == child) || (null == child.Parent))
                 {
