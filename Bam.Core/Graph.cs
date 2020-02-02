@@ -877,20 +877,30 @@ namespace Bam.Core
             Module module,
             System.Text.StringBuilder dot,
             System.Collections.Generic.HashSet<string> modulesDotted,
-            bool onlyReferencedModules = true /* only because it's really complicated otherwise */)
+            bool onlyReferencedModules = true /* only because it's really complicated otherwise */,
+            bool onlyModulesWithTools = false,
+            bool usePrimaryOutputPathKeys = false)
         {
             if (onlyReferencedModules && !this.IsReferencedModule(module))
             {
                 return;
             }
-            var moduleName = (null != module.PrimaryOutputPathKey) ? module.GeneratedPaths[module.PrimaryOutputPathKey].ToString().Replace('\\', '/') : (this.IsReferencedModule(module) ? module.ToString() : $"{module.EncapsulatingModule.ToString()}.{module.ToString()}");
+            if (onlyModulesWithTools && null == module.Tool)
+            {
+                return;
+            }
+            var moduleName = usePrimaryOutputPathKeys && (null != module.PrimaryOutputPathKey) ? module.GeneratedPaths[module.PrimaryOutputPathKey].ToString().Replace('\\', '/') : (this.IsReferencedModule(module) ? module.ToString() : $"{module.EncapsulatingModule.ToString()}.{module.ToString()}");
             foreach (var dep in module.Dependents)
             {
                 if (onlyReferencedModules && !this.IsReferencedModule(dep))
                 {
                     continue;
                 }
-                var depName = (null != dep.PrimaryOutputPathKey) ? dep.GeneratedPaths[dep.PrimaryOutputPathKey].ToString().Replace('\\', '/') : (this.IsReferencedModule(dep) ? dep.ToString() : $"{dep.EncapsulatingModule.ToString()}.{dep.ToString()}");
+                if (onlyModulesWithTools && null == dep.Tool)
+                {
+                    continue;
+                }
+                var depName = usePrimaryOutputPathKeys && (null != dep.PrimaryOutputPathKey) ? dep.GeneratedPaths[dep.PrimaryOutputPathKey].ToString().Replace('\\', '/') : (this.IsReferencedModule(dep) ? dep.ToString() : $"{dep.EncapsulatingModule.ToString()}.{dep.ToString()}");
                 dot.AppendLine($"\t\"{moduleName}\" -> \"{depName}\";");
                 modulesDotted.Add(moduleName);
                 modulesDotted.Add(depName);
@@ -902,7 +912,11 @@ namespace Bam.Core
                 {
                     continue;
                 }
-                var reqName = (null != req.PrimaryOutputPathKey) ? req.GeneratedPaths[req.PrimaryOutputPathKey].ToString().Replace('\\', '/') : (this.IsReferencedModule(req) ? req.ToString() : $"{req.EncapsulatingModule.ToString()}.{req.ToString()}");
+                if (onlyModulesWithTools && null == req.Tool)
+                {
+                    continue;
+                }
+                var reqName = usePrimaryOutputPathKeys && (null != req.PrimaryOutputPathKey) ? req.GeneratedPaths[req.PrimaryOutputPathKey].ToString().Replace('\\', '/') : (this.IsReferencedModule(req) ? req.ToString() : $"{req.EncapsulatingModule.ToString()}.{req.ToString()}");
                 dot.AppendLine($"\t\"{moduleName}\" -> \"{reqName}\" [style=dotted];");
                 modulesDotted.Add(moduleName);
                 modulesDotted.Add(reqName);
