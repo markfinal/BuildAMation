@@ -209,5 +209,33 @@ namespace C
                 }
             }
         }
+
+        /// <summary>
+        /// Compile this source collection against the SDK module typed.
+        /// </summary>
+        /// <typeparam name="SDKModule">Type of the SDK module to compile against</typeparam>
+        public void
+        CompileAgainstSDK<SDKModule>() where SDKModule : SDKTemplate, new()
+        {
+            var sdk = Bam.Core.Graph.Instance.FindReferencedModule<SDKModule>();
+            if (null == sdk)
+            {
+                return;
+            }
+            this.DependsOn(sdk);
+            this.UsePublicPatches(sdk);
+            // TODO: this isn't right - you wouldn't include the interface to all library modules from the SDK
+            foreach (var module in sdk.LibraryFilter())
+            {
+                if (module is IDynamicLibrary dynamicLibrary)
+                {
+                    foreach (var interfaceDep in dynamicLibrary.InterfaceDependencies)
+                    {
+                        this.DependsOn(interfaceDep);
+                        this.UsePublicPatches(interfaceDep);
+                    }
+                }
+            }
+        }
     }
 }

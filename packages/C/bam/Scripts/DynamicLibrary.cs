@@ -39,6 +39,7 @@ namespace C
         IForwardedLibraries
     {
         private readonly Bam.Core.Array<Bam.Core.Module> forwardedDeps = new Bam.Core.Array<Bam.Core.Module>();
+        private readonly Bam.Core.Array<Bam.Core.Module> interfaceDependencies = new Bam.Core.Array<Bam.Core.Module>();
 
         /// <summary>
         /// Initialize the dynamic library
@@ -314,5 +315,23 @@ namespace C
                 return new System.Type[] { typeof(SDKTemplate), typeof(HeaderFileCollection) };
             }
         }
+
+        // TODO: this should be on an interface
+        /// <summary>
+        /// Add an SDK to the interface dependencies for this dynamic library.
+        /// </summary>
+        /// <typeparam name="SDKModule">SDK that is the interface dependent to this library.</typeparam>
+        public void
+        AddInterfaceDependency<SDKModule>() where SDKModule: SDKTemplate, new()
+        {
+            var sdk = Bam.Core.Graph.Instance.FindReferencedModule<SDKModule>();
+            if (null == sdk)
+            {
+                return;
+            }
+            this.interfaceDependencies.AddUnique(sdk);
+        }
+
+        System.Collections.Generic.IEnumerable<Bam.Core.Module> IDynamicLibrary.InterfaceDependencies => this.interfaceDependencies;
     }
 }

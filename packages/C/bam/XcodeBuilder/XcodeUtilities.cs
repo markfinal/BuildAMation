@@ -297,6 +297,8 @@ namespace C
                 var libAsCModule = library as C.CModule;
                 if (null == libAsCModule)
                 {
+                    // TODO: visit again
+#if false
                     if (library is C.SDKTemplate sdkLibrary)
                     {
                         if (library.MetaData is XcodeBuilder.Target libraryTarget)
@@ -332,6 +334,7 @@ namespace C
                         continue;
                     }
                     else
+#endif
                     {
                         throw new Bam.Core.Exception(
                             $"Don't know how to handle library module of type '{library.GetType().ToString()}'"

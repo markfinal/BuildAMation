@@ -33,5 +33,10 @@ namespace C
     /// Interface that dynamic libraries are required.
     /// </summary>
     interface IDynamicLibrary
-    {}
+    {
+        /// <summary>
+        /// Return an enumeration of Modules that are depedents on using the interface to this dynamic library
+        /// </summary>
+        System.Collections.Generic.IEnumerable<Bam.Core.Module> InterfaceDependencies { get; }
+    }
 }

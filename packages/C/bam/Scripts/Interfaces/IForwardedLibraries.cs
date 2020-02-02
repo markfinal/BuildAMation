@@ -29,6 +29,7 @@
 #endregion // License
 namespace C
 {
+    // TODO: need to remove this interface. It's hiding true dependencies in the dependency graph
     /// <summary>
     /// Implemented by modules that need to forward modules as extra link dependencies.
     /// </summary>

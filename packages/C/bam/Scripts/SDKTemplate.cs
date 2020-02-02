@@ -35,8 +35,7 @@ namespace C
     /// Module representing a template to follow for creating SDKs.
     /// </summary>
     abstract class SDKTemplate :
-        Publisher.Collation,
-        IForwardedLibraries
+        Publisher.Collation
     {
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedHeaders = new Bam.Core.Array<Publisher.ICollatedObject>();
         private readonly Bam.Core.Array<Publisher.ICollatedObject> copiedLibs = new Bam.Core.Array<Publisher.ICollatedObject>();
@@ -67,8 +66,14 @@ namespace C
         /// </summary>
         protected abstract Bam.Core.TypeArray LibraryModuleTypes { get; }
 
-        private System.Collections.Generic.IEnumerable<Module> LibraryFilter()
+        /// <summary>
+        /// Enumerate all library modules in the SDK
+        /// </summary>
+        /// <returns>Each library Module</returns>
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        LibraryFilter()
         {
+            // TODO: probably shouldn't be public
             return this.realLibraryModules.Where(item => !(item is HeaderLibrary) && !(item is Plugin) && !(item is Cxx.Plugin));
         }
 
@@ -85,6 +90,18 @@ namespace C
         SDKLibraryTypes()
         {
             return new Bam.Core.TypeArray(this.LibraryFilter().Select(item => item.GetType()));
+        }
+
+        /// <summary>
+        /// Get the library Module from the SDK associated with the given type.
+        /// </summary>
+        /// <param name="libraryType">Type of the library to fetch from the SDK</param>
+        /// <returns>The Module for the associated library type in the SDK</returns>
+        public Bam.Core.Module
+        GetSDKLibraryModule(
+            System.Type libraryType)
+        {
+            return this.realLibraryModules.FirstOrDefault(item => item.GetType() == libraryType);
         }
 
         /// <summary>
@@ -198,8 +215,6 @@ namespace C
                 }
             }
         }
-
-        System.Collections.Generic.IEnumerable<Module> IForwardedLibraries.ForwardedLibraries => this.LibraryFilter();
 
         private void
         GatherAllLibrariesForSDK()
