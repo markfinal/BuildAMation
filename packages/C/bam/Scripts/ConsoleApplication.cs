@@ -602,7 +602,7 @@ namespace C
                         {
                             if (library is SDKTemplate sdk)
                             {
-                                foreach (var sdkLib in this.InternalLinkAgainstSDKLibraries(sdk))
+                                foreach (var sdkLib in this.SDKLibrariesToLink(sdk))
                                 {
                                     (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, sdkLib as CModule);
                                 }
@@ -658,7 +658,7 @@ namespace C
                         {
                             if (library is SDKTemplate sdk)
                             {
-                                foreach (var sdkLib in this.InternalLinkAgainstSDKLibraries(sdk))
+                                foreach (var sdkLib in this.SDKLibrariesToLink(sdk))
                                 {
                                     (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, sdkLib as CModule);
                                 }
@@ -821,8 +821,13 @@ namespace C
         /// </summary>
         public WinResource WindowsVersionResource { get; private set; }
 
-        private System.Collections.Generic.IEnumerable<Bam.Core.Module>
-        InternalLinkAgainstSDKLibraries(
+        /// <summary>
+        /// Enumerate all libraries to link against the given SDK for this module
+        /// </summary>
+        /// <param name="sdk">SDK to select libraries to link against</param>
+        /// <returns>All libraries to link against</returns>
+        public System.Collections.Generic.IEnumerable<Bam.Core.Module>
+        SDKLibrariesToLink(
             SDKTemplate sdk)
         {
             if (!this.sdkLibrariesToLink.ContainsKey(sdk))

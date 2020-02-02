@@ -297,27 +297,25 @@ namespace C
                 var libAsCModule = library as C.CModule;
                 if (null == libAsCModule)
                 {
-                    // TODO: visit again
-#if false
                     if (library is C.SDKTemplate sdkLibrary)
                     {
                         if (library.MetaData is XcodeBuilder.Target libraryTarget)
                         {
                             target.Requires(libraryTarget);
-                            foreach (var forwarded in module.SDKLibrariesToLinkAgainst(sdkLibrary))
+                            foreach (var sdkLib in module.SDKLibrariesToLink(sdkLibrary))
                             {
-                                if (forwarded is C.IDynamicLibrary)
+                                if (sdkLib is C.IDynamicLibrary)
                                 {
                                     target.EnsureFrameworksBuildFileExists(
-                                        (forwarded as Bam.Core.Module).GeneratedPaths[C.DynamicLibrary.ExecutableKey],
+                                        (sdkLib as Bam.Core.Module).GeneratedPaths[C.DynamicLibrary.ExecutableKey],
                                         XcodeBuilder.FileReference.EFileType.DynamicLibrary,
                                         XcodeBuilder.FileReference.ESourceTree.Absolute
                                     );
                                 }
-                                else if (forwarded is C.StaticLibrary)
+                                else if (sdkLib is C.StaticLibrary)
                                 {
                                     target.EnsureFrameworksBuildFileExists(
-                                        (forwarded as Bam.Core.Module).GeneratedPaths[C.StaticLibrary.LibraryKey],
+                                        (sdkLib as Bam.Core.Module).GeneratedPaths[C.StaticLibrary.LibraryKey],
                                         XcodeBuilder.FileReference.EFileType.Archive,
                                         XcodeBuilder.FileReference.ESourceTree.Absolute
                                     );
@@ -326,15 +324,19 @@ namespace C
                         }
                         else
                         {
+                            throw new Bam.Core.Exception(
+                                $"Dependent SDK has not been built... '{library.ToString()}'"
+                            );
+#if false
                             foreach (var forwarded in (library as IForwardedLibraries).ForwardedLibraries)
                             {
                                 (module.Tool as C.LinkerTool).ProcessLibraryDependency(module as CModule, forwarded as CModule);
                             }
+#endif
                         }
                         continue;
                     }
                     else
-#endif
                     {
                         throw new Bam.Core.Exception(
                             $"Don't know how to handle library module of type '{library.GetType().ToString()}'"
