@@ -301,6 +301,7 @@ namespace C
                     {
                         if (library.MetaData is XcodeBuilder.Target libraryTarget)
                         {
+                            // SDK is built in this workspace
                             target.Requires(libraryTarget);
                             foreach (var sdkLib in module.SDKLibrariesToLink(sdkLibrary))
                             {
@@ -324,15 +325,11 @@ namespace C
                         }
                         else
                         {
-                            throw new Bam.Core.Exception(
-                                $"Dependent SDK has not been built... '{library.ToString()}'"
-                            );
-#if false
-                            foreach (var forwarded in (library as IForwardedLibraries).ForwardedLibraries)
+                            // SDK was prebuilt
+                            foreach (var sdkLib in module.SDKLibrariesToLink(sdkLibrary))
                             {
-                                (module.Tool as C.LinkerTool).ProcessLibraryDependency(module as CModule, forwarded as CModule);
+                                (module.Tool as C.LinkerTool).ProcessLibraryDependency(module as CModule, sdkLib as CModule);
                             }
-#endif
                         }
                         continue;
                     }
