@@ -6,11 +6,11 @@ function launch_project([String] $projectName) {
 launch_project 'bam-compress'
 launch_project 'bam-imageformats'
 launch_project 'bam-boost'
+launch_project 'bam-parallelism'
 
 exit
 
 launch_project 'bam-graphicssdk'
-launch_project 'bam-parallelism'
 launch_project 'bam-parser'
 launch_project 'bam-python'
 launch_project 'bam-qt'

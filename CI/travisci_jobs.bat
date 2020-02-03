@@ -7,6 +7,9 @@ curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -
 echo "Launching Travis project: bam-boost"
 curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"%APPVEYOR_REPO_BRANCH%\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-boost/requests
 
+echo "Launching Travis project: bam-parallelism"
+curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"master\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-parallelism/requests
+
 EXIT /B
 
 echo "Launching Travis project: BuildAMation"
@@ -14,9 +17,6 @@ curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -
 
 echo "Launching Travis project: bam-graphicssdk"
 curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"master\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-graphicssdk/requests
-
-echo "Launching Travis project: bam-parallelism"
-curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"master\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-parallelism/requests
 
 echo "Launching Travis project: bam-parser"
 curl.exe -Ss -H "Content-Type: application/json" -H "Accept: application/json" -H "Travis-API-Version: 3" -H "Authorization: token %TRAVIS_API_TOKEN%" -d "{\"request\": {\"branch\":\"master\", \"config\":{\"merge_mode\": \"deep_merge\", \"env\":{\"global\": {\"BAM_BRANCH\":\"%APPVEYOR_REPO_BRANCH%\"}}}}}" https://api.travis-ci.org/repo/markfinal%%2Fbam-parser/requests
