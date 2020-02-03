@@ -382,6 +382,22 @@ namespace C
             var sdkLibraryTypes = dependentSDK.SDKLibraryTypes();
             this.sdkLibrariesToLink.Add(dependentSDK, sdkLibraryTypes);
             this.AddLinkDependency(dependentSDK as Bam.Core.Module);
+
+            // TODO: this feels wrong, but currently needed in order to add the rpath link
+            foreach (var module in dependentSDK.LibraryFilter())
+            {
+                if (module is C.IDynamicLibrary dynamicLibrary)
+                {
+                    foreach (var interfaceDep in dynamicLibrary.InterfaceDependencies)
+                    {
+                        if (interfaceDep is C.SDKTemplate sdkInterfaceDep)
+                        {
+                            var sdkLibraryTypes2 = sdkInterfaceDep.SDKLibraryTypes();
+                            this.sdkLibrariesToLink.Add(sdkInterfaceDep, sdkLibraryTypes2);
+                        }
+                    }
+                }
+            }
             return sdkLibraryTypes;
         }
 
@@ -602,10 +618,7 @@ namespace C
                         {
                             if (library is SDKTemplate sdk)
                             {
-                                foreach (var sdkLib in this.SDKLibrariesToLink(sdk))
-                                {
-                                    (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, sdkLib as CModule);
-                                }
+                                (this.Tool as LinkerTool).ProcessSDKDependency(this, sdk, true);
                             }
                             // TODO: visit again
 #if false
@@ -658,10 +671,7 @@ namespace C
                         {
                             if (library is SDKTemplate sdk)
                             {
-                                foreach (var sdkLib in this.SDKLibrariesToLink(sdk))
-                                {
-                                    (this.Tool as C.LinkerTool).ProcessLibraryDependency(this as CModule, sdkLib as CModule);
-                                }
+                                (this.Tool as LinkerTool).ProcessSDKDependency(this, sdk, true);
                             }
                             // TODO: visit again
 #if false

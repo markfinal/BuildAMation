@@ -180,6 +180,50 @@ namespace GccCommon
         }
 
         /// <summary>
+        /// Process dependency between executable and an SDK.
+        /// </summary>
+        /// <param name="executable">Executable</param>
+        /// <param name="sdk">SDK </param>
+        /// <param name="direct">Is this a direct dependency?</param>
+        public override void ProcessSDKDependency(
+            C.ConsoleApplication executable,
+            C.SDKTemplate sdk,
+            bool direct)
+        {
+            if (direct)
+            {
+                foreach (var sdkLib in executable.SDKLibrariesToLink(sdk))
+                {
+                    this.ProcessLibraryDependency(executable as C.CModule, sdkLib as C.CModule);
+                }
+            }
+            else
+            {
+                var linuxLinker = executable.Settings as C.ICommonLinkerSettingsLinux;
+                foreach (var sdkLib in executable.SDKLibrariesToLink(sdk))
+                {
+                    foreach (var dir in sdkLib.OutputDirectories)
+                    {
+                        linuxLinker.RPathLink.AddUnique(dir);
+                    }
+                }
+            }
+            foreach (var module in sdk.LibraryFilter())
+            {
+                if (module is C.IDynamicLibrary dynamicLibrary)
+                {
+                    foreach (var interfaceDep in dynamicLibrary.InterfaceDependencies)
+                    {
+                        if (interfaceDep is C.SDKTemplate sdkInterfaceDep)
+                        {
+                            this.ProcessSDKDependency(executable, sdkInterfaceDep, false);
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// \copydoc Bam.Core.ITool.SettingsType
         /// </summary>
         public override System.Type SettingsType => typeof(Gcc.LinkerSettings);

@@ -53,6 +53,23 @@ namespace C
             CModule library);
 
         /// <summary>
+        /// Process dependency between executable and an SDK.
+        /// </summary>
+        /// <param name="executable">Executable</param>
+        /// <param name="sdk">SDK </param>
+        /// <param name="direct">Is this a direct dependency</param>
+        public virtual void ProcessSDKDependency(
+            ConsoleApplication executable,
+            SDKTemplate sdk,
+            bool direct)
+        {
+            foreach (var sdkLib in executable.SDKLibrariesToLink(sdk))
+            {
+                (this.Tool as C.LinkerTool).ProcessLibraryDependency(executable as CModule, sdkLib as CModule);
+            }
+        }
+
+        /// <summary>
         /// Get the version of the toolchain for this tool
         /// </summary>
         public ToolchainVersion Version { get; protected set; }
