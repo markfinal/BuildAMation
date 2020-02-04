@@ -65,7 +65,7 @@ namespace C
         {
             foreach (var sdkLib in executable.SDKLibrariesToLink(sdk))
             {
-                (this.Tool as C.LinkerTool).ProcessLibraryDependency(executable as CModule, sdkLib as CModule);
+                this.ProcessLibraryDependency(executable as CModule, sdkLib as CModule);
             }
         }
 
