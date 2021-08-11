@@ -1,3 +1,5 @@
+This is no longer under active development.
+
 BuildAMation (Bam) is a build system and project generator written in C#, tuned for building C and C++ software on Windows, Linux and OSX desktop platforms.
 
 > Writing multi-platform desktop software?  
